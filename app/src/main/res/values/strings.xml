@@ -1,3 +1,23 @@
 <resources>
     <string name="app_name">Nalone</string>
+    <string name="connexion"> Connexion </string>
+    <string name="hintLogin"> Login </string>
+    <string name="hintPass"> Mot de passe </string>
+    <string name="pasInscrit"> Pas encore inscrit ?</string>
+    <string name="lienSignIn"><u>S\'inscrire</u>  </string>
+    <string name="buttonConnexion"> Se connecter </string>
+    <string name="titleSignUp"> S\'inscrire </string>
+    <string name="homme"> Homme </string>
+    <string name="femme"> Femme </string>
+    <string name="nom"> Nom </string>
+    <string name="prenom"> Prenom </string>
+    <string name="adresse"> Adresse </string>
+    <string name="date"> Date de naissance (JJ/MM/YYYY) </string>
+    <string name="departement"> Département </string>
+    <string name="numeroTel"> Numéro de téléphone</string>
+    <string name="suivant"> Suivant </string>
+
+
+
+
 </resources>
