@@ -11,7 +11,7 @@
         android:layout_height="0dp"
         android:layout_marginStart="32dp"
         android:layout_marginEnd="32dp"
-        android:gravity="center_vertical"
+        android:gravity="center|center_vertical"
         android:orientation="vertical"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -25,7 +25,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="40dp"
-            android:text="@string/titleSignUp"
+            android:text="@string/titleSignUpOne"
             android:textAlignment="center"
             android:textSize="36sp" />
 
@@ -77,6 +77,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="20dp"
+            android:autoText="false"
             android:ems="10"
             android:hint="@string/date"
             android:inputType="date" />
@@ -101,8 +102,8 @@
             android:inputType="number" />
 
         <Button
-            android:id="@+id/button2"
-            android:layout_width="match_parent"
+            android:id="@+id/signUpNext"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/suivant" />
 

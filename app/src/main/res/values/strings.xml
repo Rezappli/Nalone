@@ -6,7 +6,9 @@
     <string name="pasInscrit"> Pas encore inscrit ?</string>
     <string name="lienSignIn"><u>S\'inscrire</u>  </string>
     <string name="buttonConnexion"> Se connecter </string>
-    <string name="titleSignUp"> S\'inscrire </string>
+    <string name="titleSignUpOne"> S\'inscrire (1/3) </string>
+    <string name="titleSignUpTwo"> S\'inscrire (2/3) </string>
+    <string name="titleSignUpThree"> S\'inscrire (3/3) </string>
     <string name="homme"> Homme </string>
     <string name="femme"> Femme </string>
     <string name="nom"> Nom </string>
@@ -15,9 +17,16 @@
     <string name="date"> Date de naissance (JJ/MM/YYYY) </string>
     <string name="departement"> Département </string>
     <string name="numeroTel"> Numéro de téléphone</string>
-    <string name="suivant"> Suivant </string>
-
-
+    <string name="suivant"> Suivant > </string>
+    <string name="prem_annee"> 1ère année </string>
+    <string name="deux_annee"> 2ème année</string>
+    <string name="autre"> Autre </string>
+    <string name="choixAnnee"> Tu es en quelle année d\'étude ?</string>
+    <string name="choixDep"> Choisi ton département :</string>
+    <string name="TC"> TC </string>
+    <string name="GB"> GB </string>
+    <string name="MMI"> MMI </string>
+    <string name="INFO"> INFO </string>
 
 
 </resources>

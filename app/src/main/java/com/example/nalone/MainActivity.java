@@ -22,8 +22,8 @@ public class MainActivity extends AppCompatActivity {
         textViewSinscrire.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent signIn = new Intent(getBaseContext(), SignUpActivity.class);
-                startActivityForResult(signIn, 0);
+                Intent signUp = new Intent(getBaseContext(), SignUpActivity.class);
+                startActivityForResult(signUp, 0);
             }
         });
     }
