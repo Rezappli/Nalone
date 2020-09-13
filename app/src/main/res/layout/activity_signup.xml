@@ -30,6 +30,7 @@
             android:textSize="36sp" />
 
         <RadioGroup
+            android:id="@+id/signupSexe"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="20dp"
@@ -55,6 +56,7 @@
             android:layout_height="wrap_content">
 
             <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/signupNom"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="20dp"
@@ -66,6 +68,7 @@
             android:layout_height="wrap_content">
 
             <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/signupPrenom"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="20dp"
@@ -73,7 +76,7 @@
         </com.google.android.material.textfield.TextInputLayout>
 
         <EditText
-            android:id="@+id/editTextDate"
+            android:id="@+id/signupDate"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="20dp"
@@ -83,7 +86,7 @@
             android:inputType="date" />
 
         <EditText
-            android:id="@+id/editTextTextPostalAddress"
+            android:id="@+id/signupAdresse"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="20dp"
@@ -93,7 +96,7 @@
             android:inputType="textPostalAddress" />
 
         <EditText
-            android:id="@+id/editTextNumber"
+            android:id="@+id/signupNumero"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="30dp"
