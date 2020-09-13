@@ -9,6 +9,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.Toast;
 
 import com.google.android.material.textfield.TextInputEditText;
@@ -21,7 +22,8 @@ public class SignUpActivity extends AppCompatActivity {
     EditText adresse;
     EditText date;
     EditText numero;
-    RadioButton sexe;
+    RadioButton homme;
+    RadioButton femme;
 
     Button buttonSignUpNext;
 
@@ -36,6 +38,9 @@ public class SignUpActivity extends AppCompatActivity {
         adresse = (EditText) findViewById(R.id.signupAdresse);
         date = (EditText) findViewById(R.id.signupDate);
         numero = (EditText) findViewById(R.id.signupNumero);
+        homme = (RadioButton) findViewById(R.id.signupHomme);
+        femme = (RadioButton) findViewById(R.id.signupHomme);
+
 
 
         buttonSignUpNext.setOnClickListener(new View.OnClickListener() {
@@ -48,6 +53,11 @@ public class SignUpActivity extends AppCompatActivity {
                 String numeroEntre = numero.getText().toString();
                 String dateEntre = date.getText().toString();
 
+
+                if(homme.isChecked() == false && femme.isChecked() == false){
+                    homme.setError("Entrez votre sexe");
+                    return;
+                }
 
                 if (nomEntre.matches("")){
                     nom.setError("Entrez votre nom");

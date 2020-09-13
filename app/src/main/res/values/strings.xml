@@ -21,7 +21,7 @@
     <string name="prem_annee"> 1ère année </string>
     <string name="deux_annee"> 2ème année</string>
     <string name="autre"> Autre </string>
-    <string name="choixAnnee"> Tu es en quelle année d\'étude ?</string>
+    <string name="choixAnnee"> Quelle est ton année d\'étude ?</string>
     <string name="choixDep"> Choisi ton département :</string>
     <string name="TC"> TC </string>
     <string name="GB"> GB </string>

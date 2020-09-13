@@ -42,14 +42,14 @@
             android:orientation="horizontal">
 
             <RadioButton
-                android:id="@+id/radioButton"
+                android:id="@+id/signupHomme"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="0.5"
                 android:text="@string/prem_annee" />
 
             <RadioButton
-                android:id="@+id/radioButton2"
+                android:id="@+id/signupFemme"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="0.5"
@@ -65,110 +65,137 @@
             android:text="@string/choixDep" />
 
         <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="20dp"
-            android:orientation="vertical">
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
-
-                <TextView
-                    android:id="@+id/textView9"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="0.5"
-                    android:text="@string/TC"
-                    android:textAlignment="center"
-                    android:textSize="36sp" />
-
-                <TextView
-                    android:id="@+id/textView10"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="0.4"
-                    android:text="@string/MMI"
-                    android:textAlignment="center"
-                    android:textSize="36sp" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
-
-                <ImageView
-                    android:id="@+id/imageViewTC"
-                    android:layout_width="wrap_content"
-                    android:layout_height="100dp"
-                    android:layout_weight="1"
-                    android:clickable="true"
-                    android:src="@drawable/logo_tc" />
-
-                <ImageView
-                    android:id="@+id/imageViewMMI"
-                    android:layout_width="wrap_content"
-                    android:layout_height="100dp"
-                    android:layout_weight="1"
-                    android:clickable="true"
-                    android:src="@drawable/logo_mmi" />
-            </LinearLayout>
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                android:baselineAligned="false">
 
-                <TextView
-                    android:id="@+id/textView11"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
                     android:layout_weight="0.5"
-                    android:text="@string/GB"
-                    android:textAlignment="center"
-                    android:textSize="36sp" />
+                    android:gravity="center"
+                    android:orientation="vertical">
 
-                <TextView
-                    android:id="@+id/textView12"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="0.35"
-                    android:text="@string/INFO"
-                    android:textAlignment="center"
-                    android:textSize="36sp" />
+                    <TextView
+                        android:id="@+id/textView9"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="0.5"
+                        android:text="@string/TC"
+                        android:textAlignment="center"
+                        android:textSize="36sp" />
+
+                    <ImageView
+                        android:id="@+id/imageViewTC"
+                        android:layout_width="match_parent"
+                        android:layout_height="100dp"
+                        android:layout_weight="1"
+                        android:clickable="true"
+                        android:src="@drawable/logo_tc" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="0.5"
+                    android:gravity="center"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/textView10"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="0.4"
+                        android:text="@string/MMI"
+                        android:textAlignment="center"
+                        android:textSize="36sp" />
+
+                    <ImageView
+                        android:id="@+id/imageViewMMI"
+                        android:layout_width="wrap_content"
+                        android:layout_height="100dp"
+                        android:layout_weight="1"
+                        android:clickable="true"
+                        android:src="@drawable/logo_mmi" />
+                </LinearLayout>
+
             </LinearLayout>
+
+            <View
+                android:id="@+id/divider2"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginTop="20dp"
+                android:layout_marginBottom="10dp"
+                android:background="?android:attr/listDivider"
+                tools:layout_editor_absoluteX="-160dp"
+                tools:layout_editor_absoluteY="548dp" />
 
             <LinearLayout
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:baselineAligned="false"
                 android:orientation="horizontal">
 
-                <ImageView
-                    android:id="@+id/imageViewGB"
-                    android:layout_width="wrap_content"
-                    android:layout_height="100dp"
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
                     android:layout_weight="0.5"
-                    android:clickable="true"
-                    android:src="@drawable/logo_gb" />
+                    android:gravity="center"
+                    android:orientation="vertical">
 
-                <ImageView
-                    android:id="@+id/imageViewINFO"
-                    android:layout_width="wrap_content"
-                    android:layout_height="100dp"
+                    <TextView
+                        android:id="@+id/textView11"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="0.5"
+                        android:text="@string/GB"
+                        android:textAlignment="center"
+                        android:textSize="36sp" />
+
+                    <ImageView
+                        android:id="@+id/imageViewGB"
+                        android:layout_width="wrap_content"
+                        android:layout_height="100dp"
+                        android:layout_weight="0.5"
+                        android:clickable="true"
+                        android:src="@drawable/logo_gb" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
                     android:layout_weight="0.5"
-                    android:clickable="true"
-                    android:src="@drawable/logo_info" />
+                    android:gravity="center"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/textView12"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="0.35"
+                        android:text="@string/INFO"
+                        android:textAlignment="center"
+                        android:textSize="36sp" />
+
+                    <ImageView
+                        android:id="@+id/imageViewINFO"
+                        android:layout_width="wrap_content"
+                        android:layout_height="100dp"
+                        android:layout_weight="0.5"
+                        android:clickable="true"
+                        android:src="@drawable/logo_info" />
+                </LinearLayout>
 
             </LinearLayout>
+
         </LinearLayout>
 
         <Button
