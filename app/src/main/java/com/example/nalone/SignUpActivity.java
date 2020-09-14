@@ -26,6 +26,8 @@ public class SignUpActivity extends AppCompatActivity {
     RadioButton homme;
     RadioButton femme;
 
+    String sexe;
+
     Button buttonSignUpNext;
 
     @Override
@@ -60,6 +62,12 @@ public class SignUpActivity extends AppCompatActivity {
                 if(homme.isChecked() == false && femme.isChecked() == false){
                     homme.setError("Entrez votre sexe");
                     return;
+                }else{
+                    if(homme.isChecked()){
+                        sexe="homme";
+                    }else{
+                        sexe="femme";
+                    }
                 }
 
                 if (nomEntre.matches("")){
