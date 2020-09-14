@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 
 public class SignUpActivityTwo extends AppCompatActivity {
@@ -13,6 +14,7 @@ public class SignUpActivityTwo extends AppCompatActivity {
     ImageView imageViewGB;
     ImageView imageViewMMI;
     ImageView imageViewINFO;
+    Button buttonNext;
 
     private String departement;
 
@@ -25,6 +27,7 @@ public class SignUpActivityTwo extends AppCompatActivity {
         imageViewGB = (ImageView) findViewById(R.id.imageViewGB);
         imageViewMMI = (ImageView) findViewById(R.id.imageViewMMI);
         imageViewINFO = (ImageView) findViewById(R.id.imageViewINFO);
+        buttonNext = (Button) findViewById(R.id.signUpNext);
 
         imageViewTC.setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
@@ -70,6 +73,13 @@ public class SignUpActivityTwo extends AppCompatActivity {
             }
         });
 
+        buttonNext.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent signUpThree = new Intent(getBaseContext(), SignUpActivityThree.class);
+                startActivityForResult(signUpThree,0);
+            }
+        });
 
     }
     }

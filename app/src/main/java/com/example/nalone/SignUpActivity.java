@@ -19,6 +19,7 @@ import java.util.Date;
 public class SignUpActivity extends AppCompatActivity {
     TextInputEditText nom;
     TextInputEditText prenom;
+    EditText ville;
     EditText adresse;
     EditText date;
     EditText numero;
@@ -35,6 +36,7 @@ public class SignUpActivity extends AppCompatActivity {
         buttonSignUpNext = (Button) findViewById(R.id.signUpNext);
         nom = (TextInputEditText) findViewById(R.id.signupNom);
         prenom = (TextInputEditText) findViewById(R.id.signupPrenom);
+        ville = (EditText) findViewById(R.id.singupVille);
         adresse = (EditText) findViewById(R.id.signupAdresse);
         date = (EditText) findViewById(R.id.signupDate);
         numero = (EditText) findViewById(R.id.signupNumero);
@@ -49,6 +51,7 @@ public class SignUpActivity extends AppCompatActivity {
 
                 String nomEntre = nom.getText().toString();
                 String prenomEntre = prenom.getText().toString();
+                String villeEntre = ville.getText().toString();
                 String adresseEntre = adresse.getText().toString();
                 String numeroEntre = numero.getText().toString();
                 String dateEntre = date.getText().toString();
@@ -71,6 +74,11 @@ public class SignUpActivity extends AppCompatActivity {
 
                 if (dateEntre.matches("")){
                     date.setError("Entrez votre date de naissance");
+                    return;
+                }
+
+                if (villeEntre.matches("")){
+                    ville.setError("Entrez votre ville");
                     return;
                 }
 

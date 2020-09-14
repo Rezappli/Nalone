@@ -72,8 +72,8 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:baselineAligned="false">
+                android:baselineAligned="false"
+                android:orientation="horizontal">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -84,9 +84,9 @@
 
                     <TextView
                         android:id="@+id/textView9"
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_weight="0.5"
+                        android:layout_weight="0"
                         android:text="@string/TC"
                         android:textAlignment="center"
                         android:textSize="36sp" />
@@ -110,9 +110,9 @@
 
                     <TextView
                         android:id="@+id/textView10"
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_weight="0.4"
+                        android:layout_weight="0"
                         android:text="@string/MMI"
                         android:textAlignment="center"
                         android:textSize="36sp" />
@@ -153,9 +153,9 @@
 
                     <TextView
                         android:id="@+id/textView11"
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_weight="0.5"
+                        android:layout_weight="0"
                         android:text="@string/GB"
                         android:textAlignment="center"
                         android:textSize="36sp" />
@@ -178,9 +178,9 @@
 
                     <TextView
                         android:id="@+id/textView12"
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_weight="0.35"
+                        android:layout_weight="0"
                         android:text="@string/INFO"
                         android:textAlignment="center"
                         android:textSize="36sp" />

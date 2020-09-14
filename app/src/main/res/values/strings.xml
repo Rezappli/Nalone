@@ -13,6 +13,7 @@
     <string name="femme"> Femme </string>
     <string name="nom"> Nom </string>
     <string name="prenom"> Prenom </string>
+    <string name="ville"> Ville </string>
     <string name="adresse"> Adresse </string>
     <string name="date"> Date de naissance (JJ/MM/YYYY) </string>
     <string name="departement"> Département </string>

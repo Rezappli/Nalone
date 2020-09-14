@@ -86,6 +86,15 @@
             android:inputType="date" />
 
         <EditText
+            android:id="@+id/singupVille"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="20dp"
+            android:ems="10"
+            android:hint="@string/ville"
+            android:inputType="textPostalAddress" />
+
+        <EditText
             android:id="@+id/signupAdresse"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
