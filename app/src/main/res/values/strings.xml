@@ -1,8 +1,9 @@
 <resources>
     <string name="app_name">Nalone</string>
     <string name="connexion"> Connexion </string>
-    <string name="hintLogin"> Login </string>
+    <string name="hintLogin"> Adresse mail </string>
     <string name="hintPass"> Mot de passe </string>
+    <string name="hintConfirmPass"> Confirmer le mot de passe </string>
     <string name="pasInscrit"> Pas encore inscrit ?</string>
     <string name="lienSignIn"><u>S\'inscrire</u>  </string>
     <string name="buttonConnexion"> Se connecter </string>
@@ -22,12 +23,14 @@
     <string name="prem_annee"> 1ère année </string>
     <string name="deux_annee"> 2ème année</string>
     <string name="autre"> Autre </string>
-    <string name="choixAnnee"> Quelle est ton année d\'étude ?</string>
-    <string name="choixDep"> Choisi ton département :</string>
+    <string name="choixAnnee"> Ton année d\'étude ?</string>
+    <string name="choixDep"> Ton département :</string>
     <string name="TC"> TC </string>
     <string name="GB"> GB </string>
     <string name="MMI"> MMI </string>
     <string name="INFO"> INFO </string>
+    <string name="Description"> Description (Facultatif)</string>
+    <string name="centresInteretsTitle"> Tes centres d\'intérêts : </string>
 
 
 </resources>

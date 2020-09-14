@@ -33,7 +33,9 @@
             android:id="@+id/textView5"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/choixAnnee" />
+            android:layout_marginBottom="10dp"
+            android:text="@string/choixAnnee"
+            android:textSize="18sp" />
 
         <RadioGroup
             android:layout_width="match_parent"
@@ -42,14 +44,14 @@
             android:orientation="horizontal">
 
             <RadioButton
-                android:id="@+id/signupHomme"
+                android:id="@+id/signupAnnee1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="0.5"
                 android:text="@string/prem_annee" />
 
             <RadioButton
-                android:id="@+id/signupFemme"
+                android:id="@+id/signupAnnee2"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="0.5"
@@ -58,11 +60,12 @@
         </RadioGroup>
 
         <TextView
-            android:id="@+id/textView6"
+            android:id="@+id/textViewDepartement"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="20dp"
-            android:text="@string/choixDep" />
+            android:text="@string/choixDep"
+            android:textSize="18sp" />
 
         <LinearLayout
             android:layout_width="wrap_content"
