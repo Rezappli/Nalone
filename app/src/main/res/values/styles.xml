@@ -6,5 +6,18 @@
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
     </style>
+    <!--Floating label text style-->
+    <style name="MyHintStyle" parent="TextAppearance.AppCompat.Small">
+        <item name="android:textColor">@color/black</item>
+    </style>
 
+    <!--Input field style-->
+    <style name="MyEditText" parent="Theme.AppCompat.Light">
+        <item name="colorControlNormal">@color/indigo</item>
+        <item name="colorControlActivated">@color/pink</item>
+    </style>
+
+    <style name="TextInputLayoutWithPrimaryColor" parent="Widget.Design.TextInputLayout">
+        <item name="colorAccent">@color/colorPrimary</item>
+    </style>
 </resources>

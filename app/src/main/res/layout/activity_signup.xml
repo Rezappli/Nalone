@@ -57,7 +57,8 @@
 
             <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:theme="@style/TextInputLayoutWithPrimaryColor">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/signupNom"
@@ -69,7 +70,8 @@
 
             <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:theme="@style/TextInputLayoutWithPrimaryColor">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/signupPrenom"
@@ -81,7 +83,8 @@
 
             <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:theme="@style/TextInputLayoutWithPrimaryColor">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/signupDate"
@@ -93,7 +96,8 @@
 
             <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:theme="@style/TextInputLayoutWithPrimaryColor">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/signupVille"
@@ -105,7 +109,8 @@
 
             <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:theme="@style/TextInputLayoutWithPrimaryColor">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/signupAdresse"
@@ -118,7 +123,8 @@
             <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="30dp">
+                android:layout_marginBottom="30dp"
+                android:theme="@style/TextInputLayoutWithPrimaryColor">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/signupNumero"
@@ -130,7 +136,8 @@
 
             <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:theme="@style/TextInputLayoutWithPrimaryColor">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/signupAdresseMail"
@@ -142,7 +149,8 @@
 
             <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:theme="@style/TextInputLayoutWithPrimaryColor">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/signupPass"
@@ -155,7 +163,8 @@
             <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="20dp">
+                android:layout_marginBottom="20dp"
+                android:theme="@style/TextInputLayoutWithPrimaryColor">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/signupConfirmPass"
