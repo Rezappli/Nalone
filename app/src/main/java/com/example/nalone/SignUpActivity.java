@@ -12,15 +12,15 @@ import android.widget.RadioButton;
 import com.google.android.material.textfield.TextInputEditText;
 
 public class SignUpActivity extends AppCompatActivity {
-    TextInputEditText nom;
-    TextInputEditText prenom;
-    TextInputEditText ville;
-    TextInputEditText adresse;
-    TextInputEditText date;
-    TextInputEditText numero;
-    TextInputEditText adresseMail;
-    TextInputEditText pass;
-    TextInputEditText confirmPass;
+    EditText nom;
+    EditText prenom;
+    EditText ville;
+    EditText adresse;
+    EditText date;
+    EditText numero;
+    EditText adresseMail;
+    EditText pass;
+    EditText confirmPass;
     RadioButton homme;
     RadioButton femme;
 
@@ -34,17 +34,17 @@ public class SignUpActivity extends AppCompatActivity {
         setContentView(R.layout.activity_signup);
 
         buttonSignUpNext = (Button) findViewById(R.id.signUpNext);
-        nom = (TextInputEditText) findViewById(R.id.signupNom);
-        prenom = (TextInputEditText) findViewById(R.id.signupPrenom);
-        ville = (TextInputEditText) findViewById(R.id.signupVille);
-        adresse = (TextInputEditText) findViewById(R.id.signupAdresse);
-        date = (TextInputEditText) findViewById(R.id.signupDate);
-        numero = (TextInputEditText) findViewById(R.id.signupNumero);
-        adresseMail = (TextInputEditText) findViewById(R.id.signupAdresseMail);
-        pass = (TextInputEditText) findViewById(R.id.signupPass);
-        confirmPass = (TextInputEditText) findViewById(R.id.signupConfirmPass);
-        homme = (RadioButton) findViewById(R.id.signupHomme);
-        femme = (RadioButton) findViewById(R.id.signupFemme);
+        nom =  (EditText) findViewById(R.id.signupNom);
+        prenom = (EditText)  findViewById(R.id.signupPrenom);
+        ville = (EditText)  findViewById(R.id.signupVille);
+        adresse = (EditText) findViewById(R.id.signupAdress);
+        date = (EditText)  findViewById(R.id.signupDate);
+        numero = (EditText)  findViewById(R.id.signupNumero);
+        adresseMail = (EditText) findViewById(R.id.signupAdresseMail);
+        pass =  (EditText) findViewById(R.id.signupPass);
+        confirmPass = (EditText)  findViewById(R.id.signupConfirmPass);
+        homme =  findViewById(R.id.signupHomme);
+        femme = findViewById(R.id.signupFemme);
 
 
 
@@ -63,7 +63,7 @@ public class SignUpActivity extends AppCompatActivity {
                 String confirmPassEntre = confirmPass.getText().toString();
 
 
-                if(homme.isChecked() == false && femme.isChecked() == false){
+             /*   if(homme.isChecked() == false && femme.isChecked() == false){
                     femme.setError("Entrez votre sexe");
                     return;
                 }else{
@@ -121,8 +121,7 @@ public class SignUpActivity extends AppCompatActivity {
                     return;
                 }
 
-
-
+*/
                 Intent signUpTwo = new Intent(getBaseContext(), SignUpActivityTwo.class);
                 startActivityForResult(signUpTwo, 0);
 

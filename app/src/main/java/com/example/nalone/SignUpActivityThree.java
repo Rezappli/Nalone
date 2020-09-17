@@ -12,6 +12,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.Toast;
@@ -26,6 +27,7 @@ public class SignUpActivityThree extends AppCompatActivity {
     Spinner spinnerCentreInteret1;
     Spinner spinnerCentreInteret2;
     Spinner spinnerCentreInteret3;
+    Button signupNext;
 
     String[] centresInteret = { "Musique", "Sport", "Jeux Vidéo", "Livres", "Mangas", "Fête", "Cuisine"};
 
@@ -41,6 +43,7 @@ public class SignUpActivityThree extends AppCompatActivity {
         spinnerCentreInteret1 = (Spinner) findViewById(R.id.signupSpinner1);
         spinnerCentreInteret2 = (Spinner) findViewById(R.id.signupSpinner2);
         spinnerCentreInteret3 = (Spinner) findViewById(R.id.signupSpinner3);
+        signupNext = (Button) findViewById(R.id.signUpNext);
 
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, centresInteret);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -72,6 +75,14 @@ public class SignUpActivityThree extends AppCompatActivity {
                 Intent photoPickerIntent = new Intent(Intent.ACTION_PICK);
                 photoPickerIntent.setType("image/*");
                 startActivityForResult(photoPickerIntent, RESULT_LOAD_IMG);
+            }
+        });
+
+        signupNext.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent homeIntent = new Intent(getBaseContext(), HomeActivity.class);
+                startActivityForResult(homeIntent,0);
             }
         });
     }

@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/mobile_navigation"
+    app:startDestination="@+id/navigation_recherche">
+
+    <fragment
+        android:id="@+id/navigation_recherche"
+        android:name="com.example.nalone.ui.home.HomeFragment"
+        android:label="@string/title_recherche"
+        tools:layout="@layout/fragment_recherche" />
+
+    <fragment
+        android:id="@+id/navigation_amis"
+        android:name="com.example.nalone.ui.dashboard.DashboardFragment"
+        android:label="@string/title_amis"
+        tools:layout="@layout/fragment_amis" />
+
+    <fragment
+        android:id="@+id/navigation_evenements"
+        android:name="com.example.nalone.ui.notifications.NotificationsFragment"
+        android:label="@string/title_evenements"
+        tools:layout="@layout/fragment_evenements" />
+
+    <fragment
+        android:id="@+id/navigation_messages"
+        android:name="com.example.nalone.ui.notifications.NotificationsFragment"
+        android:label="@string/title_messages"
+        tools:layout="@layout/fragment_messages" />
+</navigation>
