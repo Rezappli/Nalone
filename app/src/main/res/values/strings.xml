@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Nalone</string>
+    <string name="app_name">NoLonely</string>
     <string name="connexion"> Connexion </string>
     <string name="hintLogin"> Adresse mail </string>
     <string name="hintPass"> Mot de passe </string>
@@ -9,7 +9,7 @@
     <string name="buttonConnexion"> Se connecter </string>
     <string name="titleSignUpOne"> Qui êtes-vous ? </string>
     <string name="titleSignUpTwo"> Inscription (2/3) </string>
-    <string name="titleSignUpThree"> Inscription (3/3) </string>
+    <string name="titleSignUpThree"> Profil </string>
     <string name="homme"> Homme </string>
     <string name="femme"> Femme </string>
     <string name="nom"> Nom </string>
@@ -38,6 +38,14 @@
     <string name="title_evenements"> Evenements </string>
     <string name="title_messages"> Messages </string>
    <string name="choixCI"> Choisi 5 centres d\'intérêt</string>
+    <string name="ci_sport"> Sport </string>
+    <string name="ci_musique"> Musique </string>
+    <string name="ci_photo"> Photographie </string>
+    <string name="ci_films"> Films </string>
+    <string name="ci_livre"> Livres </string>
+    <string name="ci_peinture"> Peinture </string>
+    <string name="ci_programmation"> Programmation </string>
+    <string name="ci_jv"> Jeux Vidéo </string>
 
 
 

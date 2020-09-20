@@ -24,12 +24,7 @@ public class SignUpActivityThree extends AppCompatActivity {
 
     ImageView imageViewPhotoProfil;
     CardView cardViewBackgroundPP;
-    Spinner spinnerCentreInteret1;
-    Spinner spinnerCentreInteret2;
-    Spinner spinnerCentreInteret3;
     Button signupNext;
-
-    String[] centresInteret = { "Musique", "Sport", "Jeux Vidéo", "Livres", "Mangas", "Fête", "Cuisine"};
 
     static final int RESULT_LOAD_IMG = 1;
 
@@ -40,34 +35,7 @@ public class SignUpActivityThree extends AppCompatActivity {
 
         imageViewPhotoProfil = findViewById(R.id.signupPhotoProfil);
         cardViewBackgroundPP = findViewById(R.id.signupBgPhotoProfil);
-        spinnerCentreInteret1 = (Spinner) findViewById(R.id.signupSpinner1);
-        spinnerCentreInteret2 = (Spinner) findViewById(R.id.signupSpinner2);
-        spinnerCentreInteret3 = (Spinner) findViewById(R.id.signupSpinner3);
-        signupNext = (Button) findViewById(R.id.signUpNext);
-
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, centresInteret);
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinnerCentreInteret1.setAdapter(adapter);
-        spinnerCentreInteret2.setAdapter(adapter);
-        spinnerCentreInteret3.setAdapter(adapter);
-      //  spinnerCentreInteret1.setOnItemSelectedListener(this);
-
-
-        if(SignUpActivityTwo.departement == "MMI"){
-            cardViewBackgroundPP.setCardBackgroundColor(Color.parseColor("#b83dba"));
-        }
-
-        if(SignUpActivityTwo.departement == "TC"){
-            cardViewBackgroundPP.setCardBackgroundColor(Color.parseColor("#00a8f3"));
-        }
-
-        if(SignUpActivityTwo.departement == "GB"){
-            cardViewBackgroundPP.setCardBackgroundColor(Color.parseColor("#0ed145"));
-        }
-
-        if(SignUpActivityTwo.departement == "INFO"){
-            cardViewBackgroundPP.setCardBackgroundColor(Color.parseColor("#ec1c24"));
-        }
+        signupNext = findViewById(R.id.signUpNext3);
 
         imageViewPhotoProfil.setOnClickListener(new View.OnClickListener() {
             @Override

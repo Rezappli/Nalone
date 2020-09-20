@@ -16,10 +16,10 @@
         <activity
             android:name=".HomeActivity"
             android:label="@string/title_activity_home" />
-        <activity android:name=".SignUpActivityThree" />
-        <activity android:name=".SignUpActivityTwo" />
-        <activity android:name=".SignUpActivity" />
-        <activity android:name=".MainActivity">
+        <activity android:name=".SignUpActivityThree" android:theme="@style/Theme.AppCompat.DayNight.NoActionBar"/>
+        <activity android:name=".SignUpActivityTwo" android:theme="@style/Theme.AppCompat.DayNight.NoActionBar" />
+        <activity android:name=".SignUpActivity" android:theme="@style/Theme.AppCompat.DayNight.NoActionBar"/>
+        <activity android:name=".MainActivity" android:theme="@style/Theme.AppCompat.DayNight.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

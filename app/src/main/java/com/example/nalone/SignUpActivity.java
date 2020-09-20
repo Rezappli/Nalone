@@ -1,13 +1,19 @@
 package com.example.nalone;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.cardview.widget.CardView;
 
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.RadioButton;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.material.textfield.TextInputEditText;
 
@@ -21,10 +27,15 @@ public class SignUpActivity extends AppCompatActivity {
     EditText adresseMail;
     EditText pass;
     EditText confirmPass;
-    RadioButton homme;
-    RadioButton femme;
+    CardView homme;
+    CardView femme;
+    ImageView imageH;
+    ImageView imageF;
+    TextView textH;
+    TextView textF;
 
-    String sexe;
+    boolean bHomme;
+    boolean bFemme;
 
     Button buttonSignUpNext;
 
@@ -43,8 +54,40 @@ public class SignUpActivity extends AppCompatActivity {
         adresseMail = (EditText) findViewById(R.id.signupAdresseMail);
         pass =  (EditText) findViewById(R.id.signupPass);
         confirmPass = (EditText)  findViewById(R.id.signupConfirmPass);
-        homme =  findViewById(R.id.signupHomme);
-        femme = findViewById(R.id.signupFemme);
+        homme =  findViewById(R.id.signUpHomme);
+        femme = findViewById(R.id.signUpFemme);
+        imageF = findViewById(R.id.imageFemme);
+        imageH = findViewById(R.id.imageHomme);
+        textF = findViewById(R.id.textFemme);
+        textH = findViewById(R.id.textHomme);
+
+        final Drawable customErrorDrawable = getResources().getDrawable(R.drawable.error_icon);
+        customErrorDrawable.setBounds(0, 0, customErrorDrawable.getIntrinsicWidth(), customErrorDrawable.getIntrinsicHeight());
+
+
+
+
+        homme.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                imageH.setImageResource(R.drawable.signup_homme_focused);
+                bHomme = true;
+                imageF.setImageResource(R.drawable.signup_femme);
+                textH.setTextColor(Color.GRAY);
+                textF.setTextColor(Color.GRAY);
+            }
+        });
+
+        femme.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                imageF.setImageResource(R.drawable.signup_femme_focused);
+                bFemme = true;
+                imageH.setImageResource(R.drawable.signup_homme);
+                textF.setTextColor(Color.GRAY);
+                textH.setTextColor(Color.GRAY);
+            }
+        });
 
 
 
@@ -63,70 +106,68 @@ public class SignUpActivity extends AppCompatActivity {
                 String confirmPassEntre = confirmPass.getText().toString();
 
 
-             /*   if(homme.isChecked() == false && femme.isChecked() == false){
-                    femme.setError("Entrez votre sexe");
-                    return;
-                }else{
-                    if(homme.isChecked()){
-                        sexe="homme";
-                    }else{
-                        sexe="femme";
-                    }
-                }
+               if(bHomme == false && bFemme == false){
+                   imageH.setImageResource(R.drawable.signup_homme_erreur);
+                   imageF.setImageResource(R.drawable.signup_femme_erreur);
+                   textF.setTextColor(Color.RED);
+                   textH.setTextColor(Color.RED);
+                   Toast.makeText(getApplicationContext(), "Selectionnez votre sexe", Toast.LENGTH_LONG).show();
+                   return;
+               }
 
                 if (nomEntre.matches("")){
-                    nom.setError("Entrez votre nom");
+                    nom.setError("Entrez votre nom", customErrorDrawable);
                     return;
                 }
 
                 if (prenomEntre.matches("")){
-                    prenom.setError("Entrez votre prénom");
+                    prenom.setError("Entrez votre prénom",customErrorDrawable);
                     return;
                 }
 
                 if (dateEntre.matches("")){
-                    date.setError("Entrez votre date de naissance");
+                    date.setError("Entrez votre date de naissance",customErrorDrawable);
                     return;
                 }
 
                 if (villeEntre.matches("")){
-                    ville.setError("Entrez votre ville");
+                    ville.setError("Entrez votre ville",customErrorDrawable);
                     return;
                 }
 
                 if (adresseEntre.matches("")){
-                    adresse.setError("Entrez votre adresse");
+                    adresse.setError("Entrez votre adresse",customErrorDrawable);
                     return;
                 }
 
                 if (numeroEntre.matches("")){
-                    numero.setError("Entrez votre numéro de téléphone");
+                    numero.setError("Entrez votre numéro de téléphone",customErrorDrawable);
                     return;
                 }
 
                 if(loginEntre.matches("")){
-                    adresseMail.setError("Entrez votre adresse mail");
+                    adresseMail.setError("Entrez votre adresse mail",customErrorDrawable);
                     return;
                 }
 
                 if(passEntre.matches("")){
-                    pass.setError("Entrez votre mot de passe");
+                    pass.setError("Entrez votre mot de passe",customErrorDrawable);
                     return;
                 }
 
                 if(passEntre.contains(confirmPassEntre)){
 
                 }else{
-                    confirmPass.setError("Le mot de passe ne correspond pas");
+                    confirmPass.setError("Le mot de passe ne correspond pas",customErrorDrawable);
                     return;
                 }
 
-*/
                 Intent signUpTwo = new Intent(getBaseContext(), SignUpActivityTwo.class);
                 startActivityForResult(signUpTwo, 0);
 
             }
         });
     }
+
 
 }
