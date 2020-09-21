@@ -1,5 +1,6 @@
 package com.example.nalone;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
@@ -8,6 +9,12 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -43,9 +50,8 @@ public class MainActivity extends AppCompatActivity {
         textViewConnexion.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
-                String textAddress = editTextAddress.getText().toString();
-                String textPass = editTextPass.getText().toString();
+                final String textAddress = editTextAddress.getText().toString().replace(".", ",");
+                final String textPass = editTextPass.getText().toString();
 
                 if(textAddress.matches("")){
                     editTextAddress.setError("Entrez votre adresse");
@@ -57,33 +63,52 @@ public class MainActivity extends AppCompatActivity {
                     return;
                 }
 
-                try {
-                    String result = getContent(textAddress, textPass);
-                    Toast.makeText(getApplicationContext(), result, Toast.LENGTH_LONG).show();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+                //Enregistrement d'un nouvel utilisateur !
 
-              /*  Intent signUp = new Intent(getBaseContext(), HomeActivity.class);
-                startActivityForResult(signUp, 0);*/
+                /*FirebaseDatabase database = FirebaseDatabase.getInstance("authentification/");
+                DatabaseReference myRef = database.getReference(textAddress);
+                myRef.setValue(textPass);*/
+
+                //
+
+
+                //Lecture d'une connexion mail/mdp via bdd
+                DatabaseReference rootRef = FirebaseDatabase.getInstance().getReference("authentification/");
+                rootRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                   @Override
+                   public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        if(dataSnapshot.hasChild(textAddress)){
+                            DatabaseReference mailRef = FirebaseDatabase.getInstance().getReference("authentification/" + textAddress);
+                            mailRef.addValueEventListener(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                    String MailPasswordBind = dataSnapshot.getValue(String.class);
+                                    if(textPass.equals(MailPasswordBind)){
+                                        Intent signUp = new Intent(getBaseContext(), HomeActivity.class);
+                                        startActivityForResult(signUp, 0);
+                                    }else{
+                                        editTextPass.setText("");
+                                        Toast.makeText(getApplicationContext(), "Le mot de passe est incorrect !", Toast.LENGTH_LONG).show();
+                                    }
+                                }
+
+                                @Override
+                                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                                }
+                            });
+                        }else{
+                            Toast.makeText(getApplicationContext(), "L'adresse mail n'existe pas !", Toast.LENGTH_LONG).show();
+                        }
+                   }
+
+                   @Override
+                   public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                   }
+                   });
             }
         });
     }
 
-    private String getContent(String address, String pass) throws IOException {
-        URL url = new URL("localhost/noLonely/connection.php?m="+address+"&&p="+pass);
-        HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-        connection.setRequestMethod("GET");
-        connection.setDoOutput(true);
-        connection.setConnectTimeout(5000);
-        connection.setReadTimeout(5000);
-        connection.connect();
-        BufferedReader rd = new BufferedReader(new InputStreamReader(connection.getInputStream()));
-        String content = "", line;
-        while ((line = rd.readLine()) != null) {
-            content += line + "\n";
-        }
-
-        return content;
-    }
 }
