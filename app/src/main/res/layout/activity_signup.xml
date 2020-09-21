@@ -68,7 +68,7 @@
                             android:layout_width="25dp"
                             android:layout_height="25dp"
                             android:layout_gravity="center"
-                            app:srcCompat="@drawable/step_one_focused" />
+                            app:srcCompat="@drawable/step_one" />
                     </androidx.cardview.widget.CardView>
 
                 </androidx.cardview.widget.CardView>

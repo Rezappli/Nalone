@@ -106,7 +106,7 @@ public class SignUpActivity extends AppCompatActivity {
                 String confirmPassEntre = confirmPass.getText().toString();
 
 
-               if(bHomme == false && bFemme == false){
+              /* if(bHomme == false && bFemme == false){
                    imageH.setImageResource(R.drawable.signup_homme_erreur);
                    imageF.setImageResource(R.drawable.signup_femme_erreur);
                    textF.setTextColor(Color.RED);
@@ -160,7 +160,7 @@ public class SignUpActivity extends AppCompatActivity {
                 }else{
                     confirmPass.setError("Le mot de passe ne correspond pas",customErrorDrawable);
                     return;
-                }
+                }*/
 
                 Intent signUpStudy = new Intent(getBaseContext(), SignUpActivityStudy.class);
                 startActivityForResult(signUpStudy, 0);

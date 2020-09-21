@@ -65,7 +65,7 @@ public class SignUpActivityTwo extends AppCompatActivity {
                     if(nbCi == 5){
                         if(e.getCardElevation() == 0){
                             e.setCardBackgroundColor(Color.WHITE);
-                            e.setCardElevation(10);
+                            e.setCardElevation(15);
                             nbCi--;
                         }else{
                             Toast.makeText(getApplicationContext(),"Limite atteinte",Toast.LENGTH_LONG).show();
@@ -80,7 +80,7 @@ public class SignUpActivityTwo extends AppCompatActivity {
 
                         }else{
                             e.setCardBackgroundColor(Color.WHITE);
-                            e.setCardElevation(10);
+                            e.setCardElevation(15);
                             nbCi--;
                         }
                     }

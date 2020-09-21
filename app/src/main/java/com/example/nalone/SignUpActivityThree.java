@@ -14,6 +14,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.Toast;
 
@@ -23,7 +24,7 @@ import java.io.InputStream;
 public class SignUpActivityThree extends AppCompatActivity {
 
     ImageView imageViewPhotoProfil;
-    CardView cardViewBackgroundPP;
+    LinearLayout linearLayoutBackgroundPP;
     Button signupNext;
 
 
@@ -35,23 +36,24 @@ public class SignUpActivityThree extends AppCompatActivity {
         setContentView(R.layout.activity_sign_up_three);
 
         imageViewPhotoProfil = findViewById(R.id.signupPhotoProfil);
-        cardViewBackgroundPP = findViewById(R.id.signupBgPhotoProfil);
+        linearLayoutBackgroundPP = findViewById(R.id.signupBgPhotoProfil);
         signupNext = findViewById(R.id.signUpNext3);
 
-        if(SignUpActivityStudy.departement == "MMI"){
-            setBackground(184,61,186);
+       if(SignUpActivityStudy.departement == "MMI"){
+            linearLayoutBackgroundPP.setBackgroundResource(R.drawable.custom_mmi);
         }
+
         if(SignUpActivityStudy.departement == "TC"){
-            setBackground(0,168,243);
+            linearLayoutBackgroundPP.setBackgroundResource(R.drawable.custom_tc);
         }
         if(SignUpActivityStudy.departement == "INFO"){
-            setBackground(236,28,36);
+            linearLayoutBackgroundPP.setBackgroundResource(R.drawable.custom_info);
         }
         if(SignUpActivityStudy.departement == "LP"){
-            setBackground(255,127,39);
+            linearLayoutBackgroundPP.setBackgroundResource(R.drawable.custom_lp);
         }
         if(SignUpActivityStudy.departement == "GB"){
-            setBackground(14,209,69);
+            linearLayoutBackgroundPP.setBackgroundResource(R.drawable.custom_gb);
         }
 
 
@@ -84,6 +86,7 @@ public class SignUpActivityThree extends AppCompatActivity {
                 final InputStream imageStream = getContentResolver().openInputStream(imageUri);
                 final Bitmap selectedImage = BitmapFactory.decodeStream(imageStream);
                 imageViewPhotoProfil.setImageBitmap(selectedImage);
+
             } catch (FileNotFoundException e) {
                 e.printStackTrace();
                 Toast.makeText(getApplicationContext(), "Une erreur s'est produite",Toast.LENGTH_LONG).show();
@@ -94,10 +97,6 @@ public class SignUpActivityThree extends AppCompatActivity {
             Toast.makeText(getApplicationContext(),"Vous n'avez pas choisi d'image", Toast.LENGTH_LONG).show();
 
         }
-    }
-
-    private void setBackground(int red, int green, int blue ){
-        cardViewBackgroundPP.setCardBackgroundColor(Color.rgb(red,green,blue));
     }
 
 

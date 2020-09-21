@@ -191,18 +191,31 @@
                 android:textSize="36sp" />
 
             <androidx.cardview.widget.CardView
-                android:id="@+id/signupBgPhotoProfil"
-                android:layout_width="150dp"
-                android:layout_height="150dp"
+                android:layout_width="140dp"
+                android:layout_height="140dp"
                 android:layout_gravity="center|center_vertical"
                 android:layout_marginBottom="30dp"
                 app:cardCornerRadius="150dp">
+
+                <LinearLayout
+                    android:id="@+id/signupBgPhotoProfil"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical"></LinearLayout>
 
                 <androidx.cardview.widget.CardView
                     android:layout_width="125dp"
                     android:layout_height="125dp"
                     android:layout_gravity="center|clip_vertical"
-                    app:cardCornerRadius="150dp"/>
+                    app:cardCornerRadius="150dp">
+
+                    <ImageView
+                        android:id="@+id/signupPhotoProfil"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_gravity="center"
+                        app:srcCompat="@drawable/add_photo" />
+                </androidx.cardview.widget.CardView>
             </androidx.cardview.widget.CardView>
 
             <com.google.android.material.textfield.TextInputLayout
