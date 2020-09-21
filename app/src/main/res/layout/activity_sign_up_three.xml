@@ -36,7 +36,7 @@
                 android:orientation="horizontal">
 
                 <View
-                    android:id="@+id/view3"
+                    android:id="@+id/view15"
                     android:layout_width="match_parent"
                     android:layout_height="18dp"
                     android:layout_marginTop="20dp"
@@ -70,7 +70,40 @@
                 </androidx.cardview.widget.CardView>
 
                 <View
-                    android:id="@+id/view5"
+                    android:id="@+id/view3"
+                    android:layout_width="match_parent"
+                    android:layout_height="18dp"
+                    android:layout_marginTop="20dp"
+                    android:layout_marginBottom="40dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/custom_stepview" />
+
+                <androidx.cardview.widget.CardView
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:layout_marginTop="4dp"
+                    app:cardBackgroundColor="#18ECC5"
+                    app:cardCornerRadius="20dp">
+
+                    <androidx.cardview.widget.CardView
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:layout_gravity="center"
+                        android:background="@drawable/custom_stepview"
+                        app:cardBackgroundColor="#FFFFFF"
+                        app:cardCornerRadius="15dp">
+
+                        <ImageView
+                            android:id="@+id/imageView8"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            app:srcCompat="@drawable/step_four_focused" />
+                    </androidx.cardview.widget.CardView>
+
+                </androidx.cardview.widget.CardView>
+
+                <View
+                    android:id="@+id/view10"
                     android:layout_width="match_parent"
                     android:layout_height="18dp"
                     android:layout_marginTop="20dp"
@@ -104,7 +137,7 @@
                 </androidx.cardview.widget.CardView>
 
                 <View
-                    android:id="@+id/view8"
+                    android:id="@+id/view5"
                     android:layout_width="match_parent"
                     android:layout_height="18dp"
                     android:layout_marginTop="20dp"
@@ -138,13 +171,14 @@
                 </androidx.cardview.widget.CardView>
 
                 <View
-                    android:id="@+id/view10"
+                    android:id="@+id/view8"
                     android:layout_width="match_parent"
                     android:layout_height="18dp"
                     android:layout_marginTop="20dp"
                     android:layout_marginBottom="40dp"
                     android:layout_weight="1"
-                    android:background="@android:color/darker_gray" />
+                    android:background="#aaaaaa" />
+
             </LinearLayout>
 
             <TextView
@@ -168,17 +202,7 @@
                     android:layout_width="125dp"
                     android:layout_height="125dp"
                     android:layout_gravity="center|clip_vertical"
-                    app:cardCornerRadius="150dp">
-
-                    <ImageView
-                        android:id="@+id/signupPhotoProfil"
-                        android:layout_width="125dp"
-                        android:layout_height="125dp"
-                        android:layout_gravity="center"
-                        android:contentDescription="@string/buttonConnexion"
-                        android:scaleType="centerCrop"
-                        app:srcCompat="@drawable/logo_photo_profil" />
-                </androidx.cardview.widget.CardView>
+                    app:cardCornerRadius="150dp"/>
             </androidx.cardview.widget.CardView>
 
             <com.google.android.material.textfield.TextInputLayout
@@ -201,15 +225,13 @@
                 android:id="@+id/signUpNext3"
                 android:layout_width="200dp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="32dp"
                 android:layout_marginTop="40sp"
-                android:layout_marginEnd="32dp"
                 android:layout_weight="0"
                 android:background="@drawable/custom_button"
                 android:text="@string/suivant"
                 android:textAllCaps="false"
                 android:textColor="#FFFFFF"
-                android:textSize="20sp" />
+                android:textSize="25sp" />
 
         </LinearLayout>
     </ScrollView>

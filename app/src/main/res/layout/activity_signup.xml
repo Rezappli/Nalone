@@ -45,7 +45,7 @@
                     android:layout_height="18dp"
                     android:layout_marginTop="20dp"
                     android:layout_marginBottom="40dp"
-                    android:layout_weight="0.9"
+                    android:layout_weight="1"
                     android:background="@drawable/custom_stepview" />
 
                 <androidx.cardview.widget.CardView
@@ -68,7 +68,7 @@
                             android:layout_width="25dp"
                             android:layout_height="25dp"
                             android:layout_gravity="center"
-                            app:srcCompat="@drawable/step_one" />
+                            app:srcCompat="@drawable/step_one_focused" />
                     </androidx.cardview.widget.CardView>
 
                 </androidx.cardview.widget.CardView>
@@ -79,14 +79,47 @@
                     android:layout_height="18dp"
                     android:layout_marginTop="20dp"
                     android:layout_marginBottom="40dp"
-                    android:layout_weight="0.9"
-                    android:background="@android:color/darker_gray" />
+                    android:layout_weight="1"
+                    android:background="#aaaaaa" />
 
                 <androidx.cardview.widget.CardView
                     android:layout_width="50dp"
                     android:layout_height="50dp"
                     android:layout_marginTop="4dp"
-                    app:cardBackgroundColor="#AAAAAA"
+                    app:cardBackgroundColor="#aaaaaa"
+                    app:cardCornerRadius="20dp">
+
+                    <androidx.cardview.widget.CardView
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:layout_gravity="center"
+                        android:background="@drawable/custom_stepview"
+                        app:cardBackgroundColor="#FFFFFF"
+                        app:cardCornerRadius="15dp">
+
+                        <ImageView
+                            android:id="@+id/imageView8"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            app:srcCompat="@drawable/step_four" />
+                    </androidx.cardview.widget.CardView>
+
+                </androidx.cardview.widget.CardView>
+
+                <View
+                    android:id="@+id/view7"
+                    android:layout_width="match_parent"
+                    android:layout_height="18dp"
+                    android:layout_marginTop="20dp"
+                    android:layout_marginBottom="40dp"
+                    android:layout_weight="1"
+                    android:background="#aaaaaa" />
+
+                <androidx.cardview.widget.CardView
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:layout_marginTop="4dp"
+                    app:cardBackgroundColor="#aaaaaa"
                     app:cardCornerRadius="20dp">
 
                     <androidx.cardview.widget.CardView
@@ -108,31 +141,31 @@
                 </androidx.cardview.widget.CardView>
 
                 <View
-                    android:id="@+id/view7"
+                    android:id="@+id/view9"
                     android:layout_width="match_parent"
                     android:layout_height="18dp"
                     android:layout_marginTop="20dp"
                     android:layout_marginBottom="40dp"
-                    android:layout_weight="0.9"
-                    android:background="@android:color/darker_gray" />
+                    android:layout_weight="1"
+                    android:background="#aaaaaa" />
 
                 <androidx.cardview.widget.CardView
                     android:layout_width="50dp"
                     android:layout_height="50dp"
                     android:layout_marginTop="4dp"
-                    app:cardBackgroundColor="#AAAAAA"
+                    app:cardBackgroundColor="#aaaaaa"
                     app:cardCornerRadius="20dp">
 
                     <androidx.cardview.widget.CardView
                         android:layout_width="40dp"
                         android:layout_height="40dp"
                         android:layout_gravity="center"
-                        android:background="@android:color/darker_gray"
+                        android:background="@drawable/custom_stepview"
                         app:cardBackgroundColor="#FFFFFF"
                         app:cardCornerRadius="15dp">
 
                         <ImageView
-                            android:id="@+id/imageView7"
+                            android:id="@+id/imageView4"
                             android:layout_width="30dp"
                             android:layout_height="30dp"
                             android:layout_gravity="center"
@@ -142,13 +175,13 @@
                 </androidx.cardview.widget.CardView>
 
                 <View
-                    android:id="@+id/view9"
+                    android:id="@+id/view16"
                     android:layout_width="match_parent"
                     android:layout_height="18dp"
                     android:layout_marginTop="20dp"
                     android:layout_marginBottom="40dp"
-                    android:layout_weight="0.9"
-                    android:background="@android:color/darker_gray" />
+                    android:layout_weight="1"
+                    android:background="#aaaaaa" />
 
             </LinearLayout>
 
@@ -401,7 +434,7 @@
                 android:text="@string/suivant"
                 android:textAllCaps="false"
                 android:textColor="#FFFFFF"
-                android:textSize="20sp" />
+                android:textSize="25sp" />
 
         </LinearLayout>
     </ScrollView>

@@ -162,8 +162,8 @@ public class SignUpActivity extends AppCompatActivity {
                     return;
                 }
 
-                Intent signUpTwo = new Intent(getBaseContext(), SignUpActivityTwo.class);
-                startActivityForResult(signUpTwo, 0);
+                Intent signUpStudy = new Intent(getBaseContext(), SignUpActivityStudy.class);
+                startActivityForResult(signUpStudy, 0);
 
             }
         });

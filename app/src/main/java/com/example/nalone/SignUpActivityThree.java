@@ -26,6 +26,7 @@ public class SignUpActivityThree extends AppCompatActivity {
     CardView cardViewBackgroundPP;
     Button signupNext;
 
+
     static final int RESULT_LOAD_IMG = 1;
 
     @Override
@@ -36,6 +37,23 @@ public class SignUpActivityThree extends AppCompatActivity {
         imageViewPhotoProfil = findViewById(R.id.signupPhotoProfil);
         cardViewBackgroundPP = findViewById(R.id.signupBgPhotoProfil);
         signupNext = findViewById(R.id.signUpNext3);
+
+        if(SignUpActivityStudy.departement == "MMI"){
+            setBackground(184,61,186);
+        }
+        if(SignUpActivityStudy.departement == "TC"){
+            setBackground(0,168,243);
+        }
+        if(SignUpActivityStudy.departement == "INFO"){
+            setBackground(236,28,36);
+        }
+        if(SignUpActivityStudy.departement == "LP"){
+            setBackground(255,127,39);
+        }
+        if(SignUpActivityStudy.departement == "GB"){
+            setBackground(14,209,69);
+        }
+
 
         imageViewPhotoProfil.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -77,4 +95,11 @@ public class SignUpActivityThree extends AppCompatActivity {
 
         }
     }
+
+    private void setBackground(int red, int green, int blue ){
+        cardViewBackgroundPP.setCardBackgroundColor(Color.rgb(red,green,blue));
+    }
+
+
+
 }
