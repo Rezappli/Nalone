@@ -62,16 +62,6 @@ public class MainActivity extends AppCompatActivity {
                     editTextPass.setError("Entrez votre mot de passe");
                     return;
                 }
-
-                //Enregistrement d'un nouvel utilisateur !
-
-                /*FirebaseDatabase database = FirebaseDatabase.getInstance("authentification/");
-                DatabaseReference myRef = database.getReference(textAddress);
-                myRef.setValue(textPass);*/
-
-                //
-
-
                 //Lecture d'une connexion mail/mdp via bdd
                 DatabaseReference rootRef = FirebaseDatabase.getInstance().getReference("authentification/");
                 rootRef.addListenerForSingleValueEvent(new ValueEventListener() {

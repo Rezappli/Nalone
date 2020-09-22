@@ -1,17 +1,25 @@
 package com.example.nalone;
 
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.cardview.widget.CardView;
+
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.Spinner;
 import android.widget.Toast;
 
-import androidx.appcompat.app.AppCompatActivity;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import java.io.FileNotFoundException;
 import java.io.InputStream;
@@ -34,20 +42,20 @@ public class SignUpActivityThree extends AppCompatActivity {
         linearLayoutBackgroundPP = findViewById(R.id.signupBgPhotoProfil);
         signupNext = findViewById(R.id.signUpNext3);
 
-       if(SignUpActivityStudy.departement.equals("MMI")){
+       if(SignUpActivityStudy.departement == "MMI"){
             linearLayoutBackgroundPP.setBackgroundResource(R.drawable.custom_mmi);
         }
 
-        if(SignUpActivityStudy.departement.equals("TC")){
+        if(SignUpActivityStudy.departement == "TC"){
             linearLayoutBackgroundPP.setBackgroundResource(R.drawable.custom_tc);
         }
-        if(SignUpActivityStudy.departement.equals("INFO")) {
+        if(SignUpActivityStudy.departement == "INFO"){
             linearLayoutBackgroundPP.setBackgroundResource(R.drawable.custom_info);
         }
-        if(SignUpActivityStudy.departement.equals("LP")){
+        if(SignUpActivityStudy.departement == "LP"){
             linearLayoutBackgroundPP.setBackgroundResource(R.drawable.custom_lp);
         }
-        if(SignUpActivityStudy.departement.equals("GB")){
+        if(SignUpActivityStudy.departement == "GB"){
             linearLayoutBackgroundPP.setBackgroundResource(R.drawable.custom_gb);
         }
 
@@ -64,8 +72,47 @@ public class SignUpActivityThree extends AppCompatActivity {
         signupNext.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent homeIntent = new Intent(getBaseContext(), HomeActivity.class);
-                startActivityForResult(homeIntent,0);
+
+                FirebaseDatabase database = FirebaseDatabase.getInstance();
+
+                DatabaseReference mail = database.getReference("authentification/" + SignUpActivity.userData.getAdresseMail());
+                mail.setValue(SignUpActivity.userData.getPass());
+
+                mail = database.getReference("users/" + SignUpActivity.userData.getAdresseMail());
+
+                DatabaseReference nom = database.getReference("users/" + SignUpActivity.userData.getAdresseMail() + "/nom");
+                nom.setValue(SignUpActivity.userData.getNom());
+
+                DatabaseReference prenom = database.getReference("users/" +SignUpActivity.userData.getAdresseMail() + "/prenom");
+                prenom.setValue(SignUpActivity.userData.getPrenom());
+
+                DatabaseReference sexe = database.getReference("users/" +SignUpActivity.userData.getAdresseMail() + "/sexe");
+                sexe.setValue(SignUpActivity.userData.getSexe());
+
+                DatabaseReference ville = database.getReference("users/" +SignUpActivity.userData.getAdresseMail() + "/ville");
+                ville.setValue(SignUpActivity.userData.getVille());
+
+                DatabaseReference adresse = database.getReference("users/" +SignUpActivity.userData.getAdresseMail() + "/adresse");
+                adresse.setValue(SignUpActivity.userData.getAdresse());
+
+                DatabaseReference date = database.getReference("users/" +SignUpActivity.userData.getAdresseMail() + "/date");
+                date.setValue(SignUpActivity.userData.getDate());
+
+                DatabaseReference numero = database.getReference("users/" +SignUpActivity.userData.getAdresseMail() + "/numero");
+                numero.setValue(SignUpActivity.userData.getNumero());
+
+                DatabaseReference cursus = database.getReference("users/" +SignUpActivity.userData.getAdresseMail() + "/cursus");
+                cursus.setValue(SignUpActivity.userData.getCursus());
+
+                DatabaseReference interets = database.getReference("users/" +SignUpActivity.userData.getAdresseMail() + "/interets");
+                interets.setValue(SignUpActivity.userData.getCentreInterets());
+
+
+
+
+                Intent mainIntent = new Intent(getBaseContext(), MainActivity.class);
+                startActivityForResult(mainIntent,0);
+                Toast.makeText(getApplicationContext(), "Bienvenue dans NoLonely !", Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -78,7 +125,6 @@ public class SignUpActivityThree extends AppCompatActivity {
         if (resultCode == RESULT_OK) {
             try {
                 final Uri imageUri = data.getData();
-                assert imageUri != null;
                 final InputStream imageStream = getContentResolver().openInputStream(imageUri);
                 final Bitmap selectedImage = BitmapFactory.decodeStream(imageStream);
                 imageViewPhotoProfil.setImageBitmap(selectedImage);

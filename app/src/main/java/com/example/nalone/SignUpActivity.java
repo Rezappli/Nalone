@@ -3,7 +3,6 @@ package com.example.nalone;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
 
-import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
@@ -12,8 +11,13 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.RadioButton;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.google.android.material.textfield.TextInputEditText;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 public class SignUpActivity extends AppCompatActivity {
     EditText nom;
@@ -37,10 +41,14 @@ public class SignUpActivity extends AppCompatActivity {
 
     Button buttonSignUpNext;
 
+    public static UserData userData;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_signup);
+
+        userData = null;
 
         buttonSignUpNext = (Button) findViewById(R.id.signUpNext);
         nom =  (EditText) findViewById(R.id.signupNom);
@@ -49,7 +57,7 @@ public class SignUpActivity extends AppCompatActivity {
         adresse = (EditText) findViewById(R.id.signupAdress);
         date = (EditText)  findViewById(R.id.signupDate);
         numero = (EditText)  findViewById(R.id.signupNumero);
-        adresseMail = (EditText) findViewById(R.id.signupMail);
+        adresseMail = (EditText) findViewById(R.id.signupAdresseMail);
         pass =  (EditText) findViewById(R.id.signupPass);
         confirmPass = (EditText)  findViewById(R.id.signupConfirmPass);
         homme =  findViewById(R.id.signUpHomme);
@@ -59,7 +67,7 @@ public class SignUpActivity extends AppCompatActivity {
         textF = findViewById(R.id.textFemme);
         textH = findViewById(R.id.textHomme);
 
-        @SuppressLint("UseCompatLoadingForDrawables") final Drawable customErrorDrawable = getResources().getDrawable(R.drawable.error_icon);
+        final Drawable customErrorDrawable = getResources().getDrawable(R.drawable.error_icon);
         customErrorDrawable.setBounds(0, 0, customErrorDrawable.getIntrinsicWidth(), customErrorDrawable.getIntrinsicHeight());
 
 
@@ -99,12 +107,14 @@ public class SignUpActivity extends AppCompatActivity {
                 String adresseEntre = adresse.getText().toString();
                 String numeroEntre = numero.getText().toString();
                 String dateEntre = date.getText().toString();
-                String loginEntre = adresseMail.getText().toString();
+                String mailEntre = adresseMail.getText().toString();
                 String passEntre = pass.getText().toString();
                 String confirmPassEntre = confirmPass.getText().toString();
 
 
-               if(!bHomme && !bFemme){
+
+
+              /* if(bHomme == false && bFemme == false){
                    imageH.setImageResource(R.drawable.signup_homme_erreur);
                    imageF.setImageResource(R.drawable.signup_femme_erreur);
                    textF.setTextColor(Color.RED);
@@ -153,11 +163,24 @@ public class SignUpActivity extends AppCompatActivity {
                     return;
                 }
 
-                if(!passEntre.contains(confirmPassEntre)){
+                if(passEntre.contains(confirmPassEntre)){
+
+                }else{
                     confirmPass.setError("Le mot de passe ne correspond pas",customErrorDrawable);
                     return;
-                }
+                }*/
+              String sexe = "";
 
+              if(bHomme){
+                  sexe = "Homme";
+              }
+
+              if(bFemme){
+                  sexe = "Femme";
+              }
+
+                userData = new UserData(sexe, nomEntre, prenomEntre, villeEntre, adresseEntre, dateEntre, numeroEntre, mailEntre, passEntre, null, null);
+                System.out.println(SignUpActivity.userData.getAdresseMail());
                 Intent signUpStudy = new Intent(getBaseContext(), SignUpActivityStudy.class);
                 startActivityForResult(signUpStudy, 0);
 

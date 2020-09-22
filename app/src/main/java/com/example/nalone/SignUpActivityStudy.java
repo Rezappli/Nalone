@@ -83,11 +83,13 @@ public class SignUpActivityStudy extends AppCompatActivity {
        signUpNext.setOnClickListener(new View.OnClickListener() {
            @Override
            public void onClick(View view) {
-               if(click){
+               if(click == true){
+                   SignUpActivity.userData.setCursus(departement);
                    Intent signUpTwo = new Intent(getBaseContext(),SignUpActivityTwo.class);
                    startActivityForResult(signUpTwo,0);
                }else{
                    Toast.makeText(getApplicationContext(), "Selectionnez votre département", Toast.LENGTH_SHORT).show();
+                   return;
                }
 
            }
