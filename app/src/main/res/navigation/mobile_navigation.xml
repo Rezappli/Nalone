@@ -7,25 +7,25 @@
 
     <fragment
         android:id="@+id/navigation_recherche"
-        android:name="com.example.nalone.ui.home.HomeFragment"
+        android:name="com.example.nalone.ui.recherche.RechercheFragment"
         android:label="@string/title_recherche"
         tools:layout="@layout/fragment_recherche" />
 
     <fragment
         android:id="@+id/navigation_amis"
-        android:name="com.example.nalone.ui.dashboard.DashboardFragment"
+        android:name="com.example.nalone.ui.amis.AmisFragment"
         android:label="@string/title_amis"
         tools:layout="@layout/fragment_amis" />
 
     <fragment
         android:id="@+id/navigation_evenements"
-        android:name="com.example.nalone.ui.notifications.NotificationsFragment"
+        android:name="com.example.nalone.ui.evenements.EvenementsFragment"
         android:label="@string/title_evenements"
-        tools:layout="@layout/fragment_evenements" />
+        tools:layout="@layout/fragment_messages" />
 
     <fragment
         android:id="@+id/navigation_messages"
-        android:name="com.example.nalone.ui.notifications.NotificationsFragment"
+        android:name="com.example.nalone.ui.message.MessagesFragment"
         android:label="@string/title_messages"
         tools:layout="@layout/fragment_messages" />
 </navigation>

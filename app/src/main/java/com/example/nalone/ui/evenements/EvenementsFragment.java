@@ -1,4 +1,4 @@
-package com.example.nalone.ui.home;
+package com.example.nalone.ui.evenements;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -14,17 +14,17 @@ import androidx.lifecycle.ViewModelProviders;
 
 import com.example.nalone.R;
 
-public class HomeFragment extends Fragment {
+public class EvenementsFragment extends Fragment {
 
-    private HomeViewModel homeViewModel;
+    private EvenementsViewModel evenementsViewModel;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        homeViewModel =
-                ViewModelProviders.of(this).get(HomeViewModel.class);
-        View root = inflater.inflate(R.layout.fragment_recherche, container, false);
-        final TextView textView = root.findViewById(R.id.text_home);
-        homeViewModel.getText().observe(getViewLifecycleOwner(), new Observer<String>() {
+        evenementsViewModel =
+                ViewModelProviders.of(this).get(EvenementsViewModel.class);
+        View root = inflater.inflate(R.layout.fragment_evenements, container, false);
+        final TextView textView = root.findViewById(R.id.text_evenements);
+        evenementsViewModel.getText().observe(getViewLifecycleOwner(), new Observer<String>() {
             @Override
             public void onChanged(@Nullable String s) {
                 textView.setText(s);

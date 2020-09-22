@@ -1,4 +1,4 @@
-package com.example.nalone.ui.dashboard;
+package com.example.nalone.ui.recherche;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -14,17 +14,17 @@ import androidx.lifecycle.ViewModelProviders;
 
 import com.example.nalone.R;
 
-public class DashboardFragment extends Fragment {
+public class RechercheFragment extends Fragment {
 
-    private DashboardViewModel dashboardViewModel;
+    private RechercheViewModel rechercheViewModel;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        dashboardViewModel =
-                ViewModelProviders.of(this).get(DashboardViewModel.class);
-        View root = inflater.inflate(R.layout.fragment_amis, container, false);
-        final TextView textView = root.findViewById(R.id.text_dashboard);
-        dashboardViewModel.getText().observe(getViewLifecycleOwner(), new Observer<String>() {
+        rechercheViewModel =
+                ViewModelProviders.of(this).get(RechercheViewModel.class);
+        View root = inflater.inflate(R.layout.fragment_recherche, container, false);
+        final TextView textView = root.findViewById(R.id.text_home);
+        rechercheViewModel.getText().observe(getViewLifecycleOwner(), new Observer<String>() {
             @Override
             public void onChanged(@Nullable String s) {
                 textView.setText(s);
