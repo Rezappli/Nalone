@@ -15,20 +15,22 @@ import android.widget.RadioButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 public class SignUpActivity extends AppCompatActivity {
-    EditText nom;
-    EditText prenom;
-    EditText ville;
-    EditText adresse;
-    EditText date;
-    EditText numero;
-    EditText adresseMail;
-    EditText pass;
-    EditText confirmPass;
+    public EditText nom;
+    public EditText prenom;
+    public EditText ville;
+    public EditText adresse;
+    public EditText date;
+    public EditText numero;
+    public EditText adresseMail;
+    public EditText pass;
+    public EditText confirmPass;
     CardView homme;
     CardView femme;
     ImageView imageH;
@@ -48,6 +50,7 @@ public class SignUpActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_signup);
 
+
         userData = null;
 
         buttonSignUpNext = (Button) findViewById(R.id.signUpNext);
@@ -66,6 +69,13 @@ public class SignUpActivity extends AppCompatActivity {
         imageH = findViewById(R.id.imageHomme);
         textF = findViewById(R.id.textFemme);
         textH = findViewById(R.id.textHomme);
+
+        final GoogleSignInAccount acct = GoogleSignIn.getLastSignedInAccount(this);
+        if(acct != null){
+            nom.setText(acct.getFamilyName());
+            prenom.setText(acct.getDisplayName());
+            adresseMail.setText(acct.getEmail());
+        }
 
         final Drawable customErrorDrawable = getResources().getDrawable(R.drawable.error_icon);
         customErrorDrawable.setBounds(0, 0, customErrorDrawable.getIntrinsicWidth(), customErrorDrawable.getIntrinsicHeight());
