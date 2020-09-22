@@ -8,7 +8,10 @@
 
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -26,6 +29,7 @@
                 android:layout_height="150dp"
                 android:layout_marginBottom="20dp"
                 android:background="@android:color/white"
+                android:contentDescription="@string/TODO"
                 android:paddingTop="20dp"
                 android:paddingBottom="20dp"
                 app:srcCompat="@drawable/logo" />
@@ -64,6 +68,7 @@
                             android:layout_width="25dp"
                             android:layout_height="25dp"
                             android:layout_gravity="center"
+                            android:contentDescription="@string/TODO"
                             app:srcCompat="@drawable/step_one_focused" />
                     </androidx.cardview.widget.CardView>
 
@@ -97,6 +102,7 @@
                             android:id="@+id/imageView8"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:contentDescription="@string/TODO"
                             app:srcCompat="@drawable/step_four_focused" />
                     </androidx.cardview.widget.CardView>
 
@@ -131,6 +137,7 @@
                             android:layout_width="35dp"
                             android:layout_height="35dp"
                             android:layout_gravity="center"
+                            android:contentDescription="@string/TODO"
                             app:srcCompat="@drawable/step_two_focused" />
                     </androidx.cardview.widget.CardView>
 
@@ -165,6 +172,7 @@
                             android:layout_width="30dp"
                             android:layout_height="30dp"
                             android:layout_gravity="center"
+                            android:contentDescription="@string/TODO"
                             app:srcCompat="@drawable/step_three" />
                     </androidx.cardview.widget.CardView>
 
@@ -214,6 +222,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:layout_gravity="center"
+                        android:contentDescription="@string/TODO"
                         app:srcCompat="@drawable/add_photo" />
                 </androidx.cardview.widget.CardView>
             </androidx.cardview.widget.CardView>
@@ -237,9 +246,9 @@
             <Button
                 android:id="@+id/signUpNext3"
                 android:layout_width="200dp"
-                android:layout_height="wrap_content"
+                android:layout_height="0dp"
                 android:layout_marginTop="40sp"
-                android:layout_weight="0"
+                android:layout_weight="0.5"
                 android:background="@drawable/custom_button"
                 android:text="@string/suivant"
                 android:textAllCaps="false"

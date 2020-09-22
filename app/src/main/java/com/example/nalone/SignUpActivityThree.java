@@ -1,22 +1,17 @@
 package com.example.nalone;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.cardview.widget.CardView;
-
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.Spinner;
 import android.widget.Toast;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 import java.io.FileNotFoundException;
 import java.io.InputStream;
@@ -39,20 +34,20 @@ public class SignUpActivityThree extends AppCompatActivity {
         linearLayoutBackgroundPP = findViewById(R.id.signupBgPhotoProfil);
         signupNext = findViewById(R.id.signUpNext3);
 
-       if(SignUpActivityStudy.departement == "MMI"){
+       if(SignUpActivityStudy.departement.equals("MMI")){
             linearLayoutBackgroundPP.setBackgroundResource(R.drawable.custom_mmi);
         }
 
-        if(SignUpActivityStudy.departement == "TC"){
+        if(SignUpActivityStudy.departement.equals("TC")){
             linearLayoutBackgroundPP.setBackgroundResource(R.drawable.custom_tc);
         }
-        if(SignUpActivityStudy.departement == "INFO"){
+        if(SignUpActivityStudy.departement.equals("INFO")) {
             linearLayoutBackgroundPP.setBackgroundResource(R.drawable.custom_info);
         }
-        if(SignUpActivityStudy.departement == "LP"){
+        if(SignUpActivityStudy.departement.equals("LP")){
             linearLayoutBackgroundPP.setBackgroundResource(R.drawable.custom_lp);
         }
-        if(SignUpActivityStudy.departement == "GB"){
+        if(SignUpActivityStudy.departement.equals("GB")){
             linearLayoutBackgroundPP.setBackgroundResource(R.drawable.custom_gb);
         }
 
@@ -83,6 +78,7 @@ public class SignUpActivityThree extends AppCompatActivity {
         if (resultCode == RESULT_OK) {
             try {
                 final Uri imageUri = data.getData();
+                assert imageUri != null;
                 final InputStream imageStream = getContentResolver().openInputStream(imageUri);
                 final Bitmap selectedImage = BitmapFactory.decodeStream(imageStream);
                 imageViewPhotoProfil.setImageBitmap(selectedImage);

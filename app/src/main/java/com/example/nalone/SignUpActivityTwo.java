@@ -15,7 +15,6 @@ import java.util.List;
 
 public class SignUpActivityTwo extends AppCompatActivity {
 
-    public static String departement;
 
     CardView ciSport;
     CardView ciMusique;
@@ -69,7 +68,7 @@ public class SignUpActivityTwo extends AppCompatActivity {
                             nbCi--;
                         }else{
                             Toast.makeText(getApplicationContext(),"Limite atteinte",Toast.LENGTH_LONG).show();
-                            return;
+
                         }
 
                     }else{

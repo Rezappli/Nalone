@@ -26,6 +26,7 @@
                 android:layout_height="150dp"
                 android:layout_marginBottom="20dp"
                 android:background="@android:color/white"
+                android:contentDescription="@string/TODO"
                 android:paddingTop="20dp"
                 android:paddingBottom="20dp"
                 app:srcCompat="@drawable/logo" />
@@ -64,6 +65,7 @@
                             android:layout_width="25dp"
                             android:layout_height="25dp"
                             android:layout_gravity="center"
+                            android:contentDescription="@string/TODO"
                             app:srcCompat="@drawable/step_one_focused" />
                     </androidx.cardview.widget.CardView>
 
@@ -97,6 +99,7 @@
                             android:id="@+id/imageView8"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:contentDescription="@string/TODO"
                             app:srcCompat="@drawable/step_four_focused" />
                     </androidx.cardview.widget.CardView>
 
@@ -131,6 +134,7 @@
                             android:layout_width="35dp"
                             android:layout_height="35dp"
                             android:layout_gravity="center"
+                            android:contentDescription="@string/TODO"
                             app:srcCompat="@drawable/step_two" />
                     </androidx.cardview.widget.CardView>
 
@@ -165,6 +169,7 @@
                             android:layout_width="30dp"
                             android:layout_height="30dp"
                             android:layout_gravity="center"
+                            android:contentDescription="@string/TODO"
                             app:srcCompat="@drawable/step_three" />
                     </androidx.cardview.widget.CardView>
 
@@ -212,11 +217,12 @@
                         <ImageView
                             android:id="@+id/imageView5"
                             android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
+                            android:layout_height="0dp"
                             android:layout_gravity="center"
                             android:layout_marginTop="10dp"
                             android:layout_marginBottom="10dp"
                             android:layout_weight="0.8"
+                            android:contentDescription="@string/TODO"
                             app:srcCompat="@drawable/ci_sport" />
 
                         <TextView
@@ -247,11 +253,12 @@
                         <ImageView
                             android:id="@+id/imageView9"
                             android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
+                            android:layout_height="0dp"
                             android:layout_gravity="center"
                             android:layout_marginTop="10dp"
                             android:layout_marginBottom="10dp"
                             android:layout_weight="0.8"
+                            android:contentDescription="@string/TODO"
                             app:srcCompat="@drawable/ci_musique" />
 
                         <TextView
@@ -288,11 +295,12 @@
                         <ImageView
                             android:id="@+id/imageView10"
                             android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
+                            android:layout_height="0dp"
                             android:layout_gravity="center"
                             android:layout_marginTop="10dp"
                             android:layout_marginBottom="10dp"
                             android:layout_weight="0.8"
+                            android:contentDescription="@string/TODO"
                             app:srcCompat="@drawable/ci_livre" />
 
                         <TextView
@@ -322,11 +330,12 @@
                         <ImageView
                             android:id="@+id/imageView11"
                             android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
+                            android:layout_height="0dp"
                             android:layout_gravity="center"
                             android:layout_marginTop="10dp"
                             android:layout_marginBottom="10dp"
                             android:layout_weight="0.8"
+                            android:contentDescription="@string/TODO"
                             app:srcCompat="@drawable/ci_peinture" />
 
                         <TextView
@@ -363,11 +372,12 @@
                         <ImageView
                             android:id="@+id/imageView12"
                             android:layout_width="match_parent"
-                            android:layout_height="match_parent"
+                            android:layout_height="0dp"
                             android:layout_gravity="center"
                             android:layout_marginTop="10dp"
                             android:layout_marginBottom="10dp"
                             android:layout_weight="0.8"
+                            android:contentDescription="@string/TODO"
                             app:srcCompat="@drawable/ci_photo" />
 
                         <TextView
@@ -402,6 +412,7 @@
                             android:layout_marginTop="10dp"
                             android:layout_marginBottom="10dp"
                             android:layout_weight="0.8"
+                            android:contentDescription="@string/TODO"
                             app:srcCompat="@drawable/ci_film" />
 
                         <TextView
@@ -437,11 +448,12 @@
                         <ImageView
                             android:id="@+id/imageHomme"
                             android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
+                            android:layout_height="0dp"
                             android:layout_gravity="center"
                             android:layout_marginTop="10dp"
                             android:layout_marginBottom="10dp"
                             android:layout_weight="0.8"
+                            android:contentDescription="@string/TODO"
                             app:srcCompat="@drawable/ci_programmation" />
 
                         <TextView
@@ -471,11 +483,12 @@
                         <ImageView
                             android:id="@+id/imageFemme"
                             android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
+                            android:layout_height="0dp"
                             android:layout_gravity="center"
                             android:layout_marginTop="10dp"
                             android:layout_marginBottom="10dp"
                             android:layout_weight="0.8"
+                            android:contentDescription="@string/TODO"
                             app:srcCompat="@drawable/ci_jeuxvideo" />
 
                         <TextView
@@ -492,11 +505,11 @@
             <Button
                 android:id="@+id/signUpNext2"
                 android:layout_width="200dp"
-                android:layout_height="wrap_content"
+                android:layout_height="0dp"
                 android:layout_marginStart="32dp"
                 android:layout_marginTop="40sp"
                 android:layout_marginEnd="32dp"
-                android:layout_weight="0"
+                android:layout_weight="0.5"
                 android:background="@drawable/custom_button"
                 android:text="@string/suivant"
                 android:textAllCaps="false"

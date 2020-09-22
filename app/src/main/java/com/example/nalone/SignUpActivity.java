@@ -3,6 +3,7 @@ package com.example.nalone;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
@@ -11,11 +12,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.RadioButton;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import com.google.android.material.textfield.TextInputEditText;
 
 public class SignUpActivity extends AppCompatActivity {
     EditText nom;
@@ -51,7 +49,7 @@ public class SignUpActivity extends AppCompatActivity {
         adresse = (EditText) findViewById(R.id.signupAdress);
         date = (EditText)  findViewById(R.id.signupDate);
         numero = (EditText)  findViewById(R.id.signupNumero);
-        adresseMail = (EditText) findViewById(R.id.signupAdresseMail);
+        adresseMail = (EditText) findViewById(R.id.signupMail);
         pass =  (EditText) findViewById(R.id.signupPass);
         confirmPass = (EditText)  findViewById(R.id.signupConfirmPass);
         homme =  findViewById(R.id.signUpHomme);
@@ -61,7 +59,7 @@ public class SignUpActivity extends AppCompatActivity {
         textF = findViewById(R.id.textFemme);
         textH = findViewById(R.id.textHomme);
 
-        final Drawable customErrorDrawable = getResources().getDrawable(R.drawable.error_icon);
+        @SuppressLint("UseCompatLoadingForDrawables") final Drawable customErrorDrawable = getResources().getDrawable(R.drawable.error_icon);
         customErrorDrawable.setBounds(0, 0, customErrorDrawable.getIntrinsicWidth(), customErrorDrawable.getIntrinsicHeight());
 
 
@@ -106,7 +104,7 @@ public class SignUpActivity extends AppCompatActivity {
                 String confirmPassEntre = confirmPass.getText().toString();
 
 
-              /* if(bHomme == false && bFemme == false){
+               if(!bHomme && !bFemme){
                    imageH.setImageResource(R.drawable.signup_homme_erreur);
                    imageF.setImageResource(R.drawable.signup_femme_erreur);
                    textF.setTextColor(Color.RED);
@@ -155,12 +153,10 @@ public class SignUpActivity extends AppCompatActivity {
                     return;
                 }
 
-                if(passEntre.contains(confirmPassEntre)){
-
-                }else{
+                if(!passEntre.contains(confirmPassEntre)){
                     confirmPass.setError("Le mot de passe ne correspond pas",customErrorDrawable);
                     return;
-                }*/
+                }
 
                 Intent signUpStudy = new Intent(getBaseContext(), SignUpActivityStudy.class);
                 startActivityForResult(signUpStudy, 0);
