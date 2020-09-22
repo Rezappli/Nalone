@@ -84,6 +84,7 @@ public class SignUpActivityStudy extends AppCompatActivity {
            @Override
            public void onClick(View view) {
                if(click == true){
+                   SignUpActivity.userData.setCursus(departement);
                    Intent signUpTwo = new Intent(getBaseContext(),SignUpActivityTwo.class);
                    startActivityForResult(signUpTwo,0);
                }else{

@@ -11,6 +11,7 @@ import android.widget.Button;
 import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class SignUpActivityTwo extends AppCompatActivity {
@@ -96,6 +97,61 @@ public class SignUpActivityTwo extends AppCompatActivity {
                     return;
                 }
 
+                String[] interets = new String[cardsList.size()];
+                int index = 0;
+                for(final CardView c : cardsList){
+                    if(c == ciFilms){
+                        if(c.getCardElevation() == 0){
+                            interets[index] = "Films";
+                        }
+                    }
+
+                    if(c == ciSport){
+                        if(c.getCardElevation() == 0){
+                            interets[index] = "Sport";
+                        }
+                    }
+
+                    if(c == ciMusique){
+                        if(c.getCardElevation() == 0){
+                            interets[index] = "Musique";
+                        }
+                    }
+
+                    if(c == ciJeuxVideo){
+                        if(c.getCardElevation() == 0){
+                            interets[index] = "Jeux";
+                        }
+                    }
+
+                    if(c == ciLivres){
+                        if(c.getCardElevation() == 0){
+                            interets[index] = "Livres";
+                        }
+                    }
+
+                    if(c == ciPeinture){
+                        if(c.getCardElevation() == 0){
+                            interets[index] = "Peinture";
+                        }
+                    }
+
+                    if(c == ciPhoto){
+                        if(c.getCardElevation() == 0){
+                            interets[index] = "Photo";
+                        }
+                    }
+
+                    if(c == ciProg){
+                        if(c.getCardElevation() == 0){
+                            interets[index] = "Programmation";
+                        }
+                    }
+
+                    index++;
+                }
+
+                SignUpActivity.userData.setCentreInterets(interets);
                 Intent signUpThree = new Intent(getBaseContext(), SignUpActivityThree.class);
                 startActivityForResult(signUpThree, 0);
             }
@@ -104,4 +160,6 @@ public class SignUpActivityTwo extends AppCompatActivity {
 
 
     }
-    }
+
+
+}

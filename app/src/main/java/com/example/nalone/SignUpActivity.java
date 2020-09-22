@@ -16,6 +16,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.material.textfield.TextInputEditText;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 public class SignUpActivity extends AppCompatActivity {
     EditText nom;
@@ -39,10 +41,14 @@ public class SignUpActivity extends AppCompatActivity {
 
     Button buttonSignUpNext;
 
+    public static UserData userData;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_signup);
+
+        userData = null;
 
         buttonSignUpNext = (Button) findViewById(R.id.signUpNext);
         nom =  (EditText) findViewById(R.id.signupNom);
@@ -101,9 +107,11 @@ public class SignUpActivity extends AppCompatActivity {
                 String adresseEntre = adresse.getText().toString();
                 String numeroEntre = numero.getText().toString();
                 String dateEntre = date.getText().toString();
-                String loginEntre = adresseMail.getText().toString();
+                String mailEntre = adresseMail.getText().toString();
                 String passEntre = pass.getText().toString();
                 String confirmPassEntre = confirmPass.getText().toString();
+
+
 
 
               /* if(bHomme == false && bFemme == false){
@@ -161,7 +169,18 @@ public class SignUpActivity extends AppCompatActivity {
                     confirmPass.setError("Le mot de passe ne correspond pas",customErrorDrawable);
                     return;
                 }*/
+              String sexe = "";
 
+              if(bHomme){
+                  sexe = "Homme";
+              }
+
+              if(bFemme){
+                  sexe = "Femme";
+              }
+
+                userData = new UserData(sexe, nomEntre, prenomEntre, villeEntre, adresseEntre, dateEntre, numeroEntre, mailEntre, passEntre, null, null);
+                System.out.println(SignUpActivity.userData.getAdresseMail());
                 Intent signUpStudy = new Intent(getBaseContext(), SignUpActivityStudy.class);
                 startActivityForResult(signUpStudy, 0);
 

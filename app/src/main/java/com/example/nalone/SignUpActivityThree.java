@@ -18,6 +18,9 @@ import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 
@@ -69,8 +72,47 @@ public class SignUpActivityThree extends AppCompatActivity {
         signupNext.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent homeIntent = new Intent(getBaseContext(), HomeActivity.class);
-                startActivityForResult(homeIntent,0);
+
+                FirebaseDatabase database = FirebaseDatabase.getInstance();
+
+                DatabaseReference mail = database.getReference("authentification/" + SignUpActivity.userData.getAdresseMail());
+                mail.setValue(SignUpActivity.userData.getPass());
+
+                mail = database.getReference("users/" + SignUpActivity.userData.getAdresseMail());
+
+                DatabaseReference nom = database.getReference("users/" + SignUpActivity.userData.getAdresseMail() + "/nom");
+                nom.setValue(SignUpActivity.userData.getNom());
+
+                DatabaseReference prenom = database.getReference("users/" +SignUpActivity.userData.getAdresseMail() + "/prenom");
+                prenom.setValue(SignUpActivity.userData.getPrenom());
+
+                DatabaseReference sexe = database.getReference("users/" +SignUpActivity.userData.getAdresseMail() + "/sexe");
+                sexe.setValue(SignUpActivity.userData.getSexe());
+
+                DatabaseReference ville = database.getReference("users/" +SignUpActivity.userData.getAdresseMail() + "/ville");
+                ville.setValue(SignUpActivity.userData.getVille());
+
+                DatabaseReference adresse = database.getReference("users/" +SignUpActivity.userData.getAdresseMail() + "/adresse");
+                adresse.setValue(SignUpActivity.userData.getAdresse());
+
+                DatabaseReference date = database.getReference("users/" +SignUpActivity.userData.getAdresseMail() + "/date");
+                date.setValue(SignUpActivity.userData.getDate());
+
+                DatabaseReference numero = database.getReference("users/" +SignUpActivity.userData.getAdresseMail() + "/numero");
+                numero.setValue(SignUpActivity.userData.getNumero());
+
+                DatabaseReference cursus = database.getReference("users/" +SignUpActivity.userData.getAdresseMail() + "/cursus");
+                cursus.setValue(SignUpActivity.userData.getCursus());
+
+                DatabaseReference interets = database.getReference("users/" +SignUpActivity.userData.getAdresseMail() + "/interets");
+                interets.setValue(SignUpActivity.userData.getCentreInterets());
+
+
+
+
+                Intent mainIntent = new Intent(getBaseContext(), MainActivity.class);
+                startActivityForResult(mainIntent,0);
+                Toast.makeText(getApplicationContext(), "Bienvenue dans NoLonely !", Toast.LENGTH_SHORT).show();
             }
         });
     }
