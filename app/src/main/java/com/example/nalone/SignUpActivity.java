@@ -57,7 +57,7 @@ public class SignUpActivity extends AppCompatActivity {
         adresse = (EditText) findViewById(R.id.signupAdress);
         date = (EditText)  findViewById(R.id.signupDate);
         numero = (EditText)  findViewById(R.id.signupNumero);
-        adresseMail = (EditText) findViewById(R.id.signupAdresseMail);
+        adresseMail = (EditText) findViewById(R.id.signupMail);
         pass =  (EditText) findViewById(R.id.signupPass);
         confirmPass = (EditText)  findViewById(R.id.signupConfirmPass);
         homme =  findViewById(R.id.signUpHomme);
