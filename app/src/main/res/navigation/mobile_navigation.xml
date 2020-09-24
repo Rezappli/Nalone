@@ -11,6 +11,7 @@
         android:label="@string/title_recherche"
         tools:layout="@layout/fragment_recherche" />
 
+
     <fragment
         android:id="@+id/navigation_amis"
         android:name="com.example.nalone.ui.amis.AmisFragment"
@@ -21,7 +22,7 @@
         android:id="@+id/navigation_evenements"
         android:name="com.example.nalone.ui.evenements.EvenementsFragment"
         android:label="@string/title_evenements"
-        tools:layout="@layout/fragment_messages" />
+        tools:layout="@layout/fragment_evenements" />
 
     <fragment
         android:id="@+id/navigation_messages"

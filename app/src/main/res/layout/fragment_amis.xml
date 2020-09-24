@@ -19,4 +19,12 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/textView6"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Fragement amis"
+        tools:layout_editor_absoluteX="174dp"
+        tools:layout_editor_absoluteY="90dp" />
 </androidx.constraintlayout.widget.ConstraintLayout>
