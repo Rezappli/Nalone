@@ -11,7 +11,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".ErrorConnexionActivity"></activity>
+        <activity android:name=".ErrorConnexionActivity"
+            android:theme="@style/Theme.AppCompat.DayNight.NoActionBar"/>
         <activity
             android:name=".SignUpActivityStudy"
             android:theme="@style/Theme.AppCompat.DayNight.NoActionBar" />

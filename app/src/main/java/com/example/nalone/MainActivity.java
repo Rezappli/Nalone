@@ -3,7 +3,10 @@ package com.example.nalone;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Context;
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -62,8 +65,8 @@ public class MainActivity extends AppCompatActivity {
         GoogleSignInAccount acct = GoogleSignIn.getLastSignedInAccount(this);
 
 
-        textViewSinscrire = (TextView) findViewById(R.id.textView3);
-        textViewConnexion = (TextView) findViewById(R.id.buttonConnexion);
+        textViewSinscrire = (TextView) findViewById(R.id.buttonQuit);
+        textViewConnexion = (TextView) findViewById(R.id.buttonRetry);
         editTextAddress = (EditText) findViewById(R.id.editTextAddress);
         editTextPass = (EditText) findViewById(R.id.editTextPassword);
 
@@ -128,6 +131,11 @@ public class MainActivity extends AppCompatActivity {
                    });
             }
         });
+
+        if(!isInternetConnected()){
+            Intent error_wifi = new Intent(getBaseContext(), ErrorConnexionActivity.class);
+            startActivityForResult(error_wifi, 0);
+        }
     }
 
     public void signIn(){
@@ -161,5 +169,19 @@ public class MainActivity extends AppCompatActivity {
             Log.w("Error", "signInResult:failed code=" + e.getStatusCode());
 
         }
+    }
+
+    public boolean isInternetConnected(){
+        boolean connected = false;
+        ConnectivityManager connectivityManager = (ConnectivityManager)getSystemService(this.CONNECTIVITY_SERVICE);
+        if(connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_MOBILE).getState() == NetworkInfo.State.CONNECTED ||
+                connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI).getState() == NetworkInfo.State.CONNECTED) {
+            //we are connected to a network
+            connected = true;
+        } else {
+            connected = false;
+        }
+
+        return connected;
     }
 }
