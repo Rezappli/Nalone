@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
@@ -84,14 +85,16 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View view) {
                 final String textAddress = editTextAddress.getText().toString().replace(".", ",");
                 final String textPass = editTextPass.getText().toString();
+                final Drawable customErrorDrawable = getResources().getDrawable(R.drawable.error_icon);
+                customErrorDrawable.setBounds(0, 0, customErrorDrawable.getIntrinsicWidth(), customErrorDrawable.getIntrinsicHeight());
 
                 if(textAddress.matches("")){
-                    editTextAddress.setError("Entrez votre adresse");
+                    editTextAddress.setError("Entrez votre adresse", customErrorDrawable);
                     return;
                 }
 
                 if(textPass.matches("")){
-                    editTextPass.setError("Entrez votre mot de passe");
+                    editTextPass.setError("Entrez votre mot de passe", customErrorDrawable);
                     return;
                 }
                 //Lecture d'une connexion mail/mdp via bdd

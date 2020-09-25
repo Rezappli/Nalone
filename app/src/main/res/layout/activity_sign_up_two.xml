@@ -43,7 +43,7 @@
                     android:layout_marginTop="20dp"
                     android:layout_marginBottom="40dp"
                     android:layout_weight="0.9"
-                    android:background="@drawable/custom_stepview" />
+                    android:background="#18ECC5" />
 
                 <androidx.cardview.widget.CardView
                     android:layout_width="50dp"
@@ -78,7 +78,7 @@
                     android:layout_marginTop="20dp"
                     android:layout_marginBottom="40dp"
                     android:layout_weight="0.9"
-                    android:background="@drawable/custom_stepview" />
+                    android:background="#18ECC5" />
 
                 <androidx.cardview.widget.CardView
                     android:layout_width="50dp"
@@ -118,7 +118,7 @@
                     android:layout_width="50dp"
                     android:layout_height="50dp"
                     android:layout_marginTop="4dp"
-                    app:cardBackgroundColor="#18ECC5"
+                    app:cardBackgroundColor="#00E9FD"
                     app:cardCornerRadius="20dp">
 
                     <androidx.cardview.widget.CardView
