@@ -37,7 +37,7 @@
     <string name="title_amis"> Amis </string>
     <string name="title_evenements"> Evenements </string>
     <string name="title_messages"> Messages </string>
-   <string name="choixCI"> Séléctionnez 5 centres d\'intérêt</string>
+    <string name="choixCI"> Séléctionnez 5 centres d\'intérêt</string>
     <string name="choixDepa"> Sélectionnez votre département </string>
     <string name="ci_sport"> Sport </string>
     <string name="ci_musique"> Musique </string>
@@ -48,7 +48,8 @@
     <string name="ci_programmation"> Programmation </string>
     <string name="ci_jv"> Jeux Vidéo </string>
     <string name="TODO"> TODO </string>
-
-
+    <string name="retry"> Reesayer </string>
+    <string name="quitter"> Quitter </string>
+    <string name="textErrorWifi"> Nous ne parvenons pas à établir une connexion. Veuillez verifier l\'état de votre réseau </string>
 
 </resources>

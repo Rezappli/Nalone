@@ -68,6 +68,7 @@ public class HomeActivity extends AppCompatActivity {
             String personName = acct.getDisplayName();
             String personGivenName = acct.getGivenName();
             String personFamilyName = acct.getFamilyName();
+            
             String personEmail = acct.getEmail();
             acct.getPhotoUrl();
             String personId = acct.getId();
