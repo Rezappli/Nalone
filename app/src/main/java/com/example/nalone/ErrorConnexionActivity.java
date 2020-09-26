@@ -56,9 +56,18 @@ public class ErrorConnexionActivity extends AppCompatActivity {
             //we are connected to a network
             connected = true;
         } else {
-            connected = false;
+            connected = false;;
         }
 
         return connected;
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if(isInternetConnected()){
+            Intent intent = new Intent(getBaseContext(), ErrorClass.activity.getClass());
+            startActivityForResult(intent, 0);
+        }
     }
 }

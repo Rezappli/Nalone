@@ -31,10 +31,17 @@ public class SignUpActivityTwo extends AppCompatActivity {
 
     List<CardView> cardsList = new ArrayList<>();
 
+    private AppCompatActivity activity;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        ErrorClass.activity = this;
+        ErrorClass.checkInternetConnection();
+
         setContentView(R.layout.activity_sign_up_two);
+
         ciFilms = findViewById(R.id.ciFilms);
         ciSport = findViewById(R.id.ciSport);
         ciMusique = findViewById(R.id.ciMusique);
@@ -90,6 +97,7 @@ public class SignUpActivityTwo extends AppCompatActivity {
         signupNext.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
                 if(nbCi == 0){
                     Toast.makeText(getApplicationContext(), "Selectionnez au moins 1 centre d'intérêt", Toast.LENGTH_LONG).show();
                     return;
@@ -157,6 +165,12 @@ public class SignUpActivityTwo extends AppCompatActivity {
 
 
 
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        ErrorClass.checkInternetConnection();
     }
 
 

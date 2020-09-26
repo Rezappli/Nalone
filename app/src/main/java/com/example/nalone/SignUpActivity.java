@@ -3,6 +3,7 @@ package com.example.nalone;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
@@ -48,6 +49,9 @@ public class SignUpActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        ErrorClass.activity = this;
+        ErrorClass.checkInternetConnection();
+
         setContentView(R.layout.activity_signup);
 
 
@@ -110,7 +114,7 @@ public class SignUpActivity extends AppCompatActivity {
         buttonSignUpNext.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                ErrorClass.checkInternetConnection();
                 String nomEntre = nom.getText().toString();
                 String prenomEntre = prenom.getText().toString();
                 String villeEntre = ville.getText().toString();
@@ -196,6 +200,12 @@ public class SignUpActivity extends AppCompatActivity {
 
             }
         });
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        ErrorClass.checkInternetConnection();
     }
 
 

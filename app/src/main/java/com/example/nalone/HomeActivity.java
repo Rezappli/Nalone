@@ -25,7 +25,10 @@ public class HomeActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        ErrorClass.activity = this;
+        ErrorClass.checkInternetConnection();
         setContentView(R.layout.activity_home);
+
         BottomNavigationView navView = findViewById(R.id.nav_view);
         // Passing each menu ID as a set of Ids because each
         // menu should be considered as top level destinations.
@@ -37,6 +40,7 @@ public class HomeActivity extends AppCompatActivity {
         NavigationUI.setupWithNavController(navView, navController);
 
         checkUserRegister();
+
     }
 
     private void checkUserRegister() {
@@ -79,6 +83,12 @@ public class HomeActivity extends AppCompatActivity {
             System.out.println(personEmail);
             System.out.println(personId);
         }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        ErrorClass.checkInternetConnection();
     }
 
 }

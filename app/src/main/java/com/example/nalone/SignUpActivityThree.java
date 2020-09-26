@@ -28,9 +28,16 @@ public class SignUpActivityThree extends AppCompatActivity {
 
     static final int RESULT_LOAD_IMG = 1;
 
+    private AppCompatActivity activity;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        this.activity = this;
+        ErrorClass.checkInternetConnection();
+
+
         setContentView(R.layout.activity_sign_up_three);
 
         imageViewPhotoProfil = findViewById(R.id.signupPhotoProfil);
@@ -67,6 +74,8 @@ public class SignUpActivityThree extends AppCompatActivity {
         signupNext.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
+                ErrorClass.checkInternetConnection();
 
                 FirebaseDatabase database = FirebaseDatabase.getInstance();
 
@@ -135,6 +144,12 @@ public class SignUpActivityThree extends AppCompatActivity {
             Toast.makeText(getApplicationContext(),"Vous n'avez pas choisi d'image", Toast.LENGTH_LONG).show();
 
         }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        ErrorClass.checkInternetConnection();
     }
 
 

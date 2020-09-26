@@ -24,6 +24,8 @@ public class SignUpActivityStudy extends AppCompatActivity {
 
     boolean click;
 
+    private AppCompatActivity activity;
+
     List<CardView> cards = new ArrayList<>();
 
     static String departement;
@@ -31,6 +33,10 @@ public class SignUpActivityStudy extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        ErrorClass.activity = this;
+        ErrorClass.checkInternetConnection();
+
         setContentView(R.layout.activity_sign_up_study);
 
         cardViewTC = findViewById(R.id.depTC);
@@ -83,6 +89,9 @@ public class SignUpActivityStudy extends AppCompatActivity {
        signUpNext.setOnClickListener(new View.OnClickListener() {
            @Override
            public void onClick(View view) {
+
+               ErrorClass.checkInternetConnection();
+
                if(click == true){
                    SignUpActivity.userData.setCursus(departement);
                    Intent signUpTwo = new Intent(getBaseContext(),SignUpActivityTwo.class);
@@ -94,9 +103,11 @@ public class SignUpActivityStudy extends AppCompatActivity {
 
            }
        });
+    }
 
-
-
-
+    @Override
+    protected void onResume() {
+        super.onResume();
+        ErrorClass.checkInternetConnection();
     }
 }
