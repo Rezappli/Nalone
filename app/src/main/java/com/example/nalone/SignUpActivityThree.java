@@ -114,8 +114,8 @@ public class SignUpActivityThree extends AppCompatActivity {
 
 
 
-                Intent mainIntent = new Intent(getBaseContext(), MainActivity.class);
-                startActivityForResult(mainIntent,0);
+                Intent welcomeIntent = new Intent(getBaseContext(), HomeActivity.class);
+                startActivityForResult(welcomeIntent,0);
                 Toast.makeText(getApplicationContext(), "Bienvenue dans NoLonely !", Toast.LENGTH_SHORT).show();
             }
         });

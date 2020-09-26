@@ -128,7 +128,7 @@ public class SignUpActivity extends AppCompatActivity {
 
 
 
-              /* if(bHomme == false && bFemme == false){
+               if(bHomme == false && bFemme == false){
                    imageH.setImageResource(R.drawable.signup_homme_erreur);
                    imageF.setImageResource(R.drawable.signup_femme_erreur);
                    textF.setTextColor(Color.RED);
@@ -167,7 +167,7 @@ public class SignUpActivity extends AppCompatActivity {
                     return;
                 }
 
-                if(loginEntre.matches("")){
+                if(mailEntre.matches("")){
                     adresseMail.setError("Entrez votre adresse mail",customErrorDrawable);
                     return;
                 }
@@ -182,7 +182,7 @@ public class SignUpActivity extends AppCompatActivity {
                 }else{
                     confirmPass.setError("Le mot de passe ne correspond pas",customErrorDrawable);
                     return;
-                }*/
+                }
               String sexe = "";
 
               if(bHomme){
