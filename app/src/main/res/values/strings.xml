@@ -52,5 +52,6 @@
     <string name="quitter"> Quitter </string>
     <string name="textErrorWifi"> Nous ne parvenons pas à établir une connexion. Veuillez verifier l\'état de votre réseau </string>
     <string name="mdpOublie"> Mot de passe oublié ? </string>
+    <string name="title_activity_maps">Map</string>
 
 </resources>
