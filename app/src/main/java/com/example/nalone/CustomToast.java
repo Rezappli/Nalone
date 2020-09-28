@@ -19,6 +19,7 @@ public class CustomToast{
             if (layout.getChildCount() > 0) {
                 TextView tv = (TextView) layout.getChildAt(0);
                 tv.setGravity(Gravity.CENTER_VERTICAL | Gravity.CENTER_HORIZONTAL);
+
             }
         }
 
