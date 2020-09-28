@@ -39,8 +39,6 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         ErrorClass.activity = this;
         ErrorClass.checkInternetConnection();
-        this.activity = this;
-
 
         /*Google Sign-In method*/
 
