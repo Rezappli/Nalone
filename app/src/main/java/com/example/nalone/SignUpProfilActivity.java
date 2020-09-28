@@ -79,37 +79,37 @@ public class SignUpProfilActivity extends AppCompatActivity {
 
                 FirebaseDatabase database = FirebaseDatabase.getInstance();
 
-                DatabaseReference mail = database.getReference("authentification/" + SignUpActivity.userData.getAdresseMail());
-                mail.setValue(SignUpActivity.userData.getPass());
+                DatabaseReference mail = database.getReference("authentification/" + SignUpInformationActivity.userData.getAdresseMail());
+                mail.setValue(SignUpInformationActivity.userData.getPass());
 
-                mail = database.getReference("users/" + SignUpActivity.userData.getAdresseMail());
+                mail = database.getReference("users/" + SignUpInformationActivity.userData.getAdresseMail());
 
-                DatabaseReference nom = database.getReference("users/" + SignUpActivity.userData.getAdresseMail() + "/nom");
-                nom.setValue(SignUpActivity.userData.getNom());
+                DatabaseReference nom = database.getReference("users/" + SignUpInformationActivity.userData.getAdresseMail() + "/nom");
+                nom.setValue(SignUpInformationActivity.userData.getNom());
 
-                DatabaseReference prenom = database.getReference("users/" +SignUpActivity.userData.getAdresseMail() + "/prenom");
-                prenom.setValue(SignUpActivity.userData.getPrenom());
+                DatabaseReference prenom = database.getReference("users/" + SignUpInformationActivity.userData.getAdresseMail() + "/prenom");
+                prenom.setValue(SignUpInformationActivity.userData.getPrenom());
 
-                DatabaseReference sexe = database.getReference("users/" +SignUpActivity.userData.getAdresseMail() + "/sexe");
-                sexe.setValue(SignUpActivity.userData.getSexe());
+                DatabaseReference sexe = database.getReference("users/" + SignUpInformationActivity.userData.getAdresseMail() + "/sexe");
+                sexe.setValue(SignUpInformationActivity.userData.getSexe());
 
-                DatabaseReference ville = database.getReference("users/" +SignUpActivity.userData.getAdresseMail() + "/ville");
-                ville.setValue(SignUpActivity.userData.getVille());
+                DatabaseReference ville = database.getReference("users/" + SignUpInformationActivity.userData.getAdresseMail() + "/ville");
+                ville.setValue(SignUpInformationActivity.userData.getVille());
 
-                DatabaseReference adresse = database.getReference("users/" +SignUpActivity.userData.getAdresseMail() + "/adresse");
-                adresse.setValue(SignUpActivity.userData.getAdresse());
+                DatabaseReference adresse = database.getReference("users/" + SignUpInformationActivity.userData.getAdresseMail() + "/adresse");
+                adresse.setValue(SignUpInformationActivity.userData.getAdresse());
 
-                DatabaseReference date = database.getReference("users/" +SignUpActivity.userData.getAdresseMail() + "/date");
-                date.setValue(SignUpActivity.userData.getDate());
+                DatabaseReference date = database.getReference("users/" + SignUpInformationActivity.userData.getAdresseMail() + "/date");
+                date.setValue(SignUpInformationActivity.userData.getDate());
 
-                DatabaseReference numero = database.getReference("users/" +SignUpActivity.userData.getAdresseMail() + "/numero");
-                numero.setValue(SignUpActivity.userData.getNumero());
+                DatabaseReference numero = database.getReference("users/" + SignUpInformationActivity.userData.getAdresseMail() + "/numero");
+                numero.setValue(SignUpInformationActivity.userData.getNumero());
 
-                DatabaseReference cursus = database.getReference("users/" +SignUpActivity.userData.getAdresseMail() + "/cursus");
-                cursus.setValue(SignUpActivity.userData.getCursus());
+                DatabaseReference cursus = database.getReference("users/" + SignUpInformationActivity.userData.getAdresseMail() + "/cursus");
+                cursus.setValue(SignUpInformationActivity.userData.getCursus());
 
-                DatabaseReference interets = database.getReference("users/" +SignUpActivity.userData.getAdresseMail() + "/interets");
-                interets.setValue(SignUpActivity.userData.getCentreInterets());
+                DatabaseReference interets = database.getReference("users/" + SignUpInformationActivity.userData.getAdresseMail() + "/interets");
+                interets.setValue(SignUpInformationActivity.userData.getCentreInterets());
 
 
 

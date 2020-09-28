@@ -3,10 +3,7 @@ package com.example.nalone;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.content.Context;
 import android.content.Intent;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -84,7 +81,7 @@ public class MainActivity extends AppCompatActivity {
                 @Override
                 public void onClick(View view) {
                     ErrorClass.checkInternetConnection();
-                    Intent signUp = new Intent(getBaseContext(), SignUpActivity.class);
+                    Intent signUp = new Intent(getBaseContext(), SignUpInformationActivity.class);
                     startActivityForResult(signUp, 0);
                 }
             });

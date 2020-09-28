@@ -17,7 +17,7 @@ import android.widget.Toast;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 
-public class SignUpActivity extends AppCompatActivity {
+public class SignUpInformationActivity extends AppCompatActivity {
     public EditText nom;
     public EditText prenom;
     public EditText ville;
@@ -47,7 +47,7 @@ public class SignUpActivity extends AppCompatActivity {
         ErrorClass.activity = this;
         ErrorClass.checkInternetConnection();
 
-        setContentView(R.layout.activity_signup_profil);
+        setContentView(R.layout.activity_sign_up_information);
 
 
         userData = null;
@@ -189,7 +189,7 @@ public class SignUpActivity extends AppCompatActivity {
               }
 
                 userData = new UserData(sexe, nomEntre, prenomEntre, villeEntre, adresseEntre, dateEntre, numeroEntre, mailEntre, passEntre, null, null);
-                System.out.println(SignUpActivity.userData.getAdresseMail());
+                System.out.println(SignUpInformationActivity.userData.getAdresseMail());
                 Intent signUpStudy = new Intent(getBaseContext(), SignUpStudiesActivity.class);
                 startActivityForResult(signUpStudy, 0);
 
