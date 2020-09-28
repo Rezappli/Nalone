@@ -14,16 +14,16 @@
         <activity android:name=".ErrorConnexionActivity"
             android:theme="@style/Theme.AppCompat.DayNight.NoActionBar"/>
         <activity
-            android:name=".SignUpActivityStudy"
+            android:name=".SignUpStudiesActivity"
             android:theme="@style/Theme.AppCompat.DayNight.NoActionBar" />
         <activity
             android:name=".HomeActivity"
             android:label="@string/title_activity_home" />
         <activity
-            android:name=".SignUpActivityThree"
+            android:name=".SignUpProfilActivity"
             android:theme="@style/Theme.AppCompat.DayNight.NoActionBar" />
         <activity
-            android:name=".SignUpActivityTwo"
+            android:name=".SignUpHobbiesActivity"
             android:theme="@style/Theme.AppCompat.DayNight.NoActionBar" />
         <activity
             android:name=".SignUpActivity"

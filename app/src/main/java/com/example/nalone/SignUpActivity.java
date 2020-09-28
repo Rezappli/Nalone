@@ -3,7 +3,6 @@ package com.example.nalone;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
@@ -12,15 +11,11 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.RadioButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
-import com.google.android.material.textfield.TextInputEditText;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 
 public class SignUpActivity extends AppCompatActivity {
     public EditText nom;
@@ -52,7 +47,7 @@ public class SignUpActivity extends AppCompatActivity {
         ErrorClass.activity = this;
         ErrorClass.checkInternetConnection();
 
-        setContentView(R.layout.activity_signup);
+        setContentView(R.layout.activity_signup_profil);
 
 
         userData = null;
@@ -195,7 +190,7 @@ public class SignUpActivity extends AppCompatActivity {
 
                 userData = new UserData(sexe, nomEntre, prenomEntre, villeEntre, adresseEntre, dateEntre, numeroEntre, mailEntre, passEntre, null, null);
                 System.out.println(SignUpActivity.userData.getAdresseMail());
-                Intent signUpStudy = new Intent(getBaseContext(), SignUpActivityStudy.class);
+                Intent signUpStudy = new Intent(getBaseContext(), SignUpStudiesActivity.class);
                 startActivityForResult(signUpStudy, 0);
 
             }

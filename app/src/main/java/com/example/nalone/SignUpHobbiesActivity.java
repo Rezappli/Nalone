@@ -13,7 +13,7 @@ import androidx.cardview.widget.CardView;
 import java.util.ArrayList;
 import java.util.List;
 
-public class SignUpActivityTwo extends AppCompatActivity {
+public class SignUpHobbiesActivity extends AppCompatActivity {
 
 
     CardView ciSport;
@@ -40,7 +40,7 @@ public class SignUpActivityTwo extends AppCompatActivity {
         ErrorClass.activity = this;
         ErrorClass.checkInternetConnection();
 
-        setContentView(R.layout.activity_sign_up_two);
+        setContentView(R.layout.activity_sign_up_hobbies);
 
         ciFilms = findViewById(R.id.ciFilms);
         ciSport = findViewById(R.id.ciSport);
@@ -158,7 +158,7 @@ public class SignUpActivityTwo extends AppCompatActivity {
                 }
 
                 SignUpActivity.userData.setCentreInterets(interets);
-                Intent signUpThree = new Intent(getBaseContext(), SignUpActivityThree.class);
+                Intent signUpThree = new Intent(getBaseContext(), SignUpProfilActivity.class);
                 startActivityForResult(signUpThree, 0);
             }
         });

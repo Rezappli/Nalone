@@ -13,7 +13,7 @@ import android.widget.Toast;
 import java.util.ArrayList;
 import java.util.List;
 
-public class SignUpActivityStudy extends AppCompatActivity {
+public class SignUpStudiesActivity extends AppCompatActivity {
 
     CardView cardViewINFO;
     CardView cardViewMMI;
@@ -37,7 +37,7 @@ public class SignUpActivityStudy extends AppCompatActivity {
         ErrorClass.activity = this;
         ErrorClass.checkInternetConnection();
 
-        setContentView(R.layout.activity_sign_up_study);
+        setContentView(R.layout.activity_sign_up_studies);
 
         cardViewTC = findViewById(R.id.depTC);
         cardViewMMI = findViewById(R.id.depMMI);
@@ -94,7 +94,7 @@ public class SignUpActivityStudy extends AppCompatActivity {
 
                if(click == true){
                    SignUpActivity.userData.setCursus(departement);
-                   Intent signUpTwo = new Intent(getBaseContext(),SignUpActivityTwo.class);
+                   Intent signUpTwo = new Intent(getBaseContext(), SignUpHobbiesActivity.class);
                    startActivityForResult(signUpTwo,0);
                }else{
                    Toast.makeText(getApplicationContext(), "Selectionnez votre département", Toast.LENGTH_SHORT).show();

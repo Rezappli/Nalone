@@ -3,7 +3,13 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/mobile_navigation"
-    app:startDestination="@+id/navigation_recherche">
+    app:startDestination="@+id/navigation_evenements">
+
+    <fragment
+        android:id="@+id/navigation_evenements"
+        android:name="com.example.nalone.ui.evenements.EvenementsFragment"
+        android:label="@string/title_evenements"
+        tools:layout="@layout/fragment_evenements" />
 
     <fragment
         android:id="@+id/navigation_recherche"
@@ -18,11 +24,7 @@
         android:label="@string/title_amis"
         tools:layout="@layout/fragment_amis" />
 
-    <fragment
-        android:id="@+id/navigation_evenements"
-        android:name="com.example.nalone.ui.evenements.EvenementsFragment"
-        android:label="@string/title_evenements"
-        tools:layout="@layout/fragment_evenements" />
+
 
     <fragment
         android:id="@+id/navigation_messages"

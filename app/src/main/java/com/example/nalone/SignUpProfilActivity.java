@@ -19,7 +19,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 
-public class SignUpActivityThree extends AppCompatActivity {
+public class SignUpProfilActivity extends AppCompatActivity {
 
     ImageView imageViewPhotoProfil;
     LinearLayout linearLayoutBackgroundPP;
@@ -38,26 +38,26 @@ public class SignUpActivityThree extends AppCompatActivity {
         ErrorClass.checkInternetConnection();
 
 
-        setContentView(R.layout.activity_sign_up_three);
+        setContentView(R.layout.activity_sign_up_profil);
 
         imageViewPhotoProfil = findViewById(R.id.signupPhotoProfil);
         linearLayoutBackgroundPP = findViewById(R.id.signupBgPhotoProfil);
         signupNext = findViewById(R.id.signUpNext3);
 
-       if(SignUpActivityStudy.departement.equals("MMI")){
+       if(SignUpStudiesActivity.departement.equals("MMI")){
             linearLayoutBackgroundPP.setBackgroundResource(R.drawable.custom_mmi);
         }
 
-        if(SignUpActivityStudy.departement.equals("TC")){
+        if(SignUpStudiesActivity.departement.equals("TC")){
             linearLayoutBackgroundPP.setBackgroundResource(R.drawable.custom_tc);
         }
-        if(SignUpActivityStudy.departement.equals("INFO")){
+        if(SignUpStudiesActivity.departement.equals("INFO")){
             linearLayoutBackgroundPP.setBackgroundResource(R.drawable.custom_info);
         }
-        if(SignUpActivityStudy.departement.equals("LP")){
+        if(SignUpStudiesActivity.departement.equals("LP")){
             linearLayoutBackgroundPP.setBackgroundResource(R.drawable.custom_lp);
         }
-        if(SignUpActivityStudy.departement.equals("GB")){
+        if(SignUpStudiesActivity.departement.equals("GB")){
             linearLayoutBackgroundPP.setBackgroundResource(R.drawable.custom_gb);
         }
 
