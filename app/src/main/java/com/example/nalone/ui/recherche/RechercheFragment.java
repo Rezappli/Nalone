@@ -32,7 +32,7 @@ public class RechercheFragment extends Fragment {
         rechercheViewModel =
                 ViewModelProviders.of(this).get(RechercheViewModel.class);
         View root = inflater.inflate(R.layout.fragment_recherche, container, false);
-        final TextView textView = root.findViewById(R.id.text_home);
+        final TextView textView = root.findViewById(R.id.text_recherche);
         rechercheViewModel.getText().observe(getViewLifecycleOwner(), new Observer<String>() {
             @Override
             public void onChanged(@Nullable String s) {
