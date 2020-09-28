@@ -14,6 +14,7 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 
 import com.example.nalone.R;
+import com.google.android.gms.maps.OnMapReadyCallback;
 
 public class EvenementsFragment extends Fragment {
 
@@ -25,11 +26,11 @@ public class EvenementsFragment extends Fragment {
         evenementsViewModel =
                 ViewModelProviders.of(this).get(EvenementsViewModel.class);
         View root = inflater.inflate(R.layout.fragment_evenements, container, false);
-        final TextView textView = root.findViewById(R.id.text_evenements);
+
         evenementsViewModel.getText().observe(getViewLifecycleOwner(), new Observer<String>() {
             @Override
             public void onChanged(@Nullable String s) {
-                textView.setText(s);
+
             }
         });
         return root;
