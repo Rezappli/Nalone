@@ -1,10 +1,15 @@
 package com.example.nalone.ui.evenements;
 
+import android.Manifest;
+import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import androidx.annotation.RequiresApi;
+import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 
 import com.example.nalone.R;
@@ -15,40 +20,116 @@ import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.example.nalone.util.Constants;
 
-public class EvenementsFragment extends Fragment {
+import static com.example.nalone.util.Constants.MAPVIEW_BUNDLE_KEY;
 
-    MapView mMapView;
+public class EvenementsFragment extends Fragment implements OnMapReadyCallback {
+
+    private MapView mMapView;
     private GoogleMap mMap;
 
+    @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_evenements, container, false);
 
-        mMapView = (MapView) rootView.findViewById(R.id.mapView);
-        mMapView.onCreate(savedInstanceState);
+        mMapView = rootView.findViewById(R.id.mapView);
 
-        mMapView.onResume(); // needed to get the map to display immediately
 
-        try {
-            MapsInitializer.initialize(getActivity().getApplicationContext());
-        } catch (Exception e) {
-            e.printStackTrace();
+
+        Bundle mapViewBundle = null;
+        if (savedInstanceState != null) {
+            mapViewBundle = savedInstanceState.getBundle(MAPVIEW_BUNDLE_KEY);
         }
 
-        mMapView.getMapAsync(new OnMapReadyCallback() {
-            @Override
-            public void onMapReady(GoogleMap googleMap) {
-                mMap = googleMap;
+        mMapView.onCreate(mapViewBundle);
 
-                // Add a marker in Sydney and move the camera
-                LatLng sydney = new LatLng(-34, 151);
-                mMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
-                mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
+        mMapView.getMapAsync(this);
 
-            }
-        });
+
+        initGoogleMap(savedInstanceState);
 
         return rootView;
     }
+
+    private void initGoogleMap(Bundle savedInstanceState) {
+        // *** IMPORTANT ***
+        // MapView requires that the Bundle you pass contain _ONLY_ MapView SDK
+        // objects or sub-Bundles.
+        Bundle mapViewBundle = null;
+        if (savedInstanceState != null) {
+            mapViewBundle = savedInstanceState.getBundle(MAPVIEW_BUNDLE_KEY);
+        }
+
+        mMapView.onCreate(mapViewBundle);
+
+        mMapView.getMapAsync(this);
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+
+        super.onSaveInstanceState(outState);
+        Bundle mapViewBundel = outState.getBundle(MAPVIEW_BUNDLE_KEY);
+        if (mapViewBundel == null) {
+            mapViewBundel = new Bundle();
+            outState.putBundle(MAPVIEW_BUNDLE_KEY, mapViewBundel);
+        }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        mMapView.onResume();
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        mMapView.onStart();
+    }
+
+    @Override
+    public void onStop() {
+        mMapView.onStop();
+        super.onStop();
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.M)
+    @Override
+    public void onMapReady(GoogleMap googleMap) {
+        googleMap.addMarker(new MarkerOptions().position(new LatLng(48.0667, -0.7667)).title("Laval"));
+        getActivity().requestPermissions(new String[]{Manifest.permission.ACCESS_COARSE_LOCATION},0);
+        getActivity().requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION},0);
+
+
+        if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getActivity(),
+                Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+
+            return;
+        }
+        googleMap.setMyLocationEnabled(true);
+    }
+
+    @Override
+    public void onPause(){
+        mMapView.onPause();
+        super.onPause();
+    }
+
+    @Override
+    public void onDestroy(){
+        mMapView.onDestroy();
+        super.onDestroy();
+    }
+
+    @Override
+    public void onLowMemory(){
+        mMapView.onLowMemory();
+        super.onLowMemory();
+    }
+
+
 }

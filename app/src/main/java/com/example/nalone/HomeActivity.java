@@ -44,9 +44,6 @@ public class HomeActivity extends AppCompatActivity {
 
         checkUserRegister();
 
-
-
-
     }
 
     private void checkUserRegister() {
