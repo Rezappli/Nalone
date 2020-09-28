@@ -52,7 +52,7 @@ public class MainActivity extends AppCompatActivity {
         GoogleSignInAccount acct = GoogleSignIn.getLastSignedInAccount(this);
 
         if(acct != null){
-            GoogleSignIn();
+            //GoogleSignIn();
             Intent intent = new Intent(getBaseContext(), HomeActivity.class);
             startActivityForResult(intent, 0);
         }else {
@@ -143,7 +143,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void GoogleSignIn(){
-        Intent signInIntent = mGoogleSignInClient.getSignInIntent();
+        Intent signInIntent =  mGoogleSignInClient.getSignInIntent();
         startActivityForResult(signInIntent, RC_SIGN_IN);
     }
 
@@ -170,7 +170,7 @@ public class MainActivity extends AppCompatActivity {
         } catch (ApiException e) {
             // The ApiException status code indicates the detailed failure reason.
             // Please refer to the GoogleSignInStatusCodes class reference for more information.
-            Log.w("Error", "signInResult:failed code=" + e.getStatusCode());
+            Log.w("GoogleError", "signInResult:failed code=" + e.getStatusCode());
 
         }
     }

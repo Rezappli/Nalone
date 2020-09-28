@@ -2,6 +2,10 @@ package com.example.nalone;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.Gravity;
+import android.widget.LinearLayout;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
@@ -21,13 +25,15 @@ import androidx.navigation.ui.NavigationUI;
 
 public class HomeActivity extends AppCompatActivity {
 
+    public int nbBackPressed;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         ErrorClass.activity = this;
         ErrorClass.checkInternetConnection();
         setContentView(R.layout.activity_home);
-
+        nbBackPressed = 0;
         BottomNavigationView navView = findViewById(R.id.nav_view);
         // Passing each menu ID as a set of Ids because each
         // menu should be considered as top level destinations.
@@ -88,6 +94,23 @@ public class HomeActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         ErrorClass.checkInternetConnection();
+    }
+
+    @Override
+    public void onBackPressed(){
+        //super.onBackPressed(); permet d'autoriser de retourner à la page
+        if(nbBackPressed == 2){
+            nbBackPressed = 0;
+        }
+        nbBackPressed++;
+        if(nbBackPressed == 1){
+            CustomToast toast = new CustomToast(getApplicationContext(), "Mon toast zgnzkjgnzkj gzjnkz njgkzjn zgnkzgn", true, false);
+        }else if(nbBackPressed == 2){
+            Intent intent = new Intent(Intent.ACTION_MAIN);
+            intent.addCategory(Intent.CATEGORY_HOME);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(intent);
+        }
     }
 
 }
