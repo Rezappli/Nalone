@@ -33,12 +33,33 @@ public class MainActivity extends AppCompatActivity {
 
     private GoogleSignInClient mGoogleSignInClient;
     private AppCompatActivity activity;
+    private String id_users;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         ErrorClass.activity = this;
         ErrorClass.checkInternetConnection();
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+
+        DatabaseReference id_user = database.getReference("id_users/");
+        id_user.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                // This method is called once with the initial value and again
+                // whenever data at this location is updated.
+                id_users = dataSnapshot.getValue(String.class);
+                Log.d("ID_USERS", "Value is: " + id_users);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError error) {
+                // Failed to read value
+                Log.w("ID_USERS", "Failed to read value.", error.toException());
+            }
+        });
+
+        Log.d("ID_USERS", "Value is: " + id_users);
 
         /*Google Sign-In method*/
 

@@ -20,11 +20,17 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <TextView
-        android:id="@+id/textView6"
+    <Button
+        android:id="@+id/signOutButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Fragement amis"
-        tools:layout_editor_absoluteX="174dp"
-        tools:layout_editor_absoluteY="90dp" />
+        android:layout_marginStart="172dp"
+        android:layout_marginTop="41dp"
+        android:layout_marginEnd="151dp"
+        android:layout_marginBottom="259dp"
+        android:text="Se déconnecter"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/text_dashboard" />
 </androidx.constraintlayout.widget.ConstraintLayout>

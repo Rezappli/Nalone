@@ -15,6 +15,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
+import com.google.android.gms.common.data.DataBuffer;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -35,7 +36,7 @@ public class SignUpProfilActivity extends AppCompatActivity {
 
     private AppCompatActivity activity;
 
-    private Long id_users;
+    private String id_users;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,6 +45,26 @@ public class SignUpProfilActivity extends AppCompatActivity {
         this.activity = this;
         ErrorClass.checkInternetConnection();
 
+        final FirebaseDatabase database = FirebaseDatabase.getInstance();
+
+        final DatabaseReference id_user = database.getReference("id_users/");
+        id_user.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                // This method is called once with the initial value and again
+                // whenever data at this location is updated.
+                id_users = dataSnapshot.getValue(String.class);
+                Log.d("ID_USERS", "Value is: " + id_users);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError error) {
+                // Failed to read value
+                Log.w("ID_USERS", "Failed to read value.", error.toException());
+            }
+        });
+
+        Log.d("ID_USERS", "Value is: " + id_users);
 
         setContentView(R.layout.activity_sign_up_profil);
 
@@ -84,59 +105,43 @@ public class SignUpProfilActivity extends AppCompatActivity {
 
                 ErrorClass.checkInternetConnection();
 
-                FirebaseDatabase database = FirebaseDatabase.getInstance();
+                DatabaseReference mailAuth = database.getReference("authentification/" + SignUpInformationActivity.userData.getAdresseMail());
+                mailAuth.setValue(SignUpInformationActivity.userData.getPass());
 
-                DatabaseReference id_users_ref = FirebaseDatabase.getInstance().getReference("id_users");
-                id_users_ref.addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                        id_users = (Long) dataSnapshot.getValue();
-                    }
+                DatabaseReference mail = database.getReference("users/" + id_users + "/mail");
+                mail.setValue(SignUpInformationActivity.userData.getAdresseMail());
 
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                    }
-                });
-
-
-
-                DatabaseReference mail = database.getReference("authentification/" + SignUpInformationActivity.userData.getAdresseMail());
-                mail.setValue(SignUpInformationActivity.userData.getPass());
-
-                DatabaseReference id = database.getReference("users/" + id_users +1);
-
-
-                DatabaseReference nom = database.getReference("users/" +id_users +1+ SignUpInformationActivity.userData.getAdresseMail() + "/nom");
+                DatabaseReference nom = database.getReference("users/" +id_users + "/nom");
                 nom.setValue(SignUpInformationActivity.userData.getNom());
 
-                DatabaseReference prenom = database.getReference("users/"+ id_users +1+ SignUpInformationActivity.userData.getAdresseMail() + "/prenom");
+                DatabaseReference prenom = database.getReference("users/"+ id_users + "/prenom");
                 prenom.setValue(SignUpInformationActivity.userData.getPrenom());
 
-                DatabaseReference sexe = database.getReference("users/"+id_users +1 + SignUpInformationActivity.userData.getAdresseMail() + "/sexe");
+                DatabaseReference sexe = database.getReference("users/"+id_users + "/sexe");
                 sexe.setValue(SignUpInformationActivity.userData.getSexe());
 
-                DatabaseReference ville = database.getReference("users/"+id_users +1 + SignUpInformationActivity.userData.getAdresseMail() + "/ville");
+                DatabaseReference ville = database.getReference("users/"+id_users + "/ville");
                 ville.setValue(SignUpInformationActivity.userData.getVille());
 
-                DatabaseReference adresse = database.getReference("users/"+id_users +1 + SignUpInformationActivity.userData.getAdresseMail() + "/adresse");
+                DatabaseReference adresse = database.getReference("users/"+id_users + "/adresse");
                 adresse.setValue(SignUpInformationActivity.userData.getAdresse());
 
-                DatabaseReference date = database.getReference("users/"+id_users +1 + SignUpInformationActivity.userData.getAdresseMail() + "/date");
+                DatabaseReference date = database.getReference("users/"+id_users + "/date");
                 date.setValue(SignUpInformationActivity.userData.getDate());
 
-                DatabaseReference numero = database.getReference("users/"+id_users +1 + SignUpInformationActivity.userData.getAdresseMail() + "/numero");
+                DatabaseReference numero = database.getReference("users/"+id_users + "/numero");
                 numero.setValue(SignUpInformationActivity.userData.getNumero());
 
-                DatabaseReference cursus = database.getReference("users/"+id_users +1 + SignUpInformationActivity.userData.getAdresseMail() + "/cursus");
+                DatabaseReference cursus = database.getReference("users/"+id_users +  "/cursus");
                 cursus.setValue(SignUpInformationActivity.userData.getCursus());
 
-                DatabaseReference interets = database.getReference("users/"+id_users +1 + SignUpInformationActivity.userData.getAdresseMail() + "/interets");
+                DatabaseReference interets = database.getReference("users/"+id_users + "/interets");
                 interets.setValue(SignUpInformationActivity.userData.getCentreInterets());
 
-                Long l = new Long(id_users+1);
-                id_users_ref.setValue(l);
-
+                int id_users_int = Integer.parseInt(id_users);
+                id_users_int++;
+                String s = id_users_int + "";
+                id_user.setValue(s);
 
                 Intent welcomeIntent = new Intent(getBaseContext(), HomeActivity.class);
                 startActivityForResult(welcomeIntent,0);

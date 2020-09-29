@@ -2,6 +2,8 @@ package com.example.nalone.ui.evenements;
 
 import android.Manifest;
 import android.content.pm.PackageManager;
+import android.location.Address;
+import android.location.Geocoder;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -21,6 +23,9 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.example.nalone.util.Constants;
+
+import java.io.IOException;
+import java.util.List;
 
 import static com.example.nalone.util.Constants.MAPVIEW_BUNDLE_KEY;
 
@@ -99,7 +104,8 @@ public class EvenementsFragment extends Fragment implements OnMapReadyCallback {
     @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
     public void onMapReady(GoogleMap googleMap) {
-        googleMap.addMarker(new MarkerOptions().position(new LatLng(48.0667, -0.7667)).title("Laval"));
+        LatLng addressePos = getLocationFromAddress("1 rue Saint-Yves, ");
+        googleMap.addMarker(new MarkerOptions().position(addressePos).title("Laval").draggable(true));
         getActivity().requestPermissions(new String[]{Manifest.permission.ACCESS_COARSE_LOCATION},0);
         getActivity().requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION},0);
 
@@ -129,6 +135,30 @@ public class EvenementsFragment extends Fragment implements OnMapReadyCallback {
     public void onLowMemory(){
         mMapView.onLowMemory();
         super.onLowMemory();
+    }
+
+    public LatLng getLocationFromAddress(String strAddress) {
+
+        Geocoder coder = new Geocoder(getContext());
+        List<Address> address;
+        LatLng p1 = null;
+
+        try {
+            // May throw an IOException
+            address = coder.getFromLocationName(strAddress, 5);
+            if (address == null) {
+                return null;
+            }
+
+            Address location = address.get(0);
+            p1 = new LatLng(location.getLatitude(), location.getLongitude() );
+
+        } catch (IOException ex) {
+
+            ex.printStackTrace();
+        }
+
+        return p1;
     }
 
 
