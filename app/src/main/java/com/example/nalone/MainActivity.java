@@ -2,7 +2,10 @@ package com.example.nalone;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.NotificationCompat;
 
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -40,26 +43,6 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         ErrorClass.activity = this;
         ErrorClass.checkInternetConnection();
-        FirebaseDatabase database = FirebaseDatabase.getInstance();
-
-        DatabaseReference id_user = database.getReference("id_users/");
-        id_user.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                // This method is called once with the initial value and again
-                // whenever data at this location is updated.
-                id_users = dataSnapshot.getValue(String.class);
-                Log.d("ID_USERS", "Value is: " + id_users);
-            }
-
-            @Override
-            public void onCancelled(DatabaseError error) {
-                // Failed to read value
-                Log.w("ID_USERS", "Failed to read value.", error.toException());
-            }
-        });
-
-        Log.d("ID_USERS", "Value is: " + id_users);
 
         /*Google Sign-In method*/
 
