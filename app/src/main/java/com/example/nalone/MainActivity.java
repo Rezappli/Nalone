@@ -6,14 +6,17 @@ import androidx.core.app.NotificationCompat;
 
 import android.app.NotificationManager;
 import android.app.PendingIntent;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.provider.ContactsContract;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.firebase.ui.database.SnapshotParser;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
@@ -116,6 +119,7 @@ public class MainActivity extends AppCompatActivity {
                                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                                         String MailPasswordBind = dataSnapshot.getValue(String.class);
                                         if (textPass.equals(MailPasswordBind)) {
+                                            HomeActivity.user_mail = textAddress;
                                             Intent signUp = new Intent(getBaseContext(), HomeActivity.class);
                                             startActivityForResult(signUp, 0);
                                         } else {

@@ -6,25 +6,39 @@ import android.location.Address;
 import android.location.Geocoder;
 import android.os.Build;
 import android.os.Bundle;
+import android.provider.ContactsContract;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 
+import com.example.nalone.Evenement;
 import com.example.nalone.R;
+import com.example.nalone.Visibilite;
+import com.firebase.ui.database.SnapshotParser;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.example.nalone.util.Constants;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import static com.example.nalone.util.Constants.MAPVIEW_BUNDLE_KEY;
@@ -33,6 +47,7 @@ public class EvenementsFragment extends Fragment implements OnMapReadyCallback {
 
     private MapView mMapView;
     private GoogleMap mMap;
+    private int nb_evenements;
 
     @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
@@ -41,6 +56,8 @@ public class EvenementsFragment extends Fragment implements OnMapReadyCallback {
 
         mMapView = rootView.findViewById(R.id.mapView);
 
+        getActivity().requestPermissions(new String[]{Manifest.permission.ACCESS_COARSE_LOCATION},0);
+        getActivity().requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION},0);
 
 
         Bundle mapViewBundle = null;
@@ -57,6 +74,8 @@ public class EvenementsFragment extends Fragment implements OnMapReadyCallback {
 
         return rootView;
     }
+
+
 
     private void initGoogleMap(Bundle savedInstanceState) {
         // *** IMPORTANT ***
@@ -101,13 +120,33 @@ public class EvenementsFragment extends Fragment implements OnMapReadyCallback {
         super.onStop();
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
     public void onMapReady(GoogleMap googleMap) {
-        LatLng addressePos = getLocationFromAddress("1 rue Saint-Yves, ");
-        googleMap.addMarker(new MarkerOptions().position(addressePos).title("Laval").draggable(true));
-        getActivity().requestPermissions(new String[]{Manifest.permission.ACCESS_COARSE_LOCATION},0);
-        getActivity().requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION},0);
+        mMap = googleMap;
+        Log.w("Map", "Waiting data...");
+
+        getFromFirebase(new OnDataReceiveCallback(){
+            public void onDataReceived(List<Evenement> listEvenements){
+                Log.w("Map", "List receive !");
+                Log.w("Map", "Events number : " + listEvenements.size());
+                mMap.clear();
+                for(int i = 0; i < listEvenements.size(); i++) {
+                    Evenement e = listEvenements.get(i);
+                    final LatLng location = getLocationFromAddress(e.getAdresse()+","+e.getVille());
+                    Log.w("Map", "Event name : " + e.getNom());
+                    if(e.getVisibilite().equals(Visibilite.PUBLIC)) {
+                        mMap.addMarker(new MarkerOptions().position(location).title(e.getNom()).snippet(e.getDescription())
+                                .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED)));
+                    }else{
+                        mMap.addMarker(new MarkerOptions().position(location).title(e.getNom()).snippet(e.getDescription())
+                                .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE)));
+                    }
+
+                    Log.w("Map", "Marker add !");
+                }
+            }
+
+        });
 
 
         if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION)
@@ -116,7 +155,83 @@ public class EvenementsFragment extends Fragment implements OnMapReadyCallback {
 
             return;
         }
-        googleMap.setMyLocationEnabled(true);
+        mMap.setMyLocationEnabled(true);
+
+    }
+
+    private void getFromFirebase(final OnDataReceiveCallback callback){
+        final FirebaseDatabase database = FirebaseDatabase.getInstance();
+
+        DatabaseReference id_evenements = database.getReference("id_evenements");
+        id_evenements.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                nb_evenements = Integer.parseInt((String) snapshot.getValue());
+                Log.w("Map", "Event found : " + nb_evenements);
+                final List<Evenement> listEvenements = new ArrayList<>();
+                for(int i = 0; i < nb_evenements; i++){
+                    DatabaseReference event = database.getReference("evenements").child(i+"");
+                    final int finalI = i;
+                    event.addValueEventListener(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot snapshot) {
+                            int id = finalI;
+                            String nom = snapshot.child("nom").getValue( String.class );
+                            String desc = snapshot.child("description").getValue( String.class );
+                            String adresse = snapshot.child("adresse").getValue(String.class);
+                            String visibiliteValue = snapshot.child("visibilite").getValue(String.class);
+                            Visibilite visibilite;
+                            if(visibiliteValue.equalsIgnoreCase("PRIVE")){
+                                visibilite = Visibilite.PRIVE;
+                            }else{
+                                visibilite = Visibilite.PUBLIC;
+                            }
+
+                            Log.w("Map", "Adresse found : " + adresse);
+                            String ville = snapshot.child("ville").getValue(String.class);
+                            Log.w("Map", "Event name before sending :"+nom);
+                            Evenement e = new Evenement(id, nom, desc, adresse, ville, visibilite, null, null);
+                            for(int j = 0; j < listEvenements.size(); j++){
+                                if(listEvenements.get(j).getId() == id){
+                                    listEvenements.remove(j);
+                                }
+                            }
+                            listEvenements.add(e);
+
+                            Log.w("Map", "List size before sending :" +listEvenements.size());
+                            callback.onDataReceived(listEvenements);
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError error) {
+
+                        }
+                    });
+
+                }
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+
+
+        /*DatabaseReference reference = database.getReference("evenements").child("0");
+        reference.addValueEventListener( new ValueEventListener(){
+            @Override
+            public void onDataChange( @NonNull DataSnapshot dataSnapshot ){
+                String nom = dataSnapshot.child( "nom" ).getValue( String.class );
+                String desc = dataSnapshot.child( "desc" ).getValue( String.class );
+                callback.onDataReceived(nom, desc);
+            }
+
+            @Override
+            public void onCancelled( @NonNull DatabaseError databaseError ){
+            }
+        });*/
     }
 
     @Override
@@ -137,7 +252,9 @@ public class EvenementsFragment extends Fragment implements OnMapReadyCallback {
         super.onLowMemory();
     }
 
-    public LatLng getLocationFromAddress(String strAddress) {
+    private LatLng getLocationFromAddress(String strAddress) {
+
+        Log.w("Evenement", "Loading coordinate from : " + strAddress);
 
         Geocoder coder = new Geocoder(getContext());
         List<Address> address;
@@ -160,6 +277,5 @@ public class EvenementsFragment extends Fragment implements OnMapReadyCallback {
 
         return p1;
     }
-
 
 }

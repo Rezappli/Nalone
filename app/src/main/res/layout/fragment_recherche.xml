@@ -8,6 +8,7 @@
     tools:context=".ui.recherche.RechercheFragment">
 
     <LinearLayout
+        android:id="@+id/fond_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
@@ -21,6 +22,7 @@
         </SearchView>
 
         <LinearLayout
+            android:id="@+id/recherche_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="20dp"

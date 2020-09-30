@@ -2,6 +2,7 @@ package com.example.nalone;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
@@ -21,9 +22,14 @@ import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 public class HomeActivity extends AppCompatActivity {
 
     public static FragmentManager fragmentManager;
+    public static String user_mail;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,6 +54,7 @@ public class HomeActivity extends AppCompatActivity {
 
     private void checkUserRegister() {
         final GoogleSignInAccount acct = GoogleSignIn.getLastSignedInAccount(this);
+        user_mail = acct.getEmail();
         if (acct != null) {
         DatabaseReference rootRef = FirebaseDatabase.getInstance().getReference("authentification/");
         rootRef.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -93,5 +100,4 @@ public class HomeActivity extends AppCompatActivity {
         super.onResume();
         ErrorClass.checkInternetConnection();
     }
-
 }
