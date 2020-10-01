@@ -112,7 +112,7 @@ public class SignUpProfilActivity extends AppCompatActivity {
                 mailAuth.setValue(SignUpInformationActivity.userData.getAdresseMail());
 
                 DatabaseReference passwordAuth = database.getReference("authentification/"+id_users + "/password");
-                mailAuth.setValue(SignUpInformationActivity.userData.getPass());
+                passwordAuth.setValue(SignUpInformationActivity.userData.getPass());
 
                 DatabaseReference mail = database.getReference("users/" + id_users + "/mail");
                 mail.setValue(SignUpInformationActivity.userData.getAdresseMail());
