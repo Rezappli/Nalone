@@ -7,10 +7,9 @@ public class ItemPerson {
     private String mNom;
     private int mImageButton;
 
-    public ItemPerson(int imageResource, String text1){
+    public ItemPerson(int imageResource, String nom){
         mImageResource = imageResource;
-        mNom = text1;
-        this.mImageButton = mImageResource;
+        mNom = nom;
 
     }
 
@@ -22,7 +21,4 @@ public class ItemPerson {
         return mNom;
     }
 
-    public int getButtonResource(){
-        return mImageButton;
-    }
 }

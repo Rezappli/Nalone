@@ -5,12 +5,15 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="60dp">
+        android:layout_height="70dp">
 
         <androidx.cardview.widget.CardView
+            android:id="@+id/cardViewPhotoPerson"
             android:layout_width="60dp"
             android:layout_height="60dp"
             android:layout_gravity="center|center_vertical"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="5dp"
             app:cardCornerRadius="150dp">
 
             <LinearLayout
@@ -26,7 +29,7 @@
                     app:cardCornerRadius="150dp">
 
                     <ImageView
-                        android:id="@+id/imagePerson,"
+                        android:id="@+id/imagePerson"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:layout_gravity="center"
@@ -39,19 +42,22 @@
 
         <TextView
             android:id="@+id/nomInvit"
-            android:layout_width="match_parent"
+            android:layout_width="250dp"
             android:layout_height="match_parent"
-            android:layout_marginStart="10dp"
+            android:layout_alignParentLeft="false"
+            android:layout_marginStart="30dp"
+            android:layout_toRightOf="@id/cardViewPhotoPerson"
             android:gravity="center_vertical"
             android:text="TextView"
             android:textStyle="bold" />
 
-        <ImageButton
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:background="@drawable/ic_baseline_add_24"
-            android:src="@drawable/ic_baseline_add_24" />
+        <ImageView
+            android:id="@+id/buttonAdd"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_marginTop="10dp"
+            android:layout_toRightOf="@id/nomInvit"
+            app:srcCompat="@drawable/ic_baseline_add_24" />
 
     </RelativeLayout>
 

@@ -2,6 +2,7 @@ package com.example.nalone;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.app.Dialog;
@@ -63,21 +64,31 @@ public class CreateEventActivity extends AppCompatActivity {
 
 
 
-    }
 
-
-
-    public void showPopUp(View v){
         RecyclerView mRecyclerView;
         RecyclerView.Adapter mAdapter;
         RecyclerView.LayoutManager mLayoutManager;
 
         ArrayList<ItemPerson> items = new ArrayList<>();
+
         items.add(new ItemPerson(R.drawable.ic_baseline_account_circle_24, "User 1"));
         items.add(new ItemPerson(R.drawable.baseline_alternate_email_focused, "User 2"));
         items.add(new ItemPerson(R.drawable.ic_baseline_lock_24, "User 3"));
-        ImageButton add;
-        add = findViewById(R.id.imageButtonAddInvit);
+
+        mRecyclerView = findViewById(R.id.recyclerView1);
+        mRecyclerView.setHasFixedSize(true);
+        mLayoutManager = new LinearLayoutManager(this);
+        mAdapter = new ItemPersonAdapter(items);
+        mRecyclerView.setLayoutManager(mLayoutManager);
+        mRecyclerView.setAdapter(mAdapter);
+
+    }
+
+
+
+    public void showPopUp(View v){
+
+
         dialogAddPerson.setContentView(R.layout.popup_add_invit);
         dialogAddPerson.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         dialogAddPerson.show();
