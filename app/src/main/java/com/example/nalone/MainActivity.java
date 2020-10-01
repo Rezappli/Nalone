@@ -38,11 +38,9 @@ public class MainActivity extends AppCompatActivity {
     private EditText editTextAddress;
 
     private GoogleSignInClient mGoogleSignInClient;
-    private AppCompatActivity activity;
-    private String id_users;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         ErrorClass.activity = this;
         ErrorClass.checkInternetConnection();
@@ -108,44 +106,56 @@ public class MainActivity extends AppCompatActivity {
                         return;
                     }
                     //Lecture d'une connexion mail/mdp via bdd
-                    DatabaseReference rootRef = FirebaseDatabase.getInstance().getReference("authentification/");
-                    rootRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                    DatabaseReference id_users = FirebaseDatabase.getInstance().getReference("id_users");
+                    id_users.addValueEventListener(new ValueEventListener() {
                         @Override
-                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                            if (dataSnapshot.hasChild(textAddress)) {
-                                DatabaseReference mailRef = FirebaseDatabase.getInstance().getReference("authentification/" + textAddress);
-                                mailRef.addValueEventListener(new ValueEventListener() {
+                        public void onDataChange(@NonNull DataSnapshot snapshot) {
+
+                            String id_users_text = snapshot.getValue(String.class);
+                            int nb_users = Integer.parseInt(id_users_text);
+
+                            for(int i = 0; i < nb_users; i++) {
+                                DatabaseReference authentificationRef = FirebaseDatabase.getInstance().getReference("authentification/"+i);
+                                HomeActivity.user_id = i+"";
+                                authentificationRef.addValueEventListener(new ValueEventListener() {
                                     @Override
-                                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                        String MailPasswordBind = dataSnapshot.getValue(String.class);
-                                        if (textPass.equals(MailPasswordBind)) {
-                                            HomeActivity.user_mail = textAddress;
-                                            Intent signUp = new Intent(getBaseContext(), HomeActivity.class);
-                                            startActivityForResult(signUp, 0);
-                                        } else {
-                                            editTextPass.setText("");
-                                            Toast.makeText(getApplicationContext(), "Le mot de passe est incorrect !", Toast.LENGTH_LONG).show();
+                                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                        String mail = snapshot.child("mail").getValue(String.class);
+                                        String password = snapshot.child("password").getValue(String.class);
+                                        boolean mailFound = false;
+                                        if(mail.equalsIgnoreCase(textAddress)){
+                                            mailFound = true;
+                                            if(password.equalsIgnoreCase(textPass)){
+                                                HomeActivity.user_mail = mail;
+                                                Intent intent = new Intent(getBaseContext(), HomeActivity.class);
+                                                startActivityForResult(intent, 0);
+                                            }else{
+                                                CustomToast toast = new CustomToast(getBaseContext(), "Mot de passe incorrect !", false, true);
+                                            }
+                                        }
+
+                                        if(!mailFound){
+                                            CustomToast toast = new CustomToast(getBaseContext(), "Adresse mail introuvable !", false, true);
                                         }
                                     }
 
                                     @Override
-                                    public void onCancelled(@NonNull DatabaseError databaseError) {
+                                    public void onCancelled(@NonNull DatabaseError error) {
 
                                     }
                                 });
-                            } else {
-                                Toast.makeText(getApplicationContext(), "L'adresse mail n'existe pas !", Toast.LENGTH_LONG).show();
                             }
                         }
 
                         @Override
-                        public void onCancelled(@NonNull DatabaseError databaseError) {
-                            //Log.w(mailRef, "Failed to read value.", databaseError.toException());
+                        public void onCancelled(@NonNull DatabaseError error) {
+
                         }
                     });
-                }
-            });
+
         }
+    });
+        };
     }
 
     public void GoogleSignIn(){

@@ -18,6 +18,7 @@ import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 
 import com.example.nalone.Evenement;
+import com.example.nalone.HomeActivity;
 import com.example.nalone.R;
 import com.example.nalone.Visibilite;
 import com.firebase.ui.database.SnapshotParser;
@@ -26,6 +27,7 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -131,16 +133,18 @@ public class EvenementsFragment extends Fragment implements OnMapReadyCallback {
                 Log.w("Map", "Events number : " + listEvenements.size());
                 mMap.clear();
                 for(int i = 0; i < listEvenements.size(); i++) {
-                    Evenement e = listEvenements.get(i);
+                    final Evenement e = listEvenements.get(i);
+
                     final LatLng location = getLocationFromAddress(e.getAdresse()+","+e.getVille());
                     Log.w("Map", "Event name : " + e.getNom());
+                    BitmapDescriptor iconColor = null;
                     if(e.getVisibilite().equals(Visibilite.PUBLIC)) {
-                        mMap.addMarker(new MarkerOptions().position(location).title(e.getNom()).snippet(e.getDescription())
-                                .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED)));
+                        iconColor = BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED);
                     }else{
-                        mMap.addMarker(new MarkerOptions().position(location).title(e.getNom()).snippet(e.getDescription())
-                                .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE)));
+                        iconColor = BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE);
                     }
+                    mMap.addMarker(new MarkerOptions().position(location).title(e.getNom()).snippet(e.getDescription())
+                            .icon(iconColor));
 
                     Log.w("Map", "Marker add !");
                 }
@@ -183,20 +187,35 @@ public class EvenementsFragment extends Fragment implements OnMapReadyCallback {
                             Visibilite visibilite;
                             if(visibiliteValue.equalsIgnoreCase("PRIVE")){
                                 visibilite = Visibilite.PRIVE;
+
                             }else{
                                 visibilite = Visibilite.PUBLIC;
                             }
 
-                            Log.w("Map", "Adresse found : " + adresse);
                             String ville = snapshot.child("ville").getValue(String.class);
-                            Log.w("Map", "Event name before sending :"+nom);
+
                             Evenement e = new Evenement(id, nom, desc, adresse, ville, visibilite, null, null);
                             for(int j = 0; j < listEvenements.size(); j++){
                                 if(listEvenements.get(j).getId() == id){
                                     listEvenements.remove(j);
                                 }
                             }
-                            listEvenements.add(e);
+
+                            if(visibilite.equals(Visibilite.PRIVE)) {
+                                String membres_inscrits_text = snapshot.child("membres_inscrits").getValue(String.class);
+                                List<String> membres_inscrits = Arrays.asList(membres_inscrits_text.split(","));
+                                for (int h = 0; h < membres_inscrits.size(); h++) {
+                                    Log.w("Membre", "Id user login:"+ HomeActivity.user_id);
+                                    Log.w("Membre", "Event member check:"+ membres_inscrits.get(h));
+                                    /*if(HomeActivity.user_id.equalsIgnoreCase(membres_inscrits.get(h))) {
+                                        listEvenements.add(e);
+                                    }*/
+                                }
+                            }else{
+                                listEvenements.add(e);
+                            }
+
+
 
                             Log.w("Map", "List size before sending :" +listEvenements.size());
                             callback.onDataReceived(listEvenements);

@@ -30,6 +30,7 @@ public class HomeActivity extends AppCompatActivity {
 
     public static FragmentManager fragmentManager;
     public static String user_mail;
+    public static String user_id;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,15 +55,49 @@ public class HomeActivity extends AppCompatActivity {
 
     private void checkUserRegister() {
         final GoogleSignInAccount acct = GoogleSignIn.getLastSignedInAccount(this);
-        user_mail = acct.getEmail();
         if (acct != null) {
+            user_mail = acct.getEmail();
+
+            DatabaseReference id_users = FirebaseDatabase.getInstance().getReference("id_users");
+            id_users.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+
+                    String id_users_text = snapshot.getValue(String.class);
+                    int nb_users = Integer.parseInt(id_users_text);
+
+                    for (int i = 0; i < nb_users; i++) {
+                        DatabaseReference authentificationRef = FirebaseDatabase.getInstance().getReference("authentification/" + i);
+                        final int finalI = i;
+                        authentificationRef.addValueEventListener(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                String mail = snapshot.child("mail").getValue(String.class);
+                                if(mail.equalsIgnoreCase(user_mail)){
+                                    user_id = finalI+"";
+                                }
+                            }
+
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError error) {
+
+                            }
+                        });
+                    }
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+
+                }
+            });
+
         DatabaseReference rootRef = FirebaseDatabase.getInstance().getReference("authentification/");
         rootRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                if (dataSnapshot.hasChild(acct.getEmail().replace(".", ","))) {
 
-                }else{
+                if (!dataSnapshot.hasChild(user_id)) {
                     Intent intent = new Intent(getBaseContext(), SignUpInformationActivity.class);
                     startActivityForResult(intent, 0);
                 }
@@ -74,6 +109,7 @@ public class HomeActivity extends AppCompatActivity {
             }
         });
     }
+        user_mail = user_mail.replace(".", ",");
     }
 
     public void getGoogleInformations(){
