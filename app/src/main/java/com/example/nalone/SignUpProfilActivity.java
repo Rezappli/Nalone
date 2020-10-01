@@ -8,6 +8,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.ContactsContract;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -105,7 +106,12 @@ public class SignUpProfilActivity extends AppCompatActivity {
 
                 ErrorClass.checkInternetConnection();
 
-                DatabaseReference mailAuth = database.getReference("authentification/" + SignUpInformationActivity.userData.getAdresseMail());
+                DatabaseReference id_user = database.getReference("authentification/"+id_users);
+
+                DatabaseReference mailAuth = database.getReference("authentification/"+id_users + "/mail");
+                mailAuth.setValue(SignUpInformationActivity.userData.getAdresseMail());
+
+                DatabaseReference passwordAuth = database.getReference("authentification/"+id_users + "/password");
                 mailAuth.setValue(SignUpInformationActivity.userData.getPass());
 
                 DatabaseReference mail = database.getReference("users/" + id_users + "/mail");
@@ -138,12 +144,13 @@ public class SignUpProfilActivity extends AppCompatActivity {
                 DatabaseReference interets = database.getReference("users/"+id_users + "/interets");
                 interets.setValue(SignUpInformationActivity.userData.getCentreInterets());
 
+                DatabaseReference id_users_ref = database.getReference("id_users");
                 int id_users_int = Integer.parseInt(id_users);
                 id_users_int++;
                 String s = id_users_int + "";
-                id_user.setValue(s);
+                id_users_ref.setValue(s);
 
-                Intent welcomeIntent = new Intent(getBaseContext(), HomeActivity.class);
+                Intent welcomeIntent = new Intent(getBaseContext(), MainActivity.class);
                 startActivityForResult(welcomeIntent,0);
                 Toast.makeText(getApplicationContext(), "Bienvenue dans NoLonely !", Toast.LENGTH_SHORT).show();
             }

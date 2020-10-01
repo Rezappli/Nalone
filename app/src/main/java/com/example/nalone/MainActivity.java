@@ -127,6 +127,7 @@ public class MainActivity extends AppCompatActivity {
                                         boolean mailFound = false;
                                         if(mail.equalsIgnoreCase(textAddress)){
                                             Log.w("Connexion", "Mail check trouvé");
+                                            Log.w("Connexion", "Mail check trouvé:"+textAddress);
                                             mailFound = true;
                                             if(password.equalsIgnoreCase(textPass)){
                                                 HomeActivity.user_mail = mail;

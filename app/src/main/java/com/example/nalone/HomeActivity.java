@@ -65,25 +65,28 @@ public class HomeActivity extends AppCompatActivity {
 
                     String id_users_text = snapshot.getValue(String.class);
                     int nb_users = Integer.parseInt(id_users_text);
-
+                    final String[] user_id = {null};
                     for (int i = 0; i < nb_users; i++) {
+
                         DatabaseReference authentificationRef = FirebaseDatabase.getInstance().getReference("authentification/" + i);
                         final int finalI = i;
                         authentificationRef.addValueEventListener(new ValueEventListener() {
                             @Override
                             public void onDataChange(@NonNull final DataSnapshot snapshot) {
                                 String mail = snapshot.child("mail").getValue(String.class);
-                                boolean user_register = false;
+                                Log.w("Connexion", "Essaye avec la mail : "+mail);
+                                Log.w("Connexion", "Essaye avec la mail : "+user_mail);
                                 if (mail.equalsIgnoreCase(user_mail)) {
-                                    user_register = true;
-                                    final String user_id = finalI+"";
+                                    user_id[0] = finalI+"";
+                                    Log.w("Connexion", "Mail check trouvé");
+                                    Log.w("Connexion", "User connecté avec l'id:"+ user_id[0]);
                                     user_mail = mail;
                                     DatabaseReference rootRef = FirebaseDatabase.getInstance().getReference("authentification/");
+                                    final String finalUser_id = user_id[0];
                                     rootRef.addListenerForSingleValueEvent(new ValueEventListener() {
                                         @Override
                                         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-
-                                            if (!dataSnapshot.hasChild(user_id)) {
+                                            if (!dataSnapshot.hasChild(finalUser_id)) {
                                                 Intent intent = new Intent(getBaseContext(), SignUpInformationActivity.class);
                                                 startActivityForResult(intent, 0);
                                             }
@@ -95,11 +98,6 @@ public class HomeActivity extends AppCompatActivity {
                                         }
                                     });
                                 }
-
-                                if(!user_register){
-                                    Intent intent = new Intent(getBaseContext(), SignUpInformationActivity.class);
-                                    startActivityForResult(intent, 0);
-                                }
                             }
 
                             @Override
@@ -107,7 +105,16 @@ public class HomeActivity extends AppCompatActivity {
 
                             }
                         });
+
+                        if(i == nb_users){
+                            if(user_id[0] == null) {
+                                Log.w("Connexion", "User inconnu dans la base");
+                                Intent intent = new Intent(getBaseContext(), SignUpInformationActivity.class);
+                                startActivityForResult(intent, 0);
+                            }
+                        }
                     }
+
                 }
 
                 @Override
