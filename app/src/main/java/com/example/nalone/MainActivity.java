@@ -113,6 +113,7 @@ public class MainActivity extends AppCompatActivity {
 
                             String id_users_text = snapshot.getValue(String.class);
                             int nb_users = Integer.parseInt(id_users_text);
+                            Log.w("Connexion", "Nb users :"+nb_users);
 
                             for(int i = 0; i < nb_users; i++) {
                                 DatabaseReference authentificationRef = FirebaseDatabase.getInstance().getReference("authentification/"+i);
@@ -122,8 +123,10 @@ public class MainActivity extends AppCompatActivity {
                                     public void onDataChange(@NonNull DataSnapshot snapshot) {
                                         String mail = snapshot.child("mail").getValue(String.class);
                                         String password = snapshot.child("password").getValue(String.class);
+                                        Log.w("Connexion", "Mail check :"+mail);
                                         boolean mailFound = false;
                                         if(mail.equalsIgnoreCase(textAddress)){
+                                            Log.w("Connexion", "Mail check trouvé");
                                             mailFound = true;
                                             if(password.equalsIgnoreCase(textPass)){
                                                 HomeActivity.user_mail = mail;

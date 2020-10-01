@@ -148,6 +148,7 @@ public class EvenementsFragment extends Fragment implements OnMapReadyCallback {
                     mMap.addMarker(new MarkerOptions().position(location).title(e.getNom()).snippet(e.getDescription())
                             .icon(iconColor));
 
+                    Log.w("Map", "Marker name :"+e.getNom());
                     Log.w("Map", "Marker add !");
                 }
             }
@@ -204,12 +205,8 @@ public class EvenementsFragment extends Fragment implements OnMapReadyCallback {
                             }
 
                             if(visibilite.equals(Visibilite.PRIVE)) {
-                                Log.w("Apparition", "Lecture d'un evenement prive !");
                                 String membres_inscrits_text = snapshot.child("membres_inscrits").getValue(String.class);
                                 final List<String> membres_inscrits = Arrays.asList(membres_inscrits_text.split(","));
-                                for(int a = 0; a < membres_inscrits.size(); a++){
-                                    Log.w("Apparition", "Membres inscrits à cet evenement :"+membres_inscrits.get(a));
-                                }
                                 DatabaseReference user_id_ref = FirebaseDatabase.getInstance().getReference("id_users");
                                 user_id_ref.addValueEventListener(new ValueEventListener() {
                                     @Override
@@ -223,17 +220,14 @@ public class EvenementsFragment extends Fragment implements OnMapReadyCallback {
                                             public void onDataChange(@NonNull DataSnapshot snapshot) {
                                                 for(int i = 0; i < nb_users; i++){
                                                     String mail = snapshot.child(i+"").child("mail").getValue(String.class);
-                                                    Log.w("Apparition", "Mail utilisateur trouvé :" +mail);
-                                                    Log.w("Apparition", "Mail utilisateur connecté :" +HomeActivity.user_mail);
                                                     String id_user = i+"";
                                                     if(mail.equalsIgnoreCase(HomeActivity.user_mail)){
-                                                        Log.w("Apparition", "Correspondance avec mail utilisateur connecté");
                                                         for (int h = 0; h < membres_inscrits.size(); h++) {
-                                                            Log.w("Apparition","Membres inscrits :"+membres_inscrits.get(i));
-                                                            Log.w("Apparition","Id users connecté :"+id_user);
                                                             if(id_user.equalsIgnoreCase(membres_inscrits.get(h))) {
-                                                                Log.w("Apparition","Apparition de l'evenement sur la carte !");
                                                                 listEvenements.add(e);
+                                                                Log.w("Apparition", "Ajout d'un evenement privé");
+                                                                Log.w("Apparition", "Taille de la liste :" + listEvenements.size());
+                                                                callback.onDataReceived(listEvenements);
                                                             }
                                                         }
                                                     }
@@ -254,11 +248,12 @@ public class EvenementsFragment extends Fragment implements OnMapReadyCallback {
                                 });
                             }else{
                                 listEvenements.add(e);
+                                callback.onDataReceived(listEvenements);
                             }
 
 
 
-                            Log.w("Map", "List size before sending :" +listEvenements.size());
+                            Log.w("Apparition", "List size before sending :" +listEvenements.size());
                             callback.onDataReceived(listEvenements);
                         }
 

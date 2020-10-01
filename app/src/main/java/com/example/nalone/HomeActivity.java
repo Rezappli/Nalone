@@ -73,7 +73,9 @@ public class HomeActivity extends AppCompatActivity {
                             @Override
                             public void onDataChange(@NonNull final DataSnapshot snapshot) {
                                 String mail = snapshot.child("mail").getValue(String.class);
+                                boolean user_register = false;
                                 if (mail.equalsIgnoreCase(user_mail)) {
+                                    user_register = true;
                                     final String user_id = finalI+"";
                                     user_mail = mail;
                                     DatabaseReference rootRef = FirebaseDatabase.getInstance().getReference("authentification/");
@@ -92,6 +94,11 @@ public class HomeActivity extends AppCompatActivity {
 
                                         }
                                     });
+                                }
+
+                                if(!user_register){
+                                    Intent intent = new Intent(getBaseContext(), SignUpInformationActivity.class);
+                                    startActivityForResult(intent, 0);
                                 }
                             }
 
