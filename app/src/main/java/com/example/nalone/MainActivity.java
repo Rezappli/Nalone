@@ -124,6 +124,7 @@ public class MainActivity extends AppCompatActivity {
                                         String mail = snapshot.child("mail").getValue(String.class);
                                         String password = snapshot.child("password").getValue(String.class);
                                         Log.w("Connexion", "Mail check :"+mail);
+                                        Log.w("Connexion", "avec :"+textAddress);
                                         boolean mailFound = false;
                                         if(mail.equalsIgnoreCase(textAddress)){
                                             Log.w("Connexion", "Mail check trouvé");
