@@ -116,7 +116,7 @@ public class MainActivity extends AppCompatActivity {
 
                             for(int i = 0; i < nb_users; i++) {
                                 DatabaseReference authentificationRef = FirebaseDatabase.getInstance().getReference("authentification/"+i);
-                                HomeActivity.user_id = i+"";
+                                final int finalI = i;
                                 authentificationRef.addValueEventListener(new ValueEventListener() {
                                     @Override
                                     public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -178,9 +178,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void handleSignInResult(Task<GoogleSignInAccount> completedTask) {
         try {
-            GoogleSignInAccount account = completedTask.getResult(ApiException.class);
-
-            // Signed in successfully, show authenticated UI.
+            final GoogleSignInAccount account = completedTask.getResult(ApiException.class);
             Intent intent = new Intent(MainActivity.this, HomeActivity.class);
             startActivity(intent);
         } catch (ApiException e) {

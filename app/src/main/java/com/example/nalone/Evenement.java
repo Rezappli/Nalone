@@ -1,13 +1,6 @@
 package com.example.nalone;
 
-import android.content.Context;
-import android.location.Address;
-import android.location.Geocoder;
 import android.util.Log;
-
-import com.google.android.gms.maps.model.LatLng;
-
-import java.io.IOException;
 import java.util.List;
 
 public class Evenement {
@@ -33,31 +26,6 @@ public class Evenement {
         this.membre_inscrits = membre_inscrits;
         this.membre_en_attente = membre_en_attente;
         Log.w("Evenement", "Nom:"+ nom);
-    }
-
-
-    public void setNom(String nom) {
-        this.nom = nom;
-    }
-
-    public void setAdresse(String adresse) {
-        this.adresse = adresse;
-    }
-
-    public void setVille(String ville) {
-        this.ville = ville;
-    }
-
-    public void setVisibilite(Visibilite visibilite) {
-        this.visibilite = visibilite;
-    }
-
-    public void setMembre_inscrits(List<String> membre_inscrits) {
-        this.membre_inscrits = membre_inscrits;
-    }
-
-    public void setMembre_en_attente(List<String> membre_en_attente) {
-        this.membre_en_attente = membre_en_attente;
     }
 
     public int getId(){

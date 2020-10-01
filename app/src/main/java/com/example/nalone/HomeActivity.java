@@ -30,7 +30,6 @@ public class HomeActivity extends AppCompatActivity {
 
     public static FragmentManager fragmentManager;
     public static String user_mail;
-    public static String user_id;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,6 +56,7 @@ public class HomeActivity extends AppCompatActivity {
         final GoogleSignInAccount acct = GoogleSignIn.getLastSignedInAccount(this);
         if (acct != null) {
             user_mail = acct.getEmail();
+        }
 
             DatabaseReference id_users = FirebaseDatabase.getInstance().getReference("id_users");
             id_users.addValueEventListener(new ValueEventListener() {
@@ -71,10 +71,27 @@ public class HomeActivity extends AppCompatActivity {
                         final int finalI = i;
                         authentificationRef.addValueEventListener(new ValueEventListener() {
                             @Override
-                            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                            public void onDataChange(@NonNull final DataSnapshot snapshot) {
                                 String mail = snapshot.child("mail").getValue(String.class);
-                                if(mail.equalsIgnoreCase(user_mail)){
-                                    user_id = finalI+"";
+                                if (mail.equalsIgnoreCase(user_mail)) {
+                                    final String user_id = finalI+"";
+                                    user_mail = mail;
+                                    DatabaseReference rootRef = FirebaseDatabase.getInstance().getReference("authentification/");
+                                    rootRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                                        @Override
+                                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
+                                            if (!dataSnapshot.hasChild(user_id)) {
+                                                Intent intent = new Intent(getBaseContext(), SignUpInformationActivity.class);
+                                                startActivityForResult(intent, 0);
+                                            }
+                                        }
+
+                                        @Override
+                                        public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                                        }
+                                    });
                                 }
                             }
 
@@ -92,24 +109,9 @@ public class HomeActivity extends AppCompatActivity {
                 }
             });
 
-        DatabaseReference rootRef = FirebaseDatabase.getInstance().getReference("authentification/");
-        rootRef.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
-                if (!dataSnapshot.hasChild(user_id)) {
-                    Intent intent = new Intent(getBaseContext(), SignUpInformationActivity.class);
-                    startActivityForResult(intent, 0);
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        });
-    }
         user_mail = user_mail.replace(".", ",");
+        Log.w("User","User mail:" + user_mail);
     }
 
     public void getGoogleInformations(){

@@ -1,6 +1,7 @@
 package com.example.nalone.ui.evenements;
 
 import android.Manifest;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Address;
 import android.location.Geocoder;
@@ -20,6 +21,7 @@ import androidx.fragment.app.Fragment;
 import com.example.nalone.Evenement;
 import com.example.nalone.HomeActivity;
 import com.example.nalone.R;
+import com.example.nalone.SignUpInformationActivity;
 import com.example.nalone.Visibilite;
 import com.firebase.ui.database.SnapshotParser;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -194,7 +196,7 @@ public class EvenementsFragment extends Fragment implements OnMapReadyCallback {
 
                             String ville = snapshot.child("ville").getValue(String.class);
 
-                            Evenement e = new Evenement(id, nom, desc, adresse, ville, visibilite, null, null);
+                            final Evenement e = new Evenement(id, nom, desc, adresse, ville, visibilite, null, null);
                             for(int j = 0; j < listEvenements.size(); j++){
                                 if(listEvenements.get(j).getId() == id){
                                     listEvenements.remove(j);
@@ -202,15 +204,54 @@ public class EvenementsFragment extends Fragment implements OnMapReadyCallback {
                             }
 
                             if(visibilite.equals(Visibilite.PRIVE)) {
+                                Log.w("Apparition", "Lecture d'un evenement prive !");
                                 String membres_inscrits_text = snapshot.child("membres_inscrits").getValue(String.class);
-                                List<String> membres_inscrits = Arrays.asList(membres_inscrits_text.split(","));
-                                for (int h = 0; h < membres_inscrits.size(); h++) {
-                                    Log.w("Membre", "Id user login:"+ HomeActivity.user_id);
-                                    Log.w("Membre", "Event member check:"+ membres_inscrits.get(h));
-                                    /*if(HomeActivity.user_id.equalsIgnoreCase(membres_inscrits.get(h))) {
-                                        listEvenements.add(e);
-                                    }*/
+                                final List<String> membres_inscrits = Arrays.asList(membres_inscrits_text.split(","));
+                                for(int a = 0; a < membres_inscrits.size(); a++){
+                                    Log.w("Apparition", "Membres inscrits à cet evenement :"+membres_inscrits.get(a));
                                 }
+                                DatabaseReference user_id_ref = FirebaseDatabase.getInstance().getReference("id_users");
+                                user_id_ref.addValueEventListener(new ValueEventListener() {
+                                    @Override
+                                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                        String nb_users_text = snapshot.getValue(String.class);
+                                        final int nb_users = Integer.parseInt(nb_users_text);
+
+                                        DatabaseReference user_id_ref_mail = FirebaseDatabase.getInstance().getReference("users");
+                                        user_id_ref_mail.addValueEventListener(new ValueEventListener() {
+                                            @Override
+                                            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                                for(int i = 0; i < nb_users; i++){
+                                                    String mail = snapshot.child(i+"").child("mail").getValue(String.class);
+                                                    Log.w("Apparition", "Mail utilisateur trouvé :" +mail);
+                                                    Log.w("Apparition", "Mail utilisateur connecté :" +HomeActivity.user_mail);
+                                                    String id_user = i+"";
+                                                    if(mail.equalsIgnoreCase(HomeActivity.user_mail)){
+                                                        Log.w("Apparition", "Correspondance avec mail utilisateur connecté");
+                                                        for (int h = 0; h < membres_inscrits.size(); h++) {
+                                                            Log.w("Apparition","Membres inscrits :"+membres_inscrits.get(i));
+                                                            Log.w("Apparition","Id users connecté :"+id_user);
+                                                            if(id_user.equalsIgnoreCase(membres_inscrits.get(h))) {
+                                                                Log.w("Apparition","Apparition de l'evenement sur la carte !");
+                                                                listEvenements.add(e);
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
+
+                                            @Override
+                                            public void onCancelled(@NonNull DatabaseError error) {
+
+                                            }
+                                        });
+                                    }
+
+                                    @Override
+                                    public void onCancelled(@NonNull DatabaseError error) {
+
+                                    }
+                                });
                             }else{
                                 listEvenements.add(e);
                             }
