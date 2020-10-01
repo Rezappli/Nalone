@@ -15,6 +15,7 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 
+import com.example.nalone.CreateEventActivity;
 import com.example.nalone.MainActivity;
 import com.example.nalone.R;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
@@ -28,6 +29,7 @@ public class AmisFragment extends Fragment {
     private AmisViewModel amisViewModel;
     private Button signOutButton;
     private GoogleSignInClient mGoogleSignInClient;
+    private Button button2;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -36,8 +38,16 @@ public class AmisFragment extends Fragment {
         amisViewModel =
                 ViewModelProviders.of(this).get(AmisViewModel.class);
         View root = inflater.inflate(R.layout.fragment_amis, container, false);
-        final TextView textView = root.findViewById(R.id.text_dashboard);
         signOutButton = root.findViewById(R.id.signOutButton);
+        button2 = root.findViewById(R.id.button2);
+
+        button2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent createEvent = new Intent(getContext(), CreateEventActivity.class);
+                startActivityForResult(createEvent,0);
+            }
+        });
 
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestEmail()
@@ -56,12 +66,7 @@ public class AmisFragment extends Fragment {
                 }
             }
         });
-        amisViewModel.getText().observe(getViewLifecycleOwner(), new Observer<String>() {
-            @Override
-            public void onChanged(@Nullable String s) {
-                textView.setText(s);
-            }
-        });
+
         return root;
     }
 

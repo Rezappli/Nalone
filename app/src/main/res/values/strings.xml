@@ -53,5 +53,11 @@
     <string name="textErrorWifi"> Nous ne parvenons pas à établir une connexion. Veuillez verifier l\'état de votre réseau </string>
     <string name="mdpOublie"> Mot de passe oublié ? </string>
     <string name="title_activity_maps">Map</string>
+    <string name="newEvent"> Nouvel évènement </string>
+    <string name="visibility"> Visibilité </string>
+    <string name="valid"> Valider </string>
+    <string name="listInvité"> Liste d\'invité </string>
+    <string name="cancel"> Annuler </string>
+    <string name="back"> Retour </string>
 
 </resources>
