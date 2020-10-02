@@ -241,13 +241,13 @@ public class EvenementsFragment extends Fragment implements OnMapReadyCallback {
                                 });
                             }else{
                                 listEvenements.add(e);
-                                callback.onDataReceived(listEvenements);
+//                                callback.onDataReceived(listEvenements);
                             }
 
 
 
                             Log.w("Apparition", "List size before sending :" +listEvenements.size());
-                            callback.onDataReceived(listEvenements);
+//                            callback.onDataReceived(listEvenements);
 
                         }
                         @Override

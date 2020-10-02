@@ -86,9 +86,16 @@ public class CreateEventActivity extends AppCompatActivity {
         dialogAddPerson.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
 
 
+
+
+
+
+
         final RecyclerView[] mRecyclerView = new RecyclerView[1];
-        final RecyclerView.Adapter[] mAdapter = new RecyclerView.Adapter[1];
+        final ItemPersonAdapter[] mAdapter = new ItemPersonAdapter[1];
         final RecyclerView.LayoutManager[] mLayoutManager = new RecyclerView.LayoutManager[1];
+
+
 
         final ArrayList<ItemPerson> items = new ArrayList<>();
 
@@ -128,10 +135,23 @@ public class CreateEventActivity extends AppCompatActivity {
 
                                                     mRecyclerView[0].setLayoutManager(mLayoutManager[0]);
                                                     mRecyclerView[0].setAdapter(mAdapter[0]);
+
+
+
                                                     items.add(new ItemPerson(R.drawable.ic_baseline_account_circle_24, prenom+" "+nom, R.drawable.ic_baseline_add_24));
                                                     if(items.size() == liste_amis.size()){
                                                         dialogAddPerson.show();
                                                     }
+
+                                                    mAdapter[0].setOnItemClickListener(new ItemPersonAdapter.OnItemClickListener() {
+                                                        @Override
+                                                        public void onAddClick(int position) {
+                                                            items.get(position).changerPlus(R.drawable.ic_baseline_remove_24);
+                                                            mAdapter[0].notifyItemChanged(position);
+                                                        }
+                                                    });
+
+
 
                                                 }
 
@@ -144,6 +164,9 @@ public class CreateEventActivity extends AppCompatActivity {
                                     }
 
                                     mAdapter[0] = new ItemPersonAdapter(items);
+
+
+
 
                                 }
 
@@ -164,5 +187,8 @@ public class CreateEventActivity extends AppCompatActivity {
             }
         });
 
+
     }
+
+
 }
