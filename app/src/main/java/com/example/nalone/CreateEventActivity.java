@@ -105,10 +105,11 @@ public class CreateEventActivity extends AppCompatActivity {
                             @Override
                             public void onDataChange(@NonNull DataSnapshot snapshot) {
                                 String mail = snapshot.child("mail").getValue(String.class);
+
                                 if(mail.equalsIgnoreCase(HomeActivity.user_mail)){
                                     int id_user_connect = finalI;
                                     String amis_text = snapshot.child("amis").getValue(String.class);
-                                    List<String> liste_amis = Arrays.asList(amis_text.split(","));
+                                    final List<String> liste_amis = Arrays.asList(amis_text.split(","));
 
                                     for(int l = 0; l < liste_amis.size(); l++){
                                         Log.w("Liste", "Element "+liste_amis.get(l));
@@ -125,7 +126,16 @@ public class CreateEventActivity extends AppCompatActivity {
                                                     String prenom = snapshot.child("prenom").getValue(String.class);
                                                     String nom = snapshot.child("nom").getValue(String.class);
                                                     Log.w("Liste", "Ajout de :"+prenom+ " " +nom);
+                                                    mRecyclerView[0] = dialogAddPerson.findViewById(R.id.recyclerView);
+                                                    mLayoutManager[0] = new LinearLayoutManager(getBaseContext());
+
+                                                    mRecyclerView[0].setLayoutManager(mLayoutManager[0]);
+                                                    mRecyclerView[0].setAdapter(mAdapter[0]);
                                                     items.add(new ItemPerson(R.drawable.ic_baseline_account_circle_24, prenom+" "+nom, R.drawable.ic_baseline_add_24));
+                                                    if(items.size() == liste_amis.size()){
+                                                        dialogAddPerson.show();
+                                                    }
+
                                                 }
 
                                                 @Override
@@ -136,15 +146,10 @@ public class CreateEventActivity extends AppCompatActivity {
                                         }
                                     }
 
-                                    mRecyclerView[0] = dialogAddPerson.findViewById(R.id.recyclerView);
-                                    mRecyclerView[0].setHasFixedSize(true);
-                                    mLayoutManager[0] = new LinearLayoutManager(getBaseContext());
                                     mAdapter[0] = new ItemPersonAdapter(items);
-                                    mRecyclerView[0].setLayoutManager(mLayoutManager[0]);
-                                    mRecyclerView[0].setAdapter(mAdapter[0]);
 
-                                    dialogAddPerson.show();
                                 }
+
                             }
 
                             @Override
@@ -152,6 +157,7 @@ public class CreateEventActivity extends AppCompatActivity {
 
                             }
                         });
+
                     }
                 }
 
