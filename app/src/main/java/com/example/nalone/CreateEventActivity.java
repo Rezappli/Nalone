@@ -111,11 +111,8 @@ public class CreateEventActivity extends AppCompatActivity {
                                     String amis_text = snapshot.child("amis").getValue(String.class);
                                     final List<String> liste_amis = Arrays.asList(amis_text.split(","));
 
-                                    for(int l = 0; l < liste_amis.size(); l++){
-                                        Log.w("Liste", "Element "+liste_amis.get(l));
-                                    }
-
                                     Log.w("Liste", "Liste amis:"+amis_text);
+                                    items.clear();
                                     for(int j = 0; j < nb_users; j++){
                                         Log.w("Liste", "J :"+j);
                                         if(liste_amis.contains(j+"")){

@@ -175,17 +175,15 @@ public class EvenementsFragment extends Fragment implements OnMapReadyCallback {
                             String nom = snapshot.child("nom").getValue( String.class );
                             String desc = snapshot.child("description").getValue( String.class );
                             String adresse = snapshot.child("adresse").getValue(String.class);
+                            String ville = snapshot.child("ville").getValue(String.class);
                             String visibiliteValue = snapshot.child("visibilite").getValue(String.class);
                             final String proprietaire = snapshot.child("proprietaire").getValue(String.class);
                             Visibilite visibilite;
                             if(visibiliteValue.equalsIgnoreCase("PRIVE")){
                                 visibilite = Visibilite.PRIVE;
-
                             }else{
                                 visibilite = Visibilite.PUBLIC;
                             }
-
-                            String ville = snapshot.child("ville").getValue(String.class);
 
                             final Evenement e = new Evenement(id, nom, desc, adresse, ville, visibilite, proprietaire);
                             for(int j = 0; j < listEvenements.size(); j++){
@@ -214,8 +212,6 @@ public class EvenementsFragment extends Fragment implements OnMapReadyCallback {
                                                     if(mail.equalsIgnoreCase(HomeActivity.user_mail)){
                                                         for (int h = 0; h < membres_inscrits.size(); h++) {
                                                             if(id_user.equalsIgnoreCase(membres_inscrits.get(h))) {
-                                                                Log.w("Proprietaire", "Proprietaire de l'event " + e.getProprietaire());
-                                                                Log.w("Proprietaire", "Proprietaire de l'event " + e.getProprietaire());
                                                                 if(e.getProprietaire().equalsIgnoreCase(id_user)){
                                                                     e.setCouleur_icone(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));
                                                                 }else{
@@ -252,8 +248,8 @@ public class EvenementsFragment extends Fragment implements OnMapReadyCallback {
 
                             Log.w("Apparition", "List size before sending :" +listEvenements.size());
                             callback.onDataReceived(listEvenements);
-                        }
 
+                        }
                         @Override
                         public void onCancelled(@NonNull DatabaseError error) {
 
@@ -306,7 +302,7 @@ public class EvenementsFragment extends Fragment implements OnMapReadyCallback {
 
     private LatLng getLocationFromAddress(String strAddress) {
 
-        Log.w("Evenement", "Loading coordinate from : " + strAddress);
+        Log.w("Location", "Loading coordinate from : " + strAddress);
 
         Geocoder coder = new Geocoder(getContext());
         List<Address> address;
