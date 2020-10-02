@@ -59,5 +59,6 @@
     <string name="listInvité"> Liste d\'invité </string>
     <string name="cancel"> Annuler </string>
     <string name="back"> Retour </string>
+    <string name="search_title"> Rechercher un ami </string>
 
 </resources>
