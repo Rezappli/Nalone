@@ -67,7 +67,7 @@ public class RechercheFragment extends Fragment {
         image.setImageResource(R.drawable.logo);
         secondCardView.addView(image);
 
-        duplicate_layout.addView(firstCardView);
+//        duplicate_layout.addView(firstCardView);
 
         layout_fond.addView(duplicate_layout);
 

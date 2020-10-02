@@ -18,11 +18,13 @@ public class ItemPersonAdapter extends RecyclerView.Adapter<ItemPersonAdapter.It
     public static class ItemPersonViewHolder extends RecyclerView.ViewHolder {
         public ImageView mImageView;
         public TextView mText;
+        public ImageView mImageView2;
 
         public ItemPersonViewHolder(View itemView) {
             super(itemView);
             mImageView = itemView.findViewById(R.id.imagePerson);
             mText = itemView.findViewById(R.id.nomInvit);
+            mImageView2 = itemView.findViewById(R.id.imageView19);
         }
     }
 
@@ -50,4 +52,3 @@ public class ItemPersonAdapter extends RecyclerView.Adapter<ItemPersonAdapter.It
     }
 
 }
-

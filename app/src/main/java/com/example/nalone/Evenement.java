@@ -1,7 +1,8 @@
 package com.example.nalone;
 
 import android.util.Log;
-import java.util.List;
+
+import com.google.android.gms.maps.model.BitmapDescriptor;
 
 public class Evenement {
 
@@ -11,20 +12,19 @@ public class Evenement {
     private String adresse;
     private String ville;
     private Visibilite visibilite;
-    private List<String> membre_inscrits;
-    private List<String> membre_en_attente;
+    private String proprietaire;
+    private BitmapDescriptor couleur_icone;
 
 
     public Evenement(int id, String nom, String description, String adresse, String ville, Visibilite visibilite,
-                     List<String> membre_inscrits, List<String> membre_en_attente){
+                     String proprietaire){
         this.id = id;
         this.nom = nom;
         this.description = description;
         this.adresse = adresse;
         this.ville = ville;
         this.visibilite = visibilite;
-        this.membre_inscrits = membre_inscrits;
-        this.membre_en_attente = membre_en_attente;
+        this.proprietaire = proprietaire;
         Log.w("Evenement", "Nom:"+ nom);
     }
 
@@ -49,12 +49,20 @@ public class Evenement {
         return visibilite;
     }
 
-    public List<String> getMembre_inscrits() {
-        return membre_inscrits;
+    public String getProprietaire() {
+        return proprietaire;
     }
 
-    public List<String> getMembre_en_attente() {
-        return membre_en_attente;
+    public void setProprietaire(String proprietaire) {
+        this.proprietaire = proprietaire;
+    }
+
+    public BitmapDescriptor getCouleur_icone() {
+        return couleur_icone;
+    }
+
+    public void setCouleur_icone(BitmapDescriptor couleur_icone) {
+        this.couleur_icone = couleur_icone;
     }
 
     public String getDescription() {

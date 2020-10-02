@@ -1,5 +1,6 @@
 package com.example.nalone;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -9,6 +10,7 @@ import android.app.Dialog;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
@@ -16,7 +18,15 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 public class CreateEventActivity extends AppCompatActivity {
     private CardView cardViewPrivate;
@@ -76,26 +86,80 @@ public class CreateEventActivity extends AppCompatActivity {
         dialogAddPerson.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
 
 
-        RecyclerView mRecyclerView;
-        RecyclerView.Adapter mAdapter;
-        RecyclerView.LayoutManager mLayoutManager;
+        final RecyclerView[] mRecyclerView = new RecyclerView[1];
+        final RecyclerView.Adapter[] mAdapter = new RecyclerView.Adapter[1];
+        final RecyclerView.LayoutManager[] mLayoutManager = new RecyclerView.LayoutManager[1];
 
-        ArrayList<ItemPerson> items = new ArrayList<>();
+        final ArrayList<ItemPerson> items = new ArrayList<>();
 
-        items.add(new ItemPerson(R.drawable.ic_baseline_account_circle_24, "User 1"));
-        items.add(new ItemPerson(R.drawable.baseline_alternate_email_focused, "User 2"));
-        items.add(new ItemPerson(R.drawable.ic_baseline_lock_24, "User 3"));
-        items.add(new ItemPerson(R.drawable.ic_baseline_lock_24, "User 4"));
+        DatabaseReference id_users_ref = FirebaseDatabase.getInstance().getReference("id_users");
+        id_users_ref.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                final String id_user = snapshot.getValue(String.class);
+                final int nb_users = Integer.parseInt(id_user);
+                for(int i = 0; i < nb_users; i++){
+                    DatabaseReference user = FirebaseDatabase.getInstance().getReference("users/"+i);
+                    final int finalI = i;
+                    user.addValueEventListener(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                String mail = snapshot.child("mail").getValue(String.class);
+                                if(mail.equalsIgnoreCase(HomeActivity.user_mail)){
+                                    int id_user_connect = finalI;
+                                    String amis_text = snapshot.child("amis").getValue(String.class);
+                                    List<String> liste_amis = Arrays.asList(amis_text.split(","));
 
+                                    for(int l = 0; l < liste_amis.size(); l++){
+                                        Log.w("Liste", "Element "+liste_amis.get(l));
+                                    }
 
-        mRecyclerView = dialogAddPerson.findViewById(R.id.recyclerView);
-        mRecyclerView.setHasFixedSize(true);
-        mLayoutManager = new LinearLayoutManager(getBaseContext());
-        mAdapter = new ItemPersonAdapter(items);
-        mRecyclerView.setLayoutManager(mLayoutManager);
-        mRecyclerView.setAdapter(mAdapter);
+                                    Log.w("Liste", "Liste amis:"+amis_text);
+                                    for(int j = 0; j < nb_users; j++){
+                                        Log.w("Liste", "J :"+j);
+                                        if(liste_amis.contains(j+"")){
+                                            DatabaseReference user_found = FirebaseDatabase.getInstance().getReference("users/"+j);
+                                            user_found.addValueEventListener(new ValueEventListener() {
+                                                @Override
+                                                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                                    String prenom = snapshot.child("prenom").getValue(String.class);
+                                                    String nom = snapshot.child("nom").getValue(String.class);
+                                                    Log.w("Liste", "Ajout de :"+prenom+ " " +nom);
+                                                    items.add(new ItemPerson(R.drawable.ic_baseline_account_circle_24, prenom+" "+nom, R.drawable.ic_baseline_add_24));
+                                                }
 
-        dialogAddPerson.show();
+                                                @Override
+                                                public void onCancelled(@NonNull DatabaseError error) {
+
+                                                }
+                                            });
+                                        }
+                                    }
+
+                                    mRecyclerView[0] = dialogAddPerson.findViewById(R.id.recyclerView);
+                                    mRecyclerView[0].setHasFixedSize(true);
+                                    mLayoutManager[0] = new LinearLayoutManager(getBaseContext());
+                                    mAdapter[0] = new ItemPersonAdapter(items);
+                                    mRecyclerView[0].setLayoutManager(mLayoutManager[0]);
+                                    mRecyclerView[0].setAdapter(mAdapter[0]);
+
+                                    dialogAddPerson.show();
+                                }
+                            }
+
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError error) {
+
+                            }
+                        });
+                    }
+                }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
 
     }
 }

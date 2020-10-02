@@ -131,25 +131,14 @@ public class EvenementsFragment extends Fragment implements OnMapReadyCallback {
 
         getFromFirebase(new OnDataReceiveCallback(){
             public void onDataReceived(List<Evenement> listEvenements){
-                Log.w("Map", "List receive !");
-                Log.w("Map", "Events number : " + listEvenements.size());
                 mMap.clear();
                 for(int i = 0; i < listEvenements.size(); i++) {
                     final Evenement e = listEvenements.get(i);
 
                     final LatLng location = getLocationFromAddress(e.getAdresse()+","+e.getVille());
-                    Log.w("Map", "Event name : " + e.getNom());
-                    BitmapDescriptor iconColor = null;
-                    if(e.getVisibilite().equals(Visibilite.PUBLIC)) {
-                        iconColor = BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED);
-                    }else{
-                        iconColor = BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE);
-                    }
                     mMap.addMarker(new MarkerOptions().position(location).title(e.getNom()).snippet(e.getDescription())
-                            .icon(iconColor));
+                            .icon(e.getCouleur_icone()));
 
-                    Log.w("Map", "Marker name :"+e.getNom());
-                    Log.w("Map", "Marker add !");
                 }
             }
 
@@ -187,6 +176,7 @@ public class EvenementsFragment extends Fragment implements OnMapReadyCallback {
                             String desc = snapshot.child("description").getValue( String.class );
                             String adresse = snapshot.child("adresse").getValue(String.class);
                             String visibiliteValue = snapshot.child("visibilite").getValue(String.class);
+                            final String proprietaire = snapshot.child("proprietaire").getValue(String.class);
                             Visibilite visibilite;
                             if(visibiliteValue.equalsIgnoreCase("PRIVE")){
                                 visibilite = Visibilite.PRIVE;
@@ -197,7 +187,7 @@ public class EvenementsFragment extends Fragment implements OnMapReadyCallback {
 
                             String ville = snapshot.child("ville").getValue(String.class);
 
-                            final Evenement e = new Evenement(id, nom, desc, adresse, ville, visibilite, null, null);
+                            final Evenement e = new Evenement(id, nom, desc, adresse, ville, visibilite, proprietaire);
                             for(int j = 0; j < listEvenements.size(); j++){
                                 if(listEvenements.get(j).getId() == id){
                                     listEvenements.remove(j);
@@ -224,6 +214,13 @@ public class EvenementsFragment extends Fragment implements OnMapReadyCallback {
                                                     if(mail.equalsIgnoreCase(HomeActivity.user_mail)){
                                                         for (int h = 0; h < membres_inscrits.size(); h++) {
                                                             if(id_user.equalsIgnoreCase(membres_inscrits.get(h))) {
+                                                                Log.w("Proprietaire", "Proprietaire de l'event " + e.getProprietaire());
+                                                                Log.w("Proprietaire", "Proprietaire de l'event " + e.getProprietaire());
+                                                                if(e.getProprietaire().equalsIgnoreCase(id_user)){
+                                                                    e.setCouleur_icone(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));
+                                                                }else{
+                                                                    e.setCouleur_icone(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE));
+                                                                }
                                                                 listEvenements.add(e);
                                                                 Log.w("Apparition", "Ajout d'un evenement privé");
                                                                 Log.w("Apparition", "Taille de la liste :" + listEvenements.size());
