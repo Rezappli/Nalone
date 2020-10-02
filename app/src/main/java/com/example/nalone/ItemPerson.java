@@ -14,6 +14,14 @@ public class ItemPerson {
 
     }
 
+    public void changerPlus(int imageRessourceChange){
+        mImageResource2 = imageRessourceChange;
+    }
+
+    public void changeName(String name){
+        mNom = name;
+    }
+
     public  int getImageResource(){
         return mImageResource;
     }
