@@ -97,6 +97,8 @@ public class RechercheFragment extends Fragment {
                                         } else {
                                             tempList.remove(items.get(i));
                                         }
+                                    }else{
+                                        tempList.remove(items.get(i));
                                     }
                             }
                         }
