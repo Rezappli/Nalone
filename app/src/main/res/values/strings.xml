@@ -60,5 +60,6 @@
     <string name="cancel"> Annuler </string>
     <string name="back"> Retour </string>
     <string name="search_title"> Rechercher un ami </string>
+    <string name="aucun_resultat"> Aucun résultat trouvé </string>
 
 </resources>

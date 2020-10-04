@@ -18,6 +18,7 @@ import androidx.annotation.RequiresApi;
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 
+import com.example.nalone.ErrorClass;
 import com.example.nalone.Evenement;
 import com.example.nalone.HomeActivity;
 import com.example.nalone.R;
@@ -56,6 +57,7 @@ public class EvenementsFragment extends Fragment implements OnMapReadyCallback {
     @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+
         View rootView = inflater.inflate(R.layout.fragment_evenements, container, false);
 
         mMapView = rootView.findViewById(R.id.mapView);
@@ -241,7 +243,7 @@ public class EvenementsFragment extends Fragment implements OnMapReadyCallback {
                                 });
                             }else{
                                 listEvenements.add(e);
-//                                callback.onDataReceived(listEvenements);
+                                callback.onDataReceived(listEvenements);
                             }
 
 

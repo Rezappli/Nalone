@@ -1,6 +1,7 @@
 package com.example.nalone;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.NotificationCompat;
 
@@ -9,6 +10,7 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.location.LocationManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.util.Log;
@@ -33,6 +35,7 @@ import com.google.firebase.database.ValueEventListener;
 
 public class MainActivity extends AppCompatActivity {
     private static final int RC_SIGN_IN = 0;
+    private static final String CHANNEL_ID = "0";
     private TextView textViewSinscrire;
     private TextView textViewConnexion;
     private EditText editTextPass;
@@ -40,12 +43,17 @@ public class MainActivity extends AppCompatActivity {
 
     private GoogleSignInClient mGoogleSignInClient;
 
+    @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         ErrorClass.activity = this;
         ErrorClass.checkInternetConnection();
 
+        Notification.SystemService = getSystemService(NotificationManager.class);
+
+        Notification notif = new Notification(getBaseContext(), "NoLonely - Ajout d'un événmenet", "Un événement publique vient d'être ajouté !", NotificationCompat.PRIORITY_DEFAULT, R.drawable.ic_launcher_foreground);
+        notif.show();
         /*Google Sign-In method*/
 
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)

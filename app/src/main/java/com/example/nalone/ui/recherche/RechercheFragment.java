@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.SearchView;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -18,6 +19,7 @@ import com.example.nalone.HomeActivity;
 import com.example.nalone.ItemPerson;
 import com.example.nalone.ItemPersonAdapter;
 import com.example.nalone.R;
+import com.google.android.gms.common.data.BitmapTeleporter;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -36,18 +38,22 @@ public class RechercheFragment extends Fragment {
     private RecyclerView mRecyclerView;
     private RecyclerView.Adapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
-
+    private TextView resultat;
+    final List<ItemPerson> tempList = new ArrayList<>();
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         ((AppCompatActivity) getActivity()).getSupportActionBar().hide();
-        final ArrayList<ItemPerson> items = new ArrayList<>();
+        final List<ItemPerson> items = new ArrayList<>();
 
         rechercheViewModel =
                 ViewModelProviders.of(this).get(RechercheViewModel.class);
         final View root = inflater.inflate(R.layout.fragment_recherche, container, false);
 
         search_bar = root.findViewById(R.id.search_bar);
+        resultat = root.findViewById(R.id.resultatText);
+        resultat.setVisibility(View.GONE);
+
 
         search_bar.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -64,23 +70,44 @@ public class RechercheFragment extends Fragment {
 
             @Override
             public boolean onQueryTextChange(String newText) {
-                Log.w("Recherche", "Le texte change :"+newText);
-                final ArrayList<ItemPerson> tempList = new ArrayList<>();
-                if(newText.length() > 0) {
-                    for (int i = 0; i < items.size(); i++) {
-                        Log.w("Recherche", "On re"+newText);
-                        if (items.get(i).getNom().contains(newText)) {
-                            tempList.add(items.get(i));
+                tempList.clear();
+                if(items.size() > 0) {
+                    if (newText.length() > 0) {
+                        for (int j = 0; j < newText.length(); j++) {
+                            for (int i = 0; i < items.size(); i++) {
+                                if (newText.charAt(j) == items.get(i).getNom().charAt(j)) {
+                                    if (!tempList.contains(items.get(i))) {
+                                        tempList.add(items.get(i));
+                                        if(resultat.getVisibility() == View.VISIBLE) {
+                                            resultat.setVisibility(View.GONE);
+                                            resultat.setText("");
+                                        }
+                                    }
+                                }else{
+                                    i++;
+                                }
+                            }
                         }
-                    }
-                    Log.w("Recherche", "Refresh de la liste ");
-                    mAdapter = new ItemPersonAdapter(tempList);
-                    mRecyclerView.setAdapter(mAdapter);
 
+
+                        if (tempList.size() == 0) {
+                            resultat.setVisibility(View.VISIBLE);
+                            resultat.setText(R.string.aucun_resultat);
+                        }
+
+                        mAdapter = new ItemPersonAdapter(tempList);
+                        mRecyclerView.setAdapter(mAdapter);
+                    } else {
+                        resultat.setVisibility(View.GONE);
+                        resultat.setText("");
+                        mAdapter = new ItemPersonAdapter(items);
+                        mRecyclerView.setAdapter(mAdapter);
+                    }
                 }else{
-                    mAdapter = new ItemPersonAdapter(items);
-                    mRecyclerView.setAdapter(mAdapter);
+                    resultat.setVisibility(View.VISIBLE);
+                    resultat.setText("Aucun amis à ajouter !");
                 }
+
                 return false;
             }
         });
@@ -106,6 +133,13 @@ public class RechercheFragment extends Fragment {
 
                                 Log.w("Liste", "Liste amis:"+amis_text);
                                 items.clear();
+
+                                if(liste_amis.size() == nb_users-1){
+                                    Log.w("Recherche","Print aucun amis a ajouter");
+                                    resultat.setVisibility(View.VISIBLE);
+                                    resultat.setText("Aucun amis à ajouter !");
+                                }
+
                                 for(int j = 0; j < nb_users; j++){
                                     Log.w("Liste", "J :"+j);
                                     if(!liste_amis.contains(j+"") && j != finalI){
@@ -125,6 +159,8 @@ public class RechercheFragment extends Fragment {
                                                 /*if(items.size() == liste_amis.size()){
                                                     dialogAddPerson.show();
                                                 }*/
+
+
 
                                             }
 

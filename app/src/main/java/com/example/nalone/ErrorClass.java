@@ -1,8 +1,11 @@
 package com.example.nalone;
 
 import android.app.Activity;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.util.Log;
@@ -12,11 +15,16 @@ import androidx.appcompat.app.AppCompatActivity;
 public class ErrorClass {
 
     public static AppCompatActivity activity;
+    private static Dialog dialogAddPerson;
 
     public static void checkInternetConnection(){
         if(!isInternetConnected(activity)){
             Intent intent = new Intent(activity.getBaseContext(), ErrorConnexionActivity.class);
             activity.startActivityForResult(intent, 0);
+            /*dialogAddPerson = new Dialog(activity.getBaseContext());
+            dialogAddPerson.setContentView(R.layout.activity_error_connexion);
+            dialogAddPerson.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+            dialogAddPerson.show();*/
         }
     }
 

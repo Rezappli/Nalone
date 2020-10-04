@@ -12,9 +12,10 @@ import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class ItemPersonAdapter extends RecyclerView.Adapter<ItemPersonAdapter.ItemPersonViewHolder> {
-    private ArrayList<ItemPerson> mItemPersonList;
+    private List<ItemPerson> mItemPersonList;
     public OnItemClickListener mListener;
 
     public interface OnItemClickListener {
@@ -58,7 +59,7 @@ public class ItemPersonAdapter extends RecyclerView.Adapter<ItemPersonAdapter.It
         ItemPersonViewHolder ipvh = new ItemPersonViewHolder(v, mListener);
         return ipvh;
     }
-    public ItemPersonAdapter(ArrayList<ItemPerson> itemlist){
+    public ItemPersonAdapter(List<ItemPerson> itemlist){
         mItemPersonList = itemlist;
     }
     @Override
