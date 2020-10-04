@@ -72,18 +72,17 @@ public class RechercheFragment extends Fragment {
             public boolean onQueryTextChange(String newText) {
                 newText = newText.toLowerCase();
                 tempList.clear();
-                boolean check = false;
+                boolean check = true;
                 if(items.size() > 0) {
                     if (newText.length() > 0) {
                         for (int i = 0; i < items.size(); i++) {
                             for (int j = 0; j < newText.length(); j++) {
                                     if(items.get(i).getmNomToLowerCase().length() > j) {
-                                        if (newText.charAt(j) == items.get(i).getmNomToLowerCase().charAt(j)) {
+                                        if (newText.charAt(j) == items.get(i).getmNomToLowerCase().charAt(j) && check) {
                                             check = true;
                                         } else {
                                             check = false;
                                         }
-                                        Log.w("Recherche", "Valeur de check : " + check);
 
 
                                         if (check) {
