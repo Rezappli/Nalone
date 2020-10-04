@@ -9,14 +9,14 @@ import java.util.concurrent.CopyOnWriteArrayList;
 public class ItemPerson {
     private int mImageResource;
     private String mNom;
+    private String mNomToLowerCase;
     private int mImageResource2;
-    private int mId;
 
     public ItemPerson(int imageResource, String nom, int imageResource2){
         mImageResource = imageResource;
         mNom = nom;
+        mNomToLowerCase = mNom.toLowerCase();
         mImageResource2 = imageResource2;
-        mId = Constants.getId();
     }
 
     public void changerPlus(int imageRessourceChange){
@@ -39,8 +39,9 @@ public class ItemPerson {
         return mImageResource2;
     }
 
-    public int getId(){
-        return mId;
+    public String getmNomToLowerCase(){
+        return mNomToLowerCase;
     }
+
 
 }

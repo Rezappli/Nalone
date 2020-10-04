@@ -70,22 +70,34 @@ public class RechercheFragment extends Fragment {
 
             @Override
             public boolean onQueryTextChange(String newText) {
+                newText = newText.toLowerCase();
                 tempList.clear();
+                boolean check = false;
                 if(items.size() > 0) {
                     if (newText.length() > 0) {
-                        for (int j = 0; j < newText.length(); j++) {
-                            for (int i = 0; i < items.size(); i++) {
-                                if (newText.charAt(j) == items.get(i).getNom().charAt(j)) {
-                                    if (!tempList.contains(items.get(i))) {
-                                        tempList.add(items.get(i));
-                                        if(resultat.getVisibility() == View.VISIBLE) {
-                                            resultat.setVisibility(View.GONE);
-                                            resultat.setText("");
+                        for (int i = 0; i < items.size(); i++) {
+                            for (int j = 0; j < newText.length(); j++) {
+                                    if(items.get(i).getmNomToLowerCase().length() > j) {
+                                        if (newText.charAt(j) == items.get(i).getmNomToLowerCase().charAt(j)) {
+                                            check = true;
+                                        } else {
+                                            check = false;
+                                        }
+                                        Log.w("Recherche", "Valeur de check : " + check);
+
+
+                                        if (check) {
+                                            if (!tempList.contains(items.get(i))) {
+                                                tempList.add(items.get(i));
+                                                if (resultat.getVisibility() == View.VISIBLE) {
+                                                    resultat.setVisibility(View.GONE);
+                                                    resultat.setText("");
+                                                }
+                                            }
+                                        } else {
+                                            tempList.remove(items.get(i));
                                         }
                                     }
-                                }else{
-                                    i++;
-                                }
                             }
                         }
 
