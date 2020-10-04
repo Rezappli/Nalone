@@ -78,6 +78,11 @@ public class RechercheFragment extends Fragment {
                         for (int i = 0; i < items.size(); i++) {
                             for (int j = 0; j < newText.length(); j++) {
                                     if(items.get(i).getmNomToLowerCase().length() > j) {
+                                        if (newText.charAt(j) == items.get(i).getmNomToLowerCase().charAt(j) && j == 0){
+                                            check = true;
+                                        }
+
+
                                         if (newText.charAt(j) == items.get(i).getmNomToLowerCase().charAt(j) && check) {
                                             check = true;
                                         } else {
