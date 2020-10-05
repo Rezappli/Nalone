@@ -29,7 +29,6 @@ public class AmisFragment extends Fragment {
     private AmisViewModel amisViewModel;
     private Button signOutButton;
     private GoogleSignInClient mGoogleSignInClient;
-    private Button button2;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -39,15 +38,7 @@ public class AmisFragment extends Fragment {
                 ViewModelProviders.of(this).get(AmisViewModel.class);
         View root = inflater.inflate(R.layout.fragment_amis, container, false);
         signOutButton = root.findViewById(R.id.signOutButton);
-        button2 = root.findViewById(R.id.button2);
 
-        button2.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent createEvent = new Intent(getContext(), CreateEventActivity.class);
-                startActivityForResult(createEvent,0);
-            }
-        });
 
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestEmail()

@@ -3,23 +3,20 @@ package com.example.nalone;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
-import java.util.ArrayList;
 import java.util.List;
 
-public class ItemPersonAdapter extends RecyclerView.Adapter<ItemPersonAdapter.ItemPersonViewHolder> {
+public class ItemAddPersonAdapter extends RecyclerView.Adapter<ItemAddPersonAdapter.ItemAddPersonViewHolder> {
     private List<ItemPerson> mItemPersonList;
     public OnItemClickListener mListener;
 
     public interface OnItemClickListener {
-        void onAddClick(int position);
+        void onRemoveClick(int position);
     }
 
     public void setOnItemClickListener(OnItemClickListener listener){
@@ -27,12 +24,12 @@ public class ItemPersonAdapter extends RecyclerView.Adapter<ItemPersonAdapter.It
     }
 
 
-    public static class ItemPersonViewHolder extends RecyclerView.ViewHolder {
+    public static class ItemAddPersonViewHolder extends RecyclerView.ViewHolder {
         public ImageView mImageView;
         public TextView mText;
         public ImageView mImageView2;
 
-        public ItemPersonViewHolder(View itemView, final OnItemClickListener listener) {
+        public ItemAddPersonViewHolder(View itemView, final OnItemClickListener listener) {
             super(itemView);
             mImageView = itemView.findViewById(R.id.imagePerson);
             mText = itemView.findViewById(R.id.nomInvit);
@@ -44,7 +41,7 @@ public class ItemPersonAdapter extends RecyclerView.Adapter<ItemPersonAdapter.It
                     if(listener != null){
                         int position = getAdapterPosition();
                         if(position != RecyclerView.NO_POSITION){
-                            listener.onAddClick(position);
+                            listener.onRemoveClick(position);
                         }
                     }
                 }
@@ -54,16 +51,16 @@ public class ItemPersonAdapter extends RecyclerView.Adapter<ItemPersonAdapter.It
 
     @NonNull
     @Override
-    public ItemPersonViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public ItemAddPersonViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_person, parent, false);
-        ItemPersonViewHolder ipvh = new ItemPersonViewHolder(v, mListener);
+        ItemAddPersonViewHolder ipvh = new ItemAddPersonViewHolder(v, mListener);
         return ipvh;
     }
-    public ItemPersonAdapter(List<ItemPerson> itemlist){
+    public ItemAddPersonAdapter(List<ItemPerson> itemlist){
         mItemPersonList = itemlist;
     }
     @Override
-    public void onBindViewHolder(@NonNull ItemPersonViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull ItemAddPersonViewHolder holder, int position) {
         ItemPerson currentItem = mItemPersonList.get(position);
 
         holder.mImageView.setImageResource(currentItem.getImageResource());

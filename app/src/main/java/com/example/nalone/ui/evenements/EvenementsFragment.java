@@ -12,12 +12,15 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 
+import com.example.nalone.CreateEventActivity;
 import com.example.nalone.ErrorClass;
 import com.example.nalone.Evenement;
 import com.example.nalone.HomeActivity;
@@ -53,6 +56,7 @@ public class EvenementsFragment extends Fragment implements OnMapReadyCallback {
     private MapView mMapView;
     private GoogleMap mMap;
     private int nb_evenements;
+    private ImageView buttonAdd;
 
     @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
@@ -73,10 +77,21 @@ public class EvenementsFragment extends Fragment implements OnMapReadyCallback {
 
         mMapView.onCreate(mapViewBundle);
 
+
         mMapView.getMapAsync(this);
 
 
         initGoogleMap(savedInstanceState);
+
+        buttonAdd = rootView.findViewById(R.id.button2);
+
+        buttonAdd.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent createEvent = new Intent(getActivity().getBaseContext(), CreateEventActivity.class);
+                startActivityForResult(createEvent,0);
+            }
+        });
 
         return rootView;
     }
@@ -84,6 +99,7 @@ public class EvenementsFragment extends Fragment implements OnMapReadyCallback {
 
 
     private void initGoogleMap(Bundle savedInstanceState) {
+
         // *** IMPORTANT ***
         // MapView requires that the Bundle you pass contain _ONLY_ MapView SDK
         // objects or sub-Bundles.
@@ -95,6 +111,7 @@ public class EvenementsFragment extends Fragment implements OnMapReadyCallback {
         mMapView.onCreate(mapViewBundle);
 
         mMapView.getMapAsync(this);
+
     }
 
     @Override
@@ -130,7 +147,8 @@ public class EvenementsFragment extends Fragment implements OnMapReadyCallback {
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
         Log.w("Map", "Waiting data...");
-
+        LatLng laval = new LatLng(48.0785146,-0.7669906);
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(laval, 13	));
         getFromFirebase(new OnDataReceiveCallback(){
             public void onDataReceived(List<Evenement> listEvenements){
                 mMap.clear();
