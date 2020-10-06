@@ -22,5 +22,6 @@ public class Constants {
     public static Bundle NALONE_BUNDLE = new Bundle();
     public static String user_mail;
     public static String user_id;
+    public static int nb_evenements;
 
 }

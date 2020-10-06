@@ -169,7 +169,7 @@ public class EvenementsFragment extends Fragment implements OnMapReadyCallback {
                     Log.w("Map", "Event location : " + location.toString());
 
                     mMap.addMarker(new MarkerOptions().position(location).title(e.getNom()).snippet(e.getDescription())
-                            .icon(e.getCouleur_icone()));
+                            .icon(getEventColor(e)));
 
                 }
             }
@@ -187,6 +187,20 @@ public class EvenementsFragment extends Fragment implements OnMapReadyCallback {
 
     }
 
+    private BitmapDescriptor getEventColor(Evenement e) {
+        BitmapDescriptor couleur;
+        if(e.visibilite.equals(Visibilite.PRIVE)){
+            if(e.proprietaire.equalsIgnoreCase(user_id)) {
+                couleur = (BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));
+            }else{
+                couleur = (BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE));
+            }
+        }else{
+            couleur = (BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));
+        }
+        return couleur;
+    }
+
     private void getFromFirebase(final OnDataReceiveCallback callback){
         final List<Evenement> listEvenements = new ArrayList<>();
         final FirebaseDatabase database = FirebaseDatabase.getInstance();
@@ -196,6 +210,7 @@ public class EvenementsFragment extends Fragment implements OnMapReadyCallback {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 nb_evenements = Integer.parseInt((String) snapshot.getValue());
+                Constants.nb_evenements = nb_evenements;
                 Log.w("User", "ID User connecte : " +user_id);
                 Log.w("User", "Mail User connecte : "+user_mail);
                 Log.w("Map", "Event found : " + nb_evenements);
@@ -271,7 +286,7 @@ public class EvenementsFragment extends Fragment implements OnMapReadyCallback {
 
         Log.w("Location", "Loading coordinate from : " + strAddress);
 
-        Geocoder coder = new Geocoder(getActivity());
+        Geocoder coder = new Geocoder(getActivity().getBaseContext());
         List<Address> address;
         LatLng p1 = null;
 

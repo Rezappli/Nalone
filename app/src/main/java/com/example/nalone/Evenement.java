@@ -14,25 +14,15 @@ import static com.example.nalone.util.Constants.user_id;
 
 public class Evenement {
 
-    private int id;
-    private String nom;
-    private String description;
-    private String adresse;
-    private String ville;
-    private Visibilite visibilite;
-    private String proprietaire;
-    private List<String> membres_inscrits;
-    private List<String> membres_en_attente;
-
-    public List<String> getMembres_inscrits() {
-        return membres_inscrits;
-    }
-
-    public List<String> getMembres_en_attente() {
-        return membres_en_attente;
-    }
-
-    private BitmapDescriptor couleur_icone = null;
+    public int id;
+    public String nom;
+    public String description;
+    public String adresse;
+    public String ville;
+    public Visibilite visibilite;
+    public String proprietaire;
+    public List<String> membres_inscrits;
+    public List<String> membres_en_attente;
 
     public Evenement() {}
 
@@ -51,20 +41,18 @@ public class Evenement {
             this.membres_en_attente.add(membres_en_attente.get(i).getId()+"");
         }
         this.id = id;
-        if(visibilite.equals(Visibilite.PRIVE)){
-            if(proprietaire.equalsIgnoreCase(user_id)) {
-                couleur_icone = (BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));
-            }else{
-                couleur_icone = (BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE));
-            }
-        }else{
-            couleur_icone = (BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));
-        }
-        Log.w("Map", "Création d'un evenement : " + couleur_icone.toString());
     }
 
     public int getId(){
         return id;
+    }
+
+    public List<String> getMembres_inscrits() {
+        return membres_inscrits;
+    }
+
+    public List<String> getMembres_en_attente() {
+        return membres_en_attente;
     }
 
 
@@ -90,23 +78,6 @@ public class Evenement {
 
     public void setProprietaire(String proprietaire) {
         this.proprietaire = proprietaire;
-    }
-
-    public BitmapDescriptor getCouleur_icone() {
-        if(visibilite.equals(Visibilite.PRIVE)){
-            if(proprietaire.equalsIgnoreCase(user_id)) {
-                couleur_icone = (BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));
-            }else{
-                couleur_icone = (BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE));
-            }
-        }else{
-            couleur_icone = (BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));
-        }
-        return couleur_icone;
-    }
-
-    public void setCouleur_icone(BitmapDescriptor couleur_icone) {
-        this.couleur_icone = couleur_icone;
     }
 
     public String getDescription() {

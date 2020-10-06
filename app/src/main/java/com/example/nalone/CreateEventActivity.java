@@ -23,6 +23,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.example.nalone.ui.evenements.EvenementsFragment;
+import com.example.nalone.util.Constants;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -155,34 +156,19 @@ public class CreateEventActivity extends AppCompatActivity {
     }
 
     public void saveDataEvent(){
-
-        final DatabaseReference id_events = FirebaseDatabase.getInstance().getReference("id_evenements");
-        id_events.addValueEventListener(new ValueEventListener() {
-
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                List<String> items = new ArrayList<>();
-                items.add(user_id);
-                int event_id = Integer.parseInt(snapshot.getValue(String.class));
-                Evenement e = new Evenement(event_id, event_name.getText().toString(), event_resume.getText().toString(),
+        List<String> items = new ArrayList<>();
+        items.add(user_id);
+        Evenement e = new Evenement(Constants.nb_evenements, event_name.getText().toString(), event_resume.getText().toString(),
                         event_adresse.getText().toString(), event_city.getText().toString(), event_visibilite, user_id, items, itemsAdd);
-                Log.w("Map", "Ajout de l'evenement :" +e.getNom());
-                DatabaseReference events = FirebaseDatabase.getInstance().getReference("evenements/"+event_id);
-                events.setValue(e);
+        Log.w("Map", "Ajout de l'evenement :" +e.getNom());
+        DatabaseReference events = FirebaseDatabase.getInstance().getReference("evenements/"+ Constants.nb_evenements);
+        events.setValue(e);
 
-                event_id++;
-                id_events.setValue(event_id+"");
+        DatabaseReference event_id = FirebaseDatabase.getInstance().getReference("id_evenements");
+        Constants.nb_evenements++;
+        event_id.setValue(Constants.nb_evenements+"");
 
-                Intent intent = new Intent(getBaseContext(), HomeActivity.class);
-                startActivity(intent);
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
-        });
-
+                finish();
     }
 
     public  void showCalendrier(View v){
