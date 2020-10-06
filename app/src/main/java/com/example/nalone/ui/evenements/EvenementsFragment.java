@@ -62,6 +62,8 @@ public class EvenementsFragment extends Fragment implements OnMapReadyCallback {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
+
+
         View rootView = inflater.inflate(R.layout.fragment_evenements, container, false);
 
         mMapView = rootView.findViewById(R.id.mapView);
@@ -92,6 +94,9 @@ public class EvenementsFragment extends Fragment implements OnMapReadyCallback {
                 startActivityForResult(createEvent,0);
             }
         });
+
+        Log.w("User", "ID User connecte : " +HomeActivity.user_id);
+        Log.w("User", "Mail User connecte : "+HomeActivity.user_mail);
 
         return rootView;
     }
@@ -148,9 +153,11 @@ public class EvenementsFragment extends Fragment implements OnMapReadyCallback {
         mMap = googleMap;
         LatLng laval = new LatLng(48.0785146,-0.7669906);
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(laval, 13	));
+        Log.w("Map", "Waiting data...");
         getFromFirebase(new OnDataReceiveCallback(){
             public void onDataReceived(List<Evenement> listEvenements){
                 mMap.clear();
+                Log.w("Map", "Data received");
                 for(int i = 0; i < listEvenements.size(); i++) {
 
                     Evenement e = listEvenements.get(i);
