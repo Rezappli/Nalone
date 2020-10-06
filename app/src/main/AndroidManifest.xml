@@ -24,7 +24,7 @@
             android:label="@string/title_activity_amis_fragment"
             android:theme="@style/AppTheme.NoActionBar"></activity>
         <activity
-            android:name=".ui.amis.AmisFragment"
+            android:name=".ui.amis.MesAmisFragment"
             android:label="@string/title_activity_amis_fragment"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".CreateEventActivity" />

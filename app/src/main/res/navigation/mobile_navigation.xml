@@ -20,9 +20,9 @@
 
     <fragment
         android:id="@+id/navigation_amis"
-        android:name="com.example.nalone.AmisFragment"
+        android:name="com.example.nalone.ui.amis.MesAmisFragment"
         android:label="@string/title_amis"
-        tools:layout="@layout/fragment_amis" />
+        tools:layout="@layout/fragment_mes_amis" />
 
 
 

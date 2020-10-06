@@ -15,6 +15,7 @@ import android.provider.ContactsContract;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CalendarView;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -29,8 +30,11 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.sql.Date;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.List;
 
 public class CreateEventActivity extends AppCompatActivity {
@@ -41,6 +45,7 @@ public class CreateEventActivity extends AppCompatActivity {
     private ImageView imageViewPublic;
     private ImageView imageViewPrivate;
     private Dialog dialogAddPerson;
+    private Dialog dialogCalendrier;
     private List<ItemPerson> itemsAdd = new ArrayList<>();
     private RecyclerView mRecyclerViewAdd;
     private ItemAddPersonAdapter mAdapterAdd;
@@ -52,6 +57,10 @@ public class CreateEventActivity extends AppCompatActivity {
     private TextInputEditText event_city;
     private TextInputEditText event_resume;
     private Visibilite event_visibilite;
+    private TextView event_date;
+    private CalendarView calendarDate;
+    private Button buttonCalendrier;
+    private String newDate;
 
 
 
@@ -71,6 +80,7 @@ public class CreateEventActivity extends AppCompatActivity {
         imageViewPublic = findViewById(R.id.imageViewPublic);
         imageViewPrivate = findViewById(R.id.imageViewPrivate);
         dialogAddPerson = new Dialog(this);
+        dialogCalendrier = new Dialog(this);
         mRecyclerViewAdd = findViewById(R.id.recyclerView1);
 
         event_adresse = findViewById(R.id.eventAdress);
@@ -78,6 +88,7 @@ public class CreateEventActivity extends AppCompatActivity {
         event_name = findViewById(R.id.eventName);
         event_resume = findViewById(R.id.eventResume);
         buttonValidEvent = findViewById(R.id.button);
+        event_date = findViewById(R.id.eventDate);
 
 
 
@@ -169,6 +180,48 @@ public class CreateEventActivity extends AppCompatActivity {
             }
         });
 
+    }
+
+    public  void showCalendrier(View v){
+        dialogCalendrier.setContentView(R.layout.calendrier);
+        calendarDate = dialogCalendrier.findViewById(R.id.calendarView);
+        buttonCalendrier = dialogCalendrier.findViewById(R.id.buttonCalendrier);
+
+        Calendar date = Calendar.getInstance();
+// for your date format use
+        SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yy");
+// set a string to format your current date
+        String curDate = sdf.format(date.getTime());
+// print the date in your log cat
+        Log.d("CUR_DATE", curDate);
+
+
+
+      /*  CalendarView.OnDateChangeListener myCalendarListener = new CalendarView.OnDateChangeListener() {
+
+            public void onSelectedDayChange(CalendarView view, int year, int month, int day) {
+
+                // add one because month starts at 0
+                month = month + 1;
+                // output to log cat **not sure how to format year to two places here**
+                newDate = day + "-" + month + "-" + year;
+                Log.d("NEW_DATE", newDate);
+            }
+        };
+
+        calendarDate.setOnDateChangeListener(myCalendarListener);*/
+
+
+        buttonCalendrier.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                event_date.setText(newDate);
+                dialogCalendrier.dismiss();
+            }
+        });
+
+        dialogCalendrier.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        dialogCalendrier.show();
     }
 
 

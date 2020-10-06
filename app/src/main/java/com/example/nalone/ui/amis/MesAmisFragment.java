@@ -25,6 +25,7 @@ public class MesAmisFragment extends Fragment {
     private Button signOutButton;
     private GoogleSignInClient mGoogleSignInClient;
 
+
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
 

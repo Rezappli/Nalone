@@ -64,7 +64,6 @@
     <string name="eventCreateProfil"> Création </string>
     <string name="eventParticipateProfil"> Participation </string>
     <string name="title_activity_amis_fragment">AmisFragment</string>
-    <string name="tab_text_1">Tab 1</string>
-    <string name="tab_text_2">Tab 2</string>
+    <string name="dateEvent"> Date </string>
 
 </resources>
