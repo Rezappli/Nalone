@@ -191,18 +191,15 @@ public class EvenementsFragment extends Fragment implements OnMapReadyCallback {
                         public void onDataChange(@NonNull DataSnapshot snapshot) {
                             List<Evenement> listEvenements = new ArrayList<>();
                             Evenement e = snapshot.getValue(Evenement.class);
-                            if(e.getProprietaire().equalsIgnoreCase(HomeActivity.user_id)){
-                                e.setCouleur_icone(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));
-                            }else{
-                                if(e.getVisibilite().equals(Visibilite.PRIVE)){
-                                    e.setCouleur_icone(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE));
-                                }else{
-                                    e.setCouleur_icone(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));
+                            if(e.getVisibilite().equals(Visibilite.PRIVE)) {
+                                if(e.getMembres_inscrits().contains(HomeActivity.user_id)) {
+                                    listEvenements.add(e);
+                                    callback.onDataReceived(listEvenements);
                                 }
+                            }else{
+                                listEvenements.add(e);
+                                callback.onDataReceived(listEvenements);
                             }
-                            Log.w("Map", "Evenement trouvé : " + e.getNom());
-                            listEvenements.add(e);
-                            callback.onDataReceived(listEvenements);
                         }
 
                         @Override

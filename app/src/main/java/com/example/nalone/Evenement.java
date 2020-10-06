@@ -3,6 +3,7 @@ package com.example.nalone;
 import android.util.Log;
 
 import com.google.android.gms.maps.model.BitmapDescriptor;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -47,6 +48,15 @@ public class Evenement {
             this.membres_en_attente.add(membres_en_attente.get(i).getId()+"");
         }
         this.id = id;
+        if(visibilite.equals(Visibilite.PRIVE)){
+            if(proprietaire.equalsIgnoreCase(HomeActivity.user_id)) {
+                couleur_icone = (BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));
+            }else{
+                couleur_icone = (BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE));
+            }
+        }else{
+            couleur_icone = (BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));
+        }
     }
 
     public int getId(){
