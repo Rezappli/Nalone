@@ -152,22 +152,12 @@ public class EvenementsFragment extends Fragment implements OnMapReadyCallback {
         mMap = googleMap;
         LatLng laval = new LatLng(48.0785146,-0.7669906);
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(laval, 13	));
-        Log.w("Map", "Waiting data...");
         getFromFirebase(new OnDataReceiveCallback(){
             public void onDataReceived(List<Evenement> listEvenements){
                 mMap.clear();
-                Log.w("Map", "Data received");
                 for(int i = 0; i < listEvenements.size(); i++) {
-
                     Evenement e = listEvenements.get(i);
                     LatLng location = getLocationFromAddress(e.getAdresse()+","+e.getVille());
-                    Log.w("Map", "Event name : " + e.getNom());
-                    Log.w("Map", "Event visibilite : " + e.getVisibilite());
-                    Log.w("Map", "Event membres_inscrits : " + e.getMembres_inscrits().toString());
-                    Log.w("Map", "Event adresse : " + e.getAdresse());
-                    Log.w("Map", "Event ville : " + e.getVille());
-                    Log.w("Map", "Event location : " + location.toString());
-
                     mMap.addMarker(new MarkerOptions().position(location).title(e.getNom()).snippet(e.getDescription())
                             .icon(getEventColor(e)));
 
@@ -202,13 +192,13 @@ public class EvenementsFragment extends Fragment implements OnMapReadyCallback {
     }
 
     private void getFromFirebase(final OnDataReceiveCallback callback){
-        final List<Evenement> listEvenements = new ArrayList<>();
         final FirebaseDatabase database = FirebaseDatabase.getInstance();
 
         DatabaseReference id_evenements = database.getReference("id_evenements");
         id_evenements.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
+                final List<Evenement> listEvenements = new ArrayList<>();
                 nb_evenements = Integer.parseInt((String) snapshot.getValue());
                 Constants.nb_evenements = nb_evenements;
                 Log.w("User", "ID User connecte : " +user_id);
