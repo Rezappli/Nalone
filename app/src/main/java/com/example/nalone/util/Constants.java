@@ -20,6 +20,7 @@ public class Constants {
     public static int COUNTER = 0;
 
     public static Bundle NALONE_BUNDLE = new Bundle();
-    public static List<ItemPerson> tempList;
+    public static String user_mail;
+    public static String user_id;
 
 }

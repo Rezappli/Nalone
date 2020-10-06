@@ -37,6 +37,9 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
 
+import static com.example.nalone.util.Constants.user_mail;
+import static com.example.nalone.util.Constants.user_id;
+
 public class CreateEventActivity extends AppCompatActivity {
     private CardView cardViewPrivate;
     private CardView cardViewPublic;
@@ -159,10 +162,10 @@ public class CreateEventActivity extends AppCompatActivity {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 List<String> items = new ArrayList<>();
-                items.add(HomeActivity.user_id);
+                items.add(user_id);
                 int event_id = Integer.parseInt(snapshot.getValue(String.class));
                 Evenement e = new Evenement(event_id, event_name.getText().toString(), event_resume.getText().toString(),
-                        event_adresse.getText().toString(), event_city.getText().toString(), event_visibilite, HomeActivity.user_id, items, itemsAdd);
+                        event_adresse.getText().toString(), event_city.getText().toString(), event_visibilite, user_id, items, itemsAdd);
                 Log.w("Map", "Ajout de l'evenement :" +e.getNom());
                 DatabaseReference events = FirebaseDatabase.getInstance().getReference("evenements/"+event_id);
                 events.setValue(e);
@@ -251,7 +254,7 @@ public class CreateEventActivity extends AppCompatActivity {
                             public void onDataChange(@NonNull DataSnapshot snapshot) {
                                 String mail = snapshot.child("mail").getValue(String.class);
 
-                                if(mail.equalsIgnoreCase(HomeActivity.user_mail)){
+                                if(mail.equalsIgnoreCase(user_mail)){
                                     int id_user_connect = finalI;
                                     String amis_text = snapshot.child("amis").getValue(String.class);
                                     final List<String> liste_amis = Arrays.asList(amis_text.split(","));

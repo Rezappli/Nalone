@@ -21,10 +21,10 @@ import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
-public class HomeActivity extends AppCompatActivity{
+import static com.example.nalone.util.Constants.user_mail;
+import static com.example.nalone.util.Constants.user_id;
 
-    public static String user_mail;
-    public static String user_id;
+public class HomeActivity extends AppCompatActivity{
 
 
     @Override

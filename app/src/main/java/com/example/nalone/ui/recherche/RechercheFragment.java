@@ -35,6 +35,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import static com.example.nalone.util.Constants.user_mail;
+import static com.example.nalone.util.Constants.user_id;
+
 public class RechercheFragment<MyDataObject> extends Fragment {
 
     private RechercheViewModel rechercheViewModel;
@@ -153,7 +156,7 @@ public class RechercheFragment<MyDataObject> extends Fragment {
                         public void onDataChange(@NonNull DataSnapshot snapshot) {
                             String mail = snapshot.child("mail").getValue(String.class);
 
-                            if(mail.equalsIgnoreCase(HomeActivity.user_mail)){
+                            if(mail.equalsIgnoreCase(user_mail)){
                                 int id_user_connect = finalI;
                                 String amis_text = snapshot.child("amis").getValue(String.class);
                                 final List<String> liste_amis = Arrays.asList(amis_text.split(","));

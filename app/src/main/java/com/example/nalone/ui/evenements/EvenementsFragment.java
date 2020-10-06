@@ -50,6 +50,8 @@ import java.util.Arrays;
 import java.util.List;
 
 import static com.example.nalone.util.Constants.MAPVIEW_BUNDLE_KEY;
+import static com.example.nalone.util.Constants.user_mail;
+import static com.example.nalone.util.Constants.user_id;
 
 public class EvenementsFragment extends Fragment implements OnMapReadyCallback {
 
@@ -194,8 +196,8 @@ public class EvenementsFragment extends Fragment implements OnMapReadyCallback {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 nb_evenements = Integer.parseInt((String) snapshot.getValue());
-                Log.w("User", "ID User connecte : " +HomeActivity.user_id);
-                Log.w("User", "Mail User connecte : "+HomeActivity.user_mail);
+                Log.w("User", "ID User connecte : " +user_id);
+                Log.w("User", "Mail User connecte : "+user_mail);
                 Log.w("Map", "Event found : " + nb_evenements);
                 for(int i = 0; i < nb_evenements; i++){
                     DatabaseReference eventRef = database.getReference("evenements/"+i);
@@ -204,7 +206,7 @@ public class EvenementsFragment extends Fragment implements OnMapReadyCallback {
                         public void onDataChange(@NonNull DataSnapshot snapshot) {
                             Evenement e = snapshot.getValue(Evenement.class);
                             if(e.getVisibilite().equals(Visibilite.PRIVE)) {
-                                if(e.getMembres_inscrits().contains(HomeActivity.user_id)) {
+                                if(e.getMembres_inscrits().contains(user_id)) {
                                     listEvenements.add(e);
                                 }
                             }else{

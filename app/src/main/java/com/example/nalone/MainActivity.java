@@ -33,6 +33,9 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import static com.example.nalone.util.Constants.user_mail;
+import static com.example.nalone.util.Constants.user_id;
+
 public class MainActivity extends AppCompatActivity {
     private static final int RC_SIGN_IN = 0;
     private static final String CHANNEL_ID = "0";
@@ -82,8 +85,8 @@ public class MainActivity extends AppCompatActivity {
                             public void onDataChange(@NonNull final DataSnapshot snapshot) {
                                 String mail = snapshot.child("mail").getValue(String.class);
                                 if (mail.equalsIgnoreCase(acct.getEmail())) {
-                                    HomeActivity.user_id = finalI+"";
-                                    HomeActivity.user_mail = mail;
+                                    user_id = finalI+"";
+                                    user_mail = mail;
                                     Intent intent = new Intent(getBaseContext(), HomeActivity.class);
                                     startActivityForResult(intent, 0);
                                 }
@@ -177,7 +180,7 @@ public class MainActivity extends AppCompatActivity {
                                             Log.w("Connexion", "Mail check trouvé:"+textAddress);
                                             mailFound = true;
                                             if(password.equalsIgnoreCase(textPass)){
-                                                HomeActivity.user_mail = mail;
+                                                user_mail = mail;
                                                 Intent intent = new Intent(getBaseContext(), HomeActivity.class);
                                                 startActivityForResult(intent, 0);
                                             }else{

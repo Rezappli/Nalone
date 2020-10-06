@@ -9,6 +9,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import static com.example.nalone.util.Constants.user_mail;
+import static com.example.nalone.util.Constants.user_id;
+
 public class Evenement {
 
     private int id;
@@ -49,7 +52,7 @@ public class Evenement {
         }
         this.id = id;
         if(visibilite.equals(Visibilite.PRIVE)){
-            if(proprietaire.equalsIgnoreCase(HomeActivity.user_id)) {
+            if(proprietaire.equalsIgnoreCase(user_id)) {
                 couleur_icone = (BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));
             }else{
                 couleur_icone = (BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE));
@@ -91,7 +94,7 @@ public class Evenement {
 
     public BitmapDescriptor getCouleur_icone() {
         if(visibilite.equals(Visibilite.PRIVE)){
-            if(proprietaire.equalsIgnoreCase(HomeActivity.user_id)) {
+            if(proprietaire.equalsIgnoreCase(user_id)) {
                 couleur_icone = (BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));
             }else{
                 couleur_icone = (BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE));
