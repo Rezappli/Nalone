@@ -158,6 +158,9 @@ public class CreateEventActivity extends AppCompatActivity {
     public void saveDataEvent(){
         List<String> items = new ArrayList<>();
         items.add(user_id);
+        for(int i = 0; i < itemsAdd.size(); i++) {
+            items.add(itemsAdd.get(i).getId()+"");
+        }
         Evenement e = new Evenement(Constants.nb_evenements, event_name.getText().toString(), event_resume.getText().toString(),
                         event_adresse.getText().toString(), event_city.getText().toString(), event_visibilite, user_id, items, itemsAdd);
         Log.w("Map", "Ajout de l'evenement :" +e.getNom());
