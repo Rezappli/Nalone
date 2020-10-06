@@ -64,6 +64,7 @@ public class HomeActivity extends AppCompatActivity{
             user_mail = acct.getEmail();
         }
 
+        if(user_mail == null || user_id == null){
             DatabaseReference id_users = FirebaseDatabase.getInstance().getReference("id_users");
             id_users.addValueEventListener(new ValueEventListener() {
                 @Override
@@ -79,12 +80,8 @@ public class HomeActivity extends AppCompatActivity{
                             @Override
                             public void onDataChange(@NonNull final DataSnapshot snapshot) {
                                 String mail = snapshot.child("mail").getValue(String.class);
-                                Log.w("Connexion", "Essaye avec la mail : "+mail);
-                                Log.w("Connexion", "Essaye avec la mail : "+user_mail);
                                 if (mail.equalsIgnoreCase(user_mail)) {
                                     user_id = finalI+"";
-                                    Log.w("Connexion", "Mail check trouvé");
-                                    Log.w("Connexion", "User connecté avec l'id:"+ user_id);
                                     user_mail = mail;
                                     DatabaseReference rootRef = FirebaseDatabase.getInstance().getReference("authentification/");
                                     final String finalUser_id = user_id;
@@ -127,6 +124,7 @@ public class HomeActivity extends AppCompatActivity{
 
                 }
             });
+        }
 
 
         user_mail = user_mail.replace(".", ",");

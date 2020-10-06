@@ -62,12 +62,48 @@ public class MainActivity extends AppCompatActivity {
                 .build();
 
         mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
-        GoogleSignInAccount acct = GoogleSignIn.getLastSignedInAccount(this);
+        final GoogleSignInAccount acct = GoogleSignIn.getLastSignedInAccount(this);
 
         if(acct != null){
-            //GoogleSignIn();
-            Intent intent = new Intent(getBaseContext(), HomeActivity.class);
-            startActivityForResult(intent, 0);
+            GoogleSignIn();
+            DatabaseReference id_users = FirebaseDatabase.getInstance().getReference("id_users");
+            id_users.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+
+                    String id_users_text = snapshot.getValue(String.class);
+                    int nb_users = Integer.parseInt(id_users_text);
+                    for (int i = 0; i < nb_users; i++) {
+
+                        DatabaseReference authentificationRef = FirebaseDatabase.getInstance().getReference("authentification/" + i);
+                        final int finalI = i;
+                        authentificationRef.addValueEventListener(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull final DataSnapshot snapshot) {
+                                String mail = snapshot.child("mail").getValue(String.class);
+                                if (mail.equalsIgnoreCase(acct.getEmail())) {
+                                    HomeActivity.user_id = finalI+"";
+                                    HomeActivity.user_mail = mail;
+                                    Intent intent = new Intent(getBaseContext(), HomeActivity.class);
+                                    startActivityForResult(intent, 0);
+                                }
+                            }
+
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError error) {
+
+                            }
+                        });
+
+                    }
+
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+
+                }
+            });
         }else {
             setContentView(R.layout.activity_main);
             SignInButton signInButton = findViewById(R.id.sign_in_button);

@@ -95,9 +95,6 @@ public class EvenementsFragment extends Fragment implements OnMapReadyCallback {
             }
         });
 
-        Log.w("User", "ID User connecte : " +HomeActivity.user_id);
-        Log.w("User", "Mail User connecte : "+HomeActivity.user_mail);
-
         return rootView;
     }
 
@@ -197,6 +194,8 @@ public class EvenementsFragment extends Fragment implements OnMapReadyCallback {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 nb_evenements = Integer.parseInt((String) snapshot.getValue());
+                Log.w("User", "ID User connecte : " +HomeActivity.user_id);
+                Log.w("User", "Mail User connecte : "+HomeActivity.user_mail);
                 Log.w("Map", "Event found : " + nb_evenements);
                 for(int i = 0; i < nb_evenements; i++){
                     DatabaseReference eventRef = database.getReference("evenements/"+i);
