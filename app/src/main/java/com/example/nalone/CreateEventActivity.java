@@ -197,7 +197,7 @@ public class CreateEventActivity extends AppCompatActivity {
 
 
 
-      /*  CalendarView.OnDateChangeListener myCalendarListener = new CalendarView.OnDateChangeListener() {
+        CalendarView.OnDateChangeListener myCalendarListener = new CalendarView.OnDateChangeListener() {
 
             public void onSelectedDayChange(CalendarView view, int year, int month, int day) {
 
@@ -209,7 +209,7 @@ public class CreateEventActivity extends AppCompatActivity {
             }
         };
 
-        calendarDate.setOnDateChangeListener(myCalendarListener);*/
+        calendarDate.setOnDateChangeListener(myCalendarListener);
 
 
         buttonCalendrier.setOnClickListener(new View.OnClickListener() {
