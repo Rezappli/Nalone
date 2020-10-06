@@ -152,10 +152,16 @@ public class EvenementsFragment extends Fragment implements OnMapReadyCallback {
             public void onDataReceived(List<Evenement> listEvenements){
                 mMap.clear();
                 for(int i = 0; i < listEvenements.size(); i++) {
-                    Log.w("Map", "Event name : " + listEvenements.get(i).getNom());
-                    final Evenement e = listEvenements.get(i);
 
-                    final LatLng location = getLocationFromAddress(e.getAdresse()+","+e.getVille());
+                    Evenement e = listEvenements.get(i);
+                    LatLng location = getLocationFromAddress(e.getAdresse()+","+e.getVille());
+                    Log.w("Map", "Event name : " + e.getNom());
+                    Log.w("Map", "Event visibilite : " + e.getVisibilite());
+                    Log.w("Map", "Event membres_inscrits : " + e.getMembres_inscrits().toString());
+                    Log.w("Map", "Event adresse : " + e.getAdresse());
+                    Log.w("Map", "Event ville : " + e.getVille());
+                    Log.w("Map", "Event location : " + location.toString());
+
                     mMap.addMarker(new MarkerOptions().position(location).title(e.getNom()).snippet(e.getDescription())
                             .icon(e.getCouleur_icone()));
 
@@ -176,6 +182,7 @@ public class EvenementsFragment extends Fragment implements OnMapReadyCallback {
     }
 
     private void getFromFirebase(final OnDataReceiveCallback callback){
+        final List<Evenement> listEvenements = new ArrayList<>();
         final FirebaseDatabase database = FirebaseDatabase.getInstance();
 
         DatabaseReference id_evenements = database.getReference("id_evenements");
@@ -189,17 +196,15 @@ public class EvenementsFragment extends Fragment implements OnMapReadyCallback {
                     eventRef.addValueEventListener(new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot snapshot) {
-                            List<Evenement> listEvenements = new ArrayList<>();
                             Evenement e = snapshot.getValue(Evenement.class);
                             if(e.getVisibilite().equals(Visibilite.PRIVE)) {
                                 if(e.getMembres_inscrits().contains(HomeActivity.user_id)) {
                                     listEvenements.add(e);
-                                    callback.onDataReceived(listEvenements);
                                 }
                             }else{
                                 listEvenements.add(e);
-                                callback.onDataReceived(listEvenements);
                             }
+                            callback.onDataReceived(listEvenements);
                         }
 
                         @Override
@@ -209,6 +214,7 @@ public class EvenementsFragment extends Fragment implements OnMapReadyCallback {
                     });
 
                 }
+
 
 
             }
@@ -257,7 +263,7 @@ public class EvenementsFragment extends Fragment implements OnMapReadyCallback {
 
         Log.w("Location", "Loading coordinate from : " + strAddress);
 
-        Geocoder coder = new Geocoder(getContext());
+        Geocoder coder = new Geocoder(getActivity());
         List<Address> address;
         LatLng p1 = null;
 

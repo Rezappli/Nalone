@@ -29,7 +29,7 @@ public class Evenement {
         return membres_en_attente;
     }
 
-    private BitmapDescriptor couleur_icone;
+    private BitmapDescriptor couleur_icone = null;
 
     public Evenement() {}
 
@@ -57,6 +57,7 @@ public class Evenement {
         }else{
             couleur_icone = (BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));
         }
+        Log.w("Map", "Création d'un evenement : " + couleur_icone.toString());
     }
 
     public int getId(){
@@ -89,6 +90,15 @@ public class Evenement {
     }
 
     public BitmapDescriptor getCouleur_icone() {
+        if(visibilite.equals(Visibilite.PRIVE)){
+            if(proprietaire.equalsIgnoreCase(HomeActivity.user_id)) {
+                couleur_icone = (BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));
+            }else{
+                couleur_icone = (BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE));
+            }
+        }else{
+            couleur_icone = (BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));
+        }
         return couleur_icone;
     }
 

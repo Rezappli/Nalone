@@ -152,6 +152,7 @@ public class CreateEventActivity extends AppCompatActivity {
                 int event_id = Integer.parseInt(snapshot.getValue(String.class));
                 Evenement e = new Evenement(event_id, event_name.getText().toString(), event_resume.getText().toString(),
                         event_adresse.getText().toString(), event_city.getText().toString(), event_visibilite, HomeActivity.user_id, items, itemsAdd);
+                Log.w("Map", "Ajout de l'evenement :" +e.getNom());
                 DatabaseReference events = FirebaseDatabase.getInstance().getReference("evenements/"+event_id);
                 events.setValue(e);
 
