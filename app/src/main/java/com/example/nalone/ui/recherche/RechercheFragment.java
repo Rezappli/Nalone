@@ -171,6 +171,7 @@ public class RechercheFragment<MyDataObject> extends Fragment {
                                     Log.w("Liste", "J :"+j);
                                     if(!liste_amis.contains(j+"") && j != finalI){
                                         DatabaseReference user_found = FirebaseDatabase.getInstance().getReference("users/"+j);
+                                        final int finalJ = j;
                                         user_found.addValueEventListener(new ValueEventListener() {
                                             @Override
                                             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -185,7 +186,7 @@ public class RechercheFragment<MyDataObject> extends Fragment {
 
                                                 mRecyclerView.setLayoutManager(mLayoutManager);
                                                 mRecyclerView.setAdapter(mAdapter);
-                                                items.add(new ItemPerson(R.drawable.ic_baseline_account_circle_24, prenom+" "+nom, 0, desc, nbCreate, nbParticipate));
+                                                items.add(new ItemPerson(finalJ,R.drawable.ic_baseline_account_circle_24, prenom+" "+nom, 0, desc, nbCreate, nbParticipate));
                                                 /*if(items.size() == liste_amis.size()){
                                                     dialogAddPerson.show();
                                                 }*/

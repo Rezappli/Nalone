@@ -146,13 +146,13 @@ public class EvenementsFragment extends Fragment implements OnMapReadyCallback {
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
-        Log.w("Map", "Waiting data...");
         LatLng laval = new LatLng(48.0785146,-0.7669906);
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(laval, 13	));
         getFromFirebase(new OnDataReceiveCallback(){
             public void onDataReceived(List<Evenement> listEvenements){
                 mMap.clear();
                 for(int i = 0; i < listEvenements.size(); i++) {
+                    Log.w("Map", "Event name : " + listEvenements.get(i).getNom());
                     final Evenement e = listEvenements.get(i);
 
                     final LatLng location = getLocationFromAddress(e.getAdresse()+","+e.getVille());
@@ -184,92 +184,27 @@ public class EvenementsFragment extends Fragment implements OnMapReadyCallback {
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 nb_evenements = Integer.parseInt((String) snapshot.getValue());
                 Log.w("Map", "Event found : " + nb_evenements);
-                final List<Evenement> listEvenements = new ArrayList<>();
                 for(int i = 0; i < nb_evenements; i++){
-                    DatabaseReference event = database.getReference("evenements").child(i+"");
-                    final int finalI = i;
-                    event.addValueEventListener(new ValueEventListener() {
+                    DatabaseReference eventRef = database.getReference("evenements/"+i);
+                    eventRef.addValueEventListener(new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot snapshot) {
-                            int id = finalI;
-                            String nom = snapshot.child("nom").getValue( String.class );
-                            String desc = snapshot.child("description").getValue( String.class );
-                            String adresse = snapshot.child("adresse").getValue(String.class);
-                            String ville = snapshot.child("ville").getValue(String.class);
-                            String visibiliteValue = snapshot.child("visibilite").getValue(String.class);
-                            final String proprietaire = snapshot.child("proprietaire").getValue(String.class);
-                            Visibilite visibilite;
-                            if(visibiliteValue.equalsIgnoreCase("PRIVE")){
-                                visibilite = Visibilite.PRIVE;
+                            List<Evenement> listEvenements = new ArrayList<>();
+                            Evenement e = snapshot.getValue(Evenement.class);
+                            if(e.getProprietaire().equalsIgnoreCase(HomeActivity.user_id)){
+                                e.setCouleur_icone(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));
                             }else{
-                                visibilite = Visibilite.PUBLIC;
-                            }
-
-                            final Evenement e = new Evenement(id, nom, desc, adresse, ville, visibilite, proprietaire);
-                            for(int j = 0; j < listEvenements.size(); j++){
-                                if(listEvenements.get(j).getId() == id){
-                                    listEvenements.remove(j);
+                                if(e.getVisibilite().equals(Visibilite.PRIVE)){
+                                    e.setCouleur_icone(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE));
+                                }else{
+                                    e.setCouleur_icone(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));
                                 }
                             }
-
-                            if(visibilite.equals(Visibilite.PRIVE)) {
-                                String membres_inscrits_text = snapshot.child("membres_inscrits").getValue(String.class);
-                                final List<String> membres_inscrits = Arrays.asList(membres_inscrits_text.split(","));
-                                DatabaseReference user_id_ref = FirebaseDatabase.getInstance().getReference("id_users");
-                                user_id_ref.addValueEventListener(new ValueEventListener() {
-                                    @Override
-                                    public void onDataChange(@NonNull DataSnapshot snapshot) {
-                                        String nb_users_text = snapshot.getValue(String.class);
-                                        final int nb_users = Integer.parseInt(nb_users_text);
-
-                                        DatabaseReference user_id_ref_mail = FirebaseDatabase.getInstance().getReference("users");
-                                        user_id_ref_mail.addValueEventListener(new ValueEventListener() {
-                                            @Override
-                                            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                                                for(int i = 0; i < nb_users; i++){
-                                                    String mail = snapshot.child(i+"").child("mail").getValue(String.class);
-                                                    String id_user = i+"";
-                                                    if(mail.equalsIgnoreCase(HomeActivity.user_mail)){
-                                                        for (int h = 0; h < membres_inscrits.size(); h++) {
-                                                            if(id_user.equalsIgnoreCase(membres_inscrits.get(h))) {
-                                                                if(e.getProprietaire().equalsIgnoreCase(id_user)){
-                                                                    e.setCouleur_icone(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));
-                                                                }else{
-                                                                    e.setCouleur_icone(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE));
-                                                                }
-                                                                listEvenements.add(e);
-                                                                Log.w("Apparition", "Ajout d'un evenement privé");
-                                                                Log.w("Apparition", "Taille de la liste :" + listEvenements.size());
-                                                                callback.onDataReceived(listEvenements);
-                                                            }
-                                                        }
-                                                    }
-                                                }
-                                            }
-
-                                            @Override
-                                            public void onCancelled(@NonNull DatabaseError error) {
-
-                                            }
-                                        });
-                                    }
-
-                                    @Override
-                                    public void onCancelled(@NonNull DatabaseError error) {
-
-                                    }
-                                });
-                            }else{
-                                listEvenements.add(e);
-                                callback.onDataReceived(listEvenements);
-                            }
-
-
-
-                            Log.w("Apparition", "List size before sending :" +listEvenements.size());
-//                            callback.onDataReceived(listEvenements);
-
+                            Log.w("Map", "Evenement trouvé : " + e.getNom());
+                            listEvenements.add(e);
+                            callback.onDataReceived(listEvenements);
                         }
+
                         @Override
                         public void onCancelled(@NonNull DatabaseError error) {
 
@@ -277,6 +212,7 @@ public class EvenementsFragment extends Fragment implements OnMapReadyCallback {
                     });
 
                 }
+
 
             }
 

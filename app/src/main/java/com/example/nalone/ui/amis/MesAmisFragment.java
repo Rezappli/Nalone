@@ -59,6 +59,7 @@ public class MesAmisFragment extends Fragment {
         return root;
     }
 
+
     private void signOut() {
         mGoogleSignInClient.signOut()
                 .addOnCompleteListener(getActivity(), new OnCompleteListener<Void>() {

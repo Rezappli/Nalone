@@ -203,5 +203,12 @@ public class SignUpInformationActivity extends AppCompatActivity {
         ErrorClass.checkInternetConnection();
     }
 
+    @Override
+    public void onBackPressed(){
+        //super.onBackPressed();
+        Intent intent = new Intent(getBaseContext(), MainActivity.class);
+        startActivity(intent);
+    }
+
 
 }

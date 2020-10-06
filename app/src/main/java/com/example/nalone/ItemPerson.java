@@ -7,6 +7,7 @@ import com.example.nalone.util.Constants;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 public class ItemPerson {
+    private int id;
     private int mImageResource;
     private String mNom;
     private String mNomToLowerCase;
@@ -15,7 +16,7 @@ public class ItemPerson {
     private String mNbCreate = 0+"";
     private String mNbParticipate = 0+"";
 
-    public ItemPerson(int imageResource, String nom, int imageResource2 , String description, String nbCreate, String nbParticipate){
+    public ItemPerson(int id, int imageResource, String nom, int imageResource2 , String description, String nbCreate, String nbParticipate){
         mImageResource = imageResource;
         mNom = nom;
         mNomToLowerCase = mNom.toLowerCase();
@@ -23,6 +24,7 @@ public class ItemPerson {
         mDescription = description;
         mNbCreate = nbCreate;
         mNbParticipate = nbParticipate;
+        this.id = id;
     }
 
     public void changerPlus(int imageRessourceChange){
@@ -91,5 +93,9 @@ public class ItemPerson {
 
     public void setmNbParticipate(String mNbParticipate) {
         this.mNbParticipate = mNbParticipate;
+    }
+
+    public int getId(){
+        return id;
     }
 }

@@ -41,17 +41,17 @@ public class CreateEventActivity extends AppCompatActivity {
     private ImageView imageViewPublic;
     private ImageView imageViewPrivate;
     private Dialog dialogAddPerson;
-    private ArrayList<ItemPerson> itemsAdd = new ArrayList<>();
+    private List<ItemPerson> itemsAdd = new ArrayList<>();
     private RecyclerView mRecyclerViewAdd;
     private ItemAddPersonAdapter mAdapterAdd;
     private RecyclerView.LayoutManager mLayoutManagerAdd;
     private Button buttonValidEvent;
 
-    private TextInputEditText eventName;
-    private TextInputEditText eventAdress;
-    private TextInputEditText eventCity;
-    private TextInputEditText eventResume;
-    private Visibilite eventVisibilite;
+    private TextInputEditText event_name;
+    private TextInputEditText event_adresse;
+    private TextInputEditText event_city;
+    private TextInputEditText event_resume;
+    private Visibilite event_visibilite;
 
 
 
@@ -73,10 +73,10 @@ public class CreateEventActivity extends AppCompatActivity {
         dialogAddPerson = new Dialog(this);
         mRecyclerViewAdd = findViewById(R.id.recyclerView1);
 
-        eventAdress = findViewById(R.id.eventAdress);
-        eventCity = findViewById(R.id.eventCity);
-        eventName = findViewById(R.id.eventName);
-        eventResume = findViewById(R.id.eventResume);
+        event_adresse = findViewById(R.id.eventAdress);
+        event_city = findViewById(R.id.eventCity);
+        event_name = findViewById(R.id.eventName);
+        event_resume = findViewById(R.id.eventResume);
         buttonValidEvent = findViewById(R.id.button);
 
 
@@ -95,7 +95,7 @@ public class CreateEventActivity extends AppCompatActivity {
                 textViewListe.setVisibility(View.VISIBLE);
                 imageViewPrivate.setImageResource(R.drawable.ic_baseline_lock_focused);
                 imageViewPublic.setImageResource(R.drawable.ic_baseline_public_24);
-                eventVisibilite = Visibilite.PRIVE;
+                event_visibilite = Visibilite.PRIVE;
 
             }
         });
@@ -108,7 +108,7 @@ public class CreateEventActivity extends AppCompatActivity {
                 mRecyclerViewAdd.setVisibility(View.GONE);
                 imageViewPublic.setImageResource(R.drawable.ic_baseline_public_focused);
                 imageViewPrivate.setImageResource(R.drawable.ic_baseline_lock_24);
-                eventVisibilite = Visibilite.PUBLIC;
+                event_visibilite = Visibilite.PUBLIC;
             }
         });
 
@@ -144,95 +144,28 @@ public class CreateEventActivity extends AppCompatActivity {
 
         final DatabaseReference id_events = FirebaseDatabase.getInstance().getReference("id_evenements");
         id_events.addValueEventListener(new ValueEventListener() {
+
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                final String id = snapshot.getValue(String.class);
-                DatabaseReference dbEventName = FirebaseDatabase.getInstance().getReference("evenements/" + id +"/nom");
-                dbEventName.setValue(eventName.getText().toString());
-                DatabaseReference dbEventAdresse = FirebaseDatabase.getInstance().getReference("evenements/" + id +"/adresse");
-                dbEventAdresse.setValue(eventAdress.getText().toString());
-                DatabaseReference dbEventVille = FirebaseDatabase.getInstance().getReference("evenements/" + id +"/ville");
-                dbEventVille.setValue(eventCity.getText().toString());
-                DatabaseReference dbEventDescription = FirebaseDatabase.getInstance().getReference("evenements/" + id +"/description");
-                dbEventDescription.setValue(eventResume.getText().toString());
-                if(eventVisibilite.equals(Visibilite.PUBLIC)){
-                    DatabaseReference dbEventVisibility = FirebaseDatabase.getInstance().getReference("evenements/" + id +"/visibilite");
-                    dbEventVisibility.setValue("PUBLIC");
+                List<String> items = new ArrayList<>();
+                items.add(HomeActivity.user_id);
+                int event_id = Integer.parseInt(snapshot.getValue(String.class));
+                Evenement e = new Evenement(event_id, event_name.getText().toString(), event_resume.getText().toString(),
+                        event_adresse.getText().toString(), event_city.getText().toString(), event_visibilite, HomeActivity.user_id, items, itemsAdd);
+                DatabaseReference events = FirebaseDatabase.getInstance().getReference("evenements/"+event_id);
+                events.setValue(e);
 
-                    Intent intent = new Intent(getBaseContext(), EvenementsFragment.class);
-                    startActivity(intent);
-                }else{
-                    DatabaseReference dbEventVisibility = FirebaseDatabase.getInstance().getReference("evenements/" + id +"/visibilite");
-                    dbEventVisibility.setValue("PRIVE");
-                    String memberSignIn = "";
-                    for (int i = 0; i < itemsAdd.size(); i++){
-                        if(i == itemsAdd.size()-1){
-                            memberSignIn+=""+i;
-                        }else{
-                            memberSignIn+=""+i+",";
-                        }
+                event_id++;
+                id_events.setValue(event_id+"");
 
-                    }
-
-                    final DatabaseReference dbEventMembersEnAttente = FirebaseDatabase.getInstance().getReference("evenements/" + id +"/membres_en_attente");
-                    dbEventMembersEnAttente.setValue(memberSignIn);
-
-                    final DatabaseReference dbEventMembersSignIn = FirebaseDatabase.getInstance().getReference("evenements/" + id +"/membres_inscrits");
-
-                    DatabaseReference id_users = FirebaseDatabase.getInstance().getReference("id_users");
-                    id_users.addValueEventListener(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(@NonNull DataSnapshot snapshot) {
-                            int nb_user = Integer.parseInt(snapshot.getValue(String.class));
-                            for(int i = 0; i < nb_user; i++){
-                                DatabaseReference user = FirebaseDatabase.getInstance().getReference("users/"+i);
-                                final int finalI = i;
-                                user.addValueEventListener(new ValueEventListener() {
-                                    @Override
-                                    public void onDataChange(@NonNull DataSnapshot snapshot) {
-                                        String mail = snapshot.child("mail").getValue(String.class);
-                                        if(mail.equalsIgnoreCase(HomeActivity.user_mail)){
-                                            dbEventMembersSignIn.setValue(finalI+"");
-                                            DatabaseReference dbEventProprietaire = FirebaseDatabase.getInstance().getReference("evenements/" + id +"/proprietaire");
-                                            dbEventProprietaire.setValue(finalI+"");
-
-                                            int t = Integer.parseInt(id);
-                                            t++;
-                                            id_events.setValue(t+"");
-
-                                            Intent intent = new Intent(getBaseContext(), EvenementsFragment.class);
-                                            startActivity(intent);
-
-                                        }
-                                    }
-
-                                    @Override
-                                    public void onCancelled(@NonNull DatabaseError error) {
-
-                                    }
-                                });
-                            }
-                        }
-
-                        @Override
-                        public void onCancelled(@NonNull DatabaseError error) {
-
-                        }
-                    });
-
-                }
-
-
-
-
+                Intent intent = new Intent(getBaseContext(), HomeActivity.class);
+                startActivity(intent);
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
 
             }
-
-
         });
 
     }
@@ -291,7 +224,7 @@ public class CreateEventActivity extends AppCompatActivity {
                                                     mRecyclerView[0].setLayoutManager(mLayoutManager[0]);
                                                     mRecyclerView[0].setAdapter(mAdapter[0]);
 
-                                                    items.add(new ItemPerson(R.drawable.ic_baseline_account_circle_24, prenom+" "+nom, R.drawable.ic_baseline_add_24, desc, nbCreate, nbParticipate));
+                                                    items.add(new ItemPerson(j[0],R.drawable.ic_baseline_account_circle_24, prenom+" "+nom, R.drawable.ic_baseline_add_24, desc, nbCreate, nbParticipate));
 
                                                   // if(items.size() == liste_amis.size()){
                                                         dialogAddPerson.show();
