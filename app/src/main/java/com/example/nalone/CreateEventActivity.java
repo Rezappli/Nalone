@@ -158,6 +158,9 @@ public class CreateEventActivity extends AppCompatActivity {
                 if(eventVisibilite.equals(Visibilite.PUBLIC)){
                     DatabaseReference dbEventVisibility = FirebaseDatabase.getInstance().getReference("evenements/" + id +"/visibilite");
                     dbEventVisibility.setValue("PUBLIC");
+
+                    Intent intent = new Intent(getBaseContext(), EvenementsFragment.class);
+                    startActivity(intent);
                 }else{
                     DatabaseReference dbEventVisibility = FirebaseDatabase.getInstance().getReference("evenements/" + id +"/visibilite");
                     dbEventVisibility.setValue("PRIVE");
@@ -278,6 +281,9 @@ public class CreateEventActivity extends AppCompatActivity {
                                                 public void onDataChange(@NonNull DataSnapshot snapshot) {
                                                     String prenom = snapshot.child("prenom").getValue(String.class);
                                                     String nom = snapshot.child("nom").getValue(String.class);
+                                                    String desc = snapshot.child("description").getValue(String.class);
+                                                    String nbCreate = snapshot.child("nombre_creation").getValue(String.class);
+                                                    String nbParticipate = snapshot.child("nombre_participation").getValue(String.class);
                                                     Log.w("Liste", "Ajout de :"+prenom+ " " +nom);
                                                     mRecyclerView[0] = dialogAddPerson.findViewById(R.id.recyclerView);
                                                     mLayoutManager[0] = new LinearLayoutManager(getBaseContext());
@@ -285,7 +291,7 @@ public class CreateEventActivity extends AppCompatActivity {
                                                     mRecyclerView[0].setLayoutManager(mLayoutManager[0]);
                                                     mRecyclerView[0].setAdapter(mAdapter[0]);
 
-                                                    items.add(new ItemPerson(R.drawable.ic_baseline_account_circle_24, prenom+" "+nom, R.drawable.ic_baseline_add_24));
+                                                    items.add(new ItemPerson(R.drawable.ic_baseline_account_circle_24, prenom+" "+nom, R.drawable.ic_baseline_add_24, desc, nbCreate, nbParticipate));
 
                                                   // if(items.size() == liste_amis.size()){
                                                         dialogAddPerson.show();

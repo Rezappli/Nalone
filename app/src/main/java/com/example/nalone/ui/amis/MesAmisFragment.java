@@ -6,16 +6,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 
-import com.example.nalone.CreateEventActivity;
 import com.example.nalone.MainActivity;
 import com.example.nalone.R;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
@@ -24,7 +19,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 
-public class AmisFragment extends Fragment {
+public class MesAmisFragment extends Fragment {
 
     private AmisViewModel amisViewModel;
     private Button signOutButton;
@@ -36,8 +31,11 @@ public class AmisFragment extends Fragment {
 
         amisViewModel =
                 ViewModelProviders.of(this).get(AmisViewModel.class);
-        View root = inflater.inflate(R.layout.fragment_amis, container, false);
+        View root = inflater.inflate(R.layout.fragment_mes_amis, container, false);
         signOutButton = root.findViewById(R.id.signOutButton);
+
+
+
 
 
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
@@ -71,6 +69,7 @@ public class AmisFragment extends Fragment {
                     }
                 });
     }
+
 
 
 }

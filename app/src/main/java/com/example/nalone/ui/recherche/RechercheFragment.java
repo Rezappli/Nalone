@@ -1,5 +1,8 @@
 package com.example.nalone.ui.recherche;
 
+import android.app.Dialog;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -16,8 +19,10 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.nalone.HomeActivity;
+import com.example.nalone.ItemAddPersonAdapter;
 import com.example.nalone.ItemPerson;
 import com.example.nalone.ItemPersonAdapter;
+import com.example.nalone.ItemProfilAdapter;
 import com.example.nalone.R;
 import com.google.android.gms.common.data.BitmapTeleporter;
 import com.google.firebase.database.DataSnapshot;
@@ -30,16 +35,19 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class RechercheFragment extends Fragment {
+public class RechercheFragment<MyDataObject> extends Fragment {
 
     private RechercheViewModel rechercheViewModel;
     private SearchView search_bar;
 
     private RecyclerView mRecyclerView;
-    private RecyclerView.Adapter mAdapter;
+    private ItemProfilAdapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
     private TextView resultat;
     final List<ItemPerson> tempList = new ArrayList<>();
+    private Dialog dialogProfil;
+
+
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -53,6 +61,7 @@ public class RechercheFragment extends Fragment {
         search_bar = root.findViewById(R.id.search_bar);
         resultat = root.findViewById(R.id.resultatText);
         resultat.setVisibility(View.GONE);
+        dialogProfil = new Dialog(getContext());
 
 
         search_bar.setOnClickListener(new View.OnClickListener() {
@@ -113,12 +122,12 @@ public class RechercheFragment extends Fragment {
                             resultat.setText(R.string.aucun_resultat);
                         }
 
-                        mAdapter = new ItemPersonAdapter(tempList);
+                        mAdapter = new ItemProfilAdapter(tempList);
                         mRecyclerView.setAdapter(mAdapter);
                     } else {
                         resultat.setVisibility(View.GONE);
                         resultat.setText("");
-                        mAdapter = new ItemPersonAdapter(items);
+                        mAdapter = new ItemProfilAdapter(items);
                         mRecyclerView.setAdapter(mAdapter);
                     }
                 }else{
@@ -167,17 +176,26 @@ public class RechercheFragment extends Fragment {
                                             public void onDataChange(@NonNull DataSnapshot snapshot) {
                                                 String prenom = snapshot.child("prenom").getValue(String.class);
                                                 String nom = snapshot.child("nom").getValue(String.class);
+                                                String desc = snapshot.child("description").getValue( String.class );
+                                                String nbCreate = snapshot.child("nombre_creation").getValue(String.class);
+                                                String nbParticipate = snapshot.child("nombre_participation").getValue(String.class);
                                                 Log.w("Liste", "Ajout de :"+prenom+ " " +nom);
                                                 mRecyclerView = root.findViewById(R.id.recyclerView);
                                                 mLayoutManager = new LinearLayoutManager(getContext());
 
                                                 mRecyclerView.setLayoutManager(mLayoutManager);
                                                 mRecyclerView.setAdapter(mAdapter);
-                                                items.add(new ItemPerson(R.drawable.ic_baseline_account_circle_24, prenom+" "+nom, R.drawable.ic_baseline_add_24));
+                                                items.add(new ItemPerson(R.drawable.ic_baseline_account_circle_24, prenom+" "+nom, 0, desc, nbCreate, nbParticipate));
                                                 /*if(items.size() == liste_amis.size()){
                                                     dialogAddPerson.show();
                                                 }*/
 
+                                                mAdapter.setOnItemClickListener(new ItemProfilAdapter.OnItemClickListener() {
+                                                    @Override
+                                                    public void onAddClick(int position) {
+                                                        showPopUpProfil(items.get(position).getNom(), items.get(position).getmDescription(), items.get(position).getmNbCreate(), items.get(position).getmNbParticipate());
+                                                    }
+                                                });
 
 
                                             }
@@ -190,7 +208,7 @@ public class RechercheFragment extends Fragment {
                                     }
                                 }
 
-                                mAdapter = new ItemPersonAdapter(items);
+                                mAdapter = new ItemProfilAdapter(items);
 
                             }
 
@@ -222,4 +240,33 @@ public class RechercheFragment extends Fragment {
         return root;
 
     }
+
+    public void showPopUpProfil(String name, String desc, String nbCreate, String nbParticipate){
+         TextView nameProfil;
+         TextView descriptionProfil;
+         TextView nbCreateProfil;
+         TextView nbParticipateProfil;
+
+        dialogProfil.setContentView(R.layout.popup_profil);
+        nameProfil = dialogProfil.findViewById(R.id.profilName);
+        descriptionProfil = dialogProfil.findViewById(R.id.profilDescription);
+        nbCreateProfil = dialogProfil.findViewById(R.id.nbEventCreate);
+        nbParticipateProfil = dialogProfil.findViewById(R.id.nbEventParticipe);
+
+
+        nameProfil.setText(name);
+        descriptionProfil.setText(desc);
+        nbCreateProfil.setText(nbCreate);
+        nbParticipateProfil.setText(nbParticipate);
+
+        if(desc.matches("")){
+            descriptionProfil.setVisibility(View.GONE);
+        }
+
+        dialogProfil.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        dialogProfil.getWindow().setLayout(900, 1500);
+        dialogProfil.show();
+
+    }
+
 }

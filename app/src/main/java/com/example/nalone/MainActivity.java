@@ -50,6 +50,7 @@ public class MainActivity extends AppCompatActivity {
         ErrorClass.activity = this;
         ErrorClass.checkInternetConnection();
 
+
         Notification.SystemService = getSystemService(NotificationManager.class);
 
         Notification notif = new Notification(getBaseContext(), "NoLonely - Ajout d'un événmenet", "Un événement publique vient d'être ajouté !", NotificationCompat.PRIORITY_DEFAULT, R.drawable.ic_launcher_foreground);
@@ -208,4 +209,5 @@ public class MainActivity extends AppCompatActivity {
         super.onResume();
         ErrorClass.checkInternetConnection();
     }
+
 }

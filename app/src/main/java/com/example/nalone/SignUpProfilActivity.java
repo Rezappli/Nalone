@@ -17,6 +17,7 @@ import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.google.android.gms.common.data.DataBuffer;
+import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -29,6 +30,7 @@ import java.io.InputStream;
 public class SignUpProfilActivity extends AppCompatActivity {
 
     ImageView imageViewPhotoProfil;
+    TextInputEditText signUpDescription;
     LinearLayout linearLayoutBackgroundPP;
     Button signupNext;
 
@@ -38,6 +40,7 @@ public class SignUpProfilActivity extends AppCompatActivity {
     private AppCompatActivity activity;
 
     private String id_users;
+    private String signUpDescriptionEnter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,6 +75,8 @@ public class SignUpProfilActivity extends AppCompatActivity {
         imageViewPhotoProfil = findViewById(R.id.signupPhotoProfil);
         linearLayoutBackgroundPP = findViewById(R.id.signupBgPhotoProfil);
         signupNext = findViewById(R.id.signUpNext3);
+        signUpDescription = findViewById(R.id.signUpDescription);
+
 
        if(SignUpStudiesActivity.departement.equals("MMI")){
             linearLayoutBackgroundPP.setBackgroundResource(R.drawable.custom_mmi);
@@ -101,8 +106,13 @@ public class SignUpProfilActivity extends AppCompatActivity {
         });
 
         signupNext.setOnClickListener(new View.OnClickListener() {
+
+
             @Override
             public void onClick(View view) {
+
+                signUpDescriptionEnter = signUpDescription.getText().toString();
+                SignUpInformationActivity.userData.setDescription(signUpDescriptionEnter);
 
                 ErrorClass.checkInternetConnection();
 
@@ -143,6 +153,15 @@ public class SignUpProfilActivity extends AppCompatActivity {
 
                 DatabaseReference interets = database.getReference("users/"+id_users + "/interets");
                 interets.setValue(SignUpInformationActivity.userData.getCentreInterets());
+
+                DatabaseReference description = database.getReference("users/"+id_users + "/description");
+                description.setValue(SignUpInformationActivity.userData.getDescription());
+
+                DatabaseReference nbCreate = database.getReference("users/"+id_users + "/nombre_creation");
+                nbCreate.setValue(SignUpInformationActivity.userData.getNbCreate());
+
+                DatabaseReference nbParticipate = database.getReference("users/"+id_users + "/nombre_participation");
+                nbParticipate.setValue(SignUpInformationActivity.userData.getNbParticipate());
 
                 DatabaseReference id_users_ref = database.getReference("id_users");
                 int id_users_int = Integer.parseInt(id_users);

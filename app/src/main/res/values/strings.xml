@@ -61,5 +61,10 @@
     <string name="back"> Retour </string>
     <string name="search_title"> Rechercher un ami </string>
     <string name="aucun_resultat"> Aucun résultat trouvé </string>
+    <string name="eventCreateProfil"> Création </string>
+    <string name="eventParticipateProfil"> Participation </string>
+    <string name="title_activity_amis_fragment">AmisFragment</string>
+    <string name="tab_text_1">Tab 1</string>
+    <string name="tab_text_2">Tab 2</string>
 
 </resources>

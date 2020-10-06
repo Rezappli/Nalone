@@ -19,6 +19,14 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        <activity
+            android:name=".AmisFragment"
+            android:label="@string/title_activity_amis_fragment"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
+        <activity
+            android:name=".ui.amis.AmisFragment"
+            android:label="@string/title_activity_amis_fragment"
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".CreateEventActivity" />
         <!--
              The API key for Google Maps-based APIs is defined as a string resource.

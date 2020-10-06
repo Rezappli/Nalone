@@ -188,7 +188,7 @@ public class SignUpInformationActivity extends AppCompatActivity {
                   sexe = "Femme";
               }
 
-                userData = new UserData(sexe, nomEntre, prenomEntre, villeEntre, adresseEntre, dateEntre, numeroEntre, mailEntre, passEntre, null, null);
+                userData = new UserData(sexe, nomEntre, prenomEntre, villeEntre, adresseEntre, dateEntre, numeroEntre, mailEntre, passEntre, null, null, null);
                 System.out.println(SignUpInformationActivity.userData.getAdresseMail());
                 Intent signUpStudy = new Intent(getBaseContext(), SignUpStudiesActivity.class);
                 startActivityForResult(signUpStudy, 0);

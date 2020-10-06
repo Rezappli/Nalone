@@ -14,6 +14,9 @@ public class UserData {
     private String pass;
     private String[] centreInterets;
     private String cursus;
+    private String description;
+    private String nbCreate;
+    private String nbParticipate;
 
     public String getSexe() {
         return sexe;
@@ -40,10 +43,10 @@ public class UserData {
     }
 
     public UserData(){
-        this(null, null, null, null, null, null, null, null, null, null, null);
+        this(null, null, null, null, null, null, null, null, null, null, null, null);
     }
 
-    public UserData(String sexe, String nom, String prenom, String ville, String adresse, String date, String numero,String adresseMail, String pass, String cursus, String[] centreInterets){
+    public UserData(String sexe, String nom, String prenom, String ville, String adresse, String date, String numero,String adresseMail, String pass, String cursus, String[] centreInterets, String description){
         this.sexe = sexe;
         this.nom = nom;
         this.prenom = prenom;
@@ -55,6 +58,10 @@ public class UserData {
         this.pass = pass;
         this.cursus = cursus;
         this.centreInterets = centreInterets;
+        this.description = description;
+        this.nbCreate = 0+"";
+        this.nbParticipate = 0+"";
+
     }
 
     public String getNom() {
@@ -119,5 +126,29 @@ public class UserData {
 
     public void setPass(String pass) {
         this.pass = pass;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public String getNbCreate() {
+        return nbCreate;
+    }
+
+    public void setNbCreate(String nbCreate) {
+        this.nbCreate = nbCreate;
+    }
+
+    public String getNbParticipate() {
+        return nbParticipate;
+    }
+
+    public void setNbParticipate(String nbParticipate) {
+        this.nbParticipate = nbParticipate;
     }
 }

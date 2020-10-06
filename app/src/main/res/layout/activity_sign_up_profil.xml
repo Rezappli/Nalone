@@ -235,6 +235,7 @@
                 app:counterMaxLength="60">
 
                 <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/signUpDescription"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="20dp"

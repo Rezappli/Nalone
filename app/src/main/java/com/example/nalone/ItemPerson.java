@@ -10,13 +10,19 @@ public class ItemPerson {
     private int mImageResource;
     private String mNom;
     private String mNomToLowerCase;
+    private String mDescription;
     private int mImageResource2;
+    private String mNbCreate = 0+"";
+    private String mNbParticipate = 0+"";
 
-    public ItemPerson(int imageResource, String nom, int imageResource2){
+    public ItemPerson(int imageResource, String nom, int imageResource2 , String description, String nbCreate, String nbParticipate){
         mImageResource = imageResource;
         mNom = nom;
         mNomToLowerCase = mNom.toLowerCase();
         mImageResource2 = imageResource2;
+        mDescription = description;
+        mNbCreate = nbCreate;
+        mNbParticipate = nbParticipate;
     }
 
     public void changerPlus(int imageRessourceChange){
@@ -43,5 +49,47 @@ public class ItemPerson {
         return mNomToLowerCase;
     }
 
+    public void setmImageResource(int mImageResource) {
+        this.mImageResource = mImageResource;
+    }
 
+    public String getmNom() {
+        return mNom;
+    }
+
+    public void setmNom(String mNom) {
+        this.mNom = mNom;
+    }
+
+    public void setmNomToLowerCase(String mNomToLowerCase) {
+        this.mNomToLowerCase = mNomToLowerCase;
+    }
+
+    public String getmDescription() {
+        return mDescription;
+    }
+
+    public void setmDescription(String mDescription) {
+        this.mDescription = mDescription;
+    }
+
+    public void setmImageResource2(int mImageResource2) {
+        this.mImageResource2 = mImageResource2;
+    }
+
+    public String getmNbCreate() {
+        return mNbCreate;
+    }
+
+    public void setmNbCreate(String mNbCreate) {
+        this.mNbCreate = mNbCreate;
+    }
+
+    public String getmNbParticipate() {
+        return mNbParticipate;
+    }
+
+    public void setmNbParticipate(String mNbParticipate) {
+        this.mNbParticipate = mNbParticipate;
+    }
 }
