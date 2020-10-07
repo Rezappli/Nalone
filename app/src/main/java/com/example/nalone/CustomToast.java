@@ -1,7 +1,5 @@
 package com.example.nalone;
 
-import android.app.Activity;
-import android.app.Application;
 import android.content.Context;
 import android.view.Gravity;
 import android.widget.LinearLayout;

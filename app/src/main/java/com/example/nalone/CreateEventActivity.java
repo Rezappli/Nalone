@@ -66,6 +66,7 @@ public class CreateEventActivity extends AppCompatActivity {
     private Button buttonCalendrier;
     private String newDate;
 
+    private int id_events;
 
 
 
@@ -142,7 +143,18 @@ public class CreateEventActivity extends AppCompatActivity {
             }
         });
 
+        DatabaseReference id_events_ref = Constants.firebaseDatabase.getReference("id_evenements");
+        id_events_ref.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                id_events = Integer.parseInt(snapshot.getValue(String.class));
+            }
 
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
 
 
 
@@ -156,22 +168,22 @@ public class CreateEventActivity extends AppCompatActivity {
     }
 
     public void saveDataEvent(){
-        List<String> items = new ArrayList<>();
-        items.add(user_id);
-        for(int i = 0; i < itemsAdd.size(); i++) {
-            items.add(itemsAdd.get(i).getId()+"");
-        }
-        Evenement e = new Evenement(Constants.nb_evenements, event_name.getText().toString(), event_resume.getText().toString(),
-                        event_adresse.getText().toString(), event_city.getText().toString(), event_visibilite, user_id, items, itemsAdd);
-        Log.w("Map", "Ajout de l'evenement :" +e.getNom());
-        DatabaseReference events = FirebaseDatabase.getInstance().getReference("evenements/"+ Constants.nb_evenements);
-        events.setValue(e);
+            List<String> items = new ArrayList<>();
+            items.add(user_id);
+            for (int i = 0; i < itemsAdd.size(); i++) {
+                items.add(itemsAdd.get(i).getId() + "");
+            }
+            Evenement e = new Evenement(id_events, event_name.getText().toString(), event_resume.getText().toString(),
+                    event_adresse.getText().toString(), event_city.getText().toString(), event_visibilite, user_id, items, itemsAdd);
+            Log.w("Map", "Ajout de l'evenement :" + e.getNom());
+            DatabaseReference events = Constants.firebaseDatabase.getReference("evenements/" + id_events);
+            events.setValue(e);
 
-        DatabaseReference event_id = FirebaseDatabase.getInstance().getReference("id_evenements");
-        Constants.nb_evenements++;
-        event_id.setValue(Constants.nb_evenements+"");
+            DatabaseReference event_id = Constants.firebaseDatabase.getReference("id_evenements");
+            id_events++;
+            event_id.setValue(id_events + "");
 
-                finish();
+            finish();
     }
 
     public  void showCalendrier(View v){
@@ -229,14 +241,14 @@ public class CreateEventActivity extends AppCompatActivity {
         final ArrayList<String> adds = new ArrayList<>();
 
 
-        DatabaseReference id_users_ref = FirebaseDatabase.getInstance().getReference("id_users");
+        DatabaseReference id_users_ref = Constants.firebaseDatabase.getReference("id_users");
         id_users_ref.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 final String id_user = snapshot.getValue(String.class);
                 final int nb_users = Integer.parseInt(id_user);
                 for(final int[] i = {0}; i[0] < nb_users; i[0]++){
-                    DatabaseReference user = FirebaseDatabase.getInstance().getReference("users/"+ i[0]);
+                    DatabaseReference user = Constants.firebaseDatabase.getReference("users/"+ i[0]);
                     final int finalI = i[0];
                     user.addValueEventListener(new ValueEventListener() {
                             @Override
@@ -253,7 +265,7 @@ public class CreateEventActivity extends AppCompatActivity {
                                     for(final int[] j = {0}; j[0] < nb_users; j[0]++){
                                         Log.w("Liste", "J :"+ j[0]);
                                         if(liste_amis.contains(j[0] +"")){
-                                            DatabaseReference user_found = FirebaseDatabase.getInstance().getReference("users/"+ j[0]);
+                                            DatabaseReference user_found = Constants.firebaseDatabase.getReference("users/"+ j[0]);
                                             final int finalJ = j[0];
                                             user_found.addValueEventListener(new ValueEventListener() {
                                                 @Override

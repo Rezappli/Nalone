@@ -16,6 +16,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
+import com.example.nalone.util.Constants;
 import com.google.android.gms.common.data.DataBuffer;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.database.DataSnapshot;
@@ -37,8 +38,6 @@ public class SignUpProfilActivity extends AppCompatActivity {
 
     static final int RESULT_LOAD_IMG = 1;
 
-    private AppCompatActivity activity;
-
     private String id_users;
     private String signUpDescriptionEnter;
 
@@ -46,12 +45,9 @@ public class SignUpProfilActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        this.activity = this;
         ErrorClass.checkInternetConnection();
 
-        final FirebaseDatabase database = FirebaseDatabase.getInstance();
-
-        final DatabaseReference id_user = database.getReference("id_users/");
+        final DatabaseReference id_user = Constants.firebaseDatabase.getReference("id_users/");
         id_user.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -116,54 +112,54 @@ public class SignUpProfilActivity extends AppCompatActivity {
 
                 ErrorClass.checkInternetConnection();
 
-                DatabaseReference id_user = database.getReference("authentification/"+id_users);
+                DatabaseReference id_user = Constants.firebaseDatabase.getReference("authentification/"+id_users);
 
-                DatabaseReference mailAuth = database.getReference("authentification/"+id_users + "/mail");
+                DatabaseReference mailAuth = Constants.firebaseDatabase.getReference("authentification/"+id_users + "/mail");
                 mailAuth.setValue(SignUpInformationActivity.userData.getAdresseMail());
 
-                DatabaseReference passwordAuth = database.getReference("authentification/"+id_users + "/password");
+                DatabaseReference passwordAuth = Constants.firebaseDatabase.getReference("authentification/"+id_users + "/password");
                 passwordAuth.setValue(SignUpInformationActivity.userData.getPass());
 
-                DatabaseReference mail = database.getReference("users/" + id_users + "/mail");
+                DatabaseReference mail = Constants.firebaseDatabase.getReference("users/" + id_users + "/mail");
                 mail.setValue(SignUpInformationActivity.userData.getAdresseMail());
 
-                DatabaseReference nom = database.getReference("users/" +id_users + "/nom");
+                DatabaseReference nom = Constants.firebaseDatabase.getReference("users/" +id_users + "/nom");
                 nom.setValue(SignUpInformationActivity.userData.getNom());
 
-                DatabaseReference prenom = database.getReference("users/"+ id_users + "/prenom");
+                DatabaseReference prenom = Constants.firebaseDatabase.getReference("users/"+ id_users + "/prenom");
                 prenom.setValue(SignUpInformationActivity.userData.getPrenom());
 
-                DatabaseReference sexe = database.getReference("users/"+id_users + "/sexe");
+                DatabaseReference sexe = Constants.firebaseDatabase.getReference("users/"+id_users + "/sexe");
                 sexe.setValue(SignUpInformationActivity.userData.getSexe());
 
-                DatabaseReference ville = database.getReference("users/"+id_users + "/ville");
+                DatabaseReference ville = Constants.firebaseDatabase.getReference("users/"+id_users + "/ville");
                 ville.setValue(SignUpInformationActivity.userData.getVille());
 
-                DatabaseReference adresse = database.getReference("users/"+id_users + "/adresse");
+                DatabaseReference adresse = Constants.firebaseDatabase.getReference("users/"+id_users + "/adresse");
                 adresse.setValue(SignUpInformationActivity.userData.getAdresse());
 
-                DatabaseReference date = database.getReference("users/"+id_users + "/date");
+                DatabaseReference date = Constants.firebaseDatabase.getReference("users/"+id_users + "/date");
                 date.setValue(SignUpInformationActivity.userData.getDate());
 
-                DatabaseReference numero = database.getReference("users/"+id_users + "/numero");
+                DatabaseReference numero = Constants.firebaseDatabase.getReference("users/"+id_users + "/numero");
                 numero.setValue(SignUpInformationActivity.userData.getNumero());
 
-                DatabaseReference cursus = database.getReference("users/"+id_users +  "/cursus");
+                DatabaseReference cursus = Constants.firebaseDatabase.getReference("users/"+id_users +  "/cursus");
                 cursus.setValue(SignUpInformationActivity.userData.getCursus());
 
-                DatabaseReference interets = database.getReference("users/"+id_users + "/interets");
+                DatabaseReference interets = Constants.firebaseDatabase.getReference("users/"+id_users + "/interets");
                 interets.setValue(SignUpInformationActivity.userData.getCentreInterets());
 
-                DatabaseReference description = database.getReference("users/"+id_users + "/description");
+                DatabaseReference description = Constants.firebaseDatabase.getReference("users/"+id_users + "/description");
                 description.setValue(SignUpInformationActivity.userData.getDescription());
 
-                DatabaseReference nbCreate = database.getReference("users/"+id_users + "/nombre_creation");
+                DatabaseReference nbCreate = Constants.firebaseDatabase.getReference("users/"+id_users + "/nombre_creation");
                 nbCreate.setValue(SignUpInformationActivity.userData.getNbCreate());
 
-                DatabaseReference nbParticipate = database.getReference("users/"+id_users + "/nombre_participation");
+                DatabaseReference nbParticipate = Constants.firebaseDatabase.getReference("users/"+id_users + "/nombre_participation");
                 nbParticipate.setValue(SignUpInformationActivity.userData.getNbParticipate());
 
-                DatabaseReference id_users_ref = database.getReference("id_users");
+                DatabaseReference id_users_ref = Constants.firebaseDatabase.getReference("id_users");
                 int id_users_int = Integer.parseInt(id_users);
                 id_users_int++;
                 String s = id_users_int + "";

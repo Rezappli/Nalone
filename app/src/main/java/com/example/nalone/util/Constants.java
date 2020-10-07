@@ -2,14 +2,7 @@ package com.example.nalone.util;
 
 import android.os.Bundle;
 
-import com.example.nalone.Evenement;
-import com.example.nalone.ItemPerson;
-import com.example.nalone.ui.evenements.EvenementsFragment;
-import com.example.nalone.ui.message.MessagesFragment;
-import com.example.nalone.ui.recherche.RechercheFragment;
-
-import java.text.MessageFormat;
-import java.util.List;
+import com.google.firebase.database.FirebaseDatabase;
 
 public class Constants {
 
@@ -22,6 +15,6 @@ public class Constants {
     public static Bundle NALONE_BUNDLE = new Bundle();
     public static String user_mail;
     public static String user_id;
-    public static int nb_evenements;
+    public static FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
 
 }

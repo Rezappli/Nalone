@@ -11,7 +11,6 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import androidx.annotation.NonNull;
@@ -65,7 +64,7 @@ public class HomeActivity extends AppCompatActivity{
         }
 
         if(user_mail == null || user_id == null){
-            DatabaseReference id_users = FirebaseDatabase.getInstance().getReference("id_users");
+            DatabaseReference id_users = Constants.firebaseDatabase.getReference("id_users");
             id_users.addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -74,7 +73,7 @@ public class HomeActivity extends AppCompatActivity{
                     int nb_users = Integer.parseInt(id_users_text);
                     for (int i = 0; i < nb_users; i++) {
 
-                        DatabaseReference authentificationRef = FirebaseDatabase.getInstance().getReference("authentification/" + i);
+                        DatabaseReference authentificationRef = Constants.firebaseDatabase.getReference("authentification/" + i);
                         final int finalI = i;
                         authentificationRef.addValueEventListener(new ValueEventListener() {
                             @Override
@@ -83,7 +82,7 @@ public class HomeActivity extends AppCompatActivity{
                                 if (mail.equalsIgnoreCase(user_mail)) {
                                     user_id = finalI+"";
                                     user_mail = mail;
-                                    DatabaseReference rootRef = FirebaseDatabase.getInstance().getReference("authentification/");
+                                    DatabaseReference rootRef = Constants.firebaseDatabase.getReference("authentification/");
                                     final String finalUser_id = user_id;
                                     rootRef.addListenerForSingleValueEvent(new ValueEventListener() {
                                         @Override

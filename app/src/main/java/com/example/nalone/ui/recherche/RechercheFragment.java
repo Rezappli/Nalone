@@ -18,17 +18,13 @@ import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.nalone.HomeActivity;
-import com.example.nalone.ItemAddPersonAdapter;
 import com.example.nalone.ItemPerson;
-import com.example.nalone.ItemPersonAdapter;
 import com.example.nalone.ItemProfilAdapter;
 import com.example.nalone.R;
-import com.google.android.gms.common.data.BitmapTeleporter;
+import com.example.nalone.util.Constants;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
@@ -36,9 +32,8 @@ import java.util.Arrays;
 import java.util.List;
 
 import static com.example.nalone.util.Constants.user_mail;
-import static com.example.nalone.util.Constants.user_id;
 
-public class RechercheFragment<MyDataObject> extends Fragment {
+public class RechercheFragment extends Fragment {
 
     private RechercheViewModel rechercheViewModel;
     private SearchView search_bar;
@@ -142,14 +137,14 @@ public class RechercheFragment<MyDataObject> extends Fragment {
             }
         });
 
-        DatabaseReference id_users_ref = FirebaseDatabase.getInstance().getReference("id_users");
+        DatabaseReference id_users_ref = Constants.firebaseDatabase.getReference("id_users");
         id_users_ref.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 final String id_user = snapshot.getValue(String.class);
                 final int nb_users = Integer.parseInt(id_user);
                 for(int i = 0; i < nb_users; i++){
-                    DatabaseReference user = FirebaseDatabase.getInstance().getReference("users/"+i);
+                    DatabaseReference user = Constants.firebaseDatabase.getReference("users/"+i);
                     final int finalI = i;
                     user.addValueEventListener(new ValueEventListener() {
                         @Override
@@ -173,7 +168,7 @@ public class RechercheFragment<MyDataObject> extends Fragment {
                                 for(int j = 0; j < nb_users; j++){
                                     Log.w("Liste", "J :"+j);
                                     if(!liste_amis.contains(j+"") && j != finalI){
-                                        DatabaseReference user_found = FirebaseDatabase.getInstance().getReference("users/"+j);
+                                        DatabaseReference user_found = Constants.firebaseDatabase.getReference("users/"+j);
                                         final int finalJ = j;
                                         user_found.addValueEventListener(new ValueEventListener() {
                                             @Override
