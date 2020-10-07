@@ -21,6 +21,7 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.TimePicker;
 
 import com.example.nalone.ui.evenements.EvenementsFragment;
 import com.example.nalone.util.Constants;
@@ -42,19 +43,11 @@ import static com.example.nalone.util.Constants.user_mail;
 import static com.example.nalone.util.Constants.user_id;
 
 public class CreateEventActivity extends AppCompatActivity {
-    private CardView cardViewPrivate;
-    private CardView cardViewPublic;
-    private ImageButton imageButtonAddInvit;
-    private TextView textViewListe;
-    private ImageView imageViewPublic;
-    private ImageView imageViewPrivate;
-    private Dialog dialogAddPerson;
-    private Dialog dialogCalendrier;
+
     private List<ItemPerson> itemsAdd = new ArrayList<>();
     private RecyclerView mRecyclerViewAdd;
     private ItemAddPersonAdapter mAdapterAdd;
     private RecyclerView.LayoutManager mLayoutManagerAdd;
-    private Button buttonValidEvent;
 
     private TextInputEditText event_name;
     private TextInputEditText event_adresse;
@@ -62,13 +55,27 @@ public class CreateEventActivity extends AppCompatActivity {
     private TextInputEditText event_resume;
     private Visibilite event_visibilite;
     private TextView event_date;
+
+    private Dialog dialogCalendrier;
     private CalendarView calendarDate;
     private Button buttonCalendrier;
+
+    private Dialog dialogTimePicker;
+    private Calendar calendar;
     private String newDate;
+    private TimePicker picker;
+    private TextView event_horaire;
 
-    private int id_events;
+    private Dialog dialogAddPerson;
+    private CardView cardViewPrivate;
+    private ImageView imageViewPrivate;
+    private ImageButton imageButtonAddInvit;
+    private TextView textViewListe;
 
+    private CardView cardViewPublic;
+    private ImageView imageViewPublic;
 
+    private Button buttonValidEvent;
 
     final ArrayList<ItemPerson> items = new ArrayList<>();
 
@@ -86,6 +93,7 @@ public class CreateEventActivity extends AppCompatActivity {
         imageViewPrivate = findViewById(R.id.imageViewPrivate);
         dialogAddPerson = new Dialog(this);
         dialogCalendrier = new Dialog(this);
+        dialogTimePicker = new Dialog(this);
         mRecyclerViewAdd = findViewById(R.id.recyclerView1);
 
         event_adresse = findViewById(R.id.eventAdress);
@@ -94,6 +102,14 @@ public class CreateEventActivity extends AppCompatActivity {
         event_resume = findViewById(R.id.eventResume);
         buttonValidEvent = findViewById(R.id.button);
         event_date = findViewById(R.id.eventDate);
+        event_horaire = findViewById(R.id.eventHoraire);
+
+        event_horaire.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showTimePicker();
+            }
+        });
 
 
 
@@ -143,18 +159,7 @@ public class CreateEventActivity extends AppCompatActivity {
             }
         });
 
-        DatabaseReference id_events_ref = Constants.firebaseDatabase.getReference("id_evenements");
-        id_events_ref.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                id_events = Integer.parseInt(snapshot.getValue(String.class));
-            }
 
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
-        });
 
 
 
@@ -168,22 +173,63 @@ public class CreateEventActivity extends AppCompatActivity {
     }
 
     public void saveDataEvent(){
-            List<String> items = new ArrayList<>();
-            items.add(user_id);
-            for (int i = 0; i < itemsAdd.size(); i++) {
-                items.add(itemsAdd.get(i).getId() + "");
-            }
-            Evenement e = new Evenement(id_events, event_name.getText().toString(), event_resume.getText().toString(),
-                    event_adresse.getText().toString(), event_city.getText().toString(), event_visibilite, user_id, items, itemsAdd);
-            Log.w("Map", "Ajout de l'evenement :" + e.getNom());
-            DatabaseReference events = Constants.firebaseDatabase.getReference("evenements/" + id_events);
-            events.setValue(e);
+        List<String> items = new ArrayList<>();
+        items.add(user_id);
+        for(int i = 0; i < itemsAdd.size(); i++) {
+            items.add(itemsAdd.get(i).getId()+"");
+        }
+        Evenement e = new Evenement(Constants.nb_evenements, event_name.getText().toString(), event_resume.getText().toString(),
+                        event_adresse.getText().toString(), event_city.getText().toString(), event_visibilite, user_id, items, itemsAdd);
+        Log.w("Map", "Ajout de l'evenement :" +e.getNom());
+        DatabaseReference events = FirebaseDatabase.getInstance().getReference("evenements/"+ Constants.nb_evenements);
+        events.setValue(e);
 
-            DatabaseReference event_id = Constants.firebaseDatabase.getReference("id_evenements");
-            id_events++;
-            event_id.setValue(id_events + "");
+        DatabaseReference event_id = FirebaseDatabase.getInstance().getReference("id_evenements");
+        Constants.nb_evenements++;
+        event_id.setValue(Constants.nb_evenements+"");
 
-            finish();
+                finish();
+    }
+
+    public void showTimePicker(){
+        dialogTimePicker.setContentView(R.layout.time_picker);
+        picker = dialogTimePicker.findViewById(R.id.timePicker);
+
+        calendar = Calendar.getInstance();
+
+        picker.setIs24HourView(true);
+        int hour = calendar.get(Calendar.HOUR_OF_DAY);
+        int min = calendar.get(Calendar.MINUTE);
+
+        dialogTimePicker.show();
+
+
+    }
+
+    public void setTime(View view) {
+        int hour = picker.getCurrentHour();
+        int min = picker.getCurrentMinute();
+        showTime(hour, min);
+        dialogTimePicker.dismiss();
+
+    }
+
+    private void showTime(int hour, int min) {
+        String mHour = "";
+        String mMin = "";
+
+        if(hour < 10){
+            mHour = "0"+hour;
+        }else{
+            mHour = ""+hour;
+        }
+
+        if(min < 10){
+            mMin = "0"+min;
+        }else{
+            mMin = ""+min;
+        }
+        event_horaire.setText(new StringBuilder().append(mHour).append(" : ").append(mMin));
     }
 
     public  void showCalendrier(View v){
@@ -205,10 +251,25 @@ public class CreateEventActivity extends AppCompatActivity {
 
             public void onSelectedDayChange(CalendarView view, int year, int month, int day) {
 
+                String mDay = "";
+                String mMonth = "";
                 // add one because month starts at 0
                 month = month + 1;
+
                 // output to log cat **not sure how to format year to two places here**
-                newDate = day + "-" + month + "-" + year;
+                if(day < 10){
+                    mDay = "0"+day;
+                }else{
+                    mDay = ""+day;
+                }
+
+                if(month < 10){
+                    mMonth = "0"+month;
+
+                }else{
+                    mMonth = ""+month;
+                }
+                newDate = mDay + "-" + mMonth + "-" + year;
                 Log.d("NEW_DATE", newDate);
             }
         };
@@ -241,14 +302,14 @@ public class CreateEventActivity extends AppCompatActivity {
         final ArrayList<String> adds = new ArrayList<>();
 
 
-        DatabaseReference id_users_ref = Constants.firebaseDatabase.getReference("id_users");
+        DatabaseReference id_users_ref = FirebaseDatabase.getInstance().getReference("id_users");
         id_users_ref.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 final String id_user = snapshot.getValue(String.class);
                 final int nb_users = Integer.parseInt(id_user);
                 for(final int[] i = {0}; i[0] < nb_users; i[0]++){
-                    DatabaseReference user = Constants.firebaseDatabase.getReference("users/"+ i[0]);
+                    DatabaseReference user = FirebaseDatabase.getInstance().getReference("users/"+ i[0]);
                     final int finalI = i[0];
                     user.addValueEventListener(new ValueEventListener() {
                             @Override
@@ -265,7 +326,7 @@ public class CreateEventActivity extends AppCompatActivity {
                                     for(final int[] j = {0}; j[0] < nb_users; j[0]++){
                                         Log.w("Liste", "J :"+ j[0]);
                                         if(liste_amis.contains(j[0] +"")){
-                                            DatabaseReference user_found = Constants.firebaseDatabase.getReference("users/"+ j[0]);
+                                            DatabaseReference user_found = FirebaseDatabase.getInstance().getReference("users/"+ j[0]);
                                             final int finalJ = j[0];
                                             user_found.addValueEventListener(new ValueEventListener() {
                                                 @Override

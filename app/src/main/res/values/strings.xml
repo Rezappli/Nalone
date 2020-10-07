@@ -65,5 +65,6 @@
     <string name="eventParticipateProfil"> Participation </string>
     <string name="title_activity_amis_fragment">AmisFragment</string>
     <string name="dateEvent"> Date </string>
+    <string name="horaireEvent"> Horaire </string>
 
 </resources>
