@@ -181,6 +181,7 @@ public class CreateEventActivity extends AppCompatActivity {
 
             DatabaseReference event_id = Constants.firebaseDatabase.getReference("id_evenements");
             id_events++;
+
             event_id.setValue(id_events + "");
 
             finish();
