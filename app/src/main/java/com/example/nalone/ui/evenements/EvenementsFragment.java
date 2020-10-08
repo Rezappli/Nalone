@@ -54,9 +54,6 @@ public class EvenementsFragment extends Fragment implements OnMapReadyCallback {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-
-
-
         View rootView = inflater.inflate(R.layout.fragment_evenements, container, false);
 
         mMapView = rootView.findViewById(R.id.mapView);
@@ -138,44 +135,22 @@ public class EvenementsFragment extends Fragment implements OnMapReadyCallback {
         mMap = googleMap;
         LatLng laval = new LatLng(48.0785146,-0.7669906);
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(laval, 13	));
-        DatabaseReference id_evenements = Constants.firebaseDatabase.getReference("id_evenements");
-        id_evenements.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                final List<Evenement> listEvenements = new ArrayList<>();
-                nb_evenements = Integer.parseInt((String) snapshot.getValue());
-                Log.w("User", "ID User connecte : " +user_id);
-                Log.w("User", "Mail User connecte : "+user_mail);
-                Log.w("Map", "Event found : " + nb_evenements);
-                for(int i = 0; i < nb_evenements; i++){
-                    DatabaseReference eventRef = Constants.firebaseDatabase.getReference("evenements/"+i);
-                    eventRef.addValueEventListener(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(@NonNull DataSnapshot snapshot) {
-                            Evenement e = snapshot.getValue(Evenement.class);
-                            LatLng location = getLocationFromAddress(e.getAdresse()+","+e.getVille());
-                            if(e.getVisibilite().equals(Visibilite.PRIVE)) {
-                                if(e.getMembres_inscrits().contains(user_id)) {
-                                    mMap.addMarker(new MarkerOptions().position(location).title(e.getNom()).snippet(e.getDescription())
-                                            .icon(getEventColor(e)));
-                                }
-                            }else{
-                                mMap.addMarker(new MarkerOptions().position(location).title(e.getNom()).snippet(e.getDescription())
-                                        .icon(getEventColor(e)));
-                            }
-                        }
-
-                        @Override
-                        public void onCancelled(@NonNull DatabaseError error) {}
-                    });
+        for(int i = 0; i < Constants.markers.size(); i++){
+            Evenement e = Constants.events.get(i);
+            MarkerOptions m = Constants.markers.get(i);
+            if(e.getVisibilite().equals(Visibilite.PRIVE)){
+                if(e.getMembres_inscrits().contains(user_id)){
+                    if(m.getIcon() == null){
+                        m.icon(getEventColor(e));
+                    }
+                    Log.w("Map", "Ajout de l'evenement");
+                    mMap.addMarker(Constants.markers.get(i));
                 }
+            }else{
+                Log.w("Map", "Ajout de l'evenement");
+                mMap.addMarker(Constants.markers.get(i));
             }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {}
-        });
-
-
+        }
 
         if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION)
                 != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getActivity(),

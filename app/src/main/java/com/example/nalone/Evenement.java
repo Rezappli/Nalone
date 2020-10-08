@@ -7,6 +7,7 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 
 import static com.example.nalone.util.Constants.user_mail;
@@ -23,12 +24,13 @@ public class Evenement {
     public String proprietaire;
     public List<String> membres_inscrits;
     public List<String> membres_en_attente;
-
+    public Date date;
+    public String timer;
     public Evenement() {}
 
 
     public Evenement(int id, String nom, String description, String adresse, String ville, Visibilite visibilite,
-                     String proprietaire, List<String> membres_inscrits, List<ItemPerson> membres_en_attente){
+                     String proprietaire, List<String> membres_inscrits, List<ItemPerson> membres_en_attente, Date date, String timer){
         this.nom = nom;
         this.description = description;
         this.adresse = adresse;
@@ -41,6 +43,8 @@ public class Evenement {
             this.membres_en_attente.add(membres_en_attente.get(i).getId()+"");
         }
         this.id = id;
+        this.date = date;
+        this.timer = timer;
     }
 
     public int getId(){
@@ -90,6 +94,14 @@ public class Evenement {
 
     public void setId(int id){
         this.id = id;
+    }
+
+    public Date getDate(){
+        return date;
+    }
+
+    public String getTimer(){
+        return timer;
     }
 
 }

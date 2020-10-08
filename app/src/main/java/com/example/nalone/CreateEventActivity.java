@@ -1,6 +1,7 @@
 package com.example.nalone;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -10,6 +11,7 @@ import android.app.Dialog;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.os.Build;
 import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.util.Log;
@@ -79,8 +81,6 @@ public class CreateEventActivity extends AppCompatActivity {
 
     final ArrayList<ItemPerson> items = new ArrayList<>();
 
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -105,14 +105,8 @@ public class CreateEventActivity extends AppCompatActivity {
         event_date = findViewById(R.id.eventDate);
         event_horaire = findViewById(R.id.eventHoraire);
 
-
-
         mLayoutManagerAdd = new LinearLayoutManager(getBaseContext());
         mAdapterAdd = new ItemAddPersonAdapter(itemsAdd);
-
-
-
-
 
         cardViewPrivate.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -147,6 +141,7 @@ public class CreateEventActivity extends AppCompatActivity {
         });
 
         buttonValidEvent.setOnClickListener(new View.OnClickListener() {
+            @RequiresApi(api = Build.VERSION_CODES.M)
             @Override
             public void onClick(View v) {
                 saveDataEvent();
@@ -165,9 +160,6 @@ public class CreateEventActivity extends AppCompatActivity {
 
             }
         });
-
-
-
     }
 
     public void addPerson(View v){
@@ -177,6 +169,7 @@ public class CreateEventActivity extends AppCompatActivity {
 
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.M)
     public void saveDataEvent(){
             List<String> items = new ArrayList<>();
             items.add(user_id);
@@ -184,8 +177,8 @@ public class CreateEventActivity extends AppCompatActivity {
                 items.add(itemsAdd.get(i).getId() + "");
             }
             Evenement e = new Evenement(id_events, event_name.getText().toString(), event_resume.getText().toString(),
-                    event_adresse.getText().toString(), event_city.getText().toString(), event_visibilite, user_id, items, itemsAdd);
-            Log.w("Map", "Ajout de l'evenement :" + e.getNom());
+                    event_adresse.getText().toString(), event_city.getText().toString(), event_visibilite, user_id, items,
+                    itemsAdd, calendar.getTime(), picker.getHour()+":"+picker.getMinute());
             DatabaseReference events = Constants.firebaseDatabase.getReference("evenements/" + id_events);
             events.setValue(e);
 
@@ -251,8 +244,6 @@ public class CreateEventActivity extends AppCompatActivity {
 // print the date in your log cat
         Log.d("CUR_DATE", curDate);
 
-
-
         CalendarView.OnDateChangeListener myCalendarListener = new CalendarView.OnDateChangeListener() {
 
             public void onSelectedDayChange(CalendarView view, int year, int month, int day) {
@@ -291,7 +282,6 @@ public class CreateEventActivity extends AppCompatActivity {
         final RecyclerView.LayoutManager[] mLayoutManager = new RecyclerView.LayoutManager[1];
 
         final ArrayList<String> adds = new ArrayList<>();
-
 
         DatabaseReference id_users_ref = Constants.firebaseDatabase.getReference("id_users");
         id_users_ref.addValueEventListener(new ValueEventListener() {
@@ -336,14 +326,7 @@ public class CreateEventActivity extends AppCompatActivity {
 
                                                     items.add(new ItemPerson(j[0],R.drawable.ic_baseline_account_circle_24, prenom+" "+nom, R.drawable.ic_baseline_add_24, desc, nbCreate, nbParticipate));
 
-                                                  // if(items.size() == liste_amis.size()){
-                                                        dialogAddPerson.show();
-                                                    //}
-
-
-
-
-
+                                                    dialogAddPerson.show();
                                                 }
 
                                                 @Override
@@ -353,8 +336,6 @@ public class CreateEventActivity extends AppCompatActivity {
                                             });
                                         }
                                     }
-
-
 
                                     mAdapter[0] = new ItemPersonAdapter(items);
 
@@ -374,19 +355,11 @@ public class CreateEventActivity extends AppCompatActivity {
                                                 itemsAdd.remove(items.get(position));
                                             }
 
-
                                             mAdapter[0].notifyItemChanged(position);
-
 
                                         }
                                     });
-
-
-
-
-
                                 }
-
                             }
 
                             @Override

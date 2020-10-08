@@ -2,7 +2,12 @@ package com.example.nalone.util;
 
 import android.os.Bundle;
 
+import com.example.nalone.Evenement;
+import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.firebase.database.FirebaseDatabase;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class Constants {
 
@@ -16,5 +21,7 @@ public class Constants {
     public static String user_mail;
     public static String user_id;
     public static FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
+    public static List<MarkerOptions> markers = new ArrayList<>();
+    public static List<Evenement> events = new ArrayList<>();
 
 }
