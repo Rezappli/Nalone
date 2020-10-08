@@ -41,6 +41,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static com.example.nalone.util.Constants.MAPVIEW_BUNDLE_KEY;
+import static com.example.nalone.util.Constants.markers;
 import static com.example.nalone.util.Constants.user_mail;
 import static com.example.nalone.util.Constants.user_id;
 
@@ -135,6 +136,8 @@ public class EvenementsFragment extends Fragment implements OnMapReadyCallback {
         mMap = googleMap;
         LatLng laval = new LatLng(48.0785146,-0.7669906);
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(laval, 13	));
+        Log.w("Map", "Taille de constants marker :"+markers.size());
+        Log.w("Map", "ID user connecté :"+user_id);
         for(int i = 0; i < Constants.markers.size(); i++){
             Evenement e = Constants.events.get(i);
             MarkerOptions m = Constants.markers.get(i);

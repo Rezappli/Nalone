@@ -1,10 +1,17 @@
 package com.example.nalone.util;
 
 import android.os.Bundle;
+import android.util.Log;
+
+import androidx.annotation.NonNull;
 
 import com.example.nalone.Evenement;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,5 +30,5 @@ public class Constants {
     public static FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
     public static List<MarkerOptions> markers = new ArrayList<>();
     public static List<Evenement> events = new ArrayList<>();
-
+    public static int nb_evenements = 0;
 }
