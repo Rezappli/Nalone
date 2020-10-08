@@ -25,19 +25,13 @@ public class MesAmisFragment extends Fragment {
     private Button signOutButton;
     private GoogleSignInClient mGoogleSignInClient;
 
-
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-
 
         amisViewModel =
                 ViewModelProviders.of(this).get(AmisViewModel.class);
         View root = inflater.inflate(R.layout.fragment_mes_amis, container, false);
         signOutButton = root.findViewById(R.id.signOutButton);
-
-
-
-
 
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestEmail()

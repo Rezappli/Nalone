@@ -140,6 +140,7 @@
                     android:layout_weight="0.5"
                     android:background="@drawable/custom_input"
                     android:drawableEnd="@drawable/ic_round_arrow_drop_down_24"
+                    android:onClick="showTimePicker"
                     android:padding="10dp"
                     android:text="@string/horaireEvent" />
 

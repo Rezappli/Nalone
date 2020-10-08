@@ -21,6 +21,7 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.TimePicker;
 
 import com.example.nalone.ui.evenements.EvenementsFragment;
 import com.example.nalone.util.Constants;
@@ -42,19 +43,10 @@ import static com.example.nalone.util.Constants.user_mail;
 import static com.example.nalone.util.Constants.user_id;
 
 public class CreateEventActivity extends AppCompatActivity {
-    private CardView cardViewPrivate;
-    private CardView cardViewPublic;
-    private ImageButton imageButtonAddInvit;
-    private TextView textViewListe;
-    private ImageView imageViewPublic;
-    private ImageView imageViewPrivate;
-    private Dialog dialogAddPerson;
-    private Dialog dialogCalendrier;
     private List<ItemPerson> itemsAdd = new ArrayList<>();
     private RecyclerView mRecyclerViewAdd;
     private ItemAddPersonAdapter mAdapterAdd;
     private RecyclerView.LayoutManager mLayoutManagerAdd;
-    private Button buttonValidEvent;
 
     private TextInputEditText event_name;
     private TextInputEditText event_adresse;
@@ -62,15 +54,31 @@ public class CreateEventActivity extends AppCompatActivity {
     private TextInputEditText event_resume;
     private Visibilite event_visibilite;
     private TextView event_date;
+
+    private Dialog dialogCalendrier;
     private CalendarView calendarDate;
     private Button buttonCalendrier;
+
+    private Dialog dialogTimePicker;
+    private Calendar calendar;
     private String newDate;
+    private TimePicker picker;
+    private TextView event_horaire;
 
     private int id_events;
+    private Dialog dialogAddPerson;
+    private CardView cardViewPrivate;
+    private ImageView imageViewPrivate;
+    private ImageButton imageButtonAddInvit;
+    private TextView textViewListe;
 
+    private CardView cardViewPublic;
+    private ImageView imageViewPublic;
 
+    private Button buttonValidEvent;
 
     final ArrayList<ItemPerson> items = new ArrayList<>();
+
 
 
     @Override
@@ -86,6 +94,7 @@ public class CreateEventActivity extends AppCompatActivity {
         imageViewPrivate = findViewById(R.id.imageViewPrivate);
         dialogAddPerson = new Dialog(this);
         dialogCalendrier = new Dialog(this);
+        dialogTimePicker = new Dialog(this);
         mRecyclerViewAdd = findViewById(R.id.recyclerView1);
 
         event_adresse = findViewById(R.id.eventAdress);
@@ -94,6 +103,7 @@ public class CreateEventActivity extends AppCompatActivity {
         event_resume = findViewById(R.id.eventResume);
         buttonValidEvent = findViewById(R.id.button);
         event_date = findViewById(R.id.eventDate);
+        event_horaire = findViewById(R.id.eventHoraire);
 
 
 
@@ -185,6 +195,47 @@ public class CreateEventActivity extends AppCompatActivity {
             event_id.setValue(id_events + "");
 
             finish();
+    }
+
+    public void showTimePicker(View v){
+        dialogTimePicker.setContentView(R.layout.time_picker);
+        picker = dialogTimePicker.findViewById(R.id.timePicker);
+
+        calendar = Calendar.getInstance();
+
+        picker.setIs24HourView(true);
+        int hour = calendar.get(Calendar.HOUR_OF_DAY);
+        int min = calendar.get(Calendar.MINUTE);
+
+        dialogTimePicker.show();
+
+
+    }
+
+    public void setTime(View view) {
+        int hour = picker.getCurrentHour();
+        int min = picker.getCurrentMinute();
+        showTime(hour, min);
+        dialogTimePicker.dismiss();
+
+    }
+
+    private void showTime(int hour, int min) {
+        String mHour = "";
+        String mMin = "";
+
+        if(hour < 10){
+            mHour = "0"+hour;
+        }else{
+            mHour = ""+hour;
+        }
+
+        if(min < 10){
+            mMin = "0"+min;
+        }else{
+            mMin = ""+min;
+        }
+        event_horaire.setText(new StringBuilder().append(mHour).append(" : ").append(mMin));
     }
 
     public  void showCalendrier(View v){
