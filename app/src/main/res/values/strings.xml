@@ -66,5 +66,8 @@
     <string name="title_activity_amis_fragment">AmisFragment</string>
     <string name="dateEvent"> Date </string>
     <string name="horaireEvent"> Horaire </string>
+    <string name="proprio"> Propriétaire </string>
+    <string name="createur"> Créateur : </string>
+    <string name="membre_inscrits"> Membres inscrits : </string>
 
 </resources>
