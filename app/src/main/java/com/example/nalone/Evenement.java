@@ -1,17 +1,9 @@
 package com.example.nalone;
 
-import android.util.Log;
-
-import com.google.android.gms.maps.model.BitmapDescriptor;
-import com.google.android.gms.maps.model.BitmapDescriptorFactory;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
-
-import static com.example.nalone.util.Constants.user_mail;
-import static com.example.nalone.util.Constants.user_id;
 
 public class Evenement {
 

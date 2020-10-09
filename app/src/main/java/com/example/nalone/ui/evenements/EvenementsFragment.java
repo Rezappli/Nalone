@@ -49,9 +49,7 @@ public class EvenementsFragment extends Fragment implements OnMapReadyCallback {
 
     private MapView mMapView;
     private GoogleMap mMap;
-    private int nb_evenements;
     private ImageView buttonAdd;
-    private int consta = 0;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
