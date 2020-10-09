@@ -266,6 +266,7 @@ public class RechercheFragment extends Fragment {
         dialogProfil.getWindow().setLayout(900, 1500);
         dialogProfil.show();
 
+
     }
 
 }
