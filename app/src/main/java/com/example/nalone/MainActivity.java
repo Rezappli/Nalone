@@ -48,10 +48,7 @@ public class MainActivity extends AppCompatActivity {
         ErrorClass.checkInternetConnection();
 
 
-        Notification.SystemService = getSystemService(NotificationManager.class);
 
-        Notification notif = new Notification(getBaseContext(), "NoLonely - Ajout d'un événmenet", "Un événement publique vient d'être ajouté !", NotificationCompat.PRIORITY_DEFAULT, R.drawable.ic_launcher_foreground);
-        notif.show();
         /*Google Sign-In method*/
 
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)

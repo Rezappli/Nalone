@@ -13,7 +13,7 @@
     <uses-permission android:name="android.permission.VIBRATE" />
 
     <application
-        android:name=".MyApp"
+        android:name="splash.MyApp"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
@@ -78,7 +78,7 @@
             android:name=".MainActivity"
             android:parentActivityName=".MainActivity" />
         <activity
-            android:name=".SplashActivity"
+            android:name="splash.SplashActivity"
             android:parentActivityName=".MainActivity"
             android:theme="@style/SplashTheme">
             <intent-filter>

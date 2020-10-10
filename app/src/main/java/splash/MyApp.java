@@ -1,4 +1,4 @@
-package com.example.nalone;
+package splash;
 
 import android.app.Application;
 import android.location.Address;
@@ -8,6 +8,7 @@ import android.util.Log;
 
 import androidx.annotation.NonNull;
 
+import com.example.nalone.Evenement;
 import com.example.nalone.util.Constants;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -44,7 +45,7 @@ public class MyApp extends Application {
                         public void onDataChange(@NonNull DataSnapshot snapshot) {
                             Evenement e = snapshot.getValue(Evenement.class);
                             LatLng location = getLocationFromAddress(e.getAdresse()+","+e.getVille());
-                            Constants.markers.add(new MarkerOptions().position(location).title(e.getNom()).snippet(e.getDescription())
+                            Constants.markers.add(new MarkerOptions().position(location).title(e.getNom()).snippet("Cliquer pour plus d'informations")
                                     .icon(null));
                             Constants.events.add(e);
                         }

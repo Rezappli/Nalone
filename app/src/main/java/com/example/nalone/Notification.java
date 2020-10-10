@@ -20,13 +20,13 @@ public class Notification {
     private Context context;
     private NotificationCompat.Builder builder;
 
-    public Notification(Context context, String title, String description, int priority, int icon){
+    public Notification(Context context, NotificationData notificationData){
 
         this.context = context;
-        this.title = title;
-        this.description = description;
-        this.priority = priority;
-        this.icon = icon;
+        this.title = notificationData.title;
+        this.description = notificationData.description;
+        this.priority = NotificationCompat.PRIORITY_DEFAULT;
+        this.icon = R.drawable.ic_launcher_foreground;
 
         generate();
 

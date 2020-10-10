@@ -41,11 +41,13 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
 
+import static com.example.nalone.util.Constants.firebaseDatabase;
 import static com.example.nalone.util.Constants.user_mail;
 import static com.example.nalone.util.Constants.user_id;
 
 public class CreateEventActivity extends AppCompatActivity {
     private List<ItemPerson> itemsAdd = new ArrayList<>();
+    private List<ItemPerson> tempsList = new ArrayList<>();
     private RecyclerView mRecyclerViewAdd;
     private ItemAddPersonAdapter mAdapterAdd;
     private RecyclerView.LayoutManager mLayoutManagerAdd;
@@ -79,7 +81,10 @@ public class CreateEventActivity extends AppCompatActivity {
 
     private Button buttonValidEvent;
 
-    final ArrayList<ItemPerson> items = new ArrayList<>();
+    final List<ItemPerson> items = new ArrayList<>();
+
+    private String mHour = "";
+    private String mMin = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -132,14 +137,6 @@ public class CreateEventActivity extends AppCompatActivity {
             }
         });
 
-        mAdapterAdd.setOnItemClickListener(new ItemAddPersonAdapter.OnItemClickListener() {
-            @Override
-            public void onRemoveClick(int position) {
-                itemsAdd.remove(position);
-                mAdapterAdd.notifyItemRemoved(position);
-            }
-        });
-
         buttonValidEvent.setOnClickListener(new View.OnClickListener() {
             @RequiresApi(api = Build.VERSION_CODES.M)
             @Override
@@ -171,14 +168,38 @@ public class CreateEventActivity extends AppCompatActivity {
 
     @RequiresApi(api = Build.VERSION_CODES.M)
     public void saveDataEvent(){
-            List<String> items = new ArrayList<>();
-            items.add(user_id);
-            for (int i = 0; i < itemsAdd.size(); i++) {
-                items.add(itemsAdd.get(i).getId() + "");
+            List<String> sign_in_members = new ArrayList<>();
+            sign_in_members.add(user_id);
+
+            for(int k = 0; k < itemsAdd.size(); k++){
+                final DatabaseReference notification = firebaseDatabase.getReference("notifications/"+itemsAdd.get(k).getId());
+                notification.addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        /*List<NotificationData> listNotification = snapshot.getValue(List.class);
+
+                        if(listNotification == null){
+                            listNotification = new ArrayList<>();
+                        }
+
+                        if(event_visibilite.equals(Visibilite.PRIVE)){
+                            listNotification.add(new NotificationData("Ajout d'un évènement privé", "Un évènement privé vient d'être crée et vous êtes invité ! "));
+                        }else{
+                            listNotification.add(new NotificationData("Ajout d'un évènement publique", "Un évènement public vient d'être crée ! "));
+                        }
+                        notification.setValue(listNotification);*/
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+
+                    }
+                });
             }
+
             Evenement e = new Evenement(id_events, event_name.getText().toString(), event_resume.getText().toString(),
-                    event_adresse.getText().toString(), event_city.getText().toString(), event_visibilite, user_id, items,
-                    itemsAdd, calendar.getTime(), picker.getHour()+":"+picker.getMinute());
+                    event_adresse.getText().toString(), event_city.getText().toString(), event_visibilite, user_id, sign_in_members,
+                    itemsAdd, calendar.getTime(), mHour+":"+mMin);
             DatabaseReference events = Constants.firebaseDatabase.getReference("evenements/" + id_events);
             events.setValue(e);
 
@@ -214,9 +235,6 @@ public class CreateEventActivity extends AppCompatActivity {
     }
 
     private void showTime(int hour, int min) {
-        String mHour = "";
-        String mMin = "";
-
         if(hour < 10){
             mHour = "0"+hour;
         }else{
@@ -229,6 +247,7 @@ public class CreateEventActivity extends AppCompatActivity {
             mMin = ""+min;
         }
         event_horaire.setText(new StringBuilder().append(mHour).append(" : ").append(mMin));
+
     }
 
     public  void showCalendrier(View v){
@@ -237,11 +256,10 @@ public class CreateEventActivity extends AppCompatActivity {
         buttonCalendrier = dialogCalendrier.findViewById(R.id.buttonCalendrier);
 
         Calendar date = Calendar.getInstance();
-// for your date format use
         SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yy");
-// set a string to format your current date
+
         String curDate = sdf.format(date.getTime());
-// print the date in your log cat
+
         Log.d("CUR_DATE", curDate);
 
         CalendarView.OnDateChangeListener myCalendarListener = new CalendarView.OnDateChangeListener() {
@@ -273,6 +291,8 @@ public class CreateEventActivity extends AppCompatActivity {
 
 
     public void showPopUp(View v){
+        items.clear();
+        tempsList.clear();
 
         dialogAddPerson.setContentView(R.layout.popup_add_invit);
         dialogAddPerson.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
@@ -317,14 +337,24 @@ public class CreateEventActivity extends AppCompatActivity {
                                                     String desc = snapshot.child("description").getValue(String.class);
                                                     String nbCreate = snapshot.child("nombre_creation").getValue(String.class);
                                                     String nbParticipate = snapshot.child("nombre_participation").getValue(String.class);
-                                                    Log.w("Liste", "Ajout de :"+prenom+ " " +nom);
+
                                                     mRecyclerView[0] = dialogAddPerson.findViewById(R.id.recyclerView);
                                                     mLayoutManager[0] = new LinearLayoutManager(getBaseContext());
 
                                                     mRecyclerView[0].setLayoutManager(mLayoutManager[0]);
                                                     mRecyclerView[0].setAdapter(mAdapter[0]);
 
-                                                    items.add(new ItemPerson(j[0],R.drawable.ic_baseline_account_circle_24, prenom+" "+nom, R.drawable.ic_baseline_add_24, desc, nbCreate, nbParticipate));
+                                                    ItemPerson itemPerson = new ItemPerson(finalJ,R.drawable.ic_baseline_account_circle_24, prenom+" "+nom, R.drawable.ic_baseline_add_24, desc, nbCreate, nbParticipate);
+                                                    boolean found = false;
+                                                    for(int k = 0; k < itemsAdd.size(); k++){
+                                                        if(itemPerson.getId() == itemsAdd.get(k).getId()){
+                                                            found = true;
+                                                        }
+                                                    }
+
+                                                    if(!found){
+                                                        items.add(itemPerson);
+                                                    }
 
                                                     dialogAddPerson.show();
                                                 }
@@ -348,15 +378,39 @@ public class CreateEventActivity extends AppCompatActivity {
                                             if(adds.contains(person) == false){
                                                 items.get(position).changerPlus(remove);
                                                 adds.add(person);
-                                                itemsAdd.add(items.get(position));
+                                                tempsList.add(items.get(position));
                                             }else{
                                                 items.get(position).changerPlus(add);
                                                 adds.remove(person);
-                                                itemsAdd.remove(items.get(position));
+                                                tempsList.remove(items.get(position));
                                             }
 
                                             mAdapter[0].notifyItemChanged(position);
 
+                                        }
+                                    });
+
+                                    Button valid = dialogAddPerson.findViewById(R.id.buttonBack);
+                                    valid.setOnClickListener(new View.OnClickListener() {
+                                        @Override
+                                        public void onClick(View v) {
+                                            for(int i = 0; i < tempsList.size(); i++){
+                                                itemsAdd.add(tempsList.get(i));
+                                            }
+                                            dialogAddPerson.dismiss();
+                                            mLayoutManagerAdd = new LinearLayoutManager(getBaseContext());
+                                            mAdapterAdd = new ItemAddPersonAdapter(itemsAdd);
+
+                                            mAdapterAdd.setOnItemClickListener(new ItemAddPersonAdapter.OnItemClickListener() {
+                                                @Override
+                                                public void onRemoveClick(int position) {
+                                                    itemsAdd.remove(position);
+                                                    mAdapterAdd.notifyItemRemoved(position);
+                                                }
+                                            });
+
+                                            mRecyclerViewAdd.setLayoutManager(mLayoutManagerAdd);
+                                            mRecyclerViewAdd.setAdapter(mAdapterAdd);
                                         }
                                     });
                                 }

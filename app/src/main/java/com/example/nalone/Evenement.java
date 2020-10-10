@@ -17,12 +17,12 @@ public class Evenement {
     public List<String> membres_inscrits;
     public List<String> membres_en_attente;
     public Date date;
-    public String timer;
+    public String time;
     public Evenement() {}
 
 
     public Evenement(int id, String nom, String description, String adresse, String ville, Visibilite visibilite,
-                     String proprietaire, List<String> membres_inscrits, List<ItemPerson> membres_en_attente, Date date, String timer){
+                     String proprietaire, List<String> membres_inscrits, List<ItemPerson> membres_en_attente, Date date, String time){
         this.nom = nom;
         this.description = description;
         this.adresse = adresse;
@@ -36,7 +36,7 @@ public class Evenement {
         }
         this.id = id;
         this.date = date;
-        this.timer = timer;
+        this.time = time;
     }
 
     public int getId(){
@@ -92,8 +92,8 @@ public class Evenement {
         return date;
     }
 
-    public String getTimer(){
-        return timer;
+    public String getTime(){
+        return time;
     }
 
 }

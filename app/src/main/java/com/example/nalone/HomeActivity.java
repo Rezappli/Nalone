@@ -1,6 +1,8 @@
 package com.example.nalone;
 
+import android.app.NotificationManager;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 
@@ -14,18 +16,23 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
+import java.util.List;
+
+import static com.example.nalone.util.Constants.firebaseDatabase;
 import static com.example.nalone.util.Constants.user_mail;
 import static com.example.nalone.util.Constants.user_id;
 
 public class HomeActivity extends AppCompatActivity{
 
 
+    @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -54,6 +61,33 @@ public class HomeActivity extends AppCompatActivity{
         NavigationUI.setupWithNavController(navView, navController);
 
         checkUserRegister();
+        checkNotification();
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.M)
+    private void checkNotification() {
+        Notification.SystemService = getSystemService(NotificationManager.class);
+        final DatabaseReference notification = firebaseDatabase.getReference("notifications/"+user_id);
+        notification.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                List<NotificationData> listNotifications = (List<NotificationData>) snapshot.getValue(List.class);
+
+                if (listNotifications != null) {
+                    for (int i = 0; i < listNotifications.size(); i++) {
+                        Notification notif = new Notification(getBaseContext(), listNotifications.get(i));
+                        notif.show();
+                    }
+
+                    notification.setValue(null);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
     }
 
 

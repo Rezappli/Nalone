@@ -30,7 +30,7 @@
     <string name="MMI"> MMI </string>
     <string name="INFO"> INFO </string>
     <string name="LP"> LP </string>
-    <string name="Description"> Description (Facultatif)</string>
+    <string name="description"> Description (Facultatif) </string>
     <string name="centresInteretsTitle"> Tes centres d\'intérêts : </string>
     <string name="title_activity_home">MainActivity</string>
     <string name="title_recherche"> Recherche </string>
@@ -67,7 +67,7 @@
     <string name="dateEvent"> Date </string>
     <string name="horaireEvent"> Horaire </string>
     <string name="proprio"> Propriétaire </string>
-    <string name="createur"> Créateur : </string>
+    <string name="organisateur"> Organisateur : </string>
     <string name="membre_inscrits"> Membres inscrits : </string>
 
 </resources>
