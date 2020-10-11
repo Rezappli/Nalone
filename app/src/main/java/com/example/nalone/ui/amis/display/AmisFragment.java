@@ -12,10 +12,10 @@ import com.example.nalone.R;
 
 /**
  * A simple {@link Fragment} subclass.
- * Use the {@link Fragment_1#newInstance} factory method to
+ * Use the {@link AmisFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class Fragment_1 extends Fragment {
+public class AmisFragment extends Fragment {
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -26,7 +26,7 @@ public class Fragment_1 extends Fragment {
     private String mParam1;
     private String mParam2;
 
-    public Fragment_1() {
+    public AmisFragment() {
         // Required empty public constructor
     }
 
@@ -39,8 +39,8 @@ public class Fragment_1 extends Fragment {
      * @return A new instance of fragment Fragment_1.
      */
     // TODO: Rename and change types and number of parameters
-    public static Fragment_1 newInstance(String param1, String param2) {
-        Fragment_1 fragment = new Fragment_1();
+    public static AmisFragment newInstance(String param1, String param2) {
+        AmisFragment fragment = new AmisFragment();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
         args.putString(ARG_PARAM2, param2);
@@ -61,6 +61,6 @@ public class Fragment_1 extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_1, container, false);
+        return inflater.inflate(R.layout.amis_fragment, container, false);
     }
 }

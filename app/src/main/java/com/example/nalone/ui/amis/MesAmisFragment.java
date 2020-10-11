@@ -1,6 +1,5 @@
 package com.example.nalone.ui.amis;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,16 +13,11 @@ import androidx.lifecycle.ViewModelProviders;
 import androidx.viewpager.widget.ViewPager;
 
 import com.example.nalone.Adapter.SectionPageAdapter;
-import com.example.nalone.MainActivity;
 import com.example.nalone.R;
-import com.example.nalone.ui.amis.display.Fragment_1;
-import com.example.nalone.ui.amis.display.Fragment_2;
+import com.example.nalone.ui.amis.display.AmisFragment;
+import com.example.nalone.ui.amis.display.GroupeFragment;
 import com.example.nalone.ui.amis.display.Fragment_3;
-import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
-import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.android.material.tabs.TabLayout;
 
 public class MesAmisFragment extends Fragment {
@@ -81,8 +75,8 @@ public class MesAmisFragment extends Fragment {
     private void setUpViewPager(ViewPager viewPager) {
         SectionPageAdapter adapter = new SectionPageAdapter(getChildFragmentManager(), 0);
 
-        adapter.addFragment(new Fragment_1(), "Fragment 1");
-        adapter.addFragment(new Fragment_2(), "Fragment 2");
+        adapter.addFragment(new AmisFragment(), "Fragment 1");
+        adapter.addFragment(new GroupeFragment(), "Fragment 2");
         adapter.addFragment(new Fragment_3(), "Fragment 3");
 
         viewPager.setAdapter(adapter);
