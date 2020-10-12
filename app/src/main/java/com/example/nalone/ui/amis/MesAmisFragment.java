@@ -75,9 +75,9 @@ public class MesAmisFragment extends Fragment {
     private void setUpViewPager(ViewPager viewPager) {
         SectionPageAdapter adapter = new SectionPageAdapter(getChildFragmentManager(), 0);
 
-        adapter.addFragment(new AmisFragment(), "Fragment 1");
-        adapter.addFragment(new GroupeFragment(), "Fragment 2");
-        adapter.addFragment(new Fragment_3(), "Fragment 3");
+        adapter.addFragment(new AmisFragment(), "Mes Amis");
+        adapter.addFragment(new GroupeFragment(), "Mes groupes");
+        adapter.addFragment(new Fragment_3(), "Mes invitations");
 
         viewPager.setAdapter(adapter);
     }

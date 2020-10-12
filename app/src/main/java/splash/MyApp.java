@@ -69,7 +69,7 @@ public class MyApp extends Application {
 
         Log.w("Location", "Loading coordinate from : " + strAddress);
 
-        Geocoder coder = new Geocoder(SplashActivity.activity);
+        Geocoder coder = new Geocoder(getApplicationContext());
         List<Address> address;
         LatLng p1 = null;
 

@@ -1,58 +1,41 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     tools:context=".ui.evenements.EvenementsFragment">
 
-
-    <androidx.cardview.widget.CardView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="250dp"
-        android:layout_marginBottom="80dp"
-        android:foregroundGravity="bottom|center_horizontal"
-        app:cardBackgroundColor="#18ECC5"
-        app:cardCornerRadius="50dp"
-        app:cardElevation="10dp"
-        app:layout_constraintBottom_toBottomOf="@+id/relativeLayout2"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="@+id/relativeLayout2">
-
-        <ImageView
-            android:id="@+id/create_event_button"
-            android:layout_width="60dp"
-            android:layout_height="60dp"
-            android:layout_centerHorizontal="true"
-            android:layout_centerVertical="true"
-            android:layout_gravity="bottom|center"
-            android:layout_marginStart="10dp"
-            android:layout_marginTop="10dp"
-            android:layout_marginEnd="10dp"
-            android:layout_marginBottom="10dp"
-            android:clickable="true"
-            app:srcCompat="@drawable/ic_baseline_add_circle_24" />
-    </androidx.cardview.widget.CardView>
-
-    <RelativeLayout
-        android:id="@+id/relativeLayout2"
+    <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/appBarLayoutEvenement"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="wrap_content"
+        android:background="@android:color/white">
 
-        <LinearLayout
+        <TextView
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical">
+            android:layout_height="wrap_content"
+            android:text="Evenements"
+            android:textAlignment="center"
+            android:textSize="30sp" />
 
-            <com.google.android.gms.maps.MapView
-                android:id="@+id/mapView"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_weight="0.8" />
+        <com.google.android.material.tabs.TabLayout
+            android:id="@+id/tabLayoutEvenement"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
 
-        </LinearLayout>
+        </com.google.android.material.tabs.TabLayout>
 
-    </RelativeLayout>
+        <androidx.viewpager.widget.ViewPager
+            android:id="@+id/viewPagerEvenement"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+
+        </androidx.viewpager.widget.ViewPager>
+
+    </com.google.android.material.appbar.AppBarLayout>
+
+</RelativeLayout>

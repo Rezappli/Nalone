@@ -12,7 +12,7 @@
         android:orientation="vertical">
 
         <SearchView
-            android:id="@+id/search_bar"
+            android:id="@+id/search_bar_amis"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="20dp"
@@ -21,10 +21,17 @@
 
         </SearchView>
 
+        <TextView
+            android:id="@+id/resultatText_amis"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="clip_horizontal|center|center_vertical"
+            android:text="@string/aucun_resultat" />
+
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recyclerView"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:layout_gravity="center|center_horizontal"
             android:layout_marginStart="20dp"
             android:layout_marginBottom="20dp"
