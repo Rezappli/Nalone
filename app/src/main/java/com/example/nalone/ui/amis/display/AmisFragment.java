@@ -17,6 +17,7 @@ import android.view.ViewGroup;
 import android.widget.SearchView;
 import android.widget.TextView;
 
+import com.example.nalone.Adapter.ItemAmisAdapter;
 import com.example.nalone.ItemPerson;
 import com.example.nalone.Adapter.ItemProfilAdapter;
 import com.example.nalone.R;
@@ -50,7 +51,7 @@ public class AmisFragment extends Fragment {
 
     private SearchView search_bar;
     private RecyclerView mRecyclerView;
-    private ItemProfilAdapter mAdapter;
+    private ItemAmisAdapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
     private TextView resultat;
     final List<ItemPerson> tempList = new ArrayList<>();
@@ -156,12 +157,12 @@ public class AmisFragment extends Fragment {
                             resultat.setText(R.string.aucun_resultat);
                         }
 
-                        mAdapter = new ItemProfilAdapter(tempList);
+                        mAdapter = new ItemAmisAdapter(tempList);
                         mRecyclerView.setAdapter(mAdapter);
                     } else {
                         resultat.setVisibility(View.GONE);
                         resultat.setText("");
-                        mAdapter = new ItemProfilAdapter(items);
+                        mAdapter = new ItemAmisAdapter(items);
                         mRecyclerView.setAdapter(mAdapter);
                     }
                 }else{
@@ -215,7 +216,7 @@ public class AmisFragment extends Fragment {
                                                 String nbCreate = snapshot.child("nombre_creation").getValue(String.class);
                                                 String nbParticipate = snapshot.child("nombre_participation").getValue(String.class);
                                                 Log.w("Liste", "Ajout de :"+prenom+ " " +nom);
-                                                mRecyclerView = root.findViewById(R.id.recyclerView);
+                                                mRecyclerView = root.findViewById(R.id.recyclerViewMesAmis);
                                                 mLayoutManager = new LinearLayoutManager(getContext());
 
                                                 mRecyclerView.setLayoutManager(mLayoutManager);
@@ -225,7 +226,7 @@ public class AmisFragment extends Fragment {
                                                     dialogAddPerson.show();
                                                 }*/
 
-                                                mAdapter.setOnItemClickListener(new ItemProfilAdapter.OnItemClickListener() {
+                                                mAdapter.setOnItemClickListener(new ItemAmisAdapter.OnItemClickListener() {
                                                     @Override
                                                     public void onAddClick(int position) {
                                                         showPopUpProfil(items.get(position).getNom(), items.get(position).getmDescription(), items.get(position).getmNbCreate(), items.get(position).getmNbParticipate());
@@ -243,7 +244,7 @@ public class AmisFragment extends Fragment {
                                     }
                                 }
 
-                                mAdapter = new ItemProfilAdapter(items);
+                                mAdapter = new ItemAmisAdapter(items);
 
                             }
 
@@ -267,6 +268,7 @@ public class AmisFragment extends Fragment {
     }
 
     public void showPopUpProfil(String name, String desc, String nbCreate, String nbParticipate){
+
         TextView nameProfil;
         TextView descriptionProfil;
         TextView nbCreateProfil;
@@ -291,7 +293,5 @@ public class AmisFragment extends Fragment {
         dialogProfil.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         dialogProfil.getWindow().setLayout(900, 1500);
         dialogProfil.show();
-
-
     }
 }
