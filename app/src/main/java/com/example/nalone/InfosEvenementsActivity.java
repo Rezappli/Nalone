@@ -66,8 +66,17 @@ public class InfosEvenementsActivity extends AppCompatActivity {
                 user.addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        String date_text = formatD.format(e.getDate());
+                        String final_date_text = "";
+                        for(int i = 0; i < date_text.length(); i++){
+                            char character = date_text.charAt(i);
+                            if(i == 0) {
+                                character = Character.toUpperCase(character);
+                            }
+                            final_date_text += character;
+                        }
                         mTitle.setText(e.getNom());
-                        mDate.setText(formatD.format(e.getDate()));
+                        mDate.setText(final_date_text);
                         mTimer.setText(e.getTime());
                         mOwner.setText(snapshot.child("prenom").getValue(String.class)+" "+snapshot.child("nom").getValue(String.class));
                         mDescription.setText(e.getDescription());

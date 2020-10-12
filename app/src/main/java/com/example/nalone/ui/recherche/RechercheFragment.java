@@ -198,6 +198,8 @@ public class RechercheFragment extends Fragment {
                                                 });
 
 
+
+
                                             }
 
                                             @Override
