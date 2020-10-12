@@ -97,6 +97,7 @@ public class AmisFragment extends Fragment {
         resultat = root.findViewById(R.id.resultatText_amis);
         resultat.setVisibility(View.GONE);
 
+
         search_bar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
