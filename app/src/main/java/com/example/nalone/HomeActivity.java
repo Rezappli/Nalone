@@ -124,7 +124,7 @@ public class HomeActivity extends AppCompatActivity{
                                             if (!dataSnapshot.hasChild(finalUser_id)) {
                                                 Intent intent = new Intent(getBaseContext(), SignUpInformationActivity.class);
                                                 startActivityForResult(intent, 0);
-                                            }
+                                          }
                                         }
 
                                         @Override

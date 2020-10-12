@@ -1,6 +1,7 @@
 package com.example.nalone.ui.recherche;
 
 import android.app.Dialog;
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
@@ -20,6 +21,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.nalone.ItemPerson;
 import com.example.nalone.Adapter.ItemProfilAdapter;
 import com.example.nalone.R;
+import com.example.nalone.ui.message.ChatActivity;
 import com.example.nalone.util.Constants;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -187,6 +189,7 @@ public class RechercheFragment extends Fragment {
                                                     dialogAddPerson.show();
                                                 }*/
 
+
                                                 mAdapter.setOnItemClickListener(new ItemProfilAdapter.OnItemClickListener() {
                                                     @Override
                                                     public void onAddClick(int position) {
@@ -237,6 +240,8 @@ public class RechercheFragment extends Fragment {
         return root;
 
     }
+
+
 
     public void showPopUpProfil(String name, String desc, String nbCreate, String nbParticipate){
          TextView nameProfil;
