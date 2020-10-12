@@ -15,10 +15,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.nalone.Adapter.ItemMessageAdapter;
-import com.example.nalone.HomeActivity;
 import com.example.nalone.ItemPerson;
-import com.example.nalone.Adapter.ItemPersonAdapter;
-import com.example.nalone.Adapter.ItemProfilAdapter;
 import com.example.nalone.R;
 import com.example.nalone.util.Constants;
 import com.google.firebase.database.DataSnapshot;
@@ -249,8 +246,6 @@ public class MessagesFragment extends Fragment  {
         Intent intent = new Intent(getContext(),ChatActivity.class);
         Log.d(TAG, "onChatClick: clicked");
         startActivity(intent);
-
-
     }
 
 

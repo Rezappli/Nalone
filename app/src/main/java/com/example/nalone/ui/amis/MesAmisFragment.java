@@ -75,9 +75,9 @@ public class MesAmisFragment extends Fragment {
     private void setUpViewPager(ViewPager viewPager) {
         SectionPageAdapter adapter = new SectionPageAdapter(getChildFragmentManager(), 0);
 
-        adapter.addFragment(new AmisFragment(), "Mes Amis");
-        adapter.addFragment(new GroupeFragment(), "Mes groupes");
-        adapter.addFragment(new Fragment_3(), "Mes invitations");
+        adapter.addFragment(new AmisFragment(), "Mes Amis", R.drawable.camera_alt_black_24dp);
+        adapter.addFragment(new GroupeFragment(), "Mes groupes", R.drawable.round_group_24);
+        adapter.addFragment(new Fragment_3(), "Mes invitations", R.drawable.round_forum_24);
 
         viewPager.setAdapter(adapter);
     }

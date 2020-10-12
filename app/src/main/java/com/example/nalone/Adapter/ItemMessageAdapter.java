@@ -4,6 +4,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -31,14 +32,16 @@ public class ItemMessageAdapter extends RecyclerView.Adapter<ItemMessageAdapter.
         public ImageView mImageView;
         public TextView mText;
         public ImageView mImageView2;
+        public LinearLayout mPerson;
 
         public ItemMessageViewHolder(View itemView, final OnItemClickListener listener) {
             super(itemView);
             mImageView = itemView.findViewById(R.id.imagePerson);
             mText = itemView.findViewById(R.id.nomInvit);
             mImageView2 = itemView.findViewById(R.id.imageView19);
+            mPerson = itemView.findViewById(R.id.layoutProfil);
 
-            mImageView2.setOnClickListener(new View.OnClickListener() {
+            mPerson.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     if(listener != null){
@@ -70,9 +73,6 @@ public class ItemMessageAdapter extends RecyclerView.Adapter<ItemMessageAdapter.
         holder.mText.setText((currentItem.getNom()));
         holder.mImageView2.setImageResource(currentItem.getImageResource2());
     }
-
-
-
 
     @Override
     public int getItemCount() {

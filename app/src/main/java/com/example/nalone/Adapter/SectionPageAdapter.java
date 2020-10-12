@@ -13,6 +13,7 @@ public class SectionPageAdapter extends FragmentPagerAdapter {
 
     private List<Fragment> fragmentList = new ArrayList<>();
     private List<String> titleList = new ArrayList<>();
+    private List<Integer> icon = new ArrayList<>();
 
     public SectionPageAdapter(@NonNull FragmentManager fm, int behavior) {
         super(fm, behavior);
@@ -35,9 +36,11 @@ public class SectionPageAdapter extends FragmentPagerAdapter {
         return titleList.get(postion);
     }
 
-    public void addFragment(Fragment fragment, String title){
+
+    public void addFragment(Fragment fragment, String title, int image){
         fragmentList.add(fragment);
         titleList.add(title);
+        icon.add(image);
     }
 
 }

@@ -33,6 +33,11 @@ public class EvenementsFragment extends Fragment {
 
     ViewPager viewPager;
     TabLayout tabLayout;
+    private int[] tabIcons = {
+            R.drawable.round_group_24,
+            R.drawable.round_group_24,
+
+    };
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -78,8 +83,8 @@ public class EvenementsFragment extends Fragment {
     private void setUpViewPager(ViewPager viewPager) {
         SectionPageAdapter adapter = new SectionPageAdapter(getChildFragmentManager(), 0);
 
-        adapter.addFragment(new EvenementsListFragment(), "Les évènements");
-        adapter.addFragment(new MapFragment(), "La carte des évènements");
+        adapter.addFragment(new MapFragment(), "La carte des évènements", R.drawable.add_photo);
+        adapter.addFragment(new EvenementsListFragment(), "Les évènements", R.drawable.custom_adress_focused);
         //adapter.addFragment(new Fragment_3(), "Mes invitations");
 
         viewPager.setAdapter(adapter);
