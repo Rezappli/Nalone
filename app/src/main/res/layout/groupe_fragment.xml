@@ -10,26 +10,10 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-        <SearchView
-            android:id="@+id/search_bar"
+        <Button
+            android:id="@+id/sign_out"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="20dp"
-            android:background="@drawable/custom_input"
-            android:queryHint="Entrer votre texte">
-
-        </SearchView>
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recyclerView"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_gravity="center|center_horizontal"
-            android:layout_marginStart="20dp"
-            android:layout_marginBottom="20dp"
-            android:layout_weight="0.8"
-            android:background="@android:color/white"
-            android:padding="4dp"
-            android:scrollbars="vertical"/>
+            android:text="Se déconnecter" />
     </LinearLayout>
 </FrameLayout>

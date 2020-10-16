@@ -27,12 +27,14 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.io.FileWriter;
+import java.io.IOException;
+
+import static com.example.nalone.util.Constants.settingsFile;
 import static com.example.nalone.util.Constants.user_mail;
 import static com.example.nalone.util.Constants.user_id;
 
 public class MainActivity extends AppCompatActivity {
-    private static final int RC_SIGN_IN = 0;
-    private static final String CHANNEL_ID = "0";
     private TextView textViewSinscrire;
     private TextView textViewConnexion;
     private EditText editTextPass;
@@ -66,7 +68,7 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 switch (v.getId()) {
                     case R.id.sign_in_button:
-                        GoogleSignIn();
+                        signIn();
                         break;
                 }
             }
@@ -104,64 +106,74 @@ public class MainActivity extends AppCompatActivity {
                     return;
                 }
                 //Lecture d'une connexion mail/mdp via bdd
-                DatabaseReference id_users = FirebaseDatabase.getInstance().getReference("id_users");
-                id_users.addValueEventListener(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if(!textAddress.equalsIgnoreCase("") && !textPass.equalsIgnoreCase("")) {
+                    DatabaseReference id_users = FirebaseDatabase.getInstance().getReference("id_users");
+                    id_users.addValueEventListener(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot snapshot) {
 
-                        String id_users_text = snapshot.getValue(String.class);
-                        int nb_users = Integer.parseInt(id_users_text);
-                        Log.w("Connexion", "Nb users :" + nb_users);
+                            String id_users_text = snapshot.getValue(String.class);
+                            int nb_users = Integer.parseInt(id_users_text);
 
-                        for (int i = 0; i < nb_users; i++) {
-                            DatabaseReference authentificationRef = FirebaseDatabase.getInstance().getReference("authentification/" + i);
-                            final int finalI = i;
-                            authentificationRef.addValueEventListener(new ValueEventListener() {
-                                @Override
-                                public void onDataChange(@NonNull DataSnapshot snapshot) {
-                                    String mail = snapshot.child("mail").getValue(String.class);
-                                    String password = snapshot.child("password").getValue(String.class);
-                                    boolean mailFound = false;
-                                    if (mail.equalsIgnoreCase(textAddress)) {
-                                        mailFound = true;
-                                        if (password.equalsIgnoreCase(textPass)) {
-                                            user_mail = mail;
-                                            Intent intent = new Intent(getBaseContext(), HomeActivity.class);
-                                            startActivityForResult(intent, 0);
-                                        } else {
-                                            CustomToast toast = new CustomToast(getBaseContext(), "Mot de passe incorrect !", false, true);
+                            for (int i = 0; i < nb_users; i++) {
+                                DatabaseReference authentificationRef = FirebaseDatabase.getInstance().getReference("authentification/" + i);
+                                final int finalI = i;
+                                authentificationRef.addValueEventListener(new ValueEventListener() {
+                                    @Override
+                                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                        String mail = snapshot.child("mail").getValue(String.class);
+                                        String password = snapshot.child("password").getValue(String.class);
+                                        boolean mailFound = false;
+                                        if (mail.equalsIgnoreCase(textAddress)) {
+                                            mailFound = true;
+                                            if (password.equalsIgnoreCase(textPass)) {
+                                                user_mail = mail;
+                                                writeSettingsData(mail+";"+password);
+                                                Intent intent = new Intent(getBaseContext(), HomeActivity.class);
+                                                startActivityForResult(intent, 0);
+                                            } else {
+                                                CustomToast toast = new CustomToast(getBaseContext(), "Mot de passe incorrect !", false, true);
+                                            }
+                                        }
+
+                                        if (!mailFound) {
+                                            CustomToast toast = new CustomToast(getBaseContext(), "Adresse mail introuvable !", false, true);
                                         }
                                     }
 
-                                    if (!mailFound) {
-                                        CustomToast toast = new CustomToast(getBaseContext(), "Adresse mail introuvable !", false, true);
+                                    @Override
+                                    public void onCancelled(@NonNull DatabaseError error) {
+
                                     }
-                                }
-
-                                @Override
-                                public void onCancelled(@NonNull DatabaseError error) {
-
-                                }
-                            });
+                                });
+                            }
                         }
-                    }
 
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError error) {
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError error) {
 
-                    }
-                });
+                        }
+                    });
+                }
 
             }
         });
+
     }
 
+    private void writeSettingsData(String data) {
+        try {
+            FileWriter myWriter = new FileWriter(settingsFile);
+            myWriter.write(data);
+            myWriter.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
-
-
-    public void GoogleSignIn() {
+    public void signIn() {
         Intent signInIntent = mGoogleSignInClient.getSignInIntent();
-        startActivityForResult(signInIntent, RC_SIGN_IN);
+        startActivityForResult(signInIntent, 0);
     }
 
     @Override
@@ -169,7 +181,7 @@ public class MainActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
 
         // Result returned from launching the Intent from GoogleSignInClient.getSignInIntent(...);
-        if (requestCode == RC_SIGN_IN) {
+        if (requestCode == 0) {
             // The Task returned from this call is always completed, no need to attach
             // a listener.
             Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);

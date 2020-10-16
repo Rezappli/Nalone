@@ -13,6 +13,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -31,4 +32,5 @@ public class Constants {
     public static List<MarkerOptions> markers = new ArrayList<>();
     public static List<Evenement> events = new ArrayList<>();
     public static int nb_evenements = 0;
+    public static File settingsFile;
 }

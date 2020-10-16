@@ -51,8 +51,6 @@ public class HomeActivity extends AppCompatActivity{
 
 
         BottomNavigationView navView = findViewById(R.id.nav_view);
-        // Passing each menu ID as a set of Ids because each
-        // menu should be considered as top level destinations.
         AppBarConfiguration appBarConfiguration = new AppBarConfiguration.Builder(
                 R.id.navigation_recherche, R.id.navigation_amis, R.id.navigation_evenements, R.id.navigation_messages)
                 .build();
@@ -162,25 +160,6 @@ public class HomeActivity extends AppCompatActivity{
 
         user_mail = user_mail.replace(".", ",");
         Log.w("User","User mail:" + user_mail);
-    }
-
-    public void getGoogleInformations(){
-        GoogleSignInAccount acct = GoogleSignIn.getLastSignedInAccount(this);
-        if (acct != null) {
-            String personName = acct.getDisplayName();
-            String personGivenName = acct.getGivenName();
-            String personFamilyName = acct.getFamilyName();
-            
-            String personEmail = acct.getEmail();
-            acct.getPhotoUrl();
-            String personId = acct.getId();
-            System.out.println("**** INFORMATIIONS ****");
-            System.out.println(personName);
-            System.out.println(personGivenName);
-            System.out.println(personFamilyName);
-            System.out.println(personEmail);
-            System.out.println(personId);
-        }
     }
 
     @Override
