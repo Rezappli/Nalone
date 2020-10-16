@@ -61,6 +61,7 @@
         android:layout_marginBottom="50dp"
         android:gravity="center_horizontal"
         android:orientation="vertical"
+        android:paddingBottom="10dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
@@ -141,7 +142,7 @@
             android:layout_marginTop="10sp"
             android:layout_weight="0"
             android:background="@drawable/custom_button_signup"
-            android:text="@string/lienSignIn"
+            android:text="@string/inscrireButton"
             android:textAllCaps="false"
             android:textSize="20sp" />
 

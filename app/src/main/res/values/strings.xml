@@ -5,7 +5,7 @@
     <string name="hintPass"> Mot de passe </string>
     <string name="hintConfirmPass"> Confirmer le mot de passe </string>
     <string name="pasInscrit"> Pas encore inscrit ?</string>
-    <string name="lienSignIn"><u>S\'inscrire</u>  </string>
+    <string name="inscrireButton">S\'inscrire </string>
     <string name="buttonConnexion"> Se connecter </string>
     <string name="titleSignUpOne"> Qui êtes-vous ? </string>
     <string name="titleSignUpTwo"> Inscription (2/3) </string>
@@ -71,5 +71,6 @@
     <string name="membre_inscrits"> Membres inscrits : </string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="descriptionNF"> Description : </string>
 
 </resources>

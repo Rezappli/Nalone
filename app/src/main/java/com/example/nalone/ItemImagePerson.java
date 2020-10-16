@@ -7,7 +7,7 @@ public class ItemImagePerson {
         this.mImageResource = image;
     }
 
-    public int getmImageResource() {
+    public int getImageResource() {
         return mImageResource;
     }
 

@@ -280,6 +280,8 @@ public class CreateEventActivity extends AppCompatActivity {
             }
         });
 
+
+
         dialogCalendrier.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         dialogCalendrier.show();
     }

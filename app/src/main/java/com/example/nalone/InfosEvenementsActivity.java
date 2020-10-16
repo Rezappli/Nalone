@@ -6,6 +6,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.TextView;
 
 import com.example.nalone.Adapter.ItemImagePersonAdapter;
@@ -49,7 +50,6 @@ public class InfosEvenementsActivity extends AppCompatActivity {
         mTimer = findViewById(R.id.time);
         mOwner = findViewById(R.id.owner);
         mDescription = findViewById(R.id.description);
-        mRecyclerView = findViewById(R.id.recyclerViewMembresInscrits);
 
         DatabaseReference event =  firebaseDatabase.getReference("evenements/"+mMarker.getTag());
         event.addValueEventListener(new ValueEventListener() {
@@ -73,15 +73,24 @@ public class InfosEvenementsActivity extends AppCompatActivity {
                         mDescription.setText(e.getDescription());
 
                         //users.add(new ItemImagePerson(R.drawable.background_image));
-                        for(int i = 0; i < e.getMembres_inscrits().size(); i++){
-                            membres_inscrits.add(new ItemImagePerson(R.drawable.background_image));
+                        for(int i = 0; i < 10; i++){
+                            membres_inscrits.add(new ItemImagePerson(R.drawable.ci_musique));
                         }
 
-                        mLayoutManager = new LinearLayoutManager(getBaseContext());
+                        mAdapter = new ItemImagePersonAdapter(membres_inscrits);
+
+                        mRecyclerView = findViewById(R.id.recyclerViewMembresInscrits);
+                        mLayoutManager = new LinearLayoutManager(
+                                getBaseContext(),
+                                LinearLayoutManager.HORIZONTAL,
+                                false);
 
                         mRecyclerView.setLayoutManager(mLayoutManager);
                         mRecyclerView.setAdapter(mAdapter);
-                        mAdapter = new ItemImagePersonAdapter(membres_inscrits);
+
+
+                        Log.w("membres", "membres : "+membres_inscrits.size());
+
                     }
 
                     @Override

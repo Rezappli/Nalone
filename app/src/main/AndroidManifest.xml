@@ -63,7 +63,6 @@
         <activity
             android:name=".SignUpInformationActivity"
             android:theme="@style/Theme.AppCompat.DayNight.NoActionBar" />
-
         <activity android:name=".ui.message.ChatActivity"
             android:theme="@style/Theme.AppCompat.DayNight.NoActionBar"/>
         <!--

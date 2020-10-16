@@ -18,6 +18,10 @@ import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.nalone.Adapter.ItemFiltreAdapter;
+import com.example.nalone.Adapter.ItemImagePersonAdapter;
+import com.example.nalone.ItemFiltre;
+import com.example.nalone.ItemImagePerson;
 import com.example.nalone.ItemPerson;
 import com.example.nalone.Adapter.ItemProfilAdapter;
 import com.example.nalone.R;
@@ -46,11 +50,16 @@ public class RechercheFragment extends Fragment {
     final List<ItemPerson> tempList = new ArrayList<>();
     private Dialog dialogProfil;
 
+    private RecyclerView mRecyclerViewFiltre;
+    private ItemFiltreAdapter mAdapterFiltre;
+    private RecyclerView.LayoutManager mLayoutManagerFiltre;
+
 
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         final List<ItemPerson> items = new ArrayList<>();
+        final List<ItemFiltre> filtres = new ArrayList<>();
 
         rechercheViewModel =
                 ViewModelProviders.of(this).get(RechercheViewModel.class);
@@ -60,6 +69,22 @@ public class RechercheFragment extends Fragment {
         resultat = root.findViewById(R.id.resultatText);
         resultat.setVisibility(View.GONE);
         dialogProfil = new Dialog(getContext());
+
+        filtres.add(new ItemFiltre("TC"));
+        filtres.add(new ItemFiltre("MMI"));
+        filtres.add(new ItemFiltre("INFO"));
+        filtres.add(new ItemFiltre("GB"));
+
+        mAdapterFiltre = new ItemFiltreAdapter(filtres);
+
+        mRecyclerViewFiltre = root.findViewById(R.id.recyclerViewFiltre);
+        mLayoutManagerFiltre = new LinearLayoutManager(
+                root.getContext(),
+                LinearLayoutManager.HORIZONTAL,
+                false);
+        mRecyclerViewFiltre.setLayoutManager(mLayoutManagerFiltre);
+        mRecyclerViewFiltre.setAdapter(mAdapterFiltre);
+
 
 
         search_bar.setOnClickListener(new View.OnClickListener() {
@@ -137,6 +162,8 @@ public class RechercheFragment extends Fragment {
             }
         });
 
+
+
         DatabaseReference id_users_ref = Constants.firebaseDatabase.getReference("id_users");
         id_users_ref.addValueEventListener(new ValueEventListener() {
             @Override
@@ -180,7 +207,8 @@ public class RechercheFragment extends Fragment {
                                                 String nbParticipate = snapshot.child("nombre_participation").getValue(String.class);
                                                 Log.w("Liste", "Ajout de :"+prenom+ " " +nom);
                                                 mRecyclerView = root.findViewById(R.id.recyclerView);
-                                                mLayoutManager = new LinearLayoutManager(getContext());
+                                                mLayoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL,
+                                                        false);
 
                                                 mRecyclerView.setLayoutManager(mLayoutManager);
                                                 mRecyclerView.setAdapter(mAdapter);
