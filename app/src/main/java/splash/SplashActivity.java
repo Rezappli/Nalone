@@ -13,6 +13,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.nalone.HomeActivity;
 import com.example.nalone.MainActivity;
+import com.example.nalone.util.Constants;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
@@ -35,14 +36,12 @@ import static com.example.nalone.util.Constants.user_mail;
 
 public class SplashActivity extends AppCompatActivity {
 
-    public static Activity activity;
     private GoogleSignInClient mGoogleSignInClient;
     private GoogleSignInAccount acct = null;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        this.activity = this;
 
         settingsFile = new File(getApplicationContext().getFilesDir(),"settings.dat");
         acct = GoogleSignIn.getLastSignedInAccount(this);
@@ -52,13 +51,20 @@ public class SplashActivity extends AppCompatActivity {
             if(acct == null) {
                 if (checkFileSettings()) {
                     String line = readSettings();
-                    String[] datas = line.split(";");
-                    checkUserRegister(this, false, datas[0], datas[1]);
+                    Log.w("fichier", "line " + line.toString());
+                    if(line != null) {
+                        String[] datas = line.split(";");
+                        checkUserRegister(datas[0], datas[1]);
+                    }else{
+                        Intent intent = new Intent(this, MainActivity.class);
+                        startActivity(intent);
+                    }
                 } else {
                     createFileSettings();
                 }
             }else{
-                checkUserRegister(this, true, acct.getEmail().replace(".", ","), null);
+                Intent home = new Intent(this, HomeActivity.class);
+                startActivity(home);
             }
         } catch (FileNotFoundException e) {
             e.printStackTrace();
@@ -89,7 +95,7 @@ public class SplashActivity extends AppCompatActivity {
         return null;
     }
 
-    private void checkUserRegister(final Context context, final boolean googleConnection, final String mail, final String password){
+    private void checkUserRegister(final String mail, final String password){
         DatabaseReference id_users = FirebaseDatabase.getInstance().getReference("id_users");
         id_users.addValueEventListener(new ValueEventListener() {
             @Override
@@ -104,18 +110,13 @@ public class SplashActivity extends AppCompatActivity {
                         @Override
                         public void onDataChange(@NonNull final DataSnapshot snapshot) {
                             String m = snapshot.child("mail").getValue(String.class);
-                            String p = snapshot.child("mail").getValue(String.class);
-                            if(googleConnection){
-                                if(m.equalsIgnoreCase(mail)){
-                                    Intent intent = new Intent(context, HomeActivity.class);
-                                    startActivity(intent);
-                                }
-                            }else{
-                                if(m.equalsIgnoreCase(mail) && p.equalsIgnoreCase(password)){
-                                    Intent intent = new Intent(context, HomeActivity.class);
-                                    startActivity(intent);
-                                }
+                            String p = snapshot.child("password").getValue(String.class);
+                            if(m.equalsIgnoreCase(mail) && p.equalsIgnoreCase(password)){
+                                user_mail = mail;
+                                Intent intent = new Intent(SplashActivity.this, HomeActivity.class);
+                                startActivity(intent);
                             }
+
                         }
 
                         @Override

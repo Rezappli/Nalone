@@ -3,6 +3,8 @@ package com.example.nalone;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -30,10 +32,12 @@ import java.io.InputStream;
 
 public class SignUpProfilActivity extends AppCompatActivity {
 
-    ImageView imageViewPhotoProfil;
-    TextInputEditText signUpDescription;
-    LinearLayout linearLayoutBackgroundPP;
-    Button signupNext;
+    private ImageView imageViewPhotoProfil;
+    private TextInputEditText signUpDescription;
+    private LinearLayout linearLayoutBackgroundPP;
+    private Button signupNext;
+    private boolean hasSelectedImage = false;
+    private Bitmap selectedImage;
 
 
     static final int RESULT_LOAD_IMG = 1;
@@ -67,6 +71,7 @@ public class SignUpProfilActivity extends AppCompatActivity {
         Log.d("ID_USERS", "Value is: " + id_users);
 
         setContentView(R.layout.activity_sign_up_profil);
+
 
         imageViewPhotoProfil = findViewById(R.id.signupPhotoProfil);
         linearLayoutBackgroundPP = findViewById(R.id.signupBgPhotoProfil);
@@ -106,71 +111,96 @@ public class SignUpProfilActivity extends AppCompatActivity {
 
             @Override
             public void onClick(View view) {
+                if (!hasSelectedImage) {
+                    final AlertDialog.Builder builder = new AlertDialog.Builder(SignUpProfilActivity.this);
+                    builder.setMessage("Vous n'avez pas séléctionné de photo de profil ! Voulez-vous continuer ?")
+                            .setPositiveButton("Oui", new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int id) {
+                                    saveData();
+                                }
+                            })
+                            .setNegativeButton("Non", new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int id) {
 
-                signUpDescriptionEnter = signUpDescription.getText().toString();
-                SignUpInformationActivity.userData.setDescription(signUpDescriptionEnter);
-
-                ErrorClass.checkInternetConnection();
-
-                DatabaseReference id_user = Constants.firebaseDatabase.getReference("authentification/"+id_users);
-
-                DatabaseReference mailAuth = Constants.firebaseDatabase.getReference("authentification/"+id_users + "/mail");
-                mailAuth.setValue(SignUpInformationActivity.userData.getAdresseMail());
-
-                DatabaseReference passwordAuth = Constants.firebaseDatabase.getReference("authentification/"+id_users + "/password");
-                passwordAuth.setValue(SignUpInformationActivity.userData.getPass());
-
-                DatabaseReference mail = Constants.firebaseDatabase.getReference("users/" + id_users + "/mail");
-                mail.setValue(SignUpInformationActivity.userData.getAdresseMail());
-
-                DatabaseReference nom = Constants.firebaseDatabase.getReference("users/" +id_users + "/nom");
-                nom.setValue(SignUpInformationActivity.userData.getNom());
-
-                DatabaseReference prenom = Constants.firebaseDatabase.getReference("users/"+ id_users + "/prenom");
-                prenom.setValue(SignUpInformationActivity.userData.getPrenom());
-
-                DatabaseReference sexe = Constants.firebaseDatabase.getReference("users/"+id_users + "/sexe");
-                sexe.setValue(SignUpInformationActivity.userData.getSexe());
-
-                DatabaseReference ville = Constants.firebaseDatabase.getReference("users/"+id_users + "/ville");
-                ville.setValue(SignUpInformationActivity.userData.getVille());
-
-                DatabaseReference adresse = Constants.firebaseDatabase.getReference("users/"+id_users + "/adresse");
-                adresse.setValue(SignUpInformationActivity.userData.getAdresse());
-
-                DatabaseReference date = Constants.firebaseDatabase.getReference("users/"+id_users + "/date");
-                date.setValue(SignUpInformationActivity.userData.getDate());
-
-                DatabaseReference numero = Constants.firebaseDatabase.getReference("users/"+id_users + "/numero");
-                numero.setValue(SignUpInformationActivity.userData.getNumero());
-
-                DatabaseReference cursus = Constants.firebaseDatabase.getReference("users/"+id_users +  "/cursus");
-                cursus.setValue(SignUpInformationActivity.userData.getCursus());
-
-                DatabaseReference interets = Constants.firebaseDatabase.getReference("users/"+id_users + "/interets");
-                interets.setValue(SignUpInformationActivity.userData.getCentreInterets());
-
-                DatabaseReference description = Constants.firebaseDatabase.getReference("users/"+id_users + "/description");
-                description.setValue(SignUpInformationActivity.userData.getDescription());
-
-                DatabaseReference nbCreate = Constants.firebaseDatabase.getReference("users/"+id_users + "/nombre_creation");
-                nbCreate.setValue(SignUpInformationActivity.userData.getNbCreate());
-
-                DatabaseReference nbParticipate = Constants.firebaseDatabase.getReference("users/"+id_users + "/nombre_participation");
-                nbParticipate.setValue(SignUpInformationActivity.userData.getNbParticipate());
-
-                DatabaseReference id_users_ref = Constants.firebaseDatabase.getReference("id_users");
-                int id_users_int = Integer.parseInt(id_users);
-                id_users_int++;
-                String s = id_users_int + "";
-                id_users_ref.setValue(s);
-
-                Intent welcomeIntent = new Intent(getBaseContext(), MainActivity.class);
-                startActivityForResult(welcomeIntent,0);
-                Toast.makeText(getApplicationContext(), "Bienvenue dans NoLonely !", Toast.LENGTH_SHORT).show();
+                                }
+                            });
+                    builder.create();
+                    builder.show();
+                }else{
+                    saveData();
+                }
             }
         });
     }
+
+    private void saveData(){
+
+        signUpDescriptionEnter = signUpDescription.getText().toString();
+        SignUpInformationActivity.userData.setDescription(signUpDescriptionEnter);
+
+        ErrorClass.checkInternetConnection();
+
+        DatabaseReference id_user = Constants.firebaseDatabase.getReference("authentification/"+id_users);
+
+        DatabaseReference mailAuth = Constants.firebaseDatabase.getReference("authentification/"+id_users + "/mail");
+        mailAuth.setValue(SignUpInformationActivity.userData.getAdresseMail());
+
+        DatabaseReference passwordAuth = Constants.firebaseDatabase.getReference("authentification/"+id_users + "/password");
+        passwordAuth.setValue(SignUpInformationActivity.userData.getPass());
+
+        DatabaseReference mail = Constants.firebaseDatabase.getReference("users/" + id_users + "/mail");
+        mail.setValue(SignUpInformationActivity.userData.getAdresseMail());
+
+        DatabaseReference nom = Constants.firebaseDatabase.getReference("users/" +id_users + "/nom");
+        nom.setValue(SignUpInformationActivity.userData.getNom());
+
+        DatabaseReference prenom = Constants.firebaseDatabase.getReference("users/"+ id_users + "/prenom");
+        prenom.setValue(SignUpInformationActivity.userData.getPrenom());
+
+        DatabaseReference sexe = Constants.firebaseDatabase.getReference("users/"+id_users + "/sexe");
+        sexe.setValue(SignUpInformationActivity.userData.getSexe());
+
+        DatabaseReference ville = Constants.firebaseDatabase.getReference("users/"+id_users + "/ville");
+        ville.setValue(SignUpInformationActivity.userData.getVille());
+
+        DatabaseReference adresse = Constants.firebaseDatabase.getReference("users/"+id_users + "/adresse");
+        adresse.setValue(SignUpInformationActivity.userData.getAdresse());
+
+        DatabaseReference date = Constants.firebaseDatabase.getReference("users/"+id_users + "/date");
+        date.setValue(SignUpInformationActivity.userData.getDate());
+
+        DatabaseReference numero = Constants.firebaseDatabase.getReference("users/"+id_users + "/numero");
+        numero.setValue(SignUpInformationActivity.userData.getNumero());
+
+        DatabaseReference cursus = Constants.firebaseDatabase.getReference("users/"+id_users +  "/cursus");
+        cursus.setValue(SignUpInformationActivity.userData.getCursus());
+
+        DatabaseReference interets = Constants.firebaseDatabase.getReference("users/"+id_users + "/interets");
+        interets.setValue(SignUpInformationActivity.userData.getCentreInterets());
+
+        DatabaseReference description = Constants.firebaseDatabase.getReference("users/"+id_users + "/description");
+        description.setValue(SignUpInformationActivity.userData.getDescription());
+
+        DatabaseReference nbCreate = Constants.firebaseDatabase.getReference("users/"+id_users + "/nombre_creation");
+        nbCreate.setValue(SignUpInformationActivity.userData.getNbCreate());
+
+        DatabaseReference nbParticipate = Constants.firebaseDatabase.getReference("users/"+id_users + "/nombre_participation");
+        nbParticipate.setValue(SignUpInformationActivity.userData.getNbParticipate());
+
+        DatabaseReference photo_profil = Constants.firebaseDatabase.getReference("users/"+id_users + "/photo_profil");
+        photo_profil.setValue(""+Constants.getBytesFromBitmap(selectedImage));
+
+        DatabaseReference id_users_ref = Constants.firebaseDatabase.getReference("id_users");
+        int id_users_int = Integer.parseInt(id_users);
+        id_users_int++;
+        String s = id_users_int + "";
+        id_users_ref.setValue(s);
+
+        Intent welcomeIntent = new Intent(getBaseContext(), MainActivity.class);
+        startActivityForResult(welcomeIntent,0);
+        Toast.makeText(getApplicationContext(), "Bienvenue dans NoLonely !", Toast.LENGTH_SHORT).show();
+    }
+
 
     @Override
     protected void onActivityResult(int reqCode, int resultCode, Intent data) {
@@ -182,9 +212,9 @@ public class SignUpProfilActivity extends AppCompatActivity {
                 final Uri imageUri = data.getData();
                 assert imageUri != null;
                 final InputStream imageStream = getContentResolver().openInputStream(imageUri);
-                final Bitmap selectedImage = BitmapFactory.decodeStream(imageStream);
+                selectedImage = BitmapFactory.decodeStream(imageStream);
                 imageViewPhotoProfil.setImageBitmap(selectedImage);
-
+                hasSelectedImage = true;
             } catch (FileNotFoundException e) {
                 e.printStackTrace();
                 Toast.makeText(getApplicationContext(), "Une erreur s'est produite",Toast.LENGTH_LONG).show();

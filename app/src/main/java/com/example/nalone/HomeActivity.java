@@ -4,7 +4,9 @@ import android.app.NotificationManager;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.example.nalone.util.Constants;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
@@ -29,7 +31,12 @@ import static com.example.nalone.util.Constants.firebaseDatabase;
 import static com.example.nalone.util.Constants.user_mail;
 import static com.example.nalone.util.Constants.user_id;
 
+
 public class HomeActivity extends AppCompatActivity{
+
+    private CustomToast t;
+    private Handler h = new Handler();
+    private Runnable r;
 
 
     @RequiresApi(api = Build.VERSION_CODES.M)
@@ -37,17 +44,11 @@ public class HomeActivity extends AppCompatActivity{
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        if(Constants.NALONE_BUNDLE != null){
-            Log.w("Fragment", "Lecture d'un save instance");
-            String s = Constants.NALONE_BUNDLE.getString("MyArrayList");
-            Log.w("Fragment", "Valeur : "+s);
-        }
-
         ErrorClass.activity = this;
         ErrorClass.checkInternetConnection();
         setContentView(R.layout.activity_home);
 
-
+        t = new CustomToast(this, "Appuyer de nouveau pour quitter", false, true);;
 
 
         BottomNavigationView navView = findViewById(R.id.nav_view);
@@ -58,8 +59,18 @@ public class HomeActivity extends AppCompatActivity{
         NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
         NavigationUI.setupWithNavController(navView, navController);
 
+       r = new Runnable() {
+            @Override
+            public void run() {
+                if(t.isShow()){
+                    t.setShow(false);
+                }
+            }
+        };
+
         checkUserRegister();
         checkNotification();
+
     }
 
     @RequiresApi(api = Build.VERSION_CODES.M)
@@ -92,10 +103,12 @@ public class HomeActivity extends AppCompatActivity{
     private void checkUserRegister() {
         final GoogleSignInAccount acct = GoogleSignIn.getLastSignedInAccount(this);
         if (acct != null) {
-            user_mail = acct.getEmail();
+            Log.w("connexion", "connexion par google");
+            user_mail = acct.getEmail().replace(".", ",");
         }
 
         if(user_mail == null || user_id == null){
+            Log.w("connexion", "connexion par email & mdp");
             DatabaseReference id_users = Constants.firebaseDatabase.getReference("id_users");
             id_users.addValueEventListener(new ValueEventListener() {
                 @Override
@@ -113,7 +126,7 @@ public class HomeActivity extends AppCompatActivity{
                                 String mail = snapshot.child("mail").getValue(String.class);
                                 if (mail.equalsIgnoreCase(user_mail)) {
                                     user_id = finalI+"";
-                                    user_mail = mail;
+                                    user_mail = mail.replace(".", ",");
                                     DatabaseReference rootRef = Constants.firebaseDatabase.getReference("authentification/");
                                     final String finalUser_id = user_id;
                                     rootRef.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -138,14 +151,6 @@ public class HomeActivity extends AppCompatActivity{
 
                             }
                         });
-
-                        if(i == nb_users){
-                            if(user_id == null) {
-                                Log.w("Connexion", "User inconnu dans la base");
-                                Intent intent = new Intent(getBaseContext(), SignUpInformationActivity.class);
-                                startActivityForResult(intent, 0);
-                            }
-                        }
                     }
 
                 }
@@ -156,31 +161,25 @@ public class HomeActivity extends AppCompatActivity{
                 }
             });
         }
-
-
-        user_mail = user_mail.replace(".", ",");
-        Log.w("User","User mail:" + user_mail);
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        Constants.COUNTER = 0;
         ErrorClass.checkInternetConnection();
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.R)
     @Override
     public void onBackPressed(){
         //super.onBackPressed();
-        Constants.COUNTER ++;
-        if(Constants.COUNTER == 1){
-            CustomToast t = new CustomToast(getBaseContext(), "Appuyer de nouveau pour quitter", false, true);
+        h.postDelayed(r, 3500);
+        if(!t.isShow()){
             t.show();
         }else{
             Intent intent = new Intent(Intent.ACTION_MAIN);
             intent.addCategory(Intent.CATEGORY_HOME);
-            CustomToast t = new CustomToast(getBaseContext(), "Appuyer de nouveau pour quitter", false, true);
-            t.show();    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             startActivity(intent);
         }
 

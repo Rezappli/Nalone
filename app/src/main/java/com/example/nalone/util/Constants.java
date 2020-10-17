@@ -1,5 +1,6 @@
 package com.example.nalone.util;
 
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.util.Log;
 
@@ -35,7 +36,10 @@ public class Constants {
     public static List<Evenement> events = new ArrayList<>();
     public static int nb_evenements = 0;
     public static File settingsFile;
-
     public static final DateFormat formatD= DateFormat.getDateInstance(DateFormat.FULL,
             new Locale("fr","FR"));
+
+    public static String getBytesFromBitmap(Bitmap image){
+        return "";
+    }
 }
