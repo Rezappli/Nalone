@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
+import com.example.nalone.Adapter.ItemEventAdapter;
 import com.example.nalone.R;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
@@ -19,10 +20,13 @@ import android.location.Address;
 import android.location.Geocoder;
 import android.os.Build;
 import android.util.Log;
+import android.widget.RelativeLayout;
 
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.nalone.CreateEventActivity;
 import com.example.nalone.Evenement;
@@ -55,6 +59,8 @@ import static com.example.nalone.util.Constants.user_id;
  */
 public class MapFragment extends Fragment implements OnMapReadyCallback{
 
+    private View rootView;
+
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -67,6 +73,11 @@ public class MapFragment extends Fragment implements OnMapReadyCallback{
     private MapView mMapView;
     private GoogleMap mMap;
     private ImageView buttonAdd;
+
+    private RecyclerView mRecyclerViewEvent;
+    private ItemEventAdapter mAdapterEvent;
+    private RecyclerView.LayoutManager mLayoutManagerEvent;
+
 
 
     public MapFragment() {
@@ -103,7 +114,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback{
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_map, container, false);
+        rootView = inflater.inflate(R.layout.fragment_map, container, false);
         ((AppCompatActivity) getActivity()).getSupportActionBar().hide();
 
         mMapView = rootView.findViewById(R.id.mapView);
@@ -130,6 +141,11 @@ public class MapFragment extends Fragment implements OnMapReadyCallback{
                 startActivityForResult(createEvent,0);
             }
         });
+
+
+
+
+
 
         return rootView;
     }
@@ -181,8 +197,10 @@ public class MapFragment extends Fragment implements OnMapReadyCallback{
     @Override
     public void onMapReady(GoogleMap googleMap) {
         final List<Evenement> finalList = new ArrayList<>();
+        final List<Evenement> itemEvents = new ArrayList<>();
         final boolean[] event_load = {false};
         mMap = googleMap;
+
         LatLng laval = new LatLng(48.0785146,-0.7669906);
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(laval, 13	));
         Log.w("Map", "Taille de constants marker :"+markers.size());
@@ -200,10 +218,41 @@ public class MapFragment extends Fragment implements OnMapReadyCallback{
                     mMap.addMarker(Constants.markers.get(i)).setTag(e.getId());
                 }
             }else{
-                Log.w("Map", "Ajout de l'evenement");
+                Log.w("Map", "Ajout de l'evenement : "+ e.getNom());
                 mMap.addMarker(Constants.markers.get(i)).setTag(e.getId());
             }
+
+            itemEvents.add(e);
         }
+
+        mAdapterEvent = new ItemEventAdapter(itemEvents);
+
+        mRecyclerViewEvent = rootView.findViewById(R.id.recyclerViewEventMap);
+        mLayoutManagerEvent = new LinearLayoutManager(
+                rootView.getContext(),
+                LinearLayoutManager.HORIZONTAL,
+                false);
+        mRecyclerViewEvent.setLayoutManager(mLayoutManagerEvent);
+        mRecyclerViewEvent.setAdapter(mAdapterEvent);
+
+
+        mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
+            @Override
+            public boolean onMarkerClick(Marker marker) {
+                /*ViewGroup.MarginLayoutParams marginLayoutParams = new ViewGroup.MarginLayoutParams(mRecyclerViewEvent.getLayoutParams());
+                marginLayoutParams.setMargins(0, 0, 0, 60);
+                mRecyclerViewEvent.setLayoutParams(marginLayoutParams);*/
+                mRecyclerViewEvent.setPadding(0,0,0,60);
+                return false;
+            }
+        });
+
+        mMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
+            @Override
+            public void onMapClick(LatLng latLng) {
+                mRecyclerViewEvent.setPadding(0,0,0,0);
+            }
+        });
 
         mMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
             @Override
@@ -213,6 +262,14 @@ public class MapFragment extends Fragment implements OnMapReadyCallback{
                 startActivity(intent);
             }
         });
+
+        mAdapterEvent.setOnItemClickListener(new ItemEventAdapter.OnItemClickListener() {
+            @Override
+            public void onAddClick(int position) {
+            }
+        });
+
+
 
 
 

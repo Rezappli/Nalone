@@ -192,7 +192,7 @@ public class CreateEventActivity extends AppCompatActivity {
                 });
             }
 
-            Evenement e = new Evenement(id_events, event_name.getText().toString(), event_resume.getText().toString(),
+            Evenement e = new Evenement(R.drawable.ic_baseline_account_circle_24, id_events, event_name.getText().toString(), event_resume.getText().toString(),
                     event_adresse.getText().toString(), event_city.getText().toString(), event_visibilite, user_id, sign_in_members,
                     itemsAdd, calendar.getTime(), mHour+":"+mMin);
             DatabaseReference events = Constants.firebaseDatabase.getReference("evenements/" + id_events);

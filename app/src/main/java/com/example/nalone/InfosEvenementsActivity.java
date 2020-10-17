@@ -10,6 +10,7 @@ import android.util.Log;
 import android.widget.TextView;
 
 import com.example.nalone.Adapter.ItemImagePersonAdapter;
+import com.example.nalone.util.Constants;
 import com.google.android.gms.maps.model.Marker;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -60,13 +61,12 @@ public class InfosEvenementsActivity extends AppCompatActivity {
                 final List<ItemImagePerson> membres_inscrits = new ArrayList<>();
                 final Evenement e = snapshot.getValue(Evenement.class);
 
-                final DateFormat formatD= DateFormat.getDateInstance(DateFormat.FULL,
-                        new Locale("fr","FR"));
+
                 DatabaseReference user = firebaseDatabase.getReference("users/"+e.getProprietaire());
                 user.addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
-                        String date_text = formatD.format(e.getDate());
+                        String date_text = Constants.formatD.format(e.getDate());
                         String final_date_text = "";
                         for(int i = 0; i < date_text.length(); i++){
                             char character = date_text.charAt(i);

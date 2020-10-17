@@ -1,5 +1,7 @@
 package com.example.nalone;
 
+import com.example.nalone.util.Constants;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -7,6 +9,7 @@ import java.util.List;
 
 public class Evenement {
 
+    public int image;
     public int id;
     public String nom;
     public String description;
@@ -21,8 +24,9 @@ public class Evenement {
     public Evenement() {}
 
 
-    public Evenement(int id, String nom, String description, String adresse, String ville, Visibilite visibilite,
+    public Evenement(int image, int id, String nom, String description, String adresse, String ville, Visibilite visibilite,
                      String proprietaire, List<String> membres_inscrits, List<ItemPerson> membres_en_attente, Date date, String time){
+        this.image = image;
         this.nom = nom;
         this.description = description;
         this.adresse = adresse;
@@ -38,6 +42,7 @@ public class Evenement {
         this.date = date;
         this.time = time;
     }
+
 
     public int getId(){
         return id;
@@ -94,6 +99,29 @@ public class Evenement {
 
     public String getTime(){
         return time;
+    }
+
+    public int getImage() {
+        return image;
+    }
+
+    public void setImage(int image) {
+        this.image = image;
+    }
+
+    @Override
+    public String toString(){
+        String date_text = Constants.formatD.format(this.date);
+        String final_date_text = "";
+        for(int i = 0; i < date_text.length(); i++){
+            char character = date_text.charAt(i);
+            if(i == 0) {
+                character = Character.toUpperCase(character);
+            }
+            final_date_text += character;
+        }
+
+        return final_date_text;
     }
 
 }

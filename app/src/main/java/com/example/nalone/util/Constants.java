@@ -14,8 +14,10 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.io.File;
+import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 public class Constants {
 
@@ -33,4 +35,7 @@ public class Constants {
     public static List<Evenement> events = new ArrayList<>();
     public static int nb_evenements = 0;
     public static File settingsFile;
+
+    public static final DateFormat formatD= DateFormat.getDateInstance(DateFormat.FULL,
+            new Locale("fr","FR"));
 }
