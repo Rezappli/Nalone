@@ -196,9 +196,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback{
     @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
     public void onMapReady(GoogleMap googleMap) {
-        final List<Evenement> finalList = new ArrayList<>();
         final List<Evenement> itemEvents = new ArrayList<>();
-        final boolean[] event_load = {false};
         mMap = googleMap;
 
         LatLng laval = new LatLng(48.0785146,-0.7669906);
@@ -214,15 +212,14 @@ public class MapFragment extends Fragment implements OnMapReadyCallback{
                     if(m.getIcon() == null){
                         m.icon(getEventColor(e));
                     }
-                    Log.w("Map", "Ajout de l'evenement");
+                    itemEvents.add(e);
                     mMap.addMarker(Constants.markers.get(i)).setTag(e.getId());
                 }
             }else{
-                Log.w("Map", "Ajout de l'evenement : "+ e.getNom());
+                itemEvents.add(e);
                 mMap.addMarker(Constants.markers.get(i)).setTag(e.getId());
             }
 
-            itemEvents.add(e);
         }
 
         mAdapterEvent = new ItemEventAdapter(itemEvents);
