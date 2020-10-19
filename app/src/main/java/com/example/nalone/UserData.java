@@ -1,22 +1,28 @@
 package com.example.nalone;
 
+import android.graphics.Bitmap;
+
+import com.example.nalone.util.Constants;
+
 import java.util.Arrays;
 
 public class UserData {
-    private String sexe;
-    private String nom;
-    private String prenom;
-    private String ville;
-    private String adresse;
-    private String date;
-    private String numero;
-    private String adresseMail;
-    private String pass;
-    private String[] centreInterets;
-    private String cursus;
-    private String description;
-    private String nbCreate;
-    private String nbParticipate;
+    public String sexe;
+    public String nom;
+    public String prenom;
+    public String ville;
+    public String adresse;
+    public String date;
+    public String numero;
+    public String adresseMail;
+    public String pass;
+    public String[] centreInterets;
+    public String cursus;
+    public String description;
+    public String nbCreate;
+    public String nbParticipate;
+    public String demande_amis_recu;
+    public String demande_amis_envoye;
 
     public String getSexe() {
         return sexe;
@@ -42,9 +48,7 @@ public class UserData {
         this.cursus = cursus;
     }
 
-    public UserData(){
-        this(null, null, null, null, null, null, null, null, null, null, null, null);
-    }
+    public UserData(){}
 
     public UserData(String sexe, String nom, String prenom, String ville, String adresse, String date, String numero,String adresseMail, String pass, String cursus, String[] centreInterets, String description){
         this.sexe = sexe;
@@ -61,7 +65,8 @@ public class UserData {
         this.description = description;
         this.nbCreate = 0+"";
         this.nbParticipate = 0+"";
-
+        this.demande_amis_envoye = "";
+        this.demande_amis_recu = "";
     }
 
     public String getNom() {
@@ -151,4 +156,21 @@ public class UserData {
     public void setNbParticipate(String nbParticipate) {
         this.nbParticipate = nbParticipate;
     }
+
+    public void setDemande_amis_recu(String demande_amis_recu) {
+        this.demande_amis_recu = demande_amis_recu;
+    }
+
+    public void setDemande_amis_envoye(String demande_amis_envoye) {
+        this.demande_amis_envoye = demande_amis_envoye;
+    }
+
+    public String getDemande_amis_recu(){
+        return demande_amis_recu;
+    }
+
+    public String getDemande_amis_envoye(){
+        return demande_amis_envoye;
+    }
+
 }

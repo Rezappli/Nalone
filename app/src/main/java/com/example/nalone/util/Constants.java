@@ -1,5 +1,6 @@
 package com.example.nalone.util;
 
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.util.Log;
@@ -7,6 +8,7 @@ import android.util.Log;
 import androidx.annotation.NonNull;
 
 import com.example.nalone.Evenement;
+import com.example.nalone.SignUpProfilActivity;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -14,6 +16,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.text.DateFormat;
 import java.util.ArrayList;
@@ -39,7 +42,17 @@ public class Constants {
     public static final DateFormat formatD= DateFormat.getDateInstance(DateFormat.FULL,
             new Locale("fr","FR"));
 
-    public static String getBytesFromBitmap(Bitmap image){
-        return "";
+    public static byte[] getBytesFromBitmap(Bitmap image, Intent intent){
+        Bitmap bmp = (Bitmap) intent.getExtras().get("data");
+
+        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+
+        bmp.compress(Bitmap.CompressFormat.PNG, 100, stream);
+
+        byte[] byteArray = stream.toByteArray();
+
+        bmp.recycle();
+
+        return byteArray;
     }
 }

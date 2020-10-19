@@ -138,9 +138,8 @@ public class SignUpProfilActivity extends AppCompatActivity {
         signUpDescriptionEnter = signUpDescription.getText().toString();
         SignUpInformationActivity.userData.setDescription(signUpDescriptionEnter);
 
-        ErrorClass.checkInternetConnection();
 
-        DatabaseReference id_user = Constants.firebaseDatabase.getReference("authentification/"+id_users);
+        ErrorClass.checkInternetConnection();
 
         DatabaseReference mailAuth = Constants.firebaseDatabase.getReference("authentification/"+id_users + "/mail");
         mailAuth.setValue(SignUpInformationActivity.userData.getAdresseMail());
@@ -148,10 +147,10 @@ public class SignUpProfilActivity extends AppCompatActivity {
         DatabaseReference passwordAuth = Constants.firebaseDatabase.getReference("authentification/"+id_users + "/password");
         passwordAuth.setValue(SignUpInformationActivity.userData.getPass());
 
-        DatabaseReference mail = Constants.firebaseDatabase.getReference("users/" + id_users + "/mail");
-        mail.setValue(SignUpInformationActivity.userData.getAdresseMail());
+        DatabaseReference user = Constants.firebaseDatabase.getReference("users/" + id_users);
+        user.setValue(SignUpInformationActivity.userData);
 
-        DatabaseReference nom = Constants.firebaseDatabase.getReference("users/" +id_users + "/nom");
+        /*DatabaseReference nom = Constants.firebaseDatabase.getReference("users/" +id_users + "/nom");
         nom.setValue(SignUpInformationActivity.userData.getNom());
 
         DatabaseReference prenom = Constants.firebaseDatabase.getReference("users/"+ id_users + "/prenom");
@@ -188,7 +187,7 @@ public class SignUpProfilActivity extends AppCompatActivity {
         nbParticipate.setValue(SignUpInformationActivity.userData.getNbParticipate());
 
         DatabaseReference photo_profil = Constants.firebaseDatabase.getReference("users/"+id_users + "/photo_profil");
-        photo_profil.setValue(""+Constants.getBytesFromBitmap(selectedImage));
+        photo_profil.setValue(""+Constants.getBytesFromBitmap(selectedImage));*/
 
         DatabaseReference id_users_ref = Constants.firebaseDatabase.getReference("id_users");
         int id_users_int = Integer.parseInt(id_users);

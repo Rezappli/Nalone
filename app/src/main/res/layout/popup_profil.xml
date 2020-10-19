@@ -152,7 +152,7 @@
             </LinearLayout>
 
             <ImageView
-                android:id="@+id/imageView16"
+                android:id="@+id/buttonAdd"
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
                 android:layout_margin="20dp"

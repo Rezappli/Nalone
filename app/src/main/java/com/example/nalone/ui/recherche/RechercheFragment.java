@@ -9,8 +9,11 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.SearchView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
@@ -25,6 +28,7 @@ import com.example.nalone.ItemImagePerson;
 import com.example.nalone.ItemPerson;
 import com.example.nalone.Adapter.ItemProfilAdapter;
 import com.example.nalone.R;
+import com.example.nalone.UserData;
 import com.example.nalone.ui.message.ChatActivity;
 import com.example.nalone.util.Constants;
 import com.google.firebase.database.DataSnapshot;
@@ -36,6 +40,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import static com.example.nalone.util.Constants.firebaseDatabase;
+import static com.example.nalone.util.Constants.user_id;
 import static com.example.nalone.util.Constants.user_mail;
 
 public class RechercheFragment extends Fragment {
@@ -181,6 +187,8 @@ public class RechercheFragment extends Fragment {
                             if(mail.equalsIgnoreCase(user_mail)){
                                 int id_user_connect = finalI;
                                 String amis_text = snapshot.child("amis").getValue(String.class);
+                                String amis_envoye = snapshot.child("demande_amis_envoye").getValue(String.class);
+                                String amis_recu = snapshot.child("demande_amis_envoye").getValue(String.class);
                                 final List<String> liste_amis = Arrays.asList(amis_text.split(","));
 
                                 Log.w("Liste", "Liste amis:"+amis_text);
@@ -193,8 +201,7 @@ public class RechercheFragment extends Fragment {
                                 }
 
                                 for(int j = 0; j < nb_users; j++){
-                                    Log.w("Liste", "J :"+j);
-                                    if(!liste_amis.contains(j+"") && j != finalI){
+                                    if(!liste_amis.contains(j+"") && j != finalI && !amis_envoye.contains(j+"") && !amis_recu.contains(""+j)){
                                         DatabaseReference user_found = Constants.firebaseDatabase.getReference("users/"+j);
                                         final int finalJ = j;
                                         user_found.addValueEventListener(new ValueEventListener() {
@@ -221,7 +228,7 @@ public class RechercheFragment extends Fragment {
                                                 mAdapter.setOnItemClickListener(new ItemProfilAdapter.OnItemClickListener() {
                                                     @Override
                                                     public void onAddClick(int position) {
-                                                        showPopUpProfil(items.get(position).getNom(), items.get(position).getmDescription(), items.get(position).getmNbCreate(), items.get(position).getmNbParticipate());
+                                                        showPopUpProfil(items.get(position).getId(), items.get(position).getNom(), items.get(position).getmDescription(), items.get(position).getmNbCreate(), items.get(position).getmNbParticipate());
                                                     }
                                                 });
 
@@ -273,17 +280,19 @@ public class RechercheFragment extends Fragment {
 
 
 
-    public void showPopUpProfil(String name, String desc, String nbCreate, String nbParticipate){
+    public void showPopUpProfil(final int id, String name, String desc, String nbCreate, String nbParticipate){
          TextView nameProfil;
          TextView descriptionProfil;
          TextView nbCreateProfil;
          TextView nbParticipateProfil;
+         final ImageView buttonAdd;
 
         dialogProfil.setContentView(R.layout.popup_profil);
         nameProfil = dialogProfil.findViewById(R.id.profilName);
         descriptionProfil = dialogProfil.findViewById(R.id.profilDescription);
         nbCreateProfil = dialogProfil.findViewById(R.id.nbEventCreate);
         nbParticipateProfil = dialogProfil.findViewById(R.id.nbEventParticipe);
+        buttonAdd = dialogProfil.findViewById(R.id.buttonAdd);
 
 
         nameProfil.setText(name);
@@ -295,11 +304,61 @@ public class RechercheFragment extends Fragment {
             descriptionProfil.setVisibility(View.GONE);
         }
 
+        buttonAdd.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.w("Friend", "ajout de l'ami : "+id);
+                addFriend(id);
+            }
+        });
+
         dialogProfil.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         dialogProfil.getWindow().setLayout(900, 1500);
         dialogProfil.show();
 
+    }
 
+    public void addFriend(final int id){
+        final DatabaseReference mDatabase = firebaseDatabase.getInstance().getReference("users").child(user_id).child("demande_amis_envoye");
+        mDatabase.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                String demande_amis_envoye = dataSnapshot.getValue(String.class);
+                if(demande_amis_envoye.length() > 0){
+                    demande_amis_envoye += ";"+id;
+                }else{
+                    demande_amis_envoye = ""+id;
+                }
+                mDatabase.setValue(demande_amis_envoye);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
+        final DatabaseReference mDatabase2 = firebaseDatabase.getInstance().getReference("users").child(""+id).child("demande_amis_recu");
+        mDatabase2.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                String demande_amis_recu = dataSnapshot.getValue(String.class);
+                if(demande_amis_recu.length() > 0){
+                    demande_amis_recu += ";"+id;
+                }else{
+                    demande_amis_recu = ""+id;
+                }
+                mDatabase2.setValue(demande_amis_recu);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
+        Toast.makeText(getContext(), "Vous avez envoyer une demande à cet utilisateur !", Toast.LENGTH_SHORT);
+        dialogProfil.hide();
     }
 
 }
