@@ -195,11 +195,8 @@ public class MesInvitationsFragment extends Fragment {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 String demande_amis_envoye = dataSnapshot.getValue(String.class);
-                if(demande_amis_envoye.length() > 0){
                     demande_amis_envoye = demande_amis_envoye.replace(","+user_id, "");
-                }else{
-                    demande_amis_envoye = "";
-                }
+                    demande_amis_envoye = demande_amis_envoye.replace(user_id, "");
                 mDatabase.setValue(demande_amis_envoye);
             }
 
@@ -226,7 +223,7 @@ public class MesInvitationsFragment extends Fragment {
         });
 
         final DatabaseReference mDatabase3 = firebaseDatabase.getInstance().getReference("users").child(user_id).child("amis");
-        mDatabase2.addListenerForSingleValueEvent(new ValueEventListener() {
+        mDatabase3.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 String amis_text = dataSnapshot.getValue(String.class);
@@ -245,7 +242,7 @@ public class MesInvitationsFragment extends Fragment {
         });
 
         final DatabaseReference mDatabase4 = firebaseDatabase.getInstance().getReference("users").child(""+id).child("amis");
-        mDatabase2.addListenerForSingleValueEvent(new ValueEventListener() {
+        mDatabase4.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 String amis_text = dataSnapshot.getValue(String.class);
