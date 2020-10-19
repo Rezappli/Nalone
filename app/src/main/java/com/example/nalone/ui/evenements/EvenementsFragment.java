@@ -4,7 +4,6 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -14,16 +13,9 @@ import androidx.viewpager.widget.ViewPager;
 
 import com.example.nalone.Adapter.SectionPageAdapter;
 import com.example.nalone.R;
-import com.example.nalone.ui.amis.display.AmisFragment;
-import com.example.nalone.ui.amis.display.GroupeFragment;
-import com.example.nalone.ui.amis.display.Fragment_3;
-import com.example.nalone.ui.evenements.EvenementsViewModel;
 import com.example.nalone.ui.evenements.display.EvenementsListFragment;
 import com.example.nalone.ui.evenements.display.MapFragment;
-import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.material.tabs.TabLayout;
-
-import java.util.Map;
 
 public class EvenementsFragment extends Fragment {
 

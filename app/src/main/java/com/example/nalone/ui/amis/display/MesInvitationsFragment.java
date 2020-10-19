@@ -12,10 +12,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.example.nalone.Adapter.ItemAmisAdapter;
-import com.example.nalone.Adapter.ItemFiltreAdapter;
 import com.example.nalone.Adapter.ItemInvitAmisAdapter;
-import com.example.nalone.Adapter.ItemProfilAdapter;
 import com.example.nalone.ItemPerson;
 import com.example.nalone.R;
 import com.example.nalone.util.Constants;
@@ -32,10 +29,10 @@ import static com.example.nalone.util.Constants.user_mail;
 
 /**
  * A simple {@link Fragment} subclass.
- * Use the {@link Fragment_3#newInstance} factory method to
+ * Use the {@link MesInvitationsFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class Fragment_3 extends Fragment {
+public class MesInvitationsFragment extends Fragment {
 
     private RecyclerView mRecyclerView;
     private ItemInvitAmisAdapter mAdapter;
@@ -50,7 +47,7 @@ public class Fragment_3 extends Fragment {
     private String mParam1;
     private String mParam2;
 
-    public Fragment_3() {
+    public MesInvitationsFragment() {
         // Required empty public constructor
     }
 
@@ -63,8 +60,8 @@ public class Fragment_3 extends Fragment {
      * @return A new instance of fragment Fragment_3.
      */
     // TODO: Rename and change types and number of parameters
-    public static Fragment_3 newInstance(String param1, String param2) {
-        Fragment_3 fragment = new Fragment_3();
+    public static MesInvitationsFragment newInstance(String param1, String param2) {
+        MesInvitationsFragment fragment = new MesInvitationsFragment();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
         args.putString(ARG_PARAM2, param2);

@@ -16,7 +16,7 @@ import com.example.nalone.Adapter.SectionPageAdapter;
 import com.example.nalone.R;
 import com.example.nalone.ui.amis.display.AmisFragment;
 import com.example.nalone.ui.amis.display.GroupeFragment;
-import com.example.nalone.ui.amis.display.Fragment_3;
+import com.example.nalone.ui.amis.display.MesInvitationsFragment;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.material.tabs.TabLayout;
 
@@ -77,7 +77,7 @@ public class MesAmisFragment extends Fragment {
 
         adapter.addFragment(new AmisFragment(), "Mes Amis", R.drawable.camera_alt_black_24dp);
         adapter.addFragment(new GroupeFragment(), "Mes groupes", R.drawable.round_group_24);
-        adapter.addFragment(new Fragment_3(), "Mes invitations", R.drawable.round_forum_24);
+        adapter.addFragment(new MesInvitationsFragment(), "Mes invitations", R.drawable.round_forum_24);
 
         viewPager.setAdapter(adapter);
     }
