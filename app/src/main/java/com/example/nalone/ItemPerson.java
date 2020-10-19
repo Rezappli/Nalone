@@ -1,5 +1,6 @@
 package com.example.nalone;
 
+import android.graphics.drawable.Drawable;
 import android.widget.ImageButton;
 
 import com.example.nalone.util.Constants;
@@ -12,18 +13,21 @@ public class ItemPerson {
     private String mNom;
     private String mNomToLowerCase;
     private String mDescription;
+    private String mVille;
     private int mImageResource2;
     private String mNbCreate = 0+"";
     private String mNbParticipate = 0+"";
 
-    public ItemPerson(int id, int imageResource, String nom, int imageResource2 , String description, String nbCreate, String nbParticipate){
-        mImageResource = imageResource;
-        mNom = nom;
-        mNomToLowerCase = mNom.toLowerCase();
-        mImageResource2 = imageResource2;
-        mDescription = description;
-        mNbCreate = nbCreate;
-        mNbParticipate = nbParticipate;
+
+    public ItemPerson(int id, int imageResource, String nom, int imageResource2 , String description, String ville, String nbCreate, String nbParticipate){
+        this.mImageResource = imageResource;
+        this.mNom = nom;
+        this.mNomToLowerCase = mNom.toLowerCase();
+        this.mImageResource2 = imageResource2;
+        this.mDescription = description;
+        this.mVille = ville;
+        this.mNbCreate = nbCreate;
+        this.mNbParticipate = nbParticipate;
         this.id = id;
     }
 
@@ -73,6 +77,14 @@ public class ItemPerson {
 
     public void setmDescription(String mDescription) {
         this.mDescription = mDescription;
+    }
+
+    public String getVille() {
+        return mVille;
+    }
+
+    public void setVille(String mVille) {
+        this.mVille = mVille;
     }
 
     public void setmImageResource2(int mImageResource2) {

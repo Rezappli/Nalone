@@ -22,7 +22,7 @@ import android.widget.TextView;
 import android.widget.TimePicker;
 
 import com.example.nalone.Adapter.ItemAddPersonAdapter;
-import com.example.nalone.Adapter.ItemPersonAdapter;
+import com.example.nalone.Adapter.ItemProfilAdapter;
 import com.example.nalone.util.Constants;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.database.DataSnapshot;
@@ -295,7 +295,7 @@ public class CreateEventActivity extends AppCompatActivity {
         dialogAddPerson.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
 
         final RecyclerView[] mRecyclerView = new RecyclerView[1];
-        final ItemPersonAdapter[] mAdapter = new ItemPersonAdapter[1];
+        final ItemProfilAdapter[] mAdapter = new ItemProfilAdapter[1];
         final RecyclerView.LayoutManager[] mLayoutManager = new RecyclerView.LayoutManager[1];
 
         final ArrayList<String> adds = new ArrayList<>();
@@ -334,6 +334,7 @@ public class CreateEventActivity extends AppCompatActivity {
                                                     String desc = snapshot.child("description").getValue(String.class);
                                                     String nbCreate = snapshot.child("nombre_creation").getValue(String.class);
                                                     String nbParticipate = snapshot.child("nombre_participation").getValue(String.class);
+                                                    String ville = snapshot.child("ville").getValue(String.class);
 
                                                     mRecyclerView[0] = dialogAddPerson.findViewById(R.id.recyclerView);
                                                     mLayoutManager[0] = new LinearLayoutManager(getBaseContext());
@@ -341,7 +342,7 @@ public class CreateEventActivity extends AppCompatActivity {
                                                     mRecyclerView[0].setLayoutManager(mLayoutManager[0]);
                                                     mRecyclerView[0].setAdapter(mAdapter[0]);
 
-                                                    ItemPerson itemPerson = new ItemPerson(finalJ,R.drawable.ic_baseline_account_circle_24, prenom+" "+nom, R.drawable.ic_baseline_add_24, desc, nbCreate, nbParticipate);
+                                                    ItemPerson itemPerson = new ItemPerson(finalJ,R.drawable.ic_baseline_account_circle_24, prenom+" "+nom, R.drawable.ic_baseline_add_24, desc, ville , nbCreate, nbParticipate);
                                                     boolean found = false;
                                                     for(int k = 0; k < itemsAdd.size(); k++){
                                                         if(itemPerson.getId() == itemsAdd.get(k).getId()){
@@ -364,9 +365,9 @@ public class CreateEventActivity extends AppCompatActivity {
                                         }
                                     }
 
-                                    mAdapter[0] = new ItemPersonAdapter(items);
+                                    mAdapter[0] = new ItemProfilAdapter(items);
 
-                                    mAdapter[0].setOnItemClickListener(new ItemPersonAdapter.OnItemClickListener() {
+                                    mAdapter[0].setOnItemClickListener(new ItemProfilAdapter.OnItemClickListener() {
                                         @Override
                                         public void onAddClick(int position) {
                                             String person = items.get(position).getNom();

@@ -16,10 +16,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.SearchView;
 import android.widget.TextView;
+import android.widget.Toast;
 
-import com.example.nalone.Adapter.ItemAmisAdapter;
-import com.example.nalone.ItemPerson;
+import com.example.nalone.Adapter.ItemListAmisAdapter;
 import com.example.nalone.Adapter.ItemProfilAdapter;
+import com.example.nalone.ItemPerson;
 import com.example.nalone.R;
 import com.example.nalone.util.Constants;
 import com.google.firebase.database.DataSnapshot;
@@ -31,6 +32,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import static com.example.nalone.util.Constants.firebaseDatabase;
+import static com.example.nalone.util.Constants.user_id;
 import static com.example.nalone.util.Constants.user_mail;
 
 /**
@@ -51,7 +54,7 @@ public class AmisFragment extends Fragment {
 
     private SearchView search_bar;
     private RecyclerView mRecyclerView;
-    private ItemAmisAdapter mAdapter;
+    private ItemListAmisAdapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
     private TextView resultat;
     final List<ItemPerson> tempList = new ArrayList<>();
@@ -97,6 +100,7 @@ public class AmisFragment extends Fragment {
         search_bar = root.findViewById(R.id.search_bar_amis);
         resultat = root.findViewById(R.id.resultatText_amis);
         resultat.setVisibility(View.GONE);
+        dialogProfil = new Dialog(getContext());
 
 
         search_bar.setOnClickListener(new View.OnClickListener() {
@@ -157,12 +161,12 @@ public class AmisFragment extends Fragment {
                             resultat.setText(R.string.aucun_resultat);
                         }
 
-                        mAdapter = new ItemAmisAdapter(tempList);
+                        mAdapter = new ItemListAmisAdapter(tempList);
                         mRecyclerView.setAdapter(mAdapter);
                     } else {
                         resultat.setVisibility(View.GONE);
                         resultat.setText("");
-                        mAdapter = new ItemAmisAdapter(items);
+                        mAdapter = new ItemListAmisAdapter(items);
                         mRecyclerView.setAdapter(mAdapter);
                     }
                 }else{
@@ -210,26 +214,36 @@ public class AmisFragment extends Fragment {
                                         user_found.addValueEventListener(new ValueEventListener() {
                                             @Override
                                             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                                                String prenom = snapshot.child("prenom").getValue(String.class);
-                                                String nom = snapshot.child("nom").getValue(String.class);
+                                                final String prenom = snapshot.child("prenom").getValue(String.class);
+                                                final String nom = snapshot.child("nom").getValue(String.class);
                                                 String desc = snapshot.child("description").getValue( String.class );
                                                 String nbCreate = snapshot.child("nombre_creation").getValue(String.class);
                                                 String nbParticipate = snapshot.child("nombre_participation").getValue(String.class);
+                                                String ville = snapshot.child("ville").getValue(String.class);
                                                 Log.w("Liste", "Ajout de :"+prenom+ " " +nom);
                                                 mRecyclerView = root.findViewById(R.id.recyclerViewMesAmis);
                                                 mLayoutManager = new LinearLayoutManager(getContext());
 
                                                 mRecyclerView.setLayoutManager(mLayoutManager);
                                                 mRecyclerView.setAdapter(mAdapter);
-                                                items.add(new ItemPerson(finalJ,R.drawable.ic_baseline_account_circle_24, prenom+" "+nom, 0, desc, nbCreate, nbParticipate));
+                                                items.add(new ItemPerson(finalJ,R.drawable.ic_baseline_account_circle_24, prenom+" "+nom, 0, desc, ville, nbCreate, nbParticipate));
                                                 /*if(items.size() == liste_amis.size()){
                                                     dialogAddPerson.show();
                                                 }*/
 
-                                                mAdapter.setOnItemClickListener(new ItemAmisAdapter.OnItemClickListener() {
+                                                mAdapter.setOnItemClickListener(new ItemListAmisAdapter.OnItemClickListener() {
                                                     @Override
                                                     public void onAddClick(int position) {
                                                         showPopUpProfil(items.get(position).getNom(), items.get(position).getmDescription(), items.get(position).getmNbCreate(), items.get(position).getmNbParticipate());
+                                                    }
+
+                                                    @Override
+                                                    public void onDelete(int position) {
+                                                        if(items.size() > 0){
+                                                            removeFriend(items.get(position).getId()+"", items.get(position).getNom());
+                                                        }else{
+                                                            Toast.makeText(getContext(), "Veuillez actualiser la page", Toast.LENGTH_SHORT).show();
+                                                        }
                                                     }
                                                 });
 
@@ -244,7 +258,7 @@ public class AmisFragment extends Fragment {
                                     }
                                 }
 
-                                mAdapter = new ItemAmisAdapter(items);
+                                mAdapter = new ItemListAmisAdapter(items);
 
                             }
 
@@ -265,6 +279,29 @@ public class AmisFragment extends Fragment {
             }
         });
         return root;
+    }
+
+    private void removeFriend(final String id, final String prenom) {
+        final DatabaseReference mDatabase2 = firebaseDatabase.getInstance().getReference("users").child(user_id).child("amis");
+
+        mDatabase2.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                String amis = dataSnapshot.getValue(String.class);
+
+                 amis = amis.replace(","+id, "");
+                 amis = amis.replace(id, "");
+
+                mDatabase2.setValue(amis);
+                Toast.makeText(getContext(), "Vous avez supprimer l'utilisateur " + prenom +" !", Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
     }
 
     public void showPopUpProfil(String name, String desc, String nbCreate, String nbParticipate){

@@ -185,13 +185,14 @@ public class MessagesFragment extends Fragment  {
                                                 String desc = snapshot.child("description").getValue( String.class );
                                                 String nbCreate = snapshot.child("nombre_creation").getValue(String.class);
                                                 String nbParticipate = snapshot.child("nombre_participation").getValue(String.class);
+                                                String ville = snapshot.child("ville").getValue(String.class);
                                                 Log.w("Liste", "Ajout de :"+prenom+ " " +nom);
                                                 mRecyclerView = root.findViewById(R.id.recycler);
                                                 mLayoutManager = new LinearLayoutManager(getContext());
 
                                                 mRecyclerView.setLayoutManager(mLayoutManager);
                                                 mRecyclerView.setAdapter(mAdapter);
-                                                items.add(new ItemPerson(finalJ,R.drawable.ic_baseline_account_circle_24, prenom+" "+nom, 0, desc, nbCreate, nbParticipate));
+                                                items.add(new ItemPerson(finalJ,R.drawable.ic_baseline_account_circle_24, prenom+" "+nom, 0, desc, ville, nbCreate, nbParticipate));
                                                 /*if(items.size() == liste_amis.size()){
                                                     dialogAddPerson.show();
                                                 }*/

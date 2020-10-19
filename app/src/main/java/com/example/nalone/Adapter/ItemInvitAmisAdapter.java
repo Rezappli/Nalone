@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.nalone.ItemPerson;
 import com.example.nalone.R;
 
+import java.text.BreakIterator;
 import java.util.List;
 
 public class ItemInvitAmisAdapter extends RecyclerView.Adapter<ItemInvitAmisAdapter.ItemInvitViewHolder> {
@@ -34,6 +35,7 @@ public class ItemInvitAmisAdapter extends RecyclerView.Adapter<ItemInvitAmisAdap
         public TextView mText;
         public ImageView mImageViewAdd;
         public ImageView mImageViewRemove;
+        public TextView mVille;
 
         public ItemInvitViewHolder(View itemView, final OnItemClickListener listener) {
             super(itemView);
@@ -41,6 +43,7 @@ public class ItemInvitAmisAdapter extends RecyclerView.Adapter<ItemInvitAmisAdap
             mText = itemView.findViewById(R.id.nomAmisInvit);
             mImageViewAdd = itemView.findViewById(R.id.addInvitAmis);
             mImageViewRemove = itemView.findViewById(R.id.removeInvitAmis);
+            mVille = itemView.findViewById(R.id.villeAmisInvit);
 
             mImageViewAdd.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -84,6 +87,7 @@ public class ItemInvitAmisAdapter extends RecyclerView.Adapter<ItemInvitAmisAdap
 
         holder.mImageView.setImageResource(currentItem.getImageResource());
         holder.mText.setText((currentItem.getNom()));
+        holder.mVille.setText(currentItem.getVille());
     }
 
     @Override

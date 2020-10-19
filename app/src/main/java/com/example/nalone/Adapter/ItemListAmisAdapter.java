@@ -12,19 +12,17 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.nalone.ItemPerson;
-import com.example.nalone.MainActivity;
 import com.example.nalone.R;
-
-import org.w3c.dom.Text;
 
 import java.util.List;
 
-public class ItemProfilAdapter extends RecyclerView.Adapter<ItemProfilAdapter.ItemProfilViewHolder> {
+public class ItemListAmisAdapter extends RecyclerView.Adapter<ItemListAmisAdapter.ItemListAmisViewHolder> {
     private List<ItemPerson> mItemPersonList;
     public OnItemClickListener mListener;
 
     public interface OnItemClickListener {
         void onAddClick(int position);
+        void onDelete(int position);
     }
 
     public void setOnItemClickListener(OnItemClickListener listener){
@@ -32,22 +30,20 @@ public class ItemProfilAdapter extends RecyclerView.Adapter<ItemProfilAdapter.It
     }
 
 
-    public static class ItemProfilViewHolder extends RecyclerView.ViewHolder {
+    public static class ItemListAmisViewHolder extends RecyclerView.ViewHolder {
         public ImageView mImageView;
         public TextView mText;
-        public ImageView mImageView2;
+        public ImageView delete;
         public TextView mVille;
         public LinearLayout mPerson;
-        public Drawable d;
 
-        public ItemProfilViewHolder(View itemView, final OnItemClickListener listener) {
+        public ItemListAmisViewHolder(View itemView, final OnItemClickListener listener) {
             super(itemView);
-            mImageView = itemView.findViewById(R.id.imagePerson);
-            mText = itemView.findViewById(R.id.nomInvit);
-            mVille = itemView.findViewById(R.id.villePers);
-            mImageView2 = itemView.findViewById(R.id.imageView19);
-            mPerson = itemView.findViewById(R.id.layoutProfil);
-            d = itemView.getResources().getDrawable(R.drawable.ic_baseline_add_location_24);
+            mImageView = itemView.findViewById(R.id.imageAmi);
+            mText = itemView.findViewById(R.id.nomAmi);
+            mVille = itemView.findViewById(R.id.villeAmi);
+            mPerson = itemView.findViewById(R.id.layoutAmi);
+            delete = itemView.findViewById(R.id.imageDelete);
 
             mPerson.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -60,26 +56,37 @@ public class ItemProfilAdapter extends RecyclerView.Adapter<ItemProfilAdapter.It
                     }
                 }
             });
+
+            delete.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if(listener != null){
+                        int position = getAdapterPosition();
+                        if(position != RecyclerView.NO_POSITION){
+                            listener.onDelete(position);
+                        }
+                    }
+                }
+            });
         }
     }
 
     @NonNull
     @Override
-    public ItemProfilViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_person, parent, false);
-        ItemProfilViewHolder ipvh = new ItemProfilViewHolder(v, mListener);
+    public ItemListAmisViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_amis, parent, false);
+        ItemListAmisViewHolder ipvh = new ItemListAmisViewHolder(v, mListener);
         return ipvh;
     }
-    public ItemProfilAdapter(List<ItemPerson> itemlist){
+    public ItemListAmisAdapter(List<ItemPerson> itemlist){
         mItemPersonList = itemlist;
     }
     @Override
-    public void onBindViewHolder(@NonNull ItemProfilViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull ItemListAmisViewHolder holder, int position) {
         ItemPerson currentItem = mItemPersonList.get(position);
 
         holder.mImageView.setImageResource(currentItem.getImageResource());
         holder.mText.setText((currentItem.getNom()));
-        holder.mImageView2.setImageResource(currentItem.getImageResource2());
         holder.mVille.setText(currentItem.getVille());
     }
 

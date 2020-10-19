@@ -132,13 +132,14 @@ public class MesInvitationsFragment extends Fragment {
                                                 String desc = snapshot.child("description").getValue( String.class );
                                                 String nbCreate = snapshot.child("nombre_creation").getValue(String.class);
                                                 String nbParticipate = snapshot.child("nombre_participation").getValue(String.class);
+                                                String ville = snapshot.child("ville").getValue(String.class);
                                                 Log.w("Liste", "Ajout de :"+prenom+ " " +nom);
                                                 mRecyclerView = root.findViewById(R.id.recyclerViewInvitAmis);
                                                 mLayoutManager = new LinearLayoutManager(getContext());
 
                                                 mRecyclerView.setLayoutManager(mLayoutManager);
                                                 mRecyclerView.setAdapter(mAdapter);
-                                                invits.add(new ItemPerson(finalJ,R.drawable.ic_baseline_account_circle_24, prenom+" "+nom, 0, desc, nbCreate, nbParticipate));
+                                                invits.add(new ItemPerson(finalJ,R.drawable.ic_baseline_account_circle_24, prenom+" "+nom, 0, desc, ville,nbCreate, nbParticipate));
                                                 /*if(items.size() == liste_amis.size()){
                                                     dialogAddPerson.show();
                                                 }*/
@@ -189,13 +190,13 @@ public class MesInvitationsFragment extends Fragment {
     }
 
     private void addFriend(final int id) {
-        final DatabaseReference mDatabase = firebaseDatabase.getInstance().getReference("users").child(user_id).child("demande_amis_envoye");
+        final DatabaseReference mDatabase = firebaseDatabase.getInstance().getReference("users").child(id+"").child("demande_amis_envoye");
         mDatabase.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 String demande_amis_envoye = dataSnapshot.getValue(String.class);
                 if(demande_amis_envoye.length() > 0){
-                    demande_amis_envoye = demande_amis_envoye.replace(","+id, "");
+                    demande_amis_envoye = demande_amis_envoye.replace(","+user_id, "");
                 }else{
                     demande_amis_envoye = "";
                 }
@@ -208,16 +209,13 @@ public class MesInvitationsFragment extends Fragment {
             }
         });
 
-        final DatabaseReference mDatabase2 = firebaseDatabase.getInstance().getReference("users").child(""+id).child("demande_amis_recu");
+        final DatabaseReference mDatabase2 = firebaseDatabase.getInstance().getReference("users").child(user_id).child("demande_amis_recu");
         mDatabase2.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 String demande_amis_recu = dataSnapshot.getValue(String.class);
-                if(demande_amis_recu.length() > 0){
-                    demande_amis_recu = demande_amis_recu.replace(","+user_id, "");
-                }else{
-                    demande_amis_recu = "";
-                }
+                    demande_amis_recu = demande_amis_recu.replace(","+id, "");
+                    demande_amis_recu = demande_amis_recu.replace(id+"", "");
                 mDatabase2.setValue(demande_amis_recu);
             }
 
@@ -227,15 +225,15 @@ public class MesInvitationsFragment extends Fragment {
             }
         });
 
-        final DatabaseReference mDatabase3 = firebaseDatabase.getInstance().getReference("users").child(""+id).child("amis");
+        final DatabaseReference mDatabase3 = firebaseDatabase.getInstance().getReference("users").child(user_id).child("amis");
         mDatabase2.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 String amis_text = dataSnapshot.getValue(String.class);
                 if(amis_text.length() > 0){
-                    amis_text += ","+user_id;
+                    amis_text += ","+id;
                 }else{
-                    amis_text = user_id;
+                    amis_text = id+"";
                 }
                 mDatabase3.setValue(amis_text);
             }

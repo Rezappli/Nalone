@@ -46,6 +46,7 @@ import static com.example.nalone.util.Constants.user_mail;
 
 public class RechercheFragment extends Fragment {
 
+
     private RechercheViewModel rechercheViewModel;
     private SearchView search_bar;
 
@@ -183,6 +184,7 @@ public class RechercheFragment extends Fragment {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot snapshot) {
                             String mail = snapshot.child("mail").getValue(String.class);
+                            final String maVille = snapshot.child("ville").getValue(String.class);
 
                             if(mail.equalsIgnoreCase(user_mail)){
                                 int id_user_connect = finalI;
@@ -207,19 +209,25 @@ public class RechercheFragment extends Fragment {
                                         user_found.addValueEventListener(new ValueEventListener() {
                                             @Override
                                             public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                                boolean presDeMoi = false;
                                                 String prenom = snapshot.child("prenom").getValue(String.class);
                                                 String nom = snapshot.child("nom").getValue(String.class);
-                                                String desc = snapshot.child("description").getValue( String.class );
+                                                String desc = snapshot.child("description").getValue( String.class);
                                                 String nbCreate = snapshot.child("nombre_creation").getValue(String.class);
                                                 String nbParticipate = snapshot.child("nombre_participation").getValue(String.class);
-                                                Log.w("Liste", "Ajout de :"+prenom+ " " +nom);
+                                                String ville = snapshot.child("ville").getValue(String.class);
+                                                Log.w("Liste", "Ajout de :"+prenom+ " " +nom + " " + ville);
+
                                                 mRecyclerView = root.findViewById(R.id.recyclerView);
                                                 mLayoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL,
                                                         false);
 
                                                 mRecyclerView.setLayoutManager(mLayoutManager);
                                                 mRecyclerView.setAdapter(mAdapter);
-                                                items.add(new ItemPerson(finalJ,R.drawable.ic_baseline_account_circle_24, prenom+" "+nom, 0, desc, nbCreate, nbParticipate));
+                                                if(maVille == ville){
+                                                    presDeMoi = true;
+                                                }
+                                                items.add(new ItemPerson(finalJ,R.drawable.ic_baseline_account_circle_24, prenom+" "+nom, 0, desc, ville, nbCreate, nbParticipate));
                                                 /*if(items.size() == liste_amis.size()){
                                                     dialogAddPerson.show();
                                                 }*/
