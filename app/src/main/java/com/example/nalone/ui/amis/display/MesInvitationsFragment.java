@@ -195,8 +195,15 @@ public class MesInvitationsFragment extends Fragment {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 String demande_amis_envoye = dataSnapshot.getValue(String.class);
-                    demande_amis_envoye = demande_amis_envoye.replace(","+user_id, "");
-                    demande_amis_envoye = demande_amis_envoye.replace(user_id, "");
+                if(demande_amis_envoye.length() > 0){
+                    if(demande_amis_envoye.length() == 1){
+                        demande_amis_envoye = demande_amis_envoye.replace(user_id, "");
+                    }else{
+                        demande_amis_envoye = demande_amis_envoye.replace(","+user_id, "");
+                    }
+                }else{
+                    demande_amis_envoye = "";
+                }
                 mDatabase.setValue(demande_amis_envoye);
             }
 
@@ -211,8 +218,15 @@ public class MesInvitationsFragment extends Fragment {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 String demande_amis_recu = dataSnapshot.getValue(String.class);
-                    demande_amis_recu = demande_amis_recu.replace(","+id, "");
-                    demande_amis_recu = demande_amis_recu.replace(id+"", "");
+                if(demande_amis_recu.length() > 0){
+                    if(demande_amis_recu.length() == 1){
+                        demande_amis_recu = demande_amis_recu.replace(id+"", "");
+                    }else{
+                        demande_amis_recu = demande_amis_recu.replace(","+id, "");
+                    }
+                }else{
+                    demande_amis_recu = "";
+                }
                 mDatabase2.setValue(demande_amis_recu);
             }
 
@@ -247,7 +261,11 @@ public class MesInvitationsFragment extends Fragment {
             public void onDataChange(DataSnapshot dataSnapshot) {
                 String amis_text = dataSnapshot.getValue(String.class);
                 if(amis_text.length() > 0){
-                    amis_text += ","+user_id;
+                    if(amis_text.length() == 1){
+                        amis_text += user_id;
+                    }else{
+                        amis_text += ","+user_id;
+                    }
                 }else{
                     amis_text = user_id;
                 }
@@ -264,13 +282,17 @@ public class MesInvitationsFragment extends Fragment {
     }
 
     private void removeFriend(final int id) {
-        final DatabaseReference mDatabase = firebaseDatabase.getInstance().getReference("users").child(user_id).child("demande_amis_envoye");
+        final DatabaseReference mDatabase = firebaseDatabase.getInstance().getReference("users").child(id+"").child("demande_amis_envoye");
         mDatabase.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 String demande_amis_envoye = dataSnapshot.getValue(String.class);
                 if(demande_amis_envoye.length() > 0){
-                    demande_amis_envoye = demande_amis_envoye.replace(","+id, "");
+                    if(demande_amis_envoye.length() == 1){
+                        demande_amis_envoye = demande_amis_envoye.replace(user_id, "");
+                    }else{
+                        demande_amis_envoye = demande_amis_envoye.replace(","+user_id, "");
+                    }
                 }else{
                     demande_amis_envoye = "";
                 }
@@ -283,13 +305,17 @@ public class MesInvitationsFragment extends Fragment {
             }
         });
 
-        final DatabaseReference mDatabase2 = firebaseDatabase.getInstance().getReference("users").child(""+id).child("demande_amis_recu");
+        final DatabaseReference mDatabase2 = firebaseDatabase.getInstance().getReference("users").child(""+user_id).child("demande_amis_recu");
         mDatabase2.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 String demande_amis_recu = dataSnapshot.getValue(String.class);
                 if(demande_amis_recu.length() > 0){
-                    demande_amis_recu = demande_amis_recu.replace(","+user_id, "");
+                    if(demande_amis_recu.length() == 1){
+                        demande_amis_recu = demande_amis_recu.replace(user_id, "");
+                    }else{
+                        demande_amis_recu = demande_amis_recu.replace(","+user_id, "");
+                    }
                 }else{
                     demande_amis_recu = "";
                 }

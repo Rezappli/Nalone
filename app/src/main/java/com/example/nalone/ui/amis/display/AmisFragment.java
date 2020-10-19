@@ -282,9 +282,9 @@ public class AmisFragment extends Fragment {
     }
 
     private void removeFriend(final String id, final String prenom) {
-        final DatabaseReference mDatabase2 = firebaseDatabase.getInstance().getReference("users").child(user_id).child("amis");
+        final DatabaseReference mDatabase = firebaseDatabase.getInstance().getReference("users").child(user_id).child("amis");
 
-        mDatabase2.addListenerForSingleValueEvent(new ValueEventListener() {
+        mDatabase.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 String amis = dataSnapshot.getValue(String.class);
@@ -292,7 +292,27 @@ public class AmisFragment extends Fragment {
                  amis = amis.replace(","+id, "");
                  amis = amis.replace(id, "");
 
-                mDatabase2.setValue(amis);
+                mDatabase.setValue(amis);
+                Toast.makeText(getContext(), "Vous avez supprimer l'utilisateur " + prenom +" !", Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
+        final DatabaseReference mDatabase1 = firebaseDatabase.getInstance().getReference("users").child(id+"").child("amis");
+
+        mDatabase1.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                String amis = dataSnapshot.getValue(String.class);
+
+                amis = amis.replace(","+user_id, "");
+                amis = amis.replace(user_id, "");
+
+                mDatabase1.setValue(amis);
                 Toast.makeText(getContext(), "Vous avez supprimer l'utilisateur " + prenom +" !", Toast.LENGTH_SHORT).show();
             }
 
