@@ -325,7 +325,7 @@ public class RechercheFragment extends Fragment {
             public void onDataChange(DataSnapshot dataSnapshot) {
                 String demande_amis_envoye = dataSnapshot.getValue(String.class);
                 if(demande_amis_envoye.length() > 0){
-                    demande_amis_envoye += ";"+id;
+                    demande_amis_envoye += ","+id;
                 }else{
                     demande_amis_envoye = ""+id;
                 }
@@ -344,9 +344,9 @@ public class RechercheFragment extends Fragment {
             public void onDataChange(DataSnapshot dataSnapshot) {
                 String demande_amis_recu = dataSnapshot.getValue(String.class);
                 if(demande_amis_recu.length() > 0){
-                    demande_amis_recu += ";"+id;
+                    demande_amis_recu += ","+user_id;
                 }else{
-                    demande_amis_recu = ""+id;
+                    demande_amis_recu = ""+user_id;
                 }
                 mDatabase2.setValue(demande_amis_recu);
             }
@@ -357,7 +357,7 @@ public class RechercheFragment extends Fragment {
             }
         });
 
-        Toast.makeText(getContext(), "Vous avez envoyer une demande à cet utilisateur !", Toast.LENGTH_SHORT);
+        Toast.makeText(getContext(), "Vous avez envoyer une demande à cet utilisateur !", Toast.LENGTH_SHORT).show();
         dialogProfil.hide();
     }
 

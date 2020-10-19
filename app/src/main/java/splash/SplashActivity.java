@@ -45,9 +45,9 @@ public class SplashActivity extends AppCompatActivity {
 
         settingsFile = new File(getApplicationContext().getFilesDir(),"settings.dat");
         acct = GoogleSignIn.getLastSignedInAccount(this);
-        Intent intent = new Intent(this, MainActivity.class);
-        startActivity(intent);
-        /*try {
+        /*Intent intent = new Intent(this, MainActivity.class);
+        startActivity(intent);*/
+        try {
             if(acct == null) {
                 if (checkFileSettings()) {
                     String line = readSettings();
@@ -70,7 +70,7 @@ public class SplashActivity extends AppCompatActivity {
             e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
-        }*/
+        }
     }
 
     private void createFileSettings() throws IOException {

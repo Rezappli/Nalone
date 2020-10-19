@@ -11,6 +11,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.example.nalone.Adapter.ItemInvitAmisAdapter;
 import com.example.nalone.ItemPerson;
@@ -25,6 +26,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import static com.example.nalone.util.Constants.firebaseDatabase;
+import static com.example.nalone.util.Constants.user_id;
 import static com.example.nalone.util.Constants.user_mail;
 
 /**
@@ -142,12 +145,12 @@ public class MesInvitationsFragment extends Fragment {
                                                 mAdapter.setOnItemClickListener(new ItemInvitAmisAdapter.OnItemClickListener() {
                                                     @Override
                                                     public void onAddClick(int position) {
-                                                        Log.w("clickInvit", "Add");
+                                                        addFriend(invits.get(position).getId());
                                                     }
 
                                                     @Override
                                                     public void onRemoveClick(int position) {
-                                                        Log.w("clickInvit", "Remove");
+                                                        removeFriend(invits.get(position).getId());
                                                     }
                                                 });
 
@@ -183,5 +186,127 @@ public class MesInvitationsFragment extends Fragment {
             }
         });
         return root;
+    }
+
+    private void addFriend(final int id) {
+        final DatabaseReference mDatabase = firebaseDatabase.getInstance().getReference("users").child(user_id).child("demande_amis_envoye");
+        mDatabase.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                String demande_amis_envoye = dataSnapshot.getValue(String.class);
+                if(demande_amis_envoye.length() > 0){
+                    demande_amis_envoye = demande_amis_envoye.replace(","+id, "");
+                }else{
+                    demande_amis_envoye = "";
+                }
+                mDatabase.setValue(demande_amis_envoye);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
+        final DatabaseReference mDatabase2 = firebaseDatabase.getInstance().getReference("users").child(""+id).child("demande_amis_recu");
+        mDatabase2.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                String demande_amis_recu = dataSnapshot.getValue(String.class);
+                if(demande_amis_recu.length() > 0){
+                    demande_amis_recu = demande_amis_recu.replace(","+user_id, "");
+                }else{
+                    demande_amis_recu = "";
+                }
+                mDatabase2.setValue(demande_amis_recu);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
+        final DatabaseReference mDatabase3 = firebaseDatabase.getInstance().getReference("users").child(""+id).child("amis");
+        mDatabase2.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                String amis_text = dataSnapshot.getValue(String.class);
+                if(amis_text.length() > 0){
+                    amis_text += ","+user_id;
+                }else{
+                    amis_text = user_id;
+                }
+                mDatabase3.setValue(amis_text);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
+        final DatabaseReference mDatabase4 = firebaseDatabase.getInstance().getReference("users").child(""+id).child("amis");
+        mDatabase2.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                String amis_text = dataSnapshot.getValue(String.class);
+                if(amis_text.length() > 0){
+                    amis_text += ","+user_id;
+                }else{
+                    amis_text = user_id;
+                }
+                mDatabase4.setValue(amis_text);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
+        Toast.makeText(getContext(), "Vous avez accepter cet utilisateur !", Toast.LENGTH_SHORT).show();
+    }
+
+    private void removeFriend(final int id) {
+        final DatabaseReference mDatabase = firebaseDatabase.getInstance().getReference("users").child(user_id).child("demande_amis_envoye");
+        mDatabase.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                String demande_amis_envoye = dataSnapshot.getValue(String.class);
+                if(demande_amis_envoye.length() > 0){
+                    demande_amis_envoye = demande_amis_envoye.replace(","+id, "");
+                }else{
+                    demande_amis_envoye = "";
+                }
+                mDatabase.setValue(demande_amis_envoye);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
+        final DatabaseReference mDatabase2 = firebaseDatabase.getInstance().getReference("users").child(""+id).child("demande_amis_recu");
+        mDatabase2.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                String demande_amis_recu = dataSnapshot.getValue(String.class);
+                if(demande_amis_recu.length() > 0){
+                    demande_amis_recu = demande_amis_recu.replace(","+user_id, "");
+                }else{
+                    demande_amis_recu = "";
+                }
+                mDatabase2.setValue(demande_amis_recu);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
+        Toast.makeText(getContext(), "Vous avez accepter cet utilisateur !", Toast.LENGTH_SHORT).show();
     }
 }
