@@ -14,7 +14,7 @@ public class UserData {
     public String adresse;
     public String date;
     public String numero;
-    public String adresseMail;
+    public String mail;
     public String pass;
     public String[] centreInterets;
     public String cursus;
@@ -59,13 +59,13 @@ public class UserData {
         this.adresse = adresse;
         this.date = date;
         this.numero = numero;
-        this.adresseMail = adresseMail.replace(".", ",");
+        this.mail = adresseMail.replace(".", ",");
         this.pass = pass;
         this.cursus = cursus;
         this.centreInterets = centreInterets;
         this.description = description;
-        this.nbCreate = 0+"";
-        this.nbParticipate = 0+"";
+        this.nbCreate = "0";
+        this.nbParticipate = "0";
         this.demande_amis_envoye = "";
         this.demande_amis_recu = "";
         this.amis = "";
@@ -120,11 +120,11 @@ public class UserData {
     }
 
     public String getAdresseMail() {
-        return adresseMail;
+        return mail;
     }
 
-    public void setAdresseMail(String adresseMail) {
-        this.adresseMail = adresseMail;
+    public void setAdresseMail(String mail) {
+        this.mail = mail;
     }
 
     public String getPass() {
