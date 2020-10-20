@@ -123,6 +123,7 @@ public class RechercheFragment extends Fragment {
                                     if(items.get(i).getmNomToLowerCase().length() > j) {
                                         if (newText.charAt(j) == items.get(i).getmNomToLowerCase().charAt(j) && j == 0){
                                             check = true;
+
                                         }
 
 
