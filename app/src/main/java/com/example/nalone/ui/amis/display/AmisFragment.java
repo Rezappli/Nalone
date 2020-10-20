@@ -57,8 +57,10 @@ public class AmisFragment extends Fragment {
     private ItemListAmisAdapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
     private TextView resultat;
-    final List<ItemPerson> tempList = new ArrayList<>();
+    private final List<ItemPerson> tempList = new ArrayList<>();
     private Dialog dialogProfil;
+    private final List<ItemPerson> items = new ArrayList<>();
+    private View rootView;
 
     public AmisFragment() {
         // Required empty public constructor
@@ -95,10 +97,10 @@ public class AmisFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        final List<ItemPerson> items = new ArrayList<>();
-        final View root = inflater.inflate(R.layout.amis_fragment, container, false);
-        search_bar = root.findViewById(R.id.search_bar_amis);
-        resultat = root.findViewById(R.id.resultatText_amis);
+
+        rootView = inflater.inflate(R.layout.amis_fragment, container, false);
+        search_bar = rootView.findViewById(R.id.search_bar_amis);
+        resultat = rootView.findViewById(R.id.resultatText_amis);
         resultat.setVisibility(View.GONE);
         dialogProfil = new Dialog(getContext());
 
@@ -178,6 +180,56 @@ public class AmisFragment extends Fragment {
             }
         });
 
+
+        return rootView;
+    }
+
+    private void removeFriend(final String id, final String prenom) {
+        final DatabaseReference mDatabase = firebaseDatabase.getInstance().getReference("users").child(user_id).child("amis");
+
+        mDatabase.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                String amis = dataSnapshot.getValue(String.class);
+
+                 amis = amis.replace(","+id, "");
+                 amis = amis.replace(id, "");
+
+                mDatabase.setValue(amis);
+                Toast.makeText(getContext(), "Vous avez supprimer l'utilisateur " + prenom +" !", Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
+        final DatabaseReference mDatabase1 = firebaseDatabase.getInstance().getReference("users").child(id+"").child("amis");
+
+        mDatabase1.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                String amis = dataSnapshot.getValue(String.class);
+
+                amis = amis.replace(","+user_id, "");
+                amis = amis.replace(user_id, "");
+
+                mDatabase1.setValue(amis);
+                Toast.makeText(getContext(), "Vous avez supprimer l'utilisateur " + prenom +" !", Toast.LENGTH_SHORT).show();
+
+                updateItems();
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
+    }
+
+    private void updateItems() {
         DatabaseReference id_users_ref = Constants.firebaseDatabase.getReference("id_users");
         id_users_ref.addValueEventListener(new ValueEventListener() {
             @Override
@@ -221,7 +273,7 @@ public class AmisFragment extends Fragment {
                                                 String nbParticipate = snapshot.child("nombre_participation").getValue(String.class);
                                                 String ville = snapshot.child("ville").getValue(String.class);
                                                 Log.w("Liste", "Ajout de :"+prenom+ " " +nom);
-                                                mRecyclerView = root.findViewById(R.id.recyclerViewMesAmis);
+                                                mRecyclerView = rootView.findViewById(R.id.recyclerViewMesAmis);
                                                 mLayoutManager = new LinearLayoutManager(getContext());
 
                                                 mRecyclerView.setLayoutManager(mLayoutManager);
@@ -278,50 +330,6 @@ public class AmisFragment extends Fragment {
 
             }
         });
-        return root;
-    }
-
-    private void removeFriend(final String id, final String prenom) {
-        final DatabaseReference mDatabase = firebaseDatabase.getInstance().getReference("users").child(user_id).child("amis");
-
-        mDatabase.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                String amis = dataSnapshot.getValue(String.class);
-
-                 amis = amis.replace(","+id, "");
-                 amis = amis.replace(id, "");
-
-                mDatabase.setValue(amis);
-                Toast.makeText(getContext(), "Vous avez supprimer l'utilisateur " + prenom +" !", Toast.LENGTH_SHORT).show();
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
-
-        final DatabaseReference mDatabase1 = firebaseDatabase.getInstance().getReference("users").child(id+"").child("amis");
-
-        mDatabase1.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                String amis = dataSnapshot.getValue(String.class);
-
-                amis = amis.replace(","+user_id, "");
-                amis = amis.replace(user_id, "");
-
-                mDatabase1.setValue(amis);
-                Toast.makeText(getContext(), "Vous avez supprimer l'utilisateur " + prenom +" !", Toast.LENGTH_SHORT).show();
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
-
     }
 
     public void showPopUpProfil(String name, String desc, String nbCreate, String nbParticipate){

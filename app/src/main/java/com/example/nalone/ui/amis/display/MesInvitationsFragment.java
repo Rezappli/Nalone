@@ -40,6 +40,8 @@ public class MesInvitationsFragment extends Fragment {
     private RecyclerView mRecyclerView;
     private ItemInvitAmisAdapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
+    private final List<ItemPerson> invits = new ArrayList<>();
+    private View rootView;
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -87,10 +89,14 @@ public class MesInvitationsFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        final View root = inflater.inflate(R.layout.fragment_3, container, false);
-        final List<ItemPerson> invits = new ArrayList<>();
+       rootView = inflater.inflate(R.layout.fragment_3, container, false);
 
+        updateItems();
 
+        return rootView;
+    }
+
+    private void updateItems() {
         DatabaseReference id_users_ref = Constants.firebaseDatabase.getReference("id_users");
         id_users_ref.addValueEventListener(new ValueEventListener() {
             @Override
@@ -115,8 +121,8 @@ public class MesInvitationsFragment extends Fragment {
 
                                 if(liste_amis.size() == nb_users-1){
                                     Log.w("Recherche","Print aucun amis a ajouter");
-                                   // resultat.setVisibility(View.VISIBLE);
-                                   // resultat.setText("Aucun amis à ajouter !");
+                                    // resultat.setVisibility(View.VISIBLE);
+                                    // resultat.setText("Aucun amis à ajouter !");
                                 }
 
                                 for(int j = 0; j < nb_users; j++){
@@ -134,7 +140,7 @@ public class MesInvitationsFragment extends Fragment {
                                                 String nbParticipate = snapshot.child("nombre_participation").getValue(String.class);
                                                 String ville = snapshot.child("ville").getValue(String.class);
                                                 Log.w("Liste", "Ajout de :"+prenom+ " " +nom);
-                                                mRecyclerView = root.findViewById(R.id.recyclerViewInvitAmis);
+                                                mRecyclerView = rootView.findViewById(R.id.recyclerViewInvitAmis);
                                                 mLayoutManager = new LinearLayoutManager(getContext());
 
                                                 mRecyclerView.setLayoutManager(mLayoutManager);
@@ -186,7 +192,6 @@ public class MesInvitationsFragment extends Fragment {
 
             }
         });
-        return root;
     }
 
     private void addFriend(final int id) {
@@ -278,6 +283,7 @@ public class MesInvitationsFragment extends Fragment {
             }
         });
 
+        updateItems();
         Toast.makeText(getContext(), "Vous avez accepter cet utilisateur !", Toast.LENGTH_SHORT).show();
     }
 
@@ -327,7 +333,7 @@ public class MesInvitationsFragment extends Fragment {
 
             }
         });
-
+        updateItems();
         Toast.makeText(getContext(), "Vous avez accepter cet utilisateur !", Toast.LENGTH_SHORT).show();
     }
 }

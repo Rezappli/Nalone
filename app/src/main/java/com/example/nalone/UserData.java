@@ -23,6 +23,7 @@ public class UserData {
     public String nbParticipate;
     public String demande_amis_recu;
     public String demande_amis_envoye;
+    public String amis;
 
     public String getSexe() {
         return sexe;
@@ -67,6 +68,7 @@ public class UserData {
         this.nbParticipate = 0+"";
         this.demande_amis_envoye = "";
         this.demande_amis_recu = "";
+        this.amis = "";
     }
 
     public String getNom() {

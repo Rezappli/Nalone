@@ -60,20 +60,21 @@ public class RechercheFragment extends Fragment {
     private RecyclerView mRecyclerViewFiltre;
     private ItemFiltreAdapter mAdapterFiltre;
     private RecyclerView.LayoutManager mLayoutManagerFiltre;
+    private final List<ItemPerson> items = new ArrayList<>();
+    private final List<ItemFiltre> filtres = new ArrayList<>();
+    private View rootView;
 
 
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        final List<ItemPerson> items = new ArrayList<>();
-        final List<ItemFiltre> filtres = new ArrayList<>();
 
         rechercheViewModel =
                 ViewModelProviders.of(this).get(RechercheViewModel.class);
-        final View root = inflater.inflate(R.layout.fragment_recherche, container, false);
+        rootView = inflater.inflate(R.layout.fragment_recherche, container, false);
 
-        search_bar = root.findViewById(R.id.search_bar);
-        resultat = root.findViewById(R.id.resultatText);
+        search_bar = rootView.findViewById(R.id.search_bar);
+        resultat = rootView.findViewById(R.id.resultatText);
         resultat.setVisibility(View.GONE);
         dialogProfil = new Dialog(getContext());
 
@@ -84,9 +85,9 @@ public class RechercheFragment extends Fragment {
 
         mAdapterFiltre = new ItemFiltreAdapter(filtres);
 
-        mRecyclerViewFiltre = root.findViewById(R.id.recyclerViewFiltre);
+        mRecyclerViewFiltre = rootView.findViewById(R.id.recyclerViewFiltre);
         mLayoutManagerFiltre = new LinearLayoutManager(
-                root.getContext(),
+                rootView.getContext(),
                 LinearLayoutManager.HORIZONTAL,
                 false);
         mRecyclerViewFiltre.setLayoutManager(mLayoutManagerFiltre);
@@ -171,108 +172,7 @@ public class RechercheFragment extends Fragment {
 
 
 
-        DatabaseReference id_users_ref = Constants.firebaseDatabase.getReference("id_users");
-        id_users_ref.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                final String id_user = snapshot.getValue(String.class);
-                final int nb_users = Integer.parseInt(id_user);
-                for(int i = 0; i < nb_users; i++){
-                    DatabaseReference user = Constants.firebaseDatabase.getReference("users/"+i);
-                    final int finalI = i;
-                    user.addValueEventListener(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(@NonNull DataSnapshot snapshot) {
-                            String mail = snapshot.child("mail").getValue(String.class);
-                            final String maVille = snapshot.child("ville").getValue(String.class);
-
-                            if(mail.equalsIgnoreCase(user_mail)){
-                                int id_user_connect = finalI;
-                                String amis_text = snapshot.child("amis").getValue(String.class);
-                                String amis_envoye = snapshot.child("demande_amis_envoye").getValue(String.class);
-                                String amis_recu = snapshot.child("demande_amis_envoye").getValue(String.class);
-                                final List<String> liste_amis = Arrays.asList(amis_text.split(","));
-
-                                Log.w("Liste", "Liste amis:"+amis_text);
-                                items.clear();
-
-                                if(liste_amis.size() == nb_users-1){
-                                    Log.w("Recherche","Print aucun amis a ajouter");
-                                    resultat.setVisibility(View.VISIBLE);
-                                    resultat.setText("Aucun amis à ajouter !");
-                                }
-
-                                for(int j = 0; j < nb_users; j++){
-                                    if(!liste_amis.contains(j+"") && j != finalI && !amis_envoye.contains(j+"") && !amis_recu.contains(""+j)){
-                                        DatabaseReference user_found = Constants.firebaseDatabase.getReference("users/"+j);
-                                        final int finalJ = j;
-                                        user_found.addValueEventListener(new ValueEventListener() {
-                                            @Override
-                                            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                                                boolean presDeMoi = false;
-                                                String prenom = snapshot.child("prenom").getValue(String.class);
-                                                String nom = snapshot.child("nom").getValue(String.class);
-                                                String desc = snapshot.child("description").getValue( String.class);
-                                                String nbCreate = snapshot.child("nombre_creation").getValue(String.class);
-                                                String nbParticipate = snapshot.child("nombre_participation").getValue(String.class);
-                                                String ville = snapshot.child("ville").getValue(String.class);
-                                                Log.w("Liste", "Ajout de :"+prenom+ " " +nom + " " + ville);
-
-                                                mRecyclerView = root.findViewById(R.id.recyclerView);
-                                                mLayoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL,
-                                                        false);
-
-                                                mRecyclerView.setLayoutManager(mLayoutManager);
-                                                mRecyclerView.setAdapter(mAdapter);
-                                                if(maVille == ville){
-                                                    presDeMoi = true;
-                                                }
-                                                items.add(new ItemPerson(finalJ,R.drawable.ic_baseline_account_circle_24, prenom+" "+nom, 0, desc, ville, nbCreate, nbParticipate));
-                                                /*if(items.size() == liste_amis.size()){
-                                                    dialogAddPerson.show();
-                                                }*/
-
-
-                                                mAdapter.setOnItemClickListener(new ItemProfilAdapter.OnItemClickListener() {
-                                                    @Override
-                                                    public void onAddClick(int position) {
-                                                        showPopUpProfil(items.get(position).getId(), items.get(position).getNom(), items.get(position).getmDescription(), items.get(position).getmNbCreate(), items.get(position).getmNbParticipate());
-                                                    }
-                                                });
-
-
-
-
-                                            }
-
-                                            @Override
-                                            public void onCancelled(@NonNull DatabaseError error) {
-
-                                            }
-                                        });
-                                    }
-                                }
-
-                                mAdapter = new ItemProfilAdapter(items);
-
-                            }
-
-                        }
-
-                        @Override
-                        public void onCancelled(@NonNull DatabaseError error) {
-
-                        }
-                    });
-
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
-        });
+        updateItems();
 
 
         /*mRecyclerView = root.findViewById(R.id.recyclerView);
@@ -282,7 +182,7 @@ public class RechercheFragment extends Fragment {
         mRecyclerView.setLayoutManager(mLayoutManager);
         mRecyclerView.setAdapter(mAdapter);*/
 
-        return root;
+        return rootView;
 
     }
 
@@ -367,6 +267,114 @@ public class RechercheFragment extends Fragment {
 
         Toast.makeText(getContext(), "Vous avez envoyer une demande à cet utilisateur !", Toast.LENGTH_SHORT).show();
         dialogProfil.hide();
+    }
+
+    public void updateItems(){
+        DatabaseReference id_users_ref = Constants.firebaseDatabase.getReference("id_users");
+        id_users_ref.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                final String id_user = snapshot.getValue(String.class);
+                final int nb_users = Integer.parseInt(id_user);
+                for(int i = 0; i < nb_users; i++){
+                    DatabaseReference user = Constants.firebaseDatabase.getReference("users/"+i);
+                    final int finalI = i;
+                    user.addValueEventListener(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot snapshot) {
+                            String mail = snapshot.child("mail").getValue(String.class);
+                            final String maVille = snapshot.child("ville").getValue(String.class);
+
+                            if(mail.equalsIgnoreCase(user_mail)){
+                                int id_user_connect = finalI;
+                                String amis_text = snapshot.child("amis").getValue(String.class);
+                                String amis_envoye = snapshot.child("demande_amis_envoye").getValue(String.class);
+                                String amis_recu = snapshot.child("demande_amis_envoye").getValue(String.class);
+                                final List<String> liste_amis = Arrays.asList(amis_text.split(","));
+
+                                Log.w("Liste", "Liste amis:"+amis_text);
+                                items.clear();
+
+                                if(liste_amis.size() == nb_users-1){
+                                    Log.w("Recherche","Print aucun amis a ajouter");
+                                    resultat.setVisibility(View.VISIBLE);
+                                    resultat.setText("Aucun amis à ajouter !");
+                                }
+
+                                for(int j = 0; j < nb_users; j++){
+                                    if(!liste_amis.contains(j+"") &&
+                                            j != finalI &&
+                                            !amis_envoye.contains(j+"")
+                                            && !amis_recu.contains(""+j)){
+                                        DatabaseReference user_found = Constants.firebaseDatabase.getReference("users/"+j);
+                                        final int finalJ = j;
+                                        user_found.addValueEventListener(new ValueEventListener() {
+                                            @Override
+                                            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                                boolean presDeMoi = false;
+                                                String prenom = snapshot.child("prenom").getValue(String.class);
+                                                String nom = snapshot.child("nom").getValue(String.class);
+                                                String desc = snapshot.child("description").getValue( String.class);
+                                                String nbCreate = snapshot.child("nombre_creation").getValue(String.class);
+                                                String nbParticipate = snapshot.child("nombre_participation").getValue(String.class);
+                                                String ville = snapshot.child("ville").getValue(String.class);
+                                                Log.w("Liste", "Ajout de :"+prenom+ " " +nom + " " + ville);
+
+                                                mRecyclerView = rootView.findViewById(R.id.recyclerView);
+                                                mLayoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL,
+                                                        false);
+
+                                                mRecyclerView.setLayoutManager(mLayoutManager);
+                                                mRecyclerView.setAdapter(mAdapter);
+                                                if(maVille == ville){
+                                                    presDeMoi = true;
+                                                }
+                                                items.add(new ItemPerson(finalJ,R.drawable.ic_baseline_account_circle_24, prenom+" "+nom, 0, desc, ville, nbCreate, nbParticipate));
+                                                /*if(items.size() == liste_amis.size()){
+                                                    dialogAddPerson.show();
+                                                }*/
+
+
+                                                mAdapter.setOnItemClickListener(new ItemProfilAdapter.OnItemClickListener() {
+                                                    @Override
+                                                    public void onAddClick(int position) {
+                                                        showPopUpProfil(items.get(position).getId(), items.get(position).getNom(), items.get(position).getmDescription(), items.get(position).getmNbCreate(), items.get(position).getmNbParticipate());
+                                                    }
+                                                });
+
+
+
+
+                                            }
+
+                                            @Override
+                                            public void onCancelled(@NonNull DatabaseError error) {
+
+                                            }
+                                        });
+                                    }
+                                }
+
+                                mAdapter = new ItemProfilAdapter(items);
+
+                            }
+
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError error) {
+
+                        }
+                    });
+
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
     }
 
 }
