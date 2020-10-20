@@ -112,6 +112,8 @@ public class AmisFragment extends Fragment {
             }
         });
 
+        updateItems();
+
         search_bar.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
@@ -216,9 +218,7 @@ public class AmisFragment extends Fragment {
                 amis = amis.replace(user_id, "");
 
                 mDatabase1.setValue(amis);
-                Toast.makeText(getContext(), "Vous avez supprimer l'utilisateur " + prenom +" !", Toast.LENGTH_SHORT).show();
 
-                updateItems();
             }
 
             @Override
@@ -226,6 +226,8 @@ public class AmisFragment extends Fragment {
 
             }
         });
+
+        updateItems();
 
     }
 
