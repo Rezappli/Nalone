@@ -174,14 +174,6 @@ public class RechercheFragment extends Fragment {
 
         updateItems();
 
-
-        /*mRecyclerView = root.findViewById(R.id.recyclerView);
-        mAdapter = new ItemPersonAdapter(items);
-        mLayoutManager = new LinearLayoutManager(getContext());
-
-        mRecyclerView.setLayoutManager(mLayoutManager);
-        mRecyclerView.setAdapter(mAdapter);*/
-
         return rootView;
 
     }
@@ -222,7 +214,7 @@ public class RechercheFragment extends Fragment {
         });
 
         dialogProfil.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-        dialogProfil.getWindow().setLayout(900, 1500);
+        dialogProfil.getWindow().setLayout(getResources().getDisplayMetrics().widthPixels - 100, getResources().getDisplayMetrics().heightPixels - 200);
         dialogProfil.show();
 
     }
@@ -346,6 +338,9 @@ public class RechercheFragment extends Fragment {
                                                     mAdapter.setOnItemClickListener(new ItemProfilAdapter.OnItemClickListener() {
                                                         @Override
                                                         public void onAddClick(int position) {
+                                                            Log.w("Amis", "Amis envoye : " +amis_envoye);
+                                                            Log.w("Amis", "Amis recu : " +amis_recu);
+                                                            Log.w("Amis", "Comparaison de :"+finalJ);
                                                             if(amis_envoye.contains(finalJ+"") && finalJ != finalI){
                                                                 showPopUpProfil(items.get(position).getId(), items.get(position).getNom(), items.get(position).getmDescription(), items.get(position).getmNbCreate(), items.get(position).getmNbParticipate(),R.drawable.ic_round_hourglass_top_24);
                                                             }else if(amis_recu.contains(finalJ+"") && finalJ != finalI){
