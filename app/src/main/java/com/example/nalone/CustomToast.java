@@ -15,7 +15,7 @@ public class CustomToast{
     private boolean isShow = false;
 
     public CustomToast(Context context, String text, boolean centerToast, boolean centerText) {
-        this.toast = Toast.makeText(context, text, Toast.LENGTH_LONG);
+        this.toast = Toast.makeText(context, text, Toast.LENGTH_SHORT);
         if(centerText) {
             LinearLayout layout = (LinearLayout) toast.getView();
             if (layout.getChildCount() > 0) {

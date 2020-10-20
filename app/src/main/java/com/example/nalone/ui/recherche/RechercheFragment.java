@@ -23,6 +23,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.nalone.Adapter.ItemFiltreAdapter;
 import com.example.nalone.Adapter.ItemImagePersonAdapter;
+import com.example.nalone.CustomToast;
 import com.example.nalone.ItemFiltre;
 import com.example.nalone.ItemImagePerson;
 import com.example.nalone.ItemPerson;
@@ -63,6 +64,8 @@ public class RechercheFragment extends Fragment {
     private final List<ItemPerson> items = new ArrayList<>();
     private final List<ItemFiltre> filtres = new ArrayList<>();
     private View rootView;
+    private String amis_envoye = "";
+    private String amis_recu = "";
 
 
 
@@ -154,17 +157,54 @@ public class RechercheFragment extends Fragment {
                         }
 
                         mAdapter = new ItemProfilAdapter(tempList);
+                        mAdapter.setOnItemClickListener(new ItemProfilAdapter.OnItemClickListener() {
+                            @Override
+                            public void onAddClick(int position) {
+                                Log.w("Amis", "Amis envoye : " +amis_envoye);
+                                Log.w("Amis", "Amis recu : " +amis_recu);
+                                Log.w("Amis", "Comparaison de :"+position);
+                                if(amis_envoye.contains(tempList.get(position).getId()+"")){
+                                    showPopUpProfil(tempList.get(position).getId(), tempList.get(position).getNom(), tempList.get(position).getmDescription(), tempList.get(position).getmNbCreate(), tempList.get(position).getmNbParticipate(),R.drawable.ic_round_hourglass_top_24);
+                                }else if(amis_recu.contains(tempList.get(position).getId()+"")){
+                                    showPopUpProfil(tempList.get(position).getId(), tempList.get(position).getNom(), tempList.get(position).getmDescription(), tempList.get(position).getmNbCreate(), tempList.get(position).getmNbParticipate(),R.drawable.ic_round_mail_24);
+                                }else{
+                                    showPopUpProfil(tempList.get(position).getId(), tempList.get(position).getNom(), tempList.get(position).getmDescription(), tempList.get(position).getmNbCreate(), tempList.get(position).getmNbParticipate(),R.drawable.ic_baseline_add_circle_outline_24);
+                                }
+
+                            }
+                        });
                         mRecyclerView.setAdapter(mAdapter);
                     } else {
                         resultat.setVisibility(View.GONE);
                         resultat.setText("");
                         mAdapter = new ItemProfilAdapter(items);
+                        mAdapter.setOnItemClickListener(new ItemProfilAdapter.OnItemClickListener() {
+                            @Override
+                            public void onAddClick(int position) {
+                                Log.w("Amis", "Amis envoye : " +amis_envoye);
+                                Log.w("Amis", "Amis recu : " +amis_recu);
+                                Log.w("Amis", "Comparaison de :"+position);
+                                if(amis_envoye.contains(items.get(position).getId()+"")){
+                                    showPopUpProfil(items.get(position).getId(), items.get(position).getNom(), items.get(position).getmDescription(), items.get(position).getmNbCreate(), items.get(position).getmNbParticipate(),R.drawable.ic_round_hourglass_top_24);
+                                }else if(amis_recu.contains(items.get(position).getId()+"")){
+                                    showPopUpProfil(items.get(position).getId(), items.get(position).getNom(), items.get(position).getmDescription(), items.get(position).getmNbCreate(), items.get(position).getmNbParticipate(),R.drawable.ic_round_mail_24);
+                                }else{
+                                    showPopUpProfil(items.get(position).getId(), items.get(position).getNom(), items.get(position).getmDescription(), items.get(position).getmNbCreate(), items.get(position).getmNbParticipate(),R.drawable.ic_baseline_add_circle_outline_24);
+                                }
+
+                            }
+                        });
                         mRecyclerView.setAdapter(mAdapter);
+
+
+
                     }
                 }else{
                     resultat.setVisibility(View.VISIBLE);
                     resultat.setText("Aucun amis à ajouter !");
                 }
+
+
 
                 return false;
             }
@@ -180,7 +220,7 @@ public class RechercheFragment extends Fragment {
 
 
 
-    public void showPopUpProfil(final int id, String name, String desc, String nbCreate, String nbParticipate, int button){
+    public void showPopUpProfil(final int id, String name, String desc, String nbCreate, String nbParticipate, final int button){
          TextView nameProfil;
          TextView descriptionProfil;
          TextView nbCreateProfil;
@@ -208,8 +248,15 @@ public class RechercheFragment extends Fragment {
         buttonAdd.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.w("Friend", "ajout de l'ami : "+id);
-                addFriend(id);
+                if(button == R.drawable.ic_round_mail_24){
+                    CustomToast t = new CustomToast(getContext(), "Vous avez reçu une demande d'amis de la part de cet utilisateur !", false ,true);
+                    t.show();
+                }else if(button == R.drawable.ic_round_hourglass_top_24){
+                    CustomToast t = new CustomToast(getContext(), "Votre demande d'amis est en attente !", false ,true);
+                    t.show();
+                }else {
+                    addFriend(id);
+                }
             }
         });
 
@@ -250,6 +297,9 @@ public class RechercheFragment extends Fragment {
                     demande_amis_recu = ""+user_id;
                 }
                 mDatabase2.setValue(demande_amis_recu);
+                updateItems();
+
+                Toast.makeText(getContext(), "Vous avez envoyer une demande à cet utilisateur !", Toast.LENGTH_SHORT).show();
             }
 
             @Override
@@ -258,9 +308,6 @@ public class RechercheFragment extends Fragment {
             }
         });
 
-        updateItems();
-
-        Toast.makeText(getContext(), "Vous avez envoyer une demande à cet utilisateur !", Toast.LENGTH_SHORT).show();
         dialogProfil.hide();
     }
 
@@ -283,8 +330,8 @@ public class RechercheFragment extends Fragment {
                             if(mail.equalsIgnoreCase(user_mail)){
                                 int id_user_connect = finalI;
                                 String amis_text = snapshot.child("amis").getValue(String.class);
-                                final String amis_envoye = snapshot.child("demande_amis_envoye").getValue(String.class);
-                                final String amis_recu = snapshot.child("demande_amis_envoye").getValue(String.class);
+                                amis_envoye = snapshot.child("demande_amis_envoye").getValue(String.class);
+                                amis_recu = snapshot.child("demande_amis_recu").getValue(String.class);
                                 final List<String> liste_amis = Arrays.asList(amis_text.split(","));
 
                                 Log.w("Liste", "Liste amis:"+amis_text);
@@ -322,13 +369,21 @@ public class RechercheFragment extends Fragment {
                                                     if (maVille == ville) {
                                                         presDeMoi = true;
                                                     }
+                                                    ItemPerson it;
                                                     if(amis_envoye.contains(finalJ+"") && finalJ != finalI){
-                                                        items.add(new ItemPerson(finalJ, R.drawable.ic_baseline_account_circle_24, prenom + " " + nom, R.drawable.ic_round_hourglass_top_24, desc, ville, nbCreate, nbParticipate));
+                                                        it = new ItemPerson(finalJ, R.drawable.ic_baseline_account_circle_24, prenom + " " + nom, R.drawable.ic_round_hourglass_top_24, desc, ville, nbCreate, nbParticipate);
                                                     }else if(amis_recu.contains(finalJ+"") && finalJ != finalI){
-
+                                                        it = new ItemPerson(finalJ, R.drawable.ic_baseline_account_circle_24, prenom + " " + nom, R.drawable.ic_round_mail_24, desc, ville, nbCreate, nbParticipate);
                                                     }else{
-                                                        items.add(new ItemPerson(finalJ, R.drawable.ic_baseline_account_circle_24, prenom + " " + nom, 0, desc, ville, nbCreate, nbParticipate));
+                                                        it = new ItemPerson(finalJ, R.drawable.ic_baseline_account_circle_24, prenom + " " + nom, 0, desc, ville, nbCreate, nbParticipate);
                                                     }
+
+                                                    for(int i = 0; i < items.size(); i++){
+                                                        if(items.get(i).getId() == it.getId()){
+                                                            items.remove(it);
+                                                        }
+                                                    }
+                                                    items.add(it);
 
                                                 /*if(items.size() == liste_amis.size()){
                                                     dialogAddPerson.show();
@@ -340,11 +395,11 @@ public class RechercheFragment extends Fragment {
                                                         public void onAddClick(int position) {
                                                             Log.w("Amis", "Amis envoye : " +amis_envoye);
                                                             Log.w("Amis", "Amis recu : " +amis_recu);
-                                                            Log.w("Amis", "Comparaison de :"+finalJ);
-                                                            if(amis_envoye.contains(finalJ+"") && finalJ != finalI){
+                                                            Log.w("Amis", "Comparaison de :"+position);
+                                                            if(amis_envoye.contains(items.get(position).getId()+"") && finalJ != finalI){
                                                                 showPopUpProfil(items.get(position).getId(), items.get(position).getNom(), items.get(position).getmDescription(), items.get(position).getmNbCreate(), items.get(position).getmNbParticipate(),R.drawable.ic_round_hourglass_top_24);
-                                                            }else if(amis_recu.contains(finalJ+"") && finalJ != finalI){
-
+                                                            }else if(amis_recu.contains(items.get(position).getId()+"") && finalJ != finalI){
+                                                                showPopUpProfil(items.get(position).getId(), items.get(position).getNom(), items.get(position).getmDescription(), items.get(position).getmNbCreate(), items.get(position).getmNbParticipate(),R.drawable.ic_round_mail_24);
                                                             }else{
                                                                 showPopUpProfil(items.get(position).getId(), items.get(position).getNom(), items.get(position).getmDescription(), items.get(position).getmNbCreate(), items.get(position).getmNbParticipate(),R.drawable.ic_baseline_add_circle_outline_24);
                                                             }
