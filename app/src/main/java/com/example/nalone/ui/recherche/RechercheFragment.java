@@ -193,6 +193,7 @@ public class RechercheFragment extends Fragment {
                                     showPopUpProfil(items.get(position).getId(), items.get(position).getNom(), items.get(position).getmDescription(), items.get(position).getmNbCreate(), items.get(position).getmNbParticipate(),R.drawable.ic_baseline_add_circle_outline_24);
                                 }
 
+
                             }
                         });
                         mRecyclerView.setAdapter(mAdapter);
