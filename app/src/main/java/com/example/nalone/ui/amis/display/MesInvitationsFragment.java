@@ -14,6 +14,7 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.example.nalone.Adapter.ItemInvitAmisAdapter;
+import com.example.nalone.CustomToast;
 import com.example.nalone.ItemPerson;
 import com.example.nalone.R;
 import com.example.nalone.util.Constants;
@@ -27,6 +28,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import static com.example.nalone.util.Constants.firebaseDatabase;
+import static com.example.nalone.util.Constants.getBytesFromBitmap;
 import static com.example.nalone.util.Constants.user_id;
 import static com.example.nalone.util.Constants.user_mail;
 
@@ -284,7 +286,8 @@ public class MesInvitationsFragment extends Fragment {
         });
 
         updateItems();
-        Toast.makeText(getContext(), "Vous avez accepter cet utilisateur !", Toast.LENGTH_SHORT).show();
+        CustomToast t = new CustomToast(getContext(), "Vous avez ajouter cet utilisateur", false, true);
+        t.show();
     }
 
     private void removeFriend(final int id) {
@@ -334,6 +337,7 @@ public class MesInvitationsFragment extends Fragment {
             }
         });
         updateItems();
-        Toast.makeText(getContext(), "Vous avez accepter cet utilisateur !", Toast.LENGTH_SHORT).show();
+        CustomToast t = new CustomToast(getContext(), "Vous avez supprimer cet utilisateur", false, true);
+        t.show();
     }
 }

@@ -20,6 +20,7 @@ import android.widget.Toast;
 
 import com.example.nalone.Adapter.ItemListAmisAdapter;
 import com.example.nalone.Adapter.ItemProfilAdapter;
+import com.example.nalone.CustomToast;
 import com.example.nalone.ItemPerson;
 import com.example.nalone.R;
 import com.example.nalone.util.Constants;
@@ -198,7 +199,8 @@ public class AmisFragment extends Fragment {
                  amis = amis.replace(id, "");
 
                 mDatabase.setValue(amis);
-                Toast.makeText(getContext(), "Vous avez supprimer l'utilisateur " + prenom +" !", Toast.LENGTH_SHORT).show();
+                CustomToast t = new CustomToast(getContext(), "Vous avez supprimer cet utilisateur", false, true);
+                t.show();
             }
 
             @Override
@@ -295,8 +297,6 @@ public class AmisFragment extends Fragment {
                                                     public void onDelete(int position) {
                                                         if(items.size() > 0){
                                                             removeFriend(items.get(position).getId()+"", items.get(position).getNom());
-                                                        }else{
-                                                            Toast.makeText(getContext(), "Veuillez actualiser la page", Toast.LENGTH_SHORT).show();
                                                         }
                                                     }
                                                 });

@@ -265,6 +265,8 @@ public class RechercheFragment extends Fragment {
             }
         });
 
+        updateItems();
+
         Toast.makeText(getContext(), "Vous avez envoyer une demande à cet utilisateur !", Toast.LENGTH_SHORT).show();
         dialogProfil.hide();
     }
@@ -302,56 +304,59 @@ public class RechercheFragment extends Fragment {
                                 }
 
                                 for(int j = 0; j < nb_users; j++){
-                                    if(!liste_amis.contains(j+"") &&
-                                            j != finalI &&
-                                            !amis_envoye.contains(j+"")
-                                            && !amis_recu.contains(""+j)){
-                                        DatabaseReference user_found = Constants.firebaseDatabase.getReference("users/"+j);
-                                        final int finalJ = j;
-                                        user_found.addValueEventListener(new ValueEventListener() {
-                                            @Override
-                                            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                                                boolean presDeMoi = false;
-                                                String prenom = snapshot.child("prenom").getValue(String.class);
-                                                String nom = snapshot.child("nom").getValue(String.class);
-                                                String desc = snapshot.child("description").getValue( String.class);
-                                                String nbCreate = snapshot.child("nombre_creation").getValue(String.class);
-                                                String nbParticipate = snapshot.child("nombre_participation").getValue(String.class);
-                                                String ville = snapshot.child("ville").getValue(String.class);
-                                                Log.w("Liste", "Ajout de :"+prenom+ " " +nom + " " + ville);
+                                    if(amis_envoye.contains(j+"") && j != finalI){
 
-                                                mRecyclerView = rootView.findViewById(R.id.recyclerView);
-                                                mLayoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL,
-                                                        false);
+                                    }else if(amis_recu.contains(j+"") && j != finalI){
 
-                                                mRecyclerView.setLayoutManager(mLayoutManager);
-                                                mRecyclerView.setAdapter(mAdapter);
-                                                if(maVille == ville){
-                                                    presDeMoi = true;
-                                                }
-                                                items.add(new ItemPerson(finalJ,R.drawable.ic_baseline_account_circle_24, prenom+" "+nom, 0, desc, ville, nbCreate, nbParticipate));
+                                    }else {
+
+                                        if (!liste_amis.contains(j + "") &&
+                                                j != finalI) {
+                                            DatabaseReference user_found = Constants.firebaseDatabase.getReference("users/" + j);
+                                            final int finalJ = j;
+                                            user_found.addValueEventListener(new ValueEventListener() {
+                                                @Override
+                                                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                                    boolean presDeMoi = false;
+                                                    String prenom = snapshot.child("prenom").getValue(String.class);
+                                                    String nom = snapshot.child("nom").getValue(String.class);
+                                                    String desc = snapshot.child("description").getValue(String.class);
+                                                    String nbCreate = snapshot.child("nombre_creation").getValue(String.class);
+                                                    String nbParticipate = snapshot.child("nombre_participation").getValue(String.class);
+                                                    String ville = snapshot.child("ville").getValue(String.class);
+                                                    Log.w("Liste", "Ajout de :" + prenom + " " + nom + " " + ville);
+
+                                                    mRecyclerView = rootView.findViewById(R.id.recyclerView);
+                                                    mLayoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL,
+                                                            false);
+
+                                                    mRecyclerView.setLayoutManager(mLayoutManager);
+                                                    mRecyclerView.setAdapter(mAdapter);
+                                                    if (maVille == ville) {
+                                                        presDeMoi = true;
+                                                    }
+                                                    items.add(new ItemPerson(finalJ, R.drawable.ic_baseline_account_circle_24, prenom + " " + nom, 0, desc, ville, nbCreate, nbParticipate));
                                                 /*if(items.size() == liste_amis.size()){
                                                     dialogAddPerson.show();
                                                 }*/
 
 
-                                                mAdapter.setOnItemClickListener(new ItemProfilAdapter.OnItemClickListener() {
-                                                    @Override
-                                                    public void onAddClick(int position) {
-                                                        showPopUpProfil(items.get(position).getId(), items.get(position).getNom(), items.get(position).getmDescription(), items.get(position).getmNbCreate(), items.get(position).getmNbParticipate());
-                                                    }
-                                                });
+                                                    mAdapter.setOnItemClickListener(new ItemProfilAdapter.OnItemClickListener() {
+                                                        @Override
+                                                        public void onAddClick(int position) {
+                                                            showPopUpProfil(items.get(position).getId(), items.get(position).getNom(), items.get(position).getmDescription(), items.get(position).getmNbCreate(), items.get(position).getmNbParticipate());
+                                                        }
+                                                    });
 
 
+                                                }
 
+                                                @Override
+                                                public void onCancelled(@NonNull DatabaseError error) {
 
-                                            }
-
-                                            @Override
-                                            public void onCancelled(@NonNull DatabaseError error) {
-
-                                            }
-                                        });
+                                                }
+                                            });
+                                        }
                                     }
                                 }
 
