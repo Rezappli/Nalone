@@ -188,12 +188,12 @@ public class RechercheFragment extends Fragment {
 
 
 
-    public void showPopUpProfil(final int id, String name, String desc, String nbCreate, String nbParticipate){
+    public void showPopUpProfil(final int id, String name, String desc, String nbCreate, String nbParticipate, int button){
          TextView nameProfil;
          TextView descriptionProfil;
          TextView nbCreateProfil;
          TextView nbParticipateProfil;
-         final ImageView buttonAdd;
+         ImageView buttonAdd;
 
         dialogProfil.setContentView(R.layout.popup_profil);
         nameProfil = dialogProfil.findViewById(R.id.profilName);
@@ -207,6 +207,7 @@ public class RechercheFragment extends Fragment {
         descriptionProfil.setText(desc);
         nbCreateProfil.setText(nbCreate);
         nbParticipateProfil.setText(nbParticipate);
+        buttonAdd.setImageResource(button);
 
         if(desc.matches("")){
             descriptionProfil.setVisibility(View.GONE);
@@ -290,8 +291,8 @@ public class RechercheFragment extends Fragment {
                             if(mail.equalsIgnoreCase(user_mail)){
                                 int id_user_connect = finalI;
                                 String amis_text = snapshot.child("amis").getValue(String.class);
-                                String amis_envoye = snapshot.child("demande_amis_envoye").getValue(String.class);
-                                String amis_recu = snapshot.child("demande_amis_envoye").getValue(String.class);
+                                final String amis_envoye = snapshot.child("demande_amis_envoye").getValue(String.class);
+                                final String amis_recu = snapshot.child("demande_amis_envoye").getValue(String.class);
                                 final List<String> liste_amis = Arrays.asList(amis_text.split(","));
 
                                 Log.w("Liste", "Liste amis:"+amis_text);
@@ -304,12 +305,6 @@ public class RechercheFragment extends Fragment {
                                 }
 
                                 for(int j = 0; j < nb_users; j++){
-                                    if(amis_envoye.contains(j+"") && j != finalI){
-
-                                    }else if(amis_recu.contains(j+"") && j != finalI){
-
-                                    }else {
-
                                         if (!liste_amis.contains(j + "") &&
                                                 j != finalI) {
                                             DatabaseReference user_found = Constants.firebaseDatabase.getReference("users/" + j);
@@ -335,7 +330,14 @@ public class RechercheFragment extends Fragment {
                                                     if (maVille == ville) {
                                                         presDeMoi = true;
                                                     }
-                                                    items.add(new ItemPerson(finalJ, R.drawable.ic_baseline_account_circle_24, prenom + " " + nom, 0, desc, ville, nbCreate, nbParticipate));
+                                                    if(amis_envoye.contains(finalJ+"") && finalJ != finalI){
+                                                        items.add(new ItemPerson(finalJ, R.drawable.ic_baseline_account_circle_24, prenom + " " + nom, R.drawable.ic_round_hourglass_top_24, desc, ville, nbCreate, nbParticipate));
+                                                    }else if(amis_recu.contains(finalJ+"") && finalJ != finalI){
+
+                                                    }else{
+                                                        items.add(new ItemPerson(finalJ, R.drawable.ic_baseline_account_circle_24, prenom + " " + nom, 0, desc, ville, nbCreate, nbParticipate));
+                                                    }
+
                                                 /*if(items.size() == liste_amis.size()){
                                                     dialogAddPerson.show();
                                                 }*/
@@ -344,7 +346,14 @@ public class RechercheFragment extends Fragment {
                                                     mAdapter.setOnItemClickListener(new ItemProfilAdapter.OnItemClickListener() {
                                                         @Override
                                                         public void onAddClick(int position) {
-                                                            showPopUpProfil(items.get(position).getId(), items.get(position).getNom(), items.get(position).getmDescription(), items.get(position).getmNbCreate(), items.get(position).getmNbParticipate());
+                                                            if(amis_envoye.contains(finalJ+"") && finalJ != finalI){
+                                                                showPopUpProfil(items.get(position).getId(), items.get(position).getNom(), items.get(position).getmDescription(), items.get(position).getmNbCreate(), items.get(position).getmNbParticipate(),R.drawable.ic_round_hourglass_top_24);
+                                                            }else if(amis_recu.contains(finalJ+"") && finalJ != finalI){
+
+                                                            }else{
+                                                                showPopUpProfil(items.get(position).getId(), items.get(position).getNom(), items.get(position).getmDescription(), items.get(position).getmNbCreate(), items.get(position).getmNbParticipate(),R.drawable.ic_baseline_add_circle_outline_24);
+                                                            }
+
                                                         }
                                                     });
 
@@ -357,7 +366,6 @@ public class RechercheFragment extends Fragment {
                                                 }
                                             });
                                         }
-                                    }
                                 }
 
                                 mAdapter = new ItemProfilAdapter(items);
