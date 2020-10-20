@@ -51,7 +51,6 @@ public class SplashActivity extends AppCompatActivity {
             if(acct == null) {
                 if (checkFileSettings()) {
                     String line = readSettings();
-                    Log.w("fichier", "line " + line.toString());
                     if(line != null) {
                         String[] datas = line.split(";");
                         checkUserRegister(datas[0], datas[1]);

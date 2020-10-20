@@ -55,7 +55,7 @@ public class RechercheFragment extends Fragment {
     private ItemProfilAdapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
     private TextView resultat;
-    final List<ItemPerson> tempList = new ArrayList<>();
+    private final List<ItemPerson> tempList = new ArrayList<>();
     private Dialog dialogProfil;
 
     private RecyclerView mRecyclerViewFiltre;
@@ -326,7 +326,8 @@ public class RechercheFragment extends Fragment {
                         public void onDataChange(@NonNull DataSnapshot snapshot) {
                             String mail = snapshot.child("mail").getValue(String.class);
                             final String maVille = snapshot.child("ville").getValue(String.class);
-
+                            Log.w("Mail", "mail trouvé : "+mail);
+                            Log.w("Mail", "user mail trouvé : "+user_mail);
                             if(mail.equalsIgnoreCase(user_mail)){
                                 int id_user_connect = finalI;
                                 String amis_text = snapshot.child("amis").getValue(String.class);
