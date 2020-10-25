@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@android:color/white"
+    android:background="@drawable/custom_button_signup"
     tools:context=".CreateEventActivity">
 
     <ScrollView
@@ -226,18 +226,29 @@
                 android:layout_marginTop="10dp"
                 android:background="@android:color/transparent"
                 android:onClick="showPopUp"
-                app:srcCompat="@drawable/ic_baseline_add_24"
-                android:visibility="gone" />
+                android:visibility="gone"
+                app:srcCompat="@drawable/ic_baseline_add_24" />
 
             <Button
                 android:id="@+id/button"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="30dp"
-                android:layout_marginEnd="30dp"
-                android:background="@drawable/custom_button"
+                android:background="@drawable/custom_button_simple"
                 android:text="@string/valid"
                 android:textColor="#FFFFFF"
+                android:textSize="18sp" />
+
+            <Button
+                android:id="@+id/buttonCancel"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="30dp"
+                android:layout_marginEnd="30dp"
+                android:layout_marginBottom="30dp"
+                android:background="@drawable/custom_button_signup"
+                android:text="@string/back"
+                android:textColor="@color/black"
                 android:textSize="18sp" />
 
         </LinearLayout>

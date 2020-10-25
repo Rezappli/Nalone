@@ -1,5 +1,6 @@
 package com.example.nalone.Adapter;
 
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -7,6 +8,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.nalone.ItemFiltre;
@@ -16,7 +18,7 @@ import com.example.nalone.R;
 import java.util.List;
 
 public class ItemFiltreAdapter extends RecyclerView.Adapter<ItemFiltreAdapter.ItemFiltreViewHolder> {
-    private List<ItemFiltre> mItemPersonList;
+    private List<ItemFiltre> mItemFiltreList;
     public OnItemClickListener mListener;
 
     public interface OnItemClickListener {
@@ -31,12 +33,15 @@ public class ItemFiltreAdapter extends RecyclerView.Adapter<ItemFiltreAdapter.It
     public static class ItemFiltreViewHolder extends RecyclerView.ViewHolder {
 
         public TextView mText;
+        public CardView cardView;
 
-        public ItemFiltreViewHolder(View itemView, final OnItemClickListener listener) {
+
+        public ItemFiltreViewHolder(final View itemView, final OnItemClickListener listener) {
             super(itemView);
             mText = itemView.findViewById(R.id.textFiltre);
+            cardView = itemView.findViewById(R.id.cardViewFiltre);
 
-            mText.setOnClickListener(new View.OnClickListener() {
+            cardView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     if(listener != null){
@@ -58,18 +63,19 @@ public class ItemFiltreAdapter extends RecyclerView.Adapter<ItemFiltreAdapter.It
         return ipvh;
     }
     public ItemFiltreAdapter(List<ItemFiltre> itemlist){
-        mItemPersonList = itemlist;
+        mItemFiltreList = itemlist;
     }
     @Override
     public void onBindViewHolder(@NonNull ItemFiltreViewHolder holder, int position) {
-        ItemFiltre currentItem = mItemPersonList.get(position);
+        ItemFiltre currentItem = mItemFiltreList.get(position);
 
         holder.mText.setText((currentItem.getFiltre()));
+        holder.mText.setBackgroundResource(currentItem.getBackground());
     }
 
     @Override
     public int getItemCount() {
-        return mItemPersonList.size();
+        return mItemFiltreList.size();
     }
 
 }

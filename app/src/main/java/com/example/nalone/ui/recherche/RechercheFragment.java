@@ -56,6 +56,7 @@ public class RechercheFragment extends Fragment {
     private RecyclerView.LayoutManager mLayoutManager;
     private TextView resultat;
     private final List<ItemPerson> tempList = new ArrayList<>();
+    private final List<ItemPerson> tempListFiltre = new ArrayList<>();
     private Dialog dialogProfil;
 
     private RecyclerView mRecyclerViewFiltre;
@@ -81,21 +82,13 @@ public class RechercheFragment extends Fragment {
         resultat.setVisibility(View.GONE);
         dialogProfil = new Dialog(getContext());
 
+
         filtres.add(new ItemFiltre("TC"));
         filtres.add(new ItemFiltre("MMI"));
         filtres.add(new ItemFiltre("INFO"));
         filtres.add(new ItemFiltre("GB"));
 
         mAdapterFiltre = new ItemFiltreAdapter(filtres);
-
-        mRecyclerViewFiltre = rootView.findViewById(R.id.recyclerViewFiltre);
-        mLayoutManagerFiltre = new LinearLayoutManager(
-                rootView.getContext(),
-                LinearLayoutManager.HORIZONTAL,
-                false);
-        mRecyclerViewFiltre.setLayoutManager(mLayoutManagerFiltre);
-        mRecyclerViewFiltre.setAdapter(mAdapterFiltre);
-
 
 
         search_bar.setOnClickListener(new View.OnClickListener() {
@@ -175,6 +168,7 @@ public class RechercheFragment extends Fragment {
                             }
                         });
                         mRecyclerView.setAdapter(mAdapter);
+
                     } else {
                         resultat.setVisibility(View.GONE);
                         resultat.setText("");
@@ -193,10 +187,8 @@ public class RechercheFragment extends Fragment {
                                     showPopUpProfil(items.get(position).getId(), items.get(position).getNom(), items.get(position).getmDescription(), items.get(position).getmNbCreate(), items.get(position).getmNbParticipate(),R.drawable.ic_baseline_add_circle_outline_24);
                                 }
 
-
                             }
                         });
-                        mRecyclerView.setAdapter(mAdapter);
 
 
 
@@ -235,6 +227,7 @@ public class RechercheFragment extends Fragment {
         nbCreateProfil = dialogProfil.findViewById(R.id.nbEventCreate);
         nbParticipateProfil = dialogProfil.findViewById(R.id.nbEventParticipe);
         buttonAdd = dialogProfil.findViewById(R.id.buttonAdd);
+
 
 
         nameProfil.setText(name);
@@ -321,7 +314,7 @@ public class RechercheFragment extends Fragment {
                 final String id_user = snapshot.getValue(String.class);
                 final int nb_users = Integer.parseInt(id_user);
                 for(int i = 0; i < nb_users; i++){
-                    DatabaseReference user = Constants.firebaseDatabase.getReference("users/"+i);
+                    final DatabaseReference user = Constants.firebaseDatabase.getReference("users/"+i);
                     final int finalI = i;
                     user.addValueEventListener(new ValueEventListener() {
                         @Override
@@ -361,6 +354,7 @@ public class RechercheFragment extends Fragment {
                                                     String nbCreate = snapshot.child("nombre_creation").getValue(String.class);
                                                     String nbParticipate = snapshot.child("nombre_participation").getValue(String.class);
                                                     String ville = snapshot.child("ville").getValue(String.class);
+                                                    final String cursus = snapshot.child("cursus").getValue(String.class);
                                                     Log.w("Liste", "Ajout de :" + prenom + " " + nom + " " + ville);
 
                                                     mRecyclerView = rootView.findViewById(R.id.recyclerView);
@@ -374,11 +368,11 @@ public class RechercheFragment extends Fragment {
                                                     }
                                                     ItemPerson it;
                                                     if(amis_envoye.contains(finalJ+"") && finalJ != finalI){
-                                                        it = new ItemPerson(finalJ, R.drawable.ic_baseline_account_circle_24, prenom + " " + nom, R.drawable.ic_round_hourglass_top_24, desc, ville, nbCreate, nbParticipate);
+                                                        it = new ItemPerson(finalJ, R.drawable.ic_baseline_account_circle_24, prenom + " " + nom, R.drawable.ic_round_hourglass_top_24, desc, ville, cursus, nbCreate, nbParticipate);
                                                     }else if(amis_recu.contains(finalJ+"") && finalJ != finalI){
-                                                        it = new ItemPerson(finalJ, R.drawable.ic_baseline_account_circle_24, prenom + " " + nom, R.drawable.ic_round_mail_24, desc, ville, nbCreate, nbParticipate);
+                                                        it = new ItemPerson(finalJ, R.drawable.ic_baseline_account_circle_24, prenom + " " + nom, R.drawable.ic_round_mail_24, desc, ville,cursus, nbCreate, nbParticipate);
                                                     }else{
-                                                        it = new ItemPerson(finalJ, R.drawable.ic_baseline_account_circle_24, prenom + " " + nom, 0, desc, ville, nbCreate, nbParticipate);
+                                                        it = new ItemPerson(finalJ, R.drawable.ic_baseline_account_circle_24, prenom + " " + nom, 0, desc, ville,cursus, nbCreate, nbParticipate);
                                                     }
 
                                                     for(int i = 0; i < items.size(); i++){
@@ -387,6 +381,10 @@ public class RechercheFragment extends Fragment {
                                                         }
                                                     }
                                                     items.add(it);
+
+
+
+
 
                                                 /*if(items.size() == liste_amis.size()){
                                                     dialogAddPerson.show();
@@ -421,7 +419,9 @@ public class RechercheFragment extends Fragment {
                                         }
                                 }
 
-                                mAdapter = new ItemProfilAdapter(items);
+                                inisialiserFiltres();
+
+
 
                             }
 
@@ -443,4 +443,70 @@ public class RechercheFragment extends Fragment {
         });
     }
 
+    public void inisialiserFiltres(){
+        mAdapter = new ItemProfilAdapter(items);
+
+        mRecyclerViewFiltre = rootView.findViewById(R.id.recyclerViewFiltre);
+        mLayoutManagerFiltre = new LinearLayoutManager(
+                rootView.getContext(),
+                LinearLayoutManager.HORIZONTAL,
+                false);
+        mRecyclerViewFiltre.setLayoutManager(mLayoutManagerFiltre);
+        mRecyclerViewFiltre.setAdapter(mAdapterFiltre);
+
+        mAdapterFiltre.setOnItemClickListener(new ItemFiltreAdapter.OnItemClickListener() {
+            @Override
+            public void onAddClick(int position) {
+                clickFiltre(position);
+            }
+
+        });
+
+    }
+
+    public void clickFiltre(int position){
+        tempListFiltre.clear();
+        if(filtres.get(position).isClick()){
+            filtres.get(position).setClick(false);
+            filtres.get(position).changeBackground(R.drawable.custom_button_signup);
+            Log.w("filtreClick", "Supprimer filtre");
+            for (int i = 0; i < tempListFiltre.size(); i++){
+                if(tempListFiltre.size() > 0){
+                    if(tempListFiltre.get(i).getCursus() ==  filtres.get(i).getFiltre()){
+                        tempListFiltre.remove(tempListFiltre.get(i));
+                    }
+                }else{
+
+                }
+            }
+            mAdapter = new ItemProfilAdapter(items);
+            mRecyclerView.setAdapter(mAdapter);
+        }else {
+            filtres.get(position).setClick(true);
+            filtres.get(position).changeBackground(R.drawable.custom_button_simple);
+            Log.w("filtreClick", "Ajout filtre");
+            String cursusFiltre = filtres.get(position).getFiltre();
+
+            Log.w("filtre", "Appuie sur " + cursusFiltre);
+            for (int i = 0 ; i < items.size(); i++){
+                String cursusUser = items.get(i).getCursus();
+                Log.w("filtre", "Comparaison avec : " + cursusUser);
+                if(cursusUser.matches(cursusFiltre)){
+                    tempListFiltre.add(items.get(i));;
+                }
+            }
+
+            if(tempListFiltre.size() > 0){
+                mAdapter = new ItemProfilAdapter(tempListFiltre);
+                mRecyclerView.setAdapter(mAdapter);
+            }else{
+                Toast.makeText(getContext(), "Il n'y a pas d'utilisateur en " + cursusFiltre, Toast.LENGTH_SHORT).show();
+            }
+
+
+        }
+        mAdapterFiltre.notifyItemChanged(position);
+    }
+
 }
+

@@ -14,6 +14,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.SearchView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -276,13 +277,14 @@ public class AmisFragment extends Fragment {
                                                 String nbCreate = snapshot.child("nombre_creation").getValue(String.class);
                                                 String nbParticipate = snapshot.child("nombre_participation").getValue(String.class);
                                                 String ville = snapshot.child("ville").getValue(String.class);
+                                                String cursus = snapshot.child("cursus").getValue(String.class);
                                                 Log.w("Liste", "Ajout de :"+prenom+ " " +nom);
                                                 mRecyclerView = rootView.findViewById(R.id.recyclerViewMesAmis);
                                                 mLayoutManager = new LinearLayoutManager(getContext());
 
                                                 mRecyclerView.setLayoutManager(mLayoutManager);
                                                 mRecyclerView.setAdapter(mAdapter);
-                                                items.add(new ItemPerson(finalJ,R.drawable.ic_baseline_account_circle_24, prenom+" "+nom, 0, desc, ville, nbCreate, nbParticipate));
+                                                items.add(new ItemPerson(finalJ,R.drawable.ic_baseline_account_circle_24, prenom+" "+nom, 0, desc, ville, cursus, nbCreate, nbParticipate));
                                                 /*if(items.size() == liste_amis.size()){
                                                     dialogAddPerson.show();
                                                 }*/
@@ -340,12 +342,15 @@ public class AmisFragment extends Fragment {
         TextView descriptionProfil;
         TextView nbCreateProfil;
         TextView nbParticipateProfil;
+        ImageView button;
 
         dialogProfil.setContentView(R.layout.popup_profil);
         nameProfil = dialogProfil.findViewById(R.id.profilName);
         descriptionProfil = dialogProfil.findViewById(R.id.profilDescription);
         nbCreateProfil = dialogProfil.findViewById(R.id.nbEventCreate);
         nbParticipateProfil = dialogProfil.findViewById(R.id.nbEventParticipe);
+        button = dialogProfil.findViewById(R.id.buttonAdd);
+        button.setVisibility(View.GONE);
 
 
         nameProfil.setText(name);

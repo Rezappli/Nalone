@@ -141,13 +141,14 @@ public class MesInvitationsFragment extends Fragment {
                                                 String nbCreate = snapshot.child("nombre_creation").getValue(String.class);
                                                 String nbParticipate = snapshot.child("nombre_participation").getValue(String.class);
                                                 String ville = snapshot.child("ville").getValue(String.class);
+                                                String cursus = snapshot.child("cursus").getValue(String.class);
                                                 Log.w("Liste", "Ajout de :"+prenom+ " " +nom);
                                                 mRecyclerView = rootView.findViewById(R.id.recyclerViewInvitAmis);
                                                 mLayoutManager = new LinearLayoutManager(getContext());
 
                                                 mRecyclerView.setLayoutManager(mLayoutManager);
                                                 mRecyclerView.setAdapter(mAdapter);
-                                                invits.add(new ItemPerson(finalJ,R.drawable.ic_baseline_account_circle_24, prenom+" "+nom, 0, desc, ville,nbCreate, nbParticipate));
+                                                invits.add(new ItemPerson(finalJ,R.drawable.ic_baseline_account_circle_24, prenom+" "+nom, 0, desc, ville, cursus, nbCreate, nbParticipate));
                                                 /*if(items.size() == liste_amis.size()){
                                                     dialogAddPerson.show();
                                                 }*/

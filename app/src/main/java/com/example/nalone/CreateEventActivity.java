@@ -75,6 +75,7 @@ public class CreateEventActivity extends AppCompatActivity {
     private ImageView imageViewPublic;
 
     private Button buttonValidEvent;
+    private Button buttonCancel;
 
     final List<ItemPerson> items = new ArrayList<>();
 
@@ -102,6 +103,7 @@ public class CreateEventActivity extends AppCompatActivity {
         event_name = findViewById(R.id.eventName);
         event_resume = findViewById(R.id.eventResume);
         buttonValidEvent = findViewById(R.id.button);
+        buttonCancel = findViewById(R.id.buttonCancel);
         event_date = findViewById(R.id.eventDate);
         event_horaire = findViewById(R.id.eventHoraire);
 
@@ -137,6 +139,13 @@ public class CreateEventActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 saveDataEvent();
+            }
+        });
+
+        buttonCancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
             }
         });
 
@@ -335,6 +344,7 @@ public class CreateEventActivity extends AppCompatActivity {
                                                     String nbCreate = snapshot.child("nombre_creation").getValue(String.class);
                                                     String nbParticipate = snapshot.child("nombre_participation").getValue(String.class);
                                                     String ville = snapshot.child("ville").getValue(String.class);
+                                                    String cursus = snapshot.child("cursus").getValue(String.class);
 
                                                     mRecyclerView[0] = dialogAddPerson.findViewById(R.id.recyclerView);
                                                     mLayoutManager[0] = new LinearLayoutManager(getBaseContext());
@@ -342,7 +352,7 @@ public class CreateEventActivity extends AppCompatActivity {
                                                     mRecyclerView[0].setLayoutManager(mLayoutManager[0]);
                                                     mRecyclerView[0].setAdapter(mAdapter[0]);
 
-                                                    ItemPerson itemPerson = new ItemPerson(finalJ,R.drawable.ic_baseline_account_circle_24, prenom+" "+nom, R.drawable.ic_baseline_add_24, desc, ville , nbCreate, nbParticipate);
+                                                    ItemPerson itemPerson = new ItemPerson(finalJ,R.drawable.ic_baseline_account_circle_24, prenom+" "+nom, R.drawable.ic_baseline_add_24, desc, ville , cursus, nbCreate, nbParticipate);
                                                     boolean found = false;
                                                     for(int k = 0; k < itemsAdd.size(); k++){
                                                         if(itemPerson.getId() == itemsAdd.get(k).getId()){
