@@ -103,61 +103,58 @@ public class SignUpHobbiesActivity extends AppCompatActivity {
                     return;
                 }
 
-                String[] interets = new String[cardsList.size()];
-                int index = 0;
+                List<String> interets = new ArrayList<>();
                 for(final CardView c : cardsList){
                     if(c == ciFilms){
                         if(c.getCardElevation() == 0){
-                            interets[index] = "Films";
+                            interets.add("Films");
                         }
                     }
 
                     if(c == ciSport){
                         if(c.getCardElevation() == 0){
-                            interets[index] = "Sport";
+                            interets.add("Sport");
                         }
                     }
 
                     if(c == ciMusique){
                         if(c.getCardElevation() == 0){
-                            interets[index] = "Musique";
+                            interets.add("Musique");
                         }
                     }
 
                     if(c == ciJeuxVideo){
                         if(c.getCardElevation() == 0){
-                            interets[index] = "Jeux";
+                            interets.add("Jeux");
                         }
                     }
 
                     if(c == ciLivres){
                         if(c.getCardElevation() == 0){
-                            interets[index] = "Livres";
+                            interets.add("Livres");
                         }
                     }
 
                     if(c == ciPeinture){
                         if(c.getCardElevation() == 0){
-                            interets[index] = "Peinture";
+                            interets.add("Peinture");
                         }
                     }
 
                     if(c == ciPhoto){
                         if(c.getCardElevation() == 0){
-                            interets[index] = "Photo";
+                            interets.add("Photo");
                         }
                     }
 
                     if(c == ciProg){
                         if(c.getCardElevation() == 0){
-                            interets[index] = "Programmation";
+                            interets.add("Programmation");
                         }
                     }
-
-                    index++;
                 }
 
-                SignUpInformationActivity.userData.setCentreInterets(interets);
+                SignUpInformationActivity.user.setCentreInterets(interets);
                 Intent signUpThree = new Intent(getBaseContext(), SignUpProfilActivity.class);
                 startActivityForResult(signUpThree, 0);
             }

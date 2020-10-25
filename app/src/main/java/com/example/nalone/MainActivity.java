@@ -3,17 +3,15 @@ package com.example.nalone;
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.NotificationCompat;
 
-import android.app.NotificationManager;
 import android.content.Intent;
-import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
@@ -21,21 +19,20 @@ import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.SignInButton;
 import com.google.android.gms.common.api.ApiException;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.auth.AuthCredential;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.GoogleAuthProvider;
 
-import java.io.FileWriter;
-import java.io.IOException;
+import java.util.Map;
 
-import static com.example.nalone.util.Constants.settingsFile;
-import static com.example.nalone.util.Constants.user_mail;
-import static com.example.nalone.util.Constants.user_id;
+import static com.example.nalone.util.Constants.USERS_LIST;
+import static com.example.nalone.util.Constants.currentUser;
+import static com.example.nalone.util.Constants.mAuth;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity{
     private TextView textViewSinscrire;
     private TextView textViewConnexion;
     private EditText editTextPass;
@@ -49,10 +46,6 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         ErrorClass.activity = this;
         ErrorClass.checkInternetConnection();
-
-
-
-        /*Google Sign-In method*/
 
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestEmail()
@@ -75,10 +68,10 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        textViewSinscrire = (TextView) findViewById(R.id.buttonQuit);
-        textViewConnexion = (TextView) findViewById(R.id.buttonRetry);
-        editTextAddress = (EditText) findViewById(R.id.editTextAddress);
-        editTextPass = (EditText) findViewById(R.id.editTextPassword);
+        textViewSinscrire = findViewById(R.id.buttonQuit);
+        textViewConnexion = findViewById(R.id.buttonRetry);
+        editTextAddress = findViewById(R.id.editTextAddress);
+        editTextPass = findViewById(R.id.editTextPassword);
 
 
         textViewSinscrire.setOnClickListener(new View.OnClickListener() {
@@ -94,82 +87,25 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 ErrorClass.checkInternetConnection();
-                final String textAddress = editTextAddress.getText().toString().replace(".", ",");
+                final String textAddress = editTextAddress.getText().toString();
                 final String textPass = editTextPass.getText().toString();
 
-                if (textAddress.matches("")) {
+                if (textAddress.equalsIgnoreCase("")) {
                     editTextAddress.setError("Entrez votre adresse");
                     return;
                 }
 
-                if (textPass.matches("")) {
+                if (textPass.equalsIgnoreCase("")) {
                     editTextPass.setError("Entrez votre mot de passe");
                     return;
                 }
-                //Lecture d'une connexion mail/mdp via bdd
-                if(!textAddress.equalsIgnoreCase("") && !textPass.equalsIgnoreCase("")) {
-                    DatabaseReference id_users = FirebaseDatabase.getInstance().getReference("id_users");
-                    id_users.addValueEventListener(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(@NonNull DataSnapshot snapshot) {
 
-                            String id_users_text = snapshot.getValue(String.class);
-                            int nb_users = Integer.parseInt(id_users_text);
-
-                            for (int i = 0; i < nb_users; i++) {
-                                DatabaseReference authentificationRef = FirebaseDatabase.getInstance().getReference("authentification/" + i);
-                                final int finalI = i;
-                                authentificationRef.addValueEventListener(new ValueEventListener() {
-                                    @Override
-                                    public void onDataChange(@NonNull DataSnapshot snapshot) {
-                                        String mail = snapshot.child("mail").getValue(String.class);
-                                        String password = snapshot.child("password").getValue(String.class);
-                                        boolean mailFound = false;
-                                        if (mail.equalsIgnoreCase(textAddress)) {
-                                            mailFound = true;
-                                            if (password.equalsIgnoreCase(textPass)) {
-                                                user_mail = mail;
-                                                writeSettingsData(mail+";"+password);
-                                                Intent intent = new Intent(getBaseContext(), HomeActivity.class);
-                                                startActivityForResult(intent, 0);
-                                            } else {
-                                                CustomToast toast = new CustomToast(getBaseContext(), "Mot de passe incorrect !", false, true);
-                                            }
-                                        }
-
-                                        if (!mailFound) {
-                                            CustomToast toast = new CustomToast(getBaseContext(), "Adresse mail introuvable !", false, true);
-                                        }
-                                    }
-
-                                    @Override
-                                    public void onCancelled(@NonNull DatabaseError error) {
-
-                                    }
-                                });
-                            }
-                        }
-
-                        @Override
-                        public void onCancelled(@NonNull DatabaseError error) {
-
-                        }
-                    });
+                if(!textAddress.equalsIgnoreCase("") && !textPass.equalsIgnoreCase("")){
+                    connectUser(textAddress, textPass);
                 }
-
             }
         });
 
-    }
-
-    private void writeSettingsData(String data) {
-        try {
-            FileWriter myWriter = new FileWriter(settingsFile);
-            myWriter.write(data);
-            myWriter.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
     }
 
     public void signIn() {
@@ -181,10 +117,7 @@ public class MainActivity extends AppCompatActivity {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        // Result returned from launching the Intent from GoogleSignInClient.getSignInIntent(...);
         if (requestCode == 0) {
-            // The Task returned from this call is always completed, no need to attach
-            // a listener.
             Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
             handleSignInResult(task);
         }
@@ -196,10 +129,7 @@ public class MainActivity extends AppCompatActivity {
             Intent intent = new Intent(MainActivity.this, HomeActivity.class);
             startActivity(intent);
         } catch (ApiException e) {
-            // The ApiException status code indicates the detailed failure reason.
-            // Please refer to the GoogleSignInStatusCodes class reference for more information.
             Log.w("GoogleError", "signInResult:failed code=" + e.getStatusCode());
-
         }
     }
 
@@ -209,4 +139,55 @@ public class MainActivity extends AppCompatActivity {
         ErrorClass.checkInternetConnection();
     }
 
+    public void connectUser(String mail, String pass) {
+            mAuth.signInWithEmailAndPassword(mail, pass)
+                    .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+                        @Override
+                        public void onComplete(@NonNull Task<AuthResult> task) {
+                            if (task.isSuccessful()) {
+                                currentUser = mAuth.getCurrentUser();
+                                if (currentUser.isEmailVerified()) {
+                                    startActivity(new Intent(MainActivity.this, HomeActivity.class));
+                                } else {
+                                    Toast.makeText(MainActivity.this, "Votre adresse mail n'a pas été vérifiée",
+                                            Toast.LENGTH_SHORT).show();
+                                }
+                            } else {
+                                Toast.makeText(MainActivity.this, "Erreur : " + task.getException(),
+                                        Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                    });
+    }
+
+    public void createGoogleUser(String token) {
+        AuthCredential credential = GoogleAuthProvider.getCredential(token, null);
+        mAuth.signInWithCredential(credential)
+                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+                        if (task.isSuccessful()) {
+                            currentUser = mAuth.getCurrentUser();
+                            sendVerificationEmail(currentUser);
+                        } else {
+                            Toast.makeText(MainActivity.this, "Erreur : "+task.getException(),
+                                    Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
+    }
+
+    private void sendVerificationEmail(FirebaseUser user) {
+        user.sendEmailVerification()
+                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        if (task.isSuccessful()) {
+                            Toast.makeText(MainActivity.this, "Veuillez vérifiez votre adresse mail !",
+                                    Toast.LENGTH_SHORT).show();
+                        }
+
+                    }
+                });
+    }
 }

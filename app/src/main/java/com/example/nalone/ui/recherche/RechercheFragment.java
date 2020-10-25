@@ -1,7 +1,6 @@
 package com.example.nalone.ui.recherche;
 
 import android.app.Dialog;
-import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
@@ -9,7 +8,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.SearchView;
 import android.widget.TextView;
@@ -22,15 +20,12 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.nalone.Adapter.ItemFiltreAdapter;
-import com.example.nalone.Adapter.ItemImagePersonAdapter;
 import com.example.nalone.CustomToast;
 import com.example.nalone.ItemFiltre;
-import com.example.nalone.ItemImagePerson;
 import com.example.nalone.ItemPerson;
 import com.example.nalone.Adapter.ItemProfilAdapter;
 import com.example.nalone.R;
-import com.example.nalone.UserData;
-import com.example.nalone.ui.message.ChatActivity;
+import com.example.nalone.User;
 import com.example.nalone.util.Constants;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -41,9 +36,11 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import static com.example.nalone.util.Constants.firebaseDatabase;
-import static com.example.nalone.util.Constants.user_id;
-import static com.example.nalone.util.Constants.user_mail;
+import static com.example.nalone.util.Constants.USERS_DB_REF;
+import static com.example.nalone.util.Constants.USERS_LIST;
+import static com.example.nalone.util.Constants.USER_ID;
+import static com.example.nalone.util.Constants.currentUser;
+import static com.example.nalone.util.Constants.mFirebase;
 
 public class RechercheFragment extends Fragment {
 
@@ -66,7 +63,6 @@ public class RechercheFragment extends Fragment {
     private View rootView;
     private String amis_envoye = "";
     private String amis_recu = "";
-
 
 
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -97,11 +93,10 @@ public class RechercheFragment extends Fragment {
         mRecyclerViewFiltre.setAdapter(mAdapterFiltre);
 
 
-
         search_bar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                    search_bar.onActionViewExpanded();
+                search_bar.onActionViewExpanded();
             }
         });
 
@@ -116,38 +111,38 @@ public class RechercheFragment extends Fragment {
                 newText = newText.toLowerCase();
                 tempList.clear();
                 boolean check = true;
-                if(items.size() > 0) {
+                if (items.size() > 0) {
                     if (newText.length() > 0) {
                         for (int i = 0; i < items.size(); i++) {
                             for (int j = 0; j < newText.length(); j++) {
-                                    if(items.get(i).getmNomToLowerCase().length() > j) {
-                                        if (newText.charAt(j) == items.get(i).getmNomToLowerCase().charAt(j) && j == 0){
-                                            check = true;
+                                if (items.get(i).getmNomToLowerCase().length() > j) {
+                                    if (newText.charAt(j) == items.get(i).getmNomToLowerCase().charAt(j) && j == 0) {
+                                        check = true;
 
-                                        }
-
-
-                                        if (newText.charAt(j) == items.get(i).getmNomToLowerCase().charAt(j) && check) {
-                                            check = true;
-                                        } else {
-                                            check = false;
-                                        }
+                                    }
 
 
-                                        if (check) {
-                                            if (!tempList.contains(items.get(i))) {
-                                                tempList.add(items.get(i));
-                                                if (resultat.getVisibility() == View.VISIBLE) {
-                                                    resultat.setVisibility(View.GONE);
-                                                    resultat.setText("");
-                                                }
+                                    if (newText.charAt(j) == items.get(i).getmNomToLowerCase().charAt(j) && check) {
+                                        check = true;
+                                    } else {
+                                        check = false;
+                                    }
+
+
+                                    if (check) {
+                                        if (!tempList.contains(items.get(i))) {
+                                            tempList.add(items.get(i));
+                                            if (resultat.getVisibility() == View.VISIBLE) {
+                                                resultat.setVisibility(View.GONE);
+                                                resultat.setText("");
                                             }
-                                        } else {
-                                            tempList.remove(items.get(i));
                                         }
-                                    }else{
+                                    } else {
                                         tempList.remove(items.get(i));
                                     }
+                                } else {
+                                    tempList.remove(items.get(i));
+                                }
                             }
                         }
 
@@ -161,15 +156,12 @@ public class RechercheFragment extends Fragment {
                         mAdapter.setOnItemClickListener(new ItemProfilAdapter.OnItemClickListener() {
                             @Override
                             public void onAddClick(int position) {
-                                Log.w("Amis", "Amis envoye : " +amis_envoye);
-                                Log.w("Amis", "Amis recu : " +amis_recu);
-                                Log.w("Amis", "Comparaison de :"+position);
-                                if(amis_envoye.contains(tempList.get(position).getId()+"")){
-                                    showPopUpProfil(tempList.get(position).getId(), tempList.get(position).getNom(), tempList.get(position).getmDescription(), tempList.get(position).getmNbCreate(), tempList.get(position).getmNbParticipate(),R.drawable.ic_round_hourglass_top_24);
-                                }else if(amis_recu.contains(tempList.get(position).getId()+"")){
-                                    showPopUpProfil(tempList.get(position).getId(), tempList.get(position).getNom(), tempList.get(position).getmDescription(), tempList.get(position).getmNbCreate(), tempList.get(position).getmNbParticipate(),R.drawable.ic_round_mail_24);
-                                }else{
-                                    showPopUpProfil(tempList.get(position).getId(), tempList.get(position).getNom(), tempList.get(position).getmDescription(), tempList.get(position).getmNbCreate(), tempList.get(position).getmNbParticipate(),R.drawable.ic_baseline_add_circle_outline_24);
+                                if (amis_envoye.contains(tempList.get(position).getId() + "")) {
+                                    showPopUpProfil(tempList.get(position).getId(), tempList.get(position).getNom(), tempList.get(position).getmDescription(), tempList.get(position).getmNbCreate(), tempList.get(position).getmNbParticipate(), R.drawable.ic_round_hourglass_top_24);
+                                } else if (amis_recu.contains(tempList.get(position).getId() + "")) {
+                                    showPopUpProfil(tempList.get(position).getId(), tempList.get(position).getNom(), tempList.get(position).getmDescription(), tempList.get(position).getmNbCreate(), tempList.get(position).getmNbParticipate(), R.drawable.ic_round_mail_24);
+                                } else {
+                                    showPopUpProfil(tempList.get(position).getId(), tempList.get(position).getNom(), tempList.get(position).getmDescription(), tempList.get(position).getmNbCreate(), tempList.get(position).getmNbParticipate(), R.drawable.ic_baseline_add_circle_outline_24);
                                 }
 
                             }
@@ -182,15 +174,12 @@ public class RechercheFragment extends Fragment {
                         mAdapter.setOnItemClickListener(new ItemProfilAdapter.OnItemClickListener() {
                             @Override
                             public void onAddClick(int position) {
-                                Log.w("Amis", "Amis envoye : " +amis_envoye);
-                                Log.w("Amis", "Amis recu : " +amis_recu);
-                                Log.w("Amis", "Comparaison de :"+position);
-                                if(amis_envoye.contains(items.get(position).getId()+"")){
-                                    showPopUpProfil(items.get(position).getId(), items.get(position).getNom(), items.get(position).getmDescription(), items.get(position).getmNbCreate(), items.get(position).getmNbParticipate(),R.drawable.ic_round_hourglass_top_24);
-                                }else if(amis_recu.contains(items.get(position).getId()+"")){
-                                    showPopUpProfil(items.get(position).getId(), items.get(position).getNom(), items.get(position).getmDescription(), items.get(position).getmNbCreate(), items.get(position).getmNbParticipate(),R.drawable.ic_round_mail_24);
-                                }else{
-                                    showPopUpProfil(items.get(position).getId(), items.get(position).getNom(), items.get(position).getmDescription(), items.get(position).getmNbCreate(), items.get(position).getmNbParticipate(),R.drawable.ic_baseline_add_circle_outline_24);
+                                if (amis_envoye.contains(items.get(position).getId() + "")) {
+                                    showPopUpProfil(items.get(position).getId(), items.get(position).getNom(), items.get(position).getmDescription(), items.get(position).getmNbCreate(), items.get(position).getmNbParticipate(), R.drawable.ic_round_hourglass_top_24);
+                                } else if (amis_recu.contains(items.get(position).getId() + "")) {
+                                    showPopUpProfil(items.get(position).getId(), items.get(position).getNom(), items.get(position).getmDescription(), items.get(position).getmNbCreate(), items.get(position).getmNbParticipate(), R.drawable.ic_round_mail_24);
+                                } else {
+                                    showPopUpProfil(items.get(position).getId(), items.get(position).getNom(), items.get(position).getmDescription(), items.get(position).getmNbCreate(), items.get(position).getmNbParticipate(), R.drawable.ic_baseline_add_circle_outline_24);
                                 }
 
 
@@ -199,19 +188,16 @@ public class RechercheFragment extends Fragment {
                         mRecyclerView.setAdapter(mAdapter);
 
 
-
                     }
-                }else{
+                } else {
                     resultat.setVisibility(View.VISIBLE);
                     resultat.setText("Aucun amis à ajouter !");
                 }
 
 
-
                 return false;
             }
         });
-
 
 
         updateItems();
@@ -221,13 +207,12 @@ public class RechercheFragment extends Fragment {
     }
 
 
-
-    public void showPopUpProfil(final int id, String name, String desc, String nbCreate, String nbParticipate, final int button){
-         TextView nameProfil;
-         TextView descriptionProfil;
-         TextView nbCreateProfil;
-         TextView nbParticipateProfil;
-         ImageView buttonAdd;
+    public void showPopUpProfil(final int id, String name, String desc, String nbCreate, String nbParticipate, final int button) {
+        TextView nameProfil;
+        TextView descriptionProfil;
+        TextView nbCreateProfil;
+        TextView nbParticipateProfil;
+        ImageView buttonAdd;
 
         dialogProfil.setContentView(R.layout.popup_profil);
         nameProfil = dialogProfil.findViewById(R.id.profilName);
@@ -243,21 +228,21 @@ public class RechercheFragment extends Fragment {
         nbParticipateProfil.setText(nbParticipate);
         buttonAdd.setImageResource(button);
 
-        if(desc.matches("")){
+        if (desc.matches("")) {
             descriptionProfil.setVisibility(View.GONE);
         }
 
         buttonAdd.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(button == R.drawable.ic_round_mail_24){
-                    CustomToast t = new CustomToast(getContext(), "Vous avez reçu une demande d'amis de la part de cet utilisateur !", false ,true);
+                if (button == R.drawable.ic_round_mail_24) {
+                    CustomToast t = new CustomToast(getContext(), "Vous avez reçu une demande d'amis de la part de cet utilisateur !", false, true);
                     t.show();
-                }else if(button == R.drawable.ic_round_hourglass_top_24){
-                    CustomToast t = new CustomToast(getContext(), "Votre demande d'amis est en attente !", false ,true);
+                } else if (button == R.drawable.ic_round_hourglass_top_24) {
+                    CustomToast t = new CustomToast(getContext(), "Votre demande d'amis est en attente !", false, true);
                     t.show();
-                }else {
-                    addFriend(id);
+                } else {
+                    addFriend(""+id);
                 }
             }
         });
@@ -268,179 +253,44 @@ public class RechercheFragment extends Fragment {
 
     }
 
-    public void addFriend(final int id){
-        final DatabaseReference mDatabase = firebaseDatabase.getInstance().getReference("users").child(user_id).child("demande_amis_envoye");
-        mDatabase.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                String demande_amis_envoye = dataSnapshot.getValue(String.class);
-                if(demande_amis_envoye.length() > 0){
-                    demande_amis_envoye += ","+id;
-                }else{
-                    demande_amis_envoye = ""+id;
-                }
-                mDatabase.setValue(demande_amis_envoye);
-            }
+    public void addFriend(final String id) {
+        USERS_LIST.get(USER_ID).getDemande_amis_envoye().add(id);
+        USERS_LIST.get(id).getDemande_amis_recu().add(USER_ID);
 
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
-
-        final DatabaseReference mDatabase2 = firebaseDatabase.getInstance().getReference("users").child(""+id).child("demande_amis_recu");
-        mDatabase2.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                String demande_amis_recu = dataSnapshot.getValue(String.class);
-                if(demande_amis_recu.length() > 0){
-                    demande_amis_recu += ","+user_id;
-                }else{
-                    demande_amis_recu = ""+user_id;
-                }
-                mDatabase2.setValue(demande_amis_recu);
-                updateItems();
-
-                Toast.makeText(getContext(), "Vous avez envoyer une demande à cet utilisateur !", Toast.LENGTH_SHORT).show();
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
+        USERS_DB_REF.setValue(USERS_LIST);
 
         dialogProfil.hide();
+
+        updateItems();
     }
 
-    public void updateItems(){
-        DatabaseReference id_users_ref = Constants.firebaseDatabase.getReference("id_users");
-        id_users_ref.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                final String id_user = snapshot.getValue(String.class);
-                final int nb_users = Integer.parseInt(id_user);
-                for(int i = 0; i < nb_users; i++){
-                    DatabaseReference user = Constants.firebaseDatabase.getReference("users/"+i);
-                    final int finalI = i;
-                    user.addValueEventListener(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(@NonNull DataSnapshot snapshot) {
-                            String mail = snapshot.child("mail").getValue(String.class);
-                            final String maVille = snapshot.child("ville").getValue(String.class);
-                            Log.w("Mail", "mail trouvé : "+mail);
-                            Log.w("Mail", "user mail trouvé : "+user_mail);
-                            if(mail.equalsIgnoreCase(user_mail)){
-                                int id_user_connect = finalI;
-                                String amis_text = snapshot.child("amis").getValue(String.class);
-                                amis_envoye = snapshot.child("demande_amis_envoye").getValue(String.class);
-                                amis_recu = snapshot.child("demande_amis_recu").getValue(String.class);
-                                final List<String> liste_amis = Arrays.asList(amis_text.split(","));
+    public void updateItems() {
+        for(int i = 0; i < USERS_LIST.size(); i++){
+            User u = USERS_LIST.get(i);
+            String s = ""+i;
+            if(!s.equalsIgnoreCase(USER_ID)){
+                if(!USERS_LIST.get(USER_ID).getAmis().contains(s)){
+                    ItemPerson it;
+                    if (amis_envoye.contains(s)) {
+                        it = new ItemPerson(i, R.drawable.ic_baseline_account_circle_24,  u.getPrenom() + " " + u.getNom(), R.drawable.ic_round_hourglass_top_24, u.getDescription(), u.getVille(), u.getNbCreate(), u.getNbParticipate());
+                    } else if (amis_recu.contains(s)) {
+                        it = new ItemPerson(i, R.drawable.ic_baseline_account_circle_24, u.getPrenom() + " " + u.getNom(), R.drawable.ic_round_mail_24, u.getDescription(), u.getVille(), u.getNbCreate(), u.getNbParticipate());
+                    } else {
+                        it = new ItemPerson(i, R.drawable.ic_baseline_account_circle_24, u.getPrenom() + " " + u.getNom(), 0, u.getDescription(), u.getVille(), u.getNbCreate(), u.getNbParticipate());
+                    }
 
-                                Log.w("Liste", "Liste amis:"+amis_text);
-                                items.clear();
-
-                                if(liste_amis.size() == nb_users-1){
-                                    Log.w("Recherche","Print aucun amis a ajouter");
-                                    resultat.setVisibility(View.VISIBLE);
-                                    resultat.setText("Aucun amis à ajouter !");
-                                }
-
-                                for(int j = 0; j < nb_users; j++){
-                                        if (!liste_amis.contains(j + "") &&
-                                                j != finalI) {
-                                            DatabaseReference user_found = Constants.firebaseDatabase.getReference("users/" + j);
-                                            final int finalJ = j;
-                                            user_found.addValueEventListener(new ValueEventListener() {
-                                                @Override
-                                                public void onDataChange(@NonNull DataSnapshot snapshot) {
-                                                    boolean presDeMoi = false;
-                                                    String prenom = snapshot.child("prenom").getValue(String.class);
-                                                    String nom = snapshot.child("nom").getValue(String.class);
-                                                    String desc = snapshot.child("description").getValue(String.class);
-                                                    String nbCreate = snapshot.child("nombre_creation").getValue(String.class);
-                                                    String nbParticipate = snapshot.child("nombre_participation").getValue(String.class);
-                                                    String ville = snapshot.child("ville").getValue(String.class);
-                                                    Log.w("Liste", "Ajout de :" + prenom + " " + nom + " " + ville);
-
-                                                    mRecyclerView = rootView.findViewById(R.id.recyclerView);
-                                                    mLayoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL,
-                                                            false);
-
-                                                    mRecyclerView.setLayoutManager(mLayoutManager);
-                                                    mRecyclerView.setAdapter(mAdapter);
-                                                    if (maVille == ville) {
-                                                        presDeMoi = true;
-                                                    }
-                                                    ItemPerson it;
-                                                    if(amis_envoye.contains(finalJ+"") && finalJ != finalI){
-                                                        it = new ItemPerson(finalJ, R.drawable.ic_baseline_account_circle_24, prenom + " " + nom, R.drawable.ic_round_hourglass_top_24, desc, ville, nbCreate, nbParticipate);
-                                                    }else if(amis_recu.contains(finalJ+"") && finalJ != finalI){
-                                                        it = new ItemPerson(finalJ, R.drawable.ic_baseline_account_circle_24, prenom + " " + nom, R.drawable.ic_round_mail_24, desc, ville, nbCreate, nbParticipate);
-                                                    }else{
-                                                        it = new ItemPerson(finalJ, R.drawable.ic_baseline_account_circle_24, prenom + " " + nom, 0, desc, ville, nbCreate, nbParticipate);
-                                                    }
-
-                                                    for(int i = 0; i < items.size(); i++){
-                                                        if(items.get(i).getId() == it.getId()){
-                                                            items.remove(it);
-                                                        }
-                                                    }
-                                                    items.add(it);
-
-                                                /*if(items.size() == liste_amis.size()){
-                                                    dialogAddPerson.show();
-                                                }*/
-
-
-                                                    mAdapter.setOnItemClickListener(new ItemProfilAdapter.OnItemClickListener() {
-                                                        @Override
-                                                        public void onAddClick(int position) {
-                                                            Log.w("Amis", "Amis envoye : " +amis_envoye);
-                                                            Log.w("Amis", "Amis recu : " +amis_recu);
-                                                            Log.w("Amis", "Comparaison de :"+position);
-                                                            if(amis_envoye.contains(items.get(position).getId()+"") && finalJ != finalI){
-                                                                showPopUpProfil(items.get(position).getId(), items.get(position).getNom(), items.get(position).getmDescription(), items.get(position).getmNbCreate(), items.get(position).getmNbParticipate(),R.drawable.ic_round_hourglass_top_24);
-                                                            }else if(amis_recu.contains(items.get(position).getId()+"") && finalJ != finalI){
-                                                                showPopUpProfil(items.get(position).getId(), items.get(position).getNom(), items.get(position).getmDescription(), items.get(position).getmNbCreate(), items.get(position).getmNbParticipate(),R.drawable.ic_round_mail_24);
-                                                            }else{
-                                                                showPopUpProfil(items.get(position).getId(), items.get(position).getNom(), items.get(position).getmDescription(), items.get(position).getmNbCreate(), items.get(position).getmNbParticipate(),R.drawable.ic_baseline_add_circle_outline_24);
-                                                            }
-
-                                                        }
-                                                    });
-
-
-                                                }
-
-                                                @Override
-                                                public void onCancelled(@NonNull DatabaseError error) {
-
-                                                }
-                                            });
-                                        }
-                                }
-
-                                mAdapter = new ItemProfilAdapter(items);
-
-                            }
-
-                        }
-
-                        @Override
-                        public void onCancelled(@NonNull DatabaseError error) {
-
-                        }
-                    });
-
+                    items.add(it);
                 }
             }
+        }
 
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
+        mAdapter = new ItemProfilAdapter(items);
+        mRecyclerView = rootView.findViewById(R.id.recyclerView);
+        mLayoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL,
+                false);
 
-            }
-        });
+        mRecyclerView.setLayoutManager(mLayoutManager);
+        mRecyclerView.setAdapter(mAdapter);
     }
 
 }

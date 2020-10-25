@@ -1,6 +1,7 @@
 package com.example.nalone.ui.amis.display;
 
 import android.app.Dialog;
+import android.content.ClipData;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
@@ -16,13 +17,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.SearchView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.nalone.Adapter.ItemListAmisAdapter;
-import com.example.nalone.Adapter.ItemProfilAdapter;
 import com.example.nalone.CustomToast;
 import com.example.nalone.ItemPerson;
 import com.example.nalone.R;
+import com.example.nalone.User;
 import com.example.nalone.util.Constants;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -33,9 +33,11 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import static com.example.nalone.util.Constants.firebaseDatabase;
-import static com.example.nalone.util.Constants.user_id;
-import static com.example.nalone.util.Constants.user_mail;
+import static com.example.nalone.util.Constants.USERS_DB_REF;
+import static com.example.nalone.util.Constants.USERS_LIST;
+import static com.example.nalone.util.Constants.USER_ID;
+import static com.example.nalone.util.Constants.currentUser;
+import static com.example.nalone.util.Constants.mFirebase;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -126,12 +128,12 @@ public class AmisFragment extends Fragment {
                 newText = newText.toLowerCase();
                 tempList.clear();
                 boolean check = true;
-                if(items.size() > 0) {
+                if (items.size() > 0) {
                     if (newText.length() > 0) {
                         for (int i = 0; i < items.size(); i++) {
                             for (int j = 0; j < newText.length(); j++) {
-                                if(items.get(i).getmNomToLowerCase().length() > j) {
-                                    if (newText.charAt(j) == items.get(i).getmNomToLowerCase().charAt(j) && j == 0){
+                                if (items.get(i).getmNomToLowerCase().length() > j) {
+                                    if (newText.charAt(j) == items.get(i).getmNomToLowerCase().charAt(j) && j == 0) {
                                         check = true;
                                     }
 
@@ -154,7 +156,7 @@ public class AmisFragment extends Fragment {
                                     } else {
                                         tempList.remove(items.get(i));
                                     }
-                                }else{
+                                } else {
                                     tempList.remove(items.get(i));
                                 }
                             }
@@ -174,7 +176,7 @@ public class AmisFragment extends Fragment {
                         mAdapter = new ItemListAmisAdapter(items);
                         mRecyclerView.setAdapter(mAdapter);
                     }
-                }else{
+                } else {
                     resultat.setVisibility(View.VISIBLE);
                     resultat.setText("Aucun amis à ajouter !");
                 }
@@ -188,153 +190,49 @@ public class AmisFragment extends Fragment {
     }
 
     private void removeFriend(final String id, final String prenom) {
-        final DatabaseReference mDatabase = firebaseDatabase.getInstance().getReference("users").child(user_id).child("amis");
+        USERS_LIST.get(USER_ID).getAmis().remove(id);
+        USERS_LIST.get(id).getAmis().remove(USER_ID);
 
-        mDatabase.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                String amis = dataSnapshot.getValue(String.class);
-
-                 amis = amis.replace(","+id, "");
-                 amis = amis.replace(id, "");
-
-                mDatabase.setValue(amis);
-                CustomToast t = new CustomToast(getContext(), "Vous avez supprimer cet utilisateur", false, true);
-                t.show();
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
-
-        final DatabaseReference mDatabase1 = firebaseDatabase.getInstance().getReference("users").child(id+"").child("amis");
-
-        mDatabase1.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                String amis = dataSnapshot.getValue(String.class);
-
-                amis = amis.replace(","+user_id, "");
-                amis = amis.replace(user_id, "");
-
-                mDatabase1.setValue(amis);
-
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
+        USERS_DB_REF.setValue(USERS_LIST);
 
         updateItems();
 
     }
 
     private void updateItems() {
-        DatabaseReference id_users_ref = Constants.firebaseDatabase.getReference("id_users");
-        id_users_ref.addValueEventListener(new ValueEventListener() {
+        for (int i = 0; i < USERS_LIST.get(USER_ID).getAmis().size(); i++) {
+            User u = USERS_LIST.get(USERS_LIST.get(USER_ID).getAmis().get(i));
+            items.add(new ItemPerson(i, R.drawable.ic_baseline_account_circle_24,
+                    u.getPrenom() + " " + u.getNom(), 0, u.getDescription(),
+                    u.getVille(), u.getNbCreate(), u.getNbParticipate()));
+
+        }
+
+        mAdapter = new ItemListAmisAdapter(items);
+
+        mRecyclerView = rootView.findViewById(R.id.recyclerViewMesAmis);
+        mLayoutManager = new LinearLayoutManager(getContext());
+
+        mRecyclerView.setLayoutManager(mLayoutManager);
+        mRecyclerView.setAdapter(mAdapter);
+
+        mAdapter.setOnItemClickListener(new ItemListAmisAdapter.OnItemClickListener() {
             @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                final String id_user = snapshot.getValue(String.class);
-                final int nb_users = Integer.parseInt(id_user);
-                for(int i = 0; i < nb_users; i++){
-                    DatabaseReference user = Constants.firebaseDatabase.getReference("users/"+i);
-                    final int finalI = i;
-                    user.addValueEventListener(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(@NonNull DataSnapshot snapshot) {
-                            String mail = snapshot.child("mail").getValue(String.class);
+            public void onAddClick(int position) {
+                showPopUpProfil(items.get(position).getNom(), items.get(position).getmDescription(), items.get(position).getmNbCreate(), items.get(position).getmNbParticipate());
+            }
 
-                            if(mail.equalsIgnoreCase(user_mail)){
-                                int id_user_connect = finalI;
-                                String amis_text = snapshot.child("amis").getValue(String.class);
-                                final List<String> liste_amis = Arrays.asList(amis_text.split(","));
-
-                                Log.w("Liste", "Liste amis:"+amis_text);
-                                items.clear();
-
-                                if(liste_amis.size() == nb_users-1){
-                                    Log.w("Recherche","Print aucun amis a ajouter");
-                                    resultat.setVisibility(View.VISIBLE);
-                                    resultat.setText("Aucun amis à ajouter !");
-                                }
-
-                                for(int j = 0; j < nb_users; j++){
-                                    Log.w("Liste", "J :"+j);
-                                    if(liste_amis.contains(j+"") && j != finalI){
-                                        DatabaseReference user_found = Constants.firebaseDatabase.getReference("users/"+j);
-                                        final int finalJ = j;
-                                        user_found.addValueEventListener(new ValueEventListener() {
-                                            @Override
-                                            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                                                final String prenom = snapshot.child("prenom").getValue(String.class);
-                                                final String nom = snapshot.child("nom").getValue(String.class);
-                                                String desc = snapshot.child("description").getValue( String.class );
-                                                String nbCreate = snapshot.child("nombre_creation").getValue(String.class);
-                                                String nbParticipate = snapshot.child("nombre_participation").getValue(String.class);
-                                                String ville = snapshot.child("ville").getValue(String.class);
-                                                Log.w("Liste", "Ajout de :"+prenom+ " " +nom);
-                                                mRecyclerView = rootView.findViewById(R.id.recyclerViewMesAmis);
-                                                mLayoutManager = new LinearLayoutManager(getContext());
-
-                                                mRecyclerView.setLayoutManager(mLayoutManager);
-                                                mRecyclerView.setAdapter(mAdapter);
-                                                items.add(new ItemPerson(finalJ,R.drawable.ic_baseline_account_circle_24, prenom+" "+nom, 0, desc, ville, nbCreate, nbParticipate));
-                                                /*if(items.size() == liste_amis.size()){
-                                                    dialogAddPerson.show();
-                                                }*/
-
-                                                mAdapter.setOnItemClickListener(new ItemListAmisAdapter.OnItemClickListener() {
-                                                    @Override
-                                                    public void onAddClick(int position) {
-                                                        showPopUpProfil(items.get(position).getNom(), items.get(position).getmDescription(), items.get(position).getmNbCreate(), items.get(position).getmNbParticipate());
-                                                    }
-
-                                                    @Override
-                                                    public void onDelete(int position) {
-                                                        if(items.size() > 0){
-                                                            removeFriend(items.get(position).getId()+"", items.get(position).getNom());
-                                                        }
-                                                    }
-                                                });
-
-
-                                            }
-
-                                            @Override
-                                            public void onCancelled(@NonNull DatabaseError error) {
-
-                                            }
-                                        });
-                                    }
-                                }
-
-                                mAdapter = new ItemListAmisAdapter(items);
-
-                            }
-
-                        }
-
-                        @Override
-                        public void onCancelled(@NonNull DatabaseError error) {
-
-                        }
-                    });
-
+            @Override
+            public void onDelete(int position) {
+                if (items.size() > 0) {
+                    removeFriend(items.get(position).getId() + "", items.get(position).getNom());
                 }
             }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
         });
+
     }
 
-    public void showPopUpProfil(String name, String desc, String nbCreate, String nbParticipate){
+    public void showPopUpProfil(String name, String desc, String nbCreate, String nbParticipate) {
 
         TextView nameProfil;
         TextView descriptionProfil;
@@ -353,7 +251,7 @@ public class AmisFragment extends Fragment {
         nbCreateProfil.setText(nbCreate);
         nbParticipateProfil.setText(nbParticipate);
 
-        if(desc.matches("")){
+        if (desc.matches("")) {
             descriptionProfil.setVisibility(View.GONE);
         }
 

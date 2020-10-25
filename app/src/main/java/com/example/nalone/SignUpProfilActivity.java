@@ -1,6 +1,5 @@
 package com.example.nalone;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.AlertDialog;
@@ -10,7 +9,6 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
-import android.provider.ContactsContract;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -19,12 +17,10 @@ import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.example.nalone.util.Constants;
-import com.google.android.gms.common.data.DataBuffer;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.io.FileNotFoundException;
@@ -51,7 +47,7 @@ public class SignUpProfilActivity extends AppCompatActivity {
 
         ErrorClass.checkInternetConnection();
 
-        final DatabaseReference id_user = Constants.firebaseDatabase.getReference("id_users/");
+        final DatabaseReference id_user = Constants.mFirebase.getReference("id_users/");
         id_user.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -136,19 +132,13 @@ public class SignUpProfilActivity extends AppCompatActivity {
     private void saveData(){
 
         signUpDescriptionEnter = signUpDescription.getText().toString();
-        SignUpInformationActivity.userData.setDescription(signUpDescriptionEnter);
+        SignUpInformationActivity.user.setDescription(signUpDescriptionEnter);
 
 
         ErrorClass.checkInternetConnection();
 
-        DatabaseReference mailAuth = Constants.firebaseDatabase.getReference("authentification/"+id_users + "/mail");
-        mailAuth.setValue(SignUpInformationActivity.userData.getAdresseMail());
-
-        DatabaseReference passwordAuth = Constants.firebaseDatabase.getReference("authentification/"+id_users + "/password");
-        passwordAuth.setValue(SignUpInformationActivity.userData.getPass());
-
-        DatabaseReference user = Constants.firebaseDatabase.getReference("users/" + id_users);
-        user.setValue(SignUpInformationActivity.userData);
+        DatabaseReference user = Constants.mFirebase.getReference("users/" + id_users);
+        user.setValue(SignUpInformationActivity.user);
 
         /*DatabaseReference nom = Constants.firebaseDatabase.getReference("users/" +id_users + "/nom");
         nom.setValue(SignUpInformationActivity.userData.getNom());
@@ -189,7 +179,7 @@ public class SignUpProfilActivity extends AppCompatActivity {
         DatabaseReference photo_profil = Constants.firebaseDatabase.getReference("users/"+id_users + "/photo_profil");
         photo_profil.setValue(""+Constants.getBytesFromBitmap(selectedImage));*/
 
-        DatabaseReference id_users_ref = Constants.firebaseDatabase.getReference("id_users");
+        DatabaseReference id_users_ref = Constants.mFirebase.getReference("id_users");
         int id_users_int = Integer.parseInt(id_users);
         id_users_int++;
         String s = id_users_int + "";

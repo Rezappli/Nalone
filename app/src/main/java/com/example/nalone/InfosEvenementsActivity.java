@@ -17,12 +17,10 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
 
-import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 
-import static com.example.nalone.util.Constants.firebaseDatabase;
+import static com.example.nalone.util.Constants.mFirebase;
 
 public class InfosEvenementsActivity extends AppCompatActivity {
 
@@ -52,7 +50,7 @@ public class InfosEvenementsActivity extends AppCompatActivity {
         mOwner = findViewById(R.id.owner);
         mDescription = findViewById(R.id.description);
 
-        DatabaseReference event =  firebaseDatabase.getReference("evenements/"+mMarker.getTag());
+        DatabaseReference event =  mFirebase.getReference("evenements/"+mMarker.getTag());
         event.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -62,7 +60,7 @@ public class InfosEvenementsActivity extends AppCompatActivity {
                 final Evenement e = snapshot.getValue(Evenement.class);
 
 
-                DatabaseReference user = firebaseDatabase.getReference("users/"+e.getProprietaire());
+                DatabaseReference user = mFirebase.getReference("users/"+e.getProprietaire());
                 user.addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {

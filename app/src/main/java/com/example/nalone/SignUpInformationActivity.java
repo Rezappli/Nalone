@@ -39,7 +39,7 @@ public class SignUpInformationActivity extends AppCompatActivity {
 
     Button buttonSignUpNext;
 
-    public static UserData userData;
+    public static User user;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,7 +50,7 @@ public class SignUpInformationActivity extends AppCompatActivity {
         setContentView(R.layout.activity_sign_up_information);
 
 
-        userData = null;
+        user = null;
 
         buttonSignUpNext = (Button) findViewById(R.id.signUpNext);
         nom =  (EditText) findViewById(R.id.signupNom);
@@ -188,8 +188,8 @@ public class SignUpInformationActivity extends AppCompatActivity {
                   sexe = "Femme";
               }
 
-                userData = new UserData(sexe, nomEntre, prenomEntre, villeEntre, adresseEntre, dateEntre, numeroEntre, mailEntre, passEntre, null, null, null);
-                System.out.println(SignUpInformationActivity.userData.getAdresseMail());
+                //user = new User(sexe, nomEntre, prenomEntre, villeEntre, adresseEntre, dateEntre, numeroEntre, mailEntre, passEntre, null, null, null);
+                System.out.println(SignUpInformationActivity.user.getMail());
                 Intent signUpStudy = new Intent(getBaseContext(), SignUpStudiesActivity.class);
                 startActivityForResult(signUpStudy, 0);
 

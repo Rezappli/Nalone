@@ -1,6 +1,7 @@
 package com.example.nalone;
 
 import com.example.nalone.util.Constants;
+import com.google.android.gms.maps.model.LatLng;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -21,11 +22,14 @@ public class Evenement {
     public List<String> membres_en_attente;
     public Date date;
     public String time;
+    public LatLng position;
+
     public Evenement() {}
 
 
-    public Evenement(int image, int id, String nom, String description, String adresse, String ville, Visibilite visibilite,
-                     String proprietaire, List<String> membres_inscrits, List<ItemPerson> membres_en_attente, Date date, String time){
+    public Evenement(int image, int id, String nom, String description, String adresse, String ville,
+                     Visibilite visibilite, String proprietaire, List<String> membres_inscrits,
+                     List<ItemPerson> membres_en_attente, Date date, String time, LatLng position){
         this.image = image;
         this.nom = nom;
         this.description = description;
@@ -35,9 +39,12 @@ public class Evenement {
         this.proprietaire = proprietaire;
         this.membres_inscrits = membres_inscrits;
         this.membres_en_attente = new ArrayList<>();
+        this.position = position;
+
         for(int i = 0; i < membres_en_attente.size(); i++) {
             this.membres_en_attente.add(membres_en_attente.get(i).getId()+"");
         }
+
         this.id = id;
         this.date = date;
         this.time = time;

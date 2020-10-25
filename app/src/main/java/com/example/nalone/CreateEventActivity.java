@@ -8,8 +8,11 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.app.Dialog;
+import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.location.Address;
+import android.location.Geocoder;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
@@ -24,21 +27,25 @@ import android.widget.TimePicker;
 import com.example.nalone.Adapter.ItemAddPersonAdapter;
 import com.example.nalone.Adapter.ItemProfilAdapter;
 import com.example.nalone.util.Constants;
+import com.google.android.gms.maps.model.LatLng;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
 
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
 
-import static com.example.nalone.util.Constants.firebaseDatabase;
-import static com.example.nalone.util.Constants.user_mail;
-import static com.example.nalone.util.Constants.user_id;
+import static com.example.nalone.util.Constants.EVENTS_DB_REF;
+import static com.example.nalone.util.Constants.EVENTS_LIST;
+import static com.example.nalone.util.Constants.USER_ID;
+import static com.example.nalone.util.Constants.currentUser;
+import static com.example.nalone.util.Constants.mFirebase;
 
 public class CreateEventActivity extends AppCompatActivity {
     private List<ItemPerson> itemsAdd = new ArrayList<>();
@@ -140,7 +147,7 @@ public class CreateEventActivity extends AppCompatActivity {
             }
         });
 
-        DatabaseReference id_events_ref = Constants.firebaseDatabase.getReference("id_evenements");
+        DatabaseReference id_events_ref = Constants.mFirebase.getReference("id_evenements");
         id_events_ref.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -164,10 +171,10 @@ public class CreateEventActivity extends AppCompatActivity {
     @RequiresApi(api = Build.VERSION_CODES.M)
     public void saveDataEvent(){
             List<String> sign_in_members = new ArrayList<>();
-            sign_in_members.add(user_id);
+            sign_in_members.add(USER_ID);
 
             for(int k = 0; k < itemsAdd.size(); k++){
-                final DatabaseReference notification = firebaseDatabase.getReference("notifications/"+itemsAdd.get(k).getId());
+                final DatabaseReference notification = mFirebase.getReference("notifications/"+itemsAdd.get(k).getId());
                 notification.addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -190,18 +197,16 @@ public class CreateEventActivity extends AppCompatActivity {
 
                     }
                 });
+
             }
 
             Evenement e = new Evenement(R.drawable.ic_baseline_account_circle_24, id_events, event_name.getText().toString(), event_resume.getText().toString(),
-                    event_adresse.getText().toString(), event_city.getText().toString(), event_visibilite, user_id, sign_in_members,
-                    itemsAdd, calendar.getTime(), mHour+":"+mMin);
-            DatabaseReference events = Constants.firebaseDatabase.getReference("evenements/" + id_events);
-            events.setValue(e);
+                    event_adresse.getText().toString(), event_city.getText().toString(), event_visibilite, USER_ID, sign_in_members,
+                    itemsAdd, calendar.getTime(), mHour+":"+mMin,
+                    getLocationFromAddress(event_adresse+","+event_city));
+            EVENTS_LIST.put(EVENTS_LIST.size()+"", e);
 
-            DatabaseReference event_id = Constants.firebaseDatabase.getReference("id_evenements");
-            id_events++;
-
-            event_id.setValue(id_events + "");
+            EVENTS_DB_REF.setValue(EVENTS_LIST);
 
             finish();
     }
@@ -300,21 +305,21 @@ public class CreateEventActivity extends AppCompatActivity {
 
         final ArrayList<String> adds = new ArrayList<>();
 
-        DatabaseReference id_users_ref = Constants.firebaseDatabase.getReference("id_users");
+        DatabaseReference id_users_ref = Constants.mFirebase.getReference("id_users");
         id_users_ref.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 final String id_user = snapshot.getValue(String.class);
                 final int nb_users = Integer.parseInt(id_user);
                 for(final int[] i = {0}; i[0] < nb_users; i[0]++){
-                    DatabaseReference user = Constants.firebaseDatabase.getReference("users/"+ i[0]);
+                    DatabaseReference user = Constants.mFirebase.getReference("users/"+ i[0]);
                     final int finalI = i[0];
                     user.addValueEventListener(new ValueEventListener() {
                             @Override
                             public void onDataChange(@NonNull DataSnapshot snapshot) {
                                 String mail = snapshot.child("mail").getValue(String.class);
 
-                                if(mail.equalsIgnoreCase(user_mail)){
+                                if(mail.equalsIgnoreCase(currentUser.getEmail())){
                                     int id_user_connect = finalI;
                                     String amis_text = snapshot.child("amis").getValue(String.class);
                                     final List<String> liste_amis = Arrays.asList(amis_text.split(","));
@@ -324,7 +329,7 @@ public class CreateEventActivity extends AppCompatActivity {
                                     for(final int[] j = {0}; j[0] < nb_users; j[0]++){
                                         Log.w("Liste", "J :"+ j[0]);
                                         if(liste_amis.contains(j[0] +"")){
-                                            DatabaseReference user_found = Constants.firebaseDatabase.getReference("users/"+ j[0]);
+                                            DatabaseReference user_found = Constants.mFirebase.getReference("users/"+ j[0]);
                                             final int finalJ = j[0];
                                             user_found.addValueEventListener(new ValueEventListener() {
                                                 @Override
@@ -430,6 +435,32 @@ public class CreateEventActivity extends AppCompatActivity {
         });
 
 
+    }
+
+    private LatLng getLocationFromAddress(String strAddress) {
+
+        Log.w("Location", "Loading coordinate from : " + strAddress);
+
+        Geocoder coder = new Geocoder(getBaseContext());
+        List<Address> address;
+        LatLng p1 = null;
+
+        try {
+            // May throw an IOException
+            address = coder.getFromLocationName(strAddress, 5);
+            if (address == null) {
+                return null;
+            }
+
+            Address location = address.get(0);
+            p1 = new LatLng(location.getLatitude(), location.getLongitude() );
+
+        } catch (IOException ex) {
+
+            ex.printStackTrace();
+        }
+
+        return p1;
     }
 
 

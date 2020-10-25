@@ -20,7 +20,6 @@ import android.location.Address;
 import android.location.Geocoder;
 import android.os.Build;
 import android.util.Log;
-import android.widget.RelativeLayout;
 
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
@@ -47,9 +46,9 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.example.nalone.util.Constants.EVENTS_LIST;
 import static com.example.nalone.util.Constants.MAPVIEW_BUNDLE_KEY;
-import static com.example.nalone.util.Constants.markers;
-import static com.example.nalone.util.Constants.user_id;
+import static com.example.nalone.util.Constants.USER_ID;
 
 
 /**
@@ -201,23 +200,25 @@ public class MapFragment extends Fragment implements OnMapReadyCallback{
 
         LatLng laval = new LatLng(48.0785146,-0.7669906);
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(laval, 13	));
-        Log.w("Map", "Taille de constants marker :"+markers.size());
-        Log.w("Map", "ID user connecté :"+user_id);
-        for(int i = 0; i < Constants.markers.size(); i++){
-            Evenement e = Constants.events.get(i);
-            MarkerOptions m = Constants.markers.get(i);
+
+        for(int i = 0; i < EVENTS_LIST.size(); i++){
+            MarkerOptions m = new MarkerOptions();
+            Evenement e = Constants.EVENTS_LIST.get(i+"");
+
+            m.title(e.getNom());
+            m.snippet("Cliquer pour en savoir plus");
 
             if(e.getVisibilite().equals(Visibilite.PRIVE)){
-                if(e.getMembres_inscrits().contains(user_id)){
+                if(e.getMembres_inscrits().contains(USER_ID)){
                     if(m.getIcon() == null){
                         m.icon(getEventColor(e));
                     }
                     itemEvents.add(e);
-                    mMap.addMarker(Constants.markers.get(i)).setTag(e.getId());
+                    mMap.addMarker(m).setTag(e.getId());
                 }
             }else{
                 itemEvents.add(e);
-                mMap.addMarker(Constants.markers.get(i)).setTag(e.getId());
+                mMap.addMarker(m).setTag(e.getId());
             }
 
         }
@@ -284,7 +285,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback{
     private BitmapDescriptor getEventColor(Evenement e) {
         BitmapDescriptor couleur;
         if(e.visibilite.equals(Visibilite.PRIVE)){
-            if(e.proprietaire.equalsIgnoreCase(user_id)) {
+            if(e.proprietaire.equalsIgnoreCase(USER_ID)) {
                 couleur = (BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));
             }else{
                 couleur = (BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE));

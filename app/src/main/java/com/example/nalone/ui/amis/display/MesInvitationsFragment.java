@@ -2,35 +2,26 @@ package com.example.nalone.ui.amis.display;
 
 import android.os.Bundle;
 
-import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import com.example.nalone.Adapter.ItemInvitAmisAdapter;
 import com.example.nalone.CustomToast;
 import com.example.nalone.ItemPerson;
 import com.example.nalone.R;
-import com.example.nalone.util.Constants;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.ValueEventListener;
+import com.example.nalone.User;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
-import static com.example.nalone.util.Constants.firebaseDatabase;
-import static com.example.nalone.util.Constants.getBytesFromBitmap;
-import static com.example.nalone.util.Constants.user_id;
-import static com.example.nalone.util.Constants.user_mail;
+import static com.example.nalone.util.Constants.USERS_DB_REF;
+import static com.example.nalone.util.Constants.USERS_LIST;
+import static com.example.nalone.util.Constants.USER_ID;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -99,245 +90,66 @@ public class MesInvitationsFragment extends Fragment {
     }
 
     private void updateItems() {
-        DatabaseReference id_users_ref = Constants.firebaseDatabase.getReference("id_users");
-        id_users_ref.addValueEventListener(new ValueEventListener() {
+        for(int i = 0; i < USERS_LIST.size(); i++){
+            String s = ""+i;
+            User u = USERS_LIST.get(i);
+            if(!s.equalsIgnoreCase(USER_ID)){
+                invits.add(new ItemPerson(i,R.drawable.ic_baseline_account_circle_24,
+                        u.getPrenom()+" "+u.getNom(), 0, u.getDescription(),
+                        u.getVille(), u.getNbCreate(), u.getNbParticipate()));
+            }
+        }
+
+        mRecyclerView = rootView.findViewById(R.id.recyclerViewMesAmis);
+        mLayoutManager = new LinearLayoutManager(getContext());
+
+        mRecyclerView.setLayoutManager(mLayoutManager);
+        mRecyclerView.setAdapter(mAdapter);
+
+        mAdapter.setOnItemClickListener(new ItemInvitAmisAdapter.OnItemClickListener() {
             @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                final String id_user = snapshot.getValue(String.class);
-                final int nb_users = Integer.parseInt(id_user);
-                for(int i = 0; i < nb_users; i++){
-                    DatabaseReference user = Constants.firebaseDatabase.getReference("users/"+i);
-                    final int finalI = i;
-                    user.addValueEventListener(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(@NonNull DataSnapshot snapshot) {
-                            String mail = snapshot.child("mail").getValue(String.class);
-
-                            if(mail.equalsIgnoreCase(user_mail)){
-                                int id_user_connect = finalI;
-                                String invit_text = snapshot.child("demande_amis_recu").getValue(String.class);
-                                final List<String> liste_amis = Arrays.asList(invit_text.split(","));
-
-                                Log.w("Liste", "Liste amis:"+invit_text);
-                                invits.clear();
-
-                                if(liste_amis.size() == nb_users-1){
-                                    Log.w("Recherche","Print aucun amis a ajouter");
-                                    // resultat.setVisibility(View.VISIBLE);
-                                    // resultat.setText("Aucun amis à ajouter !");
-                                }
-
-                                for(int j = 0; j < nb_users; j++){
-                                    Log.w("Liste", "J :"+j);
-                                    if(liste_amis.contains(j+"") && j != finalI){
-                                        DatabaseReference user_found = Constants.firebaseDatabase.getReference("users/"+j);
-                                        final int finalJ = j;
-                                        user_found.addValueEventListener(new ValueEventListener() {
-                                            @Override
-                                            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                                                String prenom = snapshot.child("prenom").getValue(String.class);
-                                                String nom = snapshot.child("nom").getValue(String.class);
-                                                String desc = snapshot.child("description").getValue( String.class );
-                                                String nbCreate = snapshot.child("nombre_creation").getValue(String.class);
-                                                String nbParticipate = snapshot.child("nombre_participation").getValue(String.class);
-                                                String ville = snapshot.child("ville").getValue(String.class);
-                                                Log.w("Liste", "Ajout de :"+prenom+ " " +nom);
-                                                mRecyclerView = rootView.findViewById(R.id.recyclerViewInvitAmis);
-                                                mLayoutManager = new LinearLayoutManager(getContext());
-
-                                                mRecyclerView.setLayoutManager(mLayoutManager);
-                                                mRecyclerView.setAdapter(mAdapter);
-                                                invits.add(new ItemPerson(finalJ,R.drawable.ic_baseline_account_circle_24, prenom+" "+nom, 0, desc, ville,nbCreate, nbParticipate));
-                                                /*if(items.size() == liste_amis.size()){
-                                                    dialogAddPerson.show();
-                                                }*/
-                                                mAdapter.setOnItemClickListener(new ItemInvitAmisAdapter.OnItemClickListener() {
-                                                    @Override
-                                                    public void onAddClick(int position) {
-                                                        addFriend(invits.get(position).getId());
-                                                    }
-
-                                                    @Override
-                                                    public void onRemoveClick(int position) {
-                                                        removeFriend(invits.get(position).getId());
-                                                    }
-                                                });
-
-
-                                            }
-
-                                            @Override
-                                            public void onCancelled(@NonNull DatabaseError error) {
-
-                                            }
-                                        });
-                                    }
-                                }
-
-                                mAdapter = new ItemInvitAmisAdapter(invits);
-
-                            }
-
-                        }
-
-                        @Override
-                        public void onCancelled(@NonNull DatabaseError error) {
-
-                        }
-                    });
-
-                }
+            public void onAddClick(int position) {
+                acceptFriendRequest(""+invits.get(position).getId());
             }
 
             @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
+            public void onRemoveClick(int position) {
+                declineFriendRequest(""+invits.get(position).getId());
             }
         });
     }
 
-    private void addFriend(final int id) {
-        final DatabaseReference mDatabase = firebaseDatabase.getInstance().getReference("users").child(id+"").child("demande_amis_envoye");
-        mDatabase.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                String demande_amis_envoye = dataSnapshot.getValue(String.class);
-                if(demande_amis_envoye.length() > 0){
-                    if(demande_amis_envoye.length() == 1){
-                        demande_amis_envoye = demande_amis_envoye.replace(user_id, "");
-                    }else{
-                        demande_amis_envoye = demande_amis_envoye.replace(","+user_id, "");
-                    }
-                }else{
-                    demande_amis_envoye = "";
-                }
-                mDatabase.setValue(demande_amis_envoye);
-            }
+    private void acceptFriendRequest(String id) {
 
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
 
-            }
-        });
+        USERS_LIST.get(USER_ID).getAmis().add(id);
+        USERS_LIST.get(id).getAmis().add(USER_ID);
 
-        final DatabaseReference mDatabase2 = firebaseDatabase.getInstance().getReference("users").child(user_id).child("demande_amis_recu");
-        mDatabase2.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                String demande_amis_recu = dataSnapshot.getValue(String.class);
-                if(demande_amis_recu.length() > 0){
-                    if(demande_amis_recu.length() == 1){
-                        demande_amis_recu = demande_amis_recu.replace(id+"", "");
-                    }else{
-                        demande_amis_recu = demande_amis_recu.replace(","+id, "");
-                    }
-                }else{
-                    demande_amis_recu = "";
-                }
-                mDatabase2.setValue(demande_amis_recu);
-            }
+        USERS_LIST.get(USER_ID).getDemande_amis_envoye().remove(id);
+        USERS_LIST.get(id).getDemande_amis_envoye().remove(USER_ID);
 
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
+        USERS_LIST.get(USER_ID).getDemande_amis_recu().remove(id);
+        USERS_LIST.get(id).getDemande_amis_recu().remove(USER_ID);
 
-            }
-        });
-
-        final DatabaseReference mDatabase3 = firebaseDatabase.getInstance().getReference("users").child(user_id).child("amis");
-        mDatabase3.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                String amis_text = dataSnapshot.getValue(String.class);
-                if(amis_text.length() > 0){
-                    amis_text += ","+id;
-                }else{
-                    amis_text = id+"";
-                }
-                mDatabase3.setValue(amis_text);
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
-
-        final DatabaseReference mDatabase4 = firebaseDatabase.getInstance().getReference("users").child(""+id).child("amis");
-        mDatabase4.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                String amis_text = dataSnapshot.getValue(String.class);
-                if(amis_text.length() > 0){
-                    if(amis_text.length() == 1){
-                        amis_text += user_id;
-                    }else{
-                        amis_text += ","+user_id;
-                    }
-                }else{
-                    amis_text = user_id;
-                }
-                mDatabase4.setValue(amis_text);
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
+        USERS_DB_REF.setValue(USERS_LIST);
 
         updateItems();
-        CustomToast t = new CustomToast(getContext(), "Vous avez ajouter cet utilisateur", false, true);
+        CustomToast t = new CustomToast(getContext(), "Vous avez ajouté(e) cet utilisateur", false, true);
         t.show();
     }
 
-    private void removeFriend(final int id) {
-        final DatabaseReference mDatabase = firebaseDatabase.getInstance().getReference("users").child(id+"").child("demande_amis_envoye");
-        mDatabase.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                String demande_amis_envoye = dataSnapshot.getValue(String.class);
-                if(demande_amis_envoye.length() > 0){
-                    if(demande_amis_envoye.length() == 1){
-                        demande_amis_envoye = demande_amis_envoye.replace(user_id, "");
-                    }else{
-                        demande_amis_envoye = demande_amis_envoye.replace(","+user_id, "");
-                    }
-                }else{
-                    demande_amis_envoye = "";
-                }
-                mDatabase.setValue(demande_amis_envoye);
-            }
+    private void declineFriendRequest(String id) {
 
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
+        USERS_LIST.get(USER_ID).getDemande_amis_envoye().remove(id);
+        USERS_LIST.get(id).getDemande_amis_envoye().remove(USER_ID);
 
-            }
-        });
+        USERS_LIST.get(USER_ID).getDemande_amis_recu().remove(id);
+        USERS_LIST.get(id).getDemande_amis_recu().remove(USER_ID);
 
-        final DatabaseReference mDatabase2 = firebaseDatabase.getInstance().getReference("users").child(""+user_id).child("demande_amis_recu");
-        mDatabase2.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                String demande_amis_recu = dataSnapshot.getValue(String.class);
-                if(demande_amis_recu.length() > 0){
-                    if(demande_amis_recu.length() == 1){
-                        demande_amis_recu = demande_amis_recu.replace(user_id, "");
-                    }else{
-                        demande_amis_recu = demande_amis_recu.replace(","+user_id, "");
-                    }
-                }else{
-                    demande_amis_recu = "";
-                }
-                mDatabase2.setValue(demande_amis_recu);
-            }
+        USERS_DB_REF.setValue(USERS_LIST);
 
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
         updateItems();
-        CustomToast t = new CustomToast(getContext(), "Vous avez supprimer cet utilisateur", false, true);
+        CustomToast t = new CustomToast(getContext(), "Vous n'avez pas accepté(e) cet utilisateur", false, true);
         t.show();
     }
 }

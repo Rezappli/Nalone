@@ -1,27 +1,29 @@
 package com.example.nalone.util;
 
-import android.content.Intent;
-import android.graphics.Bitmap;
-import android.os.Bundle;
+import android.content.Context;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
 
 import com.example.nalone.Evenement;
-import com.example.nalone.SignUpProfilActivity;
+import com.example.nalone.User;
+import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.GenericTypeIndicator;
 import com.google.firebase.database.ValueEventListener;
 
-import java.io.ByteArrayOutputStream;
-import java.io.File;
 import java.text.DateFormat;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 public class Constants {
 
@@ -29,30 +31,20 @@ public class Constants {
     public static final int PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 9002;
     public static final int PERMISSIONS_REQUEST_ENABLE_GPS = 9003;
     public static final String MAPVIEW_BUNDLE_KEY = "MapViewBundleKey";
-    public static int COUNTER = 0;
 
-    public static Bundle NALONE_BUNDLE = new Bundle();
-    public static String user_mail;
-    public static String user_id;
-    public static FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
-    public static List<MarkerOptions> markers = new ArrayList<>();
-    public static List<Evenement> events = new ArrayList<>();
-    public static int nb_evenements = 0;
-    public static File settingsFile;
-    public static final DateFormat formatD= DateFormat.getDateInstance(DateFormat.FULL,
-            new Locale("fr","FR"));
+    public static FirebaseDatabase mFirebase = FirebaseDatabase.getInstance();
+    public static FirebaseAuth mAuth = FirebaseAuth.getInstance();
 
-    public static byte[] getBytesFromBitmap(Bitmap image, Intent intent){
-        Bitmap bmp = (Bitmap) intent.getExtras().get("data");
+    public static FirebaseUser currentUser;
+    public static String USER_ID;
 
-        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+    public static HashMap<String, Evenement> EVENTS_LIST = new HashMap();
+    public static HashMap<String, User> USERS_LIST = new HashMap();
 
-        bmp.compress(Bitmap.CompressFormat.PNG, 100, stream);
+    public static DatabaseReference USERS_DB_REF = mFirebase.getReference("users");
+    public static DatabaseReference EVENTS_DB_REF = mFirebase.getReference("evenements");
 
-        byte[] byteArray = stream.toByteArray();
+    public static final DateFormat formatD = DateFormat.getDateInstance(DateFormat.FULL,
+            new Locale("fr", "FR"));
 
-        bmp.recycle();
-
-        return byteArray;
-    }
 }

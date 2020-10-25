@@ -93,7 +93,7 @@ public class SignUpStudiesActivity extends AppCompatActivity {
                ErrorClass.checkInternetConnection();
 
                if(click == true){
-                   SignUpInformationActivity.userData.setCursus(departement);
+                   SignUpInformationActivity.user.setCursus(departement);
                    Intent signUpTwo = new Intent(getBaseContext(), SignUpHobbiesActivity.class);
                    startActivityForResult(signUpTwo,0);
                }else{

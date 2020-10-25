@@ -4,26 +4,25 @@ import android.graphics.Bitmap;
 
 import com.example.nalone.util.Constants;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
-public class UserData {
+public class User {
     public String sexe;
     public String nom;
     public String prenom;
     public String ville;
-    public String adresse;
-    public String date;
     public String numero;
     public String mail;
-    public String pass;
-    public String[] centreInterets;
+    public List<String> centreInterets;
     public String cursus;
     public String description;
-    public String nbCreate;
-    public String nbParticipate;
-    public String demande_amis_recu;
-    public String demande_amis_envoye;
-    public String amis;
+    public String nbCreation;
+    public String nbParticipation;
+    public List<String> demande_amis_recu;
+    public List<String> demande_amis_envoye;
+    public List<String> amis;
 
     public String getSexe() {
         return sexe;
@@ -33,11 +32,11 @@ public class UserData {
         this.sexe = sexe;
     }
 
-    public String getCentreInterets() {
-        return Arrays.toString(centreInterets);
+    public List<String> getCentreInterets() {
+        return centreInterets;
     }
 
-    public void setCentreInterets(String[] centreInterets) {
+    public void setCentreInterets(List<String> centreInterets) {
         this.centreInterets = centreInterets;
     }
 
@@ -49,26 +48,29 @@ public class UserData {
         this.cursus = cursus;
     }
 
-    public UserData(){}
+    public User(){}
 
-    public UserData(String sexe, String nom, String prenom, String ville, String adresse, String date, String numero,String adresseMail, String pass, String cursus, String[] centreInterets, String description){
-        this.sexe = sexe;
+    public User(String nom, String prenom, String sexe, String ville,
+                String numero, String mail, String cursus, List<String> centreInterets,
+                String description){
         this.nom = nom;
         this.prenom = prenom;
+        this.sexe = sexe;
         this.ville = ville;
-        this.adresse = adresse;
-        this.date = date;
         this.numero = numero;
-        this.mail = adresseMail.replace(".", ",");
-        this.pass = pass;
+        this.mail = mail;
         this.cursus = cursus;
         this.centreInterets = centreInterets;
         this.description = description;
-        this.nbCreate = "0";
-        this.nbParticipate = "0";
-        this.demande_amis_envoye = "";
-        this.demande_amis_recu = "";
-        this.amis = "";
+        this.nbCreation = "0";
+        this.nbParticipation = "0";
+        this.demande_amis_envoye = new ArrayList<>();
+        this.demande_amis_recu = new ArrayList<>();
+        this.amis = new ArrayList<>();
+
+        amis.add("-1");
+        demande_amis_recu.add("-1");
+        demande_amis_envoye.add("-1");
     }
 
     public String getNom() {
@@ -95,22 +97,6 @@ public class UserData {
         this.ville = ville;
     }
 
-    public String getAdresse() {
-        return adresse;
-    }
-
-    public void setAdresse(String adresse) {
-        this.adresse = adresse;
-    }
-
-    public String getDate() {
-        return date;
-    }
-
-    public void setDate(String date) {
-        this.date = date;
-    }
-
     public String getNumero() {
         return numero;
     }
@@ -119,20 +105,12 @@ public class UserData {
         this.numero = numero;
     }
 
-    public String getAdresseMail() {
+    public String getMail() {
         return mail;
     }
 
     public void setAdresseMail(String mail) {
         this.mail = mail;
-    }
-
-    public String getPass() {
-        return pass;
-    }
-
-    public void setPass(String pass) {
-        this.pass = pass;
     }
 
     public String getDescription() {
@@ -144,35 +122,42 @@ public class UserData {
     }
 
     public String getNbCreate() {
-        return nbCreate;
+        return nbCreation;
     }
 
     public void setNbCreate(String nbCreate) {
-        this.nbCreate = nbCreate;
+        this.nbCreation = nbCreate;
     }
 
     public String getNbParticipate() {
-        return nbParticipate;
+        return nbParticipation;
     }
 
     public void setNbParticipate(String nbParticipate) {
-        this.nbParticipate = nbParticipate;
+        this.nbParticipation = nbParticipate;
     }
 
-    public void setDemande_amis_recu(String demande_amis_recu) {
+    public void setDemande_amis_recu(List<String> demande_amis_recu) {
         this.demande_amis_recu = demande_amis_recu;
     }
 
-    public void setDemande_amis_envoye(String demande_amis_envoye) {
+    public void setDemande_amis_envoye(List<String> demande_amis_envoye) {
         this.demande_amis_envoye = demande_amis_envoye;
     }
 
-    public String getDemande_amis_recu(){
+    public List<String> getDemande_amis_recu(){
         return demande_amis_recu;
     }
 
-    public String getDemande_amis_envoye(){
+    public List<String> getDemande_amis_envoye(){
         return demande_amis_envoye;
     }
 
+    public List<String> getAmis() {
+        return amis;
+    }
+
+    public void setAmis(List<String> amis) {
+        this.amis = amis;
+    }
 }

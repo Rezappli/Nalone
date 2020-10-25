@@ -28,7 +28,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import static com.example.nalone.util.Constants.user_mail;
+import static com.example.nalone.util.Constants.currentUser;
+
 
 public class MessagesFragment extends Fragment  {
 
@@ -144,21 +145,21 @@ public class MessagesFragment extends Fragment  {
 
 
     public void loadData(final View root) {
-        DatabaseReference id_users_ref = Constants.firebaseDatabase.getReference("id_users");
+        DatabaseReference id_users_ref = Constants.mFirebase.getReference("id_users");
         id_users_ref.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 final String id_user = snapshot.getValue(String.class);
                 final int nb_users = Integer.parseInt(id_user);
                 for(int i = 0; i < nb_users; i++){
-                    DatabaseReference user = Constants.firebaseDatabase.getReference("users/"+i);
+                    DatabaseReference user = Constants.mFirebase.getReference("users/"+i);
                     final int finalI = i;
                     user.addValueEventListener(new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot snapshot) {
                             String mail = snapshot.child("mail").getValue(String.class);
 
-                            if(mail.equalsIgnoreCase(user_mail)){
+                            if(mail.equalsIgnoreCase(currentUser.getEmail())){
                                 int id_user_connect = finalI;
                                 String amis_text = snapshot.child("amis").getValue(String.class);
                                 final List<String> liste_amis = Arrays.asList(amis_text.split(","));
@@ -175,7 +176,7 @@ public class MessagesFragment extends Fragment  {
                                 for(int j = 0; j < nb_users; j++){
                                     Log.w("Liste", "J :"+j);
                                     if(liste_amis.contains(j+"") && j != finalI){
-                                        DatabaseReference user_found = Constants.firebaseDatabase.getReference("users/"+j);
+                                        DatabaseReference user_found = Constants.mFirebase.getReference("users/"+j);
                                         final int finalJ = j;
                                         user_found.addValueEventListener(new ValueEventListener() {
                                             @Override
