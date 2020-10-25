@@ -14,17 +14,19 @@ public class ItemPerson {
     private String mNomToLowerCase;
     private String mDescription;
     private String mVille;
+    private String cursus;
     private int mImageResource2;
     private String mNbCreate = 0+"";
     private String mNbParticipate = 0+"";
 
 
-    public ItemPerson(int id, int imageResource, String nom, int imageResource2 , String description, String ville, String nbCreate, String nbParticipate){
+    public ItemPerson(int id, int imageResource, String nom, int imageResource2 , String description, String ville, String cursus, String nbCreate, String nbParticipate){
         this.mImageResource = imageResource;
         this.mNom = nom;
         this.mNomToLowerCase = mNom.toLowerCase();
         this.mImageResource2 = imageResource2;
         this.mDescription = description;
+        this.cursus = cursus;
         this.mVille = ville;
         this.mNbCreate = nbCreate;
         this.mNbParticipate = nbParticipate;
@@ -85,6 +87,14 @@ public class ItemPerson {
 
     public void setVille(String mVille) {
         this.mVille = mVille;
+    }
+
+    public String getCursus() {
+        return cursus;
+    }
+
+    public void setCursus(String cursus) {
+        this.cursus = cursus;
     }
 
     public void setmImageResource2(int mImageResource2) {
