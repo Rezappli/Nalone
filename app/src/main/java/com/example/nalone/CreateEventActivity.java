@@ -17,12 +17,14 @@ import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CalendarView;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.TimePicker;
+import android.widget.Toast;
 
 import com.example.nalone.Adapter.ItemAddPersonAdapter;
 import com.example.nalone.Adapter.ItemProfilAdapter;
@@ -43,13 +45,15 @@ import java.util.List;
 
 import static com.example.nalone.util.Constants.EVENTS_DB_REF;
 import static com.example.nalone.util.Constants.EVENTS_LIST;
+import static com.example.nalone.util.Constants.USERS_LIST;
 import static com.example.nalone.util.Constants.USER_ID;
 import static com.example.nalone.util.Constants.currentUser;
 import static com.example.nalone.util.Constants.mFirebase;
 
 public class CreateEventActivity extends AppCompatActivity {
+    private List<ItemPerson> items = new ArrayList<>();
     private List<ItemPerson> itemsAdd = new ArrayList<>();
-    private List<ItemPerson> tempsList = new ArrayList<>();
+    private List<ItemPerson> adds = new ArrayList<>();
     private RecyclerView mRecyclerViewAdd;
     private ItemAddPersonAdapter mAdapterAdd;
     private RecyclerView.LayoutManager mLayoutManagerAdd;
@@ -71,7 +75,6 @@ public class CreateEventActivity extends AppCompatActivity {
     private TimePicker picker;
     private TextView event_horaire;
 
-    private int id_events;
     private Dialog dialogAddPerson;
     private CardView cardViewPrivate;
     private ImageView imageViewPrivate;
@@ -82,8 +85,6 @@ public class CreateEventActivity extends AppCompatActivity {
     private ImageView imageViewPublic;
 
     private Button buttonValidEvent;
-
-    final List<ItemPerson> items = new ArrayList<>();
 
     private String mHour = "";
     private String mMin = "";
@@ -139,76 +140,90 @@ public class CreateEventActivity extends AppCompatActivity {
             }
         });
 
+        imageButtonAddInvit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.w("Event", "Click sur le bouton");
+                showPopUp(v);
+            }
+        });
+
         buttonValidEvent.setOnClickListener(new View.OnClickListener() {
             @RequiresApi(api = Build.VERSION_CODES.M)
             @Override
             public void onClick(View v) {
-                saveDataEvent();
+                saveEvent();
             }
         });
+    }
 
-        DatabaseReference id_events_ref = Constants.mFirebase.getReference("id_evenements");
-        id_events_ref.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                id_events = Integer.parseInt(snapshot.getValue(String.class));
+    public void updateItems(){
+        for(int i = 0; i < USERS_LIST.get(USER_ID).getAmis().size(); i++){
+            User u = USERS_LIST.get(USERS_LIST.get(USER_ID).getAmis().get(i));
+            Log.w("Event", "Ajout de : " + u.getPrenom() + " dans la liste");
+            ItemPerson it = new ItemPerson(i,R.drawable.ic_baseline_account_circle_24, u.getPrenom()+" "+u.getNom(), R.drawable.ic_baseline_add_24, u.getDescription(), u.getVille(),u.getCursus(), u.getNbCreation(), u.getNbParticipation());
+
+            boolean duplicate = false;
+
+            for(int j = 0; j < itemsAdd.size(); i++){
+                if(itemsAdd.get(j).getId() == it.getId()){
+                    duplicate = true;
+                    break;
+                }
             }
 
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
+            if(!duplicate){
+                items.add(it);
             }
-        });
+        }
     }
 
     public void addPerson(View v){
         dialogAddPerson.dismiss();
         mRecyclerViewAdd.setLayoutManager(mLayoutManagerAdd);
         mRecyclerViewAdd.setAdapter(mAdapterAdd);
-
     }
 
     @RequiresApi(api = Build.VERSION_CODES.M)
-    public void saveDataEvent(){
+    public void saveEvent(){
+
+        if(event_name.getText().toString().matches("")){
+            event_name.setError("Champs obligatoire");
+        }
+
+        if(event_adresse.getText().toString().matches("")){
+            event_adresse.setError("Champs obligatoire");
+        }
+
+        if(event_city.getText().toString().matches("")){
+            event_city.setError("Champs obligatoire");
+        }
+
+        if(event_date.getText().toString().matches("")){
+            event_date.setError("Champs obligatoire");
+        }
+
+        if(event_horaire.getText().toString().matches("")){
+            event_horaire.setError("Champs obligatoire");
+        }
+
+        if(!event_name.getText().toString().matches("") && !event_adresse.getText().toString().matches("") &&
+        !event_city.getText().toString().matches("") && !event_date.getText().toString().matches("") &&
+        !event_horaire.getText().toString().matches("")){
             List<String> sign_in_members = new ArrayList<>();
             sign_in_members.add(USER_ID);
 
-            for(int k = 0; k < itemsAdd.size(); k++){
-                final DatabaseReference notification = mFirebase.getReference("notifications/"+itemsAdd.get(k).getId());
-                notification.addValueEventListener(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot snapshot) {
-                        /*List<NotificationData> listNotification = snapshot.getValue(List.class);
-
-                        if(listNotification == null){
-                            listNotification = new ArrayList<>();
-                        }
-
-                        if(event_visibilite.equals(Visibilite.PRIVE)){
-                            listNotification.add(new NotificationData("Ajout d'un évènement privé", "Un évènement privé vient d'être crée et vous êtes invité ! "));
-                        }else{
-                            listNotification.add(new NotificationData("Ajout d'un évènement publique", "Un évènement public vient d'être crée ! "));
-                        }
-                        notification.setValue(listNotification);*/
-                    }
-
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError error) {
-
-                    }
-                });
-
-            }
-
-            Evenement e = new Evenement(R.drawable.ic_baseline_account_circle_24, id_events, event_name.getText().toString(), event_resume.getText().toString(),
+            Evenement e = new Evenement(R.drawable.ic_baseline_account_circle_24, EVENTS_LIST.size(), event_name.getText().toString(), event_resume.getText().toString(),
                     event_adresse.getText().toString(), event_city.getText().toString(), event_visibilite, USER_ID, sign_in_members,
-                    itemsAdd, calendar.getTime(), mHour+":"+mMin,
-                    getLocationFromAddress(event_adresse+","+event_city));
-            EVENTS_LIST.put(EVENTS_LIST.size()+"", e);
+                    itemsAdd, calendar.getTime(), mHour + ":" + mMin);
+            EVENTS_LIST.put(EVENTS_LIST.size() + "", e);
 
             EVENTS_DB_REF.setValue(EVENTS_LIST);
 
+            Toast.makeText(getBaseContext(), "Vous avez créer votre évènement !", Toast.LENGTH_SHORT).show();
+
             finish();
+        }
     }
 
     public void showTimePicker(View v){
@@ -294,174 +309,80 @@ public class CreateEventActivity extends AppCompatActivity {
 
     public void showPopUp(View v){
         items.clear();
-        tempsList.clear();
+        adds.clear();
+        updateItems();
 
         dialogAddPerson.setContentView(R.layout.popup_add_invit);
         dialogAddPerson.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
 
-        final RecyclerView[] mRecyclerView = new RecyclerView[1];
-        final ItemProfilAdapter[] mAdapter = new ItemProfilAdapter[1];
-        final RecyclerView.LayoutManager[] mLayoutManager = new RecyclerView.LayoutManager[1];
+        RecyclerView mRecyclerView = dialogAddPerson.findViewById(R.id.recyclerView);
+        final ItemProfilAdapter mAdapter = new ItemProfilAdapter(items);
+        RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getBaseContext());
 
-        final ArrayList<String> adds = new ArrayList<>();
+        mRecyclerView.setLayoutManager(mLayoutManager);
+        mRecyclerView.setAdapter(mAdapter);
 
-        DatabaseReference id_users_ref = Constants.mFirebase.getReference("id_users");
-        id_users_ref.addValueEventListener(new ValueEventListener() {
+        mAdapter.setOnItemClickListener(new ItemProfilAdapter.OnItemClickListener() {
             @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                final String id_user = snapshot.getValue(String.class);
-                final int nb_users = Integer.parseInt(id_user);
-                for(final int[] i = {0}; i[0] < nb_users; i[0]++){
-                    DatabaseReference user = Constants.mFirebase.getReference("users/"+ i[0]);
-                    final int finalI = i[0];
-                    user.addValueEventListener(new ValueEventListener() {
-                            @Override
-                            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                                String mail = snapshot.child("mail").getValue(String.class);
-
-                                if(mail.equalsIgnoreCase(currentUser.getEmail())){
-                                    int id_user_connect = finalI;
-                                    String amis_text = snapshot.child("amis").getValue(String.class);
-                                    final List<String> liste_amis = Arrays.asList(amis_text.split(","));
-
-                                    Log.w("Liste", "Liste amis:"+amis_text);
-                                    items.clear();
-                                    for(final int[] j = {0}; j[0] < nb_users; j[0]++){
-                                        Log.w("Liste", "J :"+ j[0]);
-                                        if(liste_amis.contains(j[0] +"")){
-                                            DatabaseReference user_found = Constants.mFirebase.getReference("users/"+ j[0]);
-                                            final int finalJ = j[0];
-                                            user_found.addValueEventListener(new ValueEventListener() {
-                                                @Override
-                                                public void onDataChange(@NonNull DataSnapshot snapshot) {
-                                                    String prenom = snapshot.child("prenom").getValue(String.class);
-                                                    String nom = snapshot.child("nom").getValue(String.class);
-                                                    String desc = snapshot.child("description").getValue(String.class);
-                                                    String nbCreate = snapshot.child("nombre_creation").getValue(String.class);
-                                                    String nbParticipate = snapshot.child("nombre_participation").getValue(String.class);
-                                                    String ville = snapshot.child("ville").getValue(String.class);
-
-                                                    mRecyclerView[0] = dialogAddPerson.findViewById(R.id.recyclerView);
-                                                    mLayoutManager[0] = new LinearLayoutManager(getBaseContext());
-
-                                                    mRecyclerView[0].setLayoutManager(mLayoutManager[0]);
-                                                    mRecyclerView[0].setAdapter(mAdapter[0]);
-
-                                                    ItemPerson itemPerson = new ItemPerson(finalJ,R.drawable.ic_baseline_account_circle_24, prenom+" "+nom, R.drawable.ic_baseline_add_24, desc, ville , nbCreate, nbParticipate);
-                                                    boolean found = false;
-                                                    for(int k = 0; k < itemsAdd.size(); k++){
-                                                        if(itemPerson.getId() == itemsAdd.get(k).getId()){
-                                                            found = true;
-                                                        }
-                                                    }
-
-                                                    if(!found){
-                                                        items.add(itemPerson);
-                                                    }
-
-                                                    dialogAddPerson.show();
-                                                }
-
-                                                @Override
-                                                public void onCancelled(@NonNull DatabaseError error) {
-
-                                                }
-                                            });
-                                        }
-                                    }
-
-                                    mAdapter[0] = new ItemProfilAdapter(items);
-
-                                    mAdapter[0].setOnItemClickListener(new ItemProfilAdapter.OnItemClickListener() {
-                                        @Override
-                                        public void onAddClick(int position) {
-                                            String person = items.get(position).getNom();
-                                            int remove = R.drawable.ic_baseline_remove_24;
-                                            int add = R.drawable.ic_baseline_add_24;
-                                            if(adds.contains(person) == false){
-                                                items.get(position).changerPlus(remove);
-                                                adds.add(person);
-                                                tempsList.add(items.get(position));
-                                            }else{
-                                                items.get(position).changerPlus(add);
-                                                adds.remove(person);
-                                                tempsList.remove(items.get(position));
-                                            }
-
-                                            mAdapter[0].notifyItemChanged(position);
-
-                                        }
-                                    });
-
-                                    Button valid = dialogAddPerson.findViewById(R.id.buttonBack);
-                                    valid.setOnClickListener(new View.OnClickListener() {
-                                        @Override
-                                        public void onClick(View v) {
-                                            for(int i = 0; i < tempsList.size(); i++){
-                                                itemsAdd.add(tempsList.get(i));
-                                            }
-                                            dialogAddPerson.dismiss();
-                                            mLayoutManagerAdd = new LinearLayoutManager(getBaseContext());
-                                            mAdapterAdd = new ItemAddPersonAdapter(itemsAdd);
-
-                                            mAdapterAdd.setOnItemClickListener(new ItemAddPersonAdapter.OnItemClickListener() {
-                                                @Override
-                                                public void onRemoveClick(int position) {
-                                                    itemsAdd.remove(position);
-                                                    mAdapterAdd.notifyItemRemoved(position);
-                                                }
-                                            });
-
-                                            mRecyclerViewAdd.setLayoutManager(mLayoutManagerAdd);
-                                            mRecyclerViewAdd.setAdapter(mAdapterAdd);
-                                        }
-                                    });
-                                }
-                            }
-
-                            @Override
-                            public void onCancelled(@NonNull DatabaseError error) {
-
-                            }
-                        });
-
-                    }
+            public void onAddClick(int position) {
+                ItemPerson person = items.get(position);
+                int remove = R.drawable.ic_baseline_remove_24;
+                int add = R.drawable.ic_baseline_add_24;
+                if(adds.contains(person) == false){
+                    items.get(position).changerPlus(remove);
+                    adds.add(person);
+                }else{
+                    items.get(position).changerPlus(add);
+                    adds.remove(person);
                 }
 
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
+                mAdapter.notifyItemChanged(position);
 
             }
         });
 
 
-    }
 
-    private LatLng getLocationFromAddress(String strAddress) {
+        mLayoutManagerAdd = new LinearLayoutManager(getBaseContext());
+        mAdapterAdd = new ItemAddPersonAdapter(itemsAdd);
 
-        Log.w("Location", "Loading coordinate from : " + strAddress);
-
-        Geocoder coder = new Geocoder(getBaseContext());
-        List<Address> address;
-        LatLng p1 = null;
-
-        try {
-            // May throw an IOException
-            address = coder.getFromLocationName(strAddress, 5);
-            if (address == null) {
-                return null;
+        mAdapterAdd.setOnItemClickListener(new ItemAddPersonAdapter.OnItemClickListener() {
+            @Override
+            public void onRemoveClick(int position) {
+                itemsAdd.remove(position);
+                mAdapterAdd.notifyItemRemoved(position);
             }
+        });
 
-            Address location = address.get(0);
-            p1 = new LatLng(location.getLatitude(), location.getLongitude() );
+        Button valid = dialogAddPerson.findViewById(R.id.buttonBack);
+        valid.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                for(int i = 0; i < adds.size(); i++){
+                    itemsAdd.add(adds.get(i));
+                }
+                dialogAddPerson.dismiss();
+                mLayoutManagerAdd = new LinearLayoutManager(getBaseContext());
+                mAdapterAdd = new ItemAddPersonAdapter(itemsAdd);
 
-        } catch (IOException ex) {
+                mAdapterAdd.setOnItemClickListener(new ItemAddPersonAdapter.OnItemClickListener() {
+                    @Override
+                    public void onRemoveClick(int position) {
+                        itemsAdd.remove(position);
+                        mAdapterAdd.notifyItemRemoved(position);
+                    }
+                });
 
-            ex.printStackTrace();
+                mRecyclerViewAdd.setLayoutManager(mLayoutManagerAdd);
+                mRecyclerViewAdd.setAdapter(mAdapterAdd);
+            }
+        });
+
+        if(items.size() > 0) {
+            dialogAddPerson.show();
+        }else{
+            Toast.makeText(getBaseContext(), "Aucun autre amis à ajouter !", Toast.LENGTH_SHORT).show();
         }
 
-        return p1;
     }
-
-
 }

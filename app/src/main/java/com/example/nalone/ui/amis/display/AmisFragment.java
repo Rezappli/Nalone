@@ -99,7 +99,6 @@ public class AmisFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
 
         rootView = inflater.inflate(R.layout.amis_fragment, container, false);
         search_bar = rootView.findViewById(R.id.search_bar_amis);
@@ -204,7 +203,7 @@ public class AmisFragment extends Fragment {
             User u = USERS_LIST.get(USERS_LIST.get(USER_ID).getAmis().get(i));
             items.add(new ItemPerson(i, R.drawable.ic_baseline_account_circle_24,
                     u.getPrenom() + " " + u.getNom(), 0, u.getDescription(),
-                    u.getVille(), u.getNbCreate(), u.getNbParticipate()));
+                    u.getVille(), u.getCursus(), u.getNbCreation(), u.getNbParticipation()));
 
         }
 

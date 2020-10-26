@@ -207,6 +207,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback{
 
             m.title(e.getNom());
             m.snippet("Cliquer pour en savoir plus");
+            m.position(getLocationFromAddress(e.getAdresse()+","+e.getVille()));
 
             if(e.getVisibilite().equals(Visibilite.PRIVE)){
                 if(e.getMembres_inscrits().contains(USER_ID)){

@@ -121,7 +121,7 @@ public class User {
         this.description = description;
     }
 
-    public String getNbCreate() {
+    public String getNbCreation() {
         return nbCreation;
     }
 
@@ -129,7 +129,7 @@ public class User {
         this.nbCreation = nbCreate;
     }
 
-    public String getNbParticipate() {
+    public String getNbParticipation() {
         return nbParticipation;
     }
 
