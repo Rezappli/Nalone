@@ -40,7 +40,9 @@ import static com.example.nalone.util.Constants.USERS_DB_REF;
 import static com.example.nalone.util.Constants.USERS_LIST;
 import static com.example.nalone.util.Constants.USER_ID;
 import static com.example.nalone.util.Constants.currentUser;
+import static com.example.nalone.util.Constants.heightScreen;
 import static com.example.nalone.util.Constants.mFirebase;
+import static com.example.nalone.util.Constants.widthScreen;
 
 public class RechercheFragment extends Fragment {
 
@@ -248,7 +250,7 @@ public class RechercheFragment extends Fragment {
         });
 
         dialogProfil.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-        dialogProfil.getWindow().setLayout(getResources().getDisplayMetrics().widthPixels - 100, getResources().getDisplayMetrics().heightPixels - 200);
+        dialogProfil.getWindow().setLayout(widthScreen - 100, heightScreen - 200);
         dialogProfil.show();
 
     }

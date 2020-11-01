@@ -15,29 +15,23 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.SearchView;
 import android.widget.TextView;
 
 import com.example.nalone.Adapter.ItemListAmisAdapter;
-import com.example.nalone.CustomToast;
 import com.example.nalone.ItemPerson;
 import com.example.nalone.R;
 import com.example.nalone.User;
-import com.example.nalone.util.Constants;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import static com.example.nalone.util.Constants.USERS_DB_REF;
 import static com.example.nalone.util.Constants.USERS_LIST;
 import static com.example.nalone.util.Constants.USER_ID;
-import static com.example.nalone.util.Constants.currentUser;
-import static com.example.nalone.util.Constants.mFirebase;
+import static com.example.nalone.util.Constants.heightScreen;
+import static com.example.nalone.util.Constants.widthScreen;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -237,25 +231,28 @@ public class AmisFragment extends Fragment {
         TextView descriptionProfil;
         TextView nbCreateProfil;
         TextView nbParticipateProfil;
+        Button buttonAdd;
 
         dialogProfil.setContentView(R.layout.popup_profil);
         nameProfil = dialogProfil.findViewById(R.id.profilName);
         descriptionProfil = dialogProfil.findViewById(R.id.profilDescription);
         nbCreateProfil = dialogProfil.findViewById(R.id.nbEventCreate);
         nbParticipateProfil = dialogProfil.findViewById(R.id.nbEventParticipe);
+        buttonAdd = dialogProfil.findViewById(R.id.buttonAdd);
 
 
         nameProfil.setText(name);
         descriptionProfil.setText(desc);
         nbCreateProfil.setText(nbCreate);
         nbParticipateProfil.setText(nbParticipate);
+        buttonAdd.setVisibility(View.GONE);
 
         if (desc.matches("")) {
             descriptionProfil.setVisibility(View.GONE);
         }
 
         dialogProfil.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-        dialogProfil.getWindow().setLayout(900, 1500);
+        dialogProfil.getWindow().setLayout(widthScreen - 100, heightScreen - 200);
         dialogProfil.show();
     }
 }

@@ -44,6 +44,9 @@ public class Constants {
     public static DatabaseReference USERS_DB_REF = mFirebase.getReference("users");
     public static DatabaseReference EVENTS_DB_REF = mFirebase.getReference("evenements");
 
+    public static int widthScreen;
+    public static int heightScreen;
+
     public static final DateFormat formatD = DateFormat.getDateInstance(DateFormat.FULL,
             new Locale("fr", "FR"));
 
