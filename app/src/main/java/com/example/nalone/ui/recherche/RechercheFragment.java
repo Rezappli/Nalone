@@ -4,7 +4,6 @@ import android.app.Dialog;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,6 +22,7 @@ import com.example.nalone.Adapter.ItemFiltreAdapter;
 import com.example.nalone.CoreListener;
 import com.example.nalone.CustomToast;
 import com.example.nalone.items.ItemFiltre;
+import com.example.nalone.items.ItemImagePerson;
 import com.example.nalone.items.ItemPerson;
 import com.example.nalone.Adapter.ItemProfilAdapter;
 import com.example.nalone.R;
@@ -152,11 +152,11 @@ public class RechercheFragment extends Fragment implements CoreListener {
                             @Override
                             public void onAddClick(int position) {
                                 if (USERS_LIST.get(USER_ID).getDemande_amis_envoye().contains(tempList.get(position).getId() + "")) {
-                                    showPopUpProfil(tempList.get(position).getId(), tempList.get(position).getNom(), tempList.get(position).getmDescription(), tempList.get(position).getmNbCreate(), tempList.get(position).getmNbParticipate(), R.drawable.ic_round_hourglass_top_24);
+                                    showPopUpProfil(tempList.get(position).getId(), tempList.get(position).getNom(), tempList.get(position).getmDescription(), tempList.get(position).getmNbCreate(), tempList.get(position).getmNbParticipate(), R.drawable.ic_round_hourglass_top_24, tempList.get(position).getCentresInterets());
                                 } else if (USERS_LIST.get(USER_ID).getDemande_amis_recu().contains(tempList.get(position).getId() + "")) {
-                                    showPopUpProfil(tempList.get(position).getId(), tempList.get(position).getNom(), tempList.get(position).getmDescription(), tempList.get(position).getmNbCreate(), tempList.get(position).getmNbParticipate(), R.drawable.ic_round_mail_24);
+                                    showPopUpProfil(tempList.get(position).getId(), tempList.get(position).getNom(), tempList.get(position).getmDescription(), tempList.get(position).getmNbCreate(), tempList.get(position).getmNbParticipate(), R.drawable.ic_round_mail_24, tempList.get(position).getCentresInterets());
                                 } else {
-                                    showPopUpProfil(tempList.get(position).getId(), tempList.get(position).getNom(), tempList.get(position).getmDescription(), tempList.get(position).getmNbCreate(), tempList.get(position).getmNbParticipate(), R.drawable.ic_baseline_add_circle_outline_24);
+                                    showPopUpProfil(tempList.get(position).getId(), tempList.get(position).getNom(), tempList.get(position).getmDescription(), tempList.get(position).getmNbCreate(), tempList.get(position).getmNbParticipate(), R.drawable.ic_baseline_add_circle_outline_24, tempList.get(position).getCentresInterets());
                                 }
 
                             }
@@ -169,13 +169,12 @@ public class RechercheFragment extends Fragment implements CoreListener {
                         mAdapter.setOnItemClickListener(new ItemProfilAdapter.OnItemClickListener() {
                             @Override
                             public void onAddClick(int position) {
-                                Log.w("user", "mAdapter listener " + items.get(position).getmNbCreate());
                                 if (USERS_LIST.get(USER_ID).getDemande_amis_envoye().contains(tempList.get(position).getId() + "")) {
-                                    showPopUpProfil(tempList.get(position).getId(), tempList.get(position).getNom(), tempList.get(position).getmDescription(), tempList.get(position).getmNbCreate(), tempList.get(position).getmNbParticipate(), R.drawable.ic_round_hourglass_top_24);
+                                    showPopUpProfil(tempList.get(position).getId(), tempList.get(position).getNom(), tempList.get(position).getmDescription(), tempList.get(position).getmNbCreate(), tempList.get(position).getmNbParticipate(), R.drawable.ic_round_hourglass_top_24, tempList.get(position).getCentresInterets());
                                 } else if (USERS_LIST.get(USER_ID).getDemande_amis_recu().contains(tempList.get(position).getId() + "")) {
-                                    showPopUpProfil(tempList.get(position).getId(), tempList.get(position).getNom(), tempList.get(position).getmDescription(), tempList.get(position).getmNbCreate(), tempList.get(position).getmNbParticipate(), R.drawable.ic_round_mail_24);
+                                    showPopUpProfil(tempList.get(position).getId(), tempList.get(position).getNom(), tempList.get(position).getmDescription(), tempList.get(position).getmNbCreate(), tempList.get(position).getmNbParticipate(), R.drawable.ic_round_mail_24, tempList.get(position).getCentresInterets());
                                 } else {
-                                    showPopUpProfil(tempList.get(position).getId(), tempList.get(position).getNom(), tempList.get(position).getmDescription(), tempList.get(position).getmNbCreate(), tempList.get(position).getmNbParticipate(), R.drawable.ic_baseline_add_circle_outline_24);
+                                    showPopUpProfil(tempList.get(position).getId(), tempList.get(position).getNom(), tempList.get(position).getmDescription(), tempList.get(position).getmNbCreate(), tempList.get(position).getmNbParticipate(), R.drawable.ic_baseline_add_circle_outline_24, tempList.get(position).getCentresInterets());
                                 }
 
 
@@ -203,7 +202,7 @@ public class RechercheFragment extends Fragment implements CoreListener {
     }
 
 
-    public void showPopUpProfil(final int id, String name, String desc, String nbCreate, String nbParticipate, final int button) {
+    public void showPopUpProfil(final int id, String name, String desc, String nbCreate, String nbParticipate, final int button, List centresInteret) {
         TextView nameProfil;
         TextView descriptionProfil;
         TextView nbCreateProfil;
@@ -217,11 +216,14 @@ public class RechercheFragment extends Fragment implements CoreListener {
         nbParticipateProfil = dialogProfil.findViewById(R.id.nbEventParticipe);
         buttonAdd = dialogProfil.findViewById(R.id.buttonAdd);
 
-        Log.w("User", "user creation showPoPUp " + nbCreate);
+        for (int i = 0; i < centresInteret.size(); i++){
+            centresInteret.get(i);
+        }
+
 
         nameProfil.setText(name);
         descriptionProfil.setText(desc);
-        nbCreateProfil.setText("0");
+        nbCreateProfil.setText(nbCreate);
         nbParticipateProfil.setText(nbParticipate);
         buttonAdd.setImageResource(button);
 
@@ -271,13 +273,13 @@ public class RechercheFragment extends Fragment implements CoreListener {
                     if (!USERS_LIST.get(USER_ID).getAmis().contains(i+"")) {
                         ItemPerson it;
                         if (USERS_LIST.get(USER_ID).getDemande_amis_envoye().contains(i+"")) {
-                            it = new ItemPerson(i, R.drawable.ic_baseline_account_circle_24, u.getPrenom() + " " + u.getNom(), R.drawable.ic_round_hourglass_top_24, u.getDescription(), u.getVille(), u.getCursus(), u.getNbCreation(), u.getNbParticipation());
+                            it = new ItemPerson(i, R.drawable.ic_baseline_account_circle_24, u.getPrenom() + " " + u.getNom(), R.drawable.ic_round_hourglass_top_24, u.getDescription(), u.getVille(), u.getCursus(), u.getNbCreation(), u.getNbParticipation(), u.getCentreInterets());
                         } else if (USERS_LIST.get(USER_ID).getDemande_amis_recu().contains(i+"")) {
-                            it = new ItemPerson(i, R.drawable.ic_baseline_account_circle_24, u.getPrenom() + " " + u.getNom(), R.drawable.ic_round_mail_24, u.getDescription(), u.getVille(), u.getNbCreation(), u.getCursus(), u.getNbParticipation());
+                            it = new ItemPerson(i, R.drawable.ic_baseline_account_circle_24, u.getPrenom() + " " + u.getNom(), R.drawable.ic_round_mail_24, u.getDescription(), u.getVille(), u.getNbCreation(), u.getCursus(), u.getNbParticipation(), u.getCentreInterets());
                         } else {
-                            it = new ItemPerson(i, R.drawable.ic_baseline_account_circle_24, u.getPrenom() + " " + u.getNom(), 0, u.getDescription(), u.getVille(), u.getNbCreation(), u.getCursus(), u.getNbParticipation());
+                            it = new ItemPerson(i, R.drawable.ic_baseline_account_circle_24, u.getPrenom() + " " + u.getNom(), 0, u.getDescription(), u.getVille(), u.getNbCreation(), u.getCursus(), u.getNbParticipation(), u.getCentreInterets());
                         }
-                        Log.w("User", "User creation : " + u.getNbCreation());
+
                         items.add(it);
                     }
                 }
@@ -296,11 +298,11 @@ public class RechercheFragment extends Fragment implements CoreListener {
             @Override
             public void onAddClick(int position) {
                 if (USERS_LIST.get(USER_ID).getDemande_amis_envoye().contains(items.get(position).getId() + "")) {
-                    showPopUpProfil(items.get(position).getId(), items.get(position).getNom(), items.get(position).getmDescription(), items.get(position).getmNbCreate(), items.get(position).getmNbParticipate(), R.drawable.ic_round_hourglass_top_24);
+                    showPopUpProfil(items.get(position).getId(), items.get(position).getNom(), items.get(position).getmDescription(), items.get(position).getmNbCreate(), items.get(position).getmNbParticipate(), R.drawable.ic_round_hourglass_top_24, items.get(position).getCentresInterets());
                 } else if (USERS_LIST.get(USER_ID).getDemande_amis_recu().contains(items.get(position).getId() + "")) {
-                    showPopUpProfil(items.get(position).getId(), items.get(position).getNom(), items.get(position).getmDescription(), items.get(position).getmNbCreate(), items.get(position).getmNbParticipate(), R.drawable.ic_round_mail_24);
+                    showPopUpProfil(items.get(position).getId(), items.get(position).getNom(), items.get(position).getmDescription(), items.get(position).getmNbCreate(), items.get(position).getmNbParticipate(), R.drawable.ic_round_mail_24, items.get(position).getCentresInterets());
                 } else {
-                    showPopUpProfil(items.get(position).getId(), items.get(position).getNom(), items.get(position).getmDescription(), items.get(position).getmNbCreate(), items.get(position).getmNbParticipate(), R.drawable.ic_baseline_add_circle_outline_24);
+                    showPopUpProfil(items.get(position).getId(), items.get(position).getNom(), items.get(position).getmDescription(), items.get(position).getmNbCreate(), items.get(position).getmNbParticipate(), R.drawable.ic_baseline_add_circle_outline_24, items.get(position).getCentresInterets());
                 }
 
 

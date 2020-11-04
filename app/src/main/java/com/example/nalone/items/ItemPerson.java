@@ -5,6 +5,8 @@ import android.widget.ImageButton;
 
 import com.example.nalone.util.Constants;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 public class ItemPerson {
@@ -15,13 +17,13 @@ public class ItemPerson {
     private String mDescription;
     private String mVille;
     private String cursus;
+    private List<String> centresInterets = new ArrayList<>();
     private int mImageResource2;
     private String mNbCreate = 0+"";
     private String mNbParticipate = 0+"";
 
 
-    public ItemPerson(int id, int imageResource, String nom, int imageResource2 , String description,
-                      String ville, String cursus, String nbCreate, String nbParticipate){
+    public ItemPerson(int id, int imageResource, String nom, int imageResource2 , String description, String ville, String cursus, String nbCreate, String nbParticipate, List centresInterets){
         this.mImageResource = imageResource;
         this.mNom = nom;
         this.mNomToLowerCase = mNom.toLowerCase();
@@ -32,6 +34,7 @@ public class ItemPerson {
         this.mNbCreate = nbCreate;
         this.mNbParticipate = nbParticipate;
         this.id = id;
+        this.centresInterets = centresInterets;
     }
 
     public void changerPlus(int imageRessourceChange){
@@ -120,5 +123,9 @@ public class ItemPerson {
 
     public int getId(){
         return id;
+    }
+
+    public List<String> getCentresInterets() {
+        return centresInterets;
     }
 }

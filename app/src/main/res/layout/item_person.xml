@@ -48,13 +48,13 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
-            android:layout_weight="0.3"
+            android:layout_weight="0.4"
             android:orientation="vertical">
 
             <TextView
                 android:id="@+id/nomInvit"
-                android:layout_width="150dp"
-                android:layout_height="match_parent"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
                 android:gravity="center_vertical"
                 android:text="TextView"
@@ -63,18 +63,20 @@
             <TextView
                 android:id="@+id/villePers"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
                 android:drawableStart="@drawable/ic_baseline_location_grey"
                 android:gravity="center_vertical"
+                android:text="@string/ville"
                 android:textSize="10sp" />
         </LinearLayout>
 
         <ImageView
             android:id="@+id/imageView19"
-            android:layout_width="30dp"
+            android:layout_width="match_parent"
             android:layout_height="30dp"
             android:layout_gravity="center"
+            android:layout_weight="0.6"
             app:srcCompat="@drawable/ic_baseline_add_24" />
 
     </LinearLayout>

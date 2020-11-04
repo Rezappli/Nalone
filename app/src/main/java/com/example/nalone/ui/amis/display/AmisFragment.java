@@ -213,7 +213,7 @@ public class AmisFragment extends Fragment implements CoreListener{
             if(u != null) {
                 items.add(new ItemPerson(i, R.drawable.ic_baseline_account_circle_24,
                         u.getPrenom() + " " + u.getNom(), 0, u.getDescription(),
-                        u.getVille(), u.getCursus(), u.getNbCreation(), u.getNbParticipation()));
+                        u.getVille(), u.getCursus(), u.getNbCreation(), u.getNbParticipation(), u.getCentreInterets()));
             }
 
         }
