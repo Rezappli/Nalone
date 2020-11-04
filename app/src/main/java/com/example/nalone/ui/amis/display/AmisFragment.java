@@ -197,7 +197,7 @@ public class AmisFragment extends Fragment implements CoreListener{
         if(USERS_LIST.get(id+"").getAmis().size() == 1) {
             USERS_LIST.get(id+"").getAmis().set(0, "");
         }else{
-            USERS_LIST.get(id+"").getAmis().remove(USER_ID);
+            USERS_LIST.get(id+"").getAmis().remove(Integer.parseInt(USER_ID));
         }
 
         USERS_DB_REF.setValue(USERS_LIST);

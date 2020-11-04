@@ -177,25 +177,25 @@ public class MesInvitationsFragment extends Fragment implements CoreListener {
     private void declineFriendRequest(int id) {
 
         if(USERS_LIST.get(USER_ID).getDemande_amis_envoye().size() == 1) {
-            USERS_LIST.get(USER_ID).getDemande_amis_envoye().set(0, " ");
+            USERS_LIST.get(USER_ID).getDemande_amis_envoye().set(0, "");
         }else{
             USERS_LIST.get(USER_ID).getDemande_amis_envoye().remove(id);
         }
 
         if(USERS_LIST.get(USER_ID).getDemande_amis_recu().size() == 1) {
-            USERS_LIST.get(USER_ID).getDemande_amis_recu().set(0, " ");
+            USERS_LIST.get(USER_ID).getDemande_amis_recu().set(0, "");
         }else{
             USERS_LIST.get(USER_ID).getDemande_amis_recu().remove(id);
         }
 
         if(USERS_LIST.get(id+"").getDemande_amis_envoye().size() == 1) {
-            USERS_LIST.get(id+"").getDemande_amis_envoye().set(0, " ");
+            USERS_LIST.get(id+"").getDemande_amis_envoye().set(0, "");
         }else{
             USERS_LIST.get(id+"").getDemande_amis_envoye().remove(Integer.parseInt(USER_ID));
         }
 
         if(USERS_LIST.get(id+"").getDemande_amis_recu().size() == 1) {
-            USERS_LIST.get(id+"").getDemande_amis_recu().set(0, " ");
+            USERS_LIST.get(id+"").getDemande_amis_recu().set(0, "");
         }else{
             USERS_LIST.get(id+"").getDemande_amis_recu().remove(Integer.parseInt(USER_ID));
         }
