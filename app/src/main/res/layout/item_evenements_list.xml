@@ -178,7 +178,7 @@
             <View
                 android:id="@+id/divider6"
                 android:layout_width="match_parent"
-                android:layout_height="5dp"
+                android:layout_height="3dp"
                 android:background="?android:attr/listDivider" />
 
             <LinearLayout
@@ -191,8 +191,8 @@
                     android:id="@+id/buttonInscrirEventList"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="40dp"
-                    android:layout_marginEnd="40dp"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginEnd="10dp"
                     android:layout_weight="0.5"
                     android:background="@drawable/custom_button_simple"
                     android:text="@string/inscrireButton" />
@@ -201,8 +201,8 @@
                     android:id="@+id/buttonAfficherEventList"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="40dp"
-                    android:layout_marginEnd="40dp"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginEnd="10dp"
                     android:layout_weight="0.5"
                     android:background="@drawable/custom_button_signup"
                     android:text="@string/afficher" />
