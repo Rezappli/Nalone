@@ -25,11 +25,6 @@ public class EvenementsFragment extends Fragment {
 
     ViewPager viewPager;
     TabLayout tabLayout;
-    private int[] tabIcons = {
-            R.drawable.round_group_24,
-            R.drawable.round_group_24,
-
-    };
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -44,6 +39,9 @@ public class EvenementsFragment extends Fragment {
         viewPager = myFragment.findViewById(R.id.viewPagerEvenement);
         tabLayout = myFragment.findViewById(R.id.tabLayoutEvenement);
 
+
+       // tabLayout.getTabAt(2).setIcon(tabIcons[2]);
+
         return myFragment;
     }
 
@@ -53,13 +51,15 @@ public class EvenementsFragment extends Fragment {
 
         setUpViewPager(viewPager);
         tabLayout.setupWithViewPager(viewPager);
+        tabLayout.getTabAt(0).setIcon(R.drawable.ic_baseline_map_24);
+        tabLayout.getTabAt(1).setIcon(R.drawable.ic_baseline_format_list_bulleted_24);
     }
 
     private void setUpViewPager(ViewPager viewPager) {
         SectionPageAdapter adapter = new SectionPageAdapter(getChildFragmentManager(), 0);
 
-        adapter.addFragment(new MapFragment(), "La carte des évènements", R.drawable.add_photo);
-        adapter.addFragment(new EvenementsListFragment(), "Les évènements", R.drawable.custom_adress_focused);
+        adapter.addFragment(new MapFragment());
+        adapter.addFragment(new EvenementsListFragment());
         //adapter.addFragment(new Fragment_3(), "Mes invitations");
 
         viewPager.setAdapter(adapter);
