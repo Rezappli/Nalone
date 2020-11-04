@@ -238,9 +238,7 @@ public class AmisFragment extends Fragment implements CoreListener{
 
             @Override
             public void onDelete(int position) {
-                if (items.size() > 0) {
-                    removeFriend(items.get(position).getId());
-                }
+                removeFriend(items.get(position).getId());
             }
         });
 

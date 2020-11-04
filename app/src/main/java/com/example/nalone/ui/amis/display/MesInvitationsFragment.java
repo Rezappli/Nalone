@@ -10,6 +10,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.example.nalone.Adapter.ItemInvitAmisAdapter;
 import com.example.nalone.Adapter.ItemListAmisAdapter;
@@ -202,9 +203,10 @@ public class MesInvitationsFragment extends Fragment implements CoreListener {
 
         USERS_DB_REF.setValue(USERS_LIST);
 
+        Toast.makeText(getContext(), "Vous n'avez pas accepté(e) cet utilisateur", Toast.LENGTH_SHORT).show();
+
         updateItems();
-        CustomToast t = new CustomToast(getContext(), "Vous n'avez pas accepté(e) cet utilisateur", false, true);
-        t.show();
+
     }
 
     @Override
