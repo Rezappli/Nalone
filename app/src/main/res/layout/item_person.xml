@@ -45,16 +45,16 @@
         </androidx.cardview.widget.CardView>
 
         <LinearLayout
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
-            android:layout_weight="0.1"
+            android:layout_weight="0.4"
             android:orientation="vertical">
 
             <TextView
                 android:id="@+id/nomInvit"
-                android:layout_width="150dp"
-                android:layout_height="match_parent"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
                 android:gravity="center_vertical"
                 android:text="TextView"
@@ -62,11 +62,12 @@
 
             <TextView
                 android:id="@+id/villePers"
-                android:layout_width="301dp"
-                android:layout_height="0dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
                 android:drawableStart="@drawable/ic_baseline_location_grey"
                 android:gravity="center_vertical"
+                android:text="@string/ville"
                 android:textSize="10sp" />
         </LinearLayout>
 
@@ -75,7 +76,7 @@
             android:layout_width="match_parent"
             android:layout_height="30dp"
             android:layout_gravity="center"
-            android:layout_weight="0.9"
+            android:layout_weight="0.6"
             app:srcCompat="@drawable/ic_baseline_add_24" />
 
     </LinearLayout>
