@@ -187,13 +187,17 @@ public class AmisFragment extends Fragment implements CoreListener{
         return rootView;
     }
 
-    private void removeFriend(final String id) {
-        Log.w("Amis", "Id : " + id);
-        USERS_LIST.get(USER_ID).getAmis().remove(Integer.parseInt(id));
-        USERS_LIST.get(id).getAmis().remove(USER_ID);
+    private void removeFriend(int id) {
+        if(USERS_LIST.get(USER_ID).getAmis().size() == 1) {
+            USERS_LIST.get(USER_ID).getAmis().set(0, " ");
+        }else{
+            USERS_LIST.get(USER_ID).getAmis().remove(id);
+        }
 
-        for(int i = 0; i < USERS_LIST.get(USER_ID).getAmis().size(); i++){
-            Log.w("Amis", "Utilisateur :"+USER_ID + " amis : " + USERS_LIST.get(USER_ID).getAmis().get(i));
+        if(USERS_LIST.get(id).getAmis().size() == 1) {
+            USERS_LIST.get(id).getAmis().set(0, " ");
+        }else{
+            USERS_LIST.get(id).getAmis().remove(USER_ID);
         }
 
         USERS_DB_REF.setValue(USERS_LIST);
@@ -235,7 +239,7 @@ public class AmisFragment extends Fragment implements CoreListener{
             @Override
             public void onDelete(int position) {
                 if (items.size() > 0) {
-                    removeFriend(items.get(position).getId() + "");
+                    removeFriend(items.get(position).getId());
                 }
             }
         });

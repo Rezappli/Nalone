@@ -311,7 +311,6 @@ public class RechercheFragment extends Fragment implements CoreListener {
 
     @Override
     public void onDataChangeListener() {
-        Log.w("data", "search data change");
         updateItems();
     }
 }
