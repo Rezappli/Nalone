@@ -20,7 +20,8 @@ public class ItemPerson {
     private String mNbParticipate = 0+"";
 
 
-    public ItemPerson(int id, int imageResource, String nom, int imageResource2 , String description, String ville, String cursus, String nbCreate, String nbParticipate){
+    public ItemPerson(int id, int imageResource, String nom, int imageResource2 , String description,
+                      String ville, String cursus, String nbCreate, String nbParticipate){
         this.mImageResource = imageResource;
         this.mNom = nom;
         this.mNomToLowerCase = mNom.toLowerCase();

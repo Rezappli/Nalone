@@ -4,6 +4,7 @@ import android.app.Dialog;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -168,6 +169,7 @@ public class RechercheFragment extends Fragment implements CoreListener {
                         mAdapter.setOnItemClickListener(new ItemProfilAdapter.OnItemClickListener() {
                             @Override
                             public void onAddClick(int position) {
+                                Log.w("user", "mAdapter listener " + items.get(position).getmNbCreate());
                                 if (USERS_LIST.get(USER_ID).getDemande_amis_envoye().contains(tempList.get(position).getId() + "")) {
                                     showPopUpProfil(tempList.get(position).getId(), tempList.get(position).getNom(), tempList.get(position).getmDescription(), tempList.get(position).getmNbCreate(), tempList.get(position).getmNbParticipate(), R.drawable.ic_round_hourglass_top_24);
                                 } else if (USERS_LIST.get(USER_ID).getDemande_amis_recu().contains(tempList.get(position).getId() + "")) {
@@ -215,10 +217,11 @@ public class RechercheFragment extends Fragment implements CoreListener {
         nbParticipateProfil = dialogProfil.findViewById(R.id.nbEventParticipe);
         buttonAdd = dialogProfil.findViewById(R.id.buttonAdd);
 
+        Log.w("User", "user creation showPoPUp " + nbCreate);
 
         nameProfil.setText(name);
         descriptionProfil.setText(desc);
-        nbCreateProfil.setText(nbCreate);
+        nbCreateProfil.setText("0");
         nbParticipateProfil.setText(nbParticipate);
         buttonAdd.setImageResource(button);
 
@@ -274,7 +277,7 @@ public class RechercheFragment extends Fragment implements CoreListener {
                         } else {
                             it = new ItemPerson(i, R.drawable.ic_baseline_account_circle_24, u.getPrenom() + " " + u.getNom(), 0, u.getDescription(), u.getVille(), u.getNbCreation(), u.getCursus(), u.getNbParticipation());
                         }
-
+                        Log.w("User", "User creation : " + u.getNbCreation());
                         items.add(it);
                     }
                 }
