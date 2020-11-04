@@ -1,12 +1,15 @@
 package com.example.nalone;
 
 import android.content.Intent;
+import android.location.Address;
+import android.location.Geocoder;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
 
 import com.example.nalone.signUpActivities.SignUpInformationActivity;
+import com.google.android.gms.maps.model.LatLng;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import androidx.annotation.RequiresApi;
@@ -16,8 +19,12 @@ import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
+import java.io.IOException;
+import java.util.List;
+
 import static com.example.nalone.util.Constants.USERS_LIST;
 import static com.example.nalone.util.Constants.USER_ID;
+import static com.example.nalone.util.Constants.USER_LATLNG;
 import static com.example.nalone.util.Constants.currentUser;
 
 
@@ -97,6 +104,7 @@ public class HomeActivity extends AppCompatActivity{
             if(u.getMail().equalsIgnoreCase(currentUser.getEmail())){
                 found = true;
                 USER_ID = ""+i;
+                USER_LATLNG = getLocationFromAddress(u.getVille());
                 break;
             }
         }
@@ -126,5 +134,29 @@ public class HomeActivity extends AppCompatActivity{
             startActivity(intent);
         }
 
+    }
+
+    private LatLng getLocationFromAddress(String strAddress) {
+
+        Geocoder coder = new Geocoder(this);
+        List<Address> address;
+        LatLng p1 = null;
+
+        try {
+            // May throw an IOException
+            address = coder.getFromLocationName(strAddress, 5);
+            if (address == null) {
+                return null;
+            }
+
+            Address location = address.get(0);
+            p1 = new LatLng(location.getLatitude(), location.getLongitude() );
+
+        } catch (IOException ex) {
+
+            ex.printStackTrace();
+        }
+
+        return p1;
     }
 }

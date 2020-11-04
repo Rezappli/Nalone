@@ -52,6 +52,8 @@ public class Constants {
 
     public static List<CoreListener> listeners = new ArrayList<>();
 
+    public static LatLng USER_LATLNG;
+
 
     public static final DateFormat formatD = DateFormat.getDateInstance(DateFormat.FULL,
             new Locale("fr", "FR"));

@@ -51,6 +51,7 @@ import static com.example.nalone.util.Constants.EVENTS_LIST;
 import static com.example.nalone.util.Constants.MAPVIEW_BUNDLE_KEY;
 import static com.example.nalone.util.Constants.USERS_LIST;
 import static com.example.nalone.util.Constants.USER_ID;
+import static com.example.nalone.util.Constants.USER_LATLNG;
 
 
 /**
@@ -200,8 +201,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         final List<Evenement> itemEvents = new ArrayList<>();
         mMap = googleMap;
 
-        LatLng laval = getLocationFromAddress(USERS_LIST.get(USER_ID).getVille());
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(laval, 13));
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(USER_LATLNG, 13	));
 
         for(int i = 0; i < EVENTS_LIST.size(); i++){
             MarkerOptions m = new MarkerOptions();
