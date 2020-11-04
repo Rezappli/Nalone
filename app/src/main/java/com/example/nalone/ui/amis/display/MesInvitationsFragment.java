@@ -94,13 +94,16 @@ public class MesInvitationsFragment extends Fragment implements CoreListener {
     }
 
     private void updateItems() {
+        invits.clear();
         for(int i = 0; i < USERS_LIST.size(); i++){
-            User u = USERS_LIST.get(i);
+            User u = USERS_LIST.get(i+"");
             if(u != null) {
-                if (!USER_ID.equalsIgnoreCase(i + "")) { ;
-                    invits.add(new ItemPerson(i, R.drawable.ic_baseline_account_circle_24,
-                            u.getPrenom() + " " + u.getNom(), 0, u.getDescription(),
-                            u.getVille(), u.getCursus(), u.getNbCreation(), u.getNbParticipation()));
+                if (!USER_ID.equalsIgnoreCase(i + "")) {
+                    if(USERS_LIST.get(USER_ID).getDemande_amis_recu().contains(i+"")) {
+                        invits.add(new ItemPerson(i, R.drawable.ic_baseline_account_circle_24,
+                                u.getPrenom() + " " + u.getNom(), 0, u.getDescription(),
+                                u.getVille(), u.getCursus(), u.getNbCreation(), u.getNbParticipation()));
+                    }
                 }
             }
         }
@@ -141,27 +144,27 @@ public class MesInvitationsFragment extends Fragment implements CoreListener {
         }
 
         if(USERS_LIST.get(USER_ID).getDemande_amis_envoye().size() == 1) {
-            USERS_LIST.get(USER_ID).getDemande_amis_envoye().set(0, " ");
+            USERS_LIST.get(USER_ID).getDemande_amis_envoye().set(0, "");
         }else{
             USERS_LIST.get(USER_ID).getDemande_amis_envoye().remove(id);
         }
 
         if(USERS_LIST.get(USER_ID).getDemande_amis_recu().size() == 1) {
-            USERS_LIST.get(USER_ID).getDemande_amis_recu().set(0, " ");
+            USERS_LIST.get(USER_ID).getDemande_amis_recu().set(0, "");
         }else{
             USERS_LIST.get(USER_ID).getDemande_amis_recu().remove(id);
         }
 
         if(USERS_LIST.get(id+"").getDemande_amis_envoye().size() == 1) {
-            USERS_LIST.get(id+"").getDemande_amis_envoye().set(0, " ");
+            USERS_LIST.get(id+"").getDemande_amis_envoye().set(0, "");
         }else{
-            USERS_LIST.get(id+"").getDemande_amis_envoye().remove(Integer.parseInt(USER_ID));
+            USERS_LIST.get(id+"").getDemande_amis_envoye().remove(USER_ID);
         }
 
         if(USERS_LIST.get(id+"").getDemande_amis_recu().size() == 1) {
-            USERS_LIST.get(id+"").getDemande_amis_recu().set(0, " ");
+            USERS_LIST.get(id+"").getDemande_amis_recu().set(0, "");
         }else{
-            USERS_LIST.get(id+"").getDemande_amis_recu().remove(Integer.parseInt(USER_ID));
+            USERS_LIST.get(id+"").getDemande_amis_recu().remove(USER_ID);
         }
 
         USERS_DB_REF.setValue(USERS_LIST);

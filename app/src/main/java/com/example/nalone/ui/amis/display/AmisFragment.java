@@ -189,15 +189,15 @@ public class AmisFragment extends Fragment implements CoreListener{
 
     private void removeFriend(int id) {
         if(USERS_LIST.get(USER_ID).getAmis().size() == 1) {
-            USERS_LIST.get(USER_ID).getAmis().set(0, " ");
+            USERS_LIST.get(USER_ID).getAmis().set(0, "");
         }else{
             USERS_LIST.get(USER_ID).getAmis().remove(id);
         }
 
-        if(USERS_LIST.get(id).getAmis().size() == 1) {
-            USERS_LIST.get(id).getAmis().set(0, " ");
+        if(USERS_LIST.get(id+"").getAmis().size() == 1) {
+            USERS_LIST.get(id+"").getAmis().set(0, "");
         }else{
-            USERS_LIST.get(id).getAmis().remove(USER_ID);
+            USERS_LIST.get(id+"").getAmis().remove(USER_ID);
         }
 
         USERS_DB_REF.setValue(USERS_LIST);
