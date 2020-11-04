@@ -1,18 +1,15 @@
 package com.example.nalone.Adapter;
 
-import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.nalone.ItemFiltre;
-import com.example.nalone.ItemPerson;
+import com.example.nalone.items.ItemFiltre;
 import com.example.nalone.R;
 
 import java.util.List;

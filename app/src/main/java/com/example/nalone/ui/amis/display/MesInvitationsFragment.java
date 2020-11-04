@@ -6,17 +6,15 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.example.nalone.Adapter.ItemInvitAmisAdapter;
-import com.example.nalone.Adapter.ItemListAmisAdapter;
 import com.example.nalone.CoreListener;
 import com.example.nalone.CustomToast;
-import com.example.nalone.ItemPerson;
+import com.example.nalone.items.ItemPerson;
 import com.example.nalone.R;
 import com.example.nalone.User;
 

@@ -1,4 +1,4 @@
-package com.example.nalone;
+package com.example.nalone.signUpActivities;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -16,6 +16,9 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
+import com.example.nalone.ErrorClass;
+import com.example.nalone.MainActivity;
+import com.example.nalone.R;
 import com.example.nalone.util.Constants;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.database.DataSnapshot;

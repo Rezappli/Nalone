@@ -1,4 +1,4 @@
-package com.example.nalone;
+package com.example.nalone.signUpActivities;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
@@ -14,6 +14,10 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.nalone.ErrorClass;
+import com.example.nalone.MainActivity;
+import com.example.nalone.R;
+import com.example.nalone.User;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 

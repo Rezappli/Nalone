@@ -1,4 +1,4 @@
-package com.example.nalone;
+package com.example.nalone.signUpActivities;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
@@ -9,6 +9,9 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
+
+import com.example.nalone.ErrorClass;
+import com.example.nalone.R;
 
 import java.util.ArrayList;
 import java.util.List;

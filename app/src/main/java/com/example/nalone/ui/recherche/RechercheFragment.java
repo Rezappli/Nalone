@@ -4,7 +4,6 @@ import android.app.Dialog;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,14 +21,13 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.nalone.Adapter.ItemFiltreAdapter;
 import com.example.nalone.CoreListener;
 import com.example.nalone.CustomToast;
-import com.example.nalone.ItemFiltre;
-import com.example.nalone.ItemPerson;
+import com.example.nalone.items.ItemFiltre;
+import com.example.nalone.items.ItemPerson;
 import com.example.nalone.Adapter.ItemProfilAdapter;
 import com.example.nalone.R;
 import com.example.nalone.User;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import static com.example.nalone.util.Constants.USERS_DB_REF;

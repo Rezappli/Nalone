@@ -1,10 +1,9 @@
 package com.example.nalone;
 
+import com.example.nalone.items.ItemPerson;
 import com.example.nalone.util.Constants;
-import com.google.android.gms.maps.model.LatLng;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 

@@ -49,19 +49,19 @@
             android:name=".ErrorConnexionActivity"
             android:theme="@style/Theme.AppCompat.DayNight.NoActionBar" />
         <activity
-            android:name=".SignUpStudiesActivity"
+            android:name=".signUpActivities.SignUpStudiesActivity"
             android:theme="@style/Theme.AppCompat.DayNight.NoActionBar" />
         <activity
             android:name=".HomeActivity"
             android:label="@string/title_activity_home" />
         <activity
-            android:name=".SignUpProfilActivity"
+            android:name=".signUpActivities.SignUpProfilActivity"
             android:theme="@style/Theme.AppCompat.DayNight.NoActionBar" />
         <activity
-            android:name=".SignUpHobbiesActivity"
+            android:name=".signUpActivities.SignUpHobbiesActivity"
             android:theme="@style/Theme.AppCompat.DayNight.NoActionBar" />
         <activity
-            android:name=".SignUpInformationActivity"
+            android:name=".signUpActivities.SignUpInformationActivity"
             android:theme="@style/Theme.AppCompat.DayNight.NoActionBar" />
         <activity android:name=".ui.message.ChatActivity"
             android:theme="@style/Theme.AppCompat.DayNight.NoActionBar"/>

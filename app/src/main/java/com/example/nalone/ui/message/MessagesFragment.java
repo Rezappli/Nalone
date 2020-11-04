@@ -11,24 +11,15 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.nalone.Adapter.ItemMessageAdapter;
-import com.example.nalone.ItemPerson;
+import com.example.nalone.items.ItemPerson;
 import com.example.nalone.R;
-import com.example.nalone.util.Constants;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-
-import static com.example.nalone.util.Constants.currentUser;
 
 
 public class MessagesFragment extends Fragment  {

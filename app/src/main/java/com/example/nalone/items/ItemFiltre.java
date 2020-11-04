@@ -1,4 +1,6 @@
-package com.example.nalone;
+package com.example.nalone.items;
+
+import com.example.nalone.R;
 
 public class ItemFiltre {
 

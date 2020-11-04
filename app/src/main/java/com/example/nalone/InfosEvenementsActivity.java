@@ -10,6 +10,7 @@ import android.util.Log;
 import android.widget.TextView;
 
 import com.example.nalone.Adapter.ItemImagePersonAdapter;
+import com.example.nalone.items.ItemImagePerson;
 import com.example.nalone.util.Constants;
 import com.google.android.gms.maps.model.Marker;
 import com.google.firebase.database.DataSnapshot;

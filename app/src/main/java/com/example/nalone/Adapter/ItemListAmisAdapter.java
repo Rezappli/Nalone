@@ -1,6 +1,5 @@
 package com.example.nalone.Adapter;
 
-import android.graphics.drawable.Drawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,7 +10,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.nalone.ItemPerson;
+import com.example.nalone.items.ItemPerson;
 import com.example.nalone.R;
 
 import java.util.List;

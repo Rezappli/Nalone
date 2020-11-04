@@ -11,11 +11,8 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.nalone.ItemPerson;
-import com.example.nalone.MainActivity;
+import com.example.nalone.items.ItemPerson;
 import com.example.nalone.R;
-
-import org.w3c.dom.Text;
 
 import java.util.List;
 

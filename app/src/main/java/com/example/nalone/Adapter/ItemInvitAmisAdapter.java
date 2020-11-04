@@ -9,10 +9,9 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.nalone.ItemPerson;
+import com.example.nalone.items.ItemPerson;
 import com.example.nalone.R;
 
-import java.text.BreakIterator;
 import java.util.List;
 
 public class ItemInvitAmisAdapter extends RecyclerView.Adapter<ItemInvitAmisAdapter.ItemInvitViewHolder> {
