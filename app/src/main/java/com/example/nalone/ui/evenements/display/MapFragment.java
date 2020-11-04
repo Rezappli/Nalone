@@ -49,6 +49,7 @@ import java.util.List;
 
 import static com.example.nalone.util.Constants.EVENTS_LIST;
 import static com.example.nalone.util.Constants.MAPVIEW_BUNDLE_KEY;
+import static com.example.nalone.util.Constants.USERS_LIST;
 import static com.example.nalone.util.Constants.USER_ID;
 
 
@@ -199,7 +200,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         final List<Evenement> itemEvents = new ArrayList<>();
         mMap = googleMap;
 
-        LatLng laval = new LatLng(48.0785146,-0.7669906);
+        LatLng laval = getLocationFromAddress(USERS_LIST.get(USER_ID).getVille());
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(laval, 13	));
 
         for(int i = 0; i < EVENTS_LIST.size(); i++){
@@ -239,9 +240,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
             @Override
             public boolean onMarkerClick(Marker marker) {
-                /*ViewGroup.MarginLayoutParams marginLayoutParams = new ViewGroup.MarginLayoutParams(mRecyclerViewEvent.getLayoutParams());
-                marginLayoutParams.setMargins(0, 0, 0, 60);
-                mRecyclerViewEvent.setLayoutParams(marginLayoutParams);*/
                 mRecyclerViewEvent.setPadding(0,0,0,60);
                 return false;
             }
@@ -266,6 +264,8 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         mAdapterEvent.setOnItemClickListener(new ItemEventAdapter.OnItemClickListener() {
             @Override
             public void onAddClick(int position) {
+                mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(getLocationFromAddress(itemEvents.get(position)
+                .getAdresse()+","+itemEvents.get(position).getVille()), 13	));
             }
         });
 

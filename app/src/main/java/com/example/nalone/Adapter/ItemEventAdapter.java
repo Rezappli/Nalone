@@ -11,6 +11,9 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.nalone.Evenement;
 import com.example.nalone.R;
+import com.example.nalone.User;
+
+import static com.example.nalone.util.Constants.USERS_LIST;
 
 import java.util.List;
 
@@ -82,7 +85,7 @@ public class ItemEventAdapter extends RecyclerView.Adapter<ItemEventAdapter.Item
         holder.mTime.setText((currentItem.getTime()));
         holder.mVille.setText((currentItem.getVille()));
         holder.mDescription.setText((currentItem.getDescription()));
-        holder.mProprietaire.setText((currentItem.getProprietaire()));
+        holder.mProprietaire.setText((USERS_LIST.get(currentItem.getProprietaire()).getPrenom()+" " + USERS_LIST.get(currentItem.getProprietaire()).getNom()));
 
     }
 
