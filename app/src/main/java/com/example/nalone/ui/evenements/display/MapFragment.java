@@ -201,7 +201,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         mMap = googleMap;
 
         LatLng laval = getLocationFromAddress(USERS_LIST.get(USER_ID).getVille());
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(laval, 13	));
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(laval, 13));
 
         for(int i = 0; i < EVENTS_LIST.size(); i++){
             MarkerOptions m = new MarkerOptions();

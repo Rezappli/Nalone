@@ -25,12 +25,13 @@ public class SignUpInformationActivity extends AppCompatActivity {
     public EditText nom;
     public EditText prenom;
     public EditText ville;
-    public EditText adresse;
-    public EditText date;
     public EditText numero;
     public EditText adresseMail;
     public EditText pass;
     public EditText confirmPass;
+
+    public static String password;
+
     CardView homme;
     CardView femme;
     ImageView imageH;
@@ -60,8 +61,6 @@ public class SignUpInformationActivity extends AppCompatActivity {
         nom =  (EditText) findViewById(R.id.signupNom);
         prenom = (EditText)  findViewById(R.id.signupPrenom);
         ville = (EditText)  findViewById(R.id.signupVille);
-        adresse = (EditText) findViewById(R.id.signupAdress);
-        date = (EditText)  findViewById(R.id.signupDate);
         numero = (EditText)  findViewById(R.id.signupNumero);
         adresseMail = (EditText) findViewById(R.id.signupMail);
         pass =  (EditText) findViewById(R.id.signupPass);
@@ -117,9 +116,7 @@ public class SignUpInformationActivity extends AppCompatActivity {
                 String nomEntre = nom.getText().toString();
                 String prenomEntre = prenom.getText().toString();
                 String villeEntre = ville.getText().toString();
-                String adresseEntre = adresse.getText().toString();
                 String numeroEntre = numero.getText().toString();
-                String dateEntre = date.getText().toString();
                 String mailEntre = adresseMail.getText().toString();
                 String passEntre = pass.getText().toString();
                 String confirmPassEntre = confirmPass.getText().toString();
@@ -146,18 +143,8 @@ public class SignUpInformationActivity extends AppCompatActivity {
                     return;
                 }
 
-                if (dateEntre.matches("")){
-                    date.setError("Entrez votre date de naissance",customErrorDrawable);
-                    return;
-                }
-
                 if (villeEntre.matches("")){
                     ville.setError("Entrez votre ville",customErrorDrawable);
-                    return;
-                }
-
-                if (adresseEntre.matches("")){
-                    adresse.setError("Entrez votre adresse",customErrorDrawable);
                     return;
                 }
 
@@ -177,7 +164,7 @@ public class SignUpInformationActivity extends AppCompatActivity {
                 }
 
                 if(passEntre.contains(confirmPassEntre)){
-
+                    password = confirmPassEntre;
                 }else{
                     confirmPass.setError("Le mot de passe ne correspond pas",customErrorDrawable);
                     return;
@@ -192,8 +179,8 @@ public class SignUpInformationActivity extends AppCompatActivity {
                   sexe = "Femme";
               }
 
-                //user = new User(sexe, nomEntre, prenomEntre, villeEntre, adresseEntre, dateEntre, numeroEntre, mailEntre, passEntre, null, null, null);
-                System.out.println(SignUpInformationActivity.user.getMail());
+                user = new User(nomEntre, prenomEntre, sexe, villeEntre, numeroEntre, mailEntre, null,
+                        null, "");
                 Intent signUpStudy = new Intent(getBaseContext(), SignUpStudiesActivity.class);
                 startActivityForResult(signUpStudy, 0);
 

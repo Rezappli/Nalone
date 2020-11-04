@@ -90,12 +90,8 @@ public class GroupeFragment extends Fragment implements CoreListener {
         sign_out.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                switch (v.getId()) {
-                    // ...
-                    case R.id.sign_out:
-                        signOut();
-                        break;
-                    // ...
+                if (v.getId() == R.id.sign_out) {
+                    signOut();
                 }
             }
         });

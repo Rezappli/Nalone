@@ -1,5 +1,6 @@
 package com.example.nalone.signUpActivities;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.AlertDialog;
@@ -20,11 +21,20 @@ import com.example.nalone.ErrorClass;
 import com.example.nalone.MainActivity;
 import com.example.nalone.R;
 import com.example.nalone.util.Constants;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.textfield.TextInputEditText;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
+
+import static com.example.nalone.util.Constants.USERS_DB_REF;
+import static com.example.nalone.util.Constants.USERS_LIST;
+import static com.example.nalone.util.Constants.mAuth;
 
 import java.io.FileNotFoundException;
 import java.io.InputStream;
@@ -137,60 +147,49 @@ public class SignUpProfilActivity extends AppCompatActivity {
         signUpDescriptionEnter = signUpDescription.getText().toString();
         SignUpInformationActivity.user.setDescription(signUpDescriptionEnter);
 
-
         ErrorClass.checkInternetConnection();
 
-        DatabaseReference user = Constants.mFirebase.getReference("users/" + id_users);
-        user.setValue(SignUpInformationActivity.user);
+        signInUser(SignUpInformationActivity.user.getMail(), SignUpInformationActivity.password);
 
-        /*DatabaseReference nom = Constants.firebaseDatabase.getReference("users/" +id_users + "/nom");
-        nom.setValue(SignUpInformationActivity.userData.getNom());
+        USERS_LIST.put(USERS_LIST.size()+"", SignUpInformationActivity.user);
 
-        DatabaseReference prenom = Constants.firebaseDatabase.getReference("users/"+ id_users + "/prenom");
-        prenom.setValue(SignUpInformationActivity.userData.getPrenom());
+        USERS_DB_REF.setValue(USERS_LIST);
 
-        DatabaseReference sexe = Constants.firebaseDatabase.getReference("users/"+id_users + "/sexe");
-        sexe.setValue(SignUpInformationActivity.userData.getSexe());
-
-        DatabaseReference ville = Constants.firebaseDatabase.getReference("users/"+id_users + "/ville");
-        ville.setValue(SignUpInformationActivity.userData.getVille());
-
-        DatabaseReference adresse = Constants.firebaseDatabase.getReference("users/"+id_users + "/adresse");
-        adresse.setValue(SignUpInformationActivity.userData.getAdresse());
-
-        DatabaseReference date = Constants.firebaseDatabase.getReference("users/"+id_users + "/date");
-        date.setValue(SignUpInformationActivity.userData.getDate());
-
-        DatabaseReference numero = Constants.firebaseDatabase.getReference("users/"+id_users + "/numero");
-        numero.setValue(SignUpInformationActivity.userData.getNumero());
-
-        DatabaseReference cursus = Constants.firebaseDatabase.getReference("users/"+id_users +  "/cursus");
-        cursus.setValue(SignUpInformationActivity.userData.getCursus());
-
-        DatabaseReference interets = Constants.firebaseDatabase.getReference("users/"+id_users + "/interets");
-        interets.setValue(SignUpInformationActivity.userData.getCentreInterets());
-
-        DatabaseReference description = Constants.firebaseDatabase.getReference("users/"+id_users + "/description");
-        description.setValue(SignUpInformationActivity.userData.getDescription());
-
-        DatabaseReference nbCreate = Constants.firebaseDatabase.getReference("users/"+id_users + "/nombre_creation");
-        nbCreate.setValue(SignUpInformationActivity.userData.getNbCreate());
-
-        DatabaseReference nbParticipate = Constants.firebaseDatabase.getReference("users/"+id_users + "/nombre_participation");
-        nbParticipate.setValue(SignUpInformationActivity.userData.getNbParticipate());
-
-        DatabaseReference photo_profil = Constants.firebaseDatabase.getReference("users/"+id_users + "/photo_profil");
-        photo_profil.setValue(""+Constants.getBytesFromBitmap(selectedImage));*/
-
-        DatabaseReference id_users_ref = Constants.mFirebase.getReference("id_users");
-        int id_users_int = Integer.parseInt(id_users);
-        id_users_int++;
-        String s = id_users_int + "";
-        id_users_ref.setValue(s);
+        Toast.makeText(this, "Bienvenue dans NoLonely !", Toast.LENGTH_SHORT).show();
 
         Intent welcomeIntent = new Intent(getBaseContext(), MainActivity.class);
         startActivityForResult(welcomeIntent,0);
-        Toast.makeText(getApplicationContext(), "Bienvenue dans NoLonely !", Toast.LENGTH_SHORT).show();
+    }
+
+    private void signInUser(String mail, String pass){
+        mAuth.createUserWithEmailAndPassword(mail, pass)
+                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+                        if (task.isSuccessful()) {
+                            FirebaseUser user = mAuth.getCurrentUser();
+                            sendVerificationEmail();
+                        } else {
+                            Toast.makeText(SignUpProfilActivity.this, "Authentication failed.",
+                                    Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
+    }
+
+    private void sendVerificationEmail() {
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        user.sendEmailVerification()
+                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        if (task.isSuccessful()) {
+                            Toast.makeText(SignUpProfilActivity.this, "Veuillez vérifiez votre adresse mail !",
+                                    Toast.LENGTH_SHORT).show();
+                        }
+
+                    }
+                });
     }
 
 

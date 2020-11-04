@@ -68,9 +68,9 @@ public class User {
         this.demande_amis_recu = new ArrayList<>();
         this.amis = new ArrayList<>();
 
-        amis.add("-1");
-        demande_amis_recu.add("-1");
-        demande_amis_envoye.add("-1");
+        amis.add(" ");
+        demande_amis_recu.add(" ");
+        demande_amis_envoye.add(" ");
     }
 
     public String getNom() {

@@ -102,7 +102,7 @@ public class SignUpHobbiesActivity extends AppCompatActivity {
             public void onClick(View view) {
 
                 if(nbCi == 0){
-                    Toast.makeText(getApplicationContext(), "Selectionnez au moins 1 centre d'intérêt", Toast.LENGTH_LONG).show();
+                    Toast.makeText(getApplicationContext(), "Séléctionnez au moins 1 centre d'intérêt", Toast.LENGTH_LONG).show();
                     return;
                 }
 
