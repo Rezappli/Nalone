@@ -229,7 +229,7 @@ public class AmisFragment extends Fragment implements CoreListener{
         mAdapter.setOnItemClickListener(new ItemListAmisAdapter.OnItemClickListener() {
             @Override
             public void onAddClick(int position) {
-                showPopUpProfil(items.get(position).getNom(), items.get(position).getmDescription(), items.get(position).getmNbCreate(), items.get(position).getmNbParticipate());
+                showPopUpProfil(items.get(position).getNom(), items.get(position).getmDescription(), items.get(position).getmNbCreate(), items.get(position).getmNbParticipate(), items.get(position).getCentresInterets());
             }
 
             @Override
@@ -240,7 +240,7 @@ public class AmisFragment extends Fragment implements CoreListener{
 
     }
 
-    public void showPopUpProfil(String name, String desc, String nbCreate, String nbParticipate) {
+    public void showPopUpProfil(String name, String desc, String nbCreate, String nbParticipate, List<String> centresInteret) {
 
         TextView nameProfil;
         TextView descriptionProfil;
@@ -254,6 +254,45 @@ public class AmisFragment extends Fragment implements CoreListener{
         nbCreateProfil = dialogProfil.findViewById(R.id.nbEventCreate);
         nbParticipateProfil = dialogProfil.findViewById(R.id.nbEventParticipe);
         buttonAdd = dialogProfil.findViewById(R.id.buttonAdd);
+
+        List<ImageView> imageCentreInteret = new ArrayList<>();
+
+        ImageView img_centre1 = dialogProfil.findViewById(R.id.imageViewCI1);
+        ImageView img_centre2 = dialogProfil.findViewById(R.id.imageViewCI2);
+        ImageView img_centre3 = dialogProfil.findViewById(R.id.imageViewCI3);
+        ImageView img_centre4 = dialogProfil.findViewById(R.id.imageViewCI4);
+        ImageView img_centre5 = dialogProfil.findViewById(R.id.imageViewCI5);
+
+        imageCentreInteret.add(img_centre1);
+        imageCentreInteret.add(img_centre2);
+        imageCentreInteret.add(img_centre3);
+        imageCentreInteret.add(img_centre4);
+        imageCentreInteret.add(img_centre5);
+
+        for(int i = 0; i < centresInteret.size(); i++){
+            int imgResource = 0;
+            if(centresInteret.get(i).toString().equalsIgnoreCase("programmation")){
+                imgResource = R.drawable.ci_programmation;
+            }else if(centresInteret.get(i).toString().equalsIgnoreCase("musique")){
+                imgResource = R.drawable.ci_musique;
+            }else if(centresInteret.get(i).toString().equalsIgnoreCase("livre")){
+                imgResource = R.drawable.ci_livre;
+            }else if(centresInteret.get(i).toString().equalsIgnoreCase("film")){
+                imgResource = R.drawable.ci_film;
+            }else if(centresInteret.get(i).toString().equalsIgnoreCase("video")){
+                imgResource = R.drawable.ci_jeuxvideo;
+            }else if(centresInteret.get(i).toString().equalsIgnoreCase("peinture")){
+                imgResource = R.drawable.ci_peinture;
+            }else if(centresInteret.get(i).toString().equalsIgnoreCase("photo")){
+                imgResource = R.drawable.ci_photo;
+            }else if(centresInteret.get(i).toString().equalsIgnoreCase("sport")){
+                imgResource = R.drawable.ci_sport;
+            }
+
+            imageCentreInteret.get(i).setImageResource(imgResource);
+            imageCentreInteret.get(i).setVisibility(View.VISIBLE);
+
+        }
 
 
         nameProfil.setText(name);

@@ -17,13 +17,13 @@ public class ItemPerson {
     private String mDescription;
     private String mVille;
     private String cursus;
-    private List<String> centresInterets = new ArrayList<>();
+    private List<String> centresInterets;
     private int mImageResource2;
-    private String mNbCreate = 0+"";
-    private String mNbParticipate = 0+"";
+    private String mNbCreate;
+    private String mNbParticipate;
 
 
-    public ItemPerson(int id, int imageResource, String nom, int imageResource2 , String description, String ville, String cursus, String nbCreate, String nbParticipate, List centresInterets){
+    public ItemPerson(int id, int imageResource, String nom, int imageResource2 , String description, String ville, String cursus, String nbCreate, String nbParticipate, List<String> centresInterets){
         this.mImageResource = imageResource;
         this.mNom = nom;
         this.mNomToLowerCase = mNom.toLowerCase();
