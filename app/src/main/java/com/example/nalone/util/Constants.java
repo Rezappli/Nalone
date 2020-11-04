@@ -5,6 +5,7 @@ import android.util.Log;
 
 import androidx.annotation.NonNull;
 
+import com.example.nalone.CoreListener;
 import com.example.nalone.Evenement;
 import com.example.nalone.User;
 import com.google.android.gms.maps.model.LatLng;
@@ -46,6 +47,11 @@ public class Constants {
 
     public static int widthScreen;
     public static int heightScreen;
+
+    public static boolean load = false;
+
+    public static List<CoreListener> listeners = new ArrayList<>();
+
 
     public static final DateFormat formatD = DateFormat.getDateInstance(DateFormat.FULL,
             new Locale("fr", "FR"));

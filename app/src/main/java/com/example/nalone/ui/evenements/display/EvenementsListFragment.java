@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.example.nalone.CoreListener;
 import com.example.nalone.R;
 
 /**
@@ -15,7 +16,7 @@ import com.example.nalone.R;
  * Use the {@link EvenementsListFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class EvenementsListFragment extends Fragment {
+public class EvenementsListFragment extends Fragment implements CoreListener {
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -62,5 +63,10 @@ public class EvenementsListFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_evenements_list, container, false);
+    }
+
+    @Override
+    public void onDataChangeListener() {
+        //updateItems();
     }
 }

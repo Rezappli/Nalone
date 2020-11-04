@@ -20,17 +20,13 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.nalone.Adapter.ItemFiltreAdapter;
+import com.example.nalone.CoreListener;
 import com.example.nalone.CustomToast;
 import com.example.nalone.ItemFiltre;
 import com.example.nalone.ItemPerson;
 import com.example.nalone.Adapter.ItemProfilAdapter;
 import com.example.nalone.R;
 import com.example.nalone.User;
-import com.example.nalone.util.Constants;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -41,10 +37,10 @@ import static com.example.nalone.util.Constants.USERS_LIST;
 import static com.example.nalone.util.Constants.USER_ID;
 import static com.example.nalone.util.Constants.currentUser;
 import static com.example.nalone.util.Constants.heightScreen;
-import static com.example.nalone.util.Constants.mFirebase;
+import static com.example.nalone.util.Constants.listeners;
 import static com.example.nalone.util.Constants.widthScreen;
 
-public class RechercheFragment extends Fragment {
+public class RechercheFragment extends Fragment implements CoreListener {
 
 
     private RechercheViewModel rechercheViewModel;
@@ -63,13 +59,11 @@ public class RechercheFragment extends Fragment {
     private final List<ItemPerson> items = new ArrayList<>();
     private final List<ItemFiltre> filtres = new ArrayList<>();
     private View rootView;
-    private String amis_envoye = "";
-    private String amis_recu = "";
 
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-
+        listeners.add(this);
         rechercheViewModel =
                 ViewModelProviders.of(this).get(RechercheViewModel.class);
         rootView = inflater.inflate(R.layout.fragment_recherche, container, false);
@@ -94,6 +88,7 @@ public class RechercheFragment extends Fragment {
         mRecyclerViewFiltre.setLayoutManager(mLayoutManagerFiltre);
         mRecyclerViewFiltre.setAdapter(mAdapterFiltre);
 
+        updateItems();
 
         search_bar.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -158,9 +153,9 @@ public class RechercheFragment extends Fragment {
                         mAdapter.setOnItemClickListener(new ItemProfilAdapter.OnItemClickListener() {
                             @Override
                             public void onAddClick(int position) {
-                                if (amis_envoye.contains(tempList.get(position).getId() + "")) {
+                                if (USERS_LIST.get(USER_ID).getDemande_amis_envoye().contains(tempList.get(position).getId() + "")) {
                                     showPopUpProfil(tempList.get(position).getId(), tempList.get(position).getNom(), tempList.get(position).getmDescription(), tempList.get(position).getmNbCreate(), tempList.get(position).getmNbParticipate(), R.drawable.ic_round_hourglass_top_24);
-                                } else if (amis_recu.contains(tempList.get(position).getId() + "")) {
+                                } else if (USERS_LIST.get(USER_ID).getDemande_amis_recu().contains(tempList.get(position).getId() + "")) {
                                     showPopUpProfil(tempList.get(position).getId(), tempList.get(position).getNom(), tempList.get(position).getmDescription(), tempList.get(position).getmNbCreate(), tempList.get(position).getmNbParticipate(), R.drawable.ic_round_mail_24);
                                 } else {
                                     showPopUpProfil(tempList.get(position).getId(), tempList.get(position).getNom(), tempList.get(position).getmDescription(), tempList.get(position).getmNbCreate(), tempList.get(position).getmNbParticipate(), R.drawable.ic_baseline_add_circle_outline_24);
@@ -176,12 +171,12 @@ public class RechercheFragment extends Fragment {
                         mAdapter.setOnItemClickListener(new ItemProfilAdapter.OnItemClickListener() {
                             @Override
                             public void onAddClick(int position) {
-                                if (amis_envoye.contains(items.get(position).getId() + "")) {
-                                    showPopUpProfil(items.get(position).getId(), items.get(position).getNom(), items.get(position).getmDescription(), items.get(position).getmNbCreate(), items.get(position).getmNbParticipate(), R.drawable.ic_round_hourglass_top_24);
-                                } else if (amis_recu.contains(items.get(position).getId() + "")) {
-                                    showPopUpProfil(items.get(position).getId(), items.get(position).getNom(), items.get(position).getmDescription(), items.get(position).getmNbCreate(), items.get(position).getmNbParticipate(), R.drawable.ic_round_mail_24);
+                                if (USERS_LIST.get(USER_ID).getDemande_amis_envoye().contains(tempList.get(position).getId() + "")) {
+                                    showPopUpProfil(tempList.get(position).getId(), tempList.get(position).getNom(), tempList.get(position).getmDescription(), tempList.get(position).getmNbCreate(), tempList.get(position).getmNbParticipate(), R.drawable.ic_round_hourglass_top_24);
+                                } else if (USERS_LIST.get(USER_ID).getDemande_amis_recu().contains(tempList.get(position).getId() + "")) {
+                                    showPopUpProfil(tempList.get(position).getId(), tempList.get(position).getNom(), tempList.get(position).getmDescription(), tempList.get(position).getmNbCreate(), tempList.get(position).getmNbParticipate(), R.drawable.ic_round_mail_24);
                                 } else {
-                                    showPopUpProfil(items.get(position).getId(), items.get(position).getNom(), items.get(position).getmDescription(), items.get(position).getmNbCreate(), items.get(position).getmNbParticipate(), R.drawable.ic_baseline_add_circle_outline_24);
+                                    showPopUpProfil(tempList.get(position).getId(), tempList.get(position).getNom(), tempList.get(position).getmDescription(), tempList.get(position).getmNbCreate(), tempList.get(position).getmNbParticipate(), R.drawable.ic_baseline_add_circle_outline_24);
                                 }
 
 
@@ -244,6 +239,7 @@ public class RechercheFragment extends Fragment {
                     CustomToast t = new CustomToast(getContext(), "Votre demande d'amis est en attente !", false, true);
                     t.show();
                 } else {
+                    Toast.makeText(getContext(), "Vous avez envoyé une demande d'amis !", Toast.LENGTH_SHORT).show();
                     addFriend(""+id);
                 }
             }
@@ -256,8 +252,8 @@ public class RechercheFragment extends Fragment {
     }
 
     public void addFriend(final String id) {
-        USERS_LIST.get(USER_ID).getDemande_amis_envoye().add(id);
-        USERS_LIST.get(id).getDemande_amis_recu().add(USER_ID);
+        USERS_LIST.get(USER_ID).getDemande_amis_envoye().add(id+"");
+        USERS_LIST.get(id).getDemande_amis_recu().add(USER_ID+"");
 
         USERS_DB_REF.setValue(USERS_LIST);
 
@@ -267,21 +263,23 @@ public class RechercheFragment extends Fragment {
     }
 
     public void updateItems() {
+        items.clear();
         for(int i = 0; i < USERS_LIST.size(); i++){
-            User u = USERS_LIST.get(i);
-            String s = ""+i;
-            if(!s.equalsIgnoreCase(USER_ID)){
-                if(!USERS_LIST.get(USER_ID).getAmis().contains(s)){
-                    ItemPerson it;
-                    if (amis_envoye.contains(s)) {
-                        it = new ItemPerson(i, R.drawable.ic_baseline_account_circle_24,  u.getPrenom() + " " + u.getNom(), R.drawable.ic_round_hourglass_top_24, u.getDescription(), u.getVille(), u.getCursus(), u.getNbCreation(), u.getNbParticipation());
-                    } else if (amis_recu.contains(s)) {
-                        it = new ItemPerson(i, R.drawable.ic_baseline_account_circle_24, u.getPrenom() + " " + u.getNom(), R.drawable.ic_round_mail_24, u.getDescription(), u.getVille(), u.getNbCreation(), u.getCursus(),u.getNbParticipation());
-                    } else {
-                        it = new ItemPerson(i, R.drawable.ic_baseline_account_circle_24, u.getPrenom() + " " + u.getNom(), 0, u.getDescription(), u.getVille(), u.getNbCreation(), u.getCursus(), u.getNbParticipation());
-                    }
+            User u = USERS_LIST.get(i+"");
+            if(u != null) {
+                if (!USER_ID.equalsIgnoreCase(i + "")) {
+                    if (!USERS_LIST.get(USER_ID).getAmis().contains(i+"")) {
+                        ItemPerson it;
+                        if (USERS_LIST.get(USER_ID).getDemande_amis_envoye().contains(i+"")) {
+                            it = new ItemPerson(i, R.drawable.ic_baseline_account_circle_24, u.getPrenom() + " " + u.getNom(), R.drawable.ic_round_hourglass_top_24, u.getDescription(), u.getVille(), u.getCursus(), u.getNbCreation(), u.getNbParticipation());
+                        } else if (USERS_LIST.get(USER_ID).getDemande_amis_recu().contains(i+"")) {
+                            it = new ItemPerson(i, R.drawable.ic_baseline_account_circle_24, u.getPrenom() + " " + u.getNom(), R.drawable.ic_round_mail_24, u.getDescription(), u.getVille(), u.getNbCreation(), u.getCursus(), u.getNbParticipation());
+                        } else {
+                            it = new ItemPerson(i, R.drawable.ic_baseline_account_circle_24, u.getPrenom() + " " + u.getNom(), 0, u.getDescription(), u.getVille(), u.getNbCreation(), u.getCursus(), u.getNbParticipation());
+                        }
 
-                    items.add(it);
+                        items.add(it);
+                    }
                 }
             }
         }
@@ -291,8 +289,29 @@ public class RechercheFragment extends Fragment {
         mLayoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL,
                 false);
 
+
         mRecyclerView.setLayoutManager(mLayoutManager);
+
+        mAdapter.setOnItemClickListener(new ItemProfilAdapter.OnItemClickListener() {
+            @Override
+            public void onAddClick(int position) {
+                if (USERS_LIST.get(USER_ID).getDemande_amis_envoye().contains(items.get(position).getId() + "")) {
+                    showPopUpProfil(items.get(position).getId(), items.get(position).getNom(), items.get(position).getmDescription(), items.get(position).getmNbCreate(), items.get(position).getmNbParticipate(), R.drawable.ic_round_hourglass_top_24);
+                } else if (USERS_LIST.get(USER_ID).getDemande_amis_recu().contains(items.get(position).getId() + "")) {
+                    showPopUpProfil(items.get(position).getId(), items.get(position).getNom(), items.get(position).getmDescription(), items.get(position).getmNbCreate(), items.get(position).getmNbParticipate(), R.drawable.ic_round_mail_24);
+                } else {
+                    showPopUpProfil(items.get(position).getId(), items.get(position).getNom(), items.get(position).getmDescription(), items.get(position).getmNbCreate(), items.get(position).getmNbParticipate(), R.drawable.ic_baseline_add_circle_outline_24);
+                }
+
+
+            }
+        });
         mRecyclerView.setAdapter(mAdapter);
     }
 
+    @Override
+    public void onDataChangeListener() {
+        Log.w("data", "search data change");
+        updateItems();
+    }
 }

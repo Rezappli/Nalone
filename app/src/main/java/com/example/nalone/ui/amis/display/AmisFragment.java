@@ -16,10 +16,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.SearchView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.nalone.Adapter.ItemListAmisAdapter;
+import com.example.nalone.CoreListener;
 import com.example.nalone.ItemPerson;
 import com.example.nalone.R;
 import com.example.nalone.User;
@@ -31,6 +34,7 @@ import static com.example.nalone.util.Constants.USERS_DB_REF;
 import static com.example.nalone.util.Constants.USERS_LIST;
 import static com.example.nalone.util.Constants.USER_ID;
 import static com.example.nalone.util.Constants.heightScreen;
+import static com.example.nalone.util.Constants.listeners;
 import static com.example.nalone.util.Constants.widthScreen;
 
 /**
@@ -38,7 +42,7 @@ import static com.example.nalone.util.Constants.widthScreen;
  * Use the {@link AmisFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class AmisFragment extends Fragment {
+public class AmisFragment extends Fragment implements CoreListener{
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -93,12 +97,15 @@ public class AmisFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-
+        listeners.add(this);
         rootView = inflater.inflate(R.layout.amis_fragment, container, false);
         search_bar = rootView.findViewById(R.id.search_bar_amis);
         resultat = rootView.findViewById(R.id.resultatText_amis);
         resultat.setVisibility(View.GONE);
         dialogProfil = new Dialog(getContext());
+
+        updateItems();
+
 
 
         search_bar.setOnClickListener(new View.OnClickListener() {
@@ -107,8 +114,6 @@ public class AmisFragment extends Fragment {
                 search_bar.onActionViewExpanded();
             }
         });
-
-        updateItems();
 
         search_bar.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
@@ -182,22 +187,34 @@ public class AmisFragment extends Fragment {
         return rootView;
     }
 
-    private void removeFriend(final String id, final String prenom) {
-        USERS_LIST.get(USER_ID).getAmis().remove(id);
+    private void removeFriend(final String id) {
+        Log.w("Amis", "Id : " + id);
+        USERS_LIST.get(USER_ID).getAmis().remove(Integer.parseInt(id));
         USERS_LIST.get(id).getAmis().remove(USER_ID);
 
+        for(int i = 0; i < USERS_LIST.get(USER_ID).getAmis().size(); i++){
+            Log.w("Amis", "Utilisateur :"+USER_ID + " amis : " + USERS_LIST.get(USER_ID).getAmis().get(i));
+        }
+
         USERS_DB_REF.setValue(USERS_LIST);
+
+        Toast.makeText(getContext(), "Vous avez supprimé un amis !", Toast.LENGTH_SHORT).show();
 
         updateItems();
 
     }
 
+
+
     private void updateItems() {
+        items.clear();
         for (int i = 0; i < USERS_LIST.get(USER_ID).getAmis().size(); i++) {
             User u = USERS_LIST.get(USERS_LIST.get(USER_ID).getAmis().get(i));
-            items.add(new ItemPerson(i, R.drawable.ic_baseline_account_circle_24,
-                    u.getPrenom() + " " + u.getNom(), 0, u.getDescription(),
-                    u.getVille(), u.getCursus(), u.getNbCreation(), u.getNbParticipation()));
+            if(u != null) {
+                items.add(new ItemPerson(i, R.drawable.ic_baseline_account_circle_24,
+                        u.getPrenom() + " " + u.getNom(), 0, u.getDescription(),
+                        u.getVille(), u.getCursus(), u.getNbCreation(), u.getNbParticipation()));
+            }
 
         }
 
@@ -218,7 +235,7 @@ public class AmisFragment extends Fragment {
             @Override
             public void onDelete(int position) {
                 if (items.size() > 0) {
-                    removeFriend(items.get(position).getId() + "", items.get(position).getNom());
+                    removeFriend(items.get(position).getId() + "");
                 }
             }
         });
@@ -231,7 +248,7 @@ public class AmisFragment extends Fragment {
         TextView descriptionProfil;
         TextView nbCreateProfil;
         TextView nbParticipateProfil;
-        Button buttonAdd;
+        ImageView buttonAdd;
 
         dialogProfil.setContentView(R.layout.popup_profil);
         nameProfil = dialogProfil.findViewById(R.id.profilName);
@@ -254,5 +271,10 @@ public class AmisFragment extends Fragment {
         dialogProfil.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         dialogProfil.getWindow().setLayout(widthScreen - 100, heightScreen - 200);
         dialogProfil.show();
+    }
+
+    @Override
+    public void onDataChangeListener() {
+        updateItems();
     }
 }

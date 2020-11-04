@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import com.example.nalone.Adapter.ItemEventAdapter;
+import com.example.nalone.CoreListener;
 import com.example.nalone.R;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
@@ -56,7 +57,7 @@ import static com.example.nalone.util.Constants.USER_ID;
  * Use the {@link MapFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class MapFragment extends Fragment implements OnMapReadyCallback{
+public class MapFragment extends Fragment implements OnMapReadyCallback {
 
     private View rootView;
 
@@ -340,5 +341,4 @@ public class MapFragment extends Fragment implements OnMapReadyCallback{
 
         return p1;
     }
-
 }

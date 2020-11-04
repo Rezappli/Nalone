@@ -6,11 +6,14 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.nalone.Adapter.ItemInvitAmisAdapter;
+import com.example.nalone.Adapter.ItemListAmisAdapter;
+import com.example.nalone.CoreListener;
 import com.example.nalone.CustomToast;
 import com.example.nalone.ItemPerson;
 import com.example.nalone.R;
@@ -22,13 +25,14 @@ import java.util.List;
 import static com.example.nalone.util.Constants.USERS_DB_REF;
 import static com.example.nalone.util.Constants.USERS_LIST;
 import static com.example.nalone.util.Constants.USER_ID;
+import static com.example.nalone.util.Constants.listeners;
 
 /**
  * A simple {@link Fragment} subclass.
  * Use the {@link MesInvitationsFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class MesInvitationsFragment extends Fragment {
+public class MesInvitationsFragment extends Fragment implements CoreListener {
 
     private RecyclerView mRecyclerView;
     private ItemInvitAmisAdapter mAdapter;
@@ -81,7 +85,7 @@ public class MesInvitationsFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-
+        listeners.add(this);
        rootView = inflater.inflate(R.layout.fragment_3, container, false);
 
         updateItems();
@@ -91,16 +95,19 @@ public class MesInvitationsFragment extends Fragment {
 
     private void updateItems() {
         for(int i = 0; i < USERS_LIST.size(); i++){
-            String s = ""+i;
             User u = USERS_LIST.get(i);
-            if(!s.equalsIgnoreCase(USER_ID)){
-                invits.add(new ItemPerson(i,R.drawable.ic_baseline_account_circle_24,
-                        u.getPrenom()+" "+u.getNom(), 0, u.getDescription(),
-                        u.getVille(), u.getCursus(), u.getNbCreation(), u.getNbParticipation()));
+            if(u != null) {
+                if (!USER_ID.equalsIgnoreCase(i + "")) { ;
+                    invits.add(new ItemPerson(i, R.drawable.ic_baseline_account_circle_24,
+                            u.getPrenom() + " " + u.getNom(), 0, u.getDescription(),
+                            u.getVille(), u.getCursus(), u.getNbCreation(), u.getNbParticipation()));
+                }
             }
         }
 
-        mRecyclerView = rootView.findViewById(R.id.recyclerViewMesAmis);
+        mAdapter = new ItemInvitAmisAdapter(invits);
+
+        mRecyclerView = rootView.findViewById(R.id.recyclerViewInvitAmis);
         mLayoutManager = new LinearLayoutManager(getContext());
 
         mRecyclerView.setLayoutManager(mLayoutManager);
@@ -151,5 +158,10 @@ public class MesInvitationsFragment extends Fragment {
         updateItems();
         CustomToast t = new CustomToast(getContext(), "Vous n'avez pas accepté(e) cet utilisateur", false, true);
         t.show();
+    }
+
+    @Override
+    public void onDataChangeListener() {
+        updateItems();
     }
 }

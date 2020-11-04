@@ -7,6 +7,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.nalone.CoreListener;
 import com.example.nalone.Evenement;
 import com.example.nalone.HomeActivity;
 import com.example.nalone.MainActivity;
@@ -22,8 +23,10 @@ import static com.example.nalone.util.Constants.USERS_DB_REF;
 import static com.example.nalone.util.Constants.USERS_LIST;
 import static com.example.nalone.util.Constants.currentUser;
 import static com.example.nalone.util.Constants.heightScreen;
+import static com.example.nalone.util.Constants.listeners;
 import static com.example.nalone.util.Constants.mAuth;
 import static com.example.nalone.util.Constants.widthScreen;
+import static com.example.nalone.util.Constants.load;
 
 public class SplashActivity extends AppCompatActivity {
 
@@ -52,6 +55,7 @@ public class SplashActivity extends AppCompatActivity {
                     Evenement e = ds.getValue(Evenement.class);
                     EVENTS_LIST.put(ds.getKey(), e);
                 }
+
                 USERS_DB_REF.addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -60,10 +64,19 @@ public class SplashActivity extends AppCompatActivity {
                             USERS_LIST.put(ds.getKey(), u);
                         }
 
-                        if(currentUser != null){
-                            startActivity(new Intent(SplashActivity.this, HomeActivity.class));
-                        }else{
-                            startActivity(new Intent(SplashActivity.this, MainActivity.class));
+                        for(CoreListener listener : listeners) {
+                            if (listener != null) {
+                                listener.onDataChangeListener();
+                            }
+                        }
+
+                        if(!load) {
+                            if (currentUser != null) {
+                                startActivity(new Intent(SplashActivity.this, HomeActivity.class));
+                            } else {
+                                startActivity(new Intent(SplashActivity.this, MainActivity.class));
+                            }
+                            load = true;
                         }
                     }
 

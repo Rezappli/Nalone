@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
+import com.example.nalone.CoreListener;
 import com.example.nalone.MainActivity;
 import com.example.nalone.R;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
@@ -27,7 +28,7 @@ import java.util.concurrent.Executor;
  * Use the {@link GroupeFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class GroupeFragment extends Fragment {
+public class GroupeFragment extends Fragment implements CoreListener {
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -110,5 +111,10 @@ public class GroupeFragment extends Fragment {
                         startActivity(intent);
                     }
                 });
+    }
+
+    @Override
+    public void onDataChangeListener() {
+        //updateItems();
     }
 }
