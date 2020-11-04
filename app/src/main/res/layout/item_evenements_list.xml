@@ -39,15 +39,15 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_weight="0.5"
+                    android:layout_weight="0.4"
                     android:orientation="vertical">
 
                     <TextView
                         android:id="@+id/titleEventList"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:paddingStart="20dp"
-                        android:paddingEnd="20dp"
+                        android:paddingStart="10dp"
+                        android:paddingEnd="10dp"
                         android:text="test"
                         android:textSize="18sp" />
 
@@ -86,7 +86,7 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_weight="0.5"
+                    android:layout_weight="0.6"
                     android:orientation="vertical">
 
                     <TextView
@@ -145,7 +145,7 @@
                 android:id="@+id/textView22"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="20dp"
+                android:layout_marginStart="10dp"
                 android:layout_marginTop="10dp"
                 android:layout_marginEnd="20dp"
                 android:text="@string/descriptionNF" />
@@ -156,8 +156,8 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
                 android:layout_marginBottom="10dp"
-                android:paddingStart="10dp"
-                android:paddingEnd="10dp"
+                android:paddingStart="20dp"
+                android:paddingEnd="20dp"
                 android:text="@string/description" />
 
             <TextView
@@ -165,8 +165,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="5dp"
-                android:paddingStart="20dp"
-                android:paddingEnd="20dp"
+                android:paddingStart="10dp"
+                android:paddingEnd="10dp"
                 android:text="@string/membre_inscrits" />
 
             <androidx.recyclerview.widget.RecyclerView
