@@ -7,6 +7,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.nalone.Evenement;
@@ -31,6 +32,7 @@ public class ItemEventAdapter extends RecyclerView.Adapter<ItemEventAdapter.Item
 
 
     public static class ItemEventViewHolder extends RecyclerView.ViewHolder {
+        public CardView mCardView;
         public ImageView mImageView;
         public TextView mTitle;
         public TextView mDate;
@@ -42,6 +44,8 @@ public class ItemEventAdapter extends RecyclerView.Adapter<ItemEventAdapter.Item
 
         public ItemEventViewHolder(View itemView, final OnItemClickListener listener) {
             super(itemView);
+
+            mCardView= itemView.findViewById(R.id.cardViewEvent);
             mImageView = itemView.findViewById(R.id.imageUser1);
             mTitle = itemView.findViewById(R.id.title1);
             mDate = itemView.findViewById(R.id.date1);
@@ -50,8 +54,7 @@ public class ItemEventAdapter extends RecyclerView.Adapter<ItemEventAdapter.Item
             mDescription = itemView.findViewById(R.id.description1);
             mProprietaire = itemView.findViewById(R.id.owner1);
 
-
-            mImageView.setOnClickListener(new View.OnClickListener() {
+            mCardView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     if(listener != null){
