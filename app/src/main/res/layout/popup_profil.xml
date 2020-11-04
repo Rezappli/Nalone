@@ -8,8 +8,12 @@
 
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:cardCornerRadius="50dp"
+        android:layout_height="0dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="16dp"
+        app:cardCornerRadius="25dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -52,12 +56,6 @@
 
             </androidx.cardview.widget.CardView>
 
-            <View
-                android:id="@+id/divider3"
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:background="?android:attr/listDivider" />
-
             <TextView
                 android:id="@+id/profilName"
                 android:layout_width="match_parent"
@@ -71,8 +69,8 @@
                 android:id="@+id/divider4"
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
-                android:layout_marginBottom="15dp"
-                android:background="?android:attr/listDivider" />
+                android:layout_margin="20dp"
+                android:background="?attr/panelBackground" />
 
             <TextView
                 android:id="@+id/profilDescription"
@@ -80,7 +78,8 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="30dp"
                 android:layout_marginBottom="20dp"
-                android:text="@string/description" />
+                android:text="@string/description"
+                android:textStyle="italic" />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -152,11 +151,61 @@
 
             </LinearLayout>
 
+            <TextView
+                android:id="@+id/textView21"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="20dp"
+                android:layout_marginBottom="10dp"
+                android:text="@string/CI" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="44dp"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:id="@+id/imageViewCI1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    app:srcCompat="@drawable/ci_musique" />
+
+                <ImageView
+                    android:id="@+id/imageViewCI2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    app:srcCompat="@drawable/ci_musique" />
+
+                <ImageView
+                    android:id="@+id/imageViewCI3"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    app:srcCompat="@drawable/ci_musique" />
+
+                <ImageView
+                    android:id="@+id/imageViewCI4"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    app:srcCompat="@drawable/ci_musique" />
+
+                <ImageView
+                    android:id="@+id/imageViewCI5"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    app:srcCompat="@drawable/ci_musique" />
+            </LinearLayout>
+
             <ImageView
                 android:id="@+id/buttonAdd"
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
                 android:layout_marginBottom="20dp"
+                android:layout_weight="1"
                 app:srcCompat="@drawable/ic_baseline_add_circle_outline_24" />
 
         </LinearLayout>

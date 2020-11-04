@@ -101,7 +101,7 @@ public class MesInvitationsFragment extends Fragment implements CoreListener {
                     if(USERS_LIST.get(USER_ID).getDemande_amis_recu().contains(i+"")) {
                         invits.add(new ItemPerson(i, R.drawable.ic_baseline_account_circle_24,
                                 u.getPrenom() + " " + u.getNom(), 0, u.getDescription(),
-                                u.getVille(), u.getCursus(), u.getNbCreation(), u.getNbParticipation()));
+                                u.getVille(), u.getCursus(), u.getNbCreation(), u.getNbParticipation(), u.getCentreInterets()));
                     }
                 }
             }

@@ -49,7 +49,8 @@
                         android:paddingStart="10dp"
                         android:paddingEnd="10dp"
                         android:text="test"
-                        android:textSize="18sp" />
+                        android:textSize="18sp"
+                        android:textStyle="bold" />
 
                     <TextView
                         android:id="@+id/dateEventList"
@@ -142,23 +143,16 @@
             </LinearLayout>
 
             <TextView
-                android:id="@+id/textView22"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="10dp"
-                android:layout_marginTop="10dp"
-                android:layout_marginEnd="20dp"
-                android:text="@string/descriptionNF" />
-
-            <TextView
                 android:id="@+id/descriptionEventList"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
                 android:layout_marginBottom="10dp"
-                android:paddingStart="20dp"
-                android:paddingEnd="20dp"
-                android:text="@string/description" />
+                android:paddingStart="10dp"
+                android:paddingEnd="10dp"
+                android:text="@string/description"
+                android:textSize="12sp"
+                android:textStyle="italic" />
 
             <TextView
                 android:id="@+id/textView24"
@@ -167,7 +161,8 @@
                 android:layout_marginBottom="5dp"
                 android:paddingStart="10dp"
                 android:paddingEnd="10dp"
-                android:text="@string/membre_inscrits" />
+                android:text="@string/membre_inscrits"
+                android:textSize="12sp" />
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/recyclerViewMembresInscritsEventList"
