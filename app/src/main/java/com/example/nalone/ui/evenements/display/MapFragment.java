@@ -50,6 +50,7 @@ import static com.example.nalone.util.Constants.MARKERS_EVENT;
 import static com.example.nalone.util.Constants.MARKER_COLOR_SET;
 import static com.example.nalone.util.Constants.USER_ID;
 import static com.example.nalone.util.Constants.USER_LATLNG;
+import static com.example.nalone.util.Constants.listeners;
 import static com.example.nalone.util.Constants.targetZoom;
 
 
@@ -121,6 +122,8 @@ public class MapFragment extends Fragment implements OnMapReadyCallback,  CoreLi
         progressBar = rootView.findViewById(R.id.progressBar2);
 
         mMapView = rootView.findViewById(R.id.mapView);
+
+        listeners.add(this);
 
         Bundle mapViewBundle = null;
         if (savedInstanceState != null) {
