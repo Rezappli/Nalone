@@ -9,14 +9,19 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.app.Dialog;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.location.Address;
+import android.location.Geocoder;
 import android.os.Build;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CalendarView;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
@@ -24,8 +29,10 @@ import android.widget.Toast;
 import com.example.nalone.Adapter.ItemAddPersonAdapter;
 import com.example.nalone.Adapter.ItemProfilAdapter;
 import com.example.nalone.items.ItemPerson;
+import com.google.android.gms.maps.model.LatLng;
 import com.google.android.material.textfield.TextInputEditText;
 
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -77,6 +84,11 @@ public class CreateEventActivity extends AppCompatActivity {
     private String mHour = "";
     private String mMin = "";
 
+    private ImageView locationValidImageView;
+    private Button validLocationButton;
+
+    private boolean locationValid = false;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -100,6 +112,9 @@ public class CreateEventActivity extends AppCompatActivity {
         buttonValidEvent = findViewById(R.id.button);
         event_date = findViewById(R.id.eventDate);
         event_horaire = findViewById(R.id.eventHoraire);
+
+        locationValidImageView = findViewById(R.id.validePositionImageView);
+        validLocationButton = findViewById(R.id.validLocationButton);
 
         mLayoutManagerAdd = new LinearLayoutManager(getBaseContext());
         mAdapterAdd = new ItemAddPersonAdapter(itemsAdd);
@@ -135,6 +150,54 @@ public class CreateEventActivity extends AppCompatActivity {
                 showPopUp(v);
             }
         });
+
+        event_adresse.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                locationValidImageView.setVisibility(View.GONE);
+                locationValid = false;
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
+
+        event_city.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                locationValidImageView.setVisibility(View.GONE);
+                locationValid = false;
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
+
+        validLocationButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(getLocationFromAddress(event_adresse.getText().toString()+","+event_city.getText().toString()) != null){
+                    locationValidImageView.setVisibility(View.VISIBLE);
+                    locationValid = true;
+                }
+            }
+        });
+
+
 
         buttonValidEvent.setOnClickListener(new View.OnClickListener() {
             @RequiresApi(api = Build.VERSION_CODES.M)
@@ -195,9 +258,13 @@ public class CreateEventActivity extends AppCompatActivity {
             event_horaire.setError("Champs obligatoire");
         }
 
+        if(!locationValid){
+            Toast.makeText(this, "Localisation de l'évènement non validée !", Toast.LENGTH_SHORT).show();
+        }
+
         if(!event_name.getText().toString().matches("") && !event_adresse.getText().toString().matches("") &&
         !event_city.getText().toString().matches("") && !event_date.getText().toString().matches("") &&
-        !event_horaire.getText().toString().matches("")){
+        !event_horaire.getText().toString().matches("") && locationValid == true){
             List<String> sign_in_members = new ArrayList<>();
             sign_in_members.add(USER_ID);
 
@@ -373,5 +440,33 @@ public class CreateEventActivity extends AppCompatActivity {
             Toast.makeText(getBaseContext(), "Aucun autre amis à ajouter !", Toast.LENGTH_SHORT).show();
         }
 
+    }
+
+    private LatLng getLocationFromAddress(String strAddress) {
+
+        Geocoder coder = new Geocoder(this);
+        List<Address> address;
+        LatLng p1 = null;
+
+        try {
+            // May throw an IOException
+            address = coder.getFromLocationName(strAddress, 5);
+            if (address == null) {
+                return null;
+            }
+
+            if(address.size() > 0) {
+                Address location = address.get(0);
+                p1 = new LatLng(location.getLatitude(), location.getLongitude());
+            }else{
+                return null;
+            }
+
+        } catch (IOException ex) {
+
+            ex.printStackTrace();
+        }
+
+        return p1;
     }
 }
