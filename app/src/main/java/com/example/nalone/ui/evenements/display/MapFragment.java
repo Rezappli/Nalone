@@ -201,18 +201,28 @@ public class MapFragment extends Fragment implements OnMapReadyCallback,  CoreLi
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
-        updateMap();
-    }
-
-    @RequiresApi(api = Build.VERSION_CODES.M)
-    public void updateMap(){
-        final List<Evenement> itemEvents = new ArrayList<>();
+        if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getActivity(),
+                Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            getActivity().requestPermissions(new String[]{Manifest.permission.ACCESS_COARSE_LOCATION},0);
+            getActivity().requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION},0);
+            return;
+        }
+        mMap.setMyLocationEnabled(true);
 
         if(targetZoom == null) {
             mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(USER_LATLNG, 13));
         }else{
             mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(targetZoom, 13));
         }
+
+        updateMap();
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.M)
+    public void updateMap(){
+        mMap.clear();
+        final List<Evenement> itemEvents = new ArrayList<>();
 
         for(int i = 0; i < EVENTS_LIST.size(); i++){
             MarkerOptions m = MARKERS_EVENT.get(i+"");
@@ -264,19 +274,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback,  CoreLi
                 mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(MARKERS_EVENT.get(itemEvents.get(position).getId()+"").getPosition(), 13	));
             }
         });
-
-
-
-
-
-        if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION)
-                != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getActivity(),
-                Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            getActivity().requestPermissions(new String[]{Manifest.permission.ACCESS_COARSE_LOCATION},0);
-            getActivity().requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION},0);
-            return;
-        }
-        mMap.setMyLocationEnabled(true);
 
         progressBar.setVisibility(View.GONE);
     }
