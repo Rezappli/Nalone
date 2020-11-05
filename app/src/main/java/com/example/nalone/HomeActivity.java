@@ -112,8 +112,20 @@ public class HomeActivity extends AppCompatActivity{
             }
         }
 
+
         if(!found){
             startActivity(new Intent(HomeActivity.this, SignUpInformationActivity.class));
+        }
+
+        for(int i = 0; i < EVENTS_LIST.size(); i++){
+            Evenement e = EVENTS_LIST.get(i+"");
+            MarkerOptions m = MARKERS_EVENT.get(i+"");
+            if(!e.getMembres_inscrits().contains(USER_ID)){
+                if(!e.getProprietaire().equalsIgnoreCase(USER_ID)){
+                    EVENTS_LIST.remove(e);
+                    MARKERS_EVENT.remove(m);
+                }
+            }
         }
     }
 

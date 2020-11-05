@@ -317,4 +317,8 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         return couleur;
     }
 
+    public void update(){
+
+    }
+
 }
