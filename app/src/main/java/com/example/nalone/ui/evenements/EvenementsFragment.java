@@ -22,10 +22,10 @@ public class EvenementsFragment extends Fragment {
 
     private com.example.nalone.ui.evenements.EvenementsViewModel EvenementsViewModel;
 
-    View myFragment;
+    private View myFragment;
 
-    ViewPager viewPager;
-    TabLayout tabLayout;
+    public static ViewPager viewPager;
+    private TabLayout tabLayout;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -63,7 +63,6 @@ public class EvenementsFragment extends Fragment {
         adapter.addFragment(new MapFragment());
         adapter.addFragment(new EvenementsListFragment());
         adapter.addFragment(new MesEvenementsListFragment());
-        //adapter.addFragment(new Fragment_3(), "Mes invitations");
 
         viewPager.setAdapter(adapter);
     }

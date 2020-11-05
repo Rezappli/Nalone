@@ -19,12 +19,15 @@ import com.example.nalone.Adapter.ItemImagePersonAdapter;
 import com.example.nalone.Adapter.ItemMesEventListAdapter;
 import com.example.nalone.CoreListener;
 import com.example.nalone.Evenement;
+import com.example.nalone.HomeActivity;
 import com.example.nalone.R;
 import com.example.nalone.Visibilite;
 import com.example.nalone.items.ItemFiltre;
 import com.example.nalone.items.ItemImagePerson;
 import com.example.nalone.signUpActivities.SignUpProfilActivity;
+import com.example.nalone.ui.evenements.EvenementsFragment;
 import com.example.nalone.util.Constants;
+import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.util.ArrayList;
@@ -115,13 +118,6 @@ public class MesEvenementsListFragment extends Fragment implements CoreListener 
         final List<Evenement> itemEvents = new ArrayList<>();
 
         for(int i = 0; i < EVENTS_LIST.size(); i++){
-            Evenement e = EVENTS_LIST.get(i+"");
-            itemEvents.add(e);
-
-        }
-
-        /*
-        for(int i = 0; i < EVENTS_LIST.size(); i++){
             MarkerOptions m = new MarkerOptions();
             Evenement e = Constants.EVENTS_LIST.get(i+"");
 
@@ -130,7 +126,7 @@ public class MesEvenementsListFragment extends Fragment implements CoreListener 
             if (e.getProprietaire().equalsIgnoreCase(USER_ID)) {
                 itemEvents.add(e);
             }
-        }*/
+        }
 
         mAdapterEventList = new ItemMesEventListAdapter(itemEvents);
 
@@ -145,7 +141,8 @@ public class MesEvenementsListFragment extends Fragment implements CoreListener 
         mAdapterEventList.setOnItemClickListener(new ItemMesEventListAdapter.OnItemClickListener() {
             @Override
             public void onDisplayClick(int position) {
-                Toast.makeText(getContext(), "Afficher event", Toast.LENGTH_SHORT).show();
+                Constants.targetZoom = MARKERS_EVENT.get(itemEvents.get(position).getId()+"").getPosition();
+                EvenementsFragment.viewPager.setCurrentItem(0);
             }
 
             @Override
@@ -154,7 +151,7 @@ public class MesEvenementsListFragment extends Fragment implements CoreListener 
                 builder.setMessage("Vous êtes sur le point de supprimer un évènement ! Cette action est irréversible ! Voulez-vous continuez ?")
                         .setPositiveButton("Oui", new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int id) {
-                                Toast.makeText(getContext(), "Vous avez supprimé un évènement !", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(getContext(), "Vous avez supprimé(e) un évènement !", Toast.LENGTH_SHORT).show();
                                 removeEvent(position);
                                 updateEvents();
                             }

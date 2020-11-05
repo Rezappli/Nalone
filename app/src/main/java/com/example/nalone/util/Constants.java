@@ -49,4 +49,5 @@ public class Constants {
     public static final DateFormat formatD = DateFormat.getDateInstance(DateFormat.FULL,
             new Locale("fr", "FR"));
 
+    public static LatLng targetZoom;
 }
