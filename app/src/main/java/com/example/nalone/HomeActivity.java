@@ -6,13 +6,9 @@ import android.location.Geocoder;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
-import android.util.Log;
 
 import com.example.nalone.signUpActivities.SignUpInformationActivity;
-import com.google.android.gms.maps.model.BitmapDescriptor;
-import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import androidx.annotation.RequiresApi;
@@ -25,8 +21,6 @@ import androidx.navigation.ui.NavigationUI;
 import java.io.IOException;
 import java.util.List;
 
-import static com.example.nalone.util.Constants.EVENTS_LIST;
-import static com.example.nalone.util.Constants.MARKERS_EVENT;
 import static com.example.nalone.util.Constants.USERS_LIST;
 import static com.example.nalone.util.Constants.USER_ID;
 import static com.example.nalone.util.Constants.USER_LATLNG;
@@ -115,17 +109,6 @@ public class HomeActivity extends AppCompatActivity{
 
         if(!found){
             startActivity(new Intent(HomeActivity.this, SignUpInformationActivity.class));
-        }
-
-        for(int i = 0; i < EVENTS_LIST.size(); i++){
-            Evenement e = EVENTS_LIST.get(i+"");
-            MarkerOptions m = MARKERS_EVENT.get(i+"");
-            if(!e.getMembres_inscrits().contains(USER_ID)){
-                if(!e.getProprietaire().equalsIgnoreCase(USER_ID)){
-                    EVENTS_LIST.remove(e);
-                    MARKERS_EVENT.remove(m);
-                }
-            }
         }
     }
 

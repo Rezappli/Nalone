@@ -205,11 +205,12 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         for(int i = 0; i < EVENTS_LIST.size(); i++){
             MarkerOptions m = MARKERS_EVENT.get(i+"");
             Evenement e = Constants.EVENTS_LIST.get(i+"");
+            if(m.getIcon() != null) {
+                mMap.addMarker(m).setTag(e.getId());
+                itemEvents.add(e);
+            }
 
-            mMap.addMarker(m).setTag(e.getId());
 
-
-            itemEvents.add(e);
 
         }
 
@@ -305,11 +306,13 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                 couleur = (BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));
             } else if(e.getMembres_inscrits().contains(USER_ID)){
                 couleur = (BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE));
+            }else{
+                couleur = null;
             }
         }else{
             if (e.getProprietaire().equalsIgnoreCase(USER_ID)) {
                 couleur = (BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));
-            } else{
+            }else{
                 couleur = (BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));
             }
         }
