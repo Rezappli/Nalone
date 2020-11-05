@@ -35,6 +35,8 @@ import static com.example.nalone.util.Constants.EVENTS_DB_REF;
 import static com.example.nalone.util.Constants.EVENTS_LIST;
 import static com.example.nalone.util.Constants.USERS_LIST;
 import static com.example.nalone.util.Constants.USER_ID;
+import static com.example.nalone.util.Constants.heightScreen;
+import static com.example.nalone.util.Constants.widthScreen;
 
 public class CreateEventActivity extends AppCompatActivity {
     private List<ItemPerson> items = new ArrayList<>();
@@ -300,6 +302,7 @@ public class CreateEventActivity extends AppCompatActivity {
 
         dialogAddPerson.setContentView(R.layout.popup_add_invit);
         dialogAddPerson.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        dialogAddPerson.getWindow().setLayout(widthScreen, heightScreen);
 
         RecyclerView mRecyclerView = dialogAddPerson.findViewById(R.id.recyclerView);
         final ItemProfilAdapter mAdapter = new ItemProfilAdapter(items);

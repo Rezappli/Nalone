@@ -290,7 +290,7 @@ public class RechercheFragment extends Fragment implements CoreListener {
         });
 
         dialogProfil.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-        dialogProfil.getWindow().setLayout(widthScreen - 100, heightScreen - 200);
+        dialogProfil.getWindow().setLayout(widthScreen, heightScreen);
         dialogProfil.show();
 
     }
