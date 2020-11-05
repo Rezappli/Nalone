@@ -157,8 +157,7 @@ public class SignUpProfilActivity extends AppCompatActivity {
 
         Toast.makeText(this, "Bienvenue dans NoLonely !", Toast.LENGTH_SHORT).show();
 
-        Intent welcomeIntent = new Intent(getBaseContext(), MainActivity.class);
-        startActivityForResult(welcomeIntent,0);
+        startActivityForResult(new Intent(getBaseContext(), MainActivity.class),0);
     }
 
     private void signInUser(String mail, String pass){

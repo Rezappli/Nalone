@@ -259,7 +259,7 @@ public class CreateEventActivity extends AppCompatActivity {
 
         if(!event_name.getText().toString().matches("") && !event_adresse.getText().toString().matches("") &&
         !event_city.getText().toString().matches("") && !event_date.getText().toString().matches("") &&
-        !event_horaire.getText().toString().matches("") && locationValid == true){
+        !event_horaire.getText().toString().matches("") && locationValid){
             List<String> sign_in_members = new ArrayList<>();
             sign_in_members.add(USER_ID);
 

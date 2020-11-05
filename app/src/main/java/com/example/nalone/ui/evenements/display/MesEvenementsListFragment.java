@@ -1,6 +1,9 @@
 package com.example.nalone.ui.evenements.display;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,13 +23,19 @@ import com.example.nalone.R;
 import com.example.nalone.Visibilite;
 import com.example.nalone.items.ItemFiltre;
 import com.example.nalone.items.ItemImagePerson;
+import com.example.nalone.signUpActivities.SignUpProfilActivity;
 import com.example.nalone.util.Constants;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
+import static com.example.nalone.util.Constants.EVENTS_DB_REF;
 import static com.example.nalone.util.Constants.EVENTS_LIST;
+import static com.example.nalone.util.Constants.MARKERS_EVENT;
+import static com.example.nalone.util.Constants.USERS_DB_REF;
 import static com.example.nalone.util.Constants.USER_ID;
 
 /**
@@ -93,23 +102,10 @@ public class MesEvenementsListFragment extends Fragment implements CoreListener 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
+
         rootView = inflater.inflate(R.layout.fragment_mes_evenements_lits, container, false);
 
        updateEvents();
-        /*for(int i = 0; i < 10; i++){
-            membres_inscrits.add(new ItemImagePerson(R.drawable.ci_musique));
-        }
-
-        mAdapterInscrits = new ItemImagePersonAdapter(membres_inscrits);
-
-        mRecyclerViewInscrit = rootView.findViewById(R.id.recyclerViewMembresInscritsEventList);
-        mLayoutManagerInscrit = new LinearLayoutManager(
-                rootView.getContext(),
-                LinearLayoutManager.HORIZONTAL,
-                false);
-        mRecyclerViewInscrit.setLayoutManager(mLayoutManagerInscrit);
-        mRecyclerViewInscrit.setAdapter(mAdapterInscrits);*/
 
         return rootView;
     }
@@ -117,8 +113,14 @@ public class MesEvenementsListFragment extends Fragment implements CoreListener 
     private void updateEvents() {
 
         final List<Evenement> itemEvents = new ArrayList<>();
-        final List<ItemImagePerson> membres_inscrits = new ArrayList<>();
 
+        for(int i = 0; i < EVENTS_LIST.size(); i++){
+            Evenement e = EVENTS_LIST.get(i+"");
+            itemEvents.add(e);
+
+        }
+
+        /*
         for(int i = 0; i < EVENTS_LIST.size(); i++){
             MarkerOptions m = new MarkerOptions();
             Evenement e = Constants.EVENTS_LIST.get(i+"");
@@ -128,7 +130,7 @@ public class MesEvenementsListFragment extends Fragment implements CoreListener 
             if (e.getProprietaire().equalsIgnoreCase(USER_ID)) {
                 itemEvents.add(e);
             }
-        }
+        }*/
 
         mAdapterEventList = new ItemMesEventListAdapter(itemEvents);
 
@@ -147,8 +149,23 @@ public class MesEvenementsListFragment extends Fragment implements CoreListener 
             }
 
             @Override
-            public void onDeleteClick(int position) {
-                Toast.makeText(getContext(), "Delete event", Toast.LENGTH_SHORT).show();
+            public void onDeleteClick(final int position) {
+                final AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+                builder.setMessage("Vous êtes sur le point de supprimer un évènement ! Cette action est irréversible ! Voulez-vous continuez ?")
+                        .setPositiveButton("Oui", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                Toast.makeText(getContext(), "Vous avez supprimé un évènement !", Toast.LENGTH_SHORT).show();
+                                removeEvent(position);
+                                updateEvents();
+                            }
+                        })
+                        .setNegativeButton("Non", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+
+                            }
+                        });
+                builder.create();
+                builder.show();
             }
 
             @Override
@@ -162,5 +179,50 @@ public class MesEvenementsListFragment extends Fragment implements CoreListener 
     @Override
     public void onDataChangeListener() {
         updateEvents();
+    }
+
+    private void removeEvent(int position) {
+        HashMap<String, Evenement> tempListEvent = new HashMap();
+        HashMap<String, MarkerOptions> tempListMarkers = new HashMap();
+        for(int i = 0; i < EVENTS_LIST.size(); i++){
+            Evenement e = EVENTS_LIST.get(i+"");
+            if(position == 0) {
+                if (i != position) {
+                    tempListEvent.put((i - 1) + "", EVENTS_LIST.get(i + ""));
+                    tempListMarkers.put((i - 1) + "", MARKERS_EVENT.get(i + ""));
+                    e.setId(i-1);
+                }
+            }else if(position == EVENTS_LIST.size()-1){
+                if(i < position){
+                    tempListEvent.put(i + "", EVENTS_LIST.get(i + ""));
+                    tempListMarkers.put(i + "", MARKERS_EVENT.get(i + ""));
+                    e.setId(i);
+                }
+            }else {
+                if (i < position) {
+                    tempListEvent.put(i + "", EVENTS_LIST.get(i + ""));
+                    tempListMarkers.put(i + "", MARKERS_EVENT.get(i + ""));
+                    e.setId(i);
+                }
+
+                if(i == position){
+                    tempListEvent.put((i) + "", EVENTS_LIST.get(i+1 + ""));
+                    tempListMarkers.put((i) + "", MARKERS_EVENT.get(i+1 + ""));
+                    e.setId(i);
+                }
+
+                if (i > position) {
+                    tempListEvent.put((i - 1) + "", EVENTS_LIST.get(i + ""));
+                    tempListMarkers.put((i - 1) + "", MARKERS_EVENT.get(i + ""));
+                    e.setId(i-1);
+                }
+            }
+        }
+        EVENTS_LIST = tempListEvent;
+        for(Map.Entry<String, MarkerOptions> m : MARKERS_EVENT.entrySet()){
+            Log.w("Map", "Map " + m.getValue().getTitle());
+        }
+        MARKERS_EVENT = tempListMarkers;
+        EVENTS_DB_REF.setValue(EVENTS_LIST);
     }
 }

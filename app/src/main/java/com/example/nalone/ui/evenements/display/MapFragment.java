@@ -213,9 +213,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                 mMap.addMarker(m).setTag(e.getId());
                 itemEvents.add(e);
             }
-
-
-
         }
 
         mAdapterEvent = new ItemEventAdapter(itemEvents);
@@ -324,10 +321,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         }
 
         return couleur;
-    }
-
-    public void update(){
-
     }
 
 }
