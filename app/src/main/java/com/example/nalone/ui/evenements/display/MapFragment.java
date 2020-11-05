@@ -11,6 +11,7 @@ import android.widget.ImageView;
 
 import com.example.nalone.Adapter.ItemEventAdapter;
 import com.example.nalone.CoreListener;
+import com.example.nalone.HomeActivity;
 import com.example.nalone.R;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
@@ -21,6 +22,7 @@ import android.location.Address;
 import android.location.Geocoder;
 import android.os.Build;
 import android.util.Log;
+import android.widget.ProgressBar;
 
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
@@ -63,6 +65,7 @@ import static com.example.nalone.util.Constants.USER_LATLNG;
 public class MapFragment extends Fragment implements OnMapReadyCallback {
 
     private View rootView;
+    private ProgressBar progressBar;
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -119,6 +122,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                              Bundle savedInstanceState) {
         rootView = inflater.inflate(R.layout.fragment_map, container, false);
         ((AppCompatActivity) getActivity()).getSupportActionBar().hide();
+        progressBar = rootView.findViewById(R.id.progressBar2);
 
         mMapView = rootView.findViewById(R.id.mapView);
 
@@ -268,6 +272,8 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
             return;
         }
         mMap.setMyLocationEnabled(true);
+
+        progressBar.setVisibility(View.GONE);
 
     }
 

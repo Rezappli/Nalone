@@ -6,6 +6,8 @@ import android.location.Geocoder;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.view.View;
+import android.widget.ProgressBar;
 
 import com.example.nalone.signUpActivities.SignUpInformationActivity;
 import com.google.android.gms.maps.model.LatLng;
@@ -157,4 +159,5 @@ public class HomeActivity extends AppCompatActivity{
 
         return p1;
     }
+
 }

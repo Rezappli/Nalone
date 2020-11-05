@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -36,6 +37,7 @@ public class MainActivity extends AppCompatActivity{
     private EditText editTextPass;
     private EditText editTextAddress;
     private TextView passwordForget;
+    private ProgressBar progressBar;
 
     private GoogleSignInClient mGoogleSignInClient;
 
@@ -72,6 +74,7 @@ public class MainActivity extends AppCompatActivity{
         editTextAddress = findViewById(R.id.editTextAddress);
         editTextPass = findViewById(R.id.editTextPassword);
         passwordForget = findViewById(R.id.editTextPasswordForget);
+        progressBar = findViewById(R.id.progressBar);
 
         passwordForget.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -107,6 +110,7 @@ public class MainActivity extends AppCompatActivity{
                 }
 
                 if(!textAddress.equalsIgnoreCase("") && !textPass.equalsIgnoreCase("")){
+                    progressBar.setVisibility(View.VISIBLE);
                     connectUser(textAddress, textPass);
                 }
             }
@@ -159,6 +163,7 @@ public class MainActivity extends AppCompatActivity{
                                             Toast.LENGTH_SHORT).show();
                                 }
                             } else {
+                                progressBar.setVisibility(View.GONE);
                                 Toast.makeText(MainActivity.this, "Erreur : " + task.getException(),
                                         Toast.LENGTH_SHORT).show();
                             }
@@ -189,6 +194,7 @@ public class MainActivity extends AppCompatActivity{
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
                         if (task.isSuccessful()) {
+                            progressBar.setVisibility(View.GONE);
                             Toast.makeText(MainActivity.this, "Veuillez vérifiez votre adresse mail !",
                                     Toast.LENGTH_SHORT).show();
                         }

@@ -30,11 +30,11 @@ public class ResetPassword extends AppCompatActivity {
         resetPasswordButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(fieldMailResetPassword.getText().toString().matches("")){
+                if (fieldMailResetPassword.getText().toString().matches("")) {
                     fieldMailResetPassword.setError("Entrez une adresse mail");
-                }else if(!fieldMailResetPassword.getText().toString().contains("@") || !fieldMailResetPassword.getText().toString().contains(".")){
+                } else if (!fieldMailResetPassword.getText().toString().contains("@") || !fieldMailResetPassword.getText().toString().contains(".")) {
                     fieldMailResetPassword.setError("Entrez une adresse mail valide");
-                }else{
+                } else {
                     sendEmail(fieldMailResetPassword.getText().toString());
                 }
             }
@@ -42,7 +42,7 @@ public class ResetPassword extends AppCompatActivity {
 
     }
 
-    public void sendEmail(String mail){
+    public void sendEmail(String mail) {
         mAuth.sendPasswordResetEmail(mail)
                 .addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
