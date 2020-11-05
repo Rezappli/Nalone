@@ -15,6 +15,7 @@ import com.example.nalone.Adapter.SectionPageAdapter;
 import com.example.nalone.R;
 import com.example.nalone.ui.evenements.display.EvenementsListFragment;
 import com.example.nalone.ui.evenements.display.MapFragment;
+import com.example.nalone.ui.evenements.display.MesEvenementsListFragment;
 import com.google.android.material.tabs.TabLayout;
 
 public class EvenementsFragment extends Fragment {
@@ -53,6 +54,7 @@ public class EvenementsFragment extends Fragment {
         tabLayout.setupWithViewPager(viewPager);
         tabLayout.getTabAt(0).setIcon(R.drawable.ic_baseline_map_24);
         tabLayout.getTabAt(1).setIcon(R.drawable.ic_baseline_format_list_bulleted_24);
+        tabLayout.getTabAt(2).setIcon(R.drawable.ic_baseline_mesevent);
     }
 
     private void setUpViewPager(ViewPager viewPager) {
@@ -60,6 +62,7 @@ public class EvenementsFragment extends Fragment {
 
         adapter.addFragment(new MapFragment());
         adapter.addFragment(new EvenementsListFragment());
+        adapter.addFragment(new MesEvenementsListFragment());
         //adapter.addFragment(new Fragment_3(), "Mes invitations");
 
         viewPager.setAdapter(adapter);
