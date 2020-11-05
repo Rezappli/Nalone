@@ -129,16 +129,9 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
 
         mMapView.onCreate(mapViewBundle);
 
-
         mMapView.getMapAsync(this);
 
-
         initGoogleMap(savedInstanceState);
-
-        if(!MARKER_COLOR_SET) {
-            MARKER_COLOR_SET = true;
-            setMarkerColor();
-        }
 
         buttonAdd = rootView.findViewById(R.id.create_event_button);
 
@@ -149,11 +142,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                 startActivityForResult(createEvent,0);
             }
         });
-
-
-
-
-
 
         return rootView;
     }
@@ -169,6 +157,11 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         mMapView.onCreate(mapViewBundle);
 
         mMapView.getMapAsync(this);
+
+        if(!MARKER_COLOR_SET) {
+            MARKER_COLOR_SET = true;
+            setMarkerColor();
+        }
 
     }
 
@@ -213,11 +206,8 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
             MarkerOptions m = MARKERS_EVENT.get(i+"");
             Evenement e = Constants.EVENTS_LIST.get(i+"");
 
-            if(e.getVisibilite().equals(Visibilite.PRIVE)){
-                    mMap.addMarker(m).setTag(e.getId());
-            }else{
-                mMap.addMarker(m).setTag(e.getId());
-            }
+            mMap.addMarker(m).setTag(e.getId());
+
 
             itemEvents.add(e);
 
@@ -261,7 +251,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         mAdapterEvent.setOnItemClickListener(new ItemEventAdapter.OnItemClickListener() {
             @Override
             public void onAddClick(int position) {
-                mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(MARKERS_EVENT.get(position).getPosition(), 13	));
+                mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(MARKERS_EVENT.get(position+"").getPosition(), 13	));
             }
         });
 
@@ -301,33 +291,29 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     }
 
     private void setMarkerColor() {
-        Log.w("SIZE", "Event list " + EVENTS_LIST.size());
-        Log.w("SIZE", "Marker list " + MARKERS_EVENT.size());
         for (int i = 0; i < EVENTS_LIST.size(); i++) {
             Evenement e = EVENTS_LIST.get(i + "");
             MarkerOptions m = MARKERS_EVENT.get(i+"");
-            if(e.getVisibilite().equals(Visibilite.PRIVE)) {
-                if (e.getMembres_inscrits().contains(USER_ID)) {
-                    if (m.getIcon() == null) {
-                        m.icon(getEventColor(e));
-                    }
-                }else{
-                    EVENTS_LIST.remove(e);
-                    MARKERS_EVENT.remove(m);
-                }
-            }
+            m.icon(getEventColor(e));
         }
     }
 
     private BitmapDescriptor getEventColor(Evenement e) {
-        BitmapDescriptor couleur = (BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));
-        if(e.visibilite.equals(Visibilite.PRIVE)){
-            if(e.proprietaire.equalsIgnoreCase(USER_ID)) {
+        BitmapDescriptor couleur = null;
+        if(e.getVisibilite().equals(Visibilite.PRIVE)) {
+            if (e.getProprietaire().equalsIgnoreCase(USER_ID)) {
                 couleur = (BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));
-            }else{
+            } else if(e.getMembres_inscrits().contains(USER_ID)){
                 couleur = (BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE));
             }
+        }else{
+            if (e.getProprietaire().equalsIgnoreCase(USER_ID)) {
+                couleur = (BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));
+            } else{
+                couleur = (BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));
+            }
         }
+
         return couleur;
     }
 
