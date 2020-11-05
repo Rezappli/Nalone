@@ -35,6 +35,7 @@ public class MainActivity extends AppCompatActivity{
     private TextView textViewConnexion;
     private EditText editTextPass;
     private EditText editTextAddress;
+    private TextView passwordForget;
 
     private GoogleSignInClient mGoogleSignInClient;
 
@@ -70,14 +71,21 @@ public class MainActivity extends AppCompatActivity{
         textViewConnexion = findViewById(R.id.buttonRetry);
         editTextAddress = findViewById(R.id.editTextAddress);
         editTextPass = findViewById(R.id.editTextPassword);
+        passwordForget = findViewById(R.id.editTextPasswordForget);
+
+        passwordForget.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivityForResult(new Intent(getBaseContext(), ResetPassword.class), 0);
+            }
+        });
 
 
         textViewSinscrire.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 ErrorClass.checkInternetConnection();
-                Intent signUp = new Intent(getBaseContext(), SignUpInformationActivity.class);
-                startActivityForResult(signUp, 0);
+                startActivityForResult(new Intent(getBaseContext(), SignUpInformationActivity.class), 0);
             }
         });
 

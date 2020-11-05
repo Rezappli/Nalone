@@ -20,7 +20,8 @@
         android:roundIcon="@mipmap/ic_logo_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".InfosEvenementsActivity"></activity>
+        <activity android:name=".ResetPassword"></activity>
+        <activity android:name=".InfosEvenementsActivity" />
         <activity
             android:name=".AmisFragment"
             android:label="@string/title_activity_amis_fragment"
@@ -63,8 +64,9 @@
         <activity
             android:name=".signUpActivities.SignUpInformationActivity"
             android:theme="@style/Theme.AppCompat.DayNight.NoActionBar" />
-        <activity android:name=".ui.message.ChatActivity"
-            android:theme="@style/Theme.AppCompat.DayNight.NoActionBar"/>
+        <activity
+            android:name=".ui.message.ChatActivity"
+            android:theme="@style/Theme.AppCompat.DayNight.NoActionBar" />
         <!--
 <activity
             android:name=".MainActivity"
