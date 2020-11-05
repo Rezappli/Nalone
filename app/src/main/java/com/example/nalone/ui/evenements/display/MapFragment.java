@@ -252,7 +252,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         mAdapterEvent.setOnItemClickListener(new ItemEventAdapter.OnItemClickListener() {
             @Override
             public void onAddClick(int position) {
-                mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(MARKERS_EVENT.get(position+"").getPosition(), 13	));
+                mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(MARKERS_EVENT.get(itemEvents.get(position).getId()+"").getPosition(), 13	));
             }
         });
 
