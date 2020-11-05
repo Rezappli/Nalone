@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import com.example.nalone.Adapter.ItemEventAdapter;
+import com.example.nalone.CoreListener;
 import com.example.nalone.R;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
@@ -57,7 +58,7 @@ import static com.example.nalone.util.Constants.targetZoom;
  * Use the {@link MapFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class MapFragment extends Fragment implements OnMapReadyCallback {
+public class MapFragment extends Fragment implements OnMapReadyCallback,  CoreListener{
 
     private View rootView;
     private ProgressBar progressBar;
@@ -196,10 +197,13 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
     public void onMapReady(GoogleMap googleMap) {
-        final List<Evenement> itemEvents = new ArrayList<>();
         mMap = googleMap;
+        updateMap();
+    }
 
-        Log.w("Map", "Target : " + targetZoom);
+    @RequiresApi(api = Build.VERSION_CODES.M)
+    public void updateMap(){
+        final List<Evenement> itemEvents = new ArrayList<>();
 
         if(targetZoom == null) {
             mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(USER_LATLNG, 13));
@@ -272,7 +276,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         mMap.setMyLocationEnabled(true);
 
         progressBar.setVisibility(View.GONE);
-
     }
 
 
@@ -325,4 +328,9 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         return couleur;
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.M)
+    @Override
+    public void onDataChangeListener() {
+        updateMap();
+    }
 }
