@@ -85,7 +85,7 @@ public class MesInvitationsFragment extends Fragment implements CoreListener {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         listeners.add(this);
-       rootView = inflater.inflate(R.layout.fragment_3, container, false);
+       rootView = inflater.inflate(R.layout.fragment_mes_invitations, container, false);
 
         updateItems();
 

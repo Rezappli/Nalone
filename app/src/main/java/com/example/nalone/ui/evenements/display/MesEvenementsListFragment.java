@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -95,35 +96,7 @@ public class MesEvenementsListFragment extends Fragment implements CoreListener 
         // Inflate the layout for this fragment
         rootView = inflater.inflate(R.layout.fragment_mes_evenements_lits, container, false);
 
-        final List<Evenement> itemEvents = new ArrayList<>();
-        final List<ItemImagePerson> membres_inscrits = new ArrayList<>();
-
-        for(int i = 0; i < EVENTS_LIST.size(); i++){
-            MarkerOptions m = new MarkerOptions();
-            Evenement e = Constants.EVENTS_LIST.get(i+"");
-
-            m.title(e.getNom());
-
-            if(e.getVisibilite().equals(Visibilite.PRIVE)){
-                if(e.getMembres_inscrits().contains(USER_ID)){
-                    itemEvents.add(e);
-                }
-            }else{
-                itemEvents.add(e);
-            }
-
-        }
-
-        mAdapterEventList = new ItemMesEventListAdapter(itemEvents);
-
-        mRecyclerViewEvent = rootView.findViewById(R.id.recyclerViewMesEventList);
-        mLayoutManagerMesEvent = new LinearLayoutManager(
-                rootView.getContext(),
-                LinearLayoutManager.VERTICAL,
-                false);
-        mRecyclerViewEvent.setLayoutManager(mLayoutManagerMesEvent);
-        mRecyclerViewEvent.setAdapter(mAdapterEventList);
-
+       updateEvents();
         /*for(int i = 0; i < 10; i++){
             membres_inscrits.add(new ItemImagePerson(R.drawable.ci_musique));
         }
@@ -141,8 +114,53 @@ public class MesEvenementsListFragment extends Fragment implements CoreListener 
         return rootView;
     }
 
+    private void updateEvents() {
+
+        final List<Evenement> itemEvents = new ArrayList<>();
+        final List<ItemImagePerson> membres_inscrits = new ArrayList<>();
+
+        for(int i = 0; i < EVENTS_LIST.size(); i++){
+            MarkerOptions m = new MarkerOptions();
+            Evenement e = Constants.EVENTS_LIST.get(i+"");
+
+            m.title(e.getNom());
+
+            if (e.getProprietaire().equalsIgnoreCase(USER_ID)) {
+                itemEvents.add(e);
+            }
+        }
+
+        mAdapterEventList = new ItemMesEventListAdapter(itemEvents);
+
+        mRecyclerViewEvent = rootView.findViewById(R.id.recyclerViewMesEventList);
+        mLayoutManagerMesEvent = new LinearLayoutManager(
+                rootView.getContext(),
+                LinearLayoutManager.VERTICAL,
+                false);
+        mRecyclerViewEvent.setLayoutManager(mLayoutManagerMesEvent);
+        mRecyclerViewEvent.setAdapter(mAdapterEventList);
+
+        mAdapterEventList.setOnItemClickListener(new ItemMesEventListAdapter.OnItemClickListener() {
+            @Override
+            public void onDisplayClick(int position) {
+                Toast.makeText(getContext(), "Afficher event", Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onDeleteClick(int position) {
+                Toast.makeText(getContext(), "Delete event", Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onEditClick(int position) {
+                Toast.makeText(getContext(), "Edit event", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+    }
+
     @Override
     public void onDataChangeListener() {
-        //updateItems();
+        updateEvents();
     }
 }

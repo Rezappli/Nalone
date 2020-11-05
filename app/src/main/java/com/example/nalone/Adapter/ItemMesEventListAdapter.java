@@ -21,7 +21,9 @@ public class ItemMesEventListAdapter extends RecyclerView.Adapter<ItemMesEventLi
     public OnItemClickListener mListener;
 
     public interface OnItemClickListener {
-        void onAddClick(int position);
+        void onDisplayClick(int position);
+        void onDeleteClick(int position);
+        void onEditClick(int position);
     }
 
     public void setOnItemClickListener(OnItemClickListener listener){
@@ -30,7 +32,7 @@ public class ItemMesEventListAdapter extends RecyclerView.Adapter<ItemMesEventLi
 
 
     public static class ItemEventViewHolder extends RecyclerView.ViewHolder {
-        public ImageView mImageView;
+        public ImageView mImageView, mImageViewEdit, mImageViewDisplay, mImageViewDelete;
         public TextView mTitle;
         public TextView mDate;
         public TextView mTime;
@@ -48,6 +50,45 @@ public class ItemMesEventListAdapter extends RecyclerView.Adapter<ItemMesEventLi
             mVille = itemView.findViewById(R.id.villeEventList);
             mDescription = itemView.findViewById(R.id.descriptionEventList);
             mProprietaire = itemView.findViewById(R.id.ownerEventList);
+            mImageViewDelete = itemView.findViewById(R.id.imageViewDeleteMesEvent);
+            mImageViewEdit = itemView.findViewById(R.id.imageViewEdit);
+            mImageViewDisplay = itemView.findViewById(R.id.imageViewAfficher);
+
+            mImageViewDisplay.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if(listener != null){
+                        int position = getAdapterPosition();
+                        if(position != RecyclerView.NO_POSITION){
+                            listener.onDisplayClick(position);
+                        }
+                    }
+                }
+            });
+
+            mImageViewEdit.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if(listener != null){
+                        int position = getAdapterPosition();
+                        if(position != RecyclerView.NO_POSITION){
+                            listener.onEditClick(position);
+                        }
+                    }
+                }
+            });
+
+            mImageViewDelete.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if(listener != null){
+                        int position = getAdapterPosition();
+                        if(position != RecyclerView.NO_POSITION){
+                            listener.onDeleteClick(position);
+                        }
+                    }
+                }
+            });
 
         }
     }
