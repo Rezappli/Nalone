@@ -30,17 +30,15 @@ public class SectionPageAdapter extends FragmentPagerAdapter {
         return fragmentList.size();
     }
 
-    @Nullable
+   /* @Nullable
     @Override
     public CharSequence getPageTitle(int postion){
         return titleList.get(postion);
-    }
+    }*/
 
 
-    public void addFragment(Fragment fragment, String title, int image){
+    public void addFragment(Fragment fragment){
         fragmentList.add(fragment);
-        titleList.add(title);
-        icon.add(image);
     }
 
 }

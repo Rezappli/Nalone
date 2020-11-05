@@ -46,7 +46,6 @@ import com.example.nalone.util.Constants;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-
 import static com.example.nalone.util.Constants.EVENTS_LIST;
 import static com.example.nalone.util.Constants.MAPVIEW_BUNDLE_KEY;
 import static com.example.nalone.util.Constants.USERS_LIST;

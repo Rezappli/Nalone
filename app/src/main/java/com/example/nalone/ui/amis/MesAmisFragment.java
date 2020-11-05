@@ -53,7 +53,10 @@ public class MesAmisFragment extends Fragment {
         
         setUpViewPager(viewPager);
         tabLayout.setupWithViewPager(viewPager);
-        
+        tabLayout.getTabAt(0).setIcon(R.drawable.ic_round_people_24);
+        tabLayout.getTabAt(1).setIcon(R.drawable.ic_round_groups_24);
+        tabLayout.getTabAt(2).setIcon(R.drawable.ic_baseline_person_add_alt_1_24);
+
         tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
@@ -75,9 +78,9 @@ public class MesAmisFragment extends Fragment {
     private void setUpViewPager(ViewPager viewPager) {
         SectionPageAdapter adapter = new SectionPageAdapter(getChildFragmentManager(), 0);
 
-        adapter.addFragment(new AmisFragment(), "Mes Amis", R.drawable.camera_alt_black_24dp);
-        adapter.addFragment(new GroupeFragment(), "Mes groupes", R.drawable.round_group_24);
-        adapter.addFragment(new MesInvitationsFragment(), "Mes invitations", R.drawable.round_forum_24);
+        adapter.addFragment(new AmisFragment());
+        adapter.addFragment(new GroupeFragment());
+        adapter.addFragment(new MesInvitationsFragment());
 
         viewPager.setAdapter(adapter);
     }
