@@ -98,16 +98,6 @@
                         android:visibility="gone"
                         app:srcCompat="@drawable/ic_baseline_event_available_24" />
 
-                    <Button
-                        android:id="@+id/validLocationButton"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_margin="30dp"
-                        android:background="@drawable/custom_button_simple"
-                        android:text="@string/valid"
-                        android:textColor="#FFFFFF"
-                        android:textSize="18sp" />
-
                 </LinearLayout>
 
                 <com.google.android.material.textfield.TextInputEditText

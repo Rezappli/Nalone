@@ -114,7 +114,6 @@ public class CreateEventActivity extends AppCompatActivity {
         event_horaire = findViewById(R.id.eventHoraire);
 
         locationValidImageView = findViewById(R.id.validePositionImageView);
-        validLocationButton = findViewById(R.id.validLocationButton);
 
         mLayoutManagerAdd = new LinearLayoutManager(getBaseContext());
         mAdapterAdd = new ItemAddPersonAdapter(itemsAdd);
@@ -187,23 +186,19 @@ public class CreateEventActivity extends AppCompatActivity {
             }
         });
 
-        validLocationButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(getLocationFromAddress(event_adresse.getText().toString()+","+event_city.getText().toString()) != null){
-                    locationValidImageView.setVisibility(View.VISIBLE);
-                    locationValid = true;
-                }
-            }
-        });
-
 
 
         buttonValidEvent.setOnClickListener(new View.OnClickListener() {
             @RequiresApi(api = Build.VERSION_CODES.M)
             @Override
             public void onClick(View v) {
-                saveEvent();
+                if(getLocationFromAddress(event_adresse.getText().toString()+","+event_city.getText().toString()) != null){
+                    locationValid = true;
+                    saveEvent();
+                }else{
+                    event_adresse.setError("Adresse introuvable");
+                }
+
             }
         });
     }
