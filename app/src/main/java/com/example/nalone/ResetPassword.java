@@ -27,7 +27,7 @@ public class ResetPassword extends AppCompatActivity {
         resetPasswordButton = findViewById(R.id.buttonSendResetPassword);
         fieldMailResetPassword = findViewById(R.id.editTextAddressSendResetPassword);
 
-        fieldMailResetPassword.setOnClickListener(new View.OnClickListener() {
+        resetPasswordButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if(fieldMailResetPassword.getText().toString().matches("")){
