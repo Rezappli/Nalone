@@ -31,6 +31,7 @@ import java.util.List;
 import static com.example.nalone.util.Constants.EVENTS_DB_REF;
 import static com.example.nalone.util.Constants.EVENTS_LIST;
 import static com.example.nalone.util.Constants.MARKERS_EVENT;
+import static com.example.nalone.util.Constants.MARKER_COLOR_SET;
 import static com.example.nalone.util.Constants.USERS_DB_REF;
 import static com.example.nalone.util.Constants.USERS_LIST;
 import static com.example.nalone.util.Constants.USER_ID;
@@ -64,6 +65,7 @@ public class SplashActivity extends AppCompatActivity {
         EVENTS_DB_REF.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
+                MARKER_COLOR_SET = false;
                 for(DataSnapshot ds : snapshot.getChildren()) {
                     Evenement e = ds.getValue(Evenement.class);
                     MarkerOptions m = new MarkerOptions().title(e.getNom()).snippet("Cliquer pour en savoir plus").position(getLocationFromAddress(e.getAdresse()+","+e.getVille()));
