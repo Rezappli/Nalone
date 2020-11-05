@@ -48,6 +48,8 @@ import java.util.ArrayList;
 import java.util.List;
 import static com.example.nalone.util.Constants.EVENTS_LIST;
 import static com.example.nalone.util.Constants.MAPVIEW_BUNDLE_KEY;
+import static com.example.nalone.util.Constants.MARKERS_EVENT;
+import static com.example.nalone.util.Constants.MARKER_COLOR_SET;
 import static com.example.nalone.util.Constants.USERS_LIST;
 import static com.example.nalone.util.Constants.USER_ID;
 import static com.example.nalone.util.Constants.USER_LATLNG;
@@ -133,6 +135,11 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
 
         initGoogleMap(savedInstanceState);
 
+        if(!MARKER_COLOR_SET) {
+            MARKER_COLOR_SET = true;
+            setMarkerColor();
+        }
+
         buttonAdd = rootView.findViewById(R.id.create_event_button);
 
         buttonAdd.setOnClickListener(new View.OnClickListener() {
@@ -203,23 +210,14 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(USER_LATLNG, 13	));
 
         for(int i = 0; i < EVENTS_LIST.size(); i++){
-            MarkerOptions m = new MarkerOptions();
+            MarkerOptions m = MARKERS_EVENT.get(i);
             Evenement e = Constants.EVENTS_LIST.get(i+"");
 
-            m.title(e.getNom());
-            m.snippet("Cliquer pour en savoir plus");
-            m.position(getLocationFromAddress(e.getAdresse()+","+e.getVille()));
+            itemEvents.add(e);
 
             if(e.getVisibilite().equals(Visibilite.PRIVE)){
-                if(e.getMembres_inscrits().contains(USER_ID)){
-                    if(m.getIcon() == null){
-                        m.icon(getEventColor(e));
-                    }
-                    itemEvents.add(e);
                     mMap.addMarker(m).setTag(e.getId());
-                }
             }else{
-                itemEvents.add(e);
                 mMap.addMarker(m).setTag(e.getId());
             }
 
@@ -263,8 +261,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         mAdapterEvent.setOnItemClickListener(new ItemEventAdapter.OnItemClickListener() {
             @Override
             public void onAddClick(int position) {
-                mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(getLocationFromAddress(itemEvents.get(position)
-                .getAdresse()+","+itemEvents.get(position).getVille()), 13	));
+                mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(MARKERS_EVENT.get(position).getPosition(), 13	));
             }
         });
 
@@ -283,19 +280,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
 
     }
 
-    private BitmapDescriptor getEventColor(Evenement e) {
-        BitmapDescriptor couleur;
-        if(e.visibilite.equals(Visibilite.PRIVE)){
-            if(e.proprietaire.equalsIgnoreCase(USER_ID)) {
-                couleur = (BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));
-            }else{
-                couleur = (BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE));
-            }
-        }else{
-            couleur = (BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));
-        }
-        return couleur;
-    }
+
 
     @Override
     public void onPause(){
@@ -315,29 +300,32 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         super.onLowMemory();
     }
 
-    private LatLng getLocationFromAddress(String strAddress) {
-
-        Log.w("Location", "Loading coordinate from : " + strAddress);
-
-        Geocoder coder = new Geocoder(getActivity().getBaseContext());
-        List<Address> address;
-        LatLng p1 = null;
-
-        try {
-            // May throw an IOException
-            address = coder.getFromLocationName(strAddress, 5);
-            if (address == null) {
-                return null;
+    private void setMarkerColor() {
+        for (int i = 0; i < EVENTS_LIST.size(); i++) {
+            Evenement e = EVENTS_LIST.get(i + "");
+            MarkerOptions m = MARKERS_EVENT.get(i);
+            if(e.getVisibilite().equals(Visibilite.PRIVE)) {
+                if (e.getMembres_inscrits().contains(USER_ID)) {
+                    if (m.getIcon() == null) {
+                        m.icon(getEventColor(e));
+                    }
+                } else {
+                    MARKERS_EVENT.remove(m);
+                }
             }
-
-            Address location = address.get(0);
-            p1 = new LatLng(location.getLatitude(), location.getLongitude() );
-
-        } catch (IOException ex) {
-
-            ex.printStackTrace();
         }
-
-        return p1;
     }
+
+    private BitmapDescriptor getEventColor(Evenement e) {
+        BitmapDescriptor couleur = (BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));
+        if(e.visibilite.equals(Visibilite.PRIVE)){
+            if(e.proprietaire.equalsIgnoreCase(USER_ID)) {
+                couleur = (BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));
+            }else{
+                couleur = (BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE));
+            }
+        }
+        return couleur;
+    }
+
 }

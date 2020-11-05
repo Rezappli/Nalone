@@ -4,6 +4,7 @@ import android.app.Dialog;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -85,8 +86,6 @@ public class RechercheFragment extends Fragment implements CoreListener {
                 false);
         mRecyclerViewFiltre.setLayoutManager(mLayoutManagerFiltre);
         mRecyclerViewFiltre.setAdapter(mAdapterFiltre);
-
-        updateItems();
 
         search_bar.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -196,6 +195,14 @@ public class RechercheFragment extends Fragment implements CoreListener {
 
 
         updateItems();
+
+        if(items.size() == 0){
+            resultat.setVisibility(View.VISIBLE);
+            resultat.setText("Aucun amis à ajouter !");
+        }else{
+            resultat.setVisibility(View.GONE);
+            resultat.setText("");
+        }
 
         return rootView;
 
@@ -310,9 +317,9 @@ public class RechercheFragment extends Fragment implements CoreListener {
                         if (USERS_LIST.get(USER_ID).getDemande_amis_envoye().contains(i+"")) {
                             it = new ItemPerson(i, R.drawable.ic_baseline_account_circle_24, u.getPrenom() + " " + u.getNom(), R.drawable.ic_round_hourglass_top_24, u.getDescription(), u.getVille(), u.getCursus(), u.getNbCreation(), u.getNbParticipation(), u.getCentreInterets());
                         } else if (USERS_LIST.get(USER_ID).getDemande_amis_recu().contains(i+"")) {
-                            it = new ItemPerson(i, R.drawable.ic_baseline_account_circle_24, u.getPrenom() + " " + u.getNom(), R.drawable.ic_round_mail_24, u.getDescription(), u.getVille(), u.getNbCreation(), u.getCursus(), u.getNbParticipation(), u.getCentreInterets());
+                            it = new ItemPerson(i, R.drawable.ic_baseline_account_circle_24, u.getPrenom() + " " + u.getNom(), R.drawable.ic_round_mail_24, u.getDescription(), u.getVille(), u.getCursus(), u.getNbCreation(),u.getNbParticipation(), u.getCentreInterets());
                         } else {
-                            it = new ItemPerson(i, R.drawable.ic_baseline_account_circle_24, u.getPrenom() + " " + u.getNom(), 0, u.getDescription(), u.getVille(), u.getNbCreation(), u.getCursus(), u.getNbParticipation(), u.getCentreInterets());
+                            it = new ItemPerson(i, R.drawable.ic_baseline_account_circle_24, u.getPrenom() + " " + u.getNom(), 0, u.getDescription(), u.getVille(), u.getCursus(), u.getNbCreation(),u.getNbParticipation(), u.getCentreInterets());
                         }
 
                         items.add(it);
