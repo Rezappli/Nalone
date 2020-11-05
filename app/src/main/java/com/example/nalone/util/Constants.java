@@ -31,7 +31,7 @@ public class Constants {
 
     public static HashMap<String, Evenement> EVENTS_LIST = new HashMap();
     public static HashMap<String, User> USERS_LIST = new HashMap();
-    public static List<MarkerOptions> MARKERS_EVENT = new ArrayList<>();
+    public static HashMap<String, MarkerOptions> MARKERS_EVENT = new HashMap<>();
     public static boolean MARKER_COLOR_SET = false;
     public static DatabaseReference USERS_DB_REF = mFirebase.getReference("users");
     public static DatabaseReference EVENTS_DB_REF = mFirebase.getReference("evenements");

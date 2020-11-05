@@ -68,7 +68,7 @@ public class SplashActivity extends AppCompatActivity {
                 for(DataSnapshot ds : snapshot.getChildren()) {
                     Evenement e = ds.getValue(Evenement.class);
                     MarkerOptions m = new MarkerOptions().title(e.getNom()).snippet("Cliquer pour en savoir plus").position(getLocationFromAddress(e.getAdresse()+","+e.getVille()));
-                    MARKERS_EVENT.add(m);
+                    MARKERS_EVENT.put(ds.getKey(), m);
                     EVENTS_LIST.put(ds.getKey(), e);
                 }
 

@@ -210,16 +210,16 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(USER_LATLNG, 13	));
 
         for(int i = 0; i < EVENTS_LIST.size(); i++){
-            MarkerOptions m = MARKERS_EVENT.get(i);
+            MarkerOptions m = MARKERS_EVENT.get(i+"");
             Evenement e = Constants.EVENTS_LIST.get(i+"");
-
-            itemEvents.add(e);
 
             if(e.getVisibilite().equals(Visibilite.PRIVE)){
                     mMap.addMarker(m).setTag(e.getId());
             }else{
                 mMap.addMarker(m).setTag(e.getId());
             }
+
+            itemEvents.add(e);
 
         }
 
@@ -301,15 +301,17 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     }
 
     private void setMarkerColor() {
+        Log.w("SIZE", "Event list " + EVENTS_LIST.size());
+        Log.w("SIZE", "Marker list " + MARKERS_EVENT.size());
         for (int i = 0; i < EVENTS_LIST.size(); i++) {
             Evenement e = EVENTS_LIST.get(i + "");
-            MarkerOptions m = MARKERS_EVENT.get(i);
+            MarkerOptions m = MARKERS_EVENT.get(i+"");
             if(e.getVisibilite().equals(Visibilite.PRIVE)) {
                 if (e.getMembres_inscrits().contains(USER_ID)) {
                     if (m.getIcon() == null) {
                         m.icon(getEventColor(e));
                     }
-                } else {
+                }else{
                     EVENTS_LIST.remove(e);
                     MARKERS_EVENT.remove(m);
                 }
