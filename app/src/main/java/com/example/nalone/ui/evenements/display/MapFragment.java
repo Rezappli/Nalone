@@ -310,6 +310,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                         m.icon(getEventColor(e));
                     }
                 } else {
+                    EVENTS_LIST.remove(e);
                     MARKERS_EVENT.remove(m);
                 }
             }

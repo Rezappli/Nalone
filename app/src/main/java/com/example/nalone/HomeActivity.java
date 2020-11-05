@@ -102,10 +102,8 @@ public class HomeActivity extends AppCompatActivity{
 
     private void checkUserRegister() {
         boolean found = false;
-        Log.w("Connexion", "Taille liste utilisateur : " + USERS_LIST.size());
         for(int i = 0; i < USERS_LIST.size(); i++){
             User u = USERS_LIST.get(i+"");
-            Log.w("Connexion", "Compare : " + u.getMail() + " avec " + currentUser.getEmail());
             if(u.getMail().equalsIgnoreCase(currentUser.getEmail())){
                 found = true;
                 USER_ID = ""+i;
