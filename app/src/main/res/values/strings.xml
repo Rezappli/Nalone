@@ -80,5 +80,7 @@
     <string name="reset"> Envoyer </string>
     <string name="verif"> Vérifier </string>
     <string name="signOut"> Se déconnecter </string>
+    <string name="aucunEvent"> Aucun évènement en approche ! </string>
+    <string name="insiterCreer"> Les autres utilisateurs n\'attendent que toi </string>
 
 </resources>
