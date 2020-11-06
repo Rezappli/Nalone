@@ -80,5 +80,8 @@
     <string name="reset"> Envoyer </string>
     <string name="verif"> Vérifier </string>
     <string name="signOut"> Se déconnecter </string>
+    <string name="connected"> Vous êtes connecté(e) en tant que :  </string>
+    <string name="delete"> Supprimer son compte  </string>
+    <string name="change_pwd"> Changer de mot de passe  </string>
 
 </resources>

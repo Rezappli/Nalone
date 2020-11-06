@@ -25,16 +25,16 @@ import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
-import com.google.firebase.database.FirebaseDatabase;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import static com.example.nalone.util.Constants.USERS_LIST;
+import static com.example.nalone.util.Constants.USER_ID;
 
 public class ProfilFragment extends Fragment  {
 
     private Button sign_out;
     private GoogleSignInClient mGoogleSignInClient;
+    private TextView userConnectText;
+    private TextView userMailConnectText;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -42,6 +42,11 @@ public class ProfilFragment extends Fragment  {
 
         View root = inflater.inflate(R.layout.fragment_profil, container, false);
         sign_out = root.findViewById(R.id.sign_out);
+        userConnectText = root.findViewById(R.id.userConnectText);
+        userMailConnectText = root.findViewById(R.id.userMailConnectText);
+
+        userConnectText.setText(USERS_LIST.get(USER_ID).getPrenom()+" "+USERS_LIST.get(USER_ID).getNom());
+        userMailConnectText.setText(USERS_LIST.get(USER_ID).getMail());
 
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestEmail()

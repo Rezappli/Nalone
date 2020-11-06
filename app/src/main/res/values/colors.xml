@@ -8,5 +8,6 @@
     <color name="indigo"> #4B0082 </color>
     <color name="green"> #16CB2D </color>
     <color name="red"> #D31717 </color>
+    <color name="red_clair"> #F34747 </color>
     <color name="white"> #FFFFFF </color>
 </resources>
