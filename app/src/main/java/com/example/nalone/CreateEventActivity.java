@@ -30,6 +30,7 @@ import com.example.nalone.Adapter.ItemAddPersonAdapter;
 import com.example.nalone.Adapter.ItemProfilAdapter;
 import com.example.nalone.items.ItemPerson;
 import com.example.nalone.ui.evenements.display.MesEvenementsListFragment;
+import com.example.nalone.util.Constants;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.material.textfield.TextInputEditText;
 
@@ -92,8 +93,6 @@ public class CreateEventActivity extends AppCompatActivity {
 
     public static boolean edit;
     private TextView titreCreateEvent;
-    private SimpleDateFormat sdf;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -129,7 +128,7 @@ public class CreateEventActivity extends AppCompatActivity {
             event_resume.setText(MesEvenementsListFragment.descEdit);
             event_horaire.setText(MesEvenementsListFragment.timeEdit);
             event_adresse.setText(MesEvenementsListFragment.adresseEdit);
-            event_date.setText(sdf.format(MesEvenementsListFragment.dateEdit));
+            event_date.setText(Constants.formatD.format(MesEvenementsListFragment.dateEdit));
 
             if(MesEvenementsListFragment.visibiliteEdit == Visibilite.PUBLIC){
                 selectPublic();
