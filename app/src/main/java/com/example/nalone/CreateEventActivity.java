@@ -34,9 +34,11 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.material.textfield.TextInputEditText;
 
 import java.io.IOException;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import static com.example.nalone.util.Constants.EVENTS_DB_REF;
@@ -67,7 +69,11 @@ public class CreateEventActivity extends AppCompatActivity {
 
     private Dialog dialogTimePicker;
     private Calendar calendar;
-    private String newDate;
+
+    private int newDay;
+    private int newMonth;
+    private int newYears;
+
     private TimePicker picker;
     private TextView event_horaire;
 
@@ -299,6 +305,8 @@ public class CreateEventActivity extends AppCompatActivity {
             List<String> sign_in_members = new ArrayList<>();
             sign_in_members.add(USER_ID);
 
+            calendar.set(newYears, newMonth, newDay);
+
             Evenement e = new Evenement(R.drawable.ic_baseline_account_circle_24, EVENTS_LIST.size(), event_name.getText().toString(), event_resume.getText().toString(),
                     event_adresse.getText().toString(), event_city.getText().toString(), event_visibilite, USER_ID, sign_in_members,
                     itemsAdd, calendar.getTime(), mHour + ":" + mMin);
@@ -351,27 +359,20 @@ public class CreateEventActivity extends AppCompatActivity {
 
     }
 
-    public  void showCalendrier(View v){
+    public  void showCalendrier(final View v){
         dialogCalendrier.setContentView(R.layout.calendrier);
         calendarDate = dialogCalendrier.findViewById(R.id.calendarView);
         buttonCalendrier = dialogCalendrier.findViewById(R.id.buttonCalendrier);
 
-        Calendar date = Calendar.getInstance();
-        SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yy");
-
-        String curDate = sdf.format(date.getTime());
-
-        Log.d("CUR_DATE", curDate);
+        calendar = Calendar.getInstance();
 
         CalendarView.OnDateChangeListener myCalendarListener = new CalendarView.OnDateChangeListener() {
 
             public void onSelectedDayChange(CalendarView view, int year, int month, int day) {
 
-                // add one because month starts at 0
-                month = month + 1;
-                // output to log cat **not sure how to format year to two places here**
-                newDate = day + "-" + month + "-" + year;
-                Log.d("NEW_DATE", newDate);
+                newDay = day;
+                newMonth = month;
+                newYears = year;
             }
         };
 
@@ -381,7 +382,7 @@ public class CreateEventActivity extends AppCompatActivity {
         buttonCalendrier.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                event_date.setText(newDate);
+                event_date.setText(newDay+"-"+newMonth+"-"+newYears);
                 dialogCalendrier.dismiss();
             }
         });
@@ -415,7 +416,7 @@ public class CreateEventActivity extends AppCompatActivity {
                 ItemPerson person = items.get(position);
                 int remove = R.drawable.ic_baseline_remove_24;
                 int add = R.drawable.ic_baseline_add_24;
-                if(adds.contains(person) == false){
+                if(!adds.contains(person)){
                     items.get(position).changerPlus(remove);
                     adds.add(person);
                 }else{
