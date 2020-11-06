@@ -31,4 +31,10 @@
         android:name="com.example.nalone.ui.message.MessagesFragment"
         android:label="@string/title_messages"
         tools:layout="@layout/fragment_messages" />
+
+    <fragment
+        android:id="@+id/navigation_profil"
+        android:name="com.example.nalone.ui.profil.ProfilFragment"
+        android:label="@string/title_profil"
+        tools:layout="@layout/fragment_profil" />
 </navigation>

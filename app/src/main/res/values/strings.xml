@@ -37,6 +37,7 @@
     <string name="title_amis"> Amis </string>
     <string name="title_evenements"> Evenements </string>
     <string name="title_messages"> Messages </string>
+    <string name="title_profil"> Profil </string>
     <string name="choixCI"> Séléctionnez 5 centres d\'intérêt</string>
     <string name="choixDepa"> Sélectionnez votre département </string>
     <string name="ci_sport"> Sport </string>
@@ -78,5 +79,6 @@
     <string name="reset_text_password"> Un email va vous être envoyé pour changer votre mot de passe </string>
     <string name="reset"> Envoyer </string>
     <string name="verif"> Vérifier </string>
+    <string name="signOut"> Se déconnecter </string>
 
 </resources>
