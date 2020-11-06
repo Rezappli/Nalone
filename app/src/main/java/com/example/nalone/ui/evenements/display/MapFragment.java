@@ -81,6 +81,8 @@ public class MapFragment extends Fragment implements OnMapReadyCallback,  CoreLi
     private ItemEventAdapter mAdapterEvent;
     private RecyclerView.LayoutManager mLayoutManagerEvent;
 
+    private final List<Evenement> itemEvents = new ArrayList<>();
+
 
 
     public MapFragment() {
@@ -221,61 +223,66 @@ public class MapFragment extends Fragment implements OnMapReadyCallback,  CoreLi
 
     @RequiresApi(api = Build.VERSION_CODES.M)
     public void updateMap(){
-        mMap.clear();
-        final List<Evenement> itemEvents = new ArrayList<>();
+        if(mMap != null) {
+            mMap.clear();
+            itemEvents.clear();
 
-        for(int i = 0; i < EVENTS_LIST.size(); i++){
-            MarkerOptions m = MARKERS_EVENT.get(i+"");
-            Evenement e = Constants.EVENTS_LIST.get(i+"");
-            if(m.getIcon() != null) {
-                mMap.addMarker(m).setTag(e.getId());
-                itemEvents.add(e);
+            for (int i = 0; i < EVENTS_LIST.size(); i++) {
+                MarkerOptions m = MARKERS_EVENT.get(i + "");
+                Evenement e = Constants.EVENTS_LIST.get(i + "");
+                if (m.getIcon() != null) {
+                    mMap.addMarker(m).setTag(e.getId());
+                    if (!itemEvents.contains(e)) {
+                        itemEvents.add(e);
+                    }
+                }
             }
+
+            mAdapterEvent = new ItemEventAdapter(itemEvents);
+
+            mRecyclerViewEvent = rootView.findViewById(R.id.recyclerViewEventMap);
+            mLayoutManagerEvent = new LinearLayoutManager(
+                    rootView.getContext(),
+                    LinearLayoutManager.HORIZONTAL,
+                    false);
+            mRecyclerViewEvent.setLayoutManager(mLayoutManagerEvent);
+            mRecyclerViewEvent.setAdapter(mAdapterEvent);
+
+
+            mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
+                @Override
+                public boolean onMarkerClick(Marker marker) {
+                    mRecyclerViewEvent.setPadding(0, 0, 0, 60);
+                    return false;
+                }
+            });
+
+            mMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
+                @Override
+                public void onMapClick(LatLng latLng) {
+                    mRecyclerViewEvent.setPadding(0, 0, 0, 0);
+                }
+            });
+
+            mMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
+                @Override
+                public void onInfoWindowClick(Marker marker) {
+                    Intent intent = new Intent(getActivity(), InfosEvenementsActivity.class);
+                    InfosEvenementsActivity.initialise(marker);
+                    startActivity(intent);
+                }
+            });
+
+            mAdapterEvent.setOnItemClickListener(new ItemEventAdapter.OnItemClickListener() {
+                @Override
+                public void onAddClick(int position) {
+                    mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(MARKERS_EVENT.get(itemEvents.get(position).getId() + "").getPosition(), 13));
+                }
+            });
         }
 
-        mAdapterEvent = new ItemEventAdapter(itemEvents);
+            progressBar.setVisibility(View.GONE);
 
-        mRecyclerViewEvent = rootView.findViewById(R.id.recyclerViewEventMap);
-        mLayoutManagerEvent = new LinearLayoutManager(
-                rootView.getContext(),
-                LinearLayoutManager.HORIZONTAL,
-                false);
-        mRecyclerViewEvent.setLayoutManager(mLayoutManagerEvent);
-        mRecyclerViewEvent.setAdapter(mAdapterEvent);
-
-
-        mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
-            @Override
-            public boolean onMarkerClick(Marker marker) {
-                mRecyclerViewEvent.setPadding(0,0,0,60);
-                return false;
-            }
-        });
-
-        mMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
-            @Override
-            public void onMapClick(LatLng latLng) {
-                mRecyclerViewEvent.setPadding(0,0,0,0);
-            }
-        });
-
-        mMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
-            @Override
-            public void onInfoWindowClick(Marker marker) {
-                Intent intent = new Intent(getActivity(), InfosEvenementsActivity.class);
-                InfosEvenementsActivity.initialise(marker);
-                startActivity(intent);
-            }
-        });
-
-        mAdapterEvent.setOnItemClickListener(new ItemEventAdapter.OnItemClickListener() {
-            @Override
-            public void onAddClick(int position) {
-                mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(MARKERS_EVENT.get(itemEvents.get(position).getId()+"").getPosition(), 13	));
-            }
-        });
-
-        progressBar.setVisibility(View.GONE);
     }
 
 

@@ -91,8 +91,5 @@ public class InfosEvenementsActivity extends AppCompatActivity {
 
         mRecyclerView.setLayoutManager(mLayoutManager);
         mRecyclerView.setAdapter(mAdapter);
-
-
-
     }
 }
