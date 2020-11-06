@@ -154,7 +154,13 @@ public class CreateEventActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Log.w("Event", "Click sur le bouton");
-                showPopUp(v);
+                if(USERS_LIST.get(USER_ID).getAmis().size() <= 1){
+                    Toast.makeText(CreateEventActivity.this, "Vous n'avez pas d'amis à ajouter", Toast.LENGTH_SHORT).show();
+                }else{
+                    showPopUp(v);
+                }
+
+
             }
         });
 
@@ -229,9 +235,10 @@ public class CreateEventActivity extends AppCompatActivity {
     }
 
     public void updateItems(){
+
         for(int i = 0; i < USERS_LIST.get(USER_ID).getAmis().size(); i++){
             User u = USERS_LIST.get(USERS_LIST.get(USER_ID).getAmis().get(i));
-            Log.w("Event", "Ajout de : " + u.getPrenom() + " dans la liste");
+            //Log.w("Event", "Ajout de : " + u.getPrenom() + " dans la liste");
             ItemPerson it = new ItemPerson(i,R.drawable.ic_baseline_account_circle_24, u.getPrenom()+" "+u.getNom(), R.drawable.ic_baseline_add_24, u.getDescription(), u.getVille(),u.getCursus(), u.getNbCreation(), u.getNbParticipation(), u.getCentreInterets());
 
             boolean duplicate = false;
