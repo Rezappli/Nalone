@@ -29,6 +29,7 @@ import android.widget.Toast;
 import com.example.nalone.Adapter.ItemAddPersonAdapter;
 import com.example.nalone.Adapter.ItemProfilAdapter;
 import com.example.nalone.items.ItemPerson;
+import com.example.nalone.ui.evenements.display.MesEvenementsListFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.material.textfield.TextInputEditText;
 
@@ -89,6 +90,9 @@ public class CreateEventActivity extends AppCompatActivity {
 
     private boolean locationValid = false;
 
+    public static boolean edit;
+    private TextView titreCreateEvent;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -118,27 +122,31 @@ public class CreateEventActivity extends AppCompatActivity {
         mLayoutManagerAdd = new LinearLayoutManager(getBaseContext());
         mAdapterAdd = new ItemAddPersonAdapter(itemsAdd);
 
+        if(edit){
+            event_city.setText(MesEvenementsListFragment.cityEdit);
+            event_name.setText(MesEvenementsListFragment.nameEvent);
+            event_resume.setText(MesEvenementsListFragment.descEdit);
+            event_horaire.setText(MesEvenementsListFragment.timeEdit);
+            event_adresse.setText(MesEvenementsListFragment.adresseEdit);
+            if(MesEvenementsListFragment.visibiliteEdit == Visibilite.PUBLIC){
+                selectPublic();
+            }else{
+                selectPrivate();
+            }
+            edit = false;
+        }
+
         cardViewPrivate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                imageButtonAddInvit.setVisibility(View.VISIBLE);
-                textViewListe.setVisibility(View.VISIBLE);
-                imageViewPrivate.setImageResource(R.drawable.ic_baseline_lock_focused);
-                imageViewPublic.setImageResource(R.drawable.ic_baseline_public_24);
-                event_visibilite = Visibilite.PRIVE;
-
+                selectPrivate();
             }
         });
 
         cardViewPublic.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                imageButtonAddInvit.setVisibility(View.GONE);
-                textViewListe.setVisibility(View.GONE);
-                mRecyclerViewAdd.setVisibility(View.GONE);
-                imageViewPublic.setImageResource(R.drawable.ic_baseline_public_focused);
-                imageViewPrivate.setImageResource(R.drawable.ic_baseline_lock_24);
-                event_visibilite = Visibilite.PUBLIC;
+                selectPublic();
             }
         });
 
@@ -201,6 +209,23 @@ public class CreateEventActivity extends AppCompatActivity {
 
             }
         });
+    }
+
+    private void selectPublic() {
+        imageButtonAddInvit.setVisibility(View.GONE);
+        textViewListe.setVisibility(View.GONE);
+        mRecyclerViewAdd.setVisibility(View.GONE);
+        imageViewPublic.setImageResource(R.drawable.ic_baseline_public_focused);
+        imageViewPrivate.setImageResource(R.drawable.ic_baseline_lock_24);
+        event_visibilite = Visibilite.PUBLIC;
+    }
+
+    private void selectPrivate() {
+        imageButtonAddInvit.setVisibility(View.VISIBLE);
+        textViewListe.setVisibility(View.VISIBLE);
+        imageViewPrivate.setImageResource(R.drawable.ic_baseline_lock_focused);
+        imageViewPublic.setImageResource(R.drawable.ic_baseline_public_24);
+        event_visibilite = Visibilite.PRIVE;
     }
 
     public void updateItems(){

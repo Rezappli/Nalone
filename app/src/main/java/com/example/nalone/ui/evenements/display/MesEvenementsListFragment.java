@@ -1,23 +1,32 @@
 package com.example.nalone.ui.evenements.display;
 
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.RequiresApi;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.nalone.Adapter.ItemAddPersonAdapter;
 import com.example.nalone.Adapter.ItemEventListAdapter;
 import com.example.nalone.Adapter.ItemFiltreAdapter;
 import com.example.nalone.Adapter.ItemImagePersonAdapter;
 import com.example.nalone.Adapter.ItemMesEventListAdapter;
 import com.example.nalone.CoreListener;
+import com.example.nalone.CreateEventActivity;
 import com.example.nalone.Evenement;
 import com.example.nalone.HomeActivity;
 import com.example.nalone.R;
@@ -31,6 +40,7 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -56,6 +66,14 @@ public class MesEvenementsListFragment extends Fragment implements CoreListener 
     private RecyclerView mRecyclerViewInscrit;
     private ItemImagePersonAdapter mAdapterInscrits;
     private RecyclerView.LayoutManager mLayoutManagerInscrit;
+
+    public static String nameEvent;
+    public static String cityEdit;
+    public static String adresseEdit;
+    public static Date dateEdit;
+    public static String timeEdit;
+    public static String descEdit;
+    public static Visibilite visibiliteEdit;
 
 
 
@@ -98,8 +116,6 @@ public class MesEvenementsListFragment extends Fragment implements CoreListener 
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
-
-
     }
 
     @Override
@@ -167,7 +183,23 @@ public class MesEvenementsListFragment extends Fragment implements CoreListener 
 
             @Override
             public void onEditClick(int position) {
+
+                Evenement e = EVENTS_LIST.get(itemEvents.get(position).getId()+"");
+
+                nameEvent = e.getNom();
+                cityEdit = e.getVille();
+                adresseEdit = e.getAdresse();
+                dateEdit = e.getDate();
+                timeEdit = e.getTime();
+                descEdit = e.getDescription();
+                visibiliteEdit = e.getVisibilite();
+
+                CreateEventActivity.edit = true;
+
+                Intent intent = new Intent(getContext(), CreateEventActivity.class);
+                startActivity(intent);
                 Toast.makeText(getContext(), "Edit event", Toast.LENGTH_SHORT).show();
+
             }
         });
 
