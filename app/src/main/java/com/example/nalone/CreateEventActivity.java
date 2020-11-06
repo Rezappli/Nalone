@@ -92,6 +92,7 @@ public class CreateEventActivity extends AppCompatActivity {
 
     public static boolean edit;
     private TextView titreCreateEvent;
+    private SimpleDateFormat sdf;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -128,6 +129,8 @@ public class CreateEventActivity extends AppCompatActivity {
             event_resume.setText(MesEvenementsListFragment.descEdit);
             event_horaire.setText(MesEvenementsListFragment.timeEdit);
             event_adresse.setText(MesEvenementsListFragment.adresseEdit);
+            event_date.setText(sdf.format(MesEvenementsListFragment.dateEdit));
+
             if(MesEvenementsListFragment.visibiliteEdit == Visibilite.PUBLIC){
                 selectPublic();
             }else{
@@ -154,7 +157,8 @@ public class CreateEventActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Log.w("Event", "Click sur le bouton");
-                if(USERS_LIST.get(USER_ID).getAmis().size() <= 1){
+                Log.w("add", USERS_LIST.get(USER_ID).getAmis().get(0));
+                if(USERS_LIST.get(USER_ID).getAmis().get(0).equalsIgnoreCase("")){
                     Toast.makeText(CreateEventActivity.this, "Vous n'avez pas d'amis à ajouter", Toast.LENGTH_SHORT).show();
                 }else{
                     showPopUp(v);
