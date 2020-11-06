@@ -14,6 +14,7 @@ import com.example.nalone.CoreListener;
 import com.example.nalone.Evenement;
 import com.example.nalone.HomeActivity;
 import com.example.nalone.MainActivity;
+import com.example.nalone.R;
 import com.example.nalone.User;
 import com.example.nalone.Visibilite;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
@@ -49,6 +50,7 @@ public class SplashActivity extends AppCompatActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_splash);
     }
 
     @Override
