@@ -83,5 +83,7 @@
     <string name="connected"> Vous êtes connecté(e) en tant que :  </string>
     <string name="delete"> Supprimer son compte  </string>
     <string name="change_pwd"> Changer de mot de passe  </string>
+    <string name="aucunEvent"> Aucun évènement en approche ! </string>
+    <string name="insiterCreer"> Les autres utilisateurs n\'attendent que toi </string>
 
 </resources>
