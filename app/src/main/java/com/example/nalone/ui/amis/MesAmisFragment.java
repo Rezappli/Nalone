@@ -13,6 +13,7 @@ import androidx.lifecycle.ViewModelProviders;
 import androidx.viewpager.widget.ViewPager;
 
 import com.example.nalone.Adapter.SectionPageAdapter;
+import com.example.nalone.HomeActivity;
 import com.example.nalone.R;
 import com.example.nalone.ui.amis.display.AmisFragment;
 import com.example.nalone.ui.amis.display.GroupeFragment;
@@ -39,7 +40,6 @@ public class MesAmisFragment extends Fragment {
         amisViewModel =
                 ViewModelProviders.of(this).get(AmisViewModel.class);
         myFragment = inflater.inflate(R.layout.fragment_mes_amis, container, false);
-
 
         viewPager = myFragment.findViewById(R.id.viewPager);
         tabLayout = myFragment.findViewById(R.id.tabLayout);

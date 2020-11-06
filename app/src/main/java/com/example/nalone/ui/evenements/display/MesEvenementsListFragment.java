@@ -39,6 +39,7 @@ import com.example.nalone.util.Constants;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -70,7 +71,7 @@ public class MesEvenementsListFragment extends Fragment implements CoreListener 
     public static String nameEvent;
     public static String cityEdit;
     public static String adresseEdit;
-    public static Date dateEdit;
+    public static String dateEdit;
     public static String timeEdit;
     public static String descEdit;
     public static Visibilite visibiliteEdit;
@@ -85,6 +86,8 @@ public class MesEvenementsListFragment extends Fragment implements CoreListener 
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
+
+    private SimpleDateFormat sdf;
 
     public MesEvenementsListFragment() {
         // Required empty public constructor
@@ -121,10 +124,11 @@ public class MesEvenementsListFragment extends Fragment implements CoreListener 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-
         rootView = inflater.inflate(R.layout.fragment_mes_evenements_lits, container, false);
 
-       updateEvents();
+        sdf = new SimpleDateFormat("dd-MM-yy");
+
+        updateEvents();
 
         return rootView;
     }
@@ -189,15 +193,14 @@ public class MesEvenementsListFragment extends Fragment implements CoreListener 
                 nameEvent = e.getNom();
                 cityEdit = e.getVille();
                 adresseEdit = e.getAdresse();
-                dateEdit = e.getDate();
+                dateEdit = sdf.format(e.getDate());
                 timeEdit = e.getTime();
                 descEdit = e.getDescription();
                 visibiliteEdit = e.getVisibilite();
 
                 CreateEventActivity.edit = true;
 
-                Intent intent = new Intent(getContext(), CreateEventActivity.class);
-                startActivity(intent);
+                startActivity(new Intent(getContext(), CreateEventActivity.class));
                 Toast.makeText(getContext(), "Edit event", Toast.LENGTH_SHORT).show();
 
             }

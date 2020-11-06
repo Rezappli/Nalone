@@ -15,6 +15,7 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.nalone.Adapter.ItemMessageAdapter;
+import com.example.nalone.HomeActivity;
 import com.example.nalone.MainActivity;
 import com.example.nalone.R;
 import com.example.nalone.items.ItemPerson;
@@ -40,7 +41,6 @@ public class ProfilFragment extends Fragment  {
 
 
         View root = inflater.inflate(R.layout.fragment_profil, container, false);
-
         sign_out = root.findViewById(R.id.sign_out);
 
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)

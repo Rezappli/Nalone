@@ -6,16 +6,24 @@ import android.location.Geocoder;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ProgressBar;
+import android.widget.Toolbar;
 
 import com.example.nalone.signUpActivities.SignUpInformationActivity;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.material.appbar.AppBarLayout;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.navigation.NavigationView;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.navigation.NavController;
+import androidx.navigation.NavDestination;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
@@ -35,7 +43,6 @@ public class HomeActivity extends AppCompatActivity{
     private Handler h = new Handler();
     private Runnable r;
 
-
     @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,6 +56,7 @@ public class HomeActivity extends AppCompatActivity{
 
 
         BottomNavigationView navView = findViewById(R.id.nav_view);
+
         AppBarConfiguration appBarConfiguration = new AppBarConfiguration.Builder(
                 R.id.navigation_recherche, R.id.navigation_amis, R.id.navigation_evenements, R.id.navigation_messages)
                 .build();

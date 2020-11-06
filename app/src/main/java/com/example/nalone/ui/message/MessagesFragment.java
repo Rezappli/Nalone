@@ -14,6 +14,7 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.nalone.Adapter.ItemMessageAdapter;
+import com.example.nalone.HomeActivity;
 import com.example.nalone.items.ItemPerson;
 import com.example.nalone.R;
 import com.google.firebase.database.FirebaseDatabase;
@@ -48,7 +49,6 @@ public class MessagesFragment extends Fragment  {
 
 
         View root = inflater.inflate(R.layout.fragment_messages, container, false);
-
 
         search_bar = root.findViewById(R.id.search_bar_message);
         resultat = root.findViewById(R.id.resul_message);

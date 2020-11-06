@@ -92,13 +92,10 @@ public class CreateEventActivity extends AppCompatActivity {
     private String mMin = "";
 
     private ImageView locationValidImageView;
-    private Button validLocationButton;
 
     private boolean locationValid = false;
 
     public static boolean edit;
-    private TextView titreCreateEvent;
-    private SimpleDateFormat sdf;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -135,7 +132,7 @@ public class CreateEventActivity extends AppCompatActivity {
             event_resume.setText(MesEvenementsListFragment.descEdit);
             event_horaire.setText(MesEvenementsListFragment.timeEdit);
             event_adresse.setText(MesEvenementsListFragment.adresseEdit);
-            event_date.setText(sdf.format(MesEvenementsListFragment.dateEdit));
+            event_date.setText(MesEvenementsListFragment.dateEdit);
 
             if(MesEvenementsListFragment.visibiliteEdit == Visibilite.PUBLIC){
                 selectPublic();

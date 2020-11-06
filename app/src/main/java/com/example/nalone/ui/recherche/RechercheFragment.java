@@ -22,6 +22,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.nalone.Adapter.ItemFiltreAdapter;
 import com.example.nalone.CoreListener;
 import com.example.nalone.CustomToast;
+import com.example.nalone.HomeActivity;
 import com.example.nalone.items.ItemFiltre;
 import com.example.nalone.items.ItemImagePerson;
 import com.example.nalone.items.ItemPerson;
