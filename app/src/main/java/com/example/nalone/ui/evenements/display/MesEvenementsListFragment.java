@@ -80,7 +80,7 @@ public class MesEvenementsListFragment extends Fragment implements CoreListener 
     public static Visibilite visibiliteEdit;
 
     private LinearLayout linearSansEvent;
-    private CardView addEvent;
+    private ImageView addEvent;
 
 
 
@@ -135,17 +135,14 @@ public class MesEvenementsListFragment extends Fragment implements CoreListener 
 
         linearSansEvent = rootView.findViewById(R.id.linearSansEvent);
         mRecyclerViewEvent = rootView.findViewById(R.id.recyclerViewMesEventList);
-        addEvent = rootView.findViewById(R.id.addSansEvent);
+        addEvent = rootView.findViewById(R.id.create_event_button);
         sdf = new SimpleDateFormat("dd-MM-yy");
         addEvent.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(getContext(), CreateEventActivity.class);
-                startActivity(intent);
+                startActivity(new Intent(getContext(),CreateEventActivity.class));
             }
         });
-
-
 
         updateEvents();
 
