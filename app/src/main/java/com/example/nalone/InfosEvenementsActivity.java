@@ -21,6 +21,9 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.example.nalone.util.Constants.EVENTS_LIST;
+import static com.example.nalone.util.Constants.USERS_LIST;
+import static com.example.nalone.util.Constants.USER_LATLNG;
 import static com.example.nalone.util.Constants.mFirebase;
 
 public class InfosEvenementsActivity extends AppCompatActivity {
@@ -34,6 +37,7 @@ public class InfosEvenementsActivity extends AppCompatActivity {
     private TextView mOwner;
     private TextView mDescription;
     private static Marker mMarker;
+    private final List<ItemImagePerson> membres_inscrits = new ArrayList<>();
 
     public static void initialise(Marker marker) {
         mMarker = marker;
@@ -51,66 +55,42 @@ public class InfosEvenementsActivity extends AppCompatActivity {
         mOwner = findViewById(R.id.owner);
         mDescription = findViewById(R.id.description);
 
-        DatabaseReference event =  mFirebase.getReference("evenements/"+mMarker.getTag());
-        event.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
+        for(Evenement e : EVENTS_LIST.values()){
+            if(e.getId() == (int)mMarker.getTag()){
+                String date_text = Constants.formatD.format(e.getDate());
+                String final_date_text = "";
+                mTitle.setText(e.getNom());
+                mTimer.setText(e.getTime());
+                mOwner.setText(USERS_LIST.get(e.getProprietaire()+"").getPrenom()+""+USERS_LIST.get(e.getProprietaire()+"").getNom());
+                mDescription.setText(e.getDescription());
 
-                getSupportActionBar().setTitle("Informations sur un évènement");
-                final List<ItemImagePerson> membres_inscrits = new ArrayList<>();
-                final Evenement e = snapshot.getValue(Evenement.class);
-
-
-                DatabaseReference user = mFirebase.getReference("users/"+e.getProprietaire());
-                user.addValueEventListener(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot snapshot) {
-                        String date_text = Constants.formatD.format(e.getDate());
-                        String final_date_text = "";
-                        for(int i = 0; i < date_text.length(); i++){
-                            char character = date_text.charAt(i);
-                            if(i == 0) {
-                                character = Character.toUpperCase(character);
-                            }
-                            final_date_text += character;
-                        }
-                        mTitle.setText(e.getNom());
-                        mDate.setText(final_date_text);
-                        mTimer.setText(e.getTime());
-                        mOwner.setText(snapshot.child("prenom").getValue(String.class)+" "+snapshot.child("nom").getValue(String.class));
-                        mDescription.setText(e.getDescription());
-
-                        //users.add(new ItemImagePerson(R.drawable.background_image));
-                        for(int i = 0; i < 10; i++){
-                            membres_inscrits.add(new ItemImagePerson(R.drawable.ci_musique));
-                        }
-
-                        mAdapter = new ItemImagePersonAdapter(membres_inscrits);
-
-                        mRecyclerView = findViewById(R.id.recyclerViewMembresInscrits);
-                        mLayoutManager = new LinearLayoutManager(
-                                getBaseContext(),
-                                LinearLayoutManager.HORIZONTAL,
-                                false);
-
-                        mRecyclerView.setLayoutManager(mLayoutManager);
-                        mRecyclerView.setAdapter(mAdapter);
-
-
-                        Log.w("membres", "membres : "+membres_inscrits.size());
-
+                for(int i = 0; i < date_text.length()-5; i++){
+                    char character = date_text.charAt(i);
+                    if(i == 0) {
+                        character = Character.toUpperCase(character);
                     }
+                    final_date_text += character;
+                }
 
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError error) {
+                mDate.setText(final_date_text);
 
-                    }
-                });
+                for(int i = 0; i < e.getMembres_inscrits().size(); i++){
+                    membres_inscrits.add(new ItemImagePerson(R.drawable.ic_round_person_24));
+                }
             }
+        }
 
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {}
-        });
+
+        mAdapter = new ItemImagePersonAdapter(membres_inscrits);
+
+        mRecyclerView = findViewById(R.id.recyclerViewMembresInscrits);
+        mLayoutManager = new LinearLayoutManager(
+                getBaseContext(),
+                LinearLayoutManager.HORIZONTAL,
+                false);
+
+        mRecyclerView.setLayoutManager(mLayoutManager);
+        mRecyclerView.setAdapter(mAdapter);
 
 
 
