@@ -12,10 +12,13 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.RequiresApi;
+import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -76,6 +79,9 @@ public class MesEvenementsListFragment extends Fragment implements CoreListener 
     public static String descEdit;
     public static Visibilite visibiliteEdit;
 
+    private LinearLayout linearSansEvent;
+    private CardView addEvent;
+
 
 
     // TODO: Rename parameter arguments, choose names that match
@@ -126,7 +132,20 @@ public class MesEvenementsListFragment extends Fragment implements CoreListener 
                              Bundle savedInstanceState) {
         rootView = inflater.inflate(R.layout.fragment_mes_evenements_lits, container, false);
 
+
+        linearSansEvent = rootView.findViewById(R.id.linearSansEvent);
+        mRecyclerViewEvent = rootView.findViewById(R.id.recyclerViewMesEventList);
+        addEvent = rootView.findViewById(R.id.addSansEvent);
         sdf = new SimpleDateFormat("dd-MM-yy");
+        addEvent.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getContext(), CreateEventActivity.class);
+                startActivity(intent);
+            }
+        });
+
+
 
         updateEvents();
 
@@ -136,6 +155,8 @@ public class MesEvenementsListFragment extends Fragment implements CoreListener 
     private void updateEvents() {
 
         final List<Evenement> itemEvents = new ArrayList<>();
+
+
 
         for(int i = 0; i < EVENTS_LIST.size(); i++){
             MarkerOptions m = new MarkerOptions();
@@ -148,9 +169,17 @@ public class MesEvenementsListFragment extends Fragment implements CoreListener 
             }
         }
 
+        if(itemEvents.isEmpty()){
+            mRecyclerViewEvent.setVisibility(View.GONE);
+            linearSansEvent.setVisibility(View.VISIBLE);
+        }else{
+            mRecyclerViewEvent.setVisibility(View.VISIBLE);
+            linearSansEvent.setVisibility(View.GONE);
+        }
+
         mAdapterEventList = new ItemMesEventListAdapter(itemEvents);
 
-        mRecyclerViewEvent = rootView.findViewById(R.id.recyclerViewMesEventList);
+
         mLayoutManagerMesEvent = new LinearLayoutManager(
                 rootView.getContext(),
                 LinearLayoutManager.VERTICAL,
@@ -250,6 +279,7 @@ public class MesEvenementsListFragment extends Fragment implements CoreListener 
                 }
             }
         }
+
         EVENTS_LIST = tempListEvent;
         for(Map.Entry<String, MarkerOptions> m : MARKERS_EVENT.entrySet()){
             Log.w("Map", "Map " + m.getValue().getTitle());
