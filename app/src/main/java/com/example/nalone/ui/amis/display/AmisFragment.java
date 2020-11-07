@@ -192,10 +192,7 @@ public class AmisFragment extends Fragment implements CoreListener{
         }
 
         if(USERS_LIST.get(id+"").getAmis().size() == 1) {
-            Log.w("amis", "index 0 : "+USERS_LIST.get(id+"").getAmis().get(0));
-            Log.w("amis", "id  : "+id);
             USERS_LIST.get(id+"").getAmis().set(0, "");
-            Log.w("amis", "index 0 : "+USERS_LIST.get(id+"").getAmis().get(0));
         }else{
             USERS_LIST.get(id+"").getAmis().remove(USER_ID);
         }
