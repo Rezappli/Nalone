@@ -85,5 +85,8 @@
     <string name="change_pwd"> Changer de mot de passe  </string>
     <string name="aucunEvent"> Aucun évènement en approche ! </string>
     <string name="insiterCreer"> Les autres utilisateurs n\'attendent que toi </string>
+    <string name="parametres"> Paramètres </string>
+    <string name="Profil"> Profil </string>
+    <string name="aide"> Aide et assistance </string>
 
 </resources>

@@ -34,7 +34,7 @@ public class ProfilFragment extends Fragment  {
     private Button sign_out;
     private GoogleSignInClient mGoogleSignInClient;
     private TextView userConnectText;
-    private TextView userMailConnectText;
+    private TextView userConnectVille, userConnectNbC, userConnectNbP;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -43,11 +43,14 @@ public class ProfilFragment extends Fragment  {
         View root = inflater.inflate(R.layout.fragment_profil, container, false);
         sign_out = root.findViewById(R.id.sign_out);
         userConnectText = root.findViewById(R.id.userConnectText);
-        userMailConnectText = root.findViewById(R.id.userMailConnectText);
+        userConnectVille = root.findViewById(R.id.useConnectVille);
+        userConnectNbC = root.findViewById(R.id.userConnectNbCreation);
+        userConnectNbP = root.findViewById(R.id.userConnectNbParticipation);
 
         userConnectText.setText(USERS_LIST.get(USER_ID).getPrenom()+" "+USERS_LIST.get(USER_ID).getNom());
-        userMailConnectText.setText(USERS_LIST.get(USER_ID).getMail());
-
+        userConnectVille.setText(USERS_LIST.get(USER_ID).getVille()+" ");
+        userConnectNbC.setText(USERS_LIST.get(USER_ID).getNbCreation()+"");
+        userConnectNbP.setText(USERS_LIST.get(USER_ID).getNbParticipation()+"");
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestEmail()
                 .build();
