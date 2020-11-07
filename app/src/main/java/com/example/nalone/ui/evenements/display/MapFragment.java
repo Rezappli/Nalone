@@ -81,6 +81,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback,  CoreLi
         rootView = inflater.inflate(R.layout.fragment_map, container, false);
         ((AppCompatActivity) getActivity()).getSupportActionBar().hide();
         progressBar = rootView.findViewById(R.id.progressBar2);
+        mRecyclerViewEvent = rootView.findViewById(R.id.recyclerViewEventMap);
 
         mMapView = rootView.findViewById(R.id.mapView);
 
@@ -199,7 +200,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback,  CoreLi
 
             mAdapterEvent = new ItemEventAdapter(itemEvents);
 
-            mRecyclerViewEvent = rootView.findViewById(R.id.recyclerViewEventMap);
             mLayoutManagerEvent = new LinearLayoutManager(
                     rootView.getContext(),
                     LinearLayoutManager.HORIZONTAL,
@@ -240,6 +240,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback,  CoreLi
             });
         }
 
+            mRecyclerViewEvent.setVisibility(View.VISIBLE);
             progressBar.setVisibility(View.GONE);
 
     }
@@ -297,6 +298,12 @@ public class MapFragment extends Fragment implements OnMapReadyCallback,  CoreLi
     @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
     public void onDataChangeListener() {
+
+        if(!MARKER_COLOR_SET) {
+            MARKER_COLOR_SET = true;
+            setMarkerColor();
+        }
+
         updateMap();
     }
 }

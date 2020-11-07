@@ -66,7 +66,6 @@ public class SplashActivity extends AppCompatActivity {
         EVENTS_DB_REF.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                MARKER_COLOR_SET = false;
                 for(DataSnapshot ds : snapshot.getChildren()) {
                     Evenement e = ds.getValue(Evenement.class);
                     MarkerOptions m = new MarkerOptions().title(e.getNom()).snippet("Cliquer pour en savoir plus").position(getLocationFromAddress(e.getAdresse()+","+e.getVille()));
@@ -84,6 +83,7 @@ public class SplashActivity extends AppCompatActivity {
 
                         for(CoreListener listener : listeners) {
                             if (listener != null) {
+                                MARKER_COLOR_SET = false;
                                 listener.onDataChangeListener();
                             }
                         }
