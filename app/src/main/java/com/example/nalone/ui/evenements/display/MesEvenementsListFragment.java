@@ -153,8 +153,6 @@ public class MesEvenementsListFragment extends Fragment implements CoreListener 
 
         final List<Evenement> itemEvents = new ArrayList<>();
 
-
-
         for(int i = 0; i < EVENTS_LIST.size(); i++){
             MarkerOptions m = new MarkerOptions();
             Evenement e = Constants.EVENTS_LIST.get(i+"");

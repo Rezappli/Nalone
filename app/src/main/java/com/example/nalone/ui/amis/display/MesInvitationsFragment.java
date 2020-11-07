@@ -6,6 +6,7 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -129,7 +130,7 @@ public class MesInvitationsFragment extends Fragment implements CoreListener {
     }
 
     private void acceptFriendRequest(int id) {
-
+        Log.w("Invits", "ID : "+id);
         if(USERS_LIST.get(USER_ID).getAmis().size() == 1) {
             USERS_LIST.get(USER_ID).getAmis().set(0, id+"");
         }else{
@@ -145,13 +146,13 @@ public class MesInvitationsFragment extends Fragment implements CoreListener {
         if(USERS_LIST.get(USER_ID).getDemande_amis_envoye().size() == 1) {
             USERS_LIST.get(USER_ID).getDemande_amis_envoye().set(0, "");
         }else{
-            USERS_LIST.get(USER_ID).getDemande_amis_envoye().remove(id);
+            USERS_LIST.get(USER_ID).getDemande_amis_envoye().remove(id+"");
         }
 
         if(USERS_LIST.get(USER_ID).getDemande_amis_recu().size() == 1) {
             USERS_LIST.get(USER_ID).getDemande_amis_recu().set(0, "");
         }else{
-            USERS_LIST.get(USER_ID).getDemande_amis_recu().remove(id);
+            USERS_LIST.get(USER_ID).getDemande_amis_recu().remove(id+"");
         }
 
         if(USERS_LIST.get(id+"").getDemande_amis_envoye().size() == 1) {
@@ -196,7 +197,7 @@ public class MesInvitationsFragment extends Fragment implements CoreListener {
         if(USERS_LIST.get(id+"").getDemande_amis_recu().size() == 1) {
             USERS_LIST.get(id+"").getDemande_amis_recu().set(0, "");
         }else{
-            USERS_LIST.get(id+"").getDemande_amis_recu().remove(Integer.parseInt(USER_ID));
+            USERS_LIST.get(id+"").getDemande_amis_recu().remove(USER_ID);
         }
 
         USERS_DB_REF.setValue(USERS_LIST);

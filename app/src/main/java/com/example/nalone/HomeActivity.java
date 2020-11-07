@@ -1,8 +1,12 @@
 package com.example.nalone;
 
+import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.location.Address;
 import android.location.Geocoder;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -40,16 +44,13 @@ import static com.example.nalone.util.Constants.currentUser;
 public class HomeActivity extends AppCompatActivity{
 
     private CustomToast t;
-    private Handler h = new Handler();
-    private Runnable r;
+    private Handler h = new Handler();;
+    private Runnable r ;
 
     @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        ErrorClass.activity = this;
-        ErrorClass.checkInternetConnection();
         setContentView(R.layout.activity_home);
 
         t = new CustomToast(this, "Appuyer de nouveau pour quitter", false, true);
@@ -69,39 +70,22 @@ public class HomeActivity extends AppCompatActivity{
             public void run() {
                 if(t.isShow()){
                     t.setShow(false);
+                    h.postDelayed(r, 3500);
                 }
+
+                if(!isInternetConnected(HomeActivity.this)){
+                    h.removeCallbacksAndMessages(null);
+                    startActivityForResult(new Intent(getBaseContext(), ErrorConnexionActivity.class), 0);
+                }
+                h.postDelayed(r, 3500);
             }
         };
 
+        //h.postDelayed(r, 0);
+
+
         checkUserRegister();
-        //checkNotification();
     }
-
-    /*@RequiresApi(api = Build.VERSION_CODES.M)
-    private void checkNotification() {
-        Notification.SystemService = getSystemService(NotificationManager.class);
-        final DatabaseReference notification = mFirebase.getReference("notifications/"+user_id);
-        notification.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                List<NotificationData> listNotifications = (List<NotificationData>) snapshot.getValue(List.class);
-
-                if (listNotifications != null) {
-                    for (int i = 0; i < listNotifications.size(); i++) {
-                        Notification notif = new Notification(getBaseContext(), listNotifications.get(i));
-                        notif.show();
-                    }
-
-                    notification.setValue(null);
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
-        });
-    }*/
 
 
     private void checkUserRegister() {
@@ -125,7 +109,6 @@ public class HomeActivity extends AppCompatActivity{
     @Override
     protected void onResume() {
         super.onResume();
-        ErrorClass.checkInternetConnection();
     }
 
     @RequiresApi(api = Build.VERSION_CODES.R)
@@ -166,6 +149,20 @@ public class HomeActivity extends AppCompatActivity{
         }
 
         return p1;
+    }
+
+    public boolean isInternetConnected(Activity activity){
+        boolean connected = false;
+        ConnectivityManager connectivityManager = (ConnectivityManager)activity.getSystemService(Context.CONNECTIVITY_SERVICE);
+        if(connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_MOBILE).getState() == NetworkInfo.State.CONNECTED ||
+                connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI).getState() == NetworkInfo.State.CONNECTED) {
+            //we are connected to a network
+            connected = true;
+        } else {
+            connected = false;;
+        }
+
+        return connected;
     }
 
 }

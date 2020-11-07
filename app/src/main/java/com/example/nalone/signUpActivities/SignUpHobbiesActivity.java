@@ -10,7 +10,6 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
 
-import com.example.nalone.ErrorClass;
 import com.example.nalone.R;
 
 import java.util.ArrayList;
@@ -39,9 +38,6 @@ public class SignUpHobbiesActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        ErrorClass.activity = this;
-        ErrorClass.checkInternetConnection();
 
         setContentView(R.layout.activity_sign_up_hobbies);
 
@@ -170,7 +166,6 @@ public class SignUpHobbiesActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        ErrorClass.checkInternetConnection();
     }
 
 
