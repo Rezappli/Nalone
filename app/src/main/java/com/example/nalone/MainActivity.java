@@ -45,8 +45,6 @@ public class MainActivity extends AppCompatActivity{
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        ErrorClass.activity = this;
-        ErrorClass.checkInternetConnection();
 
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestEmail()
@@ -87,7 +85,6 @@ public class MainActivity extends AppCompatActivity{
         textViewSinscrire.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                ErrorClass.checkInternetConnection();
                 startActivityForResult(new Intent(getBaseContext(), SignUpInformationActivity.class), 0);
             }
         });
@@ -95,7 +92,6 @@ public class MainActivity extends AppCompatActivity{
         textViewConnexion.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                ErrorClass.checkInternetConnection();
                 final String textAddress = editTextAddress.getText().toString();
                 final String textPass = editTextPass.getText().toString();
 
@@ -146,7 +142,6 @@ public class MainActivity extends AppCompatActivity{
     @Override
     protected void onResume() {
         super.onResume();
-        ErrorClass.checkInternetConnection();
     }
 
     public void connectUser(String mail, String pass) {
@@ -156,7 +151,10 @@ public class MainActivity extends AppCompatActivity{
                         public void onComplete(@NonNull Task<AuthResult> task) {
                             if (task.isSuccessful()) {
                                 currentUser = mAuth.getCurrentUser();
-                                if (currentUser.isEmailVerified()) {
+
+                                Log.w("INSCRIPTION", "current user : " + currentUser.getEmail());
+
+                                if (!currentUser.isEmailVerified()) {
                                     startActivity(new Intent(MainActivity.this, HomeActivity.class));
                                 } else {
                                     Toast.makeText(MainActivity.this, "Votre adresse mail n'a pas été vérifiée",
@@ -201,5 +199,10 @@ public class MainActivity extends AppCompatActivity{
 
                     }
                 });
+    }
+
+    @Override
+    public void onBackPressed(){
+        //super.onBackPressed();
     }
 }

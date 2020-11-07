@@ -14,7 +14,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.nalone.ErrorClass;
 import com.example.nalone.MainActivity;
 import com.example.nalone.R;
 import com.example.nalone.User;
@@ -49,9 +48,6 @@ public class SignUpInformationActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        ErrorClass.activity = this;
-        ErrorClass.checkInternetConnection();
-
         setContentView(R.layout.activity_sign_up_information);
 
 
@@ -112,7 +108,6 @@ public class SignUpInformationActivity extends AppCompatActivity {
         buttonSignUpNext.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                ErrorClass.checkInternetConnection();
                 String nomEntre = nom.getText().toString();
                 String prenomEntre = prenom.getText().toString();
                 String villeEntre = ville.getText().toString();
@@ -191,7 +186,6 @@ public class SignUpInformationActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        ErrorClass.checkInternetConnection();
     }
 
     @Override

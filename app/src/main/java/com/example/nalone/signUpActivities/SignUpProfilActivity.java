@@ -17,7 +17,6 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
-import com.example.nalone.ErrorClass;
 import com.example.nalone.MainActivity;
 import com.example.nalone.R;
 import com.example.nalone.util.Constants;
@@ -58,7 +57,6 @@ public class SignUpProfilActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        ErrorClass.checkInternetConnection();
 
         final DatabaseReference id_user = Constants.mFirebase.getReference("id_users/");
         id_user.addValueEventListener(new ValueEventListener() {
@@ -145,9 +143,8 @@ public class SignUpProfilActivity extends AppCompatActivity {
     private void saveData(){
 
         signUpDescriptionEnter = signUpDescription.getText().toString();
-        SignUpInformationActivity.user.setDescription(signUpDescriptionEnter);
 
-        ErrorClass.checkInternetConnection();
+        SignUpInformationActivity.user.setDescription(signUpDescriptionEnter);
 
         signInUser(SignUpInformationActivity.user.getMail(), SignUpInformationActivity.password);
 
@@ -169,7 +166,7 @@ public class SignUpProfilActivity extends AppCompatActivity {
                             FirebaseUser user = mAuth.getCurrentUser();
                             sendVerificationEmail();
                         } else {
-                            Toast.makeText(SignUpProfilActivity.this, "Authentication failed.",
+                            Toast.makeText(SignUpProfilActivity.this, "Une erreur est survenu : " + task.getException(),
                                     Toast.LENGTH_SHORT).show();
                         }
                     }
@@ -177,13 +174,17 @@ public class SignUpProfilActivity extends AppCompatActivity {
     }
 
     private void sendVerificationEmail() {
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        FirebaseUser user = mAuth.getCurrentUser();
+        Log.w("INSCRIPTION","USER : " + user.getEmail());
         user.sendEmailVerification()
                 .addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
                         if (task.isSuccessful()) {
                             Toast.makeText(SignUpProfilActivity.this, "Veuillez vérifiez votre adresse mail !",
+                                    Toast.LENGTH_SHORT).show();
+                        }else{
+                            Toast.makeText(SignUpProfilActivity.this, "Une erreur est survenu : " + task.getException(),
                                     Toast.LENGTH_SHORT).show();
                         }
 
@@ -208,7 +209,6 @@ public class SignUpProfilActivity extends AppCompatActivity {
             } catch (FileNotFoundException e) {
                 e.printStackTrace();
                 Toast.makeText(getApplicationContext(), "Une erreur s'est produite",Toast.LENGTH_LONG).show();
-
             }
 
         }else {
@@ -220,7 +220,6 @@ public class SignUpProfilActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        ErrorClass.checkInternetConnection();
     }
 
 

@@ -1,30 +1,19 @@
 package com.example.nalone.signUpActivities;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
 
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
-import com.example.nalone.ErrorClass;
-import com.example.nalone.MainActivity;
 import com.example.nalone.R;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.AuthResult;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import static com.example.nalone.util.Constants.mAuth;
 
 public class SignUpStudiesActivity extends AppCompatActivity {
 
@@ -46,9 +35,6 @@ public class SignUpStudiesActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        ErrorClass.activity = this;
-        ErrorClass.checkInternetConnection();
 
         setContentView(R.layout.activity_sign_up_studies);
 
@@ -103,9 +89,7 @@ public class SignUpStudiesActivity extends AppCompatActivity {
            @Override
            public void onClick(View view) {
 
-               ErrorClass.checkInternetConnection();
-
-               if(click == true){
+               if(click){
                    SignUpInformationActivity.user.setCursus(departement);
                    Intent signUpTwo = new Intent(getBaseContext(), SignUpHobbiesActivity.class);
                    startActivityForResult(signUpTwo,0);
@@ -121,6 +105,5 @@ public class SignUpStudiesActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        ErrorClass.checkInternetConnection();
     }
 }

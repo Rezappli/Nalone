@@ -9,6 +9,7 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -187,13 +188,16 @@ public class AmisFragment extends Fragment implements CoreListener{
         if(USERS_LIST.get(USER_ID).getAmis().size() == 1) {
             USERS_LIST.get(USER_ID).getAmis().set(0, "");
         }else{
-            USERS_LIST.get(USER_ID).getAmis().remove(id);
+            USERS_LIST.get(USER_ID).getAmis().remove(id+"");
         }
 
         if(USERS_LIST.get(id+"").getAmis().size() == 1) {
+            Log.w("amis", "index 0 : "+USERS_LIST.get(id+"").getAmis().get(0));
+            Log.w("amis", "id  : "+id);
             USERS_LIST.get(id+"").getAmis().set(0, "");
+            Log.w("amis", "index 0 : "+USERS_LIST.get(id+"").getAmis().get(0));
         }else{
-            USERS_LIST.get(id+"").getAmis().remove(Integer.parseInt(USER_ID));
+            USERS_LIST.get(id+"").getAmis().remove(USER_ID);
         }
 
         USERS_DB_REF.setValue(USERS_LIST);
@@ -211,7 +215,8 @@ public class AmisFragment extends Fragment implements CoreListener{
         for (int i = 0; i < USERS_LIST.get(USER_ID).getAmis().size(); i++) {
             User u = USERS_LIST.get(USERS_LIST.get(USER_ID).getAmis().get(i));
             if(u != null) {
-                items.add(new ItemPerson(i, R.drawable.ic_baseline_account_circle_24,
+                int id = Integer.parseInt(USERS_LIST.get(USER_ID).getAmis().get(i));
+                items.add(new ItemPerson(id, R.drawable.ic_baseline_account_circle_24,
                         u.getPrenom() + " " + u.getNom(), 0, u.getDescription(),
                         u.getVille(), u.getCursus(), u.getNbCreation(), u.getNbParticipation(), u.getCentreInterets()));
             }

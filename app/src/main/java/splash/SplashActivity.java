@@ -90,7 +90,11 @@ public class SplashActivity extends AppCompatActivity {
 
                         if(!load) {
                             if (currentUser != null) {
-                                startActivity(new Intent(SplashActivity.this, HomeActivity.class));
+                                if(currentUser.isEmailVerified()) {
+                                    startActivity(new Intent(SplashActivity.this, HomeActivity.class));
+                                }else {
+                                    startActivity(new Intent(SplashActivity.this, MainActivity.class));
+                                }
                             } else {
                                 startActivity(new Intent(SplashActivity.this, MainActivity.class));
                             }

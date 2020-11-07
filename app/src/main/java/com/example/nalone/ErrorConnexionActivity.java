@@ -65,9 +65,5 @@ public class ErrorConnexionActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        if(isInternetConnected()){
-            Intent intent = new Intent(getBaseContext(), ErrorClass.activity.getClass());
-            startActivityForResult(intent, 0);
-        }
     }
 }
