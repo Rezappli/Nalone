@@ -41,21 +41,15 @@
         <activity
             android:name=".MapsActivity"
             android:label="@string/title_activity_maps" />
-        <activity
-            android:name=".ErrorConnexionActivity" />
-        <activity
-            android:name=".signUpActivities.SignUpStudiesActivity" />
+        <activity android:name=".ErrorConnexionActivity" />
+        <activity android:name=".signUpActivities.SignUpStudiesActivity" />
         <activity
             android:name=".HomeActivity"
             android:label="@string/title_activity_home" />
-        <activity
-            android:name=".signUpActivities.SignUpProfilActivity" />
-        <activity
-            android:name=".signUpActivities.SignUpHobbiesActivity" />
-        <activity
-            android:name=".signUpActivities.SignUpInformationActivity" />
-        <activity
-            android:name=".ui.message.ChatActivity" />
+        <activity android:name=".signUpActivities.SignUpProfilActivity" />
+        <activity android:name=".signUpActivities.SignUpHobbiesActivity" />
+        <activity android:name=".signUpActivities.SignUpInformationActivity" />
+        <activity android:name=".ui.message.ChatActivity" />
         <!--
 <activity
             android:name=".MainActivity"

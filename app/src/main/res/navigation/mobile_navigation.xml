@@ -24,8 +24,6 @@
         android:label="@string/title_amis"
         tools:layout="@layout/fragment_mes_amis" />
 
-
-
     <fragment
         android:id="@+id/navigation_messages"
         android:name="com.example.nalone.ui.message.MessagesFragment"
@@ -36,5 +34,34 @@
         android:id="@+id/navigation_profil"
         android:name="com.example.nalone.ui.profil.ProfilFragment"
         android:label="@string/title_profil"
-        tools:layout="@layout/fragment_profil" />
+        tools:layout="@layout/fragment_profil" >
+        <action
+            android:id="@+id/action_navigation_profil_to_navigation_parametres"
+            app:destination="@id/navigation_parametres" />
+        <action
+            android:id="@+id/action_navigation_profil_to_navigation_edit_profil"
+            app:destination="@id/navigation_edit_profil" />
+        <action
+            android:id="@+id/action_navigation_profil_to_navigation_aide"
+            app:destination="@id/navigation_aide" />
+    </fragment>
+
+
+    <fragment
+        android:id="@+id/navigation_parametres"
+        android:name="com.example.nalone.ui.profil.ParametresFragment"
+        android:label="@string/title_profil"
+        tools:layout="@layout/fragment_parametres" />
+
+    <fragment
+        android:id="@+id/navigation_edit_profil"
+        android:name="com.example.nalone.ui.profil.EditFragment"
+        android:label="@string/title_profil"
+        tools:layout="@layout/fragment_edit" />
+
+    <fragment
+        android:id="@+id/navigation_aide"
+        android:name="com.example.nalone.ui.profil.AideFragment"
+        android:label="@string/title_profil"
+        tools:layout="@layout/fragment_aide" />
 </navigation>

@@ -88,5 +88,7 @@
     <string name="parametres"> Paramètres </string>
     <string name="Profil"> Profil </string>
     <string name="aide"> Aide et assistance </string>
+    <string name="dateNaissance"> Date de naissance </string>
+    <string name="editMail"> Changer d\'adresse mail </string>
 
 </resources>

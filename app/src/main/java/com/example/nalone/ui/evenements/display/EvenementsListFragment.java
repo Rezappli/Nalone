@@ -124,6 +124,18 @@ public class EvenementsListFragment extends Fragment implements CoreListener {
                 false);
         mRecyclerViewEvent.setLayoutManager(mLayoutManagerEvent);
         mRecyclerViewEvent.setAdapter(mAdapterEventList);
+
+        mAdapterEventList.setOnItemClickListener(new ItemEventListAdapter.OnItemClickListener() {
+            @Override
+            public void onDisplayClick(int position) {
+                // Pour toi thiboule
+            }
+
+            @Override
+            public void onSignInClick(int position) {
+                // Pour toi thiboule
+            }
+        });
     }
 
     @Override

@@ -3,6 +3,7 @@ package com.example.nalone.Adapter;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -22,7 +23,8 @@ public class ItemEventListAdapter extends RecyclerView.Adapter<ItemEventListAdap
     public OnItemClickListener mListener;
 
     public interface OnItemClickListener {
-        void onAddClick(int position);
+        void onDisplayClick(int position);
+        void onSignInClick(int position);
     }
 
     public void setOnItemClickListener(OnItemClickListener listener){
@@ -38,6 +40,7 @@ public class ItemEventListAdapter extends RecyclerView.Adapter<ItemEventListAdap
         public TextView mVille;
         public TextView mDescription;
         public TextView mProprietaire;
+        public Button mInscrire, mAfficher;
 
 
         public ItemEventViewHolder(View itemView, final OnItemClickListener listener) {
@@ -49,7 +52,32 @@ public class ItemEventListAdapter extends RecyclerView.Adapter<ItemEventListAdap
             mVille = itemView.findViewById(R.id.villeEventList);
             mDescription = itemView.findViewById(R.id.descriptionEventList);
             mProprietaire = itemView.findViewById(R.id.ownerEventList);
+            mAfficher = itemView.findViewById(R.id.buttonAfficherEventList);
+            mInscrire = itemView.findViewById(R.id.buttonInscrirEventList);
 
+            mAfficher.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if(listener != null){
+                        int position = getAdapterPosition();
+                        if(position != RecyclerView.NO_POSITION){
+                            listener.onDisplayClick(position);
+                        }
+                    }
+                }
+            });
+
+            mInscrire.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if(listener != null){
+                        int position = getAdapterPosition();
+                        if(position != RecyclerView.NO_POSITION){
+                            listener.onSignInClick(position);
+                        }
+                    }
+                }
+            });
         }
     }
 
