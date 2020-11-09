@@ -245,6 +245,7 @@ public class RechercheFragment extends Fragment implements CoreListener {
         mAdapter.setOnItemClickListener(new ItemProfilAdapter.OnItemClickListener() {
             @Override
             public void onAddClick(int position) {
+
                 if (USERS_LIST.get(USER_ID).getDemande_amis_envoye().contains(items.get(position).getId() + "")) {
                     showPopUpProfil(items.get(position).getId(), items.get(position).getNom(),items.get(position).getVille(), items.get(position).getmDescription(), items.get(position).getmNbCreate(), items.get(position).getmNbParticipate(), R.drawable.ic_round_hourglass_top_24, items.get(position).getCentresInterets());
                 } else if (USERS_LIST.get(USER_ID).getDemande_amis_recu().contains(items.get(position).getId() + "")) {
