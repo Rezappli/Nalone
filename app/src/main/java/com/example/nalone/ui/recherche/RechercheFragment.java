@@ -235,7 +235,9 @@ public class RechercheFragment extends Fragment implements CoreListener {
         imagePerson = dialogProfil.findViewById(R.id.imagePerson);
         buttonAdd = dialogProfil.findViewById(R.id.buttonAdd);
 
-        Glide.with(getContext()).load(USERS_PICTURE_URI.get(id+"")).fitCenter().centerCrop().into(imagePerson);
+        if(USERS_PICTURE_URI.get(id+"") != null) {
+            Glide.with(getContext()).load(USERS_PICTURE_URI.get(id + "")).fitCenter().centerCrop().into(imagePerson);
+        }
 
         List<ImageView> imageCentreInteret = new ArrayList<>();
 

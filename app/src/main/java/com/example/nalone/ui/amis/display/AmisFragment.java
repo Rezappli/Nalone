@@ -228,7 +228,9 @@ public class AmisFragment extends Fragment implements CoreListener{
         buttonAdd = dialogProfil.findViewById(R.id.buttonAdd);
         imagePerson = dialogProfil.findViewById(R.id.imagePerson);
 
-        Glide.with(getContext()).load(USERS_PICTURE_URI.get(id+"")).fitCenter().centerCrop().into(imagePerson);
+        if(USERS_PICTURE_URI.get(id+"") != null) {
+            Glide.with(getContext()).load(USERS_PICTURE_URI.get(id + "")).fitCenter().centerCrop().into(imagePerson);
+        }
 
         List<ImageView> imageCentreInteret = new ArrayList<>();
 
