@@ -3,8 +3,10 @@ package com.example.nalone.ui.amis.display;
 import android.app.Dialog;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.net.Uri;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -18,11 +20,16 @@ import android.widget.SearchView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.example.nalone.Adapter.ItemListAmisAdapter;
 import com.example.nalone.CoreListener;
 import com.example.nalone.items.ItemPerson;
 import com.example.nalone.R;
 import com.example.nalone.User;
+import com.google.android.gms.auth.api.signin.internal.Storage;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.storage.StorageReference;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,6 +39,8 @@ import static com.example.nalone.util.Constants.USERS_LIST;
 import static com.example.nalone.util.Constants.USER_ID;
 import static com.example.nalone.util.Constants.heightScreen;
 import static com.example.nalone.util.Constants.listeners;
+import static com.example.nalone.util.Constants.mProfilRef;
+import static com.example.nalone.util.Constants.mStore;
 import static com.example.nalone.util.Constants.widthScreen;
 
 public class AmisFragment extends Fragment implements CoreListener{
@@ -190,7 +199,7 @@ public class AmisFragment extends Fragment implements CoreListener{
         mAdapter.setOnItemClickListener(new ItemListAmisAdapter.OnItemClickListener() {
             @Override
             public void onAddClick(int position) {
-                showPopUpProfil(items.get(position).getNom(), items.get(position).getmDescription(), items.get(position).getmNbCreate(), items.get(position).getmNbParticipate(), items.get(position).getCentresInterets());
+                showPopUpProfil(items.get(position).getId(), items.get(position).getNom(), items.get(position).getmDescription(), items.get(position).getmNbCreate(), items.get(position).getmNbParticipate(), items.get(position).getCentresInterets());
             }
 
             @Override
@@ -201,13 +210,14 @@ public class AmisFragment extends Fragment implements CoreListener{
 
     }
 
-    public void showPopUpProfil(String name, String desc, String nbCreate, String nbParticipate, List<String> centresInteret) {
+    public void showPopUpProfil(int id, String name, String desc, String nbCreate, String nbParticipate, List<String> centresInteret) {
 
         TextView nameProfil;
         TextView descriptionProfil;
         TextView nbCreateProfil;
         TextView nbParticipateProfil;
         ImageView buttonAdd;
+        final ImageView imagePerson;
 
         dialogProfil.setContentView(R.layout.popup_profil);
         nameProfil = dialogProfil.findViewById(R.id.profilName);
@@ -215,6 +225,19 @@ public class AmisFragment extends Fragment implements CoreListener{
         nbCreateProfil = dialogProfil.findViewById(R.id.nbEventCreate);
         nbParticipateProfil = dialogProfil.findViewById(R.id.nbEventParticipe);
         buttonAdd = dialogProfil.findViewById(R.id.buttonAdd);
+        imagePerson = dialogProfil.findViewById(R.id.imagePerson);
+
+        StorageReference imgRef = mStore.getReference("users/"+id);
+
+        imgRef.getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
+            @Override
+            public void onComplete(@NonNull Task<Uri> task) {
+                if (task.isSuccessful()) {
+                    Uri img = task.getResult();
+                    Glide.with(getContext()).load(img).into(imagePerson);
+                }
+            }
+        });
 
         List<ImageView> imageCentreInteret = new ArrayList<>();
 
@@ -232,21 +255,21 @@ public class AmisFragment extends Fragment implements CoreListener{
 
         for(int i = 0; i < centresInteret.size(); i++){
             int imgResource = 0;
-            if(centresInteret.get(i).toString().equalsIgnoreCase("programmation")){
+            if(centresInteret.get(i).equalsIgnoreCase("programmation")){
                 imgResource = R.drawable.ci_programmation;
-            }else if(centresInteret.get(i).toString().equalsIgnoreCase("musique")){
+            }else if(centresInteret.get(i).equalsIgnoreCase("musique")){
                 imgResource = R.drawable.ci_musique;
-            }else if(centresInteret.get(i).toString().equalsIgnoreCase("livre")){
+            }else if(centresInteret.get(i).equalsIgnoreCase("livre")){
                 imgResource = R.drawable.ci_livre;
-            }else if(centresInteret.get(i).toString().equalsIgnoreCase("film")){
+            }else if(centresInteret.get(i).equalsIgnoreCase("film")){
                 imgResource = R.drawable.ci_film;
-            }else if(centresInteret.get(i).toString().equalsIgnoreCase("video")){
+            }else if(centresInteret.get(i).equalsIgnoreCase("video")){
                 imgResource = R.drawable.ci_jeuxvideo;
-            }else if(centresInteret.get(i).toString().equalsIgnoreCase("peinture")){
+            }else if(centresInteret.get(i).equalsIgnoreCase("peinture")){
                 imgResource = R.drawable.ci_peinture;
-            }else if(centresInteret.get(i).toString().equalsIgnoreCase("photo")){
+            }else if(centresInteret.get(i).equalsIgnoreCase("photo")){
                 imgResource = R.drawable.ci_photo;
-            }else if(centresInteret.get(i).toString().equalsIgnoreCase("sport")){
+            }else if(centresInteret.get(i).equalsIgnoreCase("sport")){
                 imgResource = R.drawable.ci_sport;
             }
 

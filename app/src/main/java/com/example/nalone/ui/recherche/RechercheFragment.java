@@ -3,6 +3,7 @@ package com.example.nalone.ui.recherche;
 import android.app.Dialog;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -19,6 +20,7 @@ import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.example.nalone.Adapter.ItemFiltreAdapter;
 import com.example.nalone.CoreListener;
 import com.example.nalone.CustomToast;
@@ -29,6 +31,9 @@ import com.example.nalone.items.ItemPerson;
 import com.example.nalone.Adapter.ItemProfilAdapter;
 import com.example.nalone.R;
 import com.example.nalone.User;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.storage.StorageReference;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,8 +41,11 @@ import java.util.List;
 import static com.example.nalone.util.Constants.USERS_DB_REF;
 import static com.example.nalone.util.Constants.USERS_LIST;
 import static com.example.nalone.util.Constants.USER_ID;
+import static com.example.nalone.util.Constants.USER_IMAGE_URI;
 import static com.example.nalone.util.Constants.heightScreen;
 import static com.example.nalone.util.Constants.listeners;
+import static com.example.nalone.util.Constants.mProfilRef;
+import static com.example.nalone.util.Constants.mStore;
 import static com.example.nalone.util.Constants.widthScreen;
 
 public class RechercheFragment extends Fragment implements CoreListener {
@@ -215,6 +223,7 @@ public class RechercheFragment extends Fragment implements CoreListener {
         TextView descriptionProfil;
         TextView nbCreateProfil;
         TextView nbParticipateProfil;
+        final ImageView imagePerson;
         ImageView buttonAdd;
 
         dialogProfil.setContentView(R.layout.popup_profil);
@@ -222,7 +231,20 @@ public class RechercheFragment extends Fragment implements CoreListener {
         descriptionProfil = dialogProfil.findViewById(R.id.profilDescription);
         nbCreateProfil = dialogProfil.findViewById(R.id.nbEventCreate);
         nbParticipateProfil = dialogProfil.findViewById(R.id.nbEventParticipe);
+        imagePerson = dialogProfil.findViewById(R.id.imageUser);
         buttonAdd = dialogProfil.findViewById(R.id.buttonAdd);
+
+        StorageReference imgRef = mStore.getReference("users/"+id);
+
+        imgRef.getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
+            @Override
+            public void onComplete(@NonNull Task<Uri> task) {
+                if (task.isSuccessful()) {
+                    Uri img = task.getResult();
+                    Glide.with(getContext()).load(img).into(imagePerson);
+                }
+            }
+        });
 
         List<ImageView> imageCentreInteret = new ArrayList<>();
 

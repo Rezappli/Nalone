@@ -25,14 +25,8 @@ import androidx.navigation.Navigation;
 import com.bumptech.glide.Glide;
 import com.example.nalone.MainActivity;
 import com.example.nalone.R;
-import com.google.android.gms.auth.api.signin.GoogleSignIn;
-import com.google.android.gms.auth.api.signin.GoogleSignInClient;
-import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
-import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
 import java.io.FileNotFoundException;
@@ -150,6 +144,11 @@ public class ProfilFragment extends Fragment  {
                 if(!editPhoto){
                     imageViewEditPhoto.setImageResource(R.drawable.ic_baseline_check_24);
                     editPhoto = true;
+
+                    Intent photoPickerIntent = new Intent(Intent.ACTION_PICK);
+                    photoPickerIntent.setType("image/*");
+                    startActivityForResult(photoPickerIntent, RESULT_LOAD_IMG);
+
                 }else{
                     imageViewEditPhoto.setImageResource(R.drawable.ic_baseline_edit_24);
                     editPhoto = false;
@@ -213,7 +212,9 @@ public class ProfilFragment extends Fragment  {
     }
 
     public void loadProfilImage(){
-        Glide.with(getContext()).load(USER_IMAGE_URI).into(imageUser);
+        if(USER_IMAGE_URI != null) {
+            Glide.with(getContext()).load(USER_IMAGE_URI).into(imageUser);
+        }
     }
 
 
