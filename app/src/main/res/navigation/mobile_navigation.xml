@@ -15,14 +15,22 @@
         android:id="@+id/navigation_recherche"
         android:name="com.example.nalone.ui.recherche.RechercheFragment"
         android:label="@string/title_recherche"
-        tools:layout="@layout/fragment_recherche" />
+        tools:layout="@layout/fragment_recherche" >
+        <action
+            android:id="@+id/action_navigation_recherche_to_navigation_popup_profil"
+            app:destination="@id/navigation_popup_profil" />
+    </fragment>
 
 
     <fragment
         android:id="@+id/navigation_amis"
         android:name="com.example.nalone.ui.amis.MesAmisFragment"
         android:label="@string/title_amis"
-        tools:layout="@layout/fragment_mes_amis" />
+        tools:layout="@layout/fragment_mes_amis" >
+        <action
+            android:id="@+id/action_navigation_amis_to_navigation_popup_profil"
+            app:destination="@id/navigation_popup_profil" />
+    </fragment>
 
     <fragment
         android:id="@+id/navigation_messages"
@@ -64,4 +72,11 @@
         android:name="com.example.nalone.ui.profil.AideFragment"
         android:label="@string/title_profil"
         tools:layout="@layout/fragment_aide" />
+
+    <fragment
+        android:id="@+id/navigation_popup_profil"
+        android:name="com.example.nalone.ui.amis.display.PopupProfilFragment"
+        android:label="@string/title_profil"
+        tools:layout="@layout/fragment_popup_profil" />
+
 </navigation>

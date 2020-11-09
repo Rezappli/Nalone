@@ -18,6 +18,8 @@ import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProviders;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -32,6 +34,7 @@ import com.example.nalone.items.ItemPerson;
 import com.example.nalone.Adapter.ItemProfilAdapter;
 import com.example.nalone.R;
 import com.example.nalone.User;
+import com.example.nalone.ui.amis.display.PopupProfilFragment;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.storage.StorageReference;
@@ -55,14 +58,12 @@ public class RechercheFragment extends Fragment implements CoreListener {
 
     private RechercheViewModel rechercheViewModel;
     private SearchView search_bar;
-
+    private NavController navController;
     private RecyclerView mRecyclerView;
     private ItemProfilAdapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
     private TextView resultat;
     private final List<ItemPerson> tempList = new ArrayList<>();
-    private Dialog dialogProfil;
-
     private RecyclerView mRecyclerViewFiltre;
     private ItemFiltreAdapter mAdapterFiltre;
     private RecyclerView.LayoutManager mLayoutManagerFiltre;
@@ -81,8 +82,7 @@ public class RechercheFragment extends Fragment implements CoreListener {
         search_bar = rootView.findViewById(R.id.search_bar);
         resultat = rootView.findViewById(R.id.resultatText);
         resultat.setVisibility(View.GONE);
-        dialogProfil = new Dialog(getContext());
-
+        navController = Navigation.findNavController(getActivity(), R.id.nav_host_fragment);
         filtres.add(new ItemFiltre("TC"));
         filtres.add(new ItemFiltre("MMI"));
         filtres.add(new ItemFiltre("INFO"));
@@ -162,11 +162,11 @@ public class RechercheFragment extends Fragment implements CoreListener {
                             @Override
                             public void onAddClick(int position) {
                                 if (USERS_LIST.get(USER_ID).getDemande_amis_envoye().contains(tempList.get(position).getId() + "")) {
-                                    showPopUpProfil(tempList.get(position).getId(), tempList.get(position).getNom(), tempList.get(position).getmDescription(), tempList.get(position).getmNbCreate(), tempList.get(position).getmNbParticipate(), R.drawable.ic_round_hourglass_top_24, tempList.get(position).getCentresInterets());
+                                    showPopUpProfil(tempList.get(position).getId(), tempList.get(position).getNom(),tempList.get(position).getVille(), tempList.get(position).getmDescription(), tempList.get(position).getmNbCreate(), tempList.get(position).getmNbParticipate(), R.drawable.ic_round_hourglass_top_24, tempList.get(position).getCentresInterets());
                                 } else if (USERS_LIST.get(USER_ID).getDemande_amis_recu().contains(tempList.get(position).getId() + "")) {
-                                    showPopUpProfil(tempList.get(position).getId(), tempList.get(position).getNom(), tempList.get(position).getmDescription(), tempList.get(position).getmNbCreate(), tempList.get(position).getmNbParticipate(), R.drawable.ic_round_mail_24, tempList.get(position).getCentresInterets());
+                                    showPopUpProfil(tempList.get(position).getId(), tempList.get(position).getNom(),tempList.get(position).getVille(), tempList.get(position).getmDescription(), tempList.get(position).getmNbCreate(), tempList.get(position).getmNbParticipate(), R.drawable.ic_round_mail_24, tempList.get(position).getCentresInterets());
                                 } else {
-                                    showPopUpProfil(tempList.get(position).getId(), tempList.get(position).getNom(), tempList.get(position).getmDescription(), tempList.get(position).getmNbCreate(), tempList.get(position).getmNbParticipate(), R.drawable.ic_baseline_add_circle_outline_24, tempList.get(position).getCentresInterets());
+                                    showPopUpProfil(tempList.get(position).getId(), tempList.get(position).getNom(),tempList.get(position).getVille(), tempList.get(position).getmDescription(), tempList.get(position).getmNbCreate(), tempList.get(position).getmNbParticipate(), R.drawable.ic_baseline_add_circle_outline_24, tempList.get(position).getCentresInterets());
                                 }
 
                             }
@@ -180,11 +180,11 @@ public class RechercheFragment extends Fragment implements CoreListener {
                             @Override
                             public void onAddClick(int position) {
                                 if (USERS_LIST.get(USER_ID).getDemande_amis_envoye().contains(tempList.get(position).getId() + "")) {
-                                    showPopUpProfil(tempList.get(position).getId(), tempList.get(position).getNom(), tempList.get(position).getmDescription(), tempList.get(position).getmNbCreate(), tempList.get(position).getmNbParticipate(), R.drawable.ic_round_hourglass_top_24, tempList.get(position).getCentresInterets());
+                                    showPopUpProfil(tempList.get(position).getId(), tempList.get(position).getNom(),tempList.get(position).getVille(), tempList.get(position).getmDescription(), tempList.get(position).getmNbCreate(), tempList.get(position).getmNbParticipate(), R.drawable.ic_round_hourglass_top_24, tempList.get(position).getCentresInterets());
                                 } else if (USERS_LIST.get(USER_ID).getDemande_amis_recu().contains(tempList.get(position).getId() + "")) {
-                                    showPopUpProfil(tempList.get(position).getId(), tempList.get(position).getNom(), tempList.get(position).getmDescription(), tempList.get(position).getmNbCreate(), tempList.get(position).getmNbParticipate(), R.drawable.ic_round_mail_24, tempList.get(position).getCentresInterets());
+                                    showPopUpProfil(tempList.get(position).getId(), tempList.get(position).getNom(),tempList.get(position).getVille(), tempList.get(position).getmDescription(), tempList.get(position).getmNbCreate(), tempList.get(position).getmNbParticipate(), R.drawable.ic_round_mail_24, tempList.get(position).getCentresInterets());
                                 } else {
-                                    showPopUpProfil(tempList.get(position).getId(), tempList.get(position).getNom(), tempList.get(position).getmDescription(), tempList.get(position).getmNbCreate(), tempList.get(position).getmNbParticipate(), R.drawable.ic_baseline_add_circle_outline_24, tempList.get(position).getCentresInterets());
+                                    showPopUpProfil(tempList.get(position).getId(), tempList.get(position).getNom(),tempList.get(position).getVille(), tempList.get(position).getmDescription(), tempList.get(position).getmNbCreate(), tempList.get(position).getmNbParticipate(), R.drawable.ic_baseline_add_circle_outline_24, tempList.get(position).getCentresInterets());
                                 }
 
 
@@ -220,126 +220,18 @@ public class RechercheFragment extends Fragment implements CoreListener {
     }
 
 
-    public void showPopUpProfil(final int id, String name, String desc, String nbCreate, String nbParticipate, final int button, List centresInteret) {
-        TextView nameProfil;
-        TextView descriptionProfil;
-        TextView nbCreateProfil;
-        TextView nbParticipateProfil;
-        final ImageView imagePerson;
-        ImageView buttonAdd;
-        CardView cardViewPhotoPerson;
+    public void showPopUpProfil(final int id, String name,String ville, String desc, String nbCreate, String nbParticipate, final int button, List centresInteret) {
 
-        dialogProfil.setContentView(R.layout.popup_profil);
-        nameProfil = dialogProfil.findViewById(R.id.profilName);
-        descriptionProfil = dialogProfil.findViewById(R.id.profilDescription);
-        nbCreateProfil = dialogProfil.findViewById(R.id.nbEventCreate);
-        nbParticipateProfil = dialogProfil.findViewById(R.id.nbEventParticipe);
-        imagePerson = dialogProfil.findViewById(R.id.imagePerson);
-        buttonAdd = dialogProfil.findViewById(R.id.buttonAdd);
-        cardViewPhotoPerson = dialogProfil.findViewById(R.id.cardViewPhotoPerson);
+        PopupProfilFragment.id = id;
+        PopupProfilFragment.name = name;
+        PopupProfilFragment.ville = ville;
+        PopupProfilFragment.desc = desc;
+        PopupProfilFragment.nbCreate = nbCreate;
+        PopupProfilFragment.nbParticipate = nbParticipate;
+        PopupProfilFragment.button = button;
+        PopupProfilFragment.centresInteret = centresInteret;
 
-        if(USERS_LIST.get(id+"").getCursus().equalsIgnoreCase("Informatique")){
-            cardViewPhotoPerson.setCardBackgroundColor(Color.RED);
-        }
-        if(USERS_LIST.get(id+"").getCursus().equalsIgnoreCase("TC")){
-            cardViewPhotoPerson.setCardBackgroundColor(Color.GREEN);
-        }
-        if(USERS_LIST.get(id+"").getCursus().equalsIgnoreCase("MMI")){
-            cardViewPhotoPerson.setCardBackgroundColor(Color.parseColor("#4B0082"));
-        }
-        if(USERS_LIST.get(id+"").getCursus().equalsIgnoreCase("GB")){
-            cardViewPhotoPerson.setCardBackgroundColor(Color.BLUE);
-        }
-        if(USERS_LIST.get(id+"").getCursus().equalsIgnoreCase("LP")){
-            cardViewPhotoPerson.setCardBackgroundColor(Color.GRAY);
-        }
-
-
-        if(USERS_PICTURE_URI.get(id+"") != null) {
-            Glide.with(getContext()).load(USERS_PICTURE_URI.get(id + "")).fitCenter().centerCrop().into(imagePerson);
-        }
-
-        List<ImageView> imageCentreInteret = new ArrayList<>();
-
-        ImageView img_centre1 = dialogProfil.findViewById(R.id.imageViewCI1);
-        ImageView img_centre2 = dialogProfil.findViewById(R.id.imageViewCI2);
-        ImageView img_centre3 = dialogProfil.findViewById(R.id.imageViewCI3);
-        ImageView img_centre4 = dialogProfil.findViewById(R.id.imageViewCI4);
-        ImageView img_centre5 = dialogProfil.findViewById(R.id.imageViewCI5);
-
-        imageCentreInteret.add(img_centre1);
-        imageCentreInteret.add(img_centre2);
-        imageCentreInteret.add(img_centre3);
-        imageCentreInteret.add(img_centre4);
-        imageCentreInteret.add(img_centre5);
-
-        for(int i = 0; i < centresInteret.size(); i++){
-            int imgResource = 0;
-            if(centresInteret.get(i).toString().equalsIgnoreCase("programmation")){
-                imgResource = R.drawable.ci_programmation;
-            }else if(centresInteret.get(i).toString().equalsIgnoreCase("musique")){
-                imgResource = R.drawable.ci_musique;
-            }else if(centresInteret.get(i).toString().equalsIgnoreCase("livre")){
-                imgResource = R.drawable.ci_livre;
-            }else if(centresInteret.get(i).toString().equalsIgnoreCase("film")){
-                imgResource = R.drawable.ci_film;
-            }else if(centresInteret.get(i).toString().equalsIgnoreCase("video")){
-                imgResource = R.drawable.ci_jeuxvideo;
-            }else if(centresInteret.get(i).toString().equalsIgnoreCase("peinture")){
-                imgResource = R.drawable.ci_peinture;
-            }else if(centresInteret.get(i).toString().equalsIgnoreCase("photo")){
-                imgResource = R.drawable.ci_photo;
-            }else if(centresInteret.get(i).toString().equalsIgnoreCase("sport")){
-                imgResource = R.drawable.ci_sport;
-            }
-            
-            imageCentreInteret.get(i).setImageResource(imgResource);
-            imageCentreInteret.get(i).setVisibility(View.VISIBLE);
-
-        }
-
-
-        nameProfil.setText(name);
-        descriptionProfil.setText(desc);
-        nbCreateProfil.setText(nbCreate);
-        nbParticipateProfil.setText(nbParticipate);
-        buttonAdd.setImageResource(button);
-
-        if (desc.matches("")) {
-            descriptionProfil.setVisibility(View.GONE);
-        }
-
-        buttonAdd.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (button == R.drawable.ic_round_mail_24) {
-                    CustomToast t = new CustomToast(getContext(), "Vous avez reçu une demande d'amis de la part de cet utilisateur !", false, true);
-                    t.show();
-                } else if (button == R.drawable.ic_round_hourglass_top_24) {
-                    CustomToast t = new CustomToast(getContext(), "Votre demande d'amis est en attente !", false, true);
-                    t.show();
-                } else {
-                    Toast.makeText(getContext(), "Vous avez envoyé une demande d'amis !", Toast.LENGTH_SHORT).show();
-                    addFriend(""+id);
-                }
-            }
-        });
-
-        dialogProfil.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-        dialogProfil.getWindow().setLayout(widthScreen, heightScreen);
-        dialogProfil.show();
-
-    }
-
-    public void addFriend(final String id) {
-        USERS_LIST.get(USER_ID).getDemande_amis_envoye().add(id+"");
-        USERS_LIST.get(id).getDemande_amis_recu().add(USER_ID+"");
-
-        USERS_DB_REF.setValue(USERS_LIST);
-
-        dialogProfil.hide();
-
-        updateItems();
+        navController.navigate(R.id.action_navigation_recherche_to_navigation_popup_profil);
     }
 
     public void updateItems() {
@@ -376,14 +268,12 @@ public class RechercheFragment extends Fragment implements CoreListener {
             @Override
             public void onAddClick(int position) {
                 if (USERS_LIST.get(USER_ID).getDemande_amis_envoye().contains(items.get(position).getId() + "")) {
-                    showPopUpProfil(items.get(position).getId(), items.get(position).getNom(), items.get(position).getmDescription(), items.get(position).getmNbCreate(), items.get(position).getmNbParticipate(), R.drawable.ic_round_hourglass_top_24, items.get(position).getCentresInterets());
+                    showPopUpProfil(items.get(position).getId(), items.get(position).getNom(),items.get(position).getVille(), items.get(position).getmDescription(), items.get(position).getmNbCreate(), items.get(position).getmNbParticipate(), R.drawable.ic_round_hourglass_top_24, items.get(position).getCentresInterets());
                 } else if (USERS_LIST.get(USER_ID).getDemande_amis_recu().contains(items.get(position).getId() + "")) {
-                    showPopUpProfil(items.get(position).getId(), items.get(position).getNom(), items.get(position).getmDescription(), items.get(position).getmNbCreate(), items.get(position).getmNbParticipate(), R.drawable.ic_round_mail_24, items.get(position).getCentresInterets());
+                    showPopUpProfil(items.get(position).getId(), items.get(position).getNom(),items.get(position).getVille(), items.get(position).getmDescription(), items.get(position).getmNbCreate(), items.get(position).getmNbParticipate(), R.drawable.ic_round_mail_24, items.get(position).getCentresInterets());
                 } else {
-                    showPopUpProfil(items.get(position).getId(), items.get(position).getNom(), items.get(position).getmDescription(), items.get(position).getmNbCreate(), items.get(position).getmNbParticipate(), R.drawable.ic_baseline_add_circle_outline_24, items.get(position).getCentresInterets());
+                    showPopUpProfil(items.get(position).getId(), items.get(position).getNom(),items.get(position).getVille(), items.get(position).getmDescription(), items.get(position).getmNbCreate(), items.get(position).getmNbParticipate(), R.drawable.ic_baseline_add_circle_outline_24, items.get(position).getCentresInterets());
                 }
-
-
             }
         });
         mRecyclerView.setAdapter(mAdapter);

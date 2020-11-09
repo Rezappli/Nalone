@@ -9,6 +9,8 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -49,11 +51,11 @@ public class AmisFragment extends Fragment implements CoreListener{
 
     private SearchView search_bar;
     private RecyclerView mRecyclerView;
+    private NavController navController;
     private ItemListAmisAdapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
     private TextView resultat;
     private final List<ItemPerson> tempList = new ArrayList<>();
-    private Dialog dialogProfil;
     private final List<ItemPerson> items = new ArrayList<>();
     private View rootView;
 
@@ -69,7 +71,7 @@ public class AmisFragment extends Fragment implements CoreListener{
         search_bar = rootView.findViewById(R.id.search_bar_amis);
         resultat = rootView.findViewById(R.id.resultatText_amis);
         resultat.setVisibility(View.GONE);
-        dialogProfil = new Dialog(getContext());
+        navController = Navigation.findNavController(getActivity(), R.id.nav_host_fragment);
 
         updateItems();
 
@@ -200,7 +202,7 @@ public class AmisFragment extends Fragment implements CoreListener{
         mAdapter.setOnItemClickListener(new ItemListAmisAdapter.OnItemClickListener() {
             @Override
             public void onAddClick(int position) {
-                showPopUpProfil(items.get(position).getId(), items.get(position).getNom(), items.get(position).getmDescription(), items.get(position).getmNbCreate(), items.get(position).getmNbParticipate(), items.get(position).getCentresInterets());
+                showPopUpProfil(items.get(position).getId(), items.get(position).getNom(),items.get(position).getVille(), items.get(position).getmDescription(), items.get(position).getmNbCreate(), items.get(position).getmNbParticipate(), items.get(position).getCentresInterets());
             }
 
             @Override
@@ -211,98 +213,16 @@ public class AmisFragment extends Fragment implements CoreListener{
 
     }
 
-    public void showPopUpProfil(int id, String name, String desc, String nbCreate, String nbParticipate, List<String> centresInteret) {
+    public void showPopUpProfil(int id, String name,String ville, String desc, String nbCreate, String nbParticipate, List<String> centresInteret) {
+        PopupProfilFragment.id = id;
+        PopupProfilFragment.name = name;
+        PopupProfilFragment.ville = ville;
+        PopupProfilFragment.desc = desc;
+        PopupProfilFragment.nbCreate = nbCreate;
+        PopupProfilFragment.nbParticipate = nbParticipate;
+        PopupProfilFragment.centresInteret = centresInteret;
 
-        TextView nameProfil;
-        TextView descriptionProfil;
-        TextView nbCreateProfil;
-        TextView nbParticipateProfil;
-        ImageView buttonAdd;
-        final ImageView imagePerson;
-        CardView cardViewPhotoPerson;
-
-        dialogProfil.setContentView(R.layout.popup_profil);
-        nameProfil = dialogProfil.findViewById(R.id.profilName);
-        descriptionProfil = dialogProfil.findViewById(R.id.profilDescription);
-        nbCreateProfil = dialogProfil.findViewById(R.id.nbEventCreate);
-        nbParticipateProfil = dialogProfil.findViewById(R.id.nbEventParticipe);
-        buttonAdd = dialogProfil.findViewById(R.id.buttonAdd);
-        imagePerson = dialogProfil.findViewById(R.id.imagePerson);
-        cardViewPhotoPerson = dialogProfil.findViewById(R.id.cardViewPhotoPerson);
-
-        if(USERS_LIST.get(id+"").getCursus().equalsIgnoreCase("Informatique")){
-            cardViewPhotoPerson.setCardBackgroundColor(Color.RED);
-        }
-        if(USERS_LIST.get(id+"").getCursus().equalsIgnoreCase("TC")){
-            cardViewPhotoPerson.setCardBackgroundColor(Color.GREEN);
-        }
-        if(USERS_LIST.get(id+"").getCursus().equalsIgnoreCase("MMI")){
-            cardViewPhotoPerson.setCardBackgroundColor(Color.parseColor("#4B0082"));
-        }
-        if(USERS_LIST.get(id+"").getCursus().equalsIgnoreCase("GB")){
-            cardViewPhotoPerson.setCardBackgroundColor(Color.BLUE);
-        }
-        if(USERS_LIST.get(id+"").getCursus().equalsIgnoreCase("LP")){
-            cardViewPhotoPerson.setCardBackgroundColor(Color.GRAY);
-        }
-
-        if(USERS_PICTURE_URI.get(id+"") != null) {
-            Glide.with(getContext()).load(USERS_PICTURE_URI.get(id + "")).fitCenter().centerCrop().into(imagePerson);
-        }
-
-        List<ImageView> imageCentreInteret = new ArrayList<>();
-
-        ImageView img_centre1 = dialogProfil.findViewById(R.id.imageViewCI1);
-        ImageView img_centre2 = dialogProfil.findViewById(R.id.imageViewCI2);
-        ImageView img_centre3 = dialogProfil.findViewById(R.id.imageViewCI3);
-        ImageView img_centre4 = dialogProfil.findViewById(R.id.imageViewCI4);
-        ImageView img_centre5 = dialogProfil.findViewById(R.id.imageViewCI5);
-
-        imageCentreInteret.add(img_centre1);
-        imageCentreInteret.add(img_centre2);
-        imageCentreInteret.add(img_centre3);
-        imageCentreInteret.add(img_centre4);
-        imageCentreInteret.add(img_centre5);
-
-        for(int i = 0; i < centresInteret.size(); i++){
-            int imgResource = 0;
-            if(centresInteret.get(i).equalsIgnoreCase("programmation")){
-                imgResource = R.drawable.ci_programmation;
-            }else if(centresInteret.get(i).equalsIgnoreCase("musique")){
-                imgResource = R.drawable.ci_musique;
-            }else if(centresInteret.get(i).equalsIgnoreCase("livre")){
-                imgResource = R.drawable.ci_livre;
-            }else if(centresInteret.get(i).equalsIgnoreCase("film")){
-                imgResource = R.drawable.ci_film;
-            }else if(centresInteret.get(i).equalsIgnoreCase("video")){
-                imgResource = R.drawable.ci_jeuxvideo;
-            }else if(centresInteret.get(i).equalsIgnoreCase("peinture")){
-                imgResource = R.drawable.ci_peinture;
-            }else if(centresInteret.get(i).equalsIgnoreCase("photo")){
-                imgResource = R.drawable.ci_photo;
-            }else if(centresInteret.get(i).equalsIgnoreCase("sport")){
-                imgResource = R.drawable.ci_sport;
-            }
-
-            imageCentreInteret.get(i).setImageResource(imgResource);
-            imageCentreInteret.get(i).setVisibility(View.VISIBLE);
-
-        }
-
-
-        nameProfil.setText(name);
-        descriptionProfil.setText(desc);
-        nbCreateProfil.setText(nbCreate);
-        nbParticipateProfil.setText(nbParticipate);
-        buttonAdd.setVisibility(View.GONE);
-
-        if (desc.matches("")) {
-            descriptionProfil.setVisibility(View.GONE);
-        }
-
-        dialogProfil.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-        dialogProfil.getWindow().setLayout(widthScreen - 100, heightScreen - 200);
-        dialogProfil.show();
+        navController.navigate(R.id.action_navigation_amis_to_navigation_popup_profil);
     }
 
     @Override

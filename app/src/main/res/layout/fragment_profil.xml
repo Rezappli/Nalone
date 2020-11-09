@@ -139,7 +139,7 @@
                     android:layout_height="match_parent"
                     android:layout_gravity="center"
                     android:contentDescription="@string/TODO"
-                    app:srcCompat="@drawable/add_photo" />
+                    app:srcCompat="@drawable/ic_baseline_account_circle_24" />
             </androidx.cardview.widget.CardView>
 
         </androidx.cardview.widget.CardView>
