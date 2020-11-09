@@ -61,4 +61,6 @@ public class Constants {
     public static LatLng targetZoom;
 
     public static int range = 50000;
+
+    public static boolean maPosition;
 }

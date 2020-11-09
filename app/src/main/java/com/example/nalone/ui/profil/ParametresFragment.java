@@ -2,10 +2,14 @@ package com.example.nalone.ui.profil;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.content.res.AppCompatResources;
 import androidx.cardview.widget.CardView;
+import androidx.core.graphics.drawable.DrawableCompat;
 import androidx.fragment.app.Fragment;
 
 import android.view.LayoutInflater;
@@ -27,6 +31,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 
 import static android.content.Context.MODE_PRIVATE;
+import static com.example.nalone.util.Constants.maPosition;
 import static com.example.nalone.util.Constants.range;
 
 public class ParametresFragment extends Fragment {
@@ -34,10 +39,10 @@ public class ParametresFragment extends Fragment {
     private Button sign_out;
     private GoogleSignInClient mGoogleSignInClient;
     private SeekBar seekBar;
-    private TextView textViewRayon, textViewInternational;
-    public static final String SHARED_PREFS = "sharedPrefs", sharedRange = "sharedRange", sharedIntern = "sharedIntern";
+    private TextView textViewRayon, textViewLocationActuel, textViewMaPosition;
+    public static final String SHARED_PREFS = "sharedPrefs", sharedRange = "sharedRange",sharedNotif = "sharedNotif", sharedIntern = "sharedIntern";
     private int rangeActual;
-    private boolean international;
+    private boolean international, notification = true;
 
 
     @Override
@@ -50,10 +55,26 @@ public class ParametresFragment extends Fragment {
                 .requestEmail()
                 .build();
 
+       // Drawable unwrappedDrawable = AppCompatResources.getDrawable(getContext(), R.drawable.my_drawable);
+        //Drawable wrappedDrawable = DrawableCompat.wrap(unwrappedDrawable);
+
+
         SharedPreferences settings = this.getActivity().getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
         international = settings.getBoolean(sharedIntern, false);
+        notification = settings.getBoolean(sharedNotif, false);
 
         textViewRayon = root.findViewById(R.id.textViewRayon);
+        textViewLocationActuel = root.findViewById(R.id.textViewLocationActuel);
+        textViewMaPosition = root.findViewById(R.id.textViewMaPosition);
+
+        textViewMaPosition.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                maPosition = true;
+                //textViewMaPosition.setStar
+            }
+        });
+
         textViewRayon.setText(range/1000+" km");
 
         final SeekBar seekBar =  root.findViewById(R.id.seekBarRayon);
@@ -84,32 +105,45 @@ public class ParametresFragment extends Fragment {
             }
         });
 
-        textViewInternational = root.findViewById(R.id.textViewInternational);
 
-        if(international == true){
-            textViewInternational.setText("Oui");
+        if(international){
             seekBar.setEnabled(false);
+        }
+
+        if(notification){
+
         }else{
-            textViewInternational.setText("Non");
+
         }
 
         Switch sw = (Switch) root.findViewById(R.id.switch1);
+        Switch swNotif = (Switch) root.findViewById(R.id.switchNotif);
 
         sw.setChecked(international);
+        swNotif.setChecked(notification);
 
+        swNotif.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if(isChecked){
+                    notification = true;
+                }else{
+                    notification = false;
+
+                }
+            }
+        });
 
         sw.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (isChecked) {
-                    textViewInternational.setText("Oui");
                     rangeActual = range;
-                    range = 10000000*100;
+                    range = 1000000*100;
                     seekBar.setProgress(seekBar.getMax());
                     textViewRayon.setText(range/1000+" km");
                     seekBar.setEnabled(false);
                     international = true;
                 } else {
-                    textViewInternational.setText("Non");
                     range = 50000;
                     textViewRayon.setText(range/1000+" km");
                     seekBar.setProgress(range);
@@ -159,6 +193,7 @@ public class ParametresFragment extends Fragment {
 
         editor.putInt(sharedRange, range);
         editor.putBoolean(sharedIntern, international);
+        editor.putBoolean(sharedNotif, notification);
 
         editor.apply();
     }
