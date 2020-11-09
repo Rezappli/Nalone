@@ -1,5 +1,6 @@
 package com.example.nalone.ui.evenements.display;
 
+import android.location.Location;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -44,6 +45,8 @@ import com.example.nalone.util.Constants;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
+
 import static com.example.nalone.util.Constants.EVENTS_LIST;
 import static com.example.nalone.util.Constants.MAPVIEW_BUNDLE_KEY;
 import static com.example.nalone.util.Constants.MARKERS_EVENT;
@@ -187,13 +190,19 @@ public class MapFragment extends Fragment implements OnMapReadyCallback,  CoreLi
             mMap.clear();
             itemEvents.clear();
 
+            float[] results = new float[1];
+
             for (int i = 0; i < EVENTS_LIST.size(); i++) {
                 MarkerOptions m = MARKERS_EVENT.get(i + "");
                 Evenement e = Constants.EVENTS_LIST.get(i + "");
                 if (m.getIcon() != null) {
                     mMap.addMarker(m).setTag(e.getId());
                     if (!itemEvents.contains(e)) {
-                        itemEvents.add(e);
+                        Location.distanceBetween(USER_LATLNG.latitude, USER_LATLNG.longitude,
+                                m.getPosition().latitude, m.getPosition().longitude, results);
+                        if(results[0] < 50000) {
+                            itemEvents.add(e);
+                        }
                     }
                 }
             }
