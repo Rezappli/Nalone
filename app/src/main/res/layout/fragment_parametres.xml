@@ -30,7 +30,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="10dp"
-                    android:layout_marginBottom="5dp"
+                    android:layout_marginBottom="10dp"
                     android:layout_weight="0.2"
                     android:text="@string/lieuParametre" />
 
@@ -39,12 +39,13 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="10dp"
-                    android:layout_marginBottom="5dp"
+                    android:layout_marginBottom="10dp"
                     android:layout_weight="0.2"
                     android:drawableStart="@drawable/ic_baseline_location_edit_focused"
                     android:drawablePadding="10dp"
                     android:gravity="center_vertical"
-                    android:text="Lannion" />
+                    android:text="Lannion"
+                    android:textStyle="bold" />
 
                 <TextView
                     android:id="@+id/textViewMaPosition"
@@ -55,7 +56,8 @@
                     android:drawableStart="@drawable/ic_baseline_my_location_24"
                     android:drawablePadding="10dp"
                     android:gravity="center_vertical"
-                    android:text="Position" />
+                    android:text="Position"
+                    android:textStyle="bold" />
 
             </LinearLayout>
 
