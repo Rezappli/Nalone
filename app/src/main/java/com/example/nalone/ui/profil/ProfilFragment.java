@@ -184,14 +184,11 @@ public class ProfilFragment extends Fragment  {
     public void uploadFile(Uri imagUri) {
         if (imagUri != null) {
 
-
+            USER_IMAGE_URI = imageUri;
             mProfilRef.putFile(imagUri)
                     .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                         @Override
                         public void onSuccess(UploadTask.TaskSnapshot snapshot) {
-                            // Get the download URL
-                            //Uri downloadUri = snapshot.getMetadata().
-                            // use this download url with imageview for viewing & store this linke to firebase message data
                             Toast.makeText(getContext(), "Vous avez changé votre photo de profil !", Toast.LENGTH_SHORT).show();
                         }
                     })
