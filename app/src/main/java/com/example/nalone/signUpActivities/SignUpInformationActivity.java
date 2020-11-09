@@ -3,12 +3,17 @@ package com.example.nalone.signUpActivities;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
 
+import android.app.Dialog;
 import android.content.Intent;
 import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CalendarView;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -20,6 +25,8 @@ import com.example.nalone.User;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 
+import java.util.Calendar;
+
 public class SignUpInformationActivity extends AppCompatActivity {
     public EditText nom;
     public EditText prenom;
@@ -28,6 +35,16 @@ public class SignUpInformationActivity extends AppCompatActivity {
     public EditText adresseMail;
     public EditText pass;
     public EditText confirmPass;
+    public EditText dateNaissance;
+
+    private Dialog dialogCalendrier;
+    private CalendarView calendarDate;
+    private Button buttonCalendrier;
+    private Calendar calendar;
+
+    private int newDay;
+    private int newMonth;
+    private int newYears;
 
     public static String password;
 
@@ -50,6 +67,7 @@ public class SignUpInformationActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_up_information);
 
+        dialogCalendrier = new Dialog(this);
 
         user = null;
 
@@ -59,6 +77,9 @@ public class SignUpInformationActivity extends AppCompatActivity {
         ville = (EditText)  findViewById(R.id.signupVille);
         numero = (EditText)  findViewById(R.id.signupNumero);
         adresseMail = (EditText) findViewById(R.id.signupMail);
+        dateNaissance = (EditText) findViewById(R.id.signupDate);
+
+
         pass =  (EditText) findViewById(R.id.signupPass);
         confirmPass = (EditText)  findViewById(R.id.signupConfirmPass);
         homme =  findViewById(R.id.signUpHomme);
@@ -78,8 +99,12 @@ public class SignUpInformationActivity extends AppCompatActivity {
         final Drawable customErrorDrawable = getResources().getDrawable(R.drawable.error_icon);
         customErrorDrawable.setBounds(0, 0, customErrorDrawable.getIntrinsicWidth(), customErrorDrawable.getIntrinsicHeight());
 
-
-
+        dateNaissance.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showCalendrier(v);
+            }
+        });
 
         homme.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -175,7 +200,7 @@ public class SignUpInformationActivity extends AppCompatActivity {
               }
 
                 user = new User(nomEntre, prenomEntre, sexe, villeEntre, numeroEntre, mailEntre, null,
-                        null, "");
+                        null, "", dateNaissance.getText().toString());
                 Intent signUpStudy = new Intent(getBaseContext(), SignUpStudiesActivity.class);
                 startActivityForResult(signUpStudy, 0);
 
@@ -193,6 +218,40 @@ public class SignUpInformationActivity extends AppCompatActivity {
         //super.onBackPressed();
         Intent intent = new Intent(getBaseContext(), MainActivity.class);
         startActivity(intent);
+    }
+
+    public void showCalendrier(final View v){
+        dialogCalendrier.setContentView(R.layout.calendrier);
+        calendarDate = dialogCalendrier.findViewById(R.id.calendarView);
+        buttonCalendrier = dialogCalendrier.findViewById(R.id.buttonCalendrier);
+
+        calendar = Calendar.getInstance();
+
+        CalendarView.OnDateChangeListener myCalendarListener = new CalendarView.OnDateChangeListener() {
+
+            public void onSelectedDayChange(CalendarView view, int year, int month, int day) {
+
+                newDay = day;
+                newMonth = month;
+                newYears = year;
+            }
+        };
+
+        calendarDate.setOnDateChangeListener(myCalendarListener);
+
+
+        buttonCalendrier.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dateNaissance.setText(newDay+"-"+newMonth+"-"+newYears);
+                dialogCalendrier.dismiss();
+            }
+        });
+
+
+
+        dialogCalendrier.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        dialogCalendrier.show();
     }
 
 

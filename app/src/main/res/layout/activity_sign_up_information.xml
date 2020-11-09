@@ -345,6 +345,22 @@
                 android:paddingEnd="12dp" />
 
             <EditText
+                android:id="@+id/signupDate"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:layout_marginStart="32dp"
+                android:layout_marginEnd="32dp"
+                android:layout_marginBottom="15dp"
+                android:layout_weight="0.5"
+                android:autofillHints=""
+                android:background="@drawable/custom_input"
+                android:drawablePadding="12dp"
+                android:ems="10"
+                android:hint="@string/dateNaissance"
+                android:paddingStart="12dp"
+                android:paddingEnd="12dp" />
+
+            <EditText
                 android:id="@+id/signupMail"
                 android:layout_width="match_parent"
                 android:layout_height="40dp"

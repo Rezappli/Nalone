@@ -23,6 +23,7 @@ public class User {
     public List<String> demande_amis_recu;
     public List<String> demande_amis_envoye;
     public List<String> amis;
+    public String dateNaissance;
 
     public String getSexe() {
         return sexe;
@@ -52,7 +53,7 @@ public class User {
 
     public User(String nom, String prenom, String sexe, String ville,
                 String numero, String mail, String cursus, List<String> centreInterets,
-                String description){
+                String description, String dateNaissance){
         this.nom = nom;
         this.prenom = prenom;
         this.sexe = sexe;
@@ -62,6 +63,8 @@ public class User {
         this.cursus = cursus;
         this.centreInterets = centreInterets;
         this.description = description;
+        this.dateNaissance = dateNaissance;
+
         this.nbCreation = "0";
         this.nbParticipation = "0";
         this.demande_amis_envoye = new ArrayList<>();
@@ -159,5 +162,9 @@ public class User {
 
     public void setAmis(List<String> amis) {
         this.amis = amis;
+    }
+
+    public String getDateNaissance(){
+        return this.dateNaissance;
     }
 }

@@ -30,8 +30,6 @@ import static com.example.nalone.util.Constants.USER_ID;
 public class ProfilFragment extends Fragment  {
 
     private NavController navController;
-    private Button sign_out;
-    private GoogleSignInClient mGoogleSignInClient;
     private TextView userConnectText;
     private EditText userConnectDesc;
     private TextView userConnectVille, userConnectNbC, userConnectNbP;
@@ -46,7 +44,6 @@ public class ProfilFragment extends Fragment  {
 
         View root = inflater.inflate(R.layout.fragment_profil, container, false);
         navController = Navigation.findNavController(getActivity(), R.id.nav_host_fragment);
-        //sign_out = root.findViewById(R.id.sign_out);
         userConnectDesc = root.findViewById(R.id.userConnectDescription);
         userConnectText = root.findViewById(R.id.userConnectText);
         userConnectVille = root.findViewById(R.id.useConnectVille);
@@ -86,11 +83,6 @@ public class ProfilFragment extends Fragment  {
 
 
 
-        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                .requestEmail()
-                .build();
-
-        mGoogleSignInClient = GoogleSignIn.getClient(getContext(), gso);
 
         cardViewProfilParametres.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -113,30 +105,11 @@ public class ProfilFragment extends Fragment  {
             }
         });
 
-       /* sign_out.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (v.getId() == R.id.sign_out) {
-                    signOut();
-                }
-            }
-        });*/
-
 
 
         return root;
     }
 
-    private void signOut() {
-        mGoogleSignInClient.signOut()
-                .addOnCompleteListener(getActivity(), new OnCompleteListener<Void>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Void> task) {
-                        Intent intent = new Intent(getContext(), MainActivity.class);
-                        startActivity(intent);
-                    }
-                });
-    }
 
 
 
