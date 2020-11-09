@@ -35,6 +35,7 @@ import java.io.IOException;
 import java.io.InputStream;
 
 import static android.app.Activity.RESULT_OK;
+import static com.example.nalone.util.Constants.USERS_DB_REF;
 import static com.example.nalone.util.Constants.USERS_LIST;
 import static com.example.nalone.util.Constants.USER_ID;
 import static com.example.nalone.util.Constants.USER_IMAGE_URI;
@@ -220,6 +221,12 @@ public class ProfilFragment extends Fragment  {
                     });
         }
         Glide.with(getContext()).load(imagUri).fitCenter().centerCrop().into(imageUser);
+
+        if(!USERS_LIST.get(USER_ID).hasProfilPhoto) {
+            USERS_LIST.get(USER_ID).setHasProfilPhoto(true);
+
+            USERS_DB_REF.setValue(USERS_LIST);
+        }
     }
 
     public void loadProfilImage(){

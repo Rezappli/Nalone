@@ -20,6 +20,7 @@ import android.widget.Toolbar;
 
 import com.bumptech.glide.Glide;
 import com.example.nalone.signUpActivities.SignUpInformationActivity;
+import com.example.nalone.ui.profil.ProfilFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -53,6 +54,7 @@ public class HomeActivity extends AppCompatActivity{
 
     private Handler h = new Handler();;
     private Runnable r ;
+    private NavController navController;
 
     @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
@@ -65,7 +67,7 @@ public class HomeActivity extends AppCompatActivity{
         AppBarConfiguration appBarConfiguration = new AppBarConfiguration.Builder(
                 R.id.navigation_recherche, R.id.navigation_amis, R.id.navigation_evenements, R.id.navigation_messages)
                 .build();
-        final NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
+        navController = Navigation.findNavController(this, R.id.nav_host_fragment);
         NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
         NavigationUI.setupWithNavController(navView, navController);
 
@@ -115,8 +117,7 @@ public class HomeActivity extends AppCompatActivity{
     @RequiresApi(api = Build.VERSION_CODES.R)
     @Override
     public void onBackPressed(){
-        //super.onBackPressed();
-
+        super.onBackPressed();
     }
 
     private LatLng getLocationFromAddress(String strAddress) {

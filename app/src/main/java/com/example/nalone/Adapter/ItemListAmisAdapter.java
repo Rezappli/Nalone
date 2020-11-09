@@ -23,7 +23,9 @@ import com.google.firebase.storage.StorageReference;
 
 import java.util.List;
 
+import static com.example.nalone.util.Constants.USERS_LIST;
 import static com.example.nalone.util.Constants.USERS_PICTURE_URI;
+import static com.example.nalone.util.Constants.USER_ID;
 import static com.example.nalone.util.Constants.mStore;
 
 public class ItemListAmisAdapter extends RecyclerView.Adapter<ItemListAmisAdapter.ItemListAmisViewHolder> {
@@ -123,20 +125,22 @@ public class ItemListAmisAdapter extends RecyclerView.Adapter<ItemListAmisAdapte
         if(USERS_PICTURE_URI.get(currentItem.getId()+"") != null){
             Glide.with(context).load(USERS_PICTURE_URI.get(currentItem.getId()+"")).fitCenter().centerCrop().into(holder.mImageView);
         }else {
-            StorageReference imgRef = mStore.getReference("users/" + currentItem.getId());
-            if (imgRef != null) {
-                imgRef.getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Uri> task) {
-                        if (task.isSuccessful()) {
-                            Uri img = task.getResult();
-                            if (img != null) {
-                                USERS_PICTURE_URI.put(currentItem.getId()+"", img);
-                                Glide.with(context).load(img).fitCenter().centerCrop().into(holder.mImageView);
+            if(USERS_LIST.get(currentItem.getId()+"").getHasSetProfilPhoto()) {
+                StorageReference imgRef = mStore.getReference("users/" + currentItem.getId());
+                if (imgRef != null) {
+                    imgRef.getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Uri> task) {
+                            if (task.isSuccessful()) {
+                                Uri img = task.getResult();
+                                if (img != null) {
+                                    USERS_PICTURE_URI.put(currentItem.getId() + "", img);
+                                    Glide.with(context).load(img).fitCenter().centerCrop().into(holder.mImageView);
+                                }
                             }
                         }
-                    }
-                });
+                    });
+                }
             }
         }
     }

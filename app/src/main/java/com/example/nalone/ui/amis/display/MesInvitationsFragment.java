@@ -87,7 +87,7 @@ public class MesInvitationsFragment extends Fragment implements CoreListener {
     }
 
     private void acceptFriendRequest(int id) {
-        Log.w("Invits", "ID : "+id);
+
         if(USERS_LIST.get(USER_ID).getAmis().size() == 1) {
             USERS_LIST.get(USER_ID).getAmis().set(0, id+"");
         }else{
@@ -126,8 +126,9 @@ public class MesInvitationsFragment extends Fragment implements CoreListener {
 
         USERS_DB_REF.setValue(USERS_LIST);
 
-        updateItems();
         Toast.makeText(getContext(), "Vous avez ajouté(e) cet utilisateur", Toast.LENGTH_SHORT).show();
+
+        updateItems();
     }
 
     private void declineFriendRequest(int id) {
@@ -147,7 +148,7 @@ public class MesInvitationsFragment extends Fragment implements CoreListener {
         if(USERS_LIST.get(id+"").getDemande_amis_envoye().size() == 1) {
             USERS_LIST.get(id+"").getDemande_amis_envoye().set(0, "");
         }else{
-            USERS_LIST.get(id+"").getDemande_amis_envoye().remove(Integer.parseInt(USER_ID));
+            USERS_LIST.get(id+"").getDemande_amis_envoye().remove(USER_ID);
         }
 
         if(USERS_LIST.get(id+"").getDemande_amis_recu().size() == 1) {
@@ -167,5 +168,11 @@ public class MesInvitationsFragment extends Fragment implements CoreListener {
     @Override
     public void onDataChangeListener() {
         updateItems();
+    }
+
+    @Override
+    public void onResume(){
+        updateItems();
+        super.onResume();
     }
 }

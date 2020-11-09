@@ -24,6 +24,7 @@ public class User {
     public List<String> demande_amis_envoye;
     public List<String> amis;
     public String dateNaissance;
+    public boolean hasProfilPhoto;
 
     public String getSexe() {
         return sexe;
@@ -64,6 +65,7 @@ public class User {
         this.centreInterets = centreInterets;
         this.description = description;
         this.dateNaissance = dateNaissance;
+        this.hasProfilPhoto = false;
 
         this.nbCreation = "0";
         this.nbParticipation = "0";
@@ -166,5 +168,13 @@ public class User {
 
     public String getDateNaissance(){
         return this.dateNaissance;
+    }
+
+    public boolean getHasSetProfilPhoto(){
+        return hasProfilPhoto;
+    }
+
+    public void setHasProfilPhoto(boolean hasProfilPhoto){
+        this.hasProfilPhoto = hasProfilPhoto;
     }
 }

@@ -226,6 +226,12 @@ public class AmisFragment extends Fragment implements CoreListener{
     }
 
     @Override
+    public void onResume(){
+        updateItems();
+        super.onResume();
+    }
+
+    @Override
     public void onDataChangeListener() {
         updateItems();
     }

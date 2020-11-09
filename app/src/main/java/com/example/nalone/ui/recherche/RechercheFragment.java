@@ -262,4 +262,10 @@ public class RechercheFragment extends Fragment implements CoreListener {
     public void onDataChangeListener() {
         updateItems();
     }
+
+    @Override
+    public void onResume(){
+        updateItems();
+        super.onResume();
+    }
 }
