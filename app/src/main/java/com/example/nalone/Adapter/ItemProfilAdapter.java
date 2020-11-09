@@ -41,8 +41,8 @@ public class ItemProfilAdapter extends RecyclerView.Adapter<ItemProfilAdapter.It
         void onAddClick(int position);
     }
 
-    public void setOnItemClickListener(OnItemClickListener listener){
-        mListener= listener;
+    public void setOnItemClickListener(OnItemClickListener listener) {
+        mListener = listener;
     }
 
 
@@ -68,9 +68,9 @@ public class ItemProfilAdapter extends RecyclerView.Adapter<ItemProfilAdapter.It
             mPerson.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if(listener != null){
+                    if (listener != null) {
                         int position = getAdapterPosition();
-                        if(position != RecyclerView.NO_POSITION){
+                        if (position != RecyclerView.NO_POSITION) {
                             listener.onAddClick(position);
                         }
                     }
@@ -86,10 +86,12 @@ public class ItemProfilAdapter extends RecyclerView.Adapter<ItemProfilAdapter.It
         ItemProfilViewHolder ipvh = new ItemProfilViewHolder(v, mListener);
         return ipvh;
     }
-    public ItemProfilAdapter(List<ItemPerson> itemlist, Context context){
+
+    public ItemProfilAdapter(List<ItemPerson> itemlist, Context context) {
         this.context = context;
         mItemPersonList = itemlist;
     }
+
     @Override
     public void onBindViewHolder(@NonNull final ItemProfilViewHolder holder, int position) {
         final ItemPerson currentItem = mItemPersonList.get(position);
@@ -99,44 +101,40 @@ public class ItemProfilAdapter extends RecyclerView.Adapter<ItemProfilAdapter.It
         holder.mImageView2.setImageResource(currentItem.getImageResource2());
         holder.mVille.setText(currentItem.getVille());
 
-        if(currentItem.getCursus().equalsIgnoreCase("Informatique")){
+        if (currentItem.getCursus().equalsIgnoreCase("Informatique")) {
             holder.cardViewPhotoPerson.setCardBackgroundColor(Color.RED);
         }
-        if(currentItem.getCursus().equalsIgnoreCase("TC")){
+        if (currentItem.getCursus().equalsIgnoreCase("TC")) {
             holder.cardViewPhotoPerson.setCardBackgroundColor(Color.GREEN);
         }
-        if(currentItem.getCursus().equalsIgnoreCase("MMI")){
+        if (currentItem.getCursus().equalsIgnoreCase("MMI")) {
             holder.cardViewPhotoPerson.setCardBackgroundColor(Color.parseColor("#4B0082"));
         }
-        if(currentItem.getCursus().equalsIgnoreCase("GB")){
+        if (currentItem.getCursus().equalsIgnoreCase("GB")) {
             holder.cardViewPhotoPerson.setCardBackgroundColor(Color.BLUE);
         }
-        if(currentItem.getCursus().equalsIgnoreCase("LP")){
+        if (currentItem.getCursus().equalsIgnoreCase("LP")) {
             holder.cardViewPhotoPerson.setCardBackgroundColor(Color.GRAY);
         }
 
 
-        if(USERS_PICTURE_URI.get(currentItem.getId()+"") != null){
-            Glide.with(context).load(USERS_PICTURE_URI.get(currentItem.getId()+"")).fitCenter().centerCrop().into(holder.mImageView);
-        }else {
-            try {
-                StorageReference imgRef = mStore.getReference("users/" + currentItem.getId());
-                if (imgRef != null) {
-                    imgRef.getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
-                        @Override
-                        public void onComplete(@NonNull Task<Uri> task) {
-                            if (task.isSuccessful()) {
-                                Uri img = task.getResult();
-                                if (img != null) {
-                                    USERS_PICTURE_URI.put(currentItem.getId() + "", img);
-                                    Glide.with(context).load(img).fitCenter().centerCrop().into(holder.mImageView);
-                                }
+        if (USERS_PICTURE_URI.get(currentItem.getId() + "") != null) {
+            Glide.with(context).load(USERS_PICTURE_URI.get(currentItem.getId() + "")).fitCenter().centerCrop().into(holder.mImageView);
+        } else {
+            StorageReference imgRef = mStore.getReference("users/" + currentItem.getId());
+            if (imgRef != null) {
+                imgRef.getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Uri> task) {
+                        if (task.isSuccessful()) {
+                            Uri img = task.getResult();
+                            if (img != null) {
+                                USERS_PICTURE_URI.put(currentItem.getId() + "", img);
+                                Glide.with(context).load(img).fitCenter().centerCrop().into(holder.mImageView);
                             }
                         }
-                    });
-                }
-            } catch (Exception e) {
-                //e.printStackTrace();
+                    }
+                });
             }
         }
     }
