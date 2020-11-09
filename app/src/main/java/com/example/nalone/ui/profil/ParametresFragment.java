@@ -1,6 +1,7 @@
 package com.example.nalone.ui.profil;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -23,6 +24,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 
+import static android.content.Context.MODE_PRIVATE;
 import static com.example.nalone.util.Constants.range;
 
 public class ParametresFragment extends Fragment {
@@ -31,6 +33,7 @@ public class ParametresFragment extends Fragment {
     private GoogleSignInClient mGoogleSignInClient;
     private SeekBar seekBar;
     private TextView textViewRayon;
+    public static final String SHARED_PREFS = "sharedPrefs", sharedRange = "sharedRange";
 
 
     @Override
@@ -42,6 +45,7 @@ public class ParametresFragment extends Fragment {
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestEmail()
                 .build();
+
 
         textViewRayon = root.findViewById(R.id.textViewRayon);
         textViewRayon.setText(range/1000+" km");
@@ -100,4 +104,20 @@ public class ParametresFragment extends Fragment {
                     }
                 });
     }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        setData();
+    }
+
+    private void setData(){
+        SharedPreferences settings = this.getActivity().getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
+        SharedPreferences.Editor editor = settings.edit();
+
+        editor.putInt(sharedRange, range);
+
+        editor.apply();
+    }
+
 }

@@ -1,6 +1,7 @@
 package splash;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.location.Address;
 import android.location.Geocoder;
 import android.os.Bundle;
@@ -17,6 +18,7 @@ import com.example.nalone.MainActivity;
 import com.example.nalone.R;
 import com.example.nalone.User;
 import com.example.nalone.Visibilite;
+import com.example.nalone.ui.profil.ParametresFragment;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
@@ -40,6 +42,7 @@ import static com.example.nalone.util.Constants.currentUser;
 import static com.example.nalone.util.Constants.heightScreen;
 import static com.example.nalone.util.Constants.listeners;
 import static com.example.nalone.util.Constants.mAuth;
+import static com.example.nalone.util.Constants.range;
 import static com.example.nalone.util.Constants.widthScreen;
 import static com.example.nalone.util.Constants.load;
 
@@ -51,6 +54,9 @@ public class SplashActivity extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
+
+        SharedPreferences settings = this.getSharedPreferences(ParametresFragment.SHARED_PREFS, MODE_PRIVATE);
+        range = settings.getInt(ParametresFragment.sharedRange, 50);
     }
 
     @Override
