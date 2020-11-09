@@ -117,8 +117,8 @@
 
         <androidx.cardview.widget.CardView
             android:id="@+id/cardViewUser"
-            android:layout_width="120dp"
-            android:layout_height="120dp"
+            android:layout_width="110dp"
+            android:layout_height="110dp"
             android:layout_centerHorizontal="true"
             android:layout_centerVertical="false"
             android:layout_gravity="center"
