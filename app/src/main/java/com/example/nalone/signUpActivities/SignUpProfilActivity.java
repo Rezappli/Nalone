@@ -21,6 +21,8 @@ import com.example.nalone.MainActivity;
 import com.example.nalone.R;
 import com.example.nalone.util.Constants;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.auth.AuthResult;
@@ -30,10 +32,13 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 
 import static com.example.nalone.util.Constants.USERS_DB_REF;
 import static com.example.nalone.util.Constants.USERS_LIST;
 import static com.example.nalone.util.Constants.mAuth;
+import static com.example.nalone.util.Constants.mStore;
 
 import java.io.FileNotFoundException;
 import java.io.InputStream;
@@ -45,7 +50,7 @@ public class SignUpProfilActivity extends AppCompatActivity {
     private LinearLayout linearLayoutBackgroundPP;
     private Button signupNext;
     private boolean hasSelectedImage = false;
-    private Bitmap selectedImage;
+    private Uri imageUri = null;
 
 
     static final int RESULT_LOAD_IMG = 1;
@@ -57,28 +62,7 @@ public class SignUpProfilActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-
-        final DatabaseReference id_user = Constants.mFirebase.getReference("id_users/");
-        id_user.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                // This method is called once with the initial value and again
-                // whenever data at this location is updated.
-                id_users = dataSnapshot.getValue(String.class);
-                Log.d("ID_USERS", "Value is: " + id_users);
-            }
-
-            @Override
-            public void onCancelled(DatabaseError error) {
-                // Failed to read value
-                Log.w("ID_USERS", "Failed to read value.", error.toException());
-            }
-        });
-
-        Log.d("ID_USERS", "Value is: " + id_users);
-
         setContentView(R.layout.activity_sign_up_profil);
-
 
         imageViewPhotoProfil = findViewById(R.id.signupPhotoProfil);
         linearLayoutBackgroundPP = findViewById(R.id.signupBgPhotoProfil);
@@ -200,11 +184,11 @@ public class SignUpProfilActivity extends AppCompatActivity {
 
         if (resultCode == RESULT_OK) {
             try {
-                final Uri imageUri = data.getData();
+                imageUri = data.getData();
                 assert imageUri != null;
                 final InputStream imageStream = getContentResolver().openInputStream(imageUri);
-                selectedImage = BitmapFactory.decodeStream(imageStream);
-                imageViewPhotoProfil.setImageBitmap(selectedImage);
+                Bitmap img  = BitmapFactory.decodeStream(imageStream);
+                imageViewPhotoProfil.setImageBitmap(img);
                 hasSelectedImage = true;
             } catch (FileNotFoundException e) {
                 e.printStackTrace();
@@ -221,7 +205,6 @@ public class SignUpProfilActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
     }
-
 
 
 }

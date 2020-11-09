@@ -7,6 +7,7 @@ import android.location.Address;
 import android.location.Geocoder;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -14,10 +15,14 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ProgressBar;
+import android.widget.Toast;
 import android.widget.Toolbar;
 
+import com.bumptech.glide.Glide;
 import com.example.nalone.signUpActivities.SignUpInformationActivity;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.appbar.AppBarLayout;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationView;
@@ -37,8 +42,11 @@ import java.util.List;
 
 import static com.example.nalone.util.Constants.USERS_LIST;
 import static com.example.nalone.util.Constants.USER_ID;
+import static com.example.nalone.util.Constants.USER_IMAGE_URI;
 import static com.example.nalone.util.Constants.USER_LATLNG;
 import static com.example.nalone.util.Constants.currentUser;
+import static com.example.nalone.util.Constants.mProfilRef;
+import static com.example.nalone.util.Constants.mStore;
 
 
 public class HomeActivity extends AppCompatActivity{
@@ -96,6 +104,8 @@ public class HomeActivity extends AppCompatActivity{
                 found = true;
                 USER_ID = ""+i;
                 USER_LATLNG = getLocationFromAddress(u.getVille());
+                mProfilRef = mStore.getReference("users/"+USER_ID);
+                loadProfilImage();
                 break;
             }
         }
@@ -104,6 +114,19 @@ public class HomeActivity extends AppCompatActivity{
         if(!found){
             startActivity(new Intent(HomeActivity.this, SignUpInformationActivity.class));
         }
+    }
+
+    private void loadProfilImage() {
+        mProfilRef.getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
+            @Override
+            public void onComplete(@NonNull Task<Uri> task) {
+                if (task.isSuccessful()) {
+                    USER_IMAGE_URI = task.getResult();
+                }else{
+                    Toast.makeText(getBaseContext(), ""+task.getException(), Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
     }
 
     @Override

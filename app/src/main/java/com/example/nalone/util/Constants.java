@@ -1,5 +1,7 @@
 package com.example.nalone.util;
 
+import android.net.Uri;
+
 import com.example.nalone.CoreListener;
 import com.example.nalone.Evenement;
 import com.example.nalone.User;
@@ -9,6 +11,8 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
 import java.text.DateFormat;
 import java.util.ArrayList;
@@ -25,6 +29,11 @@ public class Constants {
 
     public static FirebaseDatabase mFirebase = FirebaseDatabase.getInstance();
     public static FirebaseAuth mAuth = FirebaseAuth.getInstance();
+
+    public static FirebaseStorage mStore = FirebaseStorage.getInstance();
+    public static StorageReference mProfilRef;
+
+    public static Uri USER_IMAGE_URI;
 
     public static FirebaseUser currentUser;
     public static String USER_ID;
