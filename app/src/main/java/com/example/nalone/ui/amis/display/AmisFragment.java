@@ -7,6 +7,7 @@ import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
+import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -186,7 +187,6 @@ public class AmisFragment extends Fragment implements CoreListener{
                         u.getPrenom() + " " + u.getNom(), 0, u.getDescription(),
                         u.getVille(), u.getCursus(), u.getNbCreation(), u.getNbParticipation(), u.getCentreInterets()));
             }
-
         }
 
         mAdapter = new ItemListAmisAdapter(items, getContext());
@@ -219,6 +219,7 @@ public class AmisFragment extends Fragment implements CoreListener{
         TextView nbParticipateProfil;
         ImageView buttonAdd;
         final ImageView imagePerson;
+        CardView cardViewPhotoPerson;
 
         dialogProfil.setContentView(R.layout.popup_profil);
         nameProfil = dialogProfil.findViewById(R.id.profilName);
@@ -227,6 +228,23 @@ public class AmisFragment extends Fragment implements CoreListener{
         nbParticipateProfil = dialogProfil.findViewById(R.id.nbEventParticipe);
         buttonAdd = dialogProfil.findViewById(R.id.buttonAdd);
         imagePerson = dialogProfil.findViewById(R.id.imagePerson);
+        cardViewPhotoPerson = dialogProfil.findViewById(R.id.cardViewPhotoPerson);
+
+        if(USERS_LIST.get(id+"").getCursus().equalsIgnoreCase("Informatique")){
+            cardViewPhotoPerson.setCardBackgroundColor(Color.RED);
+        }
+        if(USERS_LIST.get(id+"").getCursus().equalsIgnoreCase("TC")){
+            cardViewPhotoPerson.setCardBackgroundColor(Color.GREEN);
+        }
+        if(USERS_LIST.get(id+"").getCursus().equalsIgnoreCase("MMI")){
+            cardViewPhotoPerson.setCardBackgroundColor(Color.parseColor("#4B0082"));
+        }
+        if(USERS_LIST.get(id+"").getCursus().equalsIgnoreCase("GB")){
+            cardViewPhotoPerson.setCardBackgroundColor(Color.BLUE);
+        }
+        if(USERS_LIST.get(id+"").getCursus().equalsIgnoreCase("LP")){
+            cardViewPhotoPerson.setCardBackgroundColor(Color.GRAY);
+        }
 
         if(USERS_PICTURE_URI.get(id+"") != null) {
             Glide.with(getContext()).load(USERS_PICTURE_URI.get(id + "")).fitCenter().centerCrop().into(imagePerson);

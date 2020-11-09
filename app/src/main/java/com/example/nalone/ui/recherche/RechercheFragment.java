@@ -15,6 +15,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -226,6 +227,7 @@ public class RechercheFragment extends Fragment implements CoreListener {
         TextView nbParticipateProfil;
         final ImageView imagePerson;
         ImageView buttonAdd;
+        CardView cardViewPhotoPerson;
 
         dialogProfil.setContentView(R.layout.popup_profil);
         nameProfil = dialogProfil.findViewById(R.id.profilName);
@@ -234,6 +236,24 @@ public class RechercheFragment extends Fragment implements CoreListener {
         nbParticipateProfil = dialogProfil.findViewById(R.id.nbEventParticipe);
         imagePerson = dialogProfil.findViewById(R.id.imagePerson);
         buttonAdd = dialogProfil.findViewById(R.id.buttonAdd);
+        cardViewPhotoPerson = dialogProfil.findViewById(R.id.cardViewPhotoPerson);
+
+        if(USERS_LIST.get(id+"").getCursus().equalsIgnoreCase("Informatique")){
+            cardViewPhotoPerson.setCardBackgroundColor(Color.RED);
+        }
+        if(USERS_LIST.get(id+"").getCursus().equalsIgnoreCase("TC")){
+            cardViewPhotoPerson.setCardBackgroundColor(Color.GREEN);
+        }
+        if(USERS_LIST.get(id+"").getCursus().equalsIgnoreCase("MMI")){
+            cardViewPhotoPerson.setCardBackgroundColor(Color.parseColor("#4B0082"));
+        }
+        if(USERS_LIST.get(id+"").getCursus().equalsIgnoreCase("GB")){
+            cardViewPhotoPerson.setCardBackgroundColor(Color.BLUE);
+        }
+        if(USERS_LIST.get(id+"").getCursus().equalsIgnoreCase("LP")){
+            cardViewPhotoPerson.setCardBackgroundColor(Color.GRAY);
+        }
+
 
         if(USERS_PICTURE_URI.get(id+"") != null) {
             Glide.with(getContext()).load(USERS_PICTURE_URI.get(id + "")).fitCenter().centerCrop().into(imagePerson);

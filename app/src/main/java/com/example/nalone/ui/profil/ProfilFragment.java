@@ -3,6 +3,7 @@ package com.example.nalone.ui.profil;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -46,7 +47,7 @@ public class ProfilFragment extends Fragment  {
     private TextView userConnectText;
     private EditText userConnectDesc;
     private TextView userConnectVille, userConnectNbC, userConnectNbP;
-    private CardView cardViewProfilParametres,cardViewProfilEdit,cardViewProfilAide, cardViewPhotoEditDesc, cardViewPhotoEdit;
+    private CardView cardViewPhotoPerson,cardViewProfilParametres,cardViewProfilEdit,cardViewProfilAide, cardViewPhotoEditDesc, cardViewPhotoEdit;
     private ImageView imageViewEditDescription, imageUser, imageViewEditPhoto;
     private boolean editDescription;
     private boolean editPhoto;
@@ -75,6 +76,7 @@ public class ProfilFragment extends Fragment  {
         imageViewEditDescription = root.findViewById(R.id.imageViewEditDescription);
         imageUser = root.findViewById(R.id.imageUser);
         imageViewEditPhoto = root.findViewById(R.id.imageViewEditPhoto);
+        cardViewPhotoPerson = root.findViewById(R.id.cardViewUser);
 
         userConnectText.setText(USERS_LIST.get(USER_ID).getPrenom()+" "+USERS_LIST.get(USER_ID).getNom());
         userConnectVille.setText(USERS_LIST.get(USER_ID).getVille()+" ");
@@ -83,6 +85,22 @@ public class ProfilFragment extends Fragment  {
         userConnectDesc.setText(USERS_LIST.get(USER_ID).getDescription());
         userConnectDesc.setClickable(false);
         userConnectDesc.setEnabled(false);
+
+        if(USERS_LIST.get(USER_ID).getCursus().equalsIgnoreCase("Informatique")){
+            cardViewPhotoPerson.setCardBackgroundColor(Color.RED);
+        }
+        if(USERS_LIST.get(USER_ID).getCursus().equalsIgnoreCase("TC")){
+            cardViewPhotoPerson.setCardBackgroundColor(Color.GREEN);
+        }
+        if(USERS_LIST.get(USER_ID).getCursus().equalsIgnoreCase("MMI")){
+            cardViewPhotoPerson.setCardBackgroundColor(Color.parseColor("#4B0082"));
+        }
+        if(USERS_LIST.get(USER_ID).getCursus().equalsIgnoreCase("GB")){
+            cardViewPhotoPerson.setCardBackgroundColor(Color.BLUE);
+        }
+        if(USERS_LIST.get(USER_ID).getCursus().equalsIgnoreCase("LP")){
+            cardViewPhotoPerson.setCardBackgroundColor(Color.GRAY);
+        }
 
             cardViewPhotoEditDesc.setOnClickListener(new View.OnClickListener() {
                 @Override

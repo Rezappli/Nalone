@@ -42,9 +42,9 @@ public class ParametresFragment extends Fragment {
     private GoogleSignInClient mGoogleSignInClient;
     private SeekBar seekBar;
     private TextView textViewRayon, textViewLocationActuel, textViewMaPosition;
-    public static final String SHARED_PREFS = "sharedPrefs", sharedRange = "sharedRange",sharedNotif = "sharedNotif", sharedIntern = "sharedIntern";
+    public static final String SHARED_PREFS = "sharedPrefs", sharedRange = "sharedRange",sharedNotif = "sharedNotif",sharedPosition = "sharedPosition", sharedIntern = "sharedIntern";
     private int rangeActual;
-    private boolean international, notification = true;
+    private boolean international, notification = true, position;
 
 
     @Override
@@ -62,6 +62,8 @@ public class ParametresFragment extends Fragment {
         SharedPreferences settings = this.getActivity().getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
         international = settings.getBoolean(sharedIntern, false);
         notification = settings.getBoolean(sharedNotif, false);
+        position = settings.getBoolean(sharedPosition, false);
+
 
         textViewRayon = root.findViewById(R.id.textViewRayon);
         textViewLocationActuel = root.findViewById(R.id.textViewLocationActuel);
@@ -69,8 +71,7 @@ public class ParametresFragment extends Fragment {
 
         textViewLocationActuel.setText(USERS_LIST.get(USER_ID).getVille()+"");
 
-        if(maPosition) {
-
+        if(position) {
             Drawable img = getContext().getResources().getDrawable(R.drawable.ic_baseline_my_location_focused);
             img.setBounds(0, 0, 100, 100);
             textViewMaPosition.setCompoundDrawables(img, null, null, null);
@@ -235,6 +236,7 @@ public class ParametresFragment extends Fragment {
         editor.putInt(sharedRange, range);
         editor.putBoolean(sharedIntern, international);
         editor.putBoolean(sharedNotif, notification);
+        editor.putBoolean(sharedPosition, maPosition);
 
         editor.apply();
     }

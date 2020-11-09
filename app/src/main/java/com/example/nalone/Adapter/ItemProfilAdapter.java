@@ -1,6 +1,7 @@
 package com.example.nalone.Adapter;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.view.LayoutInflater;
@@ -11,6 +12,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
@@ -48,6 +50,7 @@ public class ItemProfilAdapter extends RecyclerView.Adapter<ItemProfilAdapter.It
         public TextView mVille;
         public LinearLayout mPerson;
         public Drawable d;
+        public CardView cardViewPhotoPerson;
 
         public ItemProfilViewHolder(View itemView, final OnItemClickListener listener) {
             super(itemView);
@@ -57,6 +60,7 @@ public class ItemProfilAdapter extends RecyclerView.Adapter<ItemProfilAdapter.It
             mImageView2 = itemView.findViewById(R.id.imageView19);
             mPerson = itemView.findViewById(R.id.layoutProfil);
             d = itemView.getResources().getDrawable(R.drawable.ic_baseline_add_location_24);
+            cardViewPhotoPerson = itemView.findViewById(R.id.cardViewPhotoPerson);
 
             mPerson.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -91,6 +95,23 @@ public class ItemProfilAdapter extends RecyclerView.Adapter<ItemProfilAdapter.It
         holder.mText.setText((currentItem.getNom()));
         holder.mImageView2.setImageResource(currentItem.getImageResource2());
         holder.mVille.setText(currentItem.getVille());
+
+        if(currentItem.getCursus().equalsIgnoreCase("Informatique")){
+            holder.cardViewPhotoPerson.setCardBackgroundColor(Color.RED);
+        }
+        if(currentItem.getCursus().equalsIgnoreCase("TC")){
+            holder.cardViewPhotoPerson.setCardBackgroundColor(Color.GREEN);
+        }
+        if(currentItem.getCursus().equalsIgnoreCase("MMI")){
+            holder.cardViewPhotoPerson.setCardBackgroundColor(Color.parseColor("#4B0082"));
+        }
+        if(currentItem.getCursus().equalsIgnoreCase("GB")){
+            holder.cardViewPhotoPerson.setCardBackgroundColor(Color.BLUE);
+        }
+        if(currentItem.getCursus().equalsIgnoreCase("LP")){
+            holder.cardViewPhotoPerson.setCardBackgroundColor(Color.GRAY);
+        }
+
 
         if(USERS_PICTURE_URI.get(currentItem.getId()+"") != null){
             Glide.with(context).load(USERS_PICTURE_URI.get(currentItem.getId()+"")).fitCenter().centerCrop().into(holder.mImageView);
