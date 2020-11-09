@@ -91,5 +91,6 @@
     <string name="dateNaissance"> Date de naissance </string>
     <string name="editMail"> Changer d\'adresse mail </string>
     <string name="rayonTitle"> Rayon de recherche </string>
+    <string name="internationalTitle"> Recherche à l\'international </string>
 
 </resources>

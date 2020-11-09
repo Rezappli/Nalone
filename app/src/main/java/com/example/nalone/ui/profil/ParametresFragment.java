@@ -12,8 +12,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.ProgressBar;
 import android.widget.SeekBar;
+import android.widget.Switch;
 import android.widget.TextView;
 
 import com.example.nalone.MainActivity;
@@ -32,8 +34,10 @@ public class ParametresFragment extends Fragment {
     private Button sign_out;
     private GoogleSignInClient mGoogleSignInClient;
     private SeekBar seekBar;
-    private TextView textViewRayon;
-    public static final String SHARED_PREFS = "sharedPrefs", sharedRange = "sharedRange";
+    private TextView textViewRayon, textViewInternational;
+    public static final String SHARED_PREFS = "sharedPrefs", sharedRange = "sharedRange", sharedIntern = "sharedIntern";
+    private int rangeActual;
+    private boolean international;
 
 
     @Override
@@ -46,11 +50,13 @@ public class ParametresFragment extends Fragment {
                 .requestEmail()
                 .build();
 
+        SharedPreferences settings = this.getActivity().getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
+        international = settings.getBoolean(sharedIntern, false);
 
         textViewRayon = root.findViewById(R.id.textViewRayon);
         textViewRayon.setText(range/1000+" km");
 
-        SeekBar seekBar =  root.findViewById(R.id.seekBarRayon);
+        final SeekBar seekBar =  root.findViewById(R.id.seekBarRayon);
 
         seekBar.setMax(200000);
         seekBar.setProgress(range);
@@ -75,6 +81,42 @@ public class ParametresFragment extends Fragment {
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
                 range = progress;
+            }
+        });
+
+        textViewInternational = root.findViewById(R.id.textViewInternational);
+
+        if(international == true){
+            textViewInternational.setText("Oui");
+            seekBar.setEnabled(false);
+        }else{
+            textViewInternational.setText("Non");
+        }
+
+        Switch sw = (Switch) root.findViewById(R.id.switch1);
+
+        sw.setChecked(international);
+
+
+        sw.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
+                    textViewInternational.setText("Oui");
+                    rangeActual = range;
+                    range = 10000000*100;
+                    seekBar.setProgress(seekBar.getMax());
+                    textViewRayon.setText(range/1000+" km");
+                    seekBar.setEnabled(false);
+                    international = true;
+                } else {
+                    textViewInternational.setText("Non");
+                    range = 50000;
+                    textViewRayon.setText(range/1000+" km");
+                    seekBar.setProgress(range);
+                    international = false;
+                    seekBar.setEnabled(true);
+
+                }
             }
         });
 
@@ -116,6 +158,7 @@ public class ParametresFragment extends Fragment {
         SharedPreferences.Editor editor = settings.edit();
 
         editor.putInt(sharedRange, range);
+        editor.putBoolean(sharedIntern, international);
 
         editor.apply();
     }
