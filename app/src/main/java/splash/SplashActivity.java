@@ -37,7 +37,9 @@ import static com.example.nalone.util.Constants.MARKERS_EVENT;
 import static com.example.nalone.util.Constants.MARKER_COLOR_SET;
 import static com.example.nalone.util.Constants.USERS_DB_REF;
 import static com.example.nalone.util.Constants.USERS_LIST;
+import static com.example.nalone.util.Constants.USERS_PICTURE_URI;
 import static com.example.nalone.util.Constants.USER_ID;
+import static com.example.nalone.util.Constants.USER_IMAGE_URI;
 import static com.example.nalone.util.Constants.currentUser;
 import static com.example.nalone.util.Constants.heightScreen;
 import static com.example.nalone.util.Constants.listeners;
@@ -95,6 +97,11 @@ public class SplashActivity extends AppCompatActivity {
                         }
 
                         if(!load) {
+
+                            for(int i = 0; i < USERS_LIST.size(); i++){
+                                USERS_PICTURE_URI.put(i+"", null);
+                            }
+
                             if (currentUser != null) {
                                 if(currentUser.isEmailVerified()) {
                                     startActivity(new Intent(SplashActivity.this, HomeActivity.class));

@@ -23,11 +23,6 @@ import com.google.android.gms.tasks.Task;
 
 import java.util.concurrent.Executor;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link GroupeFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
 public class GroupeFragment extends Fragment implements CoreListener {
 
 

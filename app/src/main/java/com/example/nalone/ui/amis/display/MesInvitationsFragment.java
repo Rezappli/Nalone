@@ -66,7 +66,7 @@ public class MesInvitationsFragment extends Fragment implements CoreListener {
             }
         }
 
-        mAdapter = new ItemInvitAmisAdapter(invits);
+        mAdapter = new ItemInvitAmisAdapter(invits, getContext());
 
         mRecyclerView = rootView.findViewById(R.id.recyclerViewInvitAmis);
         mLayoutManager = new LinearLayoutManager(getContext());

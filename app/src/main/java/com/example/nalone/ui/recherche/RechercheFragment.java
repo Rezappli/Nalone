@@ -40,6 +40,7 @@ import java.util.List;
 
 import static com.example.nalone.util.Constants.USERS_DB_REF;
 import static com.example.nalone.util.Constants.USERS_LIST;
+import static com.example.nalone.util.Constants.USERS_PICTURE_URI;
 import static com.example.nalone.util.Constants.USER_ID;
 import static com.example.nalone.util.Constants.USER_IMAGE_URI;
 import static com.example.nalone.util.Constants.heightScreen;
@@ -155,7 +156,7 @@ public class RechercheFragment extends Fragment implements CoreListener {
                             resultat.setText(R.string.aucun_resultat);
                         }
 
-                        mAdapter = new ItemProfilAdapter(tempList);
+                        mAdapter = new ItemProfilAdapter(tempList, getContext());
                         mAdapter.setOnItemClickListener(new ItemProfilAdapter.OnItemClickListener() {
                             @Override
                             public void onAddClick(int position) {
@@ -173,7 +174,7 @@ public class RechercheFragment extends Fragment implements CoreListener {
                     } else {
                         resultat.setVisibility(View.GONE);
                         resultat.setText("");
-                        mAdapter = new ItemProfilAdapter(items);
+                        mAdapter = new ItemProfilAdapter(items, getContext());
                         mAdapter.setOnItemClickListener(new ItemProfilAdapter.OnItemClickListener() {
                             @Override
                             public void onAddClick(int position) {
@@ -231,20 +232,10 @@ public class RechercheFragment extends Fragment implements CoreListener {
         descriptionProfil = dialogProfil.findViewById(R.id.profilDescription);
         nbCreateProfil = dialogProfil.findViewById(R.id.nbEventCreate);
         nbParticipateProfil = dialogProfil.findViewById(R.id.nbEventParticipe);
-        imagePerson = dialogProfil.findViewById(R.id.imageUser);
+        imagePerson = dialogProfil.findViewById(R.id.imagePerson);
         buttonAdd = dialogProfil.findViewById(R.id.buttonAdd);
 
-        StorageReference imgRef = mStore.getReference("users/"+id);
-
-        imgRef.getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
-            @Override
-            public void onComplete(@NonNull Task<Uri> task) {
-                if (task.isSuccessful()) {
-                    Uri img = task.getResult();
-                    Glide.with(getContext()).load(img).into(imagePerson);
-                }
-            }
-        });
+        Glide.with(getContext()).load(USERS_PICTURE_URI.get(id+"")).fitCenter().centerCrop().into(imagePerson);
 
         List<ImageView> imageCentreInteret = new ArrayList<>();
 
@@ -351,7 +342,7 @@ public class RechercheFragment extends Fragment implements CoreListener {
             }
         }
 
-        mAdapter = new ItemProfilAdapter(items);
+        mAdapter = new ItemProfilAdapter(items, getContext());
         mRecyclerView = rootView.findViewById(R.id.recyclerView);
         mLayoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL,
                 false);

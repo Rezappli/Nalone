@@ -124,7 +124,7 @@ public class CreateEventActivity extends AppCompatActivity {
         locationValidImageView = findViewById(R.id.validePositionImageView);
 
         mLayoutManagerAdd = new LinearLayoutManager(getBaseContext());
-        mAdapterAdd = new ItemAddPersonAdapter(itemsAdd);
+        mAdapterAdd = new ItemAddPersonAdapter(itemsAdd, this);
 
         if(edit){
             event_city.setText(MesEvenementsListFragment.cityEdit);
@@ -401,7 +401,7 @@ public class CreateEventActivity extends AppCompatActivity {
         dialogAddPerson.getWindow().setLayout(widthScreen, heightScreen);
 
         RecyclerView mRecyclerView = dialogAddPerson.findViewById(R.id.recyclerView);
-        final ItemProfilAdapter mAdapter = new ItemProfilAdapter(items);
+        final ItemProfilAdapter mAdapter = new ItemProfilAdapter(items, this);
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getBaseContext());
 
         mRecyclerView.setLayoutManager(mLayoutManager);
@@ -429,7 +429,7 @@ public class CreateEventActivity extends AppCompatActivity {
 
 
         mLayoutManagerAdd = new LinearLayoutManager(getBaseContext());
-        mAdapterAdd = new ItemAddPersonAdapter(itemsAdd);
+        mAdapterAdd = new ItemAddPersonAdapter(itemsAdd, CreateEventActivity.this);
 
         mAdapterAdd.setOnItemClickListener(new ItemAddPersonAdapter.OnItemClickListener() {
             @Override
@@ -448,7 +448,7 @@ public class CreateEventActivity extends AppCompatActivity {
                 }
                 dialogAddPerson.dismiss();
                 mLayoutManagerAdd = new LinearLayoutManager(getBaseContext());
-                mAdapterAdd = new ItemAddPersonAdapter(itemsAdd);
+                mAdapterAdd = new ItemAddPersonAdapter(itemsAdd, CreateEventActivity.this);
 
                 mAdapterAdd.setOnItemClickListener(new ItemAddPersonAdapter.OnItemClickListener() {
                     @Override

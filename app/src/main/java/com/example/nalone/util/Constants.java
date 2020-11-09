@@ -44,6 +44,7 @@ public class Constants {
     public static boolean MARKER_COLOR_SET = false;
     public static DatabaseReference USERS_DB_REF = mFirebase.getReference("users");
     public static DatabaseReference EVENTS_DB_REF = mFirebase.getReference("evenements");
+    public static HashMap<String, Uri> USERS_PICTURE_URI = new HashMap<>();
 
     public static int widthScreen;
     public static int heightScreen;

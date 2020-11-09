@@ -75,13 +75,13 @@ public class InfosEvenementsActivity extends AppCompatActivity {
                 mDate.setText(final_date_text);
 
                 for(int i = 0; i < e.getMembres_inscrits().size(); i++){
-                    membres_inscrits.add(new ItemImagePerson(R.drawable.ic_round_person_24));
+                    membres_inscrits.add(new ItemImagePerson(i, R.drawable.ic_round_person_24));
                 }
             }
         }
 
 
-        mAdapter = new ItemImagePersonAdapter(membres_inscrits);
+        mAdapter = new ItemImagePersonAdapter(membres_inscrits, this);
 
         mRecyclerView = findViewById(R.id.recyclerViewMembresInscrits);
         mLayoutManager = new LinearLayoutManager(

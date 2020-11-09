@@ -36,6 +36,7 @@ import java.util.List;
 
 import static com.example.nalone.util.Constants.USERS_DB_REF;
 import static com.example.nalone.util.Constants.USERS_LIST;
+import static com.example.nalone.util.Constants.USERS_PICTURE_URI;
 import static com.example.nalone.util.Constants.USER_ID;
 import static com.example.nalone.util.Constants.heightScreen;
 import static com.example.nalone.util.Constants.listeners;
@@ -131,12 +132,12 @@ public class AmisFragment extends Fragment implements CoreListener{
                             resultat.setText(R.string.aucun_resultat);
                         }
 
-                        mAdapter = new ItemListAmisAdapter(tempList);
+                        mAdapter = new ItemListAmisAdapter(tempList, getContext());
                         mRecyclerView.setAdapter(mAdapter);
                     } else {
                         resultat.setVisibility(View.GONE);
                         resultat.setText("");
-                        mAdapter = new ItemListAmisAdapter(items);
+                        mAdapter = new ItemListAmisAdapter(items, getContext());
                         mRecyclerView.setAdapter(mAdapter);
                     }
                 } else {
@@ -188,7 +189,7 @@ public class AmisFragment extends Fragment implements CoreListener{
 
         }
 
-        mAdapter = new ItemListAmisAdapter(items);
+        mAdapter = new ItemListAmisAdapter(items, getContext());
 
         mRecyclerView = rootView.findViewById(R.id.recyclerViewMesAmis);
         mLayoutManager = new LinearLayoutManager(getContext());
@@ -227,17 +228,7 @@ public class AmisFragment extends Fragment implements CoreListener{
         buttonAdd = dialogProfil.findViewById(R.id.buttonAdd);
         imagePerson = dialogProfil.findViewById(R.id.imagePerson);
 
-        StorageReference imgRef = mStore.getReference("users/"+id);
-
-        imgRef.getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
-            @Override
-            public void onComplete(@NonNull Task<Uri> task) {
-                if (task.isSuccessful()) {
-                    Uri img = task.getResult();
-                    Glide.with(getContext()).load(img).into(imagePerson);
-                }
-            }
-        });
+        Glide.with(getContext()).load(USERS_PICTURE_URI.get(id+"")).fitCenter().centerCrop().into(imagePerson);
 
         List<ImageView> imageCentreInteret = new ArrayList<>();
 

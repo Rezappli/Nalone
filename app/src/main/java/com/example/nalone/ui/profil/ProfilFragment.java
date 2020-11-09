@@ -171,17 +171,10 @@ public class ProfilFragment extends Fragment  {
 
 
         if (resultCode == RESULT_OK) {
-            try {
                 imageUri = data.getData();
                 assert imageUri != null;
-                final InputStream imageStream = getActivity().getContentResolver().openInputStream(imageUri);
-                Bitmap img  = BitmapFactory.decodeStream(imageStream);
-                imageUser.setImageBitmap(img);
+                Glide.with(getContext()).load(imageUri).fitCenter().centerCrop().into(imageUser);
                 hasSelectedImage = true;
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
-                Toast.makeText(getContext(), "Une erreur s'est produite",Toast.LENGTH_LONG).show();
-            }
         }else {
             Toast.makeText(getContext(),"Vous n'avez pas choisi d'image", Toast.LENGTH_LONG).show();
         }
@@ -209,11 +202,12 @@ public class ProfilFragment extends Fragment  {
                         }
                     });
         }
+        Glide.with(getContext()).load(imagUri).fitCenter().centerCrop().into(imageUser);
     }
 
     public void loadProfilImage(){
         if(USER_IMAGE_URI != null) {
-            Glide.with(getContext()).load(USER_IMAGE_URI).into(imageUser);
+            Glide.with(getContext()).load(USER_IMAGE_URI).fitCenter().centerCrop().into(imageUser);
         }
     }
 
