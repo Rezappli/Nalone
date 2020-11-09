@@ -15,11 +15,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
-import com.example.nalone.Adapter.ItemProfilAdapter;
-import com.example.nalone.CustomToast;
 import com.example.nalone.R;
-import com.example.nalone.User;
-import com.example.nalone.items.ItemPerson;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -144,11 +140,9 @@ public class PopupProfilFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 if (button == R.drawable.ic_round_mail_24) {
-                    CustomToast t = new CustomToast(getContext(), "Vous avez reçu une demande d'amis de la part de cet utilisateur !", false, true);
-                    t.show();
+                    Toast.makeText(getContext(), "Vous avez reçu une demande d'amis de la part de cet utilisateur !", Toast.LENGTH_SHORT).show();
                 } else if (button == R.drawable.ic_round_hourglass_top_24) {
-                    CustomToast t = new CustomToast(getContext(), "Votre demande d'amis est en attente !", false, true);
-                    t.show();
+                   Toast.makeText(getContext(), "Votre demande d'amis est en attente !", Toast.LENGTH_SHORT).show();
                 } else {
                     Toast.makeText(getContext(), "Vous avez envoyé une demande d'amis !", Toast.LENGTH_SHORT).show();
                     addFriend(""+id);
