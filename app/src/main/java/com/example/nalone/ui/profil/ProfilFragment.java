@@ -196,6 +196,7 @@ public class ProfilFragment extends Fragment  {
         }else {
             Toast.makeText(getContext(),"Vous n'avez pas choisi d'image", Toast.LENGTH_LONG).show();
             imageViewEditPhoto.setImageResource(R.drawable.ic_baseline_edit_24);
+            editPhoto = false;
         }
     }
 
