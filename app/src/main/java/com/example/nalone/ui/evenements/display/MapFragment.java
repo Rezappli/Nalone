@@ -176,12 +176,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback,  CoreLi
         }
         mMap.setMyLocationEnabled(true);
 
-        if(targetZoom == null) {
-            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(USER_LATLNG, 13));
-        }else{
-            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(targetZoom, 13));
-        }
-
         updateMap();
     }
 
@@ -189,6 +183,13 @@ public class MapFragment extends Fragment implements OnMapReadyCallback,  CoreLi
     public void updateMap(){
         if(mMap != null) {
             mMap.clear();
+
+            if(targetZoom == null) {
+                mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(USER_LATLNG, 13));
+            }else{
+                mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(targetZoom, 13));
+            }
+
             itemEvents.clear();
 
             float[] results = new float[1];
@@ -236,9 +237,8 @@ public class MapFragment extends Fragment implements OnMapReadyCallback,  CoreLi
             mMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
                 @Override
                 public void onInfoWindowClick(Marker marker) {
-                    Intent intent = new Intent(getActivity(), InfosEvenementsActivity.class);
-                    InfosEvenementsActivity.initialise(marker);
-                    startActivity(intent);
+                    InfosEvenementsActivity.ID_EVENTS_LOAD = (int)marker.getTag();
+                    startActivity(new Intent(getContext(), InfosEvenementsActivity.class));
                 }
             });
 

@@ -1,5 +1,6 @@
 package com.example.nalone.ui.evenements.display;
 
+import android.content.Intent;
 import android.location.Location;
 import android.os.Bundle;
 
@@ -7,6 +8,7 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,10 +19,12 @@ import com.example.nalone.Adapter.ItemFiltreAdapter;
 import com.example.nalone.Adapter.ItemImagePersonAdapter;
 import com.example.nalone.CoreListener;
 import com.example.nalone.Evenement;
+import com.example.nalone.InfosEvenementsActivity;
 import com.example.nalone.R;
 import com.example.nalone.Visibilite;
 import com.example.nalone.items.ItemFiltre;
 import com.example.nalone.items.ItemImagePerson;
+import com.example.nalone.ui.evenements.EvenementsFragment;
 import com.example.nalone.util.Constants;
 import com.google.android.gms.maps.model.MarkerOptions;
 
@@ -31,6 +35,7 @@ import static com.example.nalone.util.Constants.MARKERS_EVENT;
 import static com.example.nalone.util.Constants.USER_ID;
 import static com.example.nalone.util.Constants.USER_LATLNG;
 import static com.example.nalone.util.Constants.range;
+import static com.example.nalone.util.Constants.targetZoom;
 
 public class EvenementsListFragment extends Fragment implements CoreListener {
 
@@ -141,12 +146,15 @@ public class EvenementsListFragment extends Fragment implements CoreListener {
         mAdapterEventList.setOnItemClickListener(new ItemEventListAdapter.OnItemClickListener() {
             @Override
             public void onDisplayClick(int position) {
-                // Pour toi thiboule
+                Constants.targetZoom = MARKERS_EVENT.get(itemEvents.get(position).getId()+"").getPosition();
+                Log.w("Click", "Target : " + targetZoom.latitude);
+                EvenementsFragment.viewPager.setCurrentItem(0);
             }
 
             @Override
             public void onSignInClick(int position) {
-                // Pour toi thiboule
+                InfosEvenementsActivity.ID_EVENTS_LOAD = itemEvents.get(position).getId();
+                startActivity(new Intent(getContext(), InfosEvenementsActivity.class));
             }
         });
     }

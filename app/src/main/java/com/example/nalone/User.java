@@ -69,6 +69,7 @@ public class User {
 
         this.nbCreation = "0";
         this.nbParticipation = "0";
+
         this.demande_amis_envoye = new ArrayList<>();
         this.demande_amis_recu = new ArrayList<>();
         this.amis = new ArrayList<>();
