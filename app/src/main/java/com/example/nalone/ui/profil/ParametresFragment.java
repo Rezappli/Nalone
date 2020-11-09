@@ -11,6 +11,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ProgressBar;
+import android.widget.SeekBar;
+import android.widget.TextView;
 
 import com.example.nalone.MainActivity;
 import com.example.nalone.R;
@@ -20,10 +23,14 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 
+import static com.example.nalone.util.Constants.range;
+
 public class ParametresFragment extends Fragment {
 
     private Button sign_out;
     private GoogleSignInClient mGoogleSignInClient;
+    private SeekBar seekBar;
+    private TextView textViewRayon;
 
 
     @Override
@@ -35,6 +42,37 @@ public class ParametresFragment extends Fragment {
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestEmail()
                 .build();
+
+        textViewRayon = root.findViewById(R.id.textViewRayon);
+        textViewRayon.setText(range/1000+" km");
+
+        SeekBar seekBar =  root.findViewById(R.id.seekBarRayon);
+
+        seekBar.setMax(200000);
+        seekBar.setProgress(range);
+
+        seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            int progress = range;
+
+            // When Progress value changed.
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progressValue, boolean fromUser) {
+                progress = progressValue;
+                textViewRayon.setText(progressValue/1000 + " km");
+            }
+
+            // Notification that the user has started a touch gesture.
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            // Notification that the user has finished a touch gesture
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+                range = progress;
+            }
+        });
 
         mGoogleSignInClient = GoogleSignIn.getClient(getContext(), gso);
 

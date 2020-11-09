@@ -14,6 +14,7 @@ import android.text.TextWatcher;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CalendarView;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -127,7 +128,6 @@ public class SignUpInformationActivity extends AppCompatActivity {
                 textH.setTextColor(Color.GRAY);
             }
         });
-
 
 
         buttonSignUpNext.setOnClickListener(new View.OnClickListener() {
