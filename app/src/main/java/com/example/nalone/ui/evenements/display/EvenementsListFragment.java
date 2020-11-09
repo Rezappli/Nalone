@@ -1,5 +1,6 @@
 package com.example.nalone.ui.evenements.display;
 
+import android.location.Location;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -26,7 +27,10 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import java.util.ArrayList;
 import java.util.List;
 import static com.example.nalone.util.Constants.EVENTS_LIST;
+import static com.example.nalone.util.Constants.MARKERS_EVENT;
 import static com.example.nalone.util.Constants.USER_ID;
+import static com.example.nalone.util.Constants.USER_LATLNG;
+import static com.example.nalone.util.Constants.range;
 
 public class EvenementsListFragment extends Fragment implements CoreListener {
 
@@ -99,18 +103,27 @@ public class EvenementsListFragment extends Fragment implements CoreListener {
 
     private void updateItems(){
         itemEvents.clear();
+        float[] results = new float[1];
         for(int i = 0; i < EVENTS_LIST.size(); i++){
-            MarkerOptions m = new MarkerOptions();
             Evenement e = EVENTS_LIST.get(i+"");
+            MarkerOptions m = MARKERS_EVENT.get(e.getId()+"");
 
             m.title(e.getNom());
 
             if(e.getVisibilite().equals(Visibilite.PRIVE)){
                 if(e.getMembres_inscrits().contains(USER_ID)){
-                    itemEvents.add(e);
+                    Location.distanceBetween(USER_LATLNG.latitude, USER_LATLNG.longitude,
+                            m.getPosition().latitude, m.getPosition().longitude, results);
+                    if(results[0] < range) {
+                        itemEvents.add(e);
+                    }
                 }
             }else{
-                itemEvents.add(e);
+                Location.distanceBetween(USER_LATLNG.latitude, USER_LATLNG.longitude,
+                        m.getPosition().latitude, m.getPosition().longitude, results);
+                if(results[0] < 50000) {
+                    itemEvents.add(e);
+                }
             }
 
         }

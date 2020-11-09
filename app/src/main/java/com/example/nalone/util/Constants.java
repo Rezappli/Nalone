@@ -50,4 +50,6 @@ public class Constants {
             new Locale("fr", "FR"));
 
     public static LatLng targetZoom;
+
+    public static int range = 50000;
 }

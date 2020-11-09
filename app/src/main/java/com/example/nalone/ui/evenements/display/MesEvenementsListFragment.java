@@ -82,6 +82,8 @@ public class MesEvenementsListFragment extends Fragment implements CoreListener 
     private LinearLayout linearSansEvent;
     private ImageView addEvent;
 
+    private final List<Evenement> itemEvents = new ArrayList<>();
+
 
 
     // TODO: Rename parameter arguments, choose names that match
@@ -150,8 +152,7 @@ public class MesEvenementsListFragment extends Fragment implements CoreListener 
     }
 
     private void updateEvents() {
-
-        final List<Evenement> itemEvents = new ArrayList<>();
+        itemEvents.clear();
 
         for(int i = 0; i < EVENTS_LIST.size(); i++){
             MarkerOptions m = new MarkerOptions();

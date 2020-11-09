@@ -54,6 +54,7 @@ import static com.example.nalone.util.Constants.MARKER_COLOR_SET;
 import static com.example.nalone.util.Constants.USER_ID;
 import static com.example.nalone.util.Constants.USER_LATLNG;
 import static com.example.nalone.util.Constants.listeners;
+import static com.example.nalone.util.Constants.range;
 import static com.example.nalone.util.Constants.targetZoom;
 
 
@@ -200,7 +201,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback,  CoreLi
                     if (!itemEvents.contains(e)) {
                         Location.distanceBetween(USER_LATLNG.latitude, USER_LATLNG.longitude,
                                 m.getPosition().latitude, m.getPosition().longitude, results);
-                        if(results[0] < 50000) {
+                        if(results[0] < range) {
                             itemEvents.add(e);
                         }
                     }
