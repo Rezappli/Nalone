@@ -3,9 +3,7 @@ package com.example.nalone.ui.recherche;
 import android.app.Dialog;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
-import android.net.Uri;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,17 +22,11 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.example.nalone.Adapter.ItemFiltreAdapter;
 import com.example.nalone.CoreListener;
-import com.example.nalone.CustomToast;
-import com.example.nalone.HomeActivity;
 import com.example.nalone.items.ItemFiltre;
-import com.example.nalone.items.ItemImagePerson;
 import com.example.nalone.items.ItemPerson;
 import com.example.nalone.Adapter.ItemProfilAdapter;
 import com.example.nalone.R;
 import com.example.nalone.User;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.storage.StorageReference;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -43,11 +35,8 @@ import static com.example.nalone.util.Constants.USERS_DB_REF;
 import static com.example.nalone.util.Constants.USERS_LIST;
 import static com.example.nalone.util.Constants.USERS_PICTURE_URI;
 import static com.example.nalone.util.Constants.USER_ID;
-import static com.example.nalone.util.Constants.USER_IMAGE_URI;
 import static com.example.nalone.util.Constants.heightScreen;
 import static com.example.nalone.util.Constants.listeners;
-import static com.example.nalone.util.Constants.mProfilRef;
-import static com.example.nalone.util.Constants.mStore;
 import static com.example.nalone.util.Constants.widthScreen;
 
 public class RechercheFragment extends Fragment implements CoreListener {
@@ -313,11 +302,9 @@ public class RechercheFragment extends Fragment implements CoreListener {
             @Override
             public void onClick(View v) {
                 if (button == R.drawable.ic_round_mail_24) {
-                    CustomToast t = new CustomToast(getContext(), "Vous avez reçu une demande d'amis de la part de cet utilisateur !", false, true);
-                    t.show();
+                    Toast.makeText(getContext(), "Vous avez reçu une demande d'amis de la part de cet utilisateur !", Toast.LENGTH_SHORT).show();
                 } else if (button == R.drawable.ic_round_hourglass_top_24) {
-                    CustomToast t = new CustomToast(getContext(), "Votre demande d'amis est en attente !", false, true);
-                    t.show();
+                    Toast.makeText(getContext(), "Votre demande d'amis est en attente !", Toast.LENGTH_SHORT).show();
                 } else {
                     Toast.makeText(getContext(), "Vous avez envoyé une demande d'amis !", Toast.LENGTH_SHORT).show();
                     addFriend(""+id);

@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,9 +20,11 @@ import com.bumptech.glide.Glide;
 import com.example.nalone.items.ItemPerson;
 import com.example.nalone.R;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.storage.StorageReference;
 
+import java.io.IOException;
 import java.util.List;
 
 import static com.example.nalone.util.Constants.USERS_PICTURE_URI;
@@ -116,20 +119,24 @@ public class ItemProfilAdapter extends RecyclerView.Adapter<ItemProfilAdapter.It
         if(USERS_PICTURE_URI.get(currentItem.getId()+"") != null){
             Glide.with(context).load(USERS_PICTURE_URI.get(currentItem.getId()+"")).fitCenter().centerCrop().into(holder.mImageView);
         }else {
-            StorageReference imgRef = mStore.getReference("users/" + currentItem.getId());
-            if (imgRef != null) {
-                imgRef.getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Uri> task) {
-                        if (task.isSuccessful()) {
-                            Uri img = task.getResult();
-                            if (img != null) {
-                                USERS_PICTURE_URI.put(currentItem.getId()+"", img);
-                                Glide.with(context).load(img).fitCenter().centerCrop().into(holder.mImageView);
+            try {
+                StorageReference imgRef = mStore.getReference("users/" + currentItem.getId());
+                if (imgRef != null) {
+                    imgRef.getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Uri> task) {
+                            if (task.isSuccessful()) {
+                                Uri img = task.getResult();
+                                if (img != null) {
+                                    USERS_PICTURE_URI.put(currentItem.getId() + "", img);
+                                    Glide.with(context).load(img).fitCenter().centerCrop().into(holder.mImageView);
+                                }
                             }
                         }
-                    }
-                });
+                    });
+                }
+            } catch (Exception e) {
+                //e.printStackTrace();
             }
         }
     }
