@@ -1,30 +1,22 @@
 package com.example.nalone;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.widget.TextView;
 
 import com.example.nalone.Adapter.ItemImagePersonAdapter;
 import com.example.nalone.items.ItemImagePerson;
 import com.example.nalone.util.Constants;
 import com.google.android.gms.maps.model.Marker;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import static com.example.nalone.util.Constants.EVENTS_LIST;
 import static com.example.nalone.util.Constants.USERS_LIST;
-import static com.example.nalone.util.Constants.USER_LATLNG;
-import static com.example.nalone.util.Constants.mFirebase;
 
 public class InfosEvenementsActivity extends AppCompatActivity {
 
@@ -61,7 +53,7 @@ public class InfosEvenementsActivity extends AppCompatActivity {
                 String final_date_text = "";
                 mTitle.setText(e.getNom());
                 mTimer.setText(e.getTime());
-                mOwner.setText(USERS_LIST.get(e.getProprietaire()+"").getPrenom()+""+USERS_LIST.get(e.getProprietaire()+"").getNom());
+                mOwner.setText(USERS_LIST.get(e.getProprietaire()+"").getPrenom()+" "+USERS_LIST.get(e.getProprietaire()+"").getNom());
                 mDescription.setText(e.getDescription());
 
                 for(int i = 0; i < date_text.length()-5; i++){
@@ -75,7 +67,7 @@ public class InfosEvenementsActivity extends AppCompatActivity {
                 mDate.setText(final_date_text);
 
                 for(int i = 0; i < e.getMembres_inscrits().size(); i++){
-                    membres_inscrits.add(new ItemImagePerson(i, R.drawable.ic_round_person_24));
+                    membres_inscrits.add(new ItemImagePerson(Integer.parseInt(e.getMembres_inscrits().get(i)), R.drawable.ic_round_person_24));
                 }
             }
         }

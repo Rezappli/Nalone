@@ -51,7 +51,6 @@ import static com.example.nalone.util.Constants.mStore;
 
 public class HomeActivity extends AppCompatActivity{
 
-    private CustomToast t;
     private Handler h = new Handler();;
     private Runnable r ;
 
@@ -61,9 +60,6 @@ public class HomeActivity extends AppCompatActivity{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
 
-        t = new CustomToast(this, "Appuyer de nouveau pour quitter", false, true);
-
-
         BottomNavigationView navView = findViewById(R.id.nav_view);
 
         AppBarConfiguration appBarConfiguration = new AppBarConfiguration.Builder(
@@ -72,24 +68,6 @@ public class HomeActivity extends AppCompatActivity{
         final NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
         NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
         NavigationUI.setupWithNavController(navView, navController);
-
-       r = new Runnable() {
-            @Override
-            public void run() {
-                if(t.isShow()){
-                    t.setShow(false);
-                    h.postDelayed(r, 3500);
-                }
-
-                if(!isInternetConnected(HomeActivity.this)){
-                    h.removeCallbacksAndMessages(null);
-                    startActivityForResult(new Intent(getBaseContext(), ErrorConnexionActivity.class), 0);
-                }
-                h.postDelayed(r, 3500);
-            }
-        };
-
-        //h.postDelayed(r, 0);
 
 
         checkUserRegister();
@@ -138,15 +116,6 @@ public class HomeActivity extends AppCompatActivity{
     @Override
     public void onBackPressed(){
         //super.onBackPressed();
-        h.postDelayed(r, 3500);
-        if(!t.isShow()){
-            t.show();
-        }else{
-            Intent intent = new Intent(Intent.ACTION_MAIN);
-            intent.addCategory(Intent.CATEGORY_HOME);
-            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            startActivity(intent);
-        }
 
     }
 

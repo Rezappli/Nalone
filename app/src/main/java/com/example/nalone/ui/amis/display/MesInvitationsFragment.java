@@ -14,7 +14,6 @@ import android.widget.Toast;
 
 import com.example.nalone.Adapter.ItemInvitAmisAdapter;
 import com.example.nalone.CoreListener;
-import com.example.nalone.CustomToast;
 import com.example.nalone.items.ItemPerson;
 import com.example.nalone.R;
 import com.example.nalone.User;
@@ -128,8 +127,7 @@ public class MesInvitationsFragment extends Fragment implements CoreListener {
         USERS_DB_REF.setValue(USERS_LIST);
 
         updateItems();
-        CustomToast t = new CustomToast(getContext(), "Vous avez ajouté(e) cet utilisateur", false, true);
-        t.show();
+        Toast.makeText(getContext(), "Vous avez ajouté(e) cet utilisateur", Toast.LENGTH_SHORT).show();
     }
 
     private void declineFriendRequest(int id) {
