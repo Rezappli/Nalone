@@ -199,7 +199,7 @@ public class SignUpInformationActivity extends AppCompatActivity {
                   sexe = "Femme";
               }
 
-                user = new User(nomEntre, prenomEntre, sexe, villeEntre, numeroEntre, mailEntre, null,
+                user = new User("", nomEntre, prenomEntre, sexe, villeEntre, numeroEntre, mailEntre, null,
                         null, "", dateNaissance.getText().toString());
                 Intent signUpStudy = new Intent(getBaseContext(), SignUpStudiesActivity.class);
                 startActivityForResult(signUpStudy, 0);

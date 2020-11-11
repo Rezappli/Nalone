@@ -16,7 +16,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.nalone.Adapter.ItemFiltreAdapter;
-import com.example.nalone.CoreListener;
+import com.example.nalone.listeners.CoreListener;
 import com.example.nalone.items.ItemFiltre;
 import com.example.nalone.items.ItemPerson;
 import com.example.nalone.Adapter.ItemProfilAdapter;
@@ -27,8 +27,6 @@ import com.example.nalone.ui.amis.display.PopupProfilFragment;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.example.nalone.util.Constants.USERS_LIST;
-import static com.example.nalone.util.Constants.USER_ID;
 import static com.example.nalone.util.Constants.listeners;
 
 public class RechercheFragment extends Fragment implements CoreListener {
@@ -91,92 +89,6 @@ public class RechercheFragment extends Fragment implements CoreListener {
 
             @Override
             public boolean onQueryTextChange(String newText) {
-                newText = newText.toLowerCase();
-                tempList.clear();
-                boolean check = true;
-                if (items.size() > 0) {
-                    if (newText.length() > 0) {
-                        for (int i = 0; i < items.size(); i++) {
-                            for (int j = 0; j < newText.length(); j++) {
-                                if (items.get(i).getmNomToLowerCase().length() > j) {
-                                    if (newText.charAt(j) == items.get(i).getmNomToLowerCase().charAt(j) && j == 0) {
-                                        check = true;
-
-                                    }
-
-
-                                    if (newText.charAt(j) == items.get(i).getmNomToLowerCase().charAt(j) && check) {
-                                        check = true;
-                                    } else {
-                                        check = false;
-                                    }
-
-
-                                    if (check) {
-                                        if (!tempList.contains(items.get(i))) {
-                                            tempList.add(items.get(i));
-                                            if (resultat.getVisibility() == View.VISIBLE) {
-                                                resultat.setVisibility(View.GONE);
-                                                resultat.setText("");
-                                            }
-                                        }
-                                    } else {
-                                        tempList.remove(items.get(i));
-                                    }
-                                } else {
-                                    tempList.remove(items.get(i));
-                                }
-                            }
-                        }
-
-
-                        if (tempList.size() == 0) {
-                            resultat.setVisibility(View.VISIBLE);
-                            resultat.setText(R.string.aucun_resultat);
-                        }
-
-                        mAdapter = new ItemProfilAdapter(tempList, getContext());
-                        mAdapter.setOnItemClickListener(new ItemProfilAdapter.OnItemClickListener() {
-                            @Override
-                            public void onAddClick(int position) {
-                                if (USERS_LIST.get(USER_ID).getDemande_amis_envoye().contains(tempList.get(position).getId() + "")) {
-                                    showPopUpProfil(tempList.get(position).getId(), tempList.get(position).getNom(),tempList.get(position).getVille(), tempList.get(position).getmDescription(), tempList.get(position).getmNbCreate(), tempList.get(position).getmNbParticipate(), R.drawable.ic_round_hourglass_top_24, tempList.get(position).getCentresInterets());
-                                } else if (USERS_LIST.get(USER_ID).getDemande_amis_recu().contains(tempList.get(position).getId() + "")) {
-                                    showPopUpProfil(tempList.get(position).getId(), tempList.get(position).getNom(),tempList.get(position).getVille(), tempList.get(position).getmDescription(), tempList.get(position).getmNbCreate(), tempList.get(position).getmNbParticipate(), R.drawable.ic_round_mail_24, tempList.get(position).getCentresInterets());
-                                } else {
-                                    showPopUpProfil(tempList.get(position).getId(), tempList.get(position).getNom(),tempList.get(position).getVille(), tempList.get(position).getmDescription(), tempList.get(position).getmNbCreate(), tempList.get(position).getmNbParticipate(), R.drawable.ic_baseline_add_circle_outline_24, tempList.get(position).getCentresInterets());
-                                }
-
-                            }
-                        });
-                        mRecyclerView.setAdapter(mAdapter);
-                    } else {
-                        resultat.setVisibility(View.GONE);
-                        resultat.setText("");
-                        mAdapter = new ItemProfilAdapter(items, getContext());
-                        mAdapter.setOnItemClickListener(new ItemProfilAdapter.OnItemClickListener() {
-                            @Override
-                            public void onAddClick(int position) {
-                                if (USERS_LIST.get(USER_ID).getDemande_amis_envoye().contains(tempList.get(position).getId() + "")) {
-                                    showPopUpProfil(tempList.get(position).getId(), tempList.get(position).getNom(),tempList.get(position).getVille(), tempList.get(position).getmDescription(), tempList.get(position).getmNbCreate(), tempList.get(position).getmNbParticipate(), R.drawable.ic_round_hourglass_top_24, tempList.get(position).getCentresInterets());
-                                } else if (USERS_LIST.get(USER_ID).getDemande_amis_recu().contains(tempList.get(position).getId() + "")) {
-                                    showPopUpProfil(tempList.get(position).getId(), tempList.get(position).getNom(),tempList.get(position).getVille(), tempList.get(position).getmDescription(), tempList.get(position).getmNbCreate(), tempList.get(position).getmNbParticipate(), R.drawable.ic_round_mail_24, tempList.get(position).getCentresInterets());
-                                } else {
-                                    showPopUpProfil(tempList.get(position).getId(), tempList.get(position).getNom(),tempList.get(position).getVille(), tempList.get(position).getmDescription(), tempList.get(position).getmNbCreate(), tempList.get(position).getmNbParticipate(), R.drawable.ic_baseline_add_circle_outline_24, tempList.get(position).getCentresInterets());
-                                }
-
-
-                            }
-                        });
-                        mRecyclerView.setAdapter(mAdapter);
-
-
-                    }
-                } else {
-                    resultat.setVisibility(View.VISIBLE);
-                    resultat.setText("Aucun amis à ajouter !");
-                }
-
 
                 return false;
             }
@@ -198,23 +110,16 @@ public class RechercheFragment extends Fragment implements CoreListener {
     }
 
 
-    public void showPopUpProfil(final int id, String name,String ville, String desc, String nbCreate, String nbParticipate, final int button, List centresInteret) {
+    public void showPopUpProfil(User u, String name,String ville, String desc, String nbCreate, String nbParticipate, final int button, List centresInteret) {
 
-        PopupProfilFragment.id = id;
-        PopupProfilFragment.name = name;
-        PopupProfilFragment.ville = ville;
-        PopupProfilFragment.desc = desc;
-        PopupProfilFragment.nbCreate = nbCreate;
-        PopupProfilFragment.nbParticipate = nbParticipate;
-        PopupProfilFragment.button = button;
-        PopupProfilFragment.centresInteret = centresInteret;
+        PopupProfilFragment.USER_LOAD = u;
 
         navController.navigate(R.id.action_navigation_recherche_to_navigation_popup_profil);
     }
 
     public void updateItems() {
         items.clear();
-        for(int i = 0; i < USERS_LIST.size(); i++){
+        /*for(int i = 0; i < USERS_LIST.size(); i++){
             User u = USERS_LIST.get(i+"");
             if(u != null) {
                 if (!USER_ID.equalsIgnoreCase(i + "")) {
@@ -232,7 +137,7 @@ public class RechercheFragment extends Fragment implements CoreListener {
                     }
                 }
             }
-        }
+        }*/
 
         mAdapter = new ItemProfilAdapter(items, getContext());
         mRecyclerView = rootView.findViewById(R.id.recyclerView);
@@ -246,13 +151,13 @@ public class RechercheFragment extends Fragment implements CoreListener {
             @Override
             public void onAddClick(int position) {
 
-                if (USERS_LIST.get(USER_ID).getDemande_amis_envoye().contains(items.get(position).getId() + "")) {
+                /*if (USERS_LIST.get(USER_ID).getDemande_amis_envoye().contains(items.get(position).getId() + "")) {
                     showPopUpProfil(items.get(position).getId(), items.get(position).getNom(),items.get(position).getVille(), items.get(position).getmDescription(), items.get(position).getmNbCreate(), items.get(position).getmNbParticipate(), R.drawable.ic_round_hourglass_top_24, items.get(position).getCentresInterets());
                 } else if (USERS_LIST.get(USER_ID).getDemande_amis_recu().contains(items.get(position).getId() + "")) {
                     showPopUpProfil(items.get(position).getId(), items.get(position).getNom(),items.get(position).getVille(), items.get(position).getmDescription(), items.get(position).getmNbCreate(), items.get(position).getmNbParticipate(), R.drawable.ic_round_mail_24, items.get(position).getCentresInterets());
                 } else {
                     showPopUpProfil(items.get(position).getId(), items.get(position).getNom(),items.get(position).getVille(), items.get(position).getmDescription(), items.get(position).getmNbCreate(), items.get(position).getmNbParticipate(), R.drawable.ic_baseline_add_circle_outline_24, items.get(position).getCentresInterets());
-                }
+                }*/
             }
         });
         mRecyclerView.setAdapter(mAdapter);
@@ -261,6 +166,11 @@ public class RechercheFragment extends Fragment implements CoreListener {
     @Override
     public void onDataChangeListener() {
         updateItems();
+    }
+
+    @Override
+    public void onUpdateAdapter() {
+
     }
 
     @Override

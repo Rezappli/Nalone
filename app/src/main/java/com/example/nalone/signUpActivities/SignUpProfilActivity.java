@@ -32,13 +32,13 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
-import static com.example.nalone.util.Constants.USERS_DB_REF;
-import static com.example.nalone.util.Constants.USERS_LIST;
 import static com.example.nalone.util.Constants.mAuth;
 import static com.example.nalone.util.Constants.mStore;
+import static com.example.nalone.util.Constants.mStoreBase;
 
 import java.io.FileNotFoundException;
 import java.io.InputStream;
@@ -130,11 +130,14 @@ public class SignUpProfilActivity extends AppCompatActivity {
 
         SignUpInformationActivity.user.setDescription(signUpDescriptionEnter);
 
-        signInUser(SignUpInformationActivity.user.getMail(), SignUpInformationActivity.password);
+        mStoreBase.collection("users")
+                .add(SignUpInformationActivity.user)
+                .addOnCompleteListener(new OnCompleteListener<DocumentReference>() {
+                    @Override
+                    public void onComplete(@NonNull Task<DocumentReference> task) {
 
-        USERS_LIST.put(USERS_LIST.size()+"", SignUpInformationActivity.user);
-
-        USERS_DB_REF.setValue(USERS_LIST);
+                    }
+                });
 
         Toast.makeText(this, "Bienvenue dans NoLonely !", Toast.LENGTH_SHORT).show();
 

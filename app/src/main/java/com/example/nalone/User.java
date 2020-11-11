@@ -3,43 +3,118 @@ package com.example.nalone;
 import android.graphics.Bitmap;
 
 import com.example.nalone.util.Constants;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.local.ReferenceSet;
+import com.google.firestore.v1.Document;
 
+import java.lang.ref.Reference;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 public class User {
-    public String sexe;
-    public String nom;
-    public String prenom;
-    public String ville;
-    public String numero;
-    public String mail;
-    public List<String> centreInterets;
-    public String cursus;
-    public String description;
-    public String nbCreation;
-    public String nbParticipation;
-    public List<String> demande_amis_recu;
-    public List<String> demande_amis_envoye;
-    public List<String> amis;
-    public String dateNaissance;
-    public boolean hasProfilPhoto;
+    private String uid;
+    private String sex;
+    private String last_name;
+    private String first_name;
+    private String city;
+    private String number;
+    private String mail;
+    private List<String> centers_interests;
+    private String cursus;
+    private String description;
+    private String number_events_create;
+    private String number_events_attend;
+    private List<DocumentReference> friends_requests_send;
+    private List<DocumentReference> friends_requests_received;
+    private List<DocumentReference> friends;
+    private List<DocumentReference> register_events;
+    private List<DocumentReference> waiting_events;
+    private String birthday_date;
+    private String image_url;
 
-    public String getSexe() {
-        return sexe;
+    public User(){}
+
+    public User(String uid, String last_name, String first_name, String sex, String city,
+                String number, String mail, String cursus, List<String> centers_interests,
+                String description, String birthday_date){
+        this.uid = uid;
+        this.last_name = last_name;
+        this.first_name = first_name;
+        this.sex = sex;
+        this.city = city;
+        this.number = number;
+        this.mail = mail;
+        this.cursus = cursus;
+        this.centers_interests = centers_interests;
+        this.description = description;
+        this.birthday_date = birthday_date;
+
+        this.number_events_create = "0";
+        this.number_events_attend = "0";
+
+        this.friends_requests_send = new ArrayList<>();
+        this.friends_requests_received = new ArrayList<>();
+        this.friends = new ArrayList<>();
+
+        this.image_url = null;
     }
 
-    public void setSexe(String sexe) {
-        this.sexe = sexe;
+    public String getSex() {
+        return sex;
     }
 
-    public List<String> getCentreInterets() {
-        return centreInterets;
+    public void setSex(String sex) {
+        this.sex = sex;
     }
 
-    public void setCentreInterets(List<String> centreInterets) {
-        this.centreInterets = centreInterets;
+    public String getLast_name() {
+        return last_name;
+    }
+
+    public void setLast_name(String last_name) {
+        this.last_name = last_name;
+    }
+
+    public String getFirst_name() {
+        return first_name;
+    }
+
+    public void setFirst_name(String first_name) {
+        this.first_name = first_name;
+    }
+
+    public String getCity() {
+        return city;
+    }
+
+    public void setCity(String city) {
+        this.city = city;
+    }
+
+    public String getNumber() {
+        return number;
+    }
+
+    public void setNumber(String number) {
+        this.number = number;
+    }
+
+    public String getMail() {
+        return mail;
+    }
+
+    public void setMail(String mail) {
+        this.mail = mail;
+    }
+
+    public List<String> getCenters_interests() {
+        return centers_interests;
+    }
+
+    public void setCenters_interests(List<String> centers_interests) {
+        this.centers_interests = centers_interests;
     }
 
     public String getCursus() {
@@ -50,75 +125,6 @@ public class User {
         this.cursus = cursus;
     }
 
-    public User(){}
-
-    public User(String nom, String prenom, String sexe, String ville,
-                String numero, String mail, String cursus, List<String> centreInterets,
-                String description, String dateNaissance){
-        this.nom = nom;
-        this.prenom = prenom;
-        this.sexe = sexe;
-        this.ville = ville;
-        this.numero = numero;
-        this.mail = mail;
-        this.cursus = cursus;
-        this.centreInterets = centreInterets;
-        this.description = description;
-        this.dateNaissance = dateNaissance;
-        this.hasProfilPhoto = false;
-
-        this.nbCreation = "0";
-        this.nbParticipation = "0";
-
-        this.demande_amis_envoye = new ArrayList<>();
-        this.demande_amis_recu = new ArrayList<>();
-        this.amis = new ArrayList<>();
-
-        amis.add(" ");
-        demande_amis_recu.add(" ");
-        demande_amis_envoye.add(" ");
-    }
-
-    public String getNom() {
-        return nom;
-    }
-
-    public void setNom(String nom) {
-        this.nom = nom;
-    }
-
-    public String getPrenom() {
-        return prenom;
-    }
-
-    public void setPrenom(String prenom) {
-        this.prenom = prenom;
-    }
-
-    public String getVille() {
-        return ville;
-    }
-
-    public void setVille(String ville) {
-        this.ville = ville;
-    }
-
-    public String getNumero() {
-        return numero;
-    }
-
-    public void setNumero(String numero) {
-        this.numero = numero;
-    }
-
-    public String getMail() {
-        return mail;
-    }
-
-    public void setAdresseMail(String mail) {
-        this.mail = mail;
-    }
-
     public String getDescription() {
         return description;
     }
@@ -127,55 +133,83 @@ public class User {
         this.description = description;
     }
 
-    public String getNbCreation() {
-        return nbCreation;
+    public String get_number_events_create() {
+        return number_events_create;
     }
 
-    public void setNbCreate(String nbCreate) {
-        this.nbCreation = nbCreate;
+    public void set_number_events_create(String number_events_create) {
+        this.number_events_create = number_events_create;
     }
 
-    public String getNbParticipation() {
-        return nbParticipation;
+    public String get_number_events_attend() {
+        return number_events_attend;
     }
 
-    public void setNbParticipate(String nbParticipate) {
-        this.nbParticipation = nbParticipate;
+    public void set_number_events_attend(String number_events_attend) {
+        this.number_events_attend = number_events_attend;
     }
 
-    public void setDemande_amis_recu(List<String> demande_amis_recu) {
-        this.demande_amis_recu = demande_amis_recu;
+    public List<DocumentReference> get_friends_requests_send() {
+        return friends_requests_send;
     }
 
-    public void setDemande_amis_envoye(List<String> demande_amis_envoye) {
-        this.demande_amis_envoye = demande_amis_envoye;
+    public void set_friends_requests_send(List<DocumentReference> friends_requests_send) {
+        this.friends_requests_send = friends_requests_send;
     }
 
-    public List<String> getDemande_amis_recu(){
-        return demande_amis_recu;
+    public List<DocumentReference> get_friends_requests_received() {
+        return friends_requests_received;
     }
 
-    public List<String> getDemande_amis_envoye(){
-        return demande_amis_envoye;
+    public void set_friends_requests_received(List<DocumentReference> friends_requests_received) {
+        this.friends_requests_received = friends_requests_received;
     }
 
-    public List<String> getAmis() {
-        return amis;
+    public List<DocumentReference> get_friends() {
+        return friends;
     }
 
-    public void setAmis(List<String> amis) {
-        this.amis = amis;
+    public void set_friends(List<DocumentReference> friends) {
+        this.friends = friends;
     }
 
-    public String getDateNaissance(){
-        return this.dateNaissance;
+    public List<DocumentReference> get_register_events() {
+        return register_events;
     }
 
-    public boolean getHasSetProfilPhoto(){
-        return hasProfilPhoto;
+    public void set_register_events(List<DocumentReference> register_events) {
+        this.register_events = register_events;
     }
 
-    public void setHasProfilPhoto(boolean hasProfilPhoto){
-        this.hasProfilPhoto = hasProfilPhoto;
+    public List<DocumentReference> getWaiting_events() {
+        return waiting_events;
+    }
+
+    public void set_waiting_events(List<DocumentReference> waiting_events) {
+        this.waiting_events = waiting_events;
+    }
+
+    public String get_birthday_date() {
+        return birthday_date;
+    }
+
+    public void set_birthday_date(String birthday_date) {
+        this.birthday_date = birthday_date;
+    }
+
+    public String getImage_url() {
+        return image_url;
+    }
+
+    public void setImage_url(String image_url) {
+        this.image_url = image_url;
+    }
+
+    public String getUid() {
+        return uid;
+    }
+
+    public void setUid(String uid) {
+        this.uid = uid;
     }
 }

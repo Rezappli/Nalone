@@ -1,8 +1,10 @@
 package com.example.nalone.ui.amis.display;
 
 import android.graphics.Color;
+import android.net.Uri;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -19,24 +21,24 @@ import com.example.nalone.Adapter.ItemProfilAdapter;
 import com.example.nalone.R;
 import com.example.nalone.User;
 import com.example.nalone.items.ItemPerson;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.storage.StorageReference;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.example.nalone.util.Constants.USERS_DB_REF;
-import static com.example.nalone.util.Constants.USERS_LIST;
-import static com.example.nalone.util.Constants.USERS_PICTURE_URI;
+import static com.example.nalone.util.Constants.USER;
 import static com.example.nalone.util.Constants.USER_ID;
+import static com.example.nalone.util.Constants.USER_REFERENCE;
+import static com.example.nalone.util.Constants.mStore;
+import static com.example.nalone.util.Constants.mStoreBase;
 
 public class PopupProfilFragment extends Fragment {
 
-    public static String name;
-    public static String ville;
-    public static int id;
-    public static List centresInteret;
-    public static String desc;
-    public static String nbCreate;
-    public static String nbParticipate;
+
+    public static User USER_LOAD;
     public static int button;
 
 
@@ -65,28 +67,44 @@ public class PopupProfilFragment extends Fragment {
         cardViewPhotoPerson = root.findViewById(R.id.cardViewPhotoPerson);
         villeProfil = root.findViewById(R.id.userConnectVille);
 
+        villeProfil.setText(USER_LOAD.getCity());
 
-        villeProfil.setText(ville);
-
-        if(USERS_LIST.get(id+"").getCursus().equalsIgnoreCase("Informatique")){
+        if(USER_LOAD.getCursus().equalsIgnoreCase("Informatique")){
             cardViewPhotoPerson.setCardBackgroundColor(Color.RED);
         }
-        if(USERS_LIST.get(id+"").getCursus().equalsIgnoreCase("TC")){
+
+        if(USER_LOAD.getCursus().equalsIgnoreCase("TC")){
             cardViewPhotoPerson.setCardBackgroundColor(Color.GREEN);
         }
-        if(USERS_LIST.get(id+"").getCursus().equalsIgnoreCase("MMI")){
+
+        if(USER_LOAD.getCursus().equalsIgnoreCase("MMI")){
             cardViewPhotoPerson.setCardBackgroundColor(Color.parseColor("#4B0082"));
         }
-        if(USERS_LIST.get(id+"").getCursus().equalsIgnoreCase("GB")){
+
+        if(USER_LOAD.getCursus().equalsIgnoreCase("GB")){
             cardViewPhotoPerson.setCardBackgroundColor(Color.BLUE);
         }
-        if(USERS_LIST.get(id+"").getCursus().equalsIgnoreCase("LP")){
+
+        if(USER_LOAD.getCursus().equalsIgnoreCase("LP")){
             cardViewPhotoPerson.setCardBackgroundColor(Color.GRAY);
         }
 
-
-        if(USERS_PICTURE_URI.get(id+"") != null) {
-            Glide.with(getContext()).load(USERS_PICTURE_URI.get(id + "")).fitCenter().centerCrop().into(imagePerson);
+        if(USER_LOAD.getImage_url() != null) {
+            StorageReference imgRef = mStore.getReference("users/" + USER_LOAD.getUid());
+            if (imgRef != null) {
+                imgRef.getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Uri> task) {
+                        if (task.isSuccessful()) {
+                            Uri img = task.getResult();
+                            if (img != null) {
+                                Glide.with(getContext()).load(img).fitCenter().centerCrop().into(imagePerson);
+                            }
+                        }
+                    }
+                });
+            }
+            Glide.with(getContext()).load(USER.getImage_url()).fitCenter().centerCrop().into(imagePerson);
         }
 
         List<ImageView> imageCentreInteret = new ArrayList<>();
@@ -103,23 +121,23 @@ public class PopupProfilFragment extends Fragment {
         imageCentreInteret.add(img_centre4);
         imageCentreInteret.add(img_centre5);
 
-        for(int i = 0; i < centresInteret.size(); i++){
+        for(int i = 0; i < USER_LOAD.getCenters_interests().size(); i++){
             int imgResource = 0;
-            if(centresInteret.get(i).toString().equalsIgnoreCase("programmation")){
+            if(USER_LOAD.getCenters_interests().get(i).toString().equalsIgnoreCase("programmation")){
                 imgResource = R.drawable.ci_programmation;
-            }else if(centresInteret.get(i).toString().equalsIgnoreCase("musique")){
+            }else if(USER_LOAD.getCenters_interests().get(i).toString().equalsIgnoreCase("musique")){
                 imgResource = R.drawable.ci_musique;
-            }else if(centresInteret.get(i).toString().equalsIgnoreCase("livre")){
+            }else if(USER_LOAD.getCenters_interests().get(i).toString().equalsIgnoreCase("livre")){
                 imgResource = R.drawable.ci_livre;
-            }else if(centresInteret.get(i).toString().equalsIgnoreCase("film")){
+            }else if(USER_LOAD.getCenters_interests().get(i).toString().equalsIgnoreCase("film")){
                 imgResource = R.drawable.ci_film;
-            }else if(centresInteret.get(i).toString().equalsIgnoreCase("video")){
+            }else if(USER_LOAD.getCenters_interests().get(i).toString().equalsIgnoreCase("video")){
                 imgResource = R.drawable.ci_jeuxvideo;
-            }else if(centresInteret.get(i).toString().equalsIgnoreCase("peinture")){
+            }else if(USER_LOAD.getCenters_interests().get(i).toString().equalsIgnoreCase("peinture")){
                 imgResource = R.drawable.ci_peinture;
-            }else if(centresInteret.get(i).toString().equalsIgnoreCase("photo")){
+            }else if(USER_LOAD.getCenters_interests().get(i).toString().equalsIgnoreCase("photo")){
                 imgResource = R.drawable.ci_photo;
-            }else if(centresInteret.get(i).toString().equalsIgnoreCase("sport")){
+            }else if(USER_LOAD.getCenters_interests().get(i).toString().equalsIgnoreCase("sport")){
                 imgResource = R.drawable.ci_sport;
             }
 
@@ -129,13 +147,13 @@ public class PopupProfilFragment extends Fragment {
         }
 
 
-        nameProfil.setText(name);
-        descriptionProfil.setText(desc);
-        nbCreateProfil.setText(nbCreate);
-        nbParticipateProfil.setText(nbParticipate);
+        nameProfil.setText(USER_LOAD.getLast_name() + " " + USER_LOAD.getFirst_name());
+        descriptionProfil.setText(USER_LOAD.getDescription());
+        nbCreateProfil.setText(USER_LOAD.get_number_events_create());
+        nbParticipateProfil.setText(USER_LOAD.get_number_events_attend());
         buttonAdd.setImageResource(button);
 
-        if (desc.matches("")) {
+        if (USER_LOAD.getDescription().matches("")) {
             descriptionProfil.setVisibility(View.GONE);
         }
 
@@ -148,7 +166,7 @@ public class PopupProfilFragment extends Fragment {
                     Toast.makeText(getContext(), "Votre demande d'amis est en attente !", Toast.LENGTH_SHORT).show();
                 } else {
                     Toast.makeText(getContext(), "Vous avez envoyé une demande d'amis !", Toast.LENGTH_SHORT).show();
-                    addFriend(""+id);
+                    addFriend();
                     buttonAdd.setImageResource(R.drawable.ic_round_hourglass_top_24);
                 }
             }
@@ -159,10 +177,8 @@ public class PopupProfilFragment extends Fragment {
         return root;
     }
 
-    public void addFriend(final String id) {
-        USERS_LIST.get(USER_ID).getDemande_amis_envoye().add(id+"");
-        USERS_LIST.get(id).getDemande_amis_recu().add(USER_ID+"");
-
-        USERS_DB_REF.setValue(USERS_LIST);
+    public void addFriend() {
+        USER_LOAD.get_friends_requests_received().add(mStoreBase.collection("users").document(USER.getUid()));
+        USER.get_friends_requests_send().add(mStoreBase.collection("users").document(USER_LOAD.getUid()));
     }
 }

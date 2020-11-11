@@ -1,51 +1,38 @@
 package com.example.nalone.ui.amis.display;
 
-import android.app.Dialog;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
-import android.net.Uri;
+import android.content.ClipData;
 import android.os.Bundle;
 
-import androidx.annotation.NonNull;
-import androidx.cardview.widget.CardView;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.os.Parcelable;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.SearchView;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.bumptech.glide.Glide;
 import com.example.nalone.Adapter.ItemListAmisAdapter;
-import com.example.nalone.CoreListener;
+import com.example.nalone.listeners.CoreListener;
 import com.example.nalone.items.ItemPerson;
 import com.example.nalone.R;
 import com.example.nalone.User;
-import com.google.android.gms.auth.api.signin.internal.Storage;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.storage.StorageReference;
+import com.example.nalone.listeners.FireStoreUsersListeners;
+import com.google.gson.Gson;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.example.nalone.util.Constants.USERS_DB_REF;
-import static com.example.nalone.util.Constants.USERS_LIST;
-import static com.example.nalone.util.Constants.USERS_PICTURE_URI;
-import static com.example.nalone.util.Constants.USER_ID;
-import static com.example.nalone.util.Constants.heightScreen;
+import static com.example.nalone.util.Constants.USER;
+import static com.example.nalone.util.Constants.getUserData;
 import static com.example.nalone.util.Constants.listeners;
-import static com.example.nalone.util.Constants.mProfilRef;
-import static com.example.nalone.util.Constants.mStore;
-import static com.example.nalone.util.Constants.widthScreen;
+import static com.example.nalone.util.Constants.nolonelyBundle;
 
 public class AmisFragment extends Fragment implements CoreListener{
 
@@ -55,8 +42,9 @@ public class AmisFragment extends Fragment implements CoreListener{
     private ItemListAmisAdapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
     private TextView resultat;
-    private final List<ItemPerson> tempList = new ArrayList<>();
-    private final List<ItemPerson> items = new ArrayList<>();
+    private final ArrayList<ItemPerson> tempList = new ArrayList<>();
+    private ArrayList<ItemPerson> items = new ArrayList<>();
+    private static String message = "null";
     private View rootView;
 
     public AmisFragment() {
@@ -66,16 +54,13 @@ public class AmisFragment extends Fragment implements CoreListener{
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
         listeners.add(this);
         rootView = inflater.inflate(R.layout.amis_fragment, container, false);
         search_bar = rootView.findViewById(R.id.search_bar_amis);
         resultat = rootView.findViewById(R.id.resultatText_amis);
         resultat.setVisibility(View.GONE);
         navController = Navigation.findNavController(getActivity(), R.id.nav_host_fragment);
-
-        updateItems();
-
-
 
         search_bar.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -152,12 +137,11 @@ public class AmisFragment extends Fragment implements CoreListener{
             }
         });
 
-
         return rootView;
     }
 
-    private void removeFriend(int id) {
-        if(USERS_LIST.get(USER_ID).getAmis().size() == 1) {
+    private void removeFriend(String id) {
+        /*if(USERS_LIST.get(USER_ID).getAmis().size() == 1) {
             USERS_LIST.get(USER_ID).getAmis().set(0, "");
         }else{
             USERS_LIST.get(USER_ID).getAmis().remove(id+"");
@@ -171,9 +155,9 @@ public class AmisFragment extends Fragment implements CoreListener{
 
         USERS_DB_REF.setValue(USERS_LIST);
 
-        Toast.makeText(getContext(), "Vous avez supprimé un amis !", Toast.LENGTH_SHORT).show();
+        Toast.makeText(getContext(), "Vous avez supprimé un amis !", Toast.LENGTH_SHORT).show()
 
-        updateItems();
+        updateItems();*/
 
     }
 
@@ -181,16 +165,39 @@ public class AmisFragment extends Fragment implements CoreListener{
 
     private void updateItems() {
         items.clear();
-        for (int i = 0; i < USERS_LIST.get(USER_ID).getAmis().size(); i++) {
-            User u = USERS_LIST.get(USERS_LIST.get(USER_ID).getAmis().get(i));
-            if(u != null) {
-                int id = Integer.parseInt(USERS_LIST.get(USER_ID).getAmis().get(i));
-                items.add(new ItemPerson(id, R.drawable.ic_baseline_account_circle_24,
-                        u.getPrenom() + " " + u.getNom(), 0, u.getDescription(),
-                        u.getVille(), u.getCursus(), u.getNbCreation(), u.getNbParticipation(), u.getCentreInterets()));
-            }
-        }
+        for(int i = 0; i < USER.get_friends().size(); i++){
+            Log.w("amis", "start process for a friends");
 
+            getUserData(USER.get_friends().get(i).getId(), new FireStoreUsersListeners() {
+                @Override
+                public void onDataUpdate(User u) {
+                    ItemPerson it = new ItemPerson(u.getUid(), R.drawable.ic_baseline_account_circle_24,
+                            u.getFirst_name() + " " + u.getLast_name(), 0, u.getDescription(),
+                            u.getCity(), u.getCursus(), u.get_number_events_create(), u.get_number_events_attend(), u.getCenters_interests());
+                    items.add(it);
+                    onUpdateAdapter();
+                }
+            });
+        }
+    }
+
+    public void showPopUpProfil(final String uid) {
+        getUserData(uid,new FireStoreUsersListeners() {
+            @Override
+            public void onDataUpdate(User u) {
+                PopupProfilFragment.USER_LOAD = u;
+                navController.navigate(R.id.action_navigation_amis_to_navigation_popup_profil);
+            }
+        });
+    }
+
+    @Override
+    public void onDataChangeListener() {
+        updateItems();
+    }
+
+    @Override
+    public void onUpdateAdapter() {
         mAdapter = new ItemListAmisAdapter(items, getContext());
 
         mRecyclerView = rootView.findViewById(R.id.recyclerViewMesAmis);
@@ -202,37 +209,34 @@ public class AmisFragment extends Fragment implements CoreListener{
         mAdapter.setOnItemClickListener(new ItemListAmisAdapter.OnItemClickListener() {
             @Override
             public void onAddClick(int position) {
-                showPopUpProfil(items.get(position).getId(), items.get(position).getNom(),items.get(position).getVille(), items.get(position).getmDescription(), items.get(position).getmNbCreate(), items.get(position).getmNbParticipate(), items.get(position).getCentresInterets());
+                showPopUpProfil(items.get(position).getUid());
             }
 
             @Override
             public void onDelete(int position) {
-                removeFriend(items.get(position).getId());
+                removeFriend(items.get(position).getUid());
             }
         });
-
     }
 
-    public void showPopUpProfil(int id, String name,String ville, String desc, String nbCreate, String nbParticipate, List<String> centresInteret) {
-        PopupProfilFragment.id = id;
-        PopupProfilFragment.name = name;
-        PopupProfilFragment.ville = ville;
-        PopupProfilFragment.desc = desc;
-        PopupProfilFragment.nbCreate = nbCreate;
-        PopupProfilFragment.nbParticipate = nbParticipate;
-        PopupProfilFragment.centresInteret = centresInteret;
-
-        navController.navigate(R.id.action_navigation_amis_to_navigation_popup_profil);
+    @Override
+    public void onDestroy(){
+        super.onDestroy();
+        if(nolonelyBundle.getSerializable("items") == null) {
+            nolonelyBundle.putSerializable("items", items);
+        }
     }
 
     @Override
     public void onResume(){
-        updateItems();
         super.onResume();
-    }
+            if (nolonelyBundle.getSerializable("items") != null) {
+                items = (ArrayList<ItemPerson>) nolonelyBundle.getSerializable("items");
+                onUpdateAdapter();
+                Log.w("SaveInstanceBundle", " Load : " + items);
+            } else {
+                updateItems();
+            }
+        }
 
-    @Override
-    public void onDataChangeListener() {
-        updateItems();
-    }
 }

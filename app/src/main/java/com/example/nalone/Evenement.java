@@ -2,87 +2,87 @@ package com.example.nalone;
 
 import com.example.nalone.items.ItemPerson;
 import com.example.nalone.util.Constants;
+import com.google.firebase.Timestamp;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.GeoPoint;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-public class Evenement {
+public class Evenement implements Serializable {
 
-    public int image;
-    public int id;
-    public String nom;
-    public String description;
-    public String adresse;
-    public String ville;
-    public Visibilite visibilite;
-    public String proprietaire;
-    public List<String> membres_inscrits;
-    public List<String> membres_en_attente;
-    public Date date;
-    public String time;
+    private String uid;
+    private int image;
+    private String name;
+    private String description;
+    private String address;
+    private String city;
+    private Visibility visibility;
+    private DocumentReference ownerDoc;
+    private Timestamp date;
+    private GeoPoint location;
+    private String owner;
+    private List<DocumentReference> register_users;
+    private List<DocumentReference> wainting_users;
 
     public Evenement() {}
 
 
-    public Evenement(int image, int id, String nom, String description, String adresse, String ville,
-                     Visibilite visibilite, String proprietaire, List<String> membres_inscrits,
-                     List<ItemPerson> membres_en_attente, Date date, String time){
+    public Evenement(String uid, String owner, int image, String name, String description, String address, String city,
+                     Visibility visibility, DocumentReference ownerDoc, Timestamp date, GeoPoint location){
+        this.uid = uid;
         this.image = image;
-        this.nom = nom;
+        this.name = name;
         this.description = description;
-        this.adresse = adresse;
-        this.ville = ville;
-        this.visibilite = visibilite;
-        this.proprietaire = proprietaire;
-        this.membres_inscrits = membres_inscrits;
-        this.membres_en_attente = new ArrayList<>();
-
-        for(int i = 0; i < membres_en_attente.size(); i++) {
-            this.membres_en_attente.add(membres_en_attente.get(i).getId()+"");
-        }
-
-        this.id = id;
+        this.address = address;
+        this.city = city;
+        this.visibility = visibility;
+        this.ownerDoc = ownerDoc;
         this.date = date;
-        this.time = time;
+        this.location = location;
+        this.owner = owner;
     }
 
-
-    public int getId(){
-        return id;
+    public List<DocumentReference> getRegister_users() {
+        return register_users;
     }
 
-    public List<String> getMembres_inscrits() {
-        return membres_inscrits;
+    public void addRegister_users(DocumentReference user) {
+        this.register_users.add(user);
     }
 
-    public List<String> getMembres_en_attente() {
-        return membres_en_attente;
+    public List<DocumentReference> getWainting_users() {
+        return wainting_users;
     }
 
-
-    public String getNom() {
-        return nom;
+    public void addWainting_users(DocumentReference user) {
+        this.wainting_users.add(user);
     }
 
-    public String getAdresse() {
-        return adresse;
+    public void setOwner(String owner) {
+        this.owner = owner;
     }
 
-    public String getVille() {
-        return ville;
+    public String getOwner(){
+        return owner;
     }
 
-    public Visibilite getVisibilite() {
-        return visibilite;
+    public int getImage() {
+        return image;
     }
 
-    public String getProprietaire() {
-        return proprietaire;
+    public void setImage(int image) {
+        this.image = image;
     }
 
-    public void setProprietaire(String proprietaire) {
-        this.proprietaire = proprietaire;
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public String getDescription() {
@@ -93,24 +93,60 @@ public class Evenement {
         this.description = description;
     }
 
-    public void setId(int id){
-        this.id = id;
+    public String getAddress() {
+        return address;
     }
 
-    public Date getDate(){
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
+    public String getCity() {
+        return city;
+    }
+
+    public void setCity(String city) {
+        this.city = city;
+    }
+
+    public Visibility getVisibility() {
+        return visibility;
+    }
+
+    public void setVisibility(Visibility visibility) {
+        this.visibility = visibility;
+    }
+
+    public DocumentReference getOwnerDoc() {
+        return ownerDoc;
+    }
+
+    public void setOwnerDoc(DocumentReference ownerDoc) {
+        this.ownerDoc = ownerDoc;
+    }
+
+    public Timestamp getDate() {
         return date;
     }
 
-    public String getTime(){
-        return time;
+    public void setDate(Timestamp date) {
+        this.date = date;
     }
 
-    public int getImage() {
-        return image;
+    public GeoPoint getLocation() {
+        return location;
     }
 
-    public void setImage(int image) {
-        this.image = image;
+    public void setLocation(GeoPoint location) {
+        this.location = location;
+    }
+
+    public String getUid() {
+        return uid;
+    }
+
+    public void setUid(String uid) {
+        this.uid = uid;
     }
 
     @Override

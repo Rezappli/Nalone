@@ -59,11 +59,7 @@ public class MainActivity extends AppCompatActivity{
         signInButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                switch (v.getId()) {
-                    case R.id.sign_in_button:
-                        signIn();
-                        break;
-                }
+                signIn();
             }
         });
 
@@ -114,7 +110,7 @@ public class MainActivity extends AppCompatActivity{
 
     }
 
-    public void signIn() {
+    private void signIn() {
         Intent signInIntent = new Intent(this, HomeActivity.class);
         startActivityForResult(signInIntent, 0);
     }
@@ -144,7 +140,7 @@ public class MainActivity extends AppCompatActivity{
         super.onResume();
     }
 
-    public void connectUser(String mail, String pass) {
+    private void connectUser(String mail, String pass) {
             mAuth.signInWithEmailAndPassword(mail, pass)
                     .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                         @Override
@@ -167,38 +163,6 @@ public class MainActivity extends AppCompatActivity{
                             }
                         }
                     });
-    }
-
-    public void createGoogleUser(String token) {
-        AuthCredential credential = GoogleAuthProvider.getCredential(token, null);
-        mAuth.signInWithCredential(credential)
-                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        if (task.isSuccessful()) {
-                            currentUser = mAuth.getCurrentUser();
-                            sendVerificationEmail(currentUser);
-                        } else {
-                            Toast.makeText(MainActivity.this, "Erreur : "+task.getException(),
-                                    Toast.LENGTH_SHORT).show();
-                        }
-                    }
-                });
-    }
-
-    private void sendVerificationEmail(FirebaseUser user) {
-        user.sendEmailVerification()
-                .addOnCompleteListener(new OnCompleteListener<Void>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Void> task) {
-                        if (task.isSuccessful()) {
-                            progressBar.setVisibility(View.GONE);
-                            Toast.makeText(MainActivity.this, "Veuillez vérifiez votre adresse mail !",
-                                    Toast.LENGTH_SHORT).show();
-                        }
-
-                    }
-                });
     }
 
     @Override

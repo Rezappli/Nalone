@@ -15,13 +15,11 @@ import android.os.Build;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CalendarView;
 import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
@@ -32,19 +30,19 @@ import com.example.nalone.items.ItemPerson;
 import com.example.nalone.ui.evenements.display.MesEvenementsListFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.material.textfield.TextInputEditText;
+import com.google.firebase.Timestamp;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.GeoPoint;
 
 import java.io.IOException;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 
-import static com.example.nalone.util.Constants.EVENTS_DB_REF;
-import static com.example.nalone.util.Constants.EVENTS_LIST;
-import static com.example.nalone.util.Constants.USERS_LIST;
+import static com.example.nalone.util.Constants.USER;
 import static com.example.nalone.util.Constants.USER_ID;
+import static com.example.nalone.util.Constants.USER_REFERENCE;
 import static com.example.nalone.util.Constants.heightScreen;
 import static com.example.nalone.util.Constants.widthScreen;
 
@@ -60,7 +58,7 @@ public class CreateEventActivity extends AppCompatActivity {
     private TextInputEditText event_adresse;
     private TextInputEditText event_city;
     private TextInputEditText event_resume;
-    private Visibilite event_visibilite;
+    private Visibility event_visibilite;
     private TextView event_date;
 
     private Dialog dialogCalendrier;
@@ -134,7 +132,7 @@ public class CreateEventActivity extends AppCompatActivity {
             event_adresse.setText(MesEvenementsListFragment.adresseEdit);
             event_date.setText(MesEvenementsListFragment.dateEdit);
 
-            if(MesEvenementsListFragment.visibiliteEdit == Visibilite.PUBLIC){
+            if(MesEvenementsListFragment.visibiliteEdit == Visibility.PUBLIC){
                 selectPublic();
             }else{
                 selectPrivate();
@@ -159,15 +157,13 @@ public class CreateEventActivity extends AppCompatActivity {
         imageButtonAddInvit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.w("Event", "Click sur le bouton");
+                /*Log.w("Event", "Click sur le bouton");
                 Log.w("add", USERS_LIST.get(USER_ID).getAmis().get(0));
                 if(USERS_LIST.get(USER_ID).getAmis().get(0).equalsIgnoreCase("")){
                     Toast.makeText(CreateEventActivity.this, "Vous n'avez pas d'amis à ajouter", Toast.LENGTH_SHORT).show();
                 }else{
                     showPopUp(v);
-                }
-
-
+                }*/
             }
         });
 
@@ -230,7 +226,7 @@ public class CreateEventActivity extends AppCompatActivity {
         mRecyclerViewAdd.setVisibility(View.GONE);
         imageViewPublic.setImageResource(R.drawable.ic_baseline_public_focused);
         imageViewPrivate.setImageResource(R.drawable.ic_baseline_lock_24);
-        event_visibilite = Visibilite.PUBLIC;
+        event_visibilite = Visibility.PUBLIC;
     }
 
     private void selectPrivate() {
@@ -238,12 +234,12 @@ public class CreateEventActivity extends AppCompatActivity {
         textViewListe.setVisibility(View.VISIBLE);
         imageViewPrivate.setImageResource(R.drawable.ic_baseline_lock_focused);
         imageViewPublic.setImageResource(R.drawable.ic_baseline_public_24);
-        event_visibilite = Visibilite.PRIVE;
+        event_visibilite = Visibility.PRIVATE;
     }
 
     public void updateItems(){
 
-        for(int i = 0; i < USERS_LIST.get(USER_ID).getAmis().size(); i++){
+        /*for(int i = 0; i < USERS_LIST.get(USER_ID).getAmis().size(); i++){
             User u = USERS_LIST.get(USERS_LIST.get(USER_ID).getAmis().get(i));
 
             ItemPerson it = new ItemPerson(i,R.drawable.ic_baseline_account_circle_24, u.getPrenom()+" "+u.getNom(), R.drawable.ic_baseline_add_24, u.getDescription(), u.getVille(),u.getCursus(), u.getNbCreation(), u.getNbParticipation(), u.getCentreInterets());
@@ -260,7 +256,7 @@ public class CreateEventActivity extends AppCompatActivity {
             if(!duplicate){
                 items.add(it);
             }
-        }
+        }*/
     }
 
     public void addPerson(View v){
@@ -299,17 +295,12 @@ public class CreateEventActivity extends AppCompatActivity {
         if(!event_name.getText().toString().matches("") && !event_adresse.getText().toString().matches("") &&
         !event_city.getText().toString().matches("") && !event_date.getText().toString().matches("") &&
         !event_horaire.getText().toString().matches("") && locationValid){
-            List<String> sign_in_members = new ArrayList<>();
-            sign_in_members.add(USER_ID);
 
             calendar.set(newYears, newMonth, newDay);
 
-            Evenement e = new Evenement(R.drawable.ic_baseline_account_circle_24, EVENTS_LIST.size(), event_name.getText().toString(), event_resume.getText().toString(),
-                    event_adresse.getText().toString(), event_city.getText().toString(), event_visibilite, USER_ID, sign_in_members,
-                    itemsAdd, calendar.getTime(), mHour + ":" + mMin);
-            EVENTS_LIST.put(EVENTS_LIST.size() + "", e);
+            Evenement e = new Evenement(UUID.randomUUID().toString(),USER.getFirst_name() + " " + USER.getLast_name(), R.drawable.ic_baseline_account_circle_24, event_name.getText().toString(), event_resume.getText().toString(),
+                    event_adresse.getText().toString(), event_city.getText().toString(), event_visibilite, USER_REFERENCE, null, null);
 
-            EVENTS_DB_REF.setValue(EVENTS_LIST);
 
             Toast.makeText(getBaseContext(), "Vous avez créer votre évènement !", Toast.LENGTH_SHORT).show();
 

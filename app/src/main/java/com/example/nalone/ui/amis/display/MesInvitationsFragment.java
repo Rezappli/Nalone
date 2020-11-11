@@ -13,25 +13,29 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.example.nalone.Adapter.ItemInvitAmisAdapter;
-import com.example.nalone.CoreListener;
+import com.example.nalone.User;
+import com.example.nalone.listeners.CoreListener;
 import com.example.nalone.items.ItemPerson;
 import com.example.nalone.R;
-import com.example.nalone.User;
+import com.example.nalone.listeners.FireStoreUsersListeners;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.example.nalone.util.Constants.USERS_DB_REF;
-import static com.example.nalone.util.Constants.USERS_LIST;
-import static com.example.nalone.util.Constants.USER_ID;
+import static com.example.nalone.util.Constants.USER;
+import static com.example.nalone.util.Constants.USER_REFERENCE;
+import static com.example.nalone.util.Constants.getUserData;
 import static com.example.nalone.util.Constants.listeners;
+import static com.example.nalone.util.Constants.mStoreBase;
+import static com.example.nalone.util.Constants.nolonelyBundle;
+import static com.example.nalone.util.Constants.updateUserData;
 
 public class MesInvitationsFragment extends Fragment implements CoreListener {
 
     private RecyclerView mRecyclerView;
     private ItemInvitAmisAdapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
-    private final List<ItemPerson> invits = new ArrayList<>();
+    private ArrayList<ItemPerson> invits = new ArrayList<>();
     private View rootView;
 
 
@@ -45,95 +49,54 @@ public class MesInvitationsFragment extends Fragment implements CoreListener {
         listeners.add(this);
        rootView = inflater.inflate(R.layout.fragment_mes_invitations, container, false);
 
-        updateItems();
 
         return rootView;
     }
 
     private void updateItems() {
         invits.clear();
-        for(int i = 0; i < USERS_LIST.size(); i++){
-            User u = USERS_LIST.get(i+"");
-            if(u != null) {
-                if (!USER_ID.equalsIgnoreCase(i + "")) {
-                    if(USERS_LIST.get(USER_ID).getDemande_amis_recu().contains(i+"")) {
-                        invits.add(new ItemPerson(i, R.drawable.ic_baseline_account_circle_24,
-                                u.getPrenom() + " " + u.getNom(), 0, u.getDescription(),
-                                u.getVille(), u.getCursus(), u.getNbCreation(), u.getNbParticipation(), u.getCentreInterets()));
-                    }
+
+        for(int i = 0; i < USER.get_friends_requests_received().size(); i++){
+            getUserData(USER.get_friends_requests_received().get(i).getId(), new FireStoreUsersListeners() {
+                @Override
+                public void onDataUpdate(User u) {
+                    ItemPerson it = new ItemPerson(u.getUid(), R.drawable.ic_baseline_account_circle_24,
+                            u.getFirst_name() + " " + u.getLast_name(), 0, u.getDescription(),
+                            u.getCity(), u.getCursus(), u.get_number_events_create(), u.get_number_events_attend(), u.getCenters_interests());
+                    invits.add(it);
+                    onUpdateAdapter();
                 }
-            }
+            });
         }
-
-        mAdapter = new ItemInvitAmisAdapter(invits, getContext());
-
-        mRecyclerView = rootView.findViewById(R.id.recyclerViewInvitAmis);
-        mLayoutManager = new LinearLayoutManager(getContext());
-
-        mRecyclerView.setLayoutManager(mLayoutManager);
-        mRecyclerView.setAdapter(mAdapter);
-
-        mAdapter.setOnItemClickListener(new ItemInvitAmisAdapter.OnItemClickListener() {
-            @Override
-            public void onAddClick(int position) {
-                acceptFriendRequest(invits.get(position).getId());
-            }
-
-            @Override
-            public void onRemoveClick(int position) {
-                declineFriendRequest(invits.get(position).getId());
-            }
-        });
     }
 
-    private void acceptFriendRequest(int id) {
+    private void acceptFriendRequest(final String uid) {
 
-        if(USERS_LIST.get(USER_ID).getAmis().size() == 1) {
-            USERS_LIST.get(USER_ID).getAmis().set(0, id+"");
-        }else{
-            USERS_LIST.get(USER_ID).getAmis().add(id+"");
-        }
+        getUserData(uid, new FireStoreUsersListeners() {
+            @Override
+            public void onDataUpdate(User u) {
+                USER.get_friends_requests_received().remove(mStoreBase.collection("users").document(uid));
+                u.get_friends_requests_send().remove(USER_REFERENCE);
 
-        if(USERS_LIST.get(id+"").getAmis().size() == 1) {
-            USERS_LIST.get(id+"").getAmis().set(0, USER_ID);
-        }else{
-            USERS_LIST.get(id+"").getAmis().add(USER_ID);
-        }
+                USER.get_friends().add(mStoreBase.collection("users").document(uid));
+                u.get_friends().add(USER_REFERENCE);
 
-        if(USERS_LIST.get(USER_ID).getDemande_amis_envoye().size() == 1) {
-            USERS_LIST.get(USER_ID).getDemande_amis_envoye().set(0, "");
-        }else{
-            USERS_LIST.get(USER_ID).getDemande_amis_envoye().remove(id+"");
-        }
+                updateUserData(USER);
+                updateUserData(u);
+            }
+        });
 
-        if(USERS_LIST.get(USER_ID).getDemande_amis_recu().size() == 1) {
-            USERS_LIST.get(USER_ID).getDemande_amis_recu().set(0, "");
-        }else{
-            USERS_LIST.get(USER_ID).getDemande_amis_recu().remove(id+"");
-        }
 
-        if(USERS_LIST.get(id+"").getDemande_amis_envoye().size() == 1) {
-            USERS_LIST.get(id+"").getDemande_amis_envoye().set(0, "");
-        }else{
-            USERS_LIST.get(id+"").getDemande_amis_envoye().remove(USER_ID);
-        }
-
-        if(USERS_LIST.get(id+"").getDemande_amis_recu().size() == 1) {
-            USERS_LIST.get(id+"").getDemande_amis_recu().set(0, "");
-        }else{
-            USERS_LIST.get(id+"").getDemande_amis_recu().remove(USER_ID);
-        }
-
-        USERS_DB_REF.setValue(USERS_LIST);
+        //save value
 
         Toast.makeText(getContext(), "Vous avez ajouté(e) cet utilisateur", Toast.LENGTH_SHORT).show();
 
         updateItems();
     }
 
-    private void declineFriendRequest(int id) {
+    private void declineFriendRequest(String uid) {
 
-        if(USERS_LIST.get(USER_ID).getDemande_amis_envoye().size() == 1) {
+        /*if(USERS_LIST.get(USER_ID).getDemande_amis_envoye().size() == 1) {
             USERS_LIST.get(USER_ID).getDemande_amis_envoye().set(0, "");
         }else{
             USERS_LIST.get(USER_ID).getDemande_amis_envoye().remove(id);
@@ -161,7 +124,7 @@ public class MesInvitationsFragment extends Fragment implements CoreListener {
 
         Toast.makeText(getContext(), "Vous n'avez pas accepté(e) cet utilisateur", Toast.LENGTH_SHORT).show();
 
-        updateItems();
+        updateItems();*/
 
     }
 
@@ -171,8 +134,37 @@ public class MesInvitationsFragment extends Fragment implements CoreListener {
     }
 
     @Override
-    public void onResume(){
-        updateItems();
-        super.onResume();
+    public void onUpdateAdapter() {
+        mAdapter = new ItemInvitAmisAdapter(invits, getContext());
+
+        mRecyclerView = rootView.findViewById(R.id.recyclerViewInvitAmis);
+        mLayoutManager = new LinearLayoutManager(getContext());
+
+        mRecyclerView.setLayoutManager(mLayoutManager);
+        mRecyclerView.setAdapter(mAdapter);
+
+        mAdapter.setOnItemClickListener(new ItemInvitAmisAdapter.OnItemClickListener() {
+            @Override
+            public void onAddClick(int position) {
+                acceptFriendRequest(invits.get(position).getUid());
+            }
+
+            @Override
+            public void onRemoveClick(int position) {
+                declineFriendRequest(invits.get(position).getUid());
+            }
+        });
     }
+
+    @Override
+    public void onResume(){
+        super.onResume();
+            if (nolonelyBundle.getSerializable("invitations") != null) {
+                invits = (ArrayList<ItemPerson>) nolonelyBundle.getSerializable("invitations");
+                onUpdateAdapter();
+            } else {
+                updateItems();
+            }
+    }
+
 }

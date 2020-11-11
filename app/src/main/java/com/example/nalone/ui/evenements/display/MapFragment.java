@@ -1,8 +1,8 @@
 package com.example.nalone.ui.evenements.display;
 
-import android.location.Location;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
 import android.util.Log;
@@ -12,8 +12,12 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import com.example.nalone.Adapter.ItemEventAdapter;
-import com.example.nalone.CoreListener;
+import com.example.nalone.User;
+import com.example.nalone.items.ItemPerson;
+import com.example.nalone.listeners.CoreListener;
 import com.example.nalone.R;
+import com.example.nalone.listeners.FireStoreEventsListeners;
+import com.example.nalone.listeners.FireStoreUsersListeners;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import android.Manifest;
@@ -31,7 +35,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.nalone.CreateEventActivity;
 import com.example.nalone.Evenement;
 import com.example.nalone.InfosEvenementsActivity;
-import com.example.nalone.Visibilite;
+import com.example.nalone.Visibility;
 import com.google.android.gms.maps.CameraUpdateFactory;
 
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -40,25 +44,27 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.example.nalone.util.Constants;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 
-import static com.example.nalone.util.Constants.EVENTS_LIST;
 import static com.example.nalone.util.Constants.MAPVIEW_BUNDLE_KEY;
-import static com.example.nalone.util.Constants.MARKERS_EVENT;
-import static com.example.nalone.util.Constants.MARKER_COLOR_SET;
-import static com.example.nalone.util.Constants.USER_ID;
+import static com.example.nalone.util.Constants.USER;
 import static com.example.nalone.util.Constants.USER_LATLNG;
+import static com.example.nalone.util.Constants.USER_REFERENCE;
+import static com.example.nalone.util.Constants.getEventData;
 import static com.example.nalone.util.Constants.listeners;
-import static com.example.nalone.util.Constants.range;
+import static com.example.nalone.util.Constants.mStoreBase;
+import static com.example.nalone.util.Constants.nolonelyBundle;
 import static com.example.nalone.util.Constants.targetZoom;
 
 
-public class MapFragment extends Fragment implements OnMapReadyCallback,  CoreListener{
+public class MapFragment extends Fragment implements OnMapReadyCallback, CoreListener, FireStoreEventsListeners {
 
     private View rootView;
     private ProgressBar progressBar;
@@ -71,7 +77,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback,  CoreLi
     private ItemEventAdapter mAdapterEvent;
     private RecyclerView.LayoutManager mLayoutManagerEvent;
 
-    private final List<Evenement> itemEvents = new ArrayList<>();
+    private static ArrayList<Evenement> itemEvents = new ArrayList<>();
 
 
 
@@ -127,11 +133,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback,  CoreLi
 
         mMapView.getMapAsync(this);
 
-        if(!MARKER_COLOR_SET) {
-            MARKER_COLOR_SET = true;
-            setMarkerColor();
-        }
-
     }
 
     @Override
@@ -143,12 +144,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback,  CoreLi
             mapViewBundel = new Bundle();
             outState.putBundle(MAPVIEW_BUNDLE_KEY, mapViewBundel);
         }
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        mMapView.onResume();
     }
 
     @Override
@@ -180,13 +175,15 @@ public class MapFragment extends Fragment implements OnMapReadyCallback,  CoreLi
     }
 
     @RequiresApi(api = Build.VERSION_CODES.M)
-    public void updateMap(){
-        if(mMap != null) {
+    public void updateMap() {
+        if (mMap != null) {
             mMap.clear();
 
-            if(targetZoom == null) {
+            Log.w("Map", "LatLng : " + USER_LATLNG);
+
+            if (targetZoom == null) {
                 mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(USER_LATLNG, 13));
-            }else{
+            } else {
                 mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(targetZoom, 13));
             }
 
@@ -194,65 +191,20 @@ public class MapFragment extends Fragment implements OnMapReadyCallback,  CoreLi
 
             float[] results = new float[1];
 
-            for (int i = 0; i < EVENTS_LIST.size(); i++) {
-                MarkerOptions m = MARKERS_EVENT.get(i + "");
-                Evenement e = Constants.EVENTS_LIST.get(i + "");
-                if (m.getIcon() != null) {
-                    mMap.addMarker(m).setTag(e.getId());
-                    if (!itemEvents.contains(e)) {
-                        Location.distanceBetween(USER_LATLNG.latitude, USER_LATLNG.longitude,
-                                m.getPosition().latitude, m.getPosition().longitude, results);
-                        if(results[0] < range) {
-                            itemEvents.add(e);
+            if(USER.get_register_events() != null) {
+                for (int i = 0; i < USER.get_register_events().size(); i++) {
+                    getEventData(USER.get_register_events().get(i).getId(), new FireStoreEventsListeners() {
+                        @Override
+                        public void onDataUpdate(Evenement e) {
+                            MarkerOptions m = new MarkerOptions().title(e.getName())
+                                    .snippet("Cliquez pour plus d'informations")
+                                    .icon(getEventColor(e));
+                            mMap.addMarker(m).setTag(e.getUid());
                         }
-                    }
+                    });
                 }
             }
-
-            mAdapterEvent = new ItemEventAdapter(itemEvents);
-
-            mLayoutManagerEvent = new LinearLayoutManager(
-                    rootView.getContext(),
-                    LinearLayoutManager.HORIZONTAL,
-                    false);
-            mRecyclerViewEvent.setLayoutManager(mLayoutManagerEvent);
-            mRecyclerViewEvent.setAdapter(mAdapterEvent);
-
-
-            mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
-                @Override
-                public boolean onMarkerClick(Marker marker) {
-                    mRecyclerViewEvent.setPadding(0, 0, 0, 60);
-                    return false;
-                }
-            });
-
-            mMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
-                @Override
-                public void onMapClick(LatLng latLng) {
-                    mRecyclerViewEvent.setPadding(0, 0, 0, 0);
-                }
-            });
-
-            mMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
-                @Override
-                public void onInfoWindowClick(Marker marker) {
-                    InfosEvenementsActivity.ID_EVENTS_LOAD = (int)marker.getTag();
-                    startActivity(new Intent(getContext(), InfosEvenementsActivity.class));
-                }
-            });
-
-            mAdapterEvent.setOnItemClickListener(new ItemEventAdapter.OnItemClickListener() {
-                @Override
-                public void onAddClick(int position) {
-                    mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(MARKERS_EVENT.get(itemEvents.get(position).getId() + "").getPosition(), 13));
-                }
-            });
         }
-
-            mRecyclerViewEvent.setVisibility(View.VISIBLE);
-            progressBar.setVisibility(View.GONE);
-
     }
 
 
@@ -264,38 +216,23 @@ public class MapFragment extends Fragment implements OnMapReadyCallback,  CoreLi
     }
 
     @Override
-    public void onDestroy(){
-        targetZoom = null;
-        mMapView.onDestroy();
-        super.onDestroy();
-    }
-
-    @Override
     public void onLowMemory(){
         mMapView.onLowMemory();
         super.onLowMemory();
     }
 
-    private void setMarkerColor() {
-        for (int i = 0; i < EVENTS_LIST.size(); i++) {
-            Evenement e = EVENTS_LIST.get(i + "");
-            MarkerOptions m = MARKERS_EVENT.get(i+"");
-            m.icon(getEventColor(e));
-        }
-    }
-
     private BitmapDescriptor getEventColor(Evenement e) {
-        BitmapDescriptor couleur = null;
-        if(e.getVisibilite().equals(Visibilite.PRIVE)) {
-            if (e.getProprietaire().equalsIgnoreCase(USER_ID)) {
+        BitmapDescriptor couleur;
+        if(e.getVisibility().equals(Visibility.PRIVATE)) {
+            if (e.getOwnerDoc().equals(USER_REFERENCE)) {
                 couleur = (BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));
-            } else if(e.getMembres_inscrits().contains(USER_ID)){
+            } else if(e.getRegister_users().contains(USER_REFERENCE)){
                 couleur = (BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE));
             }else{
                 couleur = null;
             }
         }else{
-            if (e.getProprietaire().equalsIgnoreCase(USER_ID)) {
+            if (e.getOwnerDoc().equals(USER_REFERENCE)) {
                 couleur = (BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));
             }else{
                 couleur = (BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));
@@ -308,12 +245,89 @@ public class MapFragment extends Fragment implements OnMapReadyCallback,  CoreLi
     @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
     public void onDataChangeListener() {
+        updateMap();
+    }
 
-        if(!MARKER_COLOR_SET) {
-            MARKER_COLOR_SET = true;
-            setMarkerColor();
+    @Override
+    public void onUpdateAdapter() {
+            mAdapterEvent = new ItemEventAdapter(itemEvents);
+
+            mLayoutManagerEvent = new LinearLayoutManager(
+                    rootView.getContext(),
+                    LinearLayoutManager.HORIZONTAL,
+                    false);
+            mRecyclerViewEvent.setLayoutManager(mLayoutManagerEvent);
+            mRecyclerViewEvent.setAdapter(mAdapterEvent);
+
+            if(mMap != null) {
+                mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
+                    @Override
+                    public boolean onMarkerClick(Marker marker) {
+                        mRecyclerViewEvent.setPadding(0, 0, 0, 60);
+                        return false;
+                    }
+                });
+
+
+                mMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
+                    @Override
+                    public void onMapClick(LatLng latLng) {
+                        mRecyclerViewEvent.setPadding(0, 0, 0, 0);
+                    }
+                });
+
+                mMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
+                    @Override
+                    public void onInfoWindowClick(Marker marker) {
+                        getEventData((String) marker.getTag(), new FireStoreEventsListeners() {
+                            @Override
+                            public void onDataUpdate(Evenement e) {
+                                InfosEvenementsActivity.EVENT_LOAD = e;
+                                startActivity(new Intent(getContext(), InfosEvenementsActivity.class));
+                            }
+                        });
+                    }
+                });
+            }
+
+            mAdapterEvent.setOnItemClickListener(new ItemEventAdapter.OnItemClickListener() {
+                @Override
+                public void onAddClick(int position) {
+                    mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(itemEvents.get(position).getLocation().getLatitude(), itemEvents.get(position).getLocation().getLongitude()), 13));
+                }
+            });
+
+
+        mRecyclerViewEvent.setVisibility(View.VISIBLE);
+        progressBar.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void onDataUpdate(Evenement e) {
+
+    }
+
+    @Override
+    public void onDestroy(){
+        super.onDestroy();
+        if(nolonelyBundle.getSerializable("events") == null) {
+            nolonelyBundle.putSerializable("events", itemEvents);
+        }
+        targetZoom = null;
+        mMapView.onDestroy();
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.M)
+    @Override
+    public void onResume(){
+        super.onResume();
+        if (nolonelyBundle.getSerializable("events") != null) {
+            itemEvents = (ArrayList<Evenement>) nolonelyBundle.getSerializable("events");
+            onUpdateAdapter();
+        } else {
+            updateMap();
         }
 
-        updateMap();
+        mMapView.onResume();
     }
 }

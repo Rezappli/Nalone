@@ -16,7 +16,6 @@ import com.example.nalone.R;
 
 import java.util.List;
 
-import static com.example.nalone.util.Constants.USERS_LIST;
 
 public class ItemEventListAdapter extends RecyclerView.Adapter<ItemEventListAdapter.ItemEventViewHolder> {
     private List<Evenement> mItemEventList;
@@ -96,12 +95,12 @@ public class ItemEventListAdapter extends RecyclerView.Adapter<ItemEventListAdap
         Evenement currentItem = mItemEventList.get(position);
 
         holder.mImageView.setImageResource(currentItem.getImage());
-        holder.mTitle.setText((currentItem.getNom()));
+        holder.mTitle.setText((currentItem.getName()));
         holder.mDate.setText((currentItem.toString()));
-        holder.mTime.setText((currentItem.getTime()));
-        holder.mVille.setText((currentItem.getVille()));
+        holder.mTime.setText((currentItem.getDate().toString()));
+        holder.mVille.setText((currentItem.getCity()));
         holder.mDescription.setText((currentItem.getDescription()));
-        holder.mProprietaire.setText((USERS_LIST.get(currentItem.getProprietaire()).getPrenom()+" " + USERS_LIST.get(currentItem.getProprietaire()).getNom()));
+        holder.mProprietaire.setText(currentItem.getOwner());
 
     }
 

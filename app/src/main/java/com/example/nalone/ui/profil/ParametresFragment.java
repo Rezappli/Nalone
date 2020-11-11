@@ -31,7 +31,6 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 
 import static android.content.Context.MODE_PRIVATE;
-import static com.example.nalone.util.Constants.USERS_LIST;
 import static com.example.nalone.util.Constants.USER_ID;
 import static com.example.nalone.util.Constants.maPosition;
 import static com.example.nalone.util.Constants.range;
@@ -69,7 +68,7 @@ public class ParametresFragment extends Fragment {
         textViewLocationActuel = root.findViewById(R.id.textViewLocationActuel);
         textViewMaPosition = root.findViewById(R.id.textViewMaPosition);
 
-        textViewLocationActuel.setText(USERS_LIST.get(USER_ID).getVille()+"");
+        //textViewLocationActuel.setText(USERS_LIST.get(USER_ID).getVille()+"");
 
         if(position) {
             Drawable img = getContext().getResources().getDrawable(R.drawable.ic_baseline_my_location_focused);

@@ -1,17 +1,20 @@
 package com.example.nalone.items;
 
 import android.graphics.drawable.Drawable;
+import android.os.Parcel;
+import android.os.Parcelable;
 import android.util.Log;
 import android.widget.ImageButton;
 
 import com.example.nalone.util.Constants;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-public class ItemPerson {
-    private int id;
+public class ItemPerson implements Serializable {
+    private String uid;
     private int mImageResource;
     private String mNom;
     private String mNomToLowerCase;
@@ -24,7 +27,7 @@ public class ItemPerson {
     private String mNbParticipate;
 
 
-    public ItemPerson(int id, int imageResource, String nom, int imageResource2 , String description, String ville, String cursus, String nbCreate, String nbParticipate, List<String> centresInterets){
+    public ItemPerson(String uid, int imageResource, String nom, int imageResource2 , String description, String ville, String cursus, String nbCreate, String nbParticipate, List<String> centresInterets){
         this.mImageResource = imageResource;
         this.mNom = nom;
         this.mNomToLowerCase = mNom.toLowerCase();
@@ -34,7 +37,7 @@ public class ItemPerson {
         this.mVille = ville;
         this.mNbCreate = nbCreate;
         this.mNbParticipate = nbParticipate;
-        this.id = id;
+        this.uid = uid;
         this.centresInterets = centresInterets;
     }
 
@@ -122,11 +125,12 @@ public class ItemPerson {
         this.mNbParticipate = mNbParticipate;
     }
 
-    public int getId(){
-        return id;
+    public String getUid(){
+        return uid;
     }
 
     public List<String> getCentresInterets() {
         return centresInterets;
     }
+
 }

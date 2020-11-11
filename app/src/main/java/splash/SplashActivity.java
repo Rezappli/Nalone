@@ -11,39 +11,38 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.example.nalone.CoreListener;
-import com.example.nalone.Evenement;
+import com.example.nalone.listeners.CoreListener;
 import com.example.nalone.HomeActivity;
 import com.example.nalone.MainActivity;
 import com.example.nalone.R;
 import com.example.nalone.User;
-import com.example.nalone.Visibilite;
 import com.example.nalone.ui.profil.ParametresFragment;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
-import com.google.android.gms.maps.model.BitmapDescriptor;
-import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.ValueEventListener;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
+import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.UUID;
 
-import static com.example.nalone.util.Constants.EVENTS_DB_REF;
-import static com.example.nalone.util.Constants.EVENTS_LIST;
-import static com.example.nalone.util.Constants.MARKERS_EVENT;
-import static com.example.nalone.util.Constants.MARKER_COLOR_SET;
-import static com.example.nalone.util.Constants.USERS_DB_REF;
-import static com.example.nalone.util.Constants.USERS_LIST;
-import static com.example.nalone.util.Constants.USERS_PICTURE_URI;
 import static com.example.nalone.util.Constants.USER_ID;
-import static com.example.nalone.util.Constants.USER_IMAGE_URI;
+import static com.example.nalone.util.Constants.USER_LATLNG;
+import static com.example.nalone.util.Constants.USER_STORAGE_REF;
+import static com.example.nalone.util.Constants.USER;
 import static com.example.nalone.util.Constants.currentUser;
 import static com.example.nalone.util.Constants.heightScreen;
 import static com.example.nalone.util.Constants.listeners;
 import static com.example.nalone.util.Constants.mAuth;
+import static com.example.nalone.util.Constants.mStore;
+import static com.example.nalone.util.Constants.mStoreBase;
 import static com.example.nalone.util.Constants.range;
 import static com.example.nalone.util.Constants.widthScreen;
 import static com.example.nalone.util.Constants.load;
@@ -70,61 +69,96 @@ public class SplashActivity extends AppCompatActivity {
     }
 
     public void init() {
+
+        //addUser();
+
         currentUser = mAuth.getCurrentUser();
-        EVENTS_DB_REF.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                for(DataSnapshot ds : snapshot.getChildren()) {
-                    Evenement e = ds.getValue(Evenement.class);
-                    MarkerOptions m = new MarkerOptions().title(e.getNom()).snippet("Cliquer pour en savoir plus").position(getLocationFromAddress(e.getAdresse()+","+e.getVille()));
-                    MARKERS_EVENT.put(ds.getKey(), m);
-                    EVENTS_LIST.put(ds.getKey(), e);
-                }
-
-                USERS_DB_REF.addValueEventListener(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot snapshot) {
-                        for(DataSnapshot ds : snapshot.getChildren()) {
-                            User u = ds.getValue(User.class);
-                            USERS_LIST.put(ds.getKey(), u);
-                        }
-
-                        for(CoreListener listener : listeners) {
-                            if (listener != null) {
-                                MARKER_COLOR_SET = false;
-                                listener.onDataChangeListener();
-                            }
-                        }
-
-                        if(!load) {
-
-                            for(int i = 0; i < USERS_LIST.size(); i++){
-                                USERS_PICTURE_URI.put(i+"", null);
-                            }
-
-                            if (currentUser != null) {
-                                if(currentUser.isEmailVerified()) {
-                                    startActivity(new Intent(SplashActivity.this, HomeActivity.class));
-                                }else {
+        if (currentUser != null) {
+            if (!load) {
+                mStoreBase.collection("users")
+                        .whereEqualTo("mail", currentUser.getEmail())
+                        .get()
+                        .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                            @Override
+                            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                if (task.isSuccessful()) {
+                                     if(task.getResult().size() > 0) {
+                                        for (QueryDocumentSnapshot document : task.getResult()) {
+                                            USER = document.toObject(User.class);
+                                        }
+                                        //USER_REFERENCE = task.getResult().ge
+                                        USER_ID = USER.getUid();
+                                        USER_STORAGE_REF = mStore.getReference("users").child(USER.getUid());
+                                        USER_LATLNG = getLocationFromAddress(USER.getCity());
+                                        Log.w("SPLASH", "City : " + USER_LATLNG.toString());
+                                        load = true;
+                                        setUpRealTime();
+                                        startActivity(new Intent(SplashActivity.this, HomeActivity.class));
+                                    }else{
+                                        load = true;
+                                        startActivity(new Intent(SplashActivity.this, MainActivity.class));
+                                    }
+                                } else {
+                                    Log.d("SPLASH", "Error getting documents: ", task.getException());
+                                    load = true;
                                     startActivity(new Intent(SplashActivity.this, MainActivity.class));
                                 }
-                            } else {
-                                startActivity(new Intent(SplashActivity.this, MainActivity.class));
                             }
-                            load = true;
-                        }
-                    }
-
+                        }).addOnFailureListener(new OnFailureListener() {
                     @Override
-                    public void onCancelled(@NonNull DatabaseError error) {}
+                    public void onFailure(@NonNull Exception e) {
+                        Log.w("SPLASH", "Erreur : " + e.getMessage());
+                    }
                 });
             }
+        } else {
+            load = true;
+            startActivity(new Intent(SplashActivity.this, MainActivity.class));
+        }
+    }
 
+    public void setUpRealTime(){
+        mStoreBase.collection("users").document(USER.getUid()).addSnapshotListener(new EventListener<DocumentSnapshot>() {
             @Override
-            public void onCancelled(@NonNull DatabaseError error) {}
+            public void onEvent(@Nullable DocumentSnapshot snapshot,
+                                @Nullable FirebaseFirestoreException e) {
+                if (e != null) {
+                    Log.w("REALTIME", "Listen failed.", e);
+                    return;
+                }
+
+                if (snapshot != null && snapshot.exists()) {
+                    Log.d("REALTIME", "Current data: " + snapshot.getData());
+                    USER = snapshot.toObject(User.class);
+                    for(CoreListener listener : listeners){
+                        listener.onDataChangeListener();
+                    }
+                } else {
+                    Log.d("REALTIME", "Current data: null");
+                }
+            }
         });
+    }
 
+    public void addUser(){
+        User u = new User(UUID.randomUUID().toString(), "Rezai", "Mathis", "H", "Lannion","0"
+        ,"mathisrezai2k@gmail.com", "Informatique", null,
+                "Breton", "25/08/2001");
 
+        mStoreBase.collection("users").document(u.getUid())
+                .set(u)
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        Log.d("FIREBASE", "DocumentSnapshot successfully written!");
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.w("FIREBASE", "Error writing document", e);
+                    }
+                });
     }
 
     private LatLng getLocationFromAddress(String strAddress) {
@@ -152,5 +186,5 @@ public class SplashActivity extends AppCompatActivity {
 
         return p1;
     }
-
 }
+

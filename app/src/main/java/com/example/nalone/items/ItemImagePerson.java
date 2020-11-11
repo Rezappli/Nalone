@@ -2,10 +2,10 @@ package com.example.nalone.items;
 
 public class ItemImagePerson {
     private int mImageResource;
-    private int id;
+    private String uid;
 
-    public ItemImagePerson(int id, int image){
-        this.id = id;
+    public ItemImagePerson(String uid, int image){
+        this.uid = uid;
         this.mImageResource = image;
     }
 
@@ -17,7 +17,7 @@ public class ItemImagePerson {
         this.mImageResource = mImageResource;
     }
 
-    public int getId(){
-        return id;
+    public String getUid(){
+        return uid;
     }
 }

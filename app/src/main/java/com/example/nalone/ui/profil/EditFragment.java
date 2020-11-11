@@ -14,8 +14,6 @@ import androidx.fragment.app.Fragment;
 import com.example.nalone.R;
 import com.example.nalone.ResetPassword;
 
-import static com.example.nalone.util.Constants.USERS_LIST;
-import static com.example.nalone.util.Constants.USER_ID;
 
 public class EditFragment extends Fragment {
 
@@ -40,13 +38,13 @@ public class EditFragment extends Fragment {
         profilEditVille = root.findViewById(R.id.profilEditVille);
         profilEditValider = root.findViewById(R.id.profilEditValider);
 
-        profilEditNom.setText(USERS_LIST.get(USER_ID).getNom()+"");
+       /* profilEditNom.setText(USERS_LIST.get(USER_ID).getNom()+"");
         profilEditPrenom.setText(USERS_LIST.get(USER_ID).getPrenom()+"");
         //profilEditDate.setText(USERS_LIST.get(USER_ID).getD);
         textProfilEditMail.setText(USERS_LIST.get(USER_ID).getMail()+"");
         profilEditDepartement.setText(USERS_LIST.get(USER_ID).getCursus()+"");
         profilEditNumero.setText(USERS_LIST.get(USER_ID).getNumero()+"");
-        profilEditVille.setText(USERS_LIST.get(USER_ID).getVille()+"");
+        profilEditVille.setText(USERS_LIST.get(USER_ID).getVille()+"");*/
 
         profilEditPassword.setOnClickListener(new View.OnClickListener() {
             @Override

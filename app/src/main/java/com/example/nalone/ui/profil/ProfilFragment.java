@@ -1,17 +1,13 @@
 package com.example.nalone.ui.profil;
 
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
-import android.provider.MediaStore;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -24,23 +20,19 @@ import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 
 import com.bumptech.glide.Glide;
-import com.example.nalone.MainActivity;
 import com.example.nalone.R;
+import com.example.nalone.items.ItemPerson;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.storage.UploadTask;
 
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
+import java.util.ArrayList;
 
 import static android.app.Activity.RESULT_OK;
-import static com.example.nalone.util.Constants.USERS_DB_REF;
-import static com.example.nalone.util.Constants.USERS_LIST;
-import static com.example.nalone.util.Constants.USER_ID;
-import static com.example.nalone.util.Constants.USER_IMAGE_URI;
-import static com.example.nalone.util.Constants.mProfilRef;
-import static com.example.nalone.util.Constants.mStore;
+import static com.example.nalone.util.Constants.USER;
+import static com.example.nalone.util.Constants.USER_STORAGE_REF;
+import static com.example.nalone.util.Constants.nolonelyBundle;
+import static com.example.nalone.util.Constants.updateUserData;
 
 public class ProfilFragment extends Fragment  {
 
@@ -79,27 +71,27 @@ public class ProfilFragment extends Fragment  {
         imageViewEditPhoto = root.findViewById(R.id.imageViewEditPhoto);
         cardViewPhotoPerson = root.findViewById(R.id.cardViewUser);
 
-        userConnectText.setText(USERS_LIST.get(USER_ID).getPrenom()+" "+USERS_LIST.get(USER_ID).getNom());
-        userConnectVille.setText(USERS_LIST.get(USER_ID).getVille()+" ");
-        userConnectNbC.setText(USERS_LIST.get(USER_ID).getNbCreation()+"");
-        userConnectNbP.setText(USERS_LIST.get(USER_ID).getNbParticipation()+"");
-        userConnectDesc.setText(USERS_LIST.get(USER_ID).getDescription());
+        userConnectText.setText(USER.getFirst_name() + " " + USER.getLast_name());
+        userConnectVille.setText(USER.getCity());
+        userConnectNbC.setText(USER.get_number_events_create());
+        userConnectNbP.setText(USER.get_number_events_attend());
+        userConnectDesc.setText(USER.getDescription());
         userConnectDesc.setClickable(false);
         userConnectDesc.setEnabled(false);
 
-        if(USERS_LIST.get(USER_ID).getCursus().equalsIgnoreCase("Informatique")){
+        if(USER.getCursus().equalsIgnoreCase("Informatique")){
             cardViewPhotoPerson.setCardBackgroundColor(Color.RED);
         }
-        if(USERS_LIST.get(USER_ID).getCursus().equalsIgnoreCase("TC")){
+        if(USER.getCursus().equalsIgnoreCase("TC")){
             cardViewPhotoPerson.setCardBackgroundColor(Color.GREEN);
         }
-        if(USERS_LIST.get(USER_ID).getCursus().equalsIgnoreCase("MMI")){
+        if(USER.getCursus().equalsIgnoreCase("MMI")){
             cardViewPhotoPerson.setCardBackgroundColor(Color.parseColor("#4B0082"));
         }
-        if(USERS_LIST.get(USER_ID).getCursus().equalsIgnoreCase("GB")){
+        if(USER.getCursus().equalsIgnoreCase("GB")){
             cardViewPhotoPerson.setCardBackgroundColor(Color.BLUE);
         }
-        if(USERS_LIST.get(USER_ID).getCursus().equalsIgnoreCase("LP")){
+        if(USER.getCursus().equalsIgnoreCase("LP")){
             cardViewPhotoPerson.setCardBackgroundColor(Color.GRAY);
         }
 
@@ -179,8 +171,6 @@ public class ProfilFragment extends Fragment  {
             }
         });
 
-        loadProfilImage();
-
         return root;
     }
 
@@ -205,8 +195,7 @@ public class ProfilFragment extends Fragment  {
     public void uploadFile(Uri imagUri) {
         if (imagUri != null) {
 
-            USER_IMAGE_URI = imageUri;
-            mProfilRef.putFile(imagUri)
+            USER_STORAGE_REF.putFile(imagUri)
                     .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                         @Override
                         public void onSuccess(UploadTask.TaskSnapshot snapshot) {
@@ -219,22 +208,29 @@ public class ProfilFragment extends Fragment  {
                             Log.w("Error", exception.getMessage());
                         }
                     });
+            USER.setImage_url(imagUri.getPath());
+            updateUserData(USER);
         }
         Glide.with(getContext()).load(imagUri).fitCenter().centerCrop().into(imageUser);
-
-        if(!USERS_LIST.get(USER_ID).hasProfilPhoto) {
-            USERS_LIST.get(USER_ID).setHasProfilPhoto(true);
-
-            USERS_DB_REF.setValue(USERS_LIST);
-        }
     }
 
-    public void loadProfilImage(){
-        if(USER_IMAGE_URI != null) {
-            Glide.with(getContext()).load(USER_IMAGE_URI).fitCenter().centerCrop().into(imageUser);
+    @Override
+    public void onStart(){
+        super.onStart();
+        if(USER.getImage_url() != null) {
+            USER_STORAGE_REF.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                @Override
+                public void onSuccess(Uri uri) {
+                    Glide.with(getContext()).load(uri).fitCenter().centerCrop().into(imageUser);
+                }
+            }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception exception) {
+                    Log.w("Image", "Error : " + exception.getMessage());
+                }
+            });
         }
     }
-
 
 
 

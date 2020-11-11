@@ -153,7 +153,7 @@ public class SignUpHobbiesActivity extends AppCompatActivity {
                     }
                 }
 
-                SignUpInformationActivity.user.setCentreInterets(interets);
+                SignUpInformationActivity.user.setCenters_interests(interets);
                 Intent signUpThree = new Intent(getBaseContext(), SignUpProfilActivity.class);
                 startActivityForResult(signUpThree, 0);
             }

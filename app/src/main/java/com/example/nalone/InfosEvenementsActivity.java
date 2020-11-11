@@ -1,10 +1,13 @@
 package com.example.nalone;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Bundle;
+import android.provider.CalendarContract;
+import android.util.Log;
 import android.widget.TextView;
 
 import com.example.nalone.Adapter.ItemImagePersonAdapter;
@@ -12,12 +15,15 @@ import com.example.nalone.items.ItemImagePerson;
 import com.example.nalone.util.Constants;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.example.nalone.util.Constants.EVENTS_LIST;
-import static com.example.nalone.util.Constants.USERS_LIST;
+import static com.example.nalone.util.Constants.mStoreBase;
 
 public class InfosEvenementsActivity extends AppCompatActivity {
 
@@ -31,7 +37,7 @@ public class InfosEvenementsActivity extends AppCompatActivity {
     private TextView mDescription;
     private final List<ItemImagePerson> membres_inscrits = new ArrayList<>();
 
-    public static int ID_EVENTS_LOAD;
+    public static Evenement EVENT_LOAD;
 
 
     @Override
@@ -45,14 +51,12 @@ public class InfosEvenementsActivity extends AppCompatActivity {
         mOwner = findViewById(R.id.owner);
         mDescription = findViewById(R.id.description);
 
-        Evenement e = EVENTS_LIST.get(ID_EVENTS_LOAD+"");
-
-        String date_text = Constants.formatD.format(e.getDate());
+        String date_text = Constants.formatD.format(EVENT_LOAD.getDate());
         String final_date_text = "";
-        mTitle.setText(e.getNom());
-        mTimer.setText(e.getTime());
-        mOwner.setText(USERS_LIST.get(e.getProprietaire() + "").getPrenom() + " " + USERS_LIST.get(e.getProprietaire() + "").getNom());
-        mDescription.setText(e.getDescription());
+        mTitle.setText(EVENT_LOAD.getName());
+        mTimer.setText(EVENT_LOAD.getDate().toString());
+        mOwner.setText(EVENT_LOAD.getOwner());
+        mDescription.setText(EVENT_LOAD.getDescription());
 
         for (int i = 0; i < date_text.length() - 5; i++) {
             char character = date_text.charAt(i);
@@ -64,8 +68,23 @@ public class InfosEvenementsActivity extends AppCompatActivity {
 
         mDate.setText(final_date_text);
 
-        for (int i = 0; i < e.getMembres_inscrits().size(); i++) {
-            membres_inscrits.add(new ItemImagePerson(Integer.parseInt(e.getMembres_inscrits().get(i)), R.drawable.ic_round_person_24));
+        for (int i = 0; i < EVENT_LOAD.getRegister_users().size(); i++) {
+            final int finalI = i;
+            mStoreBase.collection("users").document(EVENT_LOAD.getRegister_users().get(i).getId()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                @Override
+                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                    if (task.isSuccessful()) {
+                        DocumentSnapshot document = task.getResult();
+                        if (document.exists()) {
+                            membres_inscrits.add(new ItemImagePerson(EVENT_LOAD.getRegister_users().get(finalI).getId(), R.drawable.ic_round_person_24));
+                        } else {
+                            Log.d("FIREBASE", "No such document");
+                        }
+                    } else {
+                        Log.d("FIREBASE", "get failed with ", task.getException());
+                    }
+                }
+            });
         }
 
 
