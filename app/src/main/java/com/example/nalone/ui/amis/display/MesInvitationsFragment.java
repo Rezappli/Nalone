@@ -84,46 +84,23 @@ public class MesInvitationsFragment extends Fragment implements CoreListener {
             }
         });
 
-
-        //save value
-
         Toast.makeText(getContext(), "Vous avez ajouté(e) cet utilisateur", Toast.LENGTH_SHORT).show();
-
-        updateItems();
     }
 
-    private void declineFriendRequest(String uid) {
+    private void declineFriendRequest(final String uid) {
 
-        /*if(USERS_LIST.get(USER_ID).getDemande_amis_envoye().size() == 1) {
-            USERS_LIST.get(USER_ID).getDemande_amis_envoye().set(0, "");
-        }else{
-            USERS_LIST.get(USER_ID).getDemande_amis_envoye().remove(id);
-        }
+        getUserData(uid, new FireStoreUsersListeners() {
+            @Override
+            public void onDataUpdate(User u) {
+                USER.get_friends_requests_received().remove(mStoreBase.collection("users").document(uid));
+                u.get_friends_requests_send().remove(USER_REFERENCE);
 
-        if(USERS_LIST.get(USER_ID).getDemande_amis_recu().size() == 1) {
-            USERS_LIST.get(USER_ID).getDemande_amis_recu().set(0, "");
-        }else{
-            USERS_LIST.get(USER_ID).getDemande_amis_recu().remove(id);
-        }
-
-        if(USERS_LIST.get(id+"").getDemande_amis_envoye().size() == 1) {
-            USERS_LIST.get(id+"").getDemande_amis_envoye().set(0, "");
-        }else{
-            USERS_LIST.get(id+"").getDemande_amis_envoye().remove(USER_ID);
-        }
-
-        if(USERS_LIST.get(id+"").getDemande_amis_recu().size() == 1) {
-            USERS_LIST.get(id+"").getDemande_amis_recu().set(0, "");
-        }else{
-            USERS_LIST.get(id+"").getDemande_amis_recu().remove(USER_ID);
-        }
-
-        USERS_DB_REF.setValue(USERS_LIST);
+                updateUserData(USER);
+                updateUserData(u);
+            }
+        });
 
         Toast.makeText(getContext(), "Vous n'avez pas accepté(e) cet utilisateur", Toast.LENGTH_SHORT).show();
-
-        updateItems();*/
-
     }
 
     @Override

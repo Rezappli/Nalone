@@ -151,7 +151,6 @@ public class RechercheFragment extends Fragment implements CoreListener {
                             if(task.getResult().size() > 0) {
                                 for (QueryDocumentSnapshot document : task.getResult()) {
                                     User USER_LOAD = document.toObject(User.class);
-                                    Log.w("Recherche", "User ref :"+USER_REFERENCE);
                                     if(!USER_LOAD.getUid().equalsIgnoreCase(USER.getUid())) {
                                         if (!USER_LOAD.get_friends().contains(USER_REFERENCE)) {
                                             ItemPerson it;

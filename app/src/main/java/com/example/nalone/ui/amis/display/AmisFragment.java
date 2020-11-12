@@ -14,6 +14,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.SearchView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.nalone.adapter.ItemListAmisAdapter;
 import com.example.nalone.listeners.CoreListener;
@@ -25,9 +26,12 @@ import com.example.nalone.listeners.FireStoreUsersListeners;
 import java.util.ArrayList;
 
 import static com.example.nalone.util.Constants.USER;
+import static com.example.nalone.util.Constants.USER_REFERENCE;
 import static com.example.nalone.util.Constants.getUserData;
 import static com.example.nalone.util.Constants.listeners;
+import static com.example.nalone.util.Constants.mStoreBase;
 import static com.example.nalone.util.Constants.nolonelyBundle;
+import static com.example.nalone.util.Constants.updateUserData;
 
 public class AmisFragment extends Fragment implements CoreListener{
 
@@ -135,25 +139,19 @@ public class AmisFragment extends Fragment implements CoreListener{
         return rootView;
     }
 
-    private void removeFriend(String id) {
-        /*if(USERS_LIST.get(USER_ID).getAmis().size() == 1) {
-            USERS_LIST.get(USER_ID).getAmis().set(0, "");
-        }else{
-            USERS_LIST.get(USER_ID).getAmis().remove(id+"");
-        }
+    private void removeFriend(final String uid) {
+        getUserData(uid, new FireStoreUsersListeners() {
+            @Override
+            public void onDataUpdate(User u) {
+                USER.get_friends().remove(mStoreBase.collection("users").document(uid));
+                u.get_friends().remove(USER_REFERENCE);
 
-        if(USERS_LIST.get(id+"").getAmis().size() == 1) {
-            USERS_LIST.get(id+"").getAmis().set(0, "");
-        }else{
-            USERS_LIST.get(id+"").getAmis().remove(USER_ID);
-        }
+                updateUserData(USER);
+                updateUserData(u);
+            }
+        });
 
-        USERS_DB_REF.setValue(USERS_LIST);
-
-        Toast.makeText(getContext(), "Vous avez supprimé un amis !", Toast.LENGTH_SHORT).show()
-
-        updateItems();*/
-
+        Toast.makeText(getContext(), "Vous avez supprimé un amis !", Toast.LENGTH_SHORT).show();
     }
 
 
