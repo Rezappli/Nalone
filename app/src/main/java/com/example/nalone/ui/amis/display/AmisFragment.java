@@ -42,7 +42,7 @@ public class AmisFragment extends Fragment implements CoreListener{
     private RecyclerView.LayoutManager mLayoutManager;
     private TextView resultat;
     private final ArrayList<ItemPerson> tempList = new ArrayList<>();
-    private ArrayList<ItemPerson> items = new ArrayList<>();
+    private ArrayList<ItemPerson> items;
     private static String message = "null";
     private View rootView;
 
@@ -160,7 +160,7 @@ public class AmisFragment extends Fragment implements CoreListener{
 
 
     private void updateItems() {
-        items.clear();
+        items = new ArrayList<>();
         for(int i = 0; i < USER.get_friends().size(); i++){
             Log.w("amis", "start process for a friends");
 

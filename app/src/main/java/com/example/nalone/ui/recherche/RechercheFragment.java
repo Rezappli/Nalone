@@ -65,7 +65,7 @@ public class RechercheFragment extends Fragment implements CoreListener {
     private RecyclerView mRecyclerViewFiltre;
     private ItemFiltreAdapter mAdapterFiltre;
     private RecyclerView.LayoutManager mLayoutManagerFiltre;
-    private final List<ItemPerson> items = new ArrayList<>();
+    private List<ItemPerson> items = null;
     private final List<ItemFiltre> filtres = new ArrayList<>();
     private View rootView;
 
@@ -138,7 +138,7 @@ public class RechercheFragment extends Fragment implements CoreListener {
     }
 
     public void updateItems() {
-        items.clear();
+        items = new ArrayList<>();
 
         mStoreBase.collection("users")
                 .whereGreaterThan("number", "0")

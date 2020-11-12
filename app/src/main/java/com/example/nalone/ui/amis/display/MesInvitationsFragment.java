@@ -6,6 +6,7 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -33,8 +34,8 @@ public class MesInvitationsFragment extends Fragment implements CoreListener {
     private RecyclerView mRecyclerView;
     private ItemInvitAmisAdapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
-    private ArrayList<ItemPerson> invits = new ArrayList<>();
     private View rootView;
+    private ArrayList<ItemPerson> invits = null;
 
 
     public MesInvitationsFragment() {
@@ -52,8 +53,8 @@ public class MesInvitationsFragment extends Fragment implements CoreListener {
     }
 
     private void updateItems() {
-        invits.clear();
-
+        invits = new ArrayList<>();
+        Log.w("Invitations", "" + USER.get_friends_requests_received().size());
         for(int i = 0; i < USER.get_friends_requests_received().size(); i++){
             getUserData(USER.get_friends_requests_received().get(i).getId(), new FireStoreUsersListeners() {
                 @Override
@@ -62,13 +63,14 @@ public class MesInvitationsFragment extends Fragment implements CoreListener {
                             u.getFirst_name() + " " + u.getLast_name(), 0, u.getDescription(),
                             u.getCity(), u.getCursus(), u.get_number_events_create(), u.get_number_events_attend(), u.getCenters_interests());
                     invits.add(it);
+                    Log.w("Invitations", "Add invits");
                     onUpdateAdapter();
                 }
             });
         }
     }
 
-    private void acceptFriendRequest(final String uid, final int position) {
+    private void acceptFriendRequest(final String uid) {
 
         getUserData(uid, new FireStoreUsersListeners() {
             @Override
@@ -79,9 +81,6 @@ public class MesInvitationsFragment extends Fragment implements CoreListener {
                 USER.get_friends().add(mStoreBase.collection("users").document(uid));
                 u.get_friends().add(USER_REFERENCE);
 
-                invits.remove(position);
-                onUpdateAdapter();
-
                 updateUserData(u);
                 updateUserData(USER);
             }
@@ -90,16 +89,13 @@ public class MesInvitationsFragment extends Fragment implements CoreListener {
         Toast.makeText(getContext(), "Vous avez ajouté(e) cet utilisateur", Toast.LENGTH_SHORT).show();
     }
 
-    private void declineFriendRequest(final String uid, final int position) {
+    private void declineFriendRequest(final String uid) {
 
         getUserData(uid, new FireStoreUsersListeners() {
             @Override
             public void onDataUpdate(User u) {
                 USER.get_friends_requests_received().remove(mStoreBase.collection("users").document(uid));
                 u.get_friends_requests_send().remove(USER_REFERENCE);
-
-                invits.remove(position);
-                onUpdateAdapter();
 
                 updateUserData(u);
                 updateUserData(USER);
@@ -116,6 +112,7 @@ public class MesInvitationsFragment extends Fragment implements CoreListener {
 
     @Override
     public void onUpdateAdapter() {
+        Log.w("Invitations", "Invits : " + invits.size());
         mAdapter = new ItemInvitAmisAdapter(invits, getContext());
 
         mRecyclerView = rootView.findViewById(R.id.recyclerViewInvitAmis);
@@ -127,12 +124,12 @@ public class MesInvitationsFragment extends Fragment implements CoreListener {
         mAdapter.setOnItemClickListener(new ItemInvitAmisAdapter.OnItemClickListener() {
             @Override
             public void onAddClick(int position) {
-                acceptFriendRequest(invits.get(position).getUid(), position);
+                acceptFriendRequest(invits.get(position).getUid());
             }
 
             @Override
             public void onRemoveClick(int position) {
-                declineFriendRequest(invits.get(position).getUid(), position);
+                declineFriendRequest(invits.get(position).getUid());
             }
         });
     }
