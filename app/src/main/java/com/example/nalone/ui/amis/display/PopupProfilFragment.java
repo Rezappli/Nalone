@@ -108,7 +108,6 @@ public class PopupProfilFragment extends Fragment {
                 Log.w("image", "get image from cache");
                 Glide.with(getContext()).load(Cache.getUriFromUid(USER_LOAD.getUid())).fitCenter().centerCrop().into(imagePerson);
             }
-
         }
 
         List<ImageView> imageCentreInteret = new ArrayList<>();

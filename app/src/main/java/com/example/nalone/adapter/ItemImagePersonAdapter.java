@@ -86,9 +86,9 @@ public class ItemImagePersonAdapter extends RecyclerView.Adapter<ItemImagePerson
 
         getUserData(currentItem.getUid(), new FireStoreUsersListeners() {
             @Override
-            public void onDataUpdate(User u) {
+            public void onDataUpdate(final User u) {
                 if (u.getImage_url() != null) {
-                    if(!Cache.fileExists(currentItem.getUid())) {
+                    if(!Cache.fileExists(u.getUid())) {
                         StorageReference imgRef = mStore.getReference("users/" + u.getUid());
                         if (imgRef != null) {
                             imgRef.getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
@@ -98,7 +98,7 @@ public class ItemImagePersonAdapter extends RecyclerView.Adapter<ItemImagePerson
                                         Uri img = task.getResult();
                                         if (img != null) {
                                             Log.w("image", "save image from cache");
-                                            Cache.saveUriFile(currentItem.getUid(), img);
+                                            Cache.saveUriFile(u.getUid(), img);
                                             Glide.with(context).load(img).fitCenter().centerCrop().into(holder.mImageView);
                                         }
                                     }
@@ -107,9 +107,8 @@ public class ItemImagePersonAdapter extends RecyclerView.Adapter<ItemImagePerson
                         }
                     }else{
                         Log.w("image", "get image from cache");
-                        Glide.with(context).load(Cache.getUriFromUid(currentItem.getUid())).fitCenter().centerCrop().into(holder.mImageView);
+                        Glide.with(context).load(Cache.getUriFromUid(u.getUid())).fitCenter().centerCrop().into(holder.mImageView);
                     }
-
                 }
             }
         });

@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,6 +17,7 @@ import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.example.nalone.Cache;
 import com.example.nalone.User;
 import com.example.nalone.items.ItemPerson;
 import com.example.nalone.R;
@@ -116,23 +118,29 @@ public class ItemProfilAdapter extends RecyclerView.Adapter<ItemProfilAdapter.It
 
         getUserData(currentItem.getUid(), new FireStoreUsersListeners() {
             @Override
-            public void onDataUpdate(User u) {
+            public void onDataUpdate(final User u) {
                 if (u.getImage_url() != null) {
-                    StorageReference imgRef = mStore.getReference("users/" + u.getUid());
-                    if (imgRef != null) {
-                        imgRef.getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
-                            @Override
-                            public void onComplete(@NonNull Task<Uri> task) {
-                                if (task.isSuccessful()) {
-                                    Uri img = task.getResult();
-                                    if (img != null) {
-                                        Glide.with(context).load(img).fitCenter().centerCrop().into(holder.mImageView);
+                    if(!Cache.fileExists(u.getUid())) {
+                        StorageReference imgRef = mStore.getReference("users/" + u.getUid());
+                        if (imgRef != null) {
+                            imgRef.getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
+                                @Override
+                                public void onComplete(@NonNull Task<Uri> task) {
+                                    if (task.isSuccessful()) {
+                                        Uri img = task.getResult();
+                                        if (img != null) {
+                                            Log.w("image", "save image from cache");
+                                            Cache.saveUriFile(u.getUid(), img);
+                                            Glide.with(context).load(img).fitCenter().centerCrop().into(holder.mImageView);
+                                        }
                                     }
                                 }
-                            }
-                        });
+                            });
+                        }
+                    }else{
+                        Log.w("image", "get image from cache");
+                        Glide.with(context).load(Cache.getUriFromUid(u.getUid())).fitCenter().centerCrop().into(holder.mImageView);
                     }
-
                 }
             }
         });
