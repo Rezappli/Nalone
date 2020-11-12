@@ -186,7 +186,7 @@ public class PopupProfilFragment extends Fragment {
         USER_LOAD.get_friends_requests_received().add(mStoreBase.collection("users").document(USER.getUid()));
         USER.get_friends_requests_send().add(mStoreBase.collection("users").document(USER_LOAD.getUid()));
 
-        updateUserData(USER);
         updateUserData(USER_LOAD);
+        updateUserData(USER);
     }
 }

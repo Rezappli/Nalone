@@ -139,15 +139,18 @@ public class AmisFragment extends Fragment implements CoreListener{
         return rootView;
     }
 
-    private void removeFriend(final String uid) {
+    private void removeFriend(final String uid, final int position) {
         getUserData(uid, new FireStoreUsersListeners() {
             @Override
             public void onDataUpdate(User u) {
                 USER.get_friends().remove(mStoreBase.collection("users").document(uid));
                 u.get_friends().remove(USER_REFERENCE);
 
-                updateUserData(USER);
+                items.remove(position);
+                onUpdateAdapter();
+
                 updateUserData(u);
+                updateUserData(USER);
             }
         });
 
@@ -168,6 +171,7 @@ public class AmisFragment extends Fragment implements CoreListener{
                             u.getFirst_name() + " " + u.getLast_name(), 0, u.getDescription(),
                             u.getCity(), u.getCursus(), u.get_number_events_create(), u.get_number_events_attend(), u.getCenters_interests());
                     items.add(it);
+                    nolonelyBundle.putSerializable("items", items);
                     onUpdateAdapter();
                 }
             });
@@ -207,7 +211,7 @@ public class AmisFragment extends Fragment implements CoreListener{
 
             @Override
             public void onDelete(int position) {
-                removeFriend(items.get(position).getUid());
+                removeFriend(items.get(position).getUid(), position);
             }
         });
     }
@@ -226,7 +230,7 @@ public class AmisFragment extends Fragment implements CoreListener{
             if (nolonelyBundle.getSerializable("items") != null) {
                 items = (ArrayList<ItemPerson>) nolonelyBundle.getSerializable("items");
                 onUpdateAdapter();
-                Log.w("SaveInstanceBundle", " Load : " + items);
+                Log.w("SaveInstanceBundle", " Load : " + items.size());
             } else {
                 updateItems();
             }

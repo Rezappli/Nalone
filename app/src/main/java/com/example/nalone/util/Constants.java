@@ -64,6 +64,8 @@ public class Constants {
 
     public static boolean maPosition;
 
+    public static String USER_UID_LISTEN = null;
+
     public static Bundle nolonelyBundle = new Bundle();
 
     public static Application application;

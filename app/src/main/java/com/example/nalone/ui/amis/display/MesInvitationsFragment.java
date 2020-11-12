@@ -68,7 +68,7 @@ public class MesInvitationsFragment extends Fragment implements CoreListener {
         }
     }
 
-    private void acceptFriendRequest(final String uid) {
+    private void acceptFriendRequest(final String uid, final int position) {
 
         getUserData(uid, new FireStoreUsersListeners() {
             @Override
@@ -79,15 +79,18 @@ public class MesInvitationsFragment extends Fragment implements CoreListener {
                 USER.get_friends().add(mStoreBase.collection("users").document(uid));
                 u.get_friends().add(USER_REFERENCE);
 
-                updateUserData(USER);
+                invits.remove(position);
+                onUpdateAdapter();
+
                 updateUserData(u);
+                updateUserData(USER);
             }
         });
 
         Toast.makeText(getContext(), "Vous avez ajouté(e) cet utilisateur", Toast.LENGTH_SHORT).show();
     }
 
-    private void declineFriendRequest(final String uid) {
+    private void declineFriendRequest(final String uid, final int position) {
 
         getUserData(uid, new FireStoreUsersListeners() {
             @Override
@@ -95,8 +98,11 @@ public class MesInvitationsFragment extends Fragment implements CoreListener {
                 USER.get_friends_requests_received().remove(mStoreBase.collection("users").document(uid));
                 u.get_friends_requests_send().remove(USER_REFERENCE);
 
-                updateUserData(USER);
+                invits.remove(position);
+                onUpdateAdapter();
+
                 updateUserData(u);
+                updateUserData(USER);
             }
         });
 
@@ -121,12 +127,12 @@ public class MesInvitationsFragment extends Fragment implements CoreListener {
         mAdapter.setOnItemClickListener(new ItemInvitAmisAdapter.OnItemClickListener() {
             @Override
             public void onAddClick(int position) {
-                acceptFriendRequest(invits.get(position).getUid());
+                acceptFriendRequest(invits.get(position).getUid(), position);
             }
 
             @Override
             public void onRemoveClick(int position) {
-                declineFriendRequest(invits.get(position).getUid());
+                declineFriendRequest(invits.get(position).getUid(), position);
             }
         });
     }
