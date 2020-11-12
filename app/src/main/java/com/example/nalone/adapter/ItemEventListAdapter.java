@@ -1,8 +1,9 @@
-package com.example.nalone.Adapter;
+package com.example.nalone.adapter;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -15,14 +16,13 @@ import com.example.nalone.R;
 import java.util.List;
 
 
-public class ItemMesEventListAdapter extends RecyclerView.Adapter<ItemMesEventListAdapter.ItemEventViewHolder> {
+public class ItemEventListAdapter extends RecyclerView.Adapter<ItemEventListAdapter.ItemEventViewHolder> {
     private List<Evenement> mItemEventList;
     public OnItemClickListener mListener;
 
     public interface OnItemClickListener {
         void onDisplayClick(int position);
-        void onDeleteClick(int position);
-        void onEditClick(int position);
+        void onSignInClick(int position);
     }
 
     public void setOnItemClickListener(OnItemClickListener listener){
@@ -31,13 +31,14 @@ public class ItemMesEventListAdapter extends RecyclerView.Adapter<ItemMesEventLi
 
 
     public static class ItemEventViewHolder extends RecyclerView.ViewHolder {
-        public ImageView mImageView, mImageViewEdit, mImageViewDisplay, mImageViewDelete;
+        public ImageView mImageView;
         public TextView mTitle;
         public TextView mDate;
         public TextView mTime;
         public TextView mVille;
         public TextView mDescription;
         public TextView mProprietaire;
+        public Button mInscrire, mAfficher;
 
 
         public ItemEventViewHolder(View itemView, final OnItemClickListener listener) {
@@ -49,11 +50,10 @@ public class ItemMesEventListAdapter extends RecyclerView.Adapter<ItemMesEventLi
             mVille = itemView.findViewById(R.id.villeEventList);
             mDescription = itemView.findViewById(R.id.descriptionEventList);
             mProprietaire = itemView.findViewById(R.id.ownerEventList);
-            mImageViewDelete = itemView.findViewById(R.id.imageViewDeleteMesEvent);
-            mImageViewEdit = itemView.findViewById(R.id.imageViewEdit);
-            mImageViewDisplay = itemView.findViewById(R.id.imageViewAfficher);
+            mAfficher = itemView.findViewById(R.id.buttonAfficherEventList);
+            mInscrire = itemView.findViewById(R.id.buttonInscrirEventList);
 
-            mImageViewDisplay.setOnClickListener(new View.OnClickListener() {
+            mAfficher.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     if(listener != null){
@@ -65,41 +65,28 @@ public class ItemMesEventListAdapter extends RecyclerView.Adapter<ItemMesEventLi
                 }
             });
 
-            mImageViewEdit.setOnClickListener(new View.OnClickListener() {
+            mInscrire.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     if(listener != null){
                         int position = getAdapterPosition();
                         if(position != RecyclerView.NO_POSITION){
-                            listener.onEditClick(position);
+                            listener.onSignInClick(position);
                         }
                     }
                 }
             });
-
-            mImageViewDelete.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if(listener != null){
-                        int position = getAdapterPosition();
-                        if(position != RecyclerView.NO_POSITION){
-                            listener.onDeleteClick(position);
-                        }
-                    }
-                }
-            });
-
         }
     }
 
     @NonNull
     @Override
     public ItemEventViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_mes_evenements_list, parent, false);
+        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_evenements_list, parent, false);
         ItemEventViewHolder ipvh = new ItemEventViewHolder(v, mListener);
         return ipvh;
     }
-    public ItemMesEventListAdapter(List<Evenement> itemlist){
+    public ItemEventListAdapter(List<Evenement> itemlist){
         mItemEventList = itemlist;
     }
     @Override

@@ -1,4 +1,4 @@
-package com.example.nalone.Adapter;
+package com.example.nalone.adapter;
 
 import android.content.Context;
 import android.net.Uri;
@@ -13,6 +13,7 @@ import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.example.nalone.Cache;
 import com.example.nalone.User;
 import com.example.nalone.items.ItemImagePerson;
 import com.example.nalone.R;
@@ -21,6 +22,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.storage.StorageReference;
 
+import java.io.IOException;
 import java.util.List;
 
 
@@ -84,22 +86,27 @@ public class ItemImagePersonAdapter extends RecyclerView.Adapter<ItemImagePerson
         getUserData(currentItem.getUid(), new FireStoreUsersListeners() {
             @Override
             public void onDataUpdate(User u) {
-                Log.w("Invits", "User " + u.getImage_url());
-                Log.w("Invits", "User name " + u.getFirst_name());
                 if (u.getImage_url() != null) {
-                    StorageReference imgRef = mStore.getReference("users/" + u.getUid());
-                    if (imgRef != null) {
-                        imgRef.getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
-                            @Override
-                            public void onComplete(@NonNull Task<Uri> task) {
-                                if (task.isSuccessful()) {
-                                    Uri img = task.getResult();
-                                    if (img != null) {
-                                        Glide.with(context).load(img).fitCenter().centerCrop().into(holder.mImageView);
+                    if(!Cache.fileExists(currentItem.getUid())) {
+                        StorageReference imgRef = mStore.getReference("users/" + u.getUid());
+                        if (imgRef != null) {
+                            imgRef.getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
+                                @Override
+                                public void onComplete(@NonNull Task<Uri> task) {
+                                    if (task.isSuccessful()) {
+                                        Uri img = task.getResult();
+                                        if (img != null) {
+                                            Log.w("image", "save image from cache");
+                                            Cache.saveUriFile(currentItem.getUid(), img);
+                                            Glide.with(context).load(img).fitCenter().centerCrop().into(holder.mImageView);
+                                        }
                                     }
                                 }
-                            }
-                        });
+                            });
+                        }
+                    }else{
+                        Log.w("image", "get image from cache");
+                        Glide.with(context).load(Cache.getUriFromUid(currentItem.getUid())).fitCenter().centerCrop().into(holder.mImageView);
                     }
 
                 }

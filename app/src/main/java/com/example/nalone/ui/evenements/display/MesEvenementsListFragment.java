@@ -17,11 +17,8 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.nalone.Adapter.ItemImagePersonAdapter;
-import com.example.nalone.Adapter.ItemMesEventListAdapter;
-import com.example.nalone.HomeActivity;
-import com.example.nalone.MainActivity;
-import com.example.nalone.User;
+import com.example.nalone.adapter.ItemImagePersonAdapter;
+import com.example.nalone.adapter.ItemMesEventListAdapter;
 import com.example.nalone.listeners.CoreListener;
 import com.example.nalone.CreateEventActivity;
 import com.example.nalone.Evenement;
@@ -36,18 +33,8 @@ import com.google.firebase.firestore.QuerySnapshot;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.List;
 
-import splash.SplashActivity;
-
-import static com.example.nalone.util.Constants.USER;
-import static com.example.nalone.util.Constants.USER_ID;
-import static com.example.nalone.util.Constants.USER_LATLNG;
 import static com.example.nalone.util.Constants.USER_REFERENCE;
-import static com.example.nalone.util.Constants.USER_STORAGE_REF;
-import static com.example.nalone.util.Constants.currentUser;
-import static com.example.nalone.util.Constants.load;
-import static com.example.nalone.util.Constants.mStore;
 import static com.example.nalone.util.Constants.mStoreBase;
 import static com.example.nalone.util.Constants.nolonelyBundle;
 

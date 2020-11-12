@@ -6,18 +6,14 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Bundle;
-import android.provider.CalendarContract;
 import android.util.Log;
 import android.widget.TextView;
 
-import com.example.nalone.Adapter.ItemImagePersonAdapter;
+import com.example.nalone.adapter.ItemImagePersonAdapter;
 import com.example.nalone.items.ItemImagePerson;
 import com.example.nalone.util.Constants;
-import com.google.android.gms.maps.model.Marker;
-import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
-import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 
 import java.util.ArrayList;

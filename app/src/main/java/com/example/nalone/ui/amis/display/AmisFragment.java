@@ -1,16 +1,13 @@
 package com.example.nalone.ui.amis.display;
 
-import android.content.ClipData;
 import android.os.Bundle;
 
-import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.os.Parcelable;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,16 +15,14 @@ import android.view.ViewGroup;
 import android.widget.SearchView;
 import android.widget.TextView;
 
-import com.example.nalone.Adapter.ItemListAmisAdapter;
+import com.example.nalone.adapter.ItemListAmisAdapter;
 import com.example.nalone.listeners.CoreListener;
 import com.example.nalone.items.ItemPerson;
 import com.example.nalone.R;
 import com.example.nalone.User;
 import com.example.nalone.listeners.FireStoreUsersListeners;
-import com.google.gson.Gson;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import static com.example.nalone.util.Constants.USER;
 import static com.example.nalone.util.Constants.getUserData;

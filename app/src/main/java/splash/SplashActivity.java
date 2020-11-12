@@ -17,6 +17,7 @@ import com.example.nalone.MainActivity;
 import com.example.nalone.R;
 import com.example.nalone.User;
 import com.example.nalone.ui.profil.ParametresFragment;
+import com.example.nalone.util.Constants;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -71,7 +72,7 @@ public class SplashActivity extends AppCompatActivity {
     public void init() {
 
         //addUser();
-
+        Constants.application = getApplication();
         currentUser = mAuth.getCurrentUser();
         if (currentUser != null) {
             if (!load) {

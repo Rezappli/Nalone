@@ -7,8 +7,8 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.LinearLayoutManager;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,21 +17,17 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
-import com.example.nalone.Adapter.ItemProfilAdapter;
+import com.example.nalone.Cache;
 import com.example.nalone.R;
 import com.example.nalone.User;
-import com.example.nalone.items.ItemPerson;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
-import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.storage.StorageReference;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import static com.example.nalone.util.Constants.USER;
-import static com.example.nalone.util.Constants.USER_ID;
-import static com.example.nalone.util.Constants.USER_REFERENCE;
 import static com.example.nalone.util.Constants.mStore;
 import static com.example.nalone.util.Constants.mStoreBase;
 
@@ -89,22 +85,29 @@ public class PopupProfilFragment extends Fragment {
             cardViewPhotoPerson.setCardBackgroundColor(Color.GRAY);
         }
 
-        if(USER_LOAD.getImage_url() != null) {
-            StorageReference imgRef = mStore.getReference("users/" + USER_LOAD.getUid());
-            if (imgRef != null) {
-                imgRef.getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Uri> task) {
-                        if (task.isSuccessful()) {
-                            Uri img = task.getResult();
-                            if (img != null) {
-                                Glide.with(getContext()).load(img).fitCenter().centerCrop().into(imagePerson);
+        if (USER_LOAD.getImage_url() != null) {
+            if(!Cache.fileExists(USER_LOAD.getUid())) {
+                StorageReference imgRef = mStore.getReference("users/" + USER_LOAD.getUid());
+                if (imgRef != null) {
+                    imgRef.getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Uri> task) {
+                            if (task.isSuccessful()) {
+                                Uri img = task.getResult();
+                                if (img != null) {
+                                    Log.w("image", "save image from cache");
+                                    Cache.saveUriFile(USER_LOAD.getUid(), img);
+                                    Glide.with(getContext()).load(img).fitCenter().centerCrop().into(imagePerson);
+                                }
                             }
                         }
-                    }
-                });
+                    });
+                }
+            }else{
+                Log.w("image", "get image from cache");
+                Glide.with(getContext()).load(Cache.getUriFromUid(USER_LOAD.getUid())).fitCenter().centerCrop().into(imagePerson);
             }
-            Glide.with(getContext()).load(USER.getImage_url()).fitCenter().centerCrop().into(imagePerson);
+
         }
 
         List<ImageView> imageCentreInteret = new ArrayList<>();

@@ -1,5 +1,6 @@
 package com.example.nalone.util;
 
+import android.app.Application;
 import android.os.Bundle;
 import android.util.Log;
 
@@ -64,6 +65,8 @@ public class Constants {
     public static boolean maPosition;
 
     public static Bundle nolonelyBundle = new Bundle();
+
+    public static Application application;
 
     public static void updateUserData(User u){
         mStoreBase.collection("users").document(u.getUid())

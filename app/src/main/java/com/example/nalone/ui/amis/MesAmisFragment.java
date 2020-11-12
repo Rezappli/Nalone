@@ -12,8 +12,7 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.viewpager.widget.ViewPager;
 
-import com.example.nalone.Adapter.SectionPageAdapter;
-import com.example.nalone.HomeActivity;
+import com.example.nalone.adapter.SectionPageAdapter;
 import com.example.nalone.R;
 import com.example.nalone.ui.amis.display.AmisFragment;
 import com.example.nalone.ui.amis.display.GroupeFragment;

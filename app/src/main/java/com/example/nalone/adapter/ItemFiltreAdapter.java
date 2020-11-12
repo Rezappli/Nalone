@@ -1,4 +1,4 @@
-package com.example.nalone.Adapter;
+package com.example.nalone.adapter;
 
 import android.view.LayoutInflater;
 import android.view.View;

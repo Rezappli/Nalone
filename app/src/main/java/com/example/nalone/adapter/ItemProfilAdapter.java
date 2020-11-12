@@ -1,13 +1,14 @@
-package com.example.nalone.Adapter;
+package com.example.nalone.adapter;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -28,58 +29,46 @@ import java.util.List;
 import static com.example.nalone.util.Constants.getUserData;
 import static com.example.nalone.util.Constants.mStore;
 
-public class ItemInvitAmisAdapter extends RecyclerView.Adapter<ItemInvitAmisAdapter.ItemInvitViewHolder> {
+public class ItemProfilAdapter extends RecyclerView.Adapter<ItemProfilAdapter.ItemProfilViewHolder> {
     private List<ItemPerson> mItemPersonList;
     public OnItemClickListener mListener;
     private Context context;
 
     public interface OnItemClickListener {
         void onAddClick(int position);
-        void onRemoveClick(int position);
+    }
+
+    public void setOnItemClickListener(OnItemClickListener listener) {
+        mListener = listener;
     }
 
 
-    public void setOnItemClickListener(OnItemClickListener listener){
-        mListener= listener;
-    }
-
-
-    public static class ItemInvitViewHolder extends RecyclerView.ViewHolder {
+    public static class ItemProfilViewHolder extends RecyclerView.ViewHolder {
         public ImageView mImageView;
         public TextView mText;
-        public ImageView mImageViewAdd;
-        public ImageView mImageViewRemove;
+        public ImageView mImageView2;
         public TextView mVille;
+        public LinearLayout mPerson;
+        public Drawable d;
         public CardView cardViewPhotoPerson;
 
-        public ItemInvitViewHolder(View itemView, final OnItemClickListener listener) {
+        public ItemProfilViewHolder(View itemView, final OnItemClickListener listener) {
             super(itemView);
-            mImageView = itemView.findViewById(R.id.imageInvitAmis);
-            mText = itemView.findViewById(R.id.nomAmisInvit);
-            mImageViewAdd = itemView.findViewById(R.id.addInvitAmis);
-            mImageViewRemove = itemView.findViewById(R.id.removeInvitAmis);
-            mVille = itemView.findViewById(R.id.villeAmisInvit);
+            mImageView = itemView.findViewById(R.id.imagePerson);
+            mText = itemView.findViewById(R.id.nomInvit);
+            mVille = itemView.findViewById(R.id.villePers);
+            mImageView2 = itemView.findViewById(R.id.imageView19);
+            mPerson = itemView.findViewById(R.id.layoutProfil);
+            d = itemView.getResources().getDrawable(R.drawable.ic_baseline_add_location_24);
             cardViewPhotoPerson = itemView.findViewById(R.id.cardViewPhotoPerson);
 
-            mImageViewAdd.setOnClickListener(new View.OnClickListener() {
+            mPerson.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if(listener != null){
+                    if (listener != null) {
                         int position = getAdapterPosition();
-                        if(position != RecyclerView.NO_POSITION){
+                        if (position != RecyclerView.NO_POSITION) {
                             listener.onAddClick(position);
-                        }
-                    }
-                }
-            });
-
-            mImageViewRemove.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if(listener != null){
-                        int position = getAdapterPosition();
-                        if(position != RecyclerView.NO_POSITION){
-                            listener.onRemoveClick(position);
                         }
                     }
                 }
@@ -89,40 +78,41 @@ public class ItemInvitAmisAdapter extends RecyclerView.Adapter<ItemInvitAmisAdap
 
     @NonNull
     @Override
-    public ItemInvitViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_invit_amis, parent, false);
-        ItemInvitViewHolder ipvh = new ItemInvitViewHolder(v, mListener);
+    public ItemProfilViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_person, parent, false);
+        ItemProfilViewHolder ipvh = new ItemProfilViewHolder(v, mListener);
         return ipvh;
     }
-    public ItemInvitAmisAdapter(List<ItemPerson> itemlist, Context context){
+
+    public ItemProfilAdapter(List<ItemPerson> itemlist, Context context) {
         this.context = context;
         mItemPersonList = itemlist;
     }
+
     @Override
-    public void onBindViewHolder(@NonNull final ItemInvitViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull final ItemProfilViewHolder holder, int position) {
         final ItemPerson currentItem = mItemPersonList.get(position);
 
         holder.mImageView.setImageResource(currentItem.getImageResource());
         holder.mText.setText((currentItem.getNom()));
+        holder.mImageView2.setImageResource(currentItem.getImageResource2());
         holder.mVille.setText(currentItem.getVille());
 
-        if(currentItem.getCursus().equalsIgnoreCase("Informatique")){
+        if (currentItem.getCursus().equalsIgnoreCase("Informatique")) {
             holder.cardViewPhotoPerson.setCardBackgroundColor(Color.RED);
         }
-
-        if(currentItem.getCursus().equalsIgnoreCase("TC")){
+        if (currentItem.getCursus().equalsIgnoreCase("TC")) {
             holder.cardViewPhotoPerson.setCardBackgroundColor(Color.GREEN);
         }
-        if(currentItem.getCursus().equalsIgnoreCase("MMI")){
+        if (currentItem.getCursus().equalsIgnoreCase("MMI")) {
             holder.cardViewPhotoPerson.setCardBackgroundColor(Color.parseColor("#4B0082"));
         }
-        if(currentItem.getCursus().equalsIgnoreCase("GB")){
+        if (currentItem.getCursus().equalsIgnoreCase("GB")) {
             holder.cardViewPhotoPerson.setCardBackgroundColor(Color.BLUE);
         }
-        if(currentItem.getCursus().equalsIgnoreCase("LP")){
+        if (currentItem.getCursus().equalsIgnoreCase("LP")) {
             holder.cardViewPhotoPerson.setCardBackgroundColor(Color.GRAY);
         }
-
 
         getUserData(currentItem.getUid(), new FireStoreUsersListeners() {
             @Override

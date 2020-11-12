@@ -13,8 +13,7 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.nalone.Adapter.ItemMessageAdapter;
-import com.example.nalone.HomeActivity;
+import com.example.nalone.adapter.ItemMessageAdapter;
 import com.example.nalone.items.ItemPerson;
 import com.example.nalone.R;
 import com.google.firebase.database.FirebaseDatabase;

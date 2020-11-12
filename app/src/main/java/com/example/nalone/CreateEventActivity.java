@@ -24,15 +24,12 @@ import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
-import com.example.nalone.Adapter.ItemAddPersonAdapter;
-import com.example.nalone.Adapter.ItemProfilAdapter;
+import com.example.nalone.adapter.ItemAddPersonAdapter;
+import com.example.nalone.adapter.ItemProfilAdapter;
 import com.example.nalone.items.ItemPerson;
 import com.example.nalone.ui.evenements.display.MesEvenementsListFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.material.textfield.TextInputEditText;
-import com.google.firebase.Timestamp;
-import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.GeoPoint;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -41,7 +38,6 @@ import java.util.List;
 import java.util.UUID;
 
 import static com.example.nalone.util.Constants.USER;
-import static com.example.nalone.util.Constants.USER_ID;
 import static com.example.nalone.util.Constants.USER_REFERENCE;
 import static com.example.nalone.util.Constants.heightScreen;
 import static com.example.nalone.util.Constants.widthScreen;

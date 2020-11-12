@@ -2,7 +2,6 @@ package com.example.nalone.ui.evenements.display;
 
 import android.os.Bundle;
 
-import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
 import android.util.Log;
@@ -11,13 +10,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
-import com.example.nalone.Adapter.ItemEventAdapter;
-import com.example.nalone.User;
-import com.example.nalone.items.ItemPerson;
+import com.example.nalone.adapter.ItemEventAdapter;
 import com.example.nalone.listeners.CoreListener;
 import com.example.nalone.R;
 import com.example.nalone.listeners.FireStoreEventsListeners;
-import com.example.nalone.listeners.FireStoreUsersListeners;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import android.Manifest;
@@ -44,14 +40,9 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.DocumentSnapshot;
 
 
 import java.util.ArrayList;
-import java.util.List;
 
 import static com.example.nalone.util.Constants.MAPVIEW_BUNDLE_KEY;
 import static com.example.nalone.util.Constants.USER;
@@ -59,7 +50,6 @@ import static com.example.nalone.util.Constants.USER_LATLNG;
 import static com.example.nalone.util.Constants.USER_REFERENCE;
 import static com.example.nalone.util.Constants.getEventData;
 import static com.example.nalone.util.Constants.listeners;
-import static com.example.nalone.util.Constants.mStoreBase;
 import static com.example.nalone.util.Constants.nolonelyBundle;
 import static com.example.nalone.util.Constants.targetZoom;
 

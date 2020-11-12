@@ -1,4 +1,4 @@
-package com.example.nalone.Adapter;
+package com.example.nalone.adapter;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,7 +12,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.nalone.Evenement;
 import com.example.nalone.R;
-import com.example.nalone.User;
 
 import java.util.List;
 

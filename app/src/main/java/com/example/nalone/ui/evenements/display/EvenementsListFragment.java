@@ -11,9 +11,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.example.nalone.Adapter.ItemEventListAdapter;
-import com.example.nalone.Adapter.ItemFiltreAdapter;
-import com.example.nalone.Adapter.ItemImagePersonAdapter;
+import com.example.nalone.adapter.ItemEventListAdapter;
+import com.example.nalone.adapter.ItemFiltreAdapter;
+import com.example.nalone.adapter.ItemImagePersonAdapter;
 import com.example.nalone.listeners.CoreListener;
 import com.example.nalone.Evenement;
 import com.example.nalone.InfosEvenementsActivity;

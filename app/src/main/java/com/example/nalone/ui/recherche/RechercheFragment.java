@@ -15,11 +15,11 @@ import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.nalone.Adapter.ItemFiltreAdapter;
+import com.example.nalone.adapter.ItemFiltreAdapter;
 import com.example.nalone.listeners.CoreListener;
 import com.example.nalone.items.ItemFiltre;
 import com.example.nalone.items.ItemPerson;
-import com.example.nalone.Adapter.ItemProfilAdapter;
+import com.example.nalone.adapter.ItemProfilAdapter;
 import com.example.nalone.R;
 import com.example.nalone.User;
 import com.example.nalone.ui.amis.display.PopupProfilFragment;
