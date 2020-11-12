@@ -30,6 +30,7 @@ import java.util.List;
 import static com.example.nalone.util.Constants.USER;
 import static com.example.nalone.util.Constants.mStore;
 import static com.example.nalone.util.Constants.mStoreBase;
+import static com.example.nalone.util.Constants.updateUserData;
 
 public class PopupProfilFragment extends Fragment {
 
@@ -124,28 +125,30 @@ public class PopupProfilFragment extends Fragment {
         imageCentreInteret.add(img_centre4);
         imageCentreInteret.add(img_centre5);
 
-        for(int i = 0; i < USER_LOAD.getCenters_interests().size(); i++){
+        if(USER_LOAD.getCenters_interests() != null){
+        for(int i = 0; i < USER_LOAD.getCenters_interests().size(); i++) {
             int imgResource = 0;
-            if(USER_LOAD.getCenters_interests().get(i).toString().equalsIgnoreCase("programmation")){
+            if (USER_LOAD.getCenters_interests().get(i).toString().equalsIgnoreCase("programmation")) {
                 imgResource = R.drawable.ci_programmation;
-            }else if(USER_LOAD.getCenters_interests().get(i).toString().equalsIgnoreCase("musique")){
+            } else if (USER_LOAD.getCenters_interests().get(i).toString().equalsIgnoreCase("musique")) {
                 imgResource = R.drawable.ci_musique;
-            }else if(USER_LOAD.getCenters_interests().get(i).toString().equalsIgnoreCase("livre")){
+            } else if (USER_LOAD.getCenters_interests().get(i).toString().equalsIgnoreCase("livre")) {
                 imgResource = R.drawable.ci_livre;
-            }else if(USER_LOAD.getCenters_interests().get(i).toString().equalsIgnoreCase("film")){
+            } else if (USER_LOAD.getCenters_interests().get(i).toString().equalsIgnoreCase("film")) {
                 imgResource = R.drawable.ci_film;
-            }else if(USER_LOAD.getCenters_interests().get(i).toString().equalsIgnoreCase("video")){
+            } else if (USER_LOAD.getCenters_interests().get(i).toString().equalsIgnoreCase("video")) {
                 imgResource = R.drawable.ci_jeuxvideo;
-            }else if(USER_LOAD.getCenters_interests().get(i).toString().equalsIgnoreCase("peinture")){
+            } else if (USER_LOAD.getCenters_interests().get(i).toString().equalsIgnoreCase("peinture")) {
                 imgResource = R.drawable.ci_peinture;
-            }else if(USER_LOAD.getCenters_interests().get(i).toString().equalsIgnoreCase("photo")){
+            } else if (USER_LOAD.getCenters_interests().get(i).toString().equalsIgnoreCase("photo")) {
                 imgResource = R.drawable.ci_photo;
-            }else if(USER_LOAD.getCenters_interests().get(i).toString().equalsIgnoreCase("sport")){
+            } else if (USER_LOAD.getCenters_interests().get(i).toString().equalsIgnoreCase("sport")) {
                 imgResource = R.drawable.ci_sport;
             }
 
             imageCentreInteret.get(i).setImageResource(imgResource);
             imageCentreInteret.get(i).setVisibility(View.VISIBLE);
+        }
 
         }
 
@@ -183,5 +186,8 @@ public class PopupProfilFragment extends Fragment {
     public void addFriend() {
         USER_LOAD.get_friends_requests_received().add(mStoreBase.collection("users").document(USER.getUid()));
         USER.get_friends_requests_send().add(mStoreBase.collection("users").document(USER_LOAD.getUid()));
+
+        updateUserData(USER);
+        updateUserData(USER_LOAD);
     }
 }

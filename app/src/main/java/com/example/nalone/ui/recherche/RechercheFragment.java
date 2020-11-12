@@ -1,6 +1,8 @@
 package com.example.nalone.ui.recherche;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,6 +17,8 @@ import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.nalone.HomeActivity;
+import com.example.nalone.MainActivity;
 import com.example.nalone.adapter.ItemFiltreAdapter;
 import com.example.nalone.listeners.CoreListener;
 import com.example.nalone.items.ItemFiltre;
@@ -22,12 +26,30 @@ import com.example.nalone.items.ItemPerson;
 import com.example.nalone.adapter.ItemProfilAdapter;
 import com.example.nalone.R;
 import com.example.nalone.User;
+import com.example.nalone.listeners.FireStoreUsersListeners;
 import com.example.nalone.ui.amis.display.PopupProfilFragment;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import splash.SplashActivity;
+
+import static com.example.nalone.util.Constants.USER;
+import static com.example.nalone.util.Constants.USER_ID;
+import static com.example.nalone.util.Constants.USER_LATLNG;
+import static com.example.nalone.util.Constants.USER_REFERENCE;
+import static com.example.nalone.util.Constants.USER_STORAGE_REF;
+import static com.example.nalone.util.Constants.currentUser;
+import static com.example.nalone.util.Constants.getUserData;
 import static com.example.nalone.util.Constants.listeners;
+import static com.example.nalone.util.Constants.load;
+import static com.example.nalone.util.Constants.mStore;
+import static com.example.nalone.util.Constants.mStoreBase;
 
 public class RechercheFragment extends Fragment implements CoreListener {
 
@@ -95,30 +117,71 @@ public class RechercheFragment extends Fragment implements CoreListener {
         });
 
 
-        updateItems();
-
-        if(items.size() == 0){
-            resultat.setVisibility(View.VISIBLE);
-            resultat.setText("Aucun amis à ajouter !");
-        }else{
-            resultat.setVisibility(View.GONE);
-            resultat.setText("");
-        }
-
         return rootView;
 
     }
 
 
-    public void showPopUpProfil(User u, String name,String ville, String desc, String nbCreate, String nbParticipate, final int button, List centresInteret) {
+    public void showPopUpProfil(User u) {
 
         PopupProfilFragment.USER_LOAD = u;
+        if(USER.get_friends_requests_send().contains(mStoreBase.collection("users").document(u.getUid()))){
+            PopupProfilFragment.button = R.drawable.ic_round_hourglass_top_24;
+        }else if(USER.get_friends_requests_received().contains(mStoreBase.collection("users").document(u.getUid()))){
+            PopupProfilFragment.button = R.drawable.ic_round_mail_24;
+        }else{
+            PopupProfilFragment.button = R.drawable.ic_baseline_add_circle_outline_24;
+        }
+
 
         navController.navigate(R.id.action_navigation_recherche_to_navigation_popup_profil);
     }
 
     public void updateItems() {
         items.clear();
+
+        mStoreBase.collection("users")
+                .whereGreaterThan("number", "0")
+                .limit(10)
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            if(task.getResult().size() > 0) {
+                                for (QueryDocumentSnapshot document : task.getResult()) {
+                                    User USER_LOAD = document.toObject(User.class);
+                                    Log.w("Recherche", "User ref :"+USER_REFERENCE);
+                                    if(!USER_LOAD.getUid().equalsIgnoreCase(USER.getUid())) {
+                                        if (!USER_LOAD.get_friends().contains(USER_REFERENCE)) {
+                                            ItemPerson it;
+                                            if (USER.get_friends_requests_send().contains(mStoreBase.collection("users").document(USER_LOAD.getUid()))) {
+                                                it = new ItemPerson(USER_LOAD.getUid(), R.drawable.ic_baseline_account_circle_24, USER_LOAD.getFirst_name() + " " + USER_LOAD.getLast_name(), R.drawable.ic_round_hourglass_top_24, USER_LOAD.getDescription(), USER_LOAD.getCity(), USER_LOAD.getCursus(), USER_LOAD.get_number_events_create(), USER_LOAD.get_number_events_attend(), USER_LOAD.getCenters_interests());
+                                            } else if (USER.get_friends_requests_received().contains(mStoreBase.collection("users").document(USER_LOAD.getUid()))) {
+                                                it = new ItemPerson(USER_LOAD.getUid(), R.drawable.ic_baseline_account_circle_24, USER_LOAD.getFirst_name() + " " + USER_LOAD.getLast_name(), R.drawable.ic_round_mail_24, USER_LOAD.getDescription(), USER_LOAD.getCity(), USER_LOAD.getCursus(), USER_LOAD.get_number_events_create(), USER_LOAD.get_number_events_attend(), USER_LOAD.getCenters_interests());
+                                            } else {
+                                                it = new ItemPerson(USER_LOAD.getUid(), R.drawable.ic_baseline_account_circle_24, USER_LOAD.getFirst_name() + " " + USER_LOAD.getLast_name(), 0, USER_LOAD.getDescription(), USER_LOAD.getCity(), USER_LOAD.getCursus(), USER_LOAD.get_number_events_create(), USER_LOAD.get_number_events_attend(), USER_LOAD.getCenters_interests());
+                                            }
+
+                                            items.add(it);
+                                        }
+                                    }
+                                }
+                                onUpdateAdapter();
+                            }else{
+                                Log.w("Recherche", "Résultats vide");
+                            }
+                        } else {
+                            Log.d("SPLASH", "Error getting documents: ", task.getException());
+                        }
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Log.w("SPLASH", "Erreur : " + e.getMessage());
+            }
+        });
+
         /*for(int i = 0; i < USERS_LIST.size(); i++){
             User u = USERS_LIST.get(i+"");
             if(u != null) {
@@ -139,6 +202,24 @@ public class RechercheFragment extends Fragment implements CoreListener {
             }
         }*/
 
+
+    }
+
+    @Override
+    public void onDataChangeListener() {
+        updateItems();
+    }
+
+    @Override
+    public void onUpdateAdapter() {
+        if(items.size() == 0){
+            resultat.setVisibility(View.VISIBLE);
+            resultat.setText("Aucun amis à ajouter !");
+        }else{
+            resultat.setVisibility(View.GONE);
+            resultat.setText("");
+        }
+
         mAdapter = new ItemProfilAdapter(items, getContext());
         mRecyclerView = rootView.findViewById(R.id.recyclerView);
         mLayoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL,
@@ -150,27 +231,15 @@ public class RechercheFragment extends Fragment implements CoreListener {
         mAdapter.setOnItemClickListener(new ItemProfilAdapter.OnItemClickListener() {
             @Override
             public void onAddClick(int position) {
-
-                /*if (USERS_LIST.get(USER_ID).getDemande_amis_envoye().contains(items.get(position).getId() + "")) {
-                    showPopUpProfil(items.get(position).getId(), items.get(position).getNom(),items.get(position).getVille(), items.get(position).getmDescription(), items.get(position).getmNbCreate(), items.get(position).getmNbParticipate(), R.drawable.ic_round_hourglass_top_24, items.get(position).getCentresInterets());
-                } else if (USERS_LIST.get(USER_ID).getDemande_amis_recu().contains(items.get(position).getId() + "")) {
-                    showPopUpProfil(items.get(position).getId(), items.get(position).getNom(),items.get(position).getVille(), items.get(position).getmDescription(), items.get(position).getmNbCreate(), items.get(position).getmNbParticipate(), R.drawable.ic_round_mail_24, items.get(position).getCentresInterets());
-                } else {
-                    showPopUpProfil(items.get(position).getId(), items.get(position).getNom(),items.get(position).getVille(), items.get(position).getmDescription(), items.get(position).getmNbCreate(), items.get(position).getmNbParticipate(), R.drawable.ic_baseline_add_circle_outline_24, items.get(position).getCentresInterets());
-                }*/
+                    getUserData(items.get(position).getUid(), new FireStoreUsersListeners() {
+                        @Override
+                        public void onDataUpdate(User u) {
+                            showPopUpProfil(u);
+                        }
+                    });
             }
         });
         mRecyclerView.setAdapter(mAdapter);
-    }
-
-    @Override
-    public void onDataChangeListener() {
-        updateItems();
-    }
-
-    @Override
-    public void onUpdateAdapter() {
-
     }
 
     @Override

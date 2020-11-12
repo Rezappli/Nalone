@@ -8,8 +8,11 @@ import static com.example.nalone.util.Constants.application;
 import static com.example.nalone.util.Constants.formatD;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.util.Scanner;
 
 public class Cache {
 
@@ -32,12 +35,33 @@ public class Cache {
 
     }
 
-    public static Uri getUriFromUid(String uid){
+    public static Uri getUriFromUid(String uid) {
         String file_path = application.getCacheDir().getAbsolutePath();
         File dir = new File(file_path);
         File file = new File(dir, uid);
 
-        return Uri.fromFile(file);
+        String data = "";
+        try {
+            Scanner myReader = new Scanner(file);
+            while (myReader.hasNextLine()) {
+                data += myReader.nextLine();
+                System.out.println(data);
+            }
+            myReader.close();
+        } catch (FileNotFoundException e) {
+            System.out.println("An error occurred.");
+            e.printStackTrace();
+        }
+
+        byte [] buf = data.getBytes();
+        String s = null;
+        try {
+            s = new String(buf, "UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+        Uri uri = Uri.parse(s);
+        return uri;
     }
 
     public static boolean fileExists(String uid){

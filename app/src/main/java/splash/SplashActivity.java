@@ -36,6 +36,7 @@ import java.util.UUID;
 
 import static com.example.nalone.util.Constants.USER_ID;
 import static com.example.nalone.util.Constants.USER_LATLNG;
+import static com.example.nalone.util.Constants.USER_REFERENCE;
 import static com.example.nalone.util.Constants.USER_STORAGE_REF;
 import static com.example.nalone.util.Constants.USER;
 import static com.example.nalone.util.Constants.currentUser;
@@ -71,7 +72,6 @@ public class SplashActivity extends AppCompatActivity {
 
     public void init() {
 
-        //addUser();
         Constants.application = getApplication();
         currentUser = mAuth.getCurrentUser();
         if (currentUser != null) {
@@ -87,10 +87,10 @@ public class SplashActivity extends AppCompatActivity {
                                         for (QueryDocumentSnapshot document : task.getResult()) {
                                             USER = document.toObject(User.class);
                                         }
-                                        //USER_REFERENCE = task.getResult().ge
                                         USER_ID = USER.getUid();
                                         USER_STORAGE_REF = mStore.getReference("users").child(USER.getUid());
                                         USER_LATLNG = getLocationFromAddress(USER.getCity());
+                                         USER_REFERENCE = mStoreBase.collection("users").document(USER.getUid());
                                         Log.w("SPLASH", "City : " + USER_LATLNG.toString());
                                         load = true;
                                         setUpRealTime();
@@ -142,9 +142,9 @@ public class SplashActivity extends AppCompatActivity {
     }
 
     public void addUser(){
-        User u = new User(UUID.randomUUID().toString(), "Rezai", "Mathis", "H", "Lannion","0"
-        ,"mathisrezai2k@gmail.com", "Informatique", null,
-                "Breton", "25/08/2001");
+        User u = new User(UUID.randomUUID().toString(), "Le Gal", "Hugo", "H", "Nantes","0781039421"
+        ,"hlegal44@hotmail.fr", "Informatique", null,
+                "Nantais", "21/08/2001");
 
         mStoreBase.collection("users").document(u.getUid())
                 .set(u)
