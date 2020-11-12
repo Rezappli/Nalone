@@ -55,18 +55,25 @@ public class MesInvitationsFragment extends Fragment implements CoreListener {
     private void updateItems() {
         invits = new ArrayList<>();
         Log.w("Invitations", "" + USER.get_friends_requests_received().size());
-        for(int i = 0; i < USER.get_friends_requests_received().size(); i++){
-            getUserData(USER.get_friends_requests_received().get(i).getId(), new FireStoreUsersListeners() {
-                @Override
-                public void onDataUpdate(User u) {
-                    ItemPerson it = new ItemPerson(u.getUid(), R.drawable.ic_baseline_account_circle_24,
-                            u.getFirst_name() + " " + u.getLast_name(), 0, u.getDescription(),
-                            u.getCity(), u.getCursus(), u.get_number_events_create(), u.get_number_events_attend(), u.getCenters_interests());
-                    invits.add(it);
-                    Log.w("Invitations", "Add invits");
-                    onUpdateAdapter();
-                }
-            });
+
+        if(USER.get_friends_requests_received().size() > 0) {
+            for (int i = 0; i < USER.get_friends_requests_received().size(); i++) {
+                Log.w("Invitations","Chargemment de "+ USER.get_friends_requests_received().get(i).getId());
+                getUserData(USER.get_friends_requests_received().get(i).getId(), new FireStoreUsersListeners() {
+                    @Override
+                    public void onDataUpdate(User u) {
+                        ItemPerson it = new ItemPerson(u.getUid(), R.drawable.ic_baseline_account_circle_24,
+                                u.getFirst_name() + " " + u.getLast_name(), 0, u.getDescription(),
+                                u.getCity(), u.getCursus(), u.get_number_events_create(), u.get_number_events_attend(), u.getCenters_interests());
+                        invits.add(it);
+                        Log.w("Invitations", "Add invits");
+                        nolonelyBundle.putSerializable("invits", invits);
+                        onUpdateAdapter();
+                    }
+                });
+            }
+        }else{
+            onUpdateAdapter();
         }
     }
 
@@ -107,6 +114,7 @@ public class MesInvitationsFragment extends Fragment implements CoreListener {
 
     @Override
     public void onDataChangeListener() {
+        Log.w("Invitations", "Update data on firestore");
         updateItems();
     }
 
@@ -135,14 +143,13 @@ public class MesInvitationsFragment extends Fragment implements CoreListener {
     }
 
     @Override
-    public void onResume(){
-        super.onResume();
-            if (nolonelyBundle.getSerializable("invitations") != null) {
-                invits = (ArrayList<ItemPerson>) nolonelyBundle.getSerializable("invitations");
-                onUpdateAdapter();
-            } else {
-                updateItems();
-            }
+    public void onStart(){
+        super.onStart();
+        if(nolonelyBundle.getSerializable("invits") != null){
+            invits = (ArrayList<ItemPerson>) nolonelyBundle.getSerializable("invits");
+            onUpdateAdapter();
+        }else{
+            updateItems();
+        }
     }
-
 }

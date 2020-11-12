@@ -61,7 +61,6 @@ public class RechercheFragment extends Fragment implements CoreListener {
     private ItemProfilAdapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
     private TextView resultat;
-    private final List<ItemPerson> tempList = new ArrayList<>();
     private RecyclerView mRecyclerViewFiltre;
     private ItemFiltreAdapter mAdapterFiltre;
     private RecyclerView.LayoutManager mLayoutManagerFiltre;
@@ -133,7 +132,6 @@ public class RechercheFragment extends Fragment implements CoreListener {
             PopupProfilFragment.button = R.drawable.ic_baseline_add_circle_outline_24;
         }
 
-
         navController.navigate(R.id.action_navigation_recherche_to_navigation_popup_profil);
     }
 
@@ -163,10 +161,11 @@ public class RechercheFragment extends Fragment implements CoreListener {
                                             }
 
                                             items.add(it);
+                                            onUpdateAdapter();
                                         }
                                     }
                                 }
-                                onUpdateAdapter();
+
                             }else{
                                 Log.w("Recherche", "Résultats vide");
                             }

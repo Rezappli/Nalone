@@ -76,61 +76,6 @@ public class AmisFragment extends Fragment implements CoreListener{
 
             @Override
             public boolean onQueryTextChange(String newText) {
-                newText = newText.toLowerCase();
-                tempList.clear();
-                boolean check = true;
-                if (items.size() > 0) {
-                    if (newText.length() > 0) {
-                        for (int i = 0; i < items.size(); i++) {
-                            for (int j = 0; j < newText.length(); j++) {
-                                if (items.get(i).getmNomToLowerCase().length() > j) {
-                                    if (newText.charAt(j) == items.get(i).getmNomToLowerCase().charAt(j) && j == 0) {
-                                        check = true;
-                                    }
-
-
-                                    if (newText.charAt(j) == items.get(i).getmNomToLowerCase().charAt(j) && check) {
-                                        check = true;
-                                    } else {
-                                        check = false;
-                                    }
-
-
-                                    if (check) {
-                                        if (!tempList.contains(items.get(i))) {
-                                            tempList.add(items.get(i));
-                                            if (resultat.getVisibility() == View.VISIBLE) {
-                                                resultat.setVisibility(View.GONE);
-                                                resultat.setText("");
-                                            }
-                                        }
-                                    } else {
-                                        tempList.remove(items.get(i));
-                                    }
-                                } else {
-                                    tempList.remove(items.get(i));
-                                }
-                            }
-                        }
-
-
-                        if (tempList.size() == 0) {
-                            resultat.setVisibility(View.VISIBLE);
-                            resultat.setText(R.string.aucun_resultat);
-                        }
-
-                        mAdapter = new ItemListAmisAdapter(tempList, getContext());
-                        mRecyclerView.setAdapter(mAdapter);
-                    } else {
-                        resultat.setVisibility(View.GONE);
-                        resultat.setText("");
-                        mAdapter = new ItemListAmisAdapter(items, getContext());
-                        mRecyclerView.setAdapter(mAdapter);
-                    }
-                } else {
-                    resultat.setVisibility(View.VISIBLE);
-                    resultat.setText("Aucun amis à ajouter !");
-                }
 
                 return false;
             }
@@ -146,9 +91,6 @@ public class AmisFragment extends Fragment implements CoreListener{
                 USER.get_friends().remove(mStoreBase.collection("users").document(uid));
                 u.get_friends().remove(USER_REFERENCE);
 
-                items.remove(position);
-                onUpdateAdapter();
-
                 updateUserData(u);
                 updateUserData(USER);
             }
@@ -161,20 +103,27 @@ public class AmisFragment extends Fragment implements CoreListener{
 
     private void updateItems() {
         items = new ArrayList<>();
-        for(int i = 0; i < USER.get_friends().size(); i++){
-            Log.w("amis", "start process for a friends");
+        if(USER.get_friends().size() > 0) {
+            Log.w("amis", "User friend size : " + USER.get_friends().size());
+            for (int i = 0; i < USER.get_friends().size(); i++) {
+                Log.w("amis", "start process for a friends");
 
-            getUserData(USER.get_friends().get(i).getId(), new FireStoreUsersListeners() {
-                @Override
-                public void onDataUpdate(User u) {
-                    ItemPerson it = new ItemPerson(u.getUid(), R.drawable.ic_baseline_account_circle_24,
-                            u.getFirst_name() + " " + u.getLast_name(), 0, u.getDescription(),
-                            u.getCity(), u.getCursus(), u.get_number_events_create(), u.get_number_events_attend(), u.getCenters_interests());
-                    items.add(it);
-                    nolonelyBundle.putSerializable("items", items);
-                    onUpdateAdapter();
-                }
-            });
+                final int finalI = i;
+                getUserData(USER.get_friends().get(i).getId(), new FireStoreUsersListeners() {
+                    @Override
+                    public void onDataUpdate(User u) {
+                        Log.w("Invitations", "Chargement de : "+USER.get_friends().get(finalI).getId());
+                        ItemPerson it = new ItemPerson(u.getUid(), R.drawable.ic_baseline_account_circle_24,
+                                u.getFirst_name() + " " + u.getLast_name(), 0, u.getDescription(),
+                                u.getCity(), u.getCursus(), u.get_number_events_create(), u.get_number_events_attend(), u.getCenters_interests());
+                        items.add(it);
+                        nolonelyBundle.putSerializable("friends", items);
+                        onUpdateAdapter();
+                    }
+                });
+            }
+        }else{
+            onUpdateAdapter();
         }
     }
 
@@ -183,6 +132,7 @@ public class AmisFragment extends Fragment implements CoreListener{
             @Override
             public void onDataUpdate(User u) {
                 PopupProfilFragment.USER_LOAD = u;
+                PopupProfilFragment.button = 0;
                 navController.navigate(R.id.action_navigation_amis_to_navigation_popup_profil);
             }
         });
@@ -190,11 +140,13 @@ public class AmisFragment extends Fragment implements CoreListener{
 
     @Override
     public void onDataChangeListener() {
+        Log.w("Amis", "Update data on firestore");
         updateItems();
     }
 
     @Override
     public void onUpdateAdapter() {
+        Log.w("Amis", "Update data on firestore");
         mAdapter = new ItemListAmisAdapter(items, getContext());
 
         mRecyclerView = rootView.findViewById(R.id.recyclerViewMesAmis);
@@ -217,23 +169,14 @@ public class AmisFragment extends Fragment implements CoreListener{
     }
 
     @Override
-    public void onDestroy(){
-        super.onDestroy();
-        if(nolonelyBundle.getSerializable("items") == null) {
-            nolonelyBundle.putSerializable("items", items);
+    public void onStart(){
+        super.onStart();
+        if(nolonelyBundle.getSerializable("friends") != null){
+            items = (ArrayList<ItemPerson>) nolonelyBundle.getSerializable("friends");
+            onUpdateAdapter();
+        }else{
+            updateItems();
         }
     }
-
-    @Override
-    public void onResume(){
-        super.onResume();
-            if (nolonelyBundle.getSerializable("items") != null) {
-                items = (ArrayList<ItemPerson>) nolonelyBundle.getSerializable("items");
-                onUpdateAdapter();
-                Log.w("SaveInstanceBundle", " Load : " + items.size());
-            } else {
-                updateItems();
-            }
-        }
 
 }
