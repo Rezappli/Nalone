@@ -53,6 +53,7 @@ public class MesInvitationsFragment extends Fragment implements CoreListener {
     }
 
     private void updateItems() {
+        final boolean[] duplicate = {false};
         invits.clear();
         Log.w("Invitations", "" + USER.get_friends_requests_received().size());
 
@@ -65,6 +66,14 @@ public class MesInvitationsFragment extends Fragment implements CoreListener {
                         ItemPerson it = new ItemPerson(u.getUid(), R.drawable.ic_baseline_account_circle_24,
                                 u.getFirst_name() + " " + u.getLast_name(), 0, u.getDescription(),
                                 u.getCity(), u.getCursus(), u.get_number_events_create(), u.get_number_events_attend(), u.getCenters_interests());
+
+                        for(ItemPerson i : invits) {
+                            if (i.getUid().equalsIgnoreCase(it.getUid())) {
+                                duplicate[0] = true;
+                                break;
+                            }
+                        }
+
                         if(!invits.contains(it)) {
                             invits.add(it);
                             onUpdateAdapter();

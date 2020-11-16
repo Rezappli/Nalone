@@ -163,6 +163,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, CoreLis
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
+        updateMap();
         if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION)
                 != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getActivity(),
                 Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
@@ -171,7 +172,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, CoreLis
             return;
         }
         mMap.setMyLocationEnabled(true);
-        updateMap();
     }
 
     @RequiresApi(api = Build.VERSION_CODES.M)

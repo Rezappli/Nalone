@@ -136,10 +136,12 @@ public class RechercheFragment extends Fragment implements CoreListener {
     }
 
     public void updateItems() {
+        final boolean[] duplicate = {true};
         items.clear();
 
         mStoreBase.collection("users")
                 .whereGreaterThan("number", "0")
+                .whereEqualTo("o", "")
                 .limit(10)
                 .get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
@@ -160,12 +162,19 @@ public class RechercheFragment extends Fragment implements CoreListener {
                                                 it = new ItemPerson(USER_LOAD.getUid(), R.drawable.ic_baseline_account_circle_24, USER_LOAD.getFirst_name() + " " + USER_LOAD.getLast_name(), 0, USER_LOAD.getDescription(), USER_LOAD.getCity(), USER_LOAD.getCursus(), USER_LOAD.get_number_events_create(), USER_LOAD.get_number_events_attend(), USER_LOAD.getCenters_interests());
                                             }
 
+                                            for(ItemPerson i : items) {
+                                                if (i.getUid().equalsIgnoreCase(it.getUid())) {
+                                                    duplicate[0] = true;
+                                                    break;
+                                                }
+                                            }
+
                                             if(!items.contains(it)) {
                                                 items.add(it);
                                                 onUpdateAdapter();
                                             }
 
-                                            //SI DUPLICATION FAIRE BOUCLE FOR ET CHECK UID
+
                                         }
                                     }
                                 }
