@@ -195,6 +195,27 @@ public class RechercheFragment extends Fragment implements CoreListener {
             }
         });
 
+        /*for(int i = 0; i < USERS_LIST.size(); i++){
+            User u = USERS_LIST.get(i+"");
+            if(u != null) {
+                if (!USER_ID.equalsIgnoreCase(i + "")) {
+                    if (!USERS_LIST.get(USER_ID).getAmis().contains(i+"")) {
+                        ItemPerson it;
+                        if (USERS_LIST.get(USER_ID).getDemande_amis_envoye().contains(i+"")) {
+                            it = new ItemPerson(i, R.drawable.ic_baseline_account_circle_24, u.getPrenom() + " " + u.getNom(), R.drawable.ic_round_hourglass_top_24, u.getDescription(), u.getVille(), u.getCursus(), u.getNbCreation(), u.getNbParticipation(), u.getCentreInterets());
+                        } else if (USERS_LIST.get(USER_ID).getDemande_amis_recu().contains(i+"")) {
+                            it = new ItemPerson(i, R.drawable.ic_baseline_account_circle_24, u.getPrenom() + " " + u.getNom(), R.drawable.ic_round_mail_24, u.getDescription(), u.getVille(), u.getCursus(), u.getNbCreation(),u.getNbParticipation(), u.getCentreInterets());
+                        } else {
+                            it = new ItemPerson(i, R.drawable.ic_baseline_account_circle_24, u.getPrenom() + " " + u.getNom(), 0, u.getDescription(), u.getVille(), u.getCursus(), u.getNbCreation(),u.getNbParticipation(), u.getCentreInterets());
+                        }
+
+                        items.add(it);
+                    }
+                }
+            }
+        }*/
+
+
     }
 
     @Override
@@ -217,7 +238,6 @@ public class RechercheFragment extends Fragment implements CoreListener {
         mRecyclerView = rootView.findViewById(R.id.recyclerView);
         mLayoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL,
                 false);
-
 
         mRecyclerView.setLayoutManager(mLayoutManager);
 

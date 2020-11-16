@@ -69,33 +69,25 @@
                 android:gravity="center"
                 android:text="TextView" />
 
-            <View
-                android:id="@+id/divider4"
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:layout_marginTop="20dp"
-                android:layout_marginBottom="20dp"
-                android:background="@android:color/darker_gray" />
-
-            <TextView
-                android:id="@+id/profilDescription"
+            <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="30dp"
-                android:text="@string/description"
-                android:textStyle="italic" />
-
-            <View
-                android:id="@+id/divider3"
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
                 android:layout_marginTop="20dp"
-                android:layout_marginBottom="20dp"
-                android:background="@android:color/darker_gray" />
+                app:cardElevation="3dp">
+
+                <TextView
+                    android:id="@+id/profilDescription"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="20dp"
+                    android:text="@string/description"
+                    android:textStyle="italic" />
+            </androidx.cardview.widget.CardView>
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="44dp"
+                android:layout_marginTop="20dp"
                 android:gravity="center"
                 android:orientation="horizontal">
 
@@ -151,11 +143,14 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_margin="20dp"
-                    android:layout_weight="0.33">
+                    android:layout_weight="0.33"
+                    app:cardCornerRadius="10dp"
+                    app:cardElevation="4dp">
 
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
+                        android:layout_margin="5dp"
                         android:orientation="vertical">
 
                         <TextView
@@ -190,11 +185,14 @@
                     android:layout_height="match_parent"
                     android:layout_margin="20dp"
                     android:layout_weight="0.33"
-                    app:cardBackgroundColor="@android:color/white">
+                    app:cardBackgroundColor="@android:color/white"
+                    app:cardCornerRadius="10dp"
+                    app:cardElevation="4dp">
 
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
+                        android:layout_margin="5dp"
                         android:orientation="vertical">
 
                         <TextView
@@ -218,7 +216,6 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_gravity="bottom|center"
-                            android:layout_marginTop="10dp"
                             android:text="TextView"
                             android:textColor="@android:color/secondary_text_dark" />
 
@@ -233,7 +230,7 @@
                 android:layout_width="50dp"
                 android:layout_height="50dp"
                 android:layout_gravity="bottom|center"
-                android:layout_marginTop="10dp"
+                android:layout_weight="1"
                 android:baselineAlignBottom="false"
                 app:srcCompat="@drawable/ic_baseline_add_circle_outline_24" />
 

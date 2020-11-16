@@ -94,5 +94,6 @@
     <string name="internationalTitle"> Recherche à l\'international </string>
     <string name="notification"> Notification </string>
     <string name="lieuParametre"> Lieu par défault </string>
+    <string name="couleurCursusParametre"> Couleurs des cursus </string>
 
 </resources>
