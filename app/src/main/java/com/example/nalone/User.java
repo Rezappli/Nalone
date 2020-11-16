@@ -11,7 +11,11 @@ import com.google.firestore.v1.Document;
 import java.lang.ref.Reference;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+
+import static com.example.nalone.util.Constants.USER_REFERENCE;
+import static com.example.nalone.util.Constants.mStoreBase;
 
 public class User {
     private String uid;
@@ -21,23 +25,17 @@ public class User {
     private String city;
     private String number;
     private String mail;
-    private List<String> centers_interests;
     private String cursus;
     private String description;
     private String number_events_create;
     private String number_events_attend;
-    private List<DocumentReference> friends_requests_send;
-    private List<DocumentReference> friends_requests_received;
-    private List<DocumentReference> friends;
-    private List<DocumentReference> register_events;
-    private List<DocumentReference> waiting_events;
     private String birthday_date;
     private String image_url;
 
     public User(){}
 
     public User(String uid, String last_name, String first_name, String sex, String city,
-                String number, String mail, String cursus, List<String> centers_interests,
+                String number, String mail, String cursus,
                 String description, String birthday_date){
         this.uid = uid;
         this.last_name = last_name;
@@ -47,18 +45,22 @@ public class User {
         this.number = number;
         this.mail = mail;
         this.cursus = cursus;
-        this.centers_interests = centers_interests;
+
         this.description = description;
         this.birthday_date = birthday_date;
 
         this.number_events_create = "0";
         this.number_events_attend = "0";
 
-        this.friends_requests_send = new ArrayList<>();
-        this.friends_requests_received = new ArrayList<>();
-        this.friends = new ArrayList<>();
-
         this.image_url = null;
+    }
+
+    public String getUid() {
+        return uid;
+    }
+
+    public void setUid(String uid) {
+        this.uid = uid;
     }
 
     public String getSex() {
@@ -109,14 +111,6 @@ public class User {
         this.mail = mail;
     }
 
-    public List<String> getCenters_interests() {
-        return centers_interests;
-    }
-
-    public void setCenters_interests(List<String> centers_interests) {
-        this.centers_interests = centers_interests;
-    }
-
     public String getCursus() {
         return cursus;
     }
@@ -133,67 +127,27 @@ public class User {
         this.description = description;
     }
 
-    public String get_number_events_create() {
+    public String getNumber_events_create() {
         return number_events_create;
     }
 
-    public void set_number_events_create(String number_events_create) {
+    public void setNumber_events_create(String number_events_create) {
         this.number_events_create = number_events_create;
     }
 
-    public String get_number_events_attend() {
+    public String getNumber_events_attend() {
         return number_events_attend;
     }
 
-    public void set_number_events_attend(String number_events_attend) {
+    public void setNumber_events_attend(String number_events_attend) {
         this.number_events_attend = number_events_attend;
     }
 
-    public List<DocumentReference> get_friends_requests_send() {
-        return friends_requests_send;
-    }
-
-    public void set_friends_requests_send(List<DocumentReference> friends_requests_send) {
-        this.friends_requests_send = friends_requests_send;
-    }
-
-    public List<DocumentReference> get_friends_requests_received() {
-        return friends_requests_received;
-    }
-
-    public void set_friends_requests_received(List<DocumentReference> friends_requests_received) {
-        this.friends_requests_received = friends_requests_received;
-    }
-
-    public List<DocumentReference> get_friends() {
-        return friends;
-    }
-
-    public void set_friends(List<DocumentReference> friends) {
-        this.friends = friends;
-    }
-
-    public List<DocumentReference> get_register_events() {
-        return register_events;
-    }
-
-    public void set_register_events(List<DocumentReference> register_events) {
-        this.register_events = register_events;
-    }
-
-    public List<DocumentReference> getWaiting_events() {
-        return waiting_events;
-    }
-
-    public void set_waiting_events(List<DocumentReference> waiting_events) {
-        this.waiting_events = waiting_events;
-    }
-
-    public String get_birthday_date() {
+    public String getBirthday_date() {
         return birthday_date;
     }
 
-    public void set_birthday_date(String birthday_date) {
+    public void setBirthday_date(String birthday_date) {
         this.birthday_date = birthday_date;
     }
 
@@ -203,13 +157,5 @@ public class User {
 
     public void setImage_url(String image_url) {
         this.image_url = image_url;
-    }
-
-    public String getUid() {
-        return uid;
-    }
-
-    public void setUid(String uid) {
-        this.uid = uid;
     }
 }

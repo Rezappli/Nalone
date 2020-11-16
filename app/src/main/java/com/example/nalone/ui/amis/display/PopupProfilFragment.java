@@ -124,7 +124,7 @@ public class PopupProfilFragment extends Fragment {
         imageCentreInteret.add(img_centre4);
         imageCentreInteret.add(img_centre5);
 
-        if(USER_LOAD.getCenters_interests() != null){
+        /*if(USER_LOAD.getCenters_interests() != null){
         for(int i = 0; i < USER_LOAD.getCenters_interests().size(); i++) {
             int imgResource = 0;
             if (USER_LOAD.getCenters_interests().get(i).toString().equalsIgnoreCase("programmation")) {
@@ -156,7 +156,7 @@ public class PopupProfilFragment extends Fragment {
         descriptionProfil.setText(USER_LOAD.getDescription());
         nbCreateProfil.setText(USER_LOAD.get_number_events_create());
         nbParticipateProfil.setText(USER_LOAD.get_number_events_attend());
-        buttonAdd.setImageResource(button);
+        buttonAdd.setImageResource(button);*/
 
         if (USER_LOAD.getDescription().matches("")) {
             descriptionProfil.setVisibility(View.GONE);
@@ -183,8 +183,8 @@ public class PopupProfilFragment extends Fragment {
     }
 
     public void addFriend() {
-        USER_LOAD.get_friends_requests_received().add(mStoreBase.collection("users").document(USER.getUid()));
-        USER.get_friends_requests_send().add(mStoreBase.collection("users").document(USER_LOAD.getUid()));
+        //USER_LOAD.get_friends_requests_received().add(mStoreBase.collection("users").document(USER.getUid()));
+        //USER.get_friends_requests_send().add(mStoreBase.collection("users").document(USER_LOAD.getUid()));
 
         updateUserData(USER_LOAD);
         updateUserData(USER);

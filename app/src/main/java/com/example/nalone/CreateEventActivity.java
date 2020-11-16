@@ -157,11 +157,11 @@ public class CreateEventActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                if(USER.get_friends() == null){
+                /*if(USER.getFriends() == null){
                     Toast.makeText(CreateEventActivity.this, "Vous n'avez pas d'amis à ajouter", Toast.LENGTH_SHORT).show();
                 }else{
                     showPopUp(v);
-                }
+                }*/
             }
         });
 
@@ -236,7 +236,7 @@ public class CreateEventActivity extends AppCompatActivity {
     }
 
     public void updateItems(){
-        for(int i=0; i < USER.get_friends().size(); i++){
+        /*for(int i=0; i < USER.get_friends().size(); i++){
             getUserData(USER.get_friends().get(i).getId(), new FireStoreUsersListeners() {
                 @Override
                 public void onDataUpdate(User u) {
@@ -258,7 +258,7 @@ public class CreateEventActivity extends AppCompatActivity {
             });
 
 
-        }
+        }*/
     }
 
     public void addPerson(View v){

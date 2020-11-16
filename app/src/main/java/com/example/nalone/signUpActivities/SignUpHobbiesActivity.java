@@ -13,6 +13,7 @@ import androidx.cardview.widget.CardView;
 import com.example.nalone.R;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public class SignUpHobbiesActivity extends AppCompatActivity {
@@ -102,58 +103,58 @@ public class SignUpHobbiesActivity extends AppCompatActivity {
                     return;
                 }
 
-                List<String> interets = new ArrayList<>();
+                HashMap<String, String> interets = new HashMap();
                 for(final CardView c : cardsList){
                     if(c == ciFilms){
                         if(c.getCardElevation() == 0){
-                            interets.add("Films");
+                            interets.put(interets.size()+"", "Films");
                         }
                     }
 
                     if(c == ciSport){
                         if(c.getCardElevation() == 0){
-                            interets.add("Sport");
+                            interets.put(interets.size()+"", "Sport");
                         }
                     }
 
                     if(c == ciMusique){
                         if(c.getCardElevation() == 0){
-                            interets.add("Musique");
+                            interets.put(interets.size()+"", "Musique");
                         }
                     }
 
                     if(c == ciJeuxVideo){
                         if(c.getCardElevation() == 0){
-                            interets.add("Jeux");
+                            interets.put(interets.size()+"", "Jeux");
                         }
                     }
 
                     if(c == ciLivres){
                         if(c.getCardElevation() == 0){
-                            interets.add("Livres");
+                            interets.put(interets.size()+"", "Livres");
                         }
                     }
 
                     if(c == ciPeinture){
                         if(c.getCardElevation() == 0){
-                            interets.add("Peinture");
+                            interets.put(interets.size()+"", "Peinture");
                         }
                     }
 
                     if(c == ciPhoto){
                         if(c.getCardElevation() == 0){
-                            interets.add("Photo");
+                            interets.put(interets.size()+"", "Photo");
                         }
                     }
 
                     if(c == ciProg){
                         if(c.getCardElevation() == 0){
-                            interets.add("Programmation");
+                            interets.put(interets.size()+"", "Programmation");
                         }
                     }
                 }
 
-                SignUpInformationActivity.user.setCenters_interests(interets);
+                //SignUpInformationActivity.user.setCenters_interests(interets);
                 Intent signUpThree = new Intent(getBaseContext(), SignUpProfilActivity.class);
                 startActivityForResult(signUpThree, 0);
             }

@@ -55,7 +55,7 @@ public class MesInvitationsFragment extends Fragment implements CoreListener {
     }
 
     private void updateItems() {
-        final boolean[] duplicate = {false};
+        /*final boolean[] duplicate = {false};
         invits.clear();
         Log.w("Invitations", "" + USER.get_friends_requests_received().size());
 
@@ -85,12 +85,12 @@ public class MesInvitationsFragment extends Fragment implements CoreListener {
             }
         }else{
             onUpdateAdapter();
-        }
+        }*/
     }
 
     private void acceptFriendRequest(final String uid) {
 
-        getUserData(uid, new FireStoreUsersListeners() {
+       /*getUserData(uid, new FireStoreUsersListeners() {
             @Override
             public void onDataUpdate(User u) {
                 USER.get_friends_requests_received().remove(mStoreBase.collection("users").document(uid));
@@ -102,14 +102,14 @@ public class MesInvitationsFragment extends Fragment implements CoreListener {
                 updateUserData(u);
                 updateUserData(USER);
             }
-        });
+        });*/
 
         Toast.makeText(getContext(), "Vous avez ajouté(e) cet utilisateur", Toast.LENGTH_SHORT).show();
     }
 
     private void declineFriendRequest(final String uid) {
 
-        getUserData(uid, new FireStoreUsersListeners() {
+        /*getUserData(uid, new FireStoreUsersListeners() {
             @Override
             public void onDataUpdate(User u) {
                 USER.get_friends_requests_received().remove(mStoreBase.collection("users").document(uid));
@@ -119,7 +119,7 @@ public class MesInvitationsFragment extends Fragment implements CoreListener {
                 updateUserData(USER);
 
             }
-        });
+        });*/
 
         Toast.makeText(getContext(), "Vous n'avez pas accepté(e) cet utilisateur", Toast.LENGTH_SHORT).show();
     }

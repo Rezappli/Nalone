@@ -189,7 +189,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, CoreLis
 
             float[] results = new float[1];
 
-            if(USER.get_register_events() != null) {
+            /*if(USER.get_register_events() != null) {
                 for (int i = 0; i < USER.get_register_events().size(); i++) {
                     getEventData(USER.get_register_events().get(i).getId(), new FireStoreEventsListeners() {
                         @Override
@@ -201,7 +201,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, CoreLis
                         }
                     });
                 }
-            }
+            }*/
         }
     }
 

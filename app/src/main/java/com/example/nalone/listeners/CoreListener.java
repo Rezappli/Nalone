@@ -7,5 +7,4 @@ import java.util.ArrayList;
 
 public interface CoreListener {
     void onDataChangeListener();
-    void onUpdateAdapter();
 }

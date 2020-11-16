@@ -78,8 +78,8 @@ public class ProfilFragment extends Fragment  {
 
         userConnectText.setText(USER.getFirst_name() + " " + USER.getLast_name());
         userConnectVille.setText(USER.getCity());
-        userConnectNbC.setText(USER.get_number_events_create());
-        userConnectNbP.setText(USER.get_number_events_attend());
+        userConnectNbC.setText(USER.getNumber_events_create());
+        userConnectNbP.setText(USER.getNumber_events_attend());
         userConnectDesc.setText(USER.getDescription());
         userConnectDesc.setClickable(false);
         userConnectDesc.setEnabled(false);

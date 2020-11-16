@@ -91,7 +91,7 @@ public class SplashActivity extends AppCompatActivity {
                                         USER_ID = USER.getUid();
                                         USER_STORAGE_REF = mStore.getReference("users").child(USER.getUid());
                                         USER_LATLNG = getLocationFromAddress(USER.getCity());
-                                         USER_REFERENCE = mStoreBase.collection("users").document(USER.getUid());
+                                        USER_REFERENCE = mStoreBase.collection("users").document(USER.getUid());
                                         Log.w("SPLASH", "City : " + USER_LATLNG.toString());
                                         load = true;
                                         setUpRealTime();
@@ -134,7 +134,7 @@ public class SplashActivity extends AppCompatActivity {
 
     public void addUser(){
         User u = new User(UUID.randomUUID().toString(), "Le Gal", "Hugo", "H", "Nantes","0781039421"
-        ,"hlegal44@hotmail.fr", "Informatique", null,
+        ,"hlegal44@hotmail.fr", "Informatique",
                 "Nantais", "21/08/2001");
 
         mStoreBase.collection("users").document(u.getUid())

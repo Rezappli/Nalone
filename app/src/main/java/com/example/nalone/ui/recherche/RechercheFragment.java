@@ -20,6 +20,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.nalone.HomeActivity;
 import com.example.nalone.MainActivity;
+import com.example.nalone.UserFriendData;
+import com.example.nalone.adapter.FirestoreRecyclerAdapterUserFriendData;
 import com.example.nalone.adapter.ItemFiltreAdapter;
 import com.example.nalone.listeners.CoreListener;
 import com.example.nalone.items.ItemFiltre;
@@ -29,9 +31,13 @@ import com.example.nalone.R;
 import com.example.nalone.User;
 import com.example.nalone.listeners.FireStoreUsersListeners;
 import com.example.nalone.ui.amis.display.PopupProfilFragment;
+import com.example.nalone.ui.message.ChatActivity;
+import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
@@ -41,15 +47,9 @@ import java.util.List;
 import splash.SplashActivity;
 
 import static com.example.nalone.util.Constants.USER;
-import static com.example.nalone.util.Constants.USER_ID;
-import static com.example.nalone.util.Constants.USER_LATLNG;
 import static com.example.nalone.util.Constants.USER_REFERENCE;
-import static com.example.nalone.util.Constants.USER_STORAGE_REF;
-import static com.example.nalone.util.Constants.currentUser;
 import static com.example.nalone.util.Constants.getUserData;
 import static com.example.nalone.util.Constants.listeners;
-import static com.example.nalone.util.Constants.load;
-import static com.example.nalone.util.Constants.mStore;
 import static com.example.nalone.util.Constants.mStoreBase;
 
 public class RechercheFragment extends Fragment implements CoreListener {
@@ -65,7 +65,6 @@ public class RechercheFragment extends Fragment implements CoreListener {
     private RecyclerView mRecyclerViewFiltre;
     private ItemFiltreAdapter mAdapterFiltre;
     private RecyclerView.LayoutManager mLayoutManagerFiltre;
-    private List<ItemPerson> items = new ArrayList<>();
     private final List<ItemFiltre> filtres = new ArrayList<>();
     private View rootView;
     private ProgressBar loading;
@@ -127,132 +126,46 @@ public class RechercheFragment extends Fragment implements CoreListener {
     public void showPopUpProfil(User u) {
 
         PopupProfilFragment.USER_LOAD = u;
-        if(USER.get_friends_requests_send().contains(mStoreBase.collection("users").document(u.getUid()))){
+        /*if(USER.get_friends_requests_send().contains(mStoreBase.collection("users").document(u.getUid()))){
             PopupProfilFragment.button = R.drawable.ic_round_hourglass_top_24;
         }else if(USER.get_friends_requests_received().contains(mStoreBase.collection("users").document(u.getUid()))){
             PopupProfilFragment.button = R.drawable.ic_round_mail_24;
         }else{
             PopupProfilFragment.button = R.drawable.ic_baseline_add_circle_outline_24;
-        }
+        }*/
 
         navController.navigate(R.id.action_navigation_recherche_to_navigation_popup_profil);
     }
 
     public void updateItems() {
-        final boolean[] duplicate = {true};
-        items.clear();
+        CollectionReference usersRef = mStoreBase.collection("users").document(USER.getUid())
+                .collection("friends");
 
-        mStoreBase.collection("users")
-                .whereGreaterThan("number", "0")
-                .limit(10)
-                .get()
-                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        if (task.isSuccessful()) {
-                            if(task.getResult().size() > 0) {
-                                for (QueryDocumentSnapshot document : task.getResult()) {
-                                    User USER_LOAD = document.toObject(User.class);
-                                    if(!USER_LOAD.getUid().equalsIgnoreCase(USER.getUid())) {
-                                        if (!USER_LOAD.get_friends().contains(USER_REFERENCE)) {
-                                            ItemPerson it;
-                                            if (USER.get_friends_requests_send().contains(mStoreBase.collection("users").document(USER_LOAD.getUid()))) {
-                                                it = new ItemPerson(USER_LOAD.getUid(), R.drawable.ic_baseline_account_circle_24, USER_LOAD.getFirst_name() + " " + USER_LOAD.getLast_name(), R.drawable.ic_round_hourglass_top_24, USER_LOAD.getDescription(), USER_LOAD.getCity(), USER_LOAD.getCursus(), USER_LOAD.get_number_events_create(), USER_LOAD.get_number_events_attend(), USER_LOAD.getCenters_interests());
-                                            } else if (USER.get_friends_requests_received().contains(mStoreBase.collection("users").document(USER_LOAD.getUid()))) {
-                                                it = new ItemPerson(USER_LOAD.getUid(), R.drawable.ic_baseline_account_circle_24, USER_LOAD.getFirst_name() + " " + USER_LOAD.getLast_name(), R.drawable.ic_round_mail_24, USER_LOAD.getDescription(), USER_LOAD.getCity(), USER_LOAD.getCursus(), USER_LOAD.get_number_events_create(), USER_LOAD.get_number_events_attend(), USER_LOAD.getCenters_interests());
-                                            } else {
-                                                it = new ItemPerson(USER_LOAD.getUid(), R.drawable.ic_baseline_account_circle_24, USER_LOAD.getFirst_name() + " " + USER_LOAD.getLast_name(), 0, USER_LOAD.getDescription(), USER_LOAD.getCity(), USER_LOAD.getCursus(), USER_LOAD.get_number_events_create(), USER_LOAD.get_number_events_attend(), USER_LOAD.getCenters_interests());
-                                            }
+        Query query = usersRef.orderBy("add_time");
 
-                                            for(ItemPerson i : items) {
-                                                if (i.getUid().equalsIgnoreCase(it.getUid())) {
-                                                    duplicate[0] = true;
-                                                    break;
-                                                }
-                                            }
+        FirestoreRecyclerOptions<UserFriendData> options = new FirestoreRecyclerOptions.Builder<UserFriendData>().setQuery(query, UserFriendData.class).build();
+        adapter = new FirestoreRecyclerAdapterUserFriendData(options);
+        Log.w("Doc", "adapter : " + adapter.getItemCount());
 
-                                            if(!items.contains(it)) {
-                                                items.add(it);
-                                                onUpdateAdapter();
-                                            }
+        mRecyclerView.setHasFixedSize(true);
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        mRecyclerView.setAdapter(adapter);
 
-
-                                        }
-                                    }
-                                }
-
-                            }else{
-                                Log.w("Recherche", "Résultats vide");
-                            }
-                        } else {
-                            Log.d("SPLASH", "Error getting documents: ", task.getException());
-                        }
-                    }
-                }).addOnFailureListener(new OnFailureListener() {
+        adapter.setOnItemClickListener(new FirestoreRecyclerAdapterUserFriendData.OnItemClickListener() {
             @Override
-            public void onFailure(@NonNull Exception e) {
-                Log.w("SPLASH", "Erreur : " + e.getMessage());
+            public void onClickItem(int position) {
+                //ChatActivity.USER_LOAD =
+                startActivity(new Intent(getContext(), ChatActivity.class));
             }
         });
 
-        /*for(int i = 0; i < USERS_LIST.size(); i++){
-            User u = USERS_LIST.get(i+"");
-            if(u != null) {
-                if (!USER_ID.equalsIgnoreCase(i + "")) {
-                    if (!USERS_LIST.get(USER_ID).getAmis().contains(i+"")) {
-                        ItemPerson it;
-                        if (USERS_LIST.get(USER_ID).getDemande_amis_envoye().contains(i+"")) {
-                            it = new ItemPerson(i, R.drawable.ic_baseline_account_circle_24, u.getPrenom() + " " + u.getNom(), R.drawable.ic_round_hourglass_top_24, u.getDescription(), u.getVille(), u.getCursus(), u.getNbCreation(), u.getNbParticipation(), u.getCentreInterets());
-                        } else if (USERS_LIST.get(USER_ID).getDemande_amis_recu().contains(i+"")) {
-                            it = new ItemPerson(i, R.drawable.ic_baseline_account_circle_24, u.getPrenom() + " " + u.getNom(), R.drawable.ic_round_mail_24, u.getDescription(), u.getVille(), u.getCursus(), u.getNbCreation(),u.getNbParticipation(), u.getCentreInterets());
-                        } else {
-                            it = new ItemPerson(i, R.drawable.ic_baseline_account_circle_24, u.getPrenom() + " " + u.getNom(), 0, u.getDescription(), u.getVille(), u.getCursus(), u.getNbCreation(),u.getNbParticipation(), u.getCentreInterets());
-                        }
-
-                        items.add(it);
-                    }
-                }
-            }
-        }*/
-
 
     }
+
 
     @Override
     public void onDataChangeListener() {
         updateItems();
-    }
-
-    @Override
-    public void onUpdateAdapter() {
-        loading.setVisibility(View.GONE);
-        if(items.size() == 0){
-            resultat.setVisibility(View.VISIBLE);
-            resultat.setText("Aucun amis à ajouter !");
-        }else{
-            resultat.setVisibility(View.GONE);
-            resultat.setText("");
-        }
-
-        mAdapter = new ItemProfilAdapter(items, getContext());
-        mRecyclerView = rootView.findViewById(R.id.recyclerView);
-        mLayoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL,
-                false);
-
-        mRecyclerView.setLayoutManager(mLayoutManager);
-
-        mAdapter.setOnItemClickListener(new ItemProfilAdapter.OnItemClickListener() {
-            @Override
-            public void onAddClick(int position) {
-                    getUserData(items.get(position).getUid(), new FireStoreUsersListeners() {
-                        @Override
-                        public void onDataUpdate(User u) {
-                            showPopUpProfil(u);
-                        }
-                    });
-            }
-        });
-        mRecyclerView.setAdapter(mAdapter);
     }
 
     @Override

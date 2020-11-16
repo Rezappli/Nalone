@@ -87,7 +87,7 @@ public class AmisFragment extends Fragment implements CoreListener{
     }
 
     private void removeFriend(final String uid, final int position) {
-        getUserData(uid, new FireStoreUsersListeners() {
+        /*getUserData(uid, new FireStoreUsersListeners() {
             @Override
             public void onDataUpdate(User u) {
                 USER.get_friends().remove(mStoreBase.collection("users").document(uid));
@@ -96,7 +96,7 @@ public class AmisFragment extends Fragment implements CoreListener{
                 updateUserData(u);
                 updateUserData(USER);
             }
-        });
+        });*/
 
         Toast.makeText(getContext(), "Vous avez supprimé un amis !", Toast.LENGTH_SHORT).show();
     }
@@ -104,7 +104,7 @@ public class AmisFragment extends Fragment implements CoreListener{
 
 
     private void updateItems() {
-        final boolean[] duplicate = {false};
+        /*final boolean[] duplicate = {false};
         items.clear();
         if(USER.get_friends().size() > 0) {
             Log.w("amis", "User friend size : " + USER.get_friends().size());
@@ -133,7 +133,7 @@ public class AmisFragment extends Fragment implements CoreListener{
                     }
                 });
             }
-        }
+        }*/
     }
 
     public void showPopUpProfil(final String uid) {
