@@ -27,6 +27,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 
 import java.util.Calendar;
+import java.util.UUID;
 
 public class SignUpInformationActivity extends AppCompatActivity {
     public EditText nom;
@@ -199,7 +200,7 @@ public class SignUpInformationActivity extends AppCompatActivity {
                   sexe = "Femme";
               }
 
-                user = new User("", nomEntre, prenomEntre, sexe, villeEntre, numeroEntre, mailEntre, null,
+                user = new User(UUID.randomUUID().toString(), nomEntre, prenomEntre, sexe, villeEntre, numeroEntre, mailEntre, null,
                         null, "", dateNaissance.getText().toString());
                 Intent signUpStudy = new Intent(getBaseContext(), SignUpStudiesActivity.class);
                 startActivityForResult(signUpStudy, 0);

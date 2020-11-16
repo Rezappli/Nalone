@@ -27,6 +27,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.MetadataChanges;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
@@ -119,23 +120,13 @@ public class SplashActivity extends AppCompatActivity {
     }
 
     public void setUpRealTime(){
-        mStoreBase.collection("users").document(USER.getUid()).addSnapshotListener(new EventListener<DocumentSnapshot>() {
+        mStoreBase.collection("users").document(USER.getUid()).addSnapshotListener(MetadataChanges.INCLUDE, new EventListener<DocumentSnapshot>() {
             @Override
             public void onEvent(@Nullable DocumentSnapshot snapshot,
                                 @Nullable FirebaseFirestoreException e) {
-                if (e != null) {
-                    Log.w("REALTIME", "Listen failed.", e);
-                    return;
-                }
-
-                if (snapshot != null && snapshot.exists()) {
-                    Log.d("REALTIME", "Current data: " + snapshot.getData());
-                    USER = snapshot.toObject(User.class);
-                    for(CoreListener listener : listeners){
-                        listener.onDataChangeListener();
-                    }
-                } else {
-                    Log.d("REALTIME", "Current data: null");
+                USER = snapshot.toObject(User.class);
+                for(CoreListener listener : listeners){
+                    listener.onDataChangeListener();
                 }
             }
         });

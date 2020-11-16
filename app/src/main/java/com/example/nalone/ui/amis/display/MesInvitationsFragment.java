@@ -35,7 +35,7 @@ public class MesInvitationsFragment extends Fragment implements CoreListener {
     private ItemInvitAmisAdapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
     private View rootView;
-    private ArrayList<ItemPerson> invits = null;
+    private ArrayList<ItemPerson> invits = new ArrayList<>();
 
 
     public MesInvitationsFragment() {
@@ -53,7 +53,7 @@ public class MesInvitationsFragment extends Fragment implements CoreListener {
     }
 
     private void updateItems() {
-        invits = new ArrayList<>();
+        invits.clear();
         Log.w("Invitations", "" + USER.get_friends_requests_received().size());
 
         if(USER.get_friends_requests_received().size() > 0) {
@@ -65,10 +65,10 @@ public class MesInvitationsFragment extends Fragment implements CoreListener {
                         ItemPerson it = new ItemPerson(u.getUid(), R.drawable.ic_baseline_account_circle_24,
                                 u.getFirst_name() + " " + u.getLast_name(), 0, u.getDescription(),
                                 u.getCity(), u.getCursus(), u.get_number_events_create(), u.get_number_events_attend(), u.getCenters_interests());
-                        invits.add(it);
-                        Log.w("Invitations", "Add invits");
-                        nolonelyBundle.putSerializable("invits", invits);
-                        onUpdateAdapter();
+                        if(!invits.contains(it)) {
+                            invits.add(it);
+                            onUpdateAdapter();
+                        }
                     }
                 });
             }
@@ -106,6 +106,7 @@ public class MesInvitationsFragment extends Fragment implements CoreListener {
 
                 updateUserData(u);
                 updateUserData(USER);
+
             }
         });
 
@@ -120,7 +121,7 @@ public class MesInvitationsFragment extends Fragment implements CoreListener {
 
     @Override
     public void onUpdateAdapter() {
-        Log.w("Invitations", "Invits : " + invits.size());
+        Log.w("Invitations", "Update adapter");
         mAdapter = new ItemInvitAmisAdapter(invits, getContext());
 
         mRecyclerView = rootView.findViewById(R.id.recyclerViewInvitAmis);
@@ -140,6 +141,13 @@ public class MesInvitationsFragment extends Fragment implements CoreListener {
                 declineFriendRequest(invits.get(position).getUid());
             }
         });
+
+        if(nolonelyBundle.getSerializable("invits") != null) {
+            if((ArrayList<ItemPerson>)nolonelyBundle.getSerializable("invits") != invits){
+                Log.w("Invitations", "Add invits");
+                nolonelyBundle.putSerializable("invits", invits);
+            }
+        }
     }
 
     @Override

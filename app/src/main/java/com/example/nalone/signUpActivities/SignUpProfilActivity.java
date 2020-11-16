@@ -39,6 +39,7 @@ import com.google.firebase.storage.UploadTask;
 import static com.example.nalone.util.Constants.mAuth;
 import static com.example.nalone.util.Constants.mStore;
 import static com.example.nalone.util.Constants.mStoreBase;
+import static com.example.nalone.signUpActivities.SignUpInformationActivity.user;
 
 import java.io.FileNotFoundException;
 import java.io.InputStream;
@@ -128,14 +129,21 @@ public class SignUpProfilActivity extends AppCompatActivity {
 
         signUpDescriptionEnter = signUpDescription.getText().toString();
 
-        SignUpInformationActivity.user.setDescription(signUpDescriptionEnter);
+        user.setDescription(signUpDescriptionEnter);
 
-        mStoreBase.collection("users")
-                .add(SignUpInformationActivity.user)
-                .addOnCompleteListener(new OnCompleteListener<DocumentReference>() {
+        mStoreBase.collection("users").document(user.getUid())
+                .set(user)
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
-                    public void onComplete(@NonNull Task<DocumentReference> task) {
-
+                    public void onSuccess(Void aVoid) {
+                        signInUser(user.getMail(), SignUpInformationActivity.password);
+                        Log.d("FIREBASE", "DocumentSnapshot successfully written!");
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.w("FIREBASE", "Error writing document", e);
                     }
                 });
 
@@ -161,9 +169,8 @@ public class SignUpProfilActivity extends AppCompatActivity {
     }
 
     private void sendVerificationEmail() {
-        FirebaseUser user = mAuth.getCurrentUser();
-        Log.w("INSCRIPTION","USER : " + user.getEmail());
-        user.sendEmailVerification()
+        Log.w("INSCRIPTION", "Envoye d'un mail!");
+        mAuth.getCurrentUser().sendEmailVerification()
                 .addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
@@ -183,7 +190,6 @@ public class SignUpProfilActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int reqCode, int resultCode, Intent data) {
         super.onActivityResult(reqCode, resultCode, data);
-
 
         if (resultCode == RESULT_OK) {
             try {

@@ -64,7 +64,7 @@ public class RechercheFragment extends Fragment implements CoreListener {
     private RecyclerView mRecyclerViewFiltre;
     private ItemFiltreAdapter mAdapterFiltre;
     private RecyclerView.LayoutManager mLayoutManagerFiltre;
-    private List<ItemPerson> items = null;
+    private List<ItemPerson> items = new ArrayList<>();
     private final List<ItemFiltre> filtres = new ArrayList<>();
     private View rootView;
 
@@ -136,7 +136,7 @@ public class RechercheFragment extends Fragment implements CoreListener {
     }
 
     public void updateItems() {
-        items = new ArrayList<>();
+        items.clear();
 
         mStoreBase.collection("users")
                 .whereGreaterThan("number", "0")
@@ -160,8 +160,12 @@ public class RechercheFragment extends Fragment implements CoreListener {
                                                 it = new ItemPerson(USER_LOAD.getUid(), R.drawable.ic_baseline_account_circle_24, USER_LOAD.getFirst_name() + " " + USER_LOAD.getLast_name(), 0, USER_LOAD.getDescription(), USER_LOAD.getCity(), USER_LOAD.getCursus(), USER_LOAD.get_number_events_create(), USER_LOAD.get_number_events_attend(), USER_LOAD.getCenters_interests());
                                             }
 
-                                            items.add(it);
-                                            onUpdateAdapter();
+                                            if(!items.contains(it)) {
+                                                items.add(it);
+                                                onUpdateAdapter();
+                                            }
+
+                                            //SI DUPLICATION FAIRE BOUCLE FOR ET CHECK UID
                                         }
                                     }
                                 }
@@ -220,8 +224,8 @@ public class RechercheFragment extends Fragment implements CoreListener {
     }
 
     @Override
-    public void onResume(){
+    public void onStart(){
+        super.onStart();
         updateItems();
-        super.onResume();
     }
 }

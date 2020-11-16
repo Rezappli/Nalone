@@ -41,8 +41,7 @@ public class AmisFragment extends Fragment implements CoreListener{
     private ItemListAmisAdapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
     private TextView resultat;
-    private final ArrayList<ItemPerson> tempList = new ArrayList<>();
-    private ArrayList<ItemPerson> items;
+    private ArrayList<ItemPerson> items = new ArrayList<>();
     private static String message = "null";
     private View rootView;
 
@@ -102,7 +101,7 @@ public class AmisFragment extends Fragment implements CoreListener{
 
 
     private void updateItems() {
-        items = new ArrayList<>();
+        items.clear();
         if(USER.get_friends().size() > 0) {
             Log.w("amis", "User friend size : " + USER.get_friends().size());
             for (int i = 0; i < USER.get_friends().size(); i++) {
@@ -116,9 +115,10 @@ public class AmisFragment extends Fragment implements CoreListener{
                         ItemPerson it = new ItemPerson(u.getUid(), R.drawable.ic_baseline_account_circle_24,
                                 u.getFirst_name() + " " + u.getLast_name(), 0, u.getDescription(),
                                 u.getCity(), u.getCursus(), u.get_number_events_create(), u.get_number_events_attend(), u.getCenters_interests());
-                        items.add(it);
-                        nolonelyBundle.putSerializable("friends", items);
-                        onUpdateAdapter();
+                        if(!items.contains(it)) {
+                            items.add(it);
+                            onUpdateAdapter();
+                        }
                     }
                 });
             }
@@ -146,7 +146,7 @@ public class AmisFragment extends Fragment implements CoreListener{
 
     @Override
     public void onUpdateAdapter() {
-        Log.w("Amis", "Update data on firestore");
+        Log.w("Amis", "Update data on adapter");
         mAdapter = new ItemListAmisAdapter(items, getContext());
 
         mRecyclerView = rootView.findViewById(R.id.recyclerViewMesAmis);
@@ -166,12 +166,19 @@ public class AmisFragment extends Fragment implements CoreListener{
                 removeFriend(items.get(position).getUid(), position);
             }
         });
+
+        if(nolonelyBundle.getSerializable("invits") != null) {
+            if((ArrayList<ItemPerson>)nolonelyBundle.getSerializable("invits") != items){
+                nolonelyBundle.putSerializable("friends", items);
+            }
+        }
     }
 
     @Override
     public void onStart(){
         super.onStart();
         if(nolonelyBundle.getSerializable("friends") != null){
+            Log.w("Amis", "Chargement du bundle");
             items = (ArrayList<ItemPerson>) nolonelyBundle.getSerializable("friends");
             onUpdateAdapter();
         }else{
