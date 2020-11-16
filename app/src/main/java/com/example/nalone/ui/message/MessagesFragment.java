@@ -1,9 +1,12 @@
 package com.example.nalone.ui.message;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.text.Layout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -17,7 +20,7 @@ import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.FirebaseFirestore;
-
+import static com.example.nalone.util.Constants.USER;
 
 
 public class MessagesFragment extends Fragment {
@@ -38,7 +41,7 @@ public class MessagesFragment extends Fragment {
         mRecyclerView = root.findViewById(R.id.recycler);
 
         //query
-        Query query = firebaseFirestore.collection("users");
+        Query query = firebaseFirestore.collection("users").whereNotEqualTo("uid", USER.getUid());
 
         //RecyclerOption
         FirestoreRecyclerOptions<User> options = new FirestoreRecyclerOptions.Builder<User>().setQuery(query, User.class).build();
@@ -53,7 +56,16 @@ public class MessagesFragment extends Fragment {
 
             @Override
             protected void onBindViewHolder(@NonNull PersonViewHolder personViewHolder, int i, @NonNull User u) {
+                personViewHolder.villePers.setText(u.getCity());
                 personViewHolder.nomInvit.setText(u.getFirst_name() + " "+ u.getLast_name());
+
+                personViewHolder.layoutProfil.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        startActivity(new Intent(getContext(),ChatActivity.class));
+                    }
+                });
+
             }
         };
         mRecyclerView.setHasFixedSize(true);
@@ -65,11 +77,15 @@ public class MessagesFragment extends Fragment {
     private class PersonViewHolder extends RecyclerView.ViewHolder {
 
         private TextView nomInvit;
+        private TextView villePers;
+        private LinearLayout layoutProfil;
 
         public PersonViewHolder(@NonNull View itemView) {
             super(itemView);
 
             nomInvit = itemView.findViewById(R.id.nomInvit);
+            villePers = itemView.findViewById(R.id.villePers);
+            layoutProfil = itemView.findViewById(R.id.layoutProfil);
 
         }
 
