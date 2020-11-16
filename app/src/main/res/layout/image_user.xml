@@ -23,8 +23,7 @@
                 android:id="@+id/imageUser"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:contentDescription="@string/TODO"
-                app:srcCompat="@drawable/add_photo" />
+                android:contentDescription="@string/TODO" />
         </androidx.cardview.widget.CardView>
 
     </androidx.cardview.widget.CardView>
