@@ -62,6 +62,7 @@ public class MessagesFragment extends Fragment {
                 personViewHolder.layoutProfil.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
+                        ChatActivity.USER_LOAD;
                         startActivity(new Intent(getContext(),ChatActivity.class));
                     }
                 });

@@ -13,6 +13,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.nalone.R;
+import com.example.nalone.User;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.database.DatabaseReference;
@@ -27,7 +28,8 @@ public class ChatActivity extends AppCompatActivity {
     private ImageView profile_view;
     private TextView username ;
 
-    public DatabaseReference databaseReference;
+
+    public static User USER_LOAD;
 
 
     @Override
