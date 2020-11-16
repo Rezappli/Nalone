@@ -20,10 +20,14 @@ import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 
 import com.bumptech.glide.Glide;
+import com.example.nalone.Cache;
 import com.example.nalone.R;
 import com.example.nalone.items.ItemPerson;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
 import java.util.ArrayList;
@@ -31,6 +35,7 @@ import java.util.ArrayList;
 import static android.app.Activity.RESULT_OK;
 import static com.example.nalone.util.Constants.USER;
 import static com.example.nalone.util.Constants.USER_STORAGE_REF;
+import static com.example.nalone.util.Constants.mStore;
 import static com.example.nalone.util.Constants.nolonelyBundle;
 import static com.example.nalone.util.Constants.updateUserData;
 
@@ -171,6 +176,33 @@ public class ProfilFragment extends Fragment  {
             }
         });
 
+        imageUser.post(new Runnable() {
+            @Override
+            public void run() {
+                if(USER.getImage_url() != null) {
+                    if(!Cache.fileExists(USER.getUid())) {
+                        StorageReference imgRef = mStore.getReference("users/" + USER.getUid());
+                        if (imgRef != null) {
+                            imgRef.getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
+                                @Override
+                                public void onComplete(@NonNull Task<Uri> task) {
+                                    if (task.isSuccessful()) {
+                                        Uri img = task.getResult();
+                                        if (img != null) {
+                                            Cache.saveUriFile(USER.getUid(), img);
+                                            Glide.with(getContext()).load(img).fitCenter().centerCrop().into(imageUser);
+                                        }
+                                    }
+                                }
+                            });
+                        }
+                    }else{
+                        Glide.with(getContext()).load(Cache.getUriFromUid(USER.getUid())).fitCenter().centerCrop().into(imageUser);
+                    }
+                }
+            }
+        });
+
         return root;
     }
 
@@ -212,24 +244,6 @@ public class ProfilFragment extends Fragment  {
             updateUserData(USER);
         }
         Glide.with(getContext()).load(imagUri).fitCenter().centerCrop().into(imageUser);
-    }
-
-    @Override
-    public void onStart(){
-        super.onStart();
-        if(USER.getImage_url() != null) {
-            USER_STORAGE_REF.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-                @Override
-                public void onSuccess(Uri uri) {
-                    Glide.with(getContext()).load(uri).fitCenter().centerCrop().into(imageUser);
-                }
-            }).addOnFailureListener(new OnFailureListener() {
-                @Override
-                public void onFailure(@NonNull Exception exception) {
-                    Log.w("Image", "Error : " + exception.getMessage());
-                }
-            });
-        }
     }
 
 
