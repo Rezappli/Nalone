@@ -10,6 +10,7 @@ import android.widget.TextView;
 import android.widget.Toolbar;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.nalone.R;
 import com.google.android.material.textfield.TextInputEditText;
@@ -35,8 +36,6 @@ public class ChatActivity extends AppCompatActivity {
         setContentView(R.layout.activity_chatbox);
 
 
-
-       //affMessage = (TextView) findViewById(R.id.affMessage);
         buttonSend = (Button) findViewById(R.id.buttonSend);
         messageEditText = (TextInputEditText) findViewById(R.id.messageEditText);
 
@@ -46,6 +45,8 @@ public class ChatActivity extends AppCompatActivity {
             public void onClick(View v) {
                 if(messageEditText.getText().length()>0){
                     sendMessage("hugo","thibaulk",messageEditText.getText().toString());
+
+
 
                 }
             }
@@ -66,6 +67,18 @@ public class ChatActivity extends AppCompatActivity {
 
         reference.child("0").push().setValue(hashMap);
 
+
+    }
+
+    private void displayMessage (String sender, String recever, String message){
+        DatabaseReference reference = FirebaseDatabase.getInstance().getReference("chat");
+
+        HashMap<String, Object> hashMap = new HashMap<>();
+        hashMap.get(sender);
+        hashMap.get(recever);
+        hashMap.get(message);
+
+        reference.child("0").push().setValue(hashMap);
 
     }
 

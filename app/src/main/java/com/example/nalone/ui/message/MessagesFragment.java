@@ -1,68 +1,93 @@
 package com.example.nalone.ui.message;
 
-import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.SearchView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.nalone.adapter.ItemMessageAdapter;
-import com.example.nalone.items.ItemPerson;
+import com.example.nalone.User;
 import com.example.nalone.R;
-import com.google.firebase.database.FirebaseDatabase;
-
-import java.util.ArrayList;
-import java.util.List;
-
-
-public class MessagesFragment extends Fragment  {
-
-
-    private static final String TAG = "ChatListAct";
-
-    FirebaseDatabase database = FirebaseDatabase.getInstance();
+import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
+import com.firebase.ui.firestore.FirestoreRecyclerOptions;
+import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 
 
+public class MessagesFragment extends Fragment {
 
 
-    private List<ItemPerson> items = new ArrayList<>();
-    private SearchView search_bar;
 
+    private FirebaseFirestore firebaseFirestore;
     private RecyclerView mRecyclerView;
-    private ItemMessageAdapter mAdapter;
-    private RecyclerView.LayoutManager mLayoutManager;
-    private TextView resultat;
+    private  FirestoreRecyclerAdapter adapter;
 
-    final List<ItemPerson> tempList = new ArrayList<>();
-
+    @Override
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
 
 
         View root = inflater.inflate(R.layout.fragment_messages, container, false);
+        firebaseFirestore = FirebaseFirestore.getInstance();
+        mRecyclerView = root.findViewById(R.id.recycler);
 
-        search_bar = root.findViewById(R.id.search_bar_message);
-        resultat = root.findViewById(R.id.resul_message);
+        //query
+        Query query = firebaseFirestore.collection("users");
 
-       loadData(root);
-        //Log.w("valeur", s1[0]);
+        //RecyclerOption
+        FirestoreRecyclerOptions<User> options = new FirestoreRecyclerOptions.Builder<User>().setQuery(query, User.class).build();
 
-        search_bar.setOnClickListener(new View.OnClickListener() {
+         adapter = new FirestoreRecyclerAdapter<User, PersonViewHolder>(options) {
+            @NonNull
             @Override
-            public void onClick(View v) {
-                search_bar.onActionViewExpanded();
+            public PersonViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+                View view= LayoutInflater.from(parent.getContext()).inflate(R.layout.item_person,parent,false);
+                return new PersonViewHolder(view);
             }
-        });
 
-        search_bar.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            protected void onBindViewHolder(@NonNull PersonViewHolder personViewHolder, int i, @NonNull User u) {
+                personViewHolder.nomInvit.setText(u.getFirst_name() + " "+ u.getLast_name());
+            }
+        };
+        mRecyclerView.setHasFixedSize(true);
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        mRecyclerView.setAdapter(adapter);
+        return root;
+    }
+
+    private class PersonViewHolder extends RecyclerView.ViewHolder {
+
+        private TextView nomInvit;
+
+        public PersonViewHolder(@NonNull View itemView) {
+            super(itemView);
+
+            nomInvit = itemView.findViewById(R.id.nomInvit);
+
+        }
+
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        adapter.stopListening();
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        adapter.startListening(); 
+    }
+
+    /*search_bar.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
                 return false;
@@ -138,15 +163,17 @@ public class MessagesFragment extends Fragment  {
 
     }
 
+*/
 
 
-
-    public void OnChatClick() {
-        Intent intent = new Intent(getContext(),ChatActivity.class);
-        Log.d(TAG, "onChatClick: clicked");
-        startActivity(intent);
-    }
-
+      /*  public void OnChatClick () {
+            Intent intent = new Intent(getContext(), ChatActivity.class);
+            Log.d(TAG, "onChatClick: clicked");
+            startActivity(intent);
+        }
+*/
 
 
 }
+
+

@@ -41,6 +41,8 @@ public class ItemPerson implements Serializable {
         this.centresInterets = centresInterets;
     }
 
+    public ItemPerson(){}
+
     public void changerPlus(int imageRessourceChange){
         mImageResource2 = imageRessourceChange;
     }
