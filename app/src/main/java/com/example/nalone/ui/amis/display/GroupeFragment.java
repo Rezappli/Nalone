@@ -48,6 +48,7 @@ public class GroupeFragment extends Fragment implements CoreListener {
         items.add(new ItemGroupe("1873", R.drawable.ic_baseline_map_24, "Ay Caramba", R.id.buttonMoreInvit, "Gros groupe de bg"));
         items.add(new ItemGroupe("1873", R.drawable.ic_baseline_map_24, "Ay Caramba", R.id.buttonMoreInvit, "Gros groupe de bg"));
         items.add(new ItemGroupe("1873", R.drawable.ic_baseline_map_24, "Ay Caramba", R.id.buttonMoreInvit, "Gros groupe de bg"));
+
         mAdapter = new ItemGroupeAdapter(items, getContext());
         mRecyclerView = root.findViewById(R.id.recyclerViewGroupe);
         mLayoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL,
