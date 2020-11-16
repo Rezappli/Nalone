@@ -59,7 +59,7 @@ public class FirestoreRecyclerProfilAdapter extends FirestoreRecyclerAdapter<Use
                     if (listener != null) {
                         int position = getAdapterPosition();
                         if (position != RecyclerView.NO_POSITION) {
-                            listener.onAddClick(position);
+                           // listener.onAddClick(position);
                         }
                     }
                 }
@@ -99,7 +99,7 @@ public class FirestoreRecyclerProfilAdapter extends FirestoreRecyclerAdapter<Use
 
     @Override
     protected void onBindViewHolder(@NonNull final ItemProfilViewHolder holder, int i, @NonNull UserFriendData data) {
-        getUserData(data.getUser().getId(), new FireStoreUsersListeners() {
+       /* getUserData(data.getUser().getId(), new FireStoreUsersListeners() {
             @Override
             public void onDataUpdate(User u) {
                 final ItemPerson currentItem = mItemPersonList.get(position);
@@ -136,7 +136,7 @@ public class FirestoreRecyclerProfilAdapter extends FirestoreRecyclerAdapter<Use
                                         Uri img = task.getResult();
                                         if (img != null) {
                                             Log.w("image", "save image from cache");
-                                            Cache.saveUriFile(u.getUid(), img);
+                                          //  Cache.saveUriFile(u.getUid(), img);
                                             Glide.with(context).load(img).fitCenter().centerCrop().into(holder.mImageView);
                                         }
                                     }
@@ -150,7 +150,7 @@ public class FirestoreRecyclerProfilAdapter extends FirestoreRecyclerAdapter<Use
                 }
             }
 
-        });
+        });*/
 
     }
 }

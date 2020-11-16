@@ -199,7 +199,7 @@ public class MesEvenementsListFragment extends Fragment implements CoreListener 
         updateEvents();
     }
 
-    @Override
+    //@Override
     public void onUpdateAdapter() {
 
     }

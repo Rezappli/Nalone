@@ -77,6 +77,7 @@ public class ItemAddPersonAdapter extends RecyclerView.Adapter<ItemAddPersonAdap
         this.context = context;
         mItemPersonList = itemlist;
     }
+
     @Override
     public void onBindViewHolder(@NonNull final ItemAddPersonViewHolder holder, int position) {
         final ItemPerson currentItem = mItemPersonList.get(position);

@@ -64,7 +64,10 @@ public class PopupProfilFragment extends Fragment {
         cardViewPhotoPerson = root.findViewById(R.id.cardViewPhotoPerson);
         villeProfil = root.findViewById(R.id.userConnectVille);
 
+        nameProfil.setText(USER_LOAD.getFirst_name() + " " + USER_LOAD.getLast_name());
         villeProfil.setText(USER_LOAD.getCity());
+        nbCreateProfil.setText(USER_LOAD.getNumber_events_create());
+        nbParticipateProfil.setText(USER_LOAD.getNumber_events_attend());
 
         if(USER_LOAD.getCursus().equalsIgnoreCase("Informatique")){
             cardViewPhotoPerson.setCardBackgroundColor(Color.RED);

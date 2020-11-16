@@ -72,7 +72,7 @@ public class GroupeFragment extends Fragment implements CoreListener {
         //updateItems();
     }
 
-    @Override
+    //@Override
     public void onUpdateAdapter() {
 
     }

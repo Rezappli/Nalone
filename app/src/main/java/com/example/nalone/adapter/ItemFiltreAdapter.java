@@ -68,6 +68,7 @@ public class ItemFiltreAdapter extends RecyclerView.Adapter<ItemFiltreAdapter.It
 
         holder.mText.setText((currentItem.getFiltre()));
         holder.mText.setBackgroundResource(currentItem.getBackground());
+
     }
 
     @Override

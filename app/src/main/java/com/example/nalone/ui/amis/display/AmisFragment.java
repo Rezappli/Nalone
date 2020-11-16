@@ -2,6 +2,7 @@ package com.example.nalone.ui.amis.display;
 
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
@@ -12,6 +13,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.SearchView;
 import android.widget.TextView;
@@ -23,6 +26,11 @@ import com.example.nalone.items.ItemPerson;
 import com.example.nalone.R;
 import com.example.nalone.User;
 import com.example.nalone.listeners.FireStoreUsersListeners;
+import com.example.nalone.ui.recherche.RechercheFragment;
+import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
+import com.firebase.ui.firestore.FirestoreRecyclerOptions;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
 
 import java.util.ArrayList;
 
@@ -37,15 +45,19 @@ import static com.example.nalone.util.Constants.updateUserData;
 public class AmisFragment extends Fragment implements CoreListener{
 
     private SearchView search_bar;
-    private RecyclerView mRecyclerView;
+
     private NavController navController;
-    private ItemListAmisAdapter mAdapter;
-    private RecyclerView.LayoutManager mLayoutManager;
     private TextView resultat;
     private ArrayList<ItemPerson> items = new ArrayList<>();
     private static String message = "null";
     private View rootView;
     private ProgressBar loading;
+
+    private FirebaseFirestore firebaseFirestore;
+    private FirestoreRecyclerAdapter adapter;
+    private RecyclerView mRecyclerView;
+
+
 
     public AmisFragment() {
         // Required empty public constructor
@@ -62,6 +74,15 @@ public class AmisFragment extends Fragment implements CoreListener{
         resultat.setVisibility(View.GONE);
         navController = Navigation.findNavController(getActivity(), R.id.nav_host_fragment);
         loading = rootView.findViewById(R.id.amis_loading);
+
+        firebaseFirestore = FirebaseFirestore.getInstance();
+        mRecyclerView = rootView.findViewById(R.id.recyclerViewMesAmis);
+
+        //query
+        Query query = firebaseFirestore.collection("users").document(USER.getUid()).collection("friends");
+        //RecyclerOption
+        FirestoreRecyclerOptions<User> options = new FirestoreRecyclerOptions.Builder<User>().setQuery(query, User.class).build();
+        adapterUsers(options);
 
         search_bar.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -86,6 +107,87 @@ public class AmisFragment extends Fragment implements CoreListener{
         return rootView;
     }
 
+    private void adapterUsers(FirestoreRecyclerOptions<User> options) {
+        adapter = new FirestoreRecyclerAdapter<User, UserViewHolder>(options) {
+            @NonNull
+            @Override
+            public UserViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+                View view= LayoutInflater.from(parent.getContext()).inflate(R.layout.item_person,parent,false);
+                return new UserViewHolder(view);
+            }
+
+            @Override
+            protected void onBindViewHolder(@NonNull final UserViewHolder userViewHolder, int i, @NonNull final User u) {
+                final User user = u;
+                userViewHolder.villePers.setText(u.getCity());
+                userViewHolder.nomInvit.setText(u.getFirst_name() + " "+ u.getLast_name());
+                userViewHolder.button.setImageResource(0);
+
+                userViewHolder.layoutProfil.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        showPopUpProfil(user);
+                    }
+                });
+
+                /*getUserData(u.getUid(), new FireStoreUsersListeners() {
+                    @Override
+                    public void onDataUpdate(final User u) {
+                        if (u.getImage_url() != null) {
+                            if(!Cache.fileExists(u.getUid())) {
+                                StorageReference imgRef = mStore.getReference("users/" + u.getUid());
+                                if (imgRef != null) {
+                                    imgRef.getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
+                                        @Override
+                                        public void onComplete(@NonNull Task<Uri> task) {
+                                            if (task.isSuccessful()) {
+                                                Uri img = task.getResult();
+                                                if (img != null) {
+                                                    Log.w("image", "save image from cache");
+                                                    Cache.saveUriFile(u.getUid(), img);
+                                                    Glide.with(context).load(img).fitCenter().centerCrop().into(userViewHolder.imagePerson);
+                                                }
+                                            }
+                                        }
+                                    });
+                                }
+                            }else{
+                                Log.w("image", "get image from cache");
+                                Glide.with(context).load(Cache.getUriFromUid(u.getUid())).fitCenter().centerCrop().into(userViewHolder.imagePerson);
+                            }
+                        }
+                    }
+                });*/
+
+            }
+        };
+        mRecyclerView.setHasFixedSize(true);
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+
+        mRecyclerView.setAdapter(adapter);
+        loading.setVisibility(View.GONE);
+    }
+
+    private class UserViewHolder extends RecyclerView.ViewHolder {
+
+        private TextView nomInvit;
+        private TextView villePers;
+        private LinearLayout layoutProfil;
+        private ImageView imagePerson;
+        private ImageView button;
+
+        public UserViewHolder(@NonNull View itemView) {
+            super(itemView);
+
+            nomInvit = itemView.findViewById(R.id.nomInvit);
+            villePers = itemView.findViewById(R.id.villePers);
+            layoutProfil = itemView.findViewById(R.id.layoutProfil);
+            imagePerson = itemView.findViewById(R.id.imagePerson);
+            button = itemView.findViewById(R.id.imageView19);
+
+        }
+
+    }
     private void removeFriend(final String uid, final int position) {
         /*getUserData(uid, new FireStoreUsersListeners() {
             @Override
@@ -136,15 +238,17 @@ public class AmisFragment extends Fragment implements CoreListener{
         }*/
     }
 
-    public void showPopUpProfil(final String uid) {
-        getUserData(uid,new FireStoreUsersListeners() {
-            @Override
-            public void onDataUpdate(User u) {
-                PopupProfilFragment.USER_LOAD = u;
-                PopupProfilFragment.button = 0;
-                navController.navigate(R.id.action_navigation_amis_to_navigation_popup_profil);
-            }
-        });
+    public void showPopUpProfil(User u) {
+        PopupProfilFragment.USER_LOAD = u;
+       /* if(USER.get_friends_requests_send().contains(mStoreBase.collection("users").document(u.getUid()))){
+            PopupProfilFragment.button = R.drawable.ic_round_hourglass_top_24;
+       }else if(USER.get_friends_requests_received().contains(mStoreBase.collection("users").document(u.getUid()))){
+            PopupProfilFragment.button = R.drawable.ic_round_mail_24;
+        }else{*/
+        PopupProfilFragment.button = R.drawable.ic_baseline_add_circle_outline_24;
+        // }
+
+        navController.navigate(R.id.action_navigation_amis_to_navigation_popup_profil);
     }
 
     @Override
@@ -153,29 +257,11 @@ public class AmisFragment extends Fragment implements CoreListener{
         updateItems();
     }
 
-    @Override
+    //@Override
     public void onUpdateAdapter() {
         loading.setVisibility(View.GONE);
         Log.w("Amis", "Update data on adapter");
-        mAdapter = new ItemListAmisAdapter(items, getContext());
 
-        mRecyclerView = rootView.findViewById(R.id.recyclerViewMesAmis);
-        mLayoutManager = new LinearLayoutManager(getContext());
-
-        mRecyclerView.setLayoutManager(mLayoutManager);
-        mRecyclerView.setAdapter(mAdapter);
-
-        mAdapter.setOnItemClickListener(new ItemListAmisAdapter.OnItemClickListener() {
-            @Override
-            public void onAddClick(int position) {
-                showPopUpProfil(items.get(position).getUid());
-            }
-
-            @Override
-            public void onDelete(int position) {
-                removeFriend(items.get(position).getUid(), position);
-            }
-        });
 
         if(nolonelyBundle.getSerializable("invits") != null) {
             if((ArrayList<ItemPerson>)nolonelyBundle.getSerializable("invits") != items){
@@ -187,13 +273,20 @@ public class AmisFragment extends Fragment implements CoreListener{
     @Override
     public void onStart(){
         super.onStart();
-        if(nolonelyBundle.getSerializable("friends") != null){
+       /* if(nolonelyBundle.getSerializable("friends") != null){
             Log.w("Amis", "Chargement du bundle");
             items = (ArrayList<ItemPerson>) nolonelyBundle.getSerializable("friends");
             onUpdateAdapter();
         }else{
             updateItems();
-        }
+        }*/
+        adapter.startListening();
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        adapter.stopListening();
     }
 
 }

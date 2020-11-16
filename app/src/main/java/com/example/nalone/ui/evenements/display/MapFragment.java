@@ -246,7 +246,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, CoreLis
         updateMap();
     }
 
-    @Override
+    //@Override
     public void onUpdateAdapter() {
             mAdapterEvent = new ItemEventAdapter(itemEvents);
 

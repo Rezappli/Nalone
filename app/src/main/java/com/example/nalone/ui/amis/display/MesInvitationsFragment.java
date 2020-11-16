@@ -130,7 +130,7 @@ public class MesInvitationsFragment extends Fragment implements CoreListener {
         updateItems();
     }
 
-    @Override
+    //@Override
     public void onUpdateAdapter() {
         loading.setVisibility(View.GONE);
         Log.w("Invitations", "Update adapter");
