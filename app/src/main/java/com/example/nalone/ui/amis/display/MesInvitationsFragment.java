@@ -10,6 +10,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.example.nalone.adapter.ItemInvitAmisAdapter;
@@ -36,6 +37,7 @@ public class MesInvitationsFragment extends Fragment implements CoreListener {
     private RecyclerView.LayoutManager mLayoutManager;
     private View rootView;
     private ArrayList<ItemPerson> invits = new ArrayList<>();
+    private ProgressBar loading;
 
 
     public MesInvitationsFragment() {
@@ -47,7 +49,7 @@ public class MesInvitationsFragment extends Fragment implements CoreListener {
                              Bundle savedInstanceState) {
         listeners.add(this);
        rootView = inflater.inflate(R.layout.fragment_mes_invitations, container, false);
-
+        loading = rootView.findViewById(R.id.invits_loading);
 
         return rootView;
     }
@@ -130,6 +132,7 @@ public class MesInvitationsFragment extends Fragment implements CoreListener {
 
     @Override
     public void onUpdateAdapter() {
+        loading.setVisibility(View.GONE);
         Log.w("Invitations", "Update adapter");
         mAdapter = new ItemInvitAmisAdapter(invits, getContext());
 

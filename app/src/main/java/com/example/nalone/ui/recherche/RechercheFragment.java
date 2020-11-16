@@ -6,6 +6,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 import android.widget.SearchView;
 import android.widget.TextView;
 
@@ -67,6 +68,7 @@ public class RechercheFragment extends Fragment implements CoreListener {
     private List<ItemPerson> items = new ArrayList<>();
     private final List<ItemFiltre> filtres = new ArrayList<>();
     private View rootView;
+    private ProgressBar loading;
 
 
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -75,6 +77,7 @@ public class RechercheFragment extends Fragment implements CoreListener {
         rechercheViewModel =
                 ViewModelProviders.of(this).get(RechercheViewModel.class);
         rootView = inflater.inflate(R.layout.fragment_recherche, container, false);
+        loading = rootView.findViewById(R.id.search_loading);
 
         search_bar = rootView.findViewById(R.id.search_bar);
         resultat = rootView.findViewById(R.id.resultatText);
@@ -141,7 +144,6 @@ public class RechercheFragment extends Fragment implements CoreListener {
 
         mStoreBase.collection("users")
                 .whereGreaterThan("number", "0")
-                .whereEqualTo("o", "")
                 .limit(10)
                 .get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
@@ -202,6 +204,7 @@ public class RechercheFragment extends Fragment implements CoreListener {
 
     @Override
     public void onUpdateAdapter() {
+        loading.setVisibility(View.GONE);
         if(items.size() == 0){
             resultat.setVisibility(View.VISIBLE);
             resultat.setText("Aucun amis à ajouter !");

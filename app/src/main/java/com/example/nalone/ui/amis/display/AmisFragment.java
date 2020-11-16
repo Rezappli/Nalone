@@ -12,6 +12,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 import android.widget.SearchView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -44,6 +45,7 @@ public class AmisFragment extends Fragment implements CoreListener{
     private ArrayList<ItemPerson> items = new ArrayList<>();
     private static String message = "null";
     private View rootView;
+    private ProgressBar loading;
 
     public AmisFragment() {
         // Required empty public constructor
@@ -59,6 +61,7 @@ public class AmisFragment extends Fragment implements CoreListener{
         resultat = rootView.findViewById(R.id.resultatText_amis);
         resultat.setVisibility(View.GONE);
         navController = Navigation.findNavController(getActivity(), R.id.nav_host_fragment);
+        loading = rootView.findViewById(R.id.amis_loading);
 
         search_bar.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -130,8 +133,6 @@ public class AmisFragment extends Fragment implements CoreListener{
                     }
                 });
             }
-        }else{
-            onUpdateAdapter();
         }
     }
 
@@ -154,6 +155,7 @@ public class AmisFragment extends Fragment implements CoreListener{
 
     @Override
     public void onUpdateAdapter() {
+        loading.setVisibility(View.GONE);
         Log.w("Amis", "Update data on adapter");
         mAdapter = new ItemListAmisAdapter(items, getContext());
 
