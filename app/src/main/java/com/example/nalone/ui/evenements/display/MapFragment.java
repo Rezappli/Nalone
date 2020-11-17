@@ -33,6 +33,8 @@ import android.widget.Toast;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -78,6 +80,8 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, CoreLis
 
     private static ArrayList<Evenement> itemEvents = new ArrayList<>();
 
+    private NavController navController;
+
 
 
     public MapFragment() {
@@ -93,6 +97,8 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, CoreLis
         mRecyclerViewEvent = rootView.findViewById(R.id.recyclerViewEventMap);
 
         mMapView = rootView.findViewById(R.id.mapView);
+        navController = Navigation.findNavController(getActivity(), R.id.nav_host_fragment);
+
 
         listeners.add(this);
 
@@ -112,8 +118,10 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, CoreLis
         buttonAdd.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent createEvent = new Intent(getActivity().getBaseContext(), CreateEventActivity.class);
-                startActivityForResult(createEvent,0);
+               /* Intent createEvent = new Intent(getActivity().getBaseContext(), CreateEventActivity.class);
+                startActivityForResult(createEvent,0);*/
+                navController.navigate(R.id.action_navigation_evenements_to_navigation_create_event);
+
             }
         });
 

@@ -9,7 +9,11 @@
         android:id="@+id/navigation_evenements"
         android:name="com.example.nalone.ui.evenements.EvenementsFragment"
         android:label="@string/title_evenements"
-        tools:layout="@layout/fragment_evenements" />
+        tools:layout="@layout/fragment_evenements" >
+        <action
+            android:id="@+id/action_navigation_evenements_to_navigation_create_event"
+            app:destination="@id/navigation_create_event" />
+    </fragment>
 
     <fragment
         android:id="@+id/navigation_recherche"
@@ -78,5 +82,15 @@
         android:name="com.example.nalone.ui.amis.display.PopupProfilFragment"
         android:label="@string/title_profil"
         tools:layout="@layout/fragment_popup_profil" />
+
+    <fragment
+        android:id="@+id/navigation_create_event"
+        android:name="com.example.nalone.CreateEventActivity"
+        android:label="@string/eventCreateProfil"
+        tools:layout="@layout/activity_create_event" >
+        <action
+            android:id="@+id/action_navigation_create_event_to_navigation_evenements"
+            app:destination="@id/navigation_evenements" />
+    </fragment>
 
 </navigation>

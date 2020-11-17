@@ -42,6 +42,8 @@ import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.FieldPath;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
@@ -49,6 +51,7 @@ import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.StorageReference;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import splash.SplashActivity;
@@ -101,7 +104,9 @@ public class RechercheFragment extends Fragment implements CoreListener {
         mRecyclerView = rootView.findViewById(R.id.recyclerView);
 
         //query
-        Query query = mStoreBase.collection("users").whereNotEqualTo("uid", USER.getUid());
+        CollectionReference friends = mStoreBase.collection("friends");
+        Query query = mStoreBase.collection("user").whereNotEqualTo("uid", USER.getUid());
+
         //RecyclerOption
         FirestoreRecyclerOptions<User> options = new FirestoreRecyclerOptions.Builder<User>().setQuery(query, User.class).build();
         adapterUsers(options);

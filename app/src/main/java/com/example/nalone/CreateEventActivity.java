@@ -1,8 +1,13 @@
 package com.example.nalone;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
+import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProviders;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -15,7 +20,9 @@ import android.os.Build;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CalendarView;
 import android.widget.ImageButton;
@@ -29,6 +36,7 @@ import com.example.nalone.adapter.ItemProfilAdapter;
 import com.example.nalone.items.ItemPerson;
 import com.example.nalone.listeners.FireStoreUsersListeners;
 import com.example.nalone.ui.evenements.display.MesEvenementsListFragment;
+import com.example.nalone.ui.recherche.RechercheViewModel;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.Timestamp;
@@ -43,9 +51,10 @@ import static com.example.nalone.util.Constants.USER;
 import static com.example.nalone.util.Constants.USER_REFERENCE;
 import static com.example.nalone.util.Constants.getUserData;
 import static com.example.nalone.util.Constants.heightScreen;
+import static com.example.nalone.util.Constants.listeners;
 import static com.example.nalone.util.Constants.widthScreen;
 
-public class CreateEventActivity extends AppCompatActivity {
+public class CreateEventActivity extends Fragment {
     private List<ItemPerson> items = new ArrayList<>();
     private List<ItemPerson> itemsAdd = new ArrayList<>();
     private List<ItemPerson> adds = new ArrayList<>();
@@ -94,34 +103,39 @@ public class CreateEventActivity extends AppCompatActivity {
 
     public static boolean edit;
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_create_event);
+    private NavController navController;
 
-        cardViewPrivate = findViewById(R.id.cardViewPrivate);
-        cardViewPublic = findViewById(R.id.cardViewPublic);
-        imageButtonAddInvit = findViewById(R.id.buttonMoreInvit);
-        textViewListe = findViewById(R.id.textViewListe);
-        imageViewPublic = findViewById(R.id.imageViewPublic);
-        imageViewPrivate = findViewById(R.id.imageViewPrivate);
-        dialogAddPerson = new Dialog(this);
-        dialogCalendrier = new Dialog(this);
-        dialogTimePicker = new Dialog(this);
-        mRecyclerViewAdd = findViewById(R.id.recyclerView1);
+    public View onCreateView(@NonNull LayoutInflater inflater,
+                              ViewGroup container, Bundle savedInstanceState) {
 
-        event_adresse = findViewById(R.id.eventAdress);
-        event_city = findViewById(R.id.eventCity);
-        event_name = findViewById(R.id.eventName);
-        event_resume = findViewById(R.id.eventResume);
-        buttonValidEvent = findViewById(R.id.button);
-        event_date = findViewById(R.id.eventDate);
-        event_horaire = findViewById(R.id.eventHoraire);
 
-        locationValidImageView = findViewById(R.id.validePositionImageView);
+        View rootView = inflater.inflate(R.layout.activity_create_event, container, false);
 
-        mLayoutManagerAdd = new LinearLayoutManager(getBaseContext());
-        mAdapterAdd = new ItemAddPersonAdapter(itemsAdd, this);
+        cardViewPrivate = rootView.findViewById(R.id.cardViewPrivate);
+        cardViewPublic = rootView.findViewById(R.id.cardViewPublic);
+        imageButtonAddInvit = rootView.findViewById(R.id.buttonMoreInvit);
+        textViewListe = rootView.findViewById(R.id.textViewListe);
+        imageViewPublic = rootView.findViewById(R.id.imageViewPublic);
+        imageViewPrivate = rootView.findViewById(R.id.imageViewPrivate);
+        dialogAddPerson = new Dialog(getActivity());
+        dialogCalendrier = new Dialog(getActivity());
+        dialogTimePicker = new Dialog(getActivity());
+        mRecyclerViewAdd = rootView.findViewById(R.id.recyclerView1);
+
+        event_adresse = rootView.findViewById(R.id.eventAdress);
+        event_city = rootView.findViewById(R.id.eventCity);
+        event_name = rootView.findViewById(R.id.eventName);
+        event_resume = rootView.findViewById(R.id.eventResume);
+        buttonValidEvent = rootView.findViewById(R.id.button);
+        event_date = rootView.findViewById(R.id.eventDate);
+        event_horaire = rootView.findViewById(R.id.eventHoraire);
+
+        locationValidImageView = rootView.findViewById(R.id.validePositionImageView);
+
+        mLayoutManagerAdd = new LinearLayoutManager(getContext());
+        mAdapterAdd = new ItemAddPersonAdapter(itemsAdd, getContext());
+
+        navController = Navigation.findNavController(getActivity(), R.id.nav_host_fragment);
 
         if(edit){
             event_city.setText(MesEvenementsListFragment.cityEdit);
@@ -216,6 +230,8 @@ public class CreateEventActivity extends AppCompatActivity {
 
             }
         });
+
+        return rootView;
     }
 
     private void selectPublic() {
@@ -291,7 +307,7 @@ public class CreateEventActivity extends AppCompatActivity {
         }
 
         if(!locationValid){
-            Toast.makeText(this, "Localisation de l'évènement non validée !", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getContext(), "Localisation de l'évènement non validée !", Toast.LENGTH_SHORT).show();
         }
 
         if(!event_name.getText().toString().matches("") && !event_adresse.getText().toString().matches("") &&
@@ -304,9 +320,10 @@ public class CreateEventActivity extends AppCompatActivity {
                     event_adresse.getText().toString(), event_city.getText().toString(), event_visibilite, USER_REFERENCE, new Timestamp(calendar.getTime()), null);
 
 
-            Toast.makeText(getBaseContext(), "Vous avez créer votre évènement !", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getContext(), "Vous avez créer votre évènement !", Toast.LENGTH_SHORT).show();
 
-            finish();
+            navController.navigate(R.id.action_navigation_create_event_to_navigation_evenements);
+
         }
     }
 
@@ -394,8 +411,8 @@ public class CreateEventActivity extends AppCompatActivity {
         dialogAddPerson.getWindow().setLayout(widthScreen, heightScreen);
 
         RecyclerView mRecyclerView = dialogAddPerson.findViewById(R.id.recyclerView);
-        final ItemProfilAdapter mAdapter = new ItemProfilAdapter(items, this);
-        RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getBaseContext());
+        final ItemProfilAdapter mAdapter = new ItemProfilAdapter(items, getContext());
+        RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getContext());
 
         mRecyclerView.setLayoutManager(mLayoutManager);
         mRecyclerView.setAdapter(mAdapter);
@@ -421,8 +438,8 @@ public class CreateEventActivity extends AppCompatActivity {
 
 
 
-        mLayoutManagerAdd = new LinearLayoutManager(getBaseContext());
-        mAdapterAdd = new ItemAddPersonAdapter(itemsAdd, CreateEventActivity.this);
+        mLayoutManagerAdd = new LinearLayoutManager(getContext());
+        mAdapterAdd = new ItemAddPersonAdapter(itemsAdd, getContext());
 
         mAdapterAdd.setOnItemClickListener(new ItemAddPersonAdapter.OnItemClickListener() {
             @Override
@@ -440,8 +457,8 @@ public class CreateEventActivity extends AppCompatActivity {
                     itemsAdd.add(adds.get(i));
                 }
                 dialogAddPerson.dismiss();
-                mLayoutManagerAdd = new LinearLayoutManager(getBaseContext());
-                mAdapterAdd = new ItemAddPersonAdapter(itemsAdd, CreateEventActivity.this);
+                mLayoutManagerAdd = new LinearLayoutManager(getContext());
+                mAdapterAdd = new ItemAddPersonAdapter(itemsAdd, getContext());
 
                 mAdapterAdd.setOnItemClickListener(new ItemAddPersonAdapter.OnItemClickListener() {
                     @Override
@@ -459,14 +476,14 @@ public class CreateEventActivity extends AppCompatActivity {
         if(items.size() > 0) {
             dialogAddPerson.show();
         }else{
-            Toast.makeText(getBaseContext(), "Aucun autre amis à ajouter !", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getContext(), "Aucun autre amis à ajouter !", Toast.LENGTH_SHORT).show();
         }
 
     }
 
     private LatLng getLocationFromAddress(String strAddress) {
 
-        Geocoder coder = new Geocoder(this);
+        Geocoder coder = new Geocoder(getContext());
         List<Address> address;
         LatLng p1 = null;
 
