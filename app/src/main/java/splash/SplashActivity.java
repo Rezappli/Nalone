@@ -135,9 +135,9 @@ public class SplashActivity extends AppCompatActivity {
     }
 
     public void addUser(){
-        User u = new User("09cbc003-078b-4950-b0d8-c311e069cacf", "Boulay", "Thibault", "H", "Vannes","0781039494"
-        ,"thibault.boulay1@gmail.com", "Informatique",
-                "Breton", "20/08/2001");
+        User u = new User("11b4ee26-69b8-4ae2-abf9-2a7263f90f96", "Le Gal", "Hugo", "H", "Nantes","0781039461"
+        ,"hlegal44@gmail.com", "Informatique",
+                "Nantais", "25/04/2001");
 
         mStoreBase.collection("users").document(u.getUid())
                 .set(u)
