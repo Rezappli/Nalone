@@ -27,6 +27,7 @@ import com.bumptech.glide.Glide;
 import com.example.nalone.Cache;
 import com.example.nalone.HomeActivity;
 import com.example.nalone.MainActivity;
+import com.example.nalone.UserFriendData;
 import com.example.nalone.adapter.ItemFiltreAdapter;
 import com.example.nalone.listeners.CoreListener;
 import com.example.nalone.items.ItemFiltre;
@@ -97,11 +98,10 @@ public class RechercheFragment extends Fragment implements CoreListener {
         resultat.setVisibility(View.GONE);
         navController = Navigation.findNavController(getActivity(), R.id.nav_host_fragment);
 
-        firebaseFirestore = FirebaseFirestore.getInstance();
         mRecyclerView = rootView.findViewById(R.id.recyclerView);
 
         //query
-        Query query = firebaseFirestore.collection("users").whereNotEqualTo("uid", USER.getUid());
+        Query query = mStoreBase.collection("users").whereNotEqualTo("uid", USER.getUid());
         //RecyclerOption
         FirestoreRecyclerOptions<User> options = new FirestoreRecyclerOptions.Builder<User>().setQuery(query, User.class).build();
         adapterUsers(options);
@@ -174,31 +174,40 @@ public class RechercheFragment extends Fragment implements CoreListener {
     }
 
     public void adapterFiltre(String filtre){
-        Query query = null;
+        final Query[] query = {null};
         switch (filtre){
             case "INFO" :
-                query = firebaseFirestore.collection("users").whereNotEqualTo("uid", USER.getUid()).whereEqualTo("cursus", "Informatique");
+                query[0] = mStoreBase.collection("users").whereNotEqualTo("uid", USER.getUid()).whereEqualTo("cursus", "Informatique").limit(10);
                 break;
             case "GB" :
-                query = firebaseFirestore.collection("users").whereNotEqualTo("uid", USER.getUid()).whereEqualTo("cursus", "GB");
+                query[0] = mStoreBase.collection("users").whereNotEqualTo("uid", USER.getUid()).whereEqualTo("cursus", "GB").limit(10);
                 break;
             case "MMI" :
-                query = firebaseFirestore.collection("users").whereNotEqualTo("uid", USER.getUid()).whereEqualTo("cursus", "MMI");
+                query[0] = mStoreBase.collection("users").whereNotEqualTo("uid", USER.getUid()).whereEqualTo("cursus", "MMI").limit(10);
                 break;
             case "TC" :
-                query = firebaseFirestore.collection("users").whereNotEqualTo("uid", USER.getUid()).whereEqualTo("cursus", "TC");
+                query[0] = mStoreBase.collection("users").whereNotEqualTo("uid", USER.getUid()).whereEqualTo("cursus", "TC").limit(10);
                 break;
             case "LP" :
-                query = firebaseFirestore.collection("users").whereNotEqualTo("uid", USER.getUid()).whereEqualTo("cursus", "LP");
+                query[0] = mStoreBase.collection("users").whereNotEqualTo("uid", USER.getUid()).whereEqualTo("cursus", "LP").limit(10);
                 break;
             case "none" :
-                query = firebaseFirestore.collection("users").whereNotEqualTo("uid", USER.getUid());
+                mStoreBase.collection("users").document(USER.getUid()).collection("friends").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        List<String> friends = new ArrayList<>();
+                        for(QueryDocumentSnapshot doc : task.getResult()){
+                            friends.add(doc.toObject(UserFriendData.class).getUser().getId());
+                        }
+                        query[0] = mStoreBase.collection("users").whereNotEqualTo("uid", USER.getUid()).whereNotIn(USER.getUid(), friends).limit(10);
+                    }
+                });
                 break;
             default:
                 break;
         }
 
-        FirestoreRecyclerOptions<User> options = new FirestoreRecyclerOptions.Builder<User>().setQuery(query, User.class).build();
+        FirestoreRecyclerOptions<User> options = new FirestoreRecyclerOptions.Builder<User>().setQuery(query[0], User.class).build();
         adapterUsers(options);
     }
 
@@ -217,49 +226,42 @@ public class RechercheFragment extends Fragment implements CoreListener {
                 userViewHolder.nomInvit.setText(u.getFirst_name() + " "+ u.getLast_name());
                 userViewHolder.button.setImageResource(0);
 
+                if(!Cache.fileExists(u.getUid())) {
+                    StorageReference imgRef = mStore.getReference("users/" + u.getUid());
+                    if (imgRef != null) {
+                        imgRef.getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
+                            @Override
+                            public void onComplete(@NonNull Task<Uri> task) {
+                                if (task.isSuccessful()) {
+                                    Uri img = task.getResult();
+                                    if (img != null) {
+                                        Log.w("image", "save image from cache");
+                                        Cache.saveUriFile(u.getUid(), img);
+                                        Glide.with(getContext()).load(img).fitCenter().centerCrop().into(userViewHolder.imagePerson);
+                                    }
+                                }
+                            }
+                        });
+                    }
+                }else{
+                    Log.w("image", "get image from cache");
+                    Glide.with(getContext()).load(Cache.getUriFromUid(u.getUid())).fitCenter().centerCrop().into(userViewHolder.imagePerson);
+                }
+
                 userViewHolder.layoutProfil.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         showPopUpProfil(u);
                     }
                 });
-
-                /*getUserData(u.getUid(), new FireStoreUsersListeners() {
-                    @Override
-                    public void onDataUpdate(final User u) {
-                        if (u.getImage_url() != null) {
-                            if(!Cache.fileExists(u.getUid())) {
-                                StorageReference imgRef = mStore.getReference("users/" + u.getUid());
-                                if (imgRef != null) {
-                                    imgRef.getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
-                                        @Override
-                                        public void onComplete(@NonNull Task<Uri> task) {
-                                            if (task.isSuccessful()) {
-                                                Uri img = task.getResult();
-                                                if (img != null) {
-                                                    Log.w("image", "save image from cache");
-                                                    Cache.saveUriFile(u.getUid(), img);
-                                                    Glide.with(context).load(img).fitCenter().centerCrop().into(userViewHolder.imagePerson);
-                                                }
-                                            }
-                                        }
-                                    });
-                                }
-                            }else{
-                                Log.w("image", "get image from cache");
-                                Glide.with(context).load(Cache.getUriFromUid(u.getUid())).fitCenter().centerCrop().into(userViewHolder.imagePerson);
-                            }
-                        }
-                    }
-                });*/
-
+                loading.setVisibility(View.GONE);
             }
         };
         mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
         mRecyclerView.setAdapter(adapter);
-        loading.setVisibility(View.GONE);
+
     }
 
     private class UserViewHolder extends RecyclerView.ViewHolder {

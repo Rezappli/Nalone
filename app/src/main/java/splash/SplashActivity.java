@@ -165,7 +165,7 @@ public class SplashActivity extends AppCompatActivity {
 
         try {
             // May throw an IOException
-            address = coder.getFromLocationName(strAddress, 5);
+            address = coder.getFromLocationName(strAddress, 10);
             if (address == null) {
                 return null;
             }

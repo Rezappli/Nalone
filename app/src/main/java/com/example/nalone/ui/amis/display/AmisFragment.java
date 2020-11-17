@@ -35,8 +35,12 @@ import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.StorageReference;
 
 import java.util.ArrayList;
@@ -83,14 +87,7 @@ public class AmisFragment extends Fragment implements CoreListener{
         navController = Navigation.findNavController(getActivity(), R.id.nav_host_fragment);
         loading = rootView.findViewById(R.id.amis_loading);
 
-        firebaseFirestore = FirebaseFirestore.getInstance();
         mRecyclerView = rootView.findViewById(R.id.recyclerViewMesAmis);
-
-        //query
-        Query query = firebaseFirestore.collection("users").document(USER.getUid()).collection("friends");
-        //RecyclerOption
-        FirestoreRecyclerOptions<UserFriendData> options = new FirestoreRecyclerOptions.Builder<UserFriendData>().setQuery(query, UserFriendData.class).build();
-        adapterUsers(options);
 
         search_bar.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -156,52 +153,32 @@ public class AmisFragment extends Fragment implements CoreListener{
                         }
 
 
+
+
                         userViewHolder.layoutProfil.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
                                 showPopUpProfil(u);
                             }
                         });
+
+                        userViewHolder.button.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                removeFriend(u.getUid());
+                            }
+                        });
+                        loading.setVisibility(View.GONE);
+
                     }
                 });
-
-
-                /*getUserData(u.getUid(), new FireStoreUsersListeners() {
-                    @Override
-                    public void onDataUpdate(final User u) {
-                        if (u.getImage_url() != null) {
-                            if(!Cache.fileExists(u.getUid())) {
-                                StorageReference imgRef = mStore.getReference("users/" + u.getUid());
-                                if (imgRef != null) {
-                                    imgRef.getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
-                                        @Override
-                                        public void onComplete(@NonNull Task<Uri> task) {
-                                            if (task.isSuccessful()) {
-                                                Uri img = task.getResult();
-                                                if (img != null) {
-                                                    Log.w("image", "save image from cache");
-                                                    Cache.saveUriFile(u.getUid(), img);
-                                                    Glide.with(context).load(img).fitCenter().centerCrop().into(userViewHolder.imagePerson);
-                                                }
-                                            }
-                                        }
-                                    });
-                                }
-                            }else{
-                                Log.w("image", "get image from cache");
-                                Glide.with(context).load(Cache.getUriFromUid(u.getUid())).fitCenter().centerCrop().into(userViewHolder.imagePerson);
-                            }
-                        }
-                    }
-                });*/
-
             }
         };
         mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
         mRecyclerView.setAdapter(adapter);
-        loading.setVisibility(View.GONE);
+        adapter.startListening();
     }
 
     private class UserViewHolder extends RecyclerView.ViewHolder {
@@ -224,17 +201,12 @@ public class AmisFragment extends Fragment implements CoreListener{
         }
 
     }
-    private void removeFriend(final String uid, final int position) {
-        /*getUserData(uid, new FireStoreUsersListeners() {
-            @Override
-            public void onDataUpdate(User u) {
-                USER.get_friends().remove(mStoreBase.collection("users").document(uid));
-                u.get_friends().remove(USER_REFERENCE);
+    private void removeFriend(final String uid) {
+        mStoreBase.collection("users").document(USER.getUid()).
+                collection("friends").document(uid).delete();
 
-                updateUserData(u);
-                updateUserData(USER);
-            }
-        });*/
+        mStoreBase.collection("users").document(uid).
+                collection("friends").document(USER.getUid()).delete();
 
         Toast.makeText(getContext(), "Vous avez supprimé un amis !", Toast.LENGTH_SHORT).show();
     }
@@ -242,49 +214,35 @@ public class AmisFragment extends Fragment implements CoreListener{
 
 
     private void updateItems() {
-        /*final boolean[] duplicate = {false};
-        items.clear();
-        if(USER.get_friends().size() > 0) {
-            Log.w("amis", "User friend size : " + USER.get_friends().size());
-            for (int i = 0; i < USER.get_friends().size(); i++) {
-                Log.w("amis", "start process for a friends");
-
-                final int finalI = i;
-                getUserData(USER.get_friends().get(i).getId(), new FireStoreUsersListeners() {
-                    @Override
-                    public void onDataUpdate(User u) {
-                        Log.w("Invitations", "Chargement de : "+USER.get_friends().get(finalI).getId());
-                        ItemPerson it = new ItemPerson(u.getUid(), R.drawable.ic_baseline_account_circle_24,
-                                u.getFirst_name() + " " + u.getLast_name(), 0, u.getDescription(),
-                                u.getCity(), u.getCursus(), u.get_number_events_create(), u.get_number_events_attend(), u.getCenters_interests());
-                        for(ItemPerson i : items) {
-                            if (i.getUid().equalsIgnoreCase(it.getUid())) {
-                                duplicate[0] = true;
-                                break;
-                            }
-                        }
-
-                        if(!duplicate[0]) {
-                            items.add(it);
-                            onUpdateAdapter();
-                        }
-                    }
-                });
-            }
-        }*/
+        //query
+        Query query = mStoreBase.collection("users").document(USER.getUid()).collection("friends");
+        //RecyclerOption
+        FirestoreRecyclerOptions<UserFriendData> options = new FirestoreRecyclerOptions.Builder<UserFriendData>().setQuery(query, UserFriendData.class).build();
+        adapterUsers(options);
     }
 
-    public void showPopUpProfil(User u) {
+    public void showPopUpProfil(final User u) {
         PopupProfilFragment.USER_LOAD = u;
-       /* if(USER.get_friends_requests_send().contains(mStoreBase.collection("users").document(u.getUid()))){
-            PopupProfilFragment.button = R.drawable.ic_round_hourglass_top_24;
-       }else if(USER.get_friends_requests_received().contains(mStoreBase.collection("users").document(u.getUid()))){
-            PopupProfilFragment.button = R.drawable.ic_round_mail_24;
-        }else{*/
-        PopupProfilFragment.button = R.drawable.ic_baseline_add_circle_outline_24;
-        // }
+        mStoreBase.collection("users").document(USER.getUid()).collection("friends").document(u.getUid()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                PopupProfilFragment.button = 0;
+            }
+        });
 
-        navController.navigate(R.id.action_navigation_amis_to_navigation_popup_profil);
+        mStoreBase.collection("users").document(USER.getUid()).collection("friends_request_send").document(u.getUid()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                PopupProfilFragment.button = R.drawable.ic_round_hourglass_top_24;
+            }
+        });
+
+        mStoreBase.collection("users").document(USER.getUid()).collection("friends_request_received").document(u.getUid()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                PopupProfilFragment.button = R.drawable.ic_round_mail_24;
+            }
+        });
     }
 
     @Override
@@ -307,22 +265,11 @@ public class AmisFragment extends Fragment implements CoreListener{
     }
 
     @Override
-    public void onStart(){
-        super.onStart();
-       /* if(nolonelyBundle.getSerializable("friends") != null){
-            Log.w("Amis", "Chargement du bundle");
-            items = (ArrayList<ItemPerson>) nolonelyBundle.getSerializable("friends");
-            onUpdateAdapter();
-        }else{
-            updateItems();
-        }*/
-        adapter.startListening();
-    }
-
-    @Override
     public void onStop() {
         super.onStop();
-        adapter.stopListening();
+        if(adapter != null) {
+            adapter.stopListening();
+        }
     }
 
 }

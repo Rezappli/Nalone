@@ -24,13 +24,11 @@ import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.FirebaseFirestore;
 import static com.example.nalone.util.Constants.USER;
 import static com.example.nalone.util.Constants.getUserData;
+import static com.example.nalone.util.Constants.mStoreBase;
 
 
 public class MessagesFragment extends Fragment {
 
-
-
-    private FirebaseFirestore firebaseFirestore;
     private RecyclerView mRecyclerView;
     private  FirestoreRecyclerAdapter adapter;
 
@@ -40,11 +38,10 @@ public class MessagesFragment extends Fragment {
 
 
         View root = inflater.inflate(R.layout.fragment_messages, container, false);
-        firebaseFirestore = FirebaseFirestore.getInstance();
         mRecyclerView = root.findViewById(R.id.recycler);
 
         //query
-        Query query = firebaseFirestore.collection("users").document(USER.getUid()).collection("friends");
+        Query query = mStoreBase.collection("users").document(USER.getUid()).collection("friends");
 
         //RecyclerOption
         FirestoreRecyclerOptions<UserFriendData> options = new FirestoreRecyclerOptions.Builder<UserFriendData>().setQuery(query, UserFriendData.class).build();
@@ -112,93 +109,6 @@ public class MessagesFragment extends Fragment {
         super.onStart();
         adapter.startListening(); 
     }
-
-    /*search_bar.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-            @Override
-            public boolean onQueryTextSubmit(String query) {
-                return false;
-            }
-
-            @Override
-            public boolean onQueryTextChange(String newText) {
-                newText = newText.toLowerCase();
-                tempList.clear();
-                boolean check = true;
-                if(items.size() > 0) {
-                    if (newText.length() > 0) {
-                        for (int i = 0; i < items.size(); i++) {
-                            for (int j = 0; j < newText.length(); j++) {
-                                if(items.get(i).getmNomToLowerCase().length() > j) {
-                                    if (newText.charAt(j) == items.get(i).getmNomToLowerCase().charAt(j) && j == 0){
-                                        check = true;
-                                    }
-
-
-                                    if (newText.charAt(j) == items.get(i).getmNomToLowerCase().charAt(j) && check) {
-                                        check = true;
-                                    } else {
-                                        check = false;
-                                    }
-
-
-                                    if (check) {
-                                        if (!tempList.contains(items.get(i))) {
-                                            tempList.add(items.get(i));
-                                            if (resultat.getVisibility() == View.VISIBLE) {
-                                                resultat.setVisibility(View.GONE);
-                                                resultat.setText("");
-                                            }
-                                        }
-                                    } else {
-                                        tempList.remove(items.get(i));
-                                    }
-                                }else{
-                                    tempList.remove(items.get(i));
-                                }
-                            }
-                        }
-
-
-                        if (tempList.size() == 0) {
-                            resultat.setVisibility(View.VISIBLE);
-                            resultat.setText(R.string.aucun_resultat);
-                        }
-
-                        mAdapter = new ItemMessageAdapter(tempList);
-                        mRecyclerView.setAdapter(mAdapter);
-                    } else {
-                        resultat.setVisibility(View.GONE);
-                        resultat.setText("");
-                        mAdapter = new ItemMessageAdapter(items);
-                        mRecyclerView.setAdapter(mAdapter);
-                    }
-                }else{
-                    resultat.setVisibility(View.VISIBLE);
-                    resultat.setText("Aucun amis à ajouter !");
-                }
-
-                return false;
-            }
-        });
-
-        return root;
-    }
-
-
-    public void loadData(final View root) {
-
-    }
-
-*/
-
-
-      /*  public void OnChatClick () {
-            Intent intent = new Intent(getContext(), ChatActivity.class);
-            Log.d(TAG, "onChatClick: clicked");
-            startActivity(intent);
-        }
-*/
-
 
 }
 

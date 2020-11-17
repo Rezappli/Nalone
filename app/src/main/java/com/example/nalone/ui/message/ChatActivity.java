@@ -2,6 +2,7 @@ package com.example.nalone.ui.message;
 
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -36,7 +37,6 @@ public class ChatActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chatbox);
 
-
         buttonSend = (Button) findViewById(R.id.buttonSend);
         messageEditText = (TextInputEditText) findViewById(R.id.messageEditText);
 
@@ -46,9 +46,6 @@ public class ChatActivity extends AppCompatActivity {
             public void onClick(View v) {
                 if(messageEditText.getText().length()>0){
                     sendMessage("hugo","thibaulk",messageEditText.getText().toString());
-
-
-
                 }
             }
         });

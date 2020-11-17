@@ -22,6 +22,7 @@ import com.example.nalone.R;
 import com.example.nalone.User;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.storage.StorageReference;
 
 import java.util.ArrayList;
@@ -168,6 +169,7 @@ public class PopupProfilFragment extends Fragment {
         buttonAdd.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Log.w("Button", "Button : " + button);
                 if (button == R.drawable.ic_round_mail_24) {
                     Toast.makeText(getContext(), "Vous avez reçu une demande d'amis de la part de cet utilisateur !", Toast.LENGTH_SHORT).show();
                 } else if (button == R.drawable.ic_round_hourglass_top_24) {
