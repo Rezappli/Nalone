@@ -53,6 +53,8 @@ public class FirestoreRecyclerProfilAdapter extends FirestoreRecyclerAdapter<Use
             d = itemView.getResources().getDrawable(R.drawable.ic_baseline_add_location_24);
             cardViewPhotoPerson = itemView.findViewById(R.id.cardViewPhotoPerson);
 
+
+
             mPerson.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {

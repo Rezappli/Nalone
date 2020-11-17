@@ -200,10 +200,6 @@ public class RechercheFragment extends Fragment implements CoreListener {
 
         FirestoreRecyclerOptions<User> options = new FirestoreRecyclerOptions.Builder<User>().setQuery(query, User.class).build();
         adapterUsers(options);
-
-
-
-
     }
 
     private void adapterUsers(FirestoreRecyclerOptions<User> options) {
@@ -217,7 +213,6 @@ public class RechercheFragment extends Fragment implements CoreListener {
 
             @Override
             protected void onBindViewHolder(@NonNull final UserViewHolder userViewHolder, int i, @NonNull final User u) {
-                final User user = u;
                 userViewHolder.villePers.setText(u.getCity());
                 userViewHolder.nomInvit.setText(u.getFirst_name() + " "+ u.getLast_name());
                 userViewHolder.button.setImageResource(0);
@@ -225,7 +220,7 @@ public class RechercheFragment extends Fragment implements CoreListener {
                 userViewHolder.layoutProfil.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        showPopUpProfil(user);
+                        showPopUpProfil(u);
                     }
                 });
 

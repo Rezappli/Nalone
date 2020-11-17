@@ -152,14 +152,14 @@ public class PopupProfilFragment extends Fragment {
             imageCentreInteret.get(i).setVisibility(View.VISIBLE);
         }
 
-        }
+        }*/
 
 
         nameProfil.setText(USER_LOAD.getLast_name() + " " + USER_LOAD.getFirst_name());
         descriptionProfil.setText(USER_LOAD.getDescription());
-        nbCreateProfil.setText(USER_LOAD.get_number_events_create());
-        nbParticipateProfil.setText(USER_LOAD.get_number_events_attend());
-        buttonAdd.setImageResource(button);*/
+        nbCreateProfil.setText(USER_LOAD.getNumber_events_create());
+        nbParticipateProfil.setText(USER_LOAD.getNumber_events_attend());
+        buttonAdd.setImageResource(button);
 
         if (USER_LOAD.getDescription().matches("")) {
             descriptionProfil.setVisibility(View.GONE);

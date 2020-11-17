@@ -61,14 +61,14 @@ public class MessagesFragment extends Fragment {
             protected void onBindViewHolder(@NonNull final PersonViewHolder personViewHolder, int i, @NonNull UserFriendData data) {
                 getUserData(data.getUser().getId(), new FireStoreUsersListeners() {
                     @Override
-                    public void onDataUpdate(User u) {
+                    public void onDataUpdate(final User u) {
                         personViewHolder.villePers.setText(u.getCity());
                         personViewHolder.nomInvit.setText(u.getFirst_name() + " "+ u.getLast_name());
 
                         personViewHolder.layoutProfil.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
-                                //ChatActivity.USER_LOAD;
+                                ChatActivity.USER_LOAD = u;
                                 startActivity(new Intent(getContext(),ChatActivity.class));
                             }
                         });

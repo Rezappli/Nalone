@@ -1,5 +1,6 @@
 package com.example.nalone.ui.amis.display;
 
+import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -20,6 +21,8 @@ import android.widget.SearchView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
+import com.example.nalone.Cache;
 import com.example.nalone.UserFriendData;
 import com.example.nalone.adapter.ItemListAmisAdapter;
 import com.example.nalone.listeners.CoreListener;
@@ -30,8 +33,11 @@ import com.example.nalone.listeners.FireStoreUsersListeners;
 import com.example.nalone.ui.recherche.RechercheFragment;
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
+import com.google.firebase.storage.StorageReference;
 
 import java.util.ArrayList;
 
@@ -39,6 +45,7 @@ import static com.example.nalone.util.Constants.USER;
 import static com.example.nalone.util.Constants.USER_REFERENCE;
 import static com.example.nalone.util.Constants.getUserData;
 import static com.example.nalone.util.Constants.listeners;
+import static com.example.nalone.util.Constants.mStore;
 import static com.example.nalone.util.Constants.mStoreBase;
 import static com.example.nalone.util.Constants.nolonelyBundle;
 import static com.example.nalone.util.Constants.updateUserData;
@@ -125,6 +132,29 @@ public class AmisFragment extends Fragment implements CoreListener{
                         userViewHolder.villePers.setText(u.getCity());
                         userViewHolder.nomInvit.setText(u.getFirst_name() + " "+ u.getLast_name());
                         userViewHolder.button.setImageResource(0);
+
+                        if(!Cache.fileExists(u.getUid())) {
+                            StorageReference imgRef = mStore.getReference("users/" + u.getUid());
+                            if (imgRef != null) {
+                                imgRef.getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<Uri> task) {
+                                        if (task.isSuccessful()) {
+                                            Uri img = task.getResult();
+                                            if (img != null) {
+                                                Log.w("image", "save image from cache");
+                                                Cache.saveUriFile(u.getUid(), img);
+                                                Glide.with(getContext()).load(img).fitCenter().centerCrop().into(userViewHolder.imagePerson);
+                                            }
+                                        }
+                                    }
+                                });
+                            }
+                        }else{
+                            Log.w("image", "get image from cache");
+                            Glide.with(getContext()).load(Cache.getUriFromUid(u.getUid())).fitCenter().centerCrop().into(userViewHolder.imagePerson);
+                        }
+
 
                         userViewHolder.layoutProfil.setOnClickListener(new View.OnClickListener() {
                             @Override
