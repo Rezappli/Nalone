@@ -20,6 +20,7 @@ import android.widget.SearchView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.nalone.UserFriendData;
 import com.example.nalone.adapter.ItemListAmisAdapter;
 import com.example.nalone.listeners.CoreListener;
 import com.example.nalone.items.ItemPerson;
@@ -81,7 +82,7 @@ public class AmisFragment extends Fragment implements CoreListener{
         //query
         Query query = firebaseFirestore.collection("users").document(USER.getUid()).collection("friends");
         //RecyclerOption
-        FirestoreRecyclerOptions<User> options = new FirestoreRecyclerOptions.Builder<User>().setQuery(query, User.class).build();
+        FirestoreRecyclerOptions<UserFriendData> options = new FirestoreRecyclerOptions.Builder<UserFriendData>().setQuery(query, UserFriendData.class).build();
         adapterUsers(options);
 
         search_bar.setOnClickListener(new View.OnClickListener() {
@@ -107,8 +108,8 @@ public class AmisFragment extends Fragment implements CoreListener{
         return rootView;
     }
 
-    private void adapterUsers(FirestoreRecyclerOptions<User> options) {
-        adapter = new FirestoreRecyclerAdapter<User, UserViewHolder>(options) {
+    private void adapterUsers(FirestoreRecyclerOptions<UserFriendData> options) {
+        adapter = new FirestoreRecyclerAdapter<UserFriendData, UserViewHolder>(options) {
             @NonNull
             @Override
             public UserViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -117,18 +118,23 @@ public class AmisFragment extends Fragment implements CoreListener{
             }
 
             @Override
-            protected void onBindViewHolder(@NonNull final UserViewHolder userViewHolder, int i, @NonNull final User u) {
-                final User user = u;
-                userViewHolder.villePers.setText(u.getCity());
-                userViewHolder.nomInvit.setText(u.getFirst_name() + " "+ u.getLast_name());
-                userViewHolder.button.setImageResource(0);
-
-                userViewHolder.layoutProfil.setOnClickListener(new View.OnClickListener() {
+            protected void onBindViewHolder(@NonNull final UserViewHolder userViewHolder, int i, @NonNull final UserFriendData data) {
+                getUserData(data.getUser().getId(), new FireStoreUsersListeners() {
                     @Override
-                    public void onClick(View v) {
-                        showPopUpProfil(user);
+                    public void onDataUpdate(final User u) {
+                        userViewHolder.villePers.setText(u.getCity());
+                        userViewHolder.nomInvit.setText(u.getFirst_name() + " "+ u.getLast_name());
+                        userViewHolder.button.setImageResource(0);
+
+                        userViewHolder.layoutProfil.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                showPopUpProfil(u);
+                            }
+                        });
                     }
                 });
+
 
                 /*getUserData(u.getUid(), new FireStoreUsersListeners() {
                     @Override

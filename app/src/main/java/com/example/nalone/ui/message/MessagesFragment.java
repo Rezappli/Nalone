@@ -16,11 +16,14 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.nalone.User;
 import com.example.nalone.R;
+import com.example.nalone.UserFriendData;
+import com.example.nalone.listeners.FireStoreUsersListeners;
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.FirebaseFirestore;
 import static com.example.nalone.util.Constants.USER;
+import static com.example.nalone.util.Constants.getUserData;
 
 
 public class MessagesFragment extends Fragment {
@@ -41,12 +44,12 @@ public class MessagesFragment extends Fragment {
         mRecyclerView = root.findViewById(R.id.recycler);
 
         //query
-        Query query = firebaseFirestore.collection("users").whereNotEqualTo("uid", USER.getUid());
+        Query query = firebaseFirestore.collection("users").document(USER.getUid()).collection("friends");
 
         //RecyclerOption
-        FirestoreRecyclerOptions<User> options = new FirestoreRecyclerOptions.Builder<User>().setQuery(query, User.class).build();
+        FirestoreRecyclerOptions<UserFriendData> options = new FirestoreRecyclerOptions.Builder<UserFriendData>().setQuery(query, UserFriendData.class).build();
 
-         adapter = new FirestoreRecyclerAdapter<User, PersonViewHolder>(options) {
+         adapter = new FirestoreRecyclerAdapter<UserFriendData, PersonViewHolder>(options) {
             @NonNull
             @Override
             public PersonViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -55,17 +58,23 @@ public class MessagesFragment extends Fragment {
             }
 
             @Override
-            protected void onBindViewHolder(@NonNull PersonViewHolder personViewHolder, int i, @NonNull User u) {
-                personViewHolder.villePers.setText(u.getCity());
-                personViewHolder.nomInvit.setText(u.getFirst_name() + " "+ u.getLast_name());
-
-                personViewHolder.layoutProfil.setOnClickListener(new View.OnClickListener() {
+            protected void onBindViewHolder(@NonNull final PersonViewHolder personViewHolder, int i, @NonNull UserFriendData data) {
+                getUserData(data.getUser().getId(), new FireStoreUsersListeners() {
                     @Override
-                    public void onClick(View v) {
-                        //ChatActivity.USER_LOAD;
-                        startActivity(new Intent(getContext(),ChatActivity.class));
+                    public void onDataUpdate(User u) {
+                        personViewHolder.villePers.setText(u.getCity());
+                        personViewHolder.nomInvit.setText(u.getFirst_name() + " "+ u.getLast_name());
+
+                        personViewHolder.layoutProfil.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                //ChatActivity.USER_LOAD;
+                                startActivity(new Intent(getContext(),ChatActivity.class));
+                            }
+                        });
                     }
                 });
+
 
             }
         };
