@@ -89,6 +89,7 @@ public class AmisFragment extends Fragment implements CoreListener{
 
         mRecyclerView = rootView.findViewById(R.id.recyclerViewMesAmis);
 
+        adapterUsers();
         search_bar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -112,7 +113,11 @@ public class AmisFragment extends Fragment implements CoreListener{
         return rootView;
     }
 
-    private void adapterUsers(FirestoreRecyclerOptions<UserFriendData> options) {
+    private void adapterUsers() {
+
+        Query query = mStoreBase.collection("users").document(USER.getUid()).collection("friends");
+        FirestoreRecyclerOptions<UserFriendData> options = new FirestoreRecyclerOptions.Builder<UserFriendData>().setQuery(query, UserFriendData.class).build();
+
         adapter = new FirestoreRecyclerAdapter<UserFriendData, UserViewHolder>(options) {
             @NonNull
             @Override
@@ -214,11 +219,8 @@ public class AmisFragment extends Fragment implements CoreListener{
 
 
     private void updateItems() {
-        //query
-        Query query = mStoreBase.collection("users").document(USER.getUid()).collection("friends");
-        //RecyclerOption
-        FirestoreRecyclerOptions<UserFriendData> options = new FirestoreRecyclerOptions.Builder<UserFriendData>().setQuery(query, UserFriendData.class).build();
-        adapterUsers(options);
+        ///RecyclerOption
+        adapterUsers();
     }
 
     public void showPopUpProfil(final User u) {
@@ -270,6 +272,13 @@ public class AmisFragment extends Fragment implements CoreListener{
         if(adapter != null) {
             adapter.stopListening();
         }
+    }
+
+    @Override
+    public void onStart(){
+        super.onStart();
+        //updateItems();
+        adapter.startListening();
     }
 
 }

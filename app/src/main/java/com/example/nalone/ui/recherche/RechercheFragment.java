@@ -86,6 +86,8 @@ public class RechercheFragment extends Fragment implements CoreListener {
     private ItemFiltreAdapter mAdapterFiltre;
     private RecyclerView.LayoutManager mLayoutManagerFiltre;
     private FirestoreRecyclerAdapter adapter;
+    List<String> friends;
+
 
 
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -103,10 +105,28 @@ public class RechercheFragment extends Fragment implements CoreListener {
 
         mRecyclerView = rootView.findViewById(R.id.recyclerView);
 
-        //query
-        CollectionReference friends = mStoreBase.collection("friends");
-        Query query = mStoreBase.collection("user").whereNotEqualTo("uid", USER.getUid());
+        friends = new ArrayList<>();
 
+        mStoreBase.collection("users").document(USER.getUid()).collection("friends")
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            for (QueryDocumentSnapshot document : task.getResult()) {
+                                Log.d("TAG", document.getId() + " => " + document.getData());
+                                friends.add(document.getId());
+                            }
+                        } else {
+                            Log.d("TAG", "Error getting documents: ", task.getException());
+                        }
+                    }
+                });
+
+        friends.add("090");
+
+        //query
+        Query query = mStoreBase.collection("users").whereNotIn("uid", friends);
         //RecyclerOption
         FirestoreRecyclerOptions<User> options = new FirestoreRecyclerOptions.Builder<User>().setQuery(query, User.class).build();
         adapterUsers(options);
