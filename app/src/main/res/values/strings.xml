@@ -58,6 +58,8 @@
     <string name="visibility"> Visibilité </string>
     <string name="valid"> Valider </string>
     <string name="listInvité"> Liste d\'invités </string>
+    <string name="listGroup"> Ajouter des membres </string>
+
     <string name="cancel"> Annuler </string>
     <string name="back"> Retour </string>
     <string name="search_title"> Rechercher un ami </string>

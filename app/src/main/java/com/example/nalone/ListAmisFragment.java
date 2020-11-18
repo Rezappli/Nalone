@@ -1,5 +1,6 @@
-package com.example.nalone.ui.amis.display;
+package com.example.nalone;
 
+import android.annotation.SuppressLint;
 import android.net.Uri;
 import android.os.Bundle;
 
@@ -22,11 +23,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
-import com.example.nalone.Cache;
 import com.example.nalone.listeners.CoreListener;
 import com.example.nalone.items.ItemPerson;
-import com.example.nalone.R;
-import com.example.nalone.User;
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -45,7 +43,7 @@ import static com.example.nalone.util.Constants.listeners;
 import static com.example.nalone.util.Constants.mStore;
 import static com.example.nalone.util.Constants.mStoreBase;
 
-public class AmisFragment extends Fragment implements CoreListener{
+public class ListAmisFragment extends Fragment implements CoreListener{
 
     private SearchView search_bar;
 
@@ -61,11 +59,6 @@ public class AmisFragment extends Fragment implements CoreListener{
     private RecyclerView mRecyclerView;
     private List<String> friends;
 
-
-
-    public AmisFragment() {
-        // Required empty public constructor
-    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -127,7 +120,7 @@ public class AmisFragment extends Fragment implements CoreListener{
                                     @NonNull
                                     @Override
                                     public UserViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-                                        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_person, parent, false);
+                                        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_invit_amis, parent, false);
                                         return new UserViewHolder(view);
                                     }
 
@@ -135,7 +128,6 @@ public class AmisFragment extends Fragment implements CoreListener{
                                     protected void onBindViewHolder(@NonNull final UserViewHolder userViewHolder, int i, @NonNull final User u) {
                                         userViewHolder.villePers.setText(u.getCity());
                                         userViewHolder.nomInvit.setText(u.getFirst_name() + " " + u.getLast_name());
-                                        userViewHolder.button.setImageResource(R.drawable.ic_baseline_delete_24);
 
                                         if (u.getImage_url() != null) {
                                             if (!Cache.fileExists(u.getUid())) {
@@ -162,18 +154,19 @@ public class AmisFragment extends Fragment implements CoreListener{
                                             }
                                         }
 
-
-                                        userViewHolder.layoutProfil.setOnClickListener(new View.OnClickListener() {
-                                            @Override
-                                            public void onClick(View v) {
-                                                showPopUpProfil(u);
-                                            }
-                                        });
-
-                                        userViewHolder.button.setOnClickListener(new View.OnClickListener() {
+                                        userViewHolder.buttonRemove.setOnClickListener(new View.OnClickListener() {
                                             @Override
                                             public void onClick(View v) {
                                                 removeFriend(u.getUid());
+                                            }
+                                        });
+
+                                        userViewHolder.buttonAdd.setOnClickListener(new View.OnClickListener() {
+                                            @SuppressLint("ResourceType")
+                                            @Override
+                                            public void onClick(View v) {
+                                                removeFriend(u.getUid());
+                                                userViewHolder.buttonAdd.setImageDrawable(getResources().getDrawable(R.id.addInvitAmis));
                                             }
                                         });
                                         loading.setVisibility(View.GONE);
@@ -197,18 +190,17 @@ public class AmisFragment extends Fragment implements CoreListener{
 
         private TextView nomInvit;
         private TextView villePers;
-        private LinearLayout layoutProfil;
         private ImageView imagePerson;
-        private ImageView button;
+        private ImageView buttonAdd, buttonRemove;
 
         public UserViewHolder(@NonNull View itemView) {
             super(itemView);
 
-            nomInvit = itemView.findViewById(R.id.nomInvit);
-            villePers = itemView.findViewById(R.id.villePers);
-            layoutProfil = itemView.findViewById(R.id.layoutProfil);
+            nomInvit = itemView.findViewById(R.id.nomAmisInvit);
+            villePers = itemView.findViewById(R.id.villeAmisInvit);
             imagePerson = itemView.findViewById(R.id.imagePerson);
-            button = itemView.findViewById(R.id.imageView19);
+            buttonAdd = itemView.findViewById(R.id.addInvitAmis);
+            buttonRemove= itemView.findViewById(R.id.removeInvitAmis);
 
         }
 
@@ -230,30 +222,6 @@ public class AmisFragment extends Fragment implements CoreListener{
         adapterUsers();
     }
 
-    public void showPopUpProfil(final User u) {
-        PopupProfilFragment.USER_LOAD = u;
-        mStoreBase.collection("users").document(USER.getUid()).collection("friends").whereEqualTo("status", "add").whereEqualTo("uid", u.getUid()).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                PopupProfilFragment.button = 0;
-            }
-        });
-
-        mStoreBase.collection("users").document(USER.getUid()).collection("friends").whereEqualTo("status", "send").whereEqualTo("uid", u.getUid()).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                PopupProfilFragment.button = R.drawable.ic_round_hourglass_top_24;
-            }
-        });
-
-        mStoreBase.collection("users").document(USER.getUid()).collection("friends").whereEqualTo("status", "received").whereEqualTo("uid", u.getUid()).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                PopupProfilFragment.button = R.drawable.ic_round_mail_24;
-            }
-        });
-        navController.navigate(R.id.action_navigation_amis_to_navigation_popup_profil);
-    }
 
     @Override
     public void onDataChangeListener() {

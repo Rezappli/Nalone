@@ -62,8 +62,8 @@
 
             <TextView
                 android:id="@+id/villeAmisInvit"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_width="267dp"
+                android:layout_height="2dp"
                 android:layout_marginStart="8dp"
                 android:layout_weight="0.5"
                 android:drawableStart="@drawable/ic_baseline_location_grey"

@@ -45,13 +45,23 @@
         android:label="@string/title_messages"
         tools:layout="@layout/fragment_messages" />
 
+    <fragment
+        android:id="@+id/navigation_list_amis"
+        android:name="com.example.nalone.ListAmisFragment"
+        android:label="@string/listInvité"
+        tools:layout="@layout/fragment_list_amis" />
+
 
 
     <fragment
         android:id="@+id/navigation_creat_group"
         android:name="com.example.nalone.CreateGroupFragment"
         android:label="@string/new_groupe"
-        tools:layout="@layout/fragment_create_group" />
+        tools:layout="@layout/fragment_create_group" >
+        <action
+            android:id="@+id/action_navigation_creat_group_to_navigation_list_amis"
+            app:destination="@id/navigation_list_amis" />
+    </fragment>
 
     <fragment
         android:id="@+id/navigation_profil"
