@@ -16,6 +16,16 @@
     </fragment>
 
     <fragment
+        android:id="@+id/navigation_group"
+        android:name="com.example.nalone.ui.amis.display.GroupeFragment"
+        android:label="@string/new_groupe"
+        tools:layout="@layout/groupe_fragment" >
+        <action
+            android:id="@+id/action_navigation_group_to_navigation_creat_group"
+            app:destination="@id/navigation_creat_group" />
+    </fragment>
+
+    <fragment
         android:id="@+id/navigation_recherche"
         android:name="com.example.nalone.ui.recherche.RechercheFragment"
         android:label="@string/title_recherche"
@@ -41,6 +51,14 @@
         android:name="com.example.nalone.ui.message.MessagesFragment"
         android:label="@string/title_messages"
         tools:layout="@layout/fragment_messages" />
+
+
+
+    <fragment
+        android:id="@+id/navigation_creat_group"
+        android:name="com.example.nalone.CreateGroupFragment"
+        android:label="@string/new_groupe"
+        tools:layout="@layout/fragment_create_group" />
 
     <fragment
         android:id="@+id/navigation_profil"
@@ -97,7 +115,7 @@
         android:id="@+id/navigation_create_event"
         android:name="com.example.nalone.CreateEventActivity"
         android:label="@string/eventCreateProfil"
-        tools:layout="@layout/activity_create_event" >
+        tools:layout="@layout/fragment_create_event" >
         <action
             android:id="@+id/action_navigation_create_event_to_navigation_evenements"
             app:destination="@id/navigation_evenements" />

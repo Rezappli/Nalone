@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/amis_navigation">
+
+    <fragment
+        android:id="@+id/navigation_group"
+        android:name="com.example.nalone.ui.amis.display.GroupeFragment"
+        android:label="@string/new_groupe"
+        tools:layout="@layout/groupe_fragment" >
+        <action
+            android:id="@+id/action_navigation_group_to_navigation_creat_group"
+            app:destination="@id/navigation_creat_group" />
+    </fragment>
+
+
+    <fragment
+        android:id="@+id/navigation_creat_group"
+        android:name="com.example.nalone.CreateGroupFragment"
+        android:label="@string/new_groupe"
+        tools:layout="@layout/fragment_create_group" />
+
+
+    <fragment
+        android:id="@+id/navigation_invit_amis"
+        android:name="com.example.nalone.ui.amis.display.MesInvitationsFragment"
+        android:label="@string/listInvité"
+        tools:layout="@layout/fragment_mes_invitations" >
+        <action
+            android:id="@+id/action_navigation_invit_amis_to_navigation_popup_profil"
+            app:destination="@id/navigation_popup_profil" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/navigation_popup_profil"
+        android:name="com.example.nalone.ui.amis.display.PopupProfilFragment"
+        android:label="@string/title_profil"
+        tools:layout="@layout/fragment_popup_profil" />
+
+
+</navigation>

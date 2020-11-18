@@ -3,14 +3,17 @@ package com.example.nalone.ui.amis.display;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
+import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -46,10 +49,8 @@ public class GroupeFragment extends Fragment implements CoreListener {
     private NavController navController;
     private RecyclerView mRecyclerView;
     private FirestoreRecyclerAdapter adapter;
+    private ImageView addGroup;
 
-    public GroupeFragment() {
-        // Required empty public constructor
-    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -58,6 +59,15 @@ public class GroupeFragment extends Fragment implements CoreListener {
         View root =  inflater.inflate(R.layout.groupe_fragment, container, false);
 
         mRecyclerView = root.findViewById(R.id.recyclerViewGroupe);
+        addGroup = root.findViewById(R.id.create_group_button);
+        navController = Navigation.findNavController(getActivity(), R.id.viewPager);
+
+        addGroup.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                navController.navigate(R.id.action_navigation_group_to_navigation_creat_group);
+            }
+        });
 
         adapterGroups();
 

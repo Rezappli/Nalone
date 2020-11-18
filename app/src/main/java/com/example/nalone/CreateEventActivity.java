@@ -2,10 +2,8 @@ package com.example.nalone;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.ViewModelProviders;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -34,9 +32,7 @@ import android.widget.Toast;
 import com.example.nalone.adapter.ItemAddPersonAdapter;
 import com.example.nalone.adapter.ItemProfilAdapter;
 import com.example.nalone.items.ItemPerson;
-import com.example.nalone.listeners.FireStoreUsersListeners;
 import com.example.nalone.ui.evenements.display.MesEvenementsListFragment;
-import com.example.nalone.ui.recherche.RechercheViewModel;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.Timestamp;
@@ -49,9 +45,7 @@ import java.util.UUID;
 
 import static com.example.nalone.util.Constants.USER;
 import static com.example.nalone.util.Constants.USER_REFERENCE;
-import static com.example.nalone.util.Constants.getUserData;
 import static com.example.nalone.util.Constants.heightScreen;
-import static com.example.nalone.util.Constants.listeners;
 import static com.example.nalone.util.Constants.widthScreen;
 
 public class CreateEventActivity extends Fragment {
@@ -109,7 +103,7 @@ public class CreateEventActivity extends Fragment {
                               ViewGroup container, Bundle savedInstanceState) {
 
 
-        View rootView = inflater.inflate(R.layout.activity_create_event, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_create_event, container, false);
 
         cardViewPrivate = rootView.findViewById(R.id.cardViewPrivate);
         cardViewPublic = rootView.findViewById(R.id.cardViewPublic);

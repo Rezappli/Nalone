@@ -128,6 +128,7 @@ public class AmisFragment extends Fragment implements CoreListener{
                                 Log.d("TAG", document.getId() + " => " + document.getData());
                                 friends.add(document.getId());
                             }
+
                             //query
                             if (!friends.isEmpty()) {
                                 Query query = mStoreBase.collection("users").whereIn("uid", friends);

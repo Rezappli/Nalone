@@ -24,7 +24,8 @@
         <androidx.viewpager.widget.ViewPager
             android:id="@+id/viewPager"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            app:navGraph="@navigation/amis_navigation">
 
 
         </androidx.viewpager.widget.ViewPager>

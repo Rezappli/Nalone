@@ -95,5 +95,7 @@
     <string name="notification"> Notification </string>
     <string name="lieuParametre"> Lieu par défault </string>
     <string name="couleurCursusParametre"> Couleurs des cursus </string>
+    <string name="new_groupe"> Nouveau groupe </string>
+    <string name="new_event"> Nouvel évènement </string>
 
 </resources>
