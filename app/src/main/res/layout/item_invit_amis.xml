@@ -6,7 +6,7 @@
     app:cardElevation="0dp">
 
     <LinearLayout
-        android:id="@+id/layoutProfil"
+        android:id="@+id/layoutInvitAmi"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="horizontal"

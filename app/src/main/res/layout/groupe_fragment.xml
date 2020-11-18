@@ -1,14 +1,40 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".ui.amis.display.GroupeFragment">
 
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:layout_height="match_parent">
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/addGroup"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentBottom="true"
+            android:layout_marginStart="32dp"
+            android:layout_marginEnd="40dp"
+            android:layout_marginBottom="40dp"
+            android:foregroundGravity="bottom|center_horizontal"
+            app:cardBackgroundColor="#18ECC5"
+            app:cardCornerRadius="50dp"
+            app:cardElevation="10dp">
+
+            <ImageView
+                android:id="@+id/create_group_button"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_centerHorizontal="true"
+                android:layout_centerVertical="true"
+                android:layout_gravity="bottom|center"
+                android:layout_margin="5dp"
+                android:clickable="true"
+                app:srcCompat="@drawable/ic_baseline_add_circle_24" />
+        </androidx.cardview.widget.CardView>
 
         <SearchView
             android:id="@+id/search_bar"
@@ -22,10 +48,19 @@
 
         </SearchView>
 
+        <View
+            android:id="@+id/divider7"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_below="@id/search_bar"
+            android:layout_marginTop="10dp"
+            android:background="@color/cardview_dark_background" />
+
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recyclerViewGroupe"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
-    </LinearLayout>
+            android:layout_height="match_parent"
+            android:layout_below="@id/divider7" />
+    </RelativeLayout>
 
 </FrameLayout>
