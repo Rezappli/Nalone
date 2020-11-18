@@ -133,7 +133,6 @@ public class AmisFragment extends Fragment implements CoreListener{
                                 Query query = mStoreBase.collection("users").whereIn("uid", friends);
                                 FirestoreRecyclerOptions<User> options = new FirestoreRecyclerOptions.Builder<User>().setQuery(query, User.class).build();
 
-
                                 adapter = new FirestoreRecyclerAdapter<User, UserViewHolder>(options) {
                                     @NonNull
                                     @Override
@@ -197,10 +196,7 @@ public class AmisFragment extends Fragment implements CoreListener{
 
                                 mRecyclerView.setAdapter(adapter);
                                 adapter.startListening();
-                            }else{
-                                loading.setVisibility(View.GONE);
                             }
-
                         }
                     }
                 });
