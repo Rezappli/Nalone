@@ -127,31 +127,31 @@ public class RechercheFragment extends Fragment implements CoreListener {
                             adapter.startListening();
                             addFilters();
 
-                            search_bar.setOnClickListener(new View.OnClickListener() {
-                                @Override
-                                public void onClick(View v) {
-                                    search_bar.onActionViewExpanded();
-                                }
-                            });
-
-                            search_bar.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-                                @Override
-                                public boolean onQueryTextSubmit(String query) {
-                                    return false;
-                                }
-
-                                @Override
-                                public boolean onQueryTextChange(String newText) {
-
-                                    return false;
-                                }
-                            });
-
                         } else {
                             Log.d("TAG", "Error getting documents: ", task.getException());
                         }
                     }
                 });
+
+        search_bar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                search_bar.onActionViewExpanded();
+            }
+        });
+
+        search_bar.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+
+                return false;
+            }
+        });
 
 
         return rootView;
@@ -305,13 +305,7 @@ public class RechercheFragment extends Fragment implements CoreListener {
     public void showPopUpProfil(User u) {
 
         PopupProfilFragment.USER_LOAD = u;
-       /* if(USER.get_friends_requests_send().contains(mStoreBase.collection("users").document(u.getUid()))){
-            PopupProfilFragment.button = R.drawable.ic_round_hourglass_top_24;
-       }else if(USER.get_friends_requests_received().contains(mStoreBase.collection("users").document(u.getUid()))){
-            PopupProfilFragment.button = R.drawable.ic_round_mail_24;
-        }else{*/
         PopupProfilFragment.button = R.drawable.ic_baseline_add_circle_outline_24;
-        // }
 
         navController.navigate(R.id.action_navigation_recherche_to_navigation_popup_profil);
     }

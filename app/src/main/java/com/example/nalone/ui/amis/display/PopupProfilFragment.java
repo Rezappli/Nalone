@@ -20,8 +20,10 @@ import com.bumptech.glide.Glide;
 import com.example.nalone.Cache;
 import com.example.nalone.R;
 import com.example.nalone.User;
+import com.example.nalone.UserFriendData;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.storage.StorageReference;
 
@@ -188,10 +190,11 @@ public class PopupProfilFragment extends Fragment {
     }
 
     public void addFriend() {
-        //USER_LOAD.get_friends_requests_received().add(mStoreBase.collection("users").document(USER.getUid()));
-        //USER.get_friends_requests_send().add(mStoreBase.collection("users").document(USER_LOAD.getUid()));
+        UserFriendData data1 = new UserFriendData("received", mStoreBase.collection("users").document(USER.getUid()));
+        UserFriendData data2 = new UserFriendData("send", mStoreBase.collection("users").document(USER_LOAD.getUid()));
+        mStoreBase.collection("users").document(USER.getUid()).collection("friends").document(USER_LOAD.getUid()).set(data2);
 
-        updateUserData(USER_LOAD);
-        updateUserData(USER);
+        mStoreBase.collection("users").document(USER_LOAD.getUid()).collection("friends").document(USER.getUid()).set(data1);
     }
+
 }
