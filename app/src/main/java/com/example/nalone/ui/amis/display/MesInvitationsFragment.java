@@ -95,43 +95,44 @@ public class MesInvitationsFragment extends Fragment implements CoreListener {
                                 friends.add(document.getId());
                             }
                             //query
-                            Query query = mStoreBase.collection("users").whereIn("uid", friends);
-                            FirestoreRecyclerOptions<User> options = new FirestoreRecyclerOptions.Builder<User>().setQuery(query, User.class).build();
+                            if (!friends.isEmpty()) {
+                                Query query = mStoreBase.collection("users").whereIn("uid", friends);
+                                FirestoreRecyclerOptions<User> options = new FirestoreRecyclerOptions.Builder<User>().setQuery(query, User.class).build();
 
-                            adapter = new FirestoreRecyclerAdapter<User, UserViewHolder>(options) {
-                                @NonNull
-                                @Override
-                                public UserViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-                                    View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_invit_amis, parent, false);
-                                    return new UserViewHolder(view);
-                                }
+                                adapter = new FirestoreRecyclerAdapter<User, UserViewHolder>(options) {
+                                    @NonNull
+                                    @Override
+                                    public UserViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+                                        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_invit_amis, parent, false);
+                                        return new UserViewHolder(view);
+                                    }
 
-                                @Override
-                                protected void onBindViewHolder(@NonNull final UserViewHolder userViewHolder, int i, @NonNull final User u) {
-                                    userViewHolder.villePers.setText(u.getCity());
-                                    userViewHolder.nomInvit.setText(u.getFirst_name() + " " + u.getLast_name());
+                                    @Override
+                                    protected void onBindViewHolder(@NonNull final UserViewHolder userViewHolder, int i, @NonNull final User u) {
+                                        userViewHolder.villePers.setText(u.getCity());
+                                        userViewHolder.nomInvit.setText(u.getFirst_name() + " " + u.getLast_name());
 
-                                    if (!Cache.fileExists(u.getUid())) {
-                                        StorageReference imgRef = mStore.getReference("users/" + u.getUid());
-                                        if (imgRef != null) {
-                                            imgRef.getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
-                                                @Override
-                                                public void onComplete(@NonNull Task<Uri> task) {
-                                                    if (task.isSuccessful()) {
-                                                        Uri img = task.getResult();
-                                                        if (img != null) {
-                                                            Log.w("image", "save image from cache");
-                                                            Cache.saveUriFile(u.getUid(), img);
-                                                            Glide.with(getContext()).load(img).fitCenter().centerCrop().into(userViewHolder.imagePerson);
+                                        if (!Cache.fileExists(u.getUid())) {
+                                            StorageReference imgRef = mStore.getReference("users/" + u.getUid());
+                                            if (imgRef != null) {
+                                                imgRef.getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
+                                                    @Override
+                                                    public void onComplete(@NonNull Task<Uri> task) {
+                                                        if (task.isSuccessful()) {
+                                                            Uri img = task.getResult();
+                                                            if (img != null) {
+                                                                Log.w("image", "save image from cache");
+                                                                Cache.saveUriFile(u.getUid(), img);
+                                                                Glide.with(getContext()).load(img).fitCenter().centerCrop().into(userViewHolder.imagePerson);
+                                                            }
                                                         }
                                                     }
-                                                }
-                                            });
-                                        } else {
-                                            Log.w("image", "get image from cache");
-                                            Glide.with(getContext()).load(Cache.getUriFromUid(u.getUid())).fitCenter().centerCrop().into(userViewHolder.imagePerson);
+                                                });
+                                            } else {
+                                                Log.w("image", "get image from cache");
+                                                Glide.with(getContext()).load(Cache.getUriFromUid(u.getUid())).fitCenter().centerCrop().into(userViewHolder.imagePerson);
+                                            }
                                         }
-                                    }
 
                                         userViewHolder.layoutProfil.setOnClickListener(new View.OnClickListener() {
                                             @Override
@@ -140,12 +141,12 @@ public class MesInvitationsFragment extends Fragment implements CoreListener {
                                             }
                                         });
 
-                                    userViewHolder.buttonAdd.setOnClickListener(new View.OnClickListener() {
-                                        @Override
-                                        public void onClick(View v) {
-                                            //addFriend(u.getUid());
-                                        }
-                                    });
+                                        userViewHolder.buttonAdd.setOnClickListener(new View.OnClickListener() {
+                                            @Override
+                                            public void onClick(View v) {
+                                                //addFriend(u.getUid());
+                                            }
+                                        });
 
                                         userViewHolder.buttonRemove.setOnClickListener(new View.OnClickListener() {
                                             @Override
@@ -155,15 +156,15 @@ public class MesInvitationsFragment extends Fragment implements CoreListener {
                                         });
                                         loading.setVisibility(View.GONE);
 
-                                }
-                            };
-                            mRecyclerView.setHasFixedSize(true);
-                            mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+                                    }
+                                };
+                                mRecyclerView.setHasFixedSize(true);
+                                mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
-                            mRecyclerView.setAdapter(adapter);
-                            adapter.startListening();
+                                mRecyclerView.setAdapter(adapter);
+                                adapter.startListening();
+                            }
                         }
-                        ;
                     }
                 });
     }
@@ -319,7 +320,9 @@ public class MesInvitationsFragment extends Fragment implements CoreListener {
     @Override
     public void onStop() {
         super.onStop();
-        adapter.stopListening();
+        if(adapter != null) {
+            adapter.stopListening();
+        }
     }
 
 }
