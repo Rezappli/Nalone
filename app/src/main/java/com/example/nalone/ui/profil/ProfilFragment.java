@@ -36,6 +36,7 @@ import static android.app.Activity.RESULT_OK;
 import static com.example.nalone.util.Constants.USER;
 import static com.example.nalone.util.Constants.USER_STORAGE_REF;
 import static com.example.nalone.util.Constants.mStore;
+import static com.example.nalone.util.Constants.mStoreBase;
 import static com.example.nalone.util.Constants.nolonelyBundle;
 import static com.example.nalone.util.Constants.updateUserData;
 
@@ -113,6 +114,11 @@ public class ProfilFragment extends Fragment  {
                         userConnectDesc.setEnabled(false);
                         imageViewEditDescription.setImageResource(R.drawable.ic_baseline_edit_24);
                         editDescription = false;
+                        if(!userConnectDesc.getText().toString().equalsIgnoreCase(USER.getDescription())){
+                            USER.setDescription(userConnectDesc.getText().toString());
+                            mStoreBase.collection("users").document(USER.getUid()).set(USER);
+                            Toast.makeText(getContext(), "Vous avez mis à jour votre description", Toast.LENGTH_SHORT).show();
+                        }
                     }
 
                 }
@@ -241,7 +247,7 @@ public class ProfilFragment extends Fragment  {
                         }
                     });
             USER.setImage_url(imagUri.getPath());
-            updateUserData(USER);
+            mStoreBase.collection("users").document(USER.getUid()).set(USER);
         }
         Glide.with(getContext()).load(imagUri).fitCenter().centerCrop().into(imageUser);
     }
