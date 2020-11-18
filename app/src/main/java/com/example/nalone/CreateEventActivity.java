@@ -124,8 +124,6 @@ public class CreateEventActivity extends Fragment {
         event_date = rootView.findViewById(R.id.eventDate);
         event_horaire = rootView.findViewById(R.id.eventHoraire);
 
-        locationValidImageView = rootView.findViewById(R.id.validePositionImageView);
-
         mLayoutManagerAdd = new LinearLayoutManager(getContext());
         mAdapterAdd = new ItemAddPersonAdapter(itemsAdd, getContext());
 
