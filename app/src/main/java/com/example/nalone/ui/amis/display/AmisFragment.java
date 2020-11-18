@@ -30,6 +30,7 @@ import com.example.nalone.items.ItemPerson;
 import com.example.nalone.R;
 import com.example.nalone.User;
 import com.example.nalone.listeners.FireStoreUsersListeners;
+import com.example.nalone.ui.profil.ProfilFragment;
 import com.example.nalone.ui.recherche.RechercheFragment;
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
@@ -44,6 +45,7 @@ import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.StorageReference;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import static com.example.nalone.util.Constants.USER;
 import static com.example.nalone.util.Constants.USER_REFERENCE;
@@ -68,6 +70,7 @@ public class AmisFragment extends Fragment implements CoreListener{
     private FirebaseFirestore firebaseFirestore;
     private FirestoreRecyclerAdapter adapter;
     private RecyclerView mRecyclerView;
+    private List<String> friends;
 
 
 
@@ -114,77 +117,91 @@ public class AmisFragment extends Fragment implements CoreListener{
     }
 
     private void adapterUsers() {
-
-        Query query = mStoreBase.collection("users").document(USER.getUid()).collection("friends");
-        FirestoreRecyclerOptions<UserFriendData> options = new FirestoreRecyclerOptions.Builder<UserFriendData>().setQuery(query, UserFriendData.class).build();
-
-        adapter = new FirestoreRecyclerAdapter<UserFriendData, UserViewHolder>(options) {
-            @NonNull
-            @Override
-            public UserViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-                View view= LayoutInflater.from(parent.getContext()).inflate(R.layout.item_person,parent,false);
-                return new UserViewHolder(view);
-            }
-
-            @Override
-            protected void onBindViewHolder(@NonNull final UserViewHolder userViewHolder, int i, @NonNull final UserFriendData data) {
-                getUserData(data.getUser().getId(), new FireStoreUsersListeners() {
+        friends = new ArrayList<>();
+        mStoreBase.collection("users").document(USER.getUid()).collection("friends").whereEqualTo("status", "add").limit(10)
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
-                    public void onDataUpdate(final User u) {
-                        userViewHolder.villePers.setText(u.getCity());
-                        userViewHolder.nomInvit.setText(u.getFirst_name() + " "+ u.getLast_name());
-                        userViewHolder.button.setImageResource(R.drawable.ic_baseline_delete_24);
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            for (QueryDocumentSnapshot document : task.getResult()) {
+                                Log.d("TAG", document.getId() + " => " + document.getData());
+                                friends.add(document.getId());
+                            }
+                            //query
+                            Query query = mStoreBase.collection("users").whereIn("uid", friends);
+                            FirestoreRecyclerOptions<User> options = new FirestoreRecyclerOptions.Builder<User>().setQuery(query, User.class).build();
 
-                        if(!Cache.fileExists(u.getUid())) {
-                            StorageReference imgRef = mStore.getReference("users/" + u.getUid());
-                            if (imgRef != null) {
-                                imgRef.getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
-                                    @Override
-                                    public void onComplete(@NonNull Task<Uri> task) {
-                                        if (task.isSuccessful()) {
-                                            Uri img = task.getResult();
-                                            if (img != null) {
-                                                Log.w("image", "save image from cache");
-                                                Cache.saveUriFile(u.getUid(), img);
-                                                Glide.with(getContext()).load(img).fitCenter().centerCrop().into(userViewHolder.imagePerson);
-                                            }
+                            adapter = new FirestoreRecyclerAdapter<User, UserViewHolder>(options) {
+                                @NonNull
+                                @Override
+                                public UserViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+                                    View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_person, parent, false);
+                                    return new UserViewHolder(view);
+                                }
+
+                                @Override
+                                protected void onBindViewHolder(@NonNull final UserViewHolder userViewHolder, int i, @NonNull final User u) {
+                                    userViewHolder.villePers.setText(u.getCity());
+                                    userViewHolder.nomInvit.setText(u.getFirst_name() + " " + u.getLast_name());
+                                    userViewHolder.button.setImageResource(R.drawable.ic_baseline_delete_24);
+
+                                    if(u.getImage_url() != null){
+                                    if (!Cache.fileExists(u.getUid())) {
+                                        Log.w("Cache", "Loading : " + u.getFirst_name());
+                                        StorageReference imgRef = mStore.getReference("users/" + u.getUid());
+                                        if (imgRef != null) {
+                                            imgRef.getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
+                                                @Override
+                                                public void onComplete(@NonNull Task<Uri> task) {
+                                                    if (task.isSuccessful()) {
+                                                        Uri img = task.getResult();
+                                                        if (img != null) {
+                                                            Log.w("image", "save image from cache");
+                                                            Cache.saveUriFile(u.getUid(), img);
+                                                            Glide.with(getContext()).load(img).fitCenter().centerCrop().into(userViewHolder.imagePerson);
+                                                        }
+                                                    }
+                                                }
+                                            });
+                                        } else {
+                                            Log.w("image", "get image from cache");
+                                            Glide.with(getContext()).load(Cache.getUriFromUid(u.getUid())).fitCenter().centerCrop().into(userViewHolder.imagePerson);
                                         }
                                     }
-                                });
-                            }
-                        }else{
-                            Log.w("image", "get image from cache");
-                            Glide.with(getContext()).load(Cache.getUriFromUid(u.getUid())).fitCenter().centerCrop().into(userViewHolder.imagePerson);
+                                    }
+
+
+                                        userViewHolder.layoutProfil.setOnClickListener(new View.OnClickListener() {
+                                            @Override
+                                            public void onClick(View v) {
+                                                showPopUpProfil(u);
+                                            }
+                                        });
+
+                                        userViewHolder.button.setOnClickListener(new View.OnClickListener() {
+                                            @Override
+                                            public void onClick(View v) {
+                                                removeFriend(u.getUid());
+                                            }
+                                        });
+                                        loading.setVisibility(View.GONE);
+
+
+
+                                }
+                            };
+                            mRecyclerView.setHasFixedSize(true);
+                            mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+
+                            mRecyclerView.setAdapter(adapter);
+                            adapter.startListening();
                         }
-
-
-
-
-                        userViewHolder.layoutProfil.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                showPopUpProfil(u);
-                            }
-                        });
-
-                        userViewHolder.button.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                removeFriend(u.getUid());
-                            }
-                        });
-                        loading.setVisibility(View.GONE);
-
+                        ;
                     }
                 });
-            }
-        };
-        mRecyclerView.setHasFixedSize(true);
-        mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-
-        mRecyclerView.setAdapter(adapter);
-        adapter.startListening();
     }
+
 
     private class UserViewHolder extends RecyclerView.ViewHolder {
 
@@ -225,23 +242,23 @@ public class AmisFragment extends Fragment implements CoreListener{
 
     public void showPopUpProfil(final User u) {
         PopupProfilFragment.USER_LOAD = u;
-        mStoreBase.collection("users").document(USER.getUid()).collection("friends").document(u.getUid()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+        mStoreBase.collection("users").document(USER.getUid()).collection("friends").whereEqualTo("status", "add").whereEqualTo("uid", u.getUid()).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
-            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
                 PopupProfilFragment.button = 0;
             }
         });
 
-        mStoreBase.collection("users").document(USER.getUid()).collection("friends_request_send").document(u.getUid()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+        mStoreBase.collection("users").document(USER.getUid()).collection("friends").whereEqualTo("status", "send").whereEqualTo("uid", u.getUid()).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
-            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
                 PopupProfilFragment.button = R.drawable.ic_round_hourglass_top_24;
             }
         });
 
-        mStoreBase.collection("users").document(USER.getUid()).collection("friends_request_received").document(u.getUid()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+        mStoreBase.collection("users").document(USER.getUid()).collection("friends").whereEqualTo("status", "received").whereEqualTo("uid", u.getUid()).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
-            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
                 PopupProfilFragment.button = R.drawable.ic_round_mail_24;
             }
         });
@@ -253,32 +270,12 @@ public class AmisFragment extends Fragment implements CoreListener{
         updateItems();
     }
 
-    //@Override
-    public void onUpdateAdapter() {
-        loading.setVisibility(View.GONE);
-        Log.w("Amis", "Update data on adapter");
-
-
-        if(nolonelyBundle.getSerializable("invits") != null) {
-            if((ArrayList<ItemPerson>)nolonelyBundle.getSerializable("invits") != items){
-                nolonelyBundle.putSerializable("friends", items);
-            }
-        }
-    }
-
     @Override
     public void onStop() {
         super.onStop();
         if(adapter != null) {
             adapter.stopListening();
         }
-    }
-
-    @Override
-    public void onStart(){
-        super.onStart();
-        //updateItems();
-        adapter.startListening();
     }
 
 }

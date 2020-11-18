@@ -242,26 +242,26 @@ public class RechercheFragment extends Fragment implements CoreListener {
                 userViewHolder.nomInvit.setText(u.getFirst_name() + " "+ u.getLast_name());
                 userViewHolder.button.setImageResource(0);
 
-                if(!Cache.fileExists(u.getUid())) {
-                    StorageReference imgRef = mStore.getReference("users/" + u.getUid());
-                    if (imgRef != null) {
-                        imgRef.getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
-                            @Override
-                            public void onComplete(@NonNull Task<Uri> task) {
-                                if (task.isSuccessful()) {
-                                    Uri img = task.getResult();
-                                    if (img != null) {
-                                        Log.w("image", "save image from cache");
-                                        Cache.saveUriFile(u.getUid(), img);
-                                        Glide.with(getContext()).load(img).fitCenter().centerCrop().into(userViewHolder.imagePerson);
+                if(u.getImage_url() != null) {
+                    if (!Cache.fileExists(u.getUid())) {
+                        StorageReference imgRef = mStore.getReference("users/" + u.getUid());
+                        if (imgRef != null) {
+                            imgRef.getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
+                                @Override
+                                public void onComplete(@NonNull Task<Uri> task) {
+                                    if (task.isSuccessful()) {
+                                        Uri img = task.getResult();
+                                        if (img != null) {
+                                            Cache.saveUriFile(u.getUid(), img);
+                                            Glide.with(getContext()).load(img).fitCenter().centerCrop().into(userViewHolder.imagePerson);
+                                        }
                                     }
                                 }
-                            }
-                        });
+                            });
+                        }
+                    } else {
+                        Glide.with(getContext()).load(Cache.getUriFromUid(u.getUid())).fitCenter().centerCrop().into(userViewHolder.imagePerson);
                     }
-                }else{
-                    Log.w("image", "get image from cache");
-                    Glide.with(getContext()).load(Cache.getUriFromUid(u.getUid())).fitCenter().centerCrop().into(userViewHolder.imagePerson);
                 }
 
                 userViewHolder.layoutProfil.setOnClickListener(new View.OnClickListener() {
@@ -316,111 +316,12 @@ public class RechercheFragment extends Fragment implements CoreListener {
         navController.navigate(R.id.action_navigation_recherche_to_navigation_popup_profil);
     }
 
-   /* public void updateItems() {
-        final boolean[] duplicate = {true};
-        items.clear();
-
-        mStoreBase.collection("users")
-                .whereGreaterThan("number", "0")
-                .limit(10)
-                .get()
-                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        if (task.isSuccessful()) {
-                            if(task.getResult().size() > 0) {
-                                for (QueryDocumentSnapshot document : task.getResult()) {
-                                    User USER_LOAD = document.toObject(User.class);
-                                    if(!USER_LOAD.getUid().equalsIgnoreCase(USER.getUid())) {
-                                       if (!USER_LOAD.get_friends().contains(USER_REFERENCE)) {
-                                            ItemPerson it;
-                                            if (USER.get_friends_requests_send().contains(mStoreBase.collection("users").document(USER_LOAD.getUid()))) {
-                                                it = new ItemPerson(USER_LOAD.getUid(), R.drawable.ic_baseline_account_circle_24, USER_LOAD.getFirst_name() + " " + USER_LOAD.getLast_name(), R.drawable.ic_round_hourglass_top_24, USER_LOAD.getDescription(), USER_LOAD.getCity(), USER_LOAD.getCursus(), USER_LOAD.get_number_events_create(), USER_LOAD.get_number_events_attend(), USER_LOAD.getCenters_interests());
-                                           } else if (USER.get_friends_requests_received().contains(mStoreBase.collection("users").document(USER_LOAD.getUid()))) {
-                                                it = new ItemPerson(USER_LOAD.getUid(), R.drawable.ic_baseline_account_circle_24, USER_LOAD.getFirst_name() + " " + USER_LOAD.getLast_name(), R.drawable.ic_round_mail_24, USER_LOAD.getDescription(), USER_LOAD.getCity(), USER_LOAD.getCursus(), USER_LOAD.get_number_events_create(), USER_LOAD.get_number_events_attend(), USER_LOAD.getCenters_interests());
-                                            } else {
-                                                it = new ItemPerson(USER_LOAD.getUid(), R.drawable.ic_baseline_account_circle_24, USER_LOAD.getFirst_name() + " " + USER_LOAD.getLast_name(), 0, USER_LOAD.getDescription(), USER_LOAD.getCity(), USER_LOAD.getCursus(), USER_LOAD.get_number_events_create(), USER_LOAD.get_number_events_attend(), USER_LOAD.getCenters_interests());
-                                            }
-
-                                            for(ItemPerson i : items) {
-                                                if (i.getUid().equalsIgnoreCase(it.getUid())) {
-                                                    duplicate[0] = true;
-                                                    break;
-                                                }
-                                            }
-
-                                            if(!items.contains(it)) {
-                                                items.add(it);
-                                                onUpdateAdapter();
-                                            }
-
-
-                                        }
-                                    }
-                                }
-
-                            }else{
-                                Log.w("Recherche", "Résultats vide");
-                            }
-                        } else {
-                            Log.d("SPLASH", "Error getting documents: ", task.getException());
-                        }
-                    }
-                }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                Log.w("SPLASH", "Erreur : " + e.getMessage());
-            }
-        });
-
-        /*for(int i = 0; i < USERS_LIST.size(); i++){
-            User u = USERS_LIST.get(i+"");
-            if(u != null) {
-                if (!USER_ID.equalsIgnoreCase(i + "")) {
-                    if (!USERS_LIST.get(USER_ID).getAmis().contains(i+"")) {
-                        ItemPerson it;
-                        if (USERS_LIST.get(USER_ID).getDemande_amis_envoye().contains(i+"")) {
-                            it = new ItemPerson(i, R.drawable.ic_baseline_account_circle_24, u.getPrenom() + " " + u.getNom(), R.drawable.ic_round_hourglass_top_24, u.getDescription(), u.getVille(), u.getCursus(), u.getNbCreation(), u.getNbParticipation(), u.getCentreInterets());
-                        } else if (USERS_LIST.get(USER_ID).getDemande_amis_recu().contains(i+"")) {
-                            it = new ItemPerson(i, R.drawable.ic_baseline_account_circle_24, u.getPrenom() + " " + u.getNom(), R.drawable.ic_round_mail_24, u.getDescription(), u.getVille(), u.getCursus(), u.getNbCreation(),u.getNbParticipation(), u.getCentreInterets());
-                        } else {
-                            it = new ItemPerson(i, R.drawable.ic_baseline_account_circle_24, u.getPrenom() + " " + u.getNom(), 0, u.getDescription(), u.getVille(), u.getCursus(), u.getNbCreation(),u.getNbParticipation(), u.getCentreInterets());
-                        }
-
-                        items.add(it);
-                    }
-                }
-            }
-        }
-
-
-    }*/
-
     @Override
     public void onDataChangeListener() {
         // updateItems();
         adapter.startListening();
     }
 
-    //  @Override
-    public void onUpdateAdapter() {
-        loading.setVisibility(View.GONE);
-        if(items.size() == 0){
-            resultat.setVisibility(View.VISIBLE);
-            resultat.setText("Aucun amis à ajouter !");
-        }else{
-            resultat.setVisibility(View.GONE);
-            resultat.setText("");
-        }
-
-    }
-
-    @Override
-    public void onStart(){
-        super.onStart();
-        //updateItems();
-
-    }
 
     @Override
     public void onStop() {
