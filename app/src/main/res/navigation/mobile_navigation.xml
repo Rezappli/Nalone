@@ -16,16 +16,6 @@
     </fragment>
 
     <fragment
-        android:id="@+id/navigation_group"
-        android:name="com.example.nalone.ui.amis.display.GroupeFragment"
-        android:label="@string/new_groupe"
-        tools:layout="@layout/groupe_fragment" >
-        <action
-            android:id="@+id/action_navigation_group_to_navigation_creat_group"
-            app:destination="@id/navigation_creat_group" />
-    </fragment>
-
-    <fragment
         android:id="@+id/navigation_recherche"
         android:name="com.example.nalone.ui.recherche.RechercheFragment"
         android:label="@string/title_recherche"
@@ -44,6 +34,9 @@
         <action
             android:id="@+id/action_navigation_amis_to_navigation_popup_profil"
             app:destination="@id/navigation_popup_profil" />
+        <action
+            android:id="@+id/action_navigation_amis_to_navigation_creat_group"
+            app:destination="@id/navigation_creat_group" />
     </fragment>
 
     <fragment
@@ -88,16 +81,6 @@
         android:name="com.example.nalone.ui.profil.EditFragment"
         android:label="@string/title_profil"
         tools:layout="@layout/fragment_edit" />
-
-    <fragment
-        android:id="@+id/navigation_invit_amis"
-        android:name="com.example.nalone.ui.amis.display.MesInvitationsFragment"
-        android:label="@string/listInvité"
-        tools:layout="@layout/fragment_mes_invitations" >
-        <action
-            android:id="@+id/action_navigation_invit_amis_to_navigation_popup_profil"
-            app:destination="@id/navigation_popup_profil" />
-    </fragment>
 
     <fragment
         android:id="@+id/navigation_aide"

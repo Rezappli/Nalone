@@ -60,12 +60,12 @@ public class GroupeFragment extends Fragment implements CoreListener {
 
         mRecyclerView = root.findViewById(R.id.recyclerViewGroupe);
         addGroup = root.findViewById(R.id.create_group_button);
-        navController = Navigation.findNavController(getActivity(), R.id.viewPager);
+        navController = Navigation.findNavController(getActivity(), R.id.nav_host_fragment);
 
         addGroup.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                navController.navigate(R.id.action_navigation_group_to_navigation_creat_group);
+                navController.navigate(R.id.action_navigation_amis_to_navigation_creat_group);
             }
         });
 

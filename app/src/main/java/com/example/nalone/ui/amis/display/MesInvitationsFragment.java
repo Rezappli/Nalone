@@ -182,7 +182,7 @@ public class MesInvitationsFragment extends Fragment implements CoreListener {
         PopupProfilFragment.button = R.drawable.ic_baseline_add_circle_outline_24;
         // }
 
-        navController.navigate(R.id.action_navigation_invit_amis_to_navigation_popup_profil);
+        navController.navigate(R.id.action_navigation_amis_to_navigation_popup_profil);
     }
 
 

@@ -263,6 +263,7 @@ public class AmisFragment extends Fragment implements CoreListener{
                 PopupProfilFragment.button = R.drawable.ic_round_mail_24;
             }
         });
+        navController.navigate(R.id.action_navigation_amis_to_navigation_popup_profil);
     }
 
     @Override
