@@ -326,7 +326,9 @@ public class RechercheFragment extends Fragment implements CoreListener {
     @Override
     public void onStop() {
         super.onStop();
-        adapter.stopListening();
+        if(adapter != null) {
+            adapter.stopListening();
+        }
     }
 
 
