@@ -277,6 +277,7 @@ public class RechercheFragment extends Fragment implements CoreListener {
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
         mRecyclerView.setAdapter(adapter);
+        adapter.startListening();
 
     }
 
@@ -312,7 +313,7 @@ public class RechercheFragment extends Fragment implements CoreListener {
 
     @Override
     public void onDataChangeListener() {
-        // updateItems();
+        mAdapterFiltre.notifyDataSetChanged();
         if(adapter != null) {
             adapter.startListening();
         }

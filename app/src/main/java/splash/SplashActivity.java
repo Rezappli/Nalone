@@ -154,31 +154,5 @@ public class SplashActivity extends AppCompatActivity {
                     }
                 });
     }
-
-    private LatLng getLocationFromAddress(String strAddress) {
-
-        Log.w("Location", "Loading coordinate from : " + strAddress);
-
-        Geocoder coder = new Geocoder(this);
-        List<Address> address;
-        LatLng p1 = null;
-
-        try {
-            // May throw an IOException
-            address = coder.getFromLocationName(strAddress, 10);
-            if (address == null) {
-                return null;
-            }
-
-            Address location = address.get(0);
-            p1 = new LatLng(location.getLatitude(), location.getLongitude() );
-
-        } catch (IOException ex) {
-
-            ex.printStackTrace();
-        }
-
-        return p1;
-    }
 }
 

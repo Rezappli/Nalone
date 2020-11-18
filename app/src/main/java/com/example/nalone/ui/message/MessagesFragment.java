@@ -41,7 +41,7 @@ public class MessagesFragment extends Fragment {
         mRecyclerView = root.findViewById(R.id.recycler);
 
         //query
-        Query query = mStoreBase.collection("users").document(USER.getUid()).collection("friends");
+        Query query = mStoreBase.collection("users").document(USER.getUid()).collection("friends").whereEqualTo("status", "add");
 
         //RecyclerOption
         FirestoreRecyclerOptions<UserFriendData> options = new FirestoreRecyclerOptions.Builder<UserFriendData>().setQuery(query, UserFriendData.class).build();

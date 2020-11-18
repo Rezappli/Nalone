@@ -174,13 +174,7 @@ public class MesInvitationsFragment extends Fragment implements CoreListener {
     public void showPopUpProfil(User u) {
 
         PopupProfilFragment.USER_LOAD = u;
-       /* if(USER.get_friends_requests_send().contains(mStoreBase.collection("users").document(u.getUid()))){
-            PopupProfilFragment.button = R.drawable.ic_round_hourglass_top_24;
-       }else if(USER.get_friends_requests_received().contains(mStoreBase.collection("users").document(u.getUid()))){
-            PopupProfilFragment.button = R.drawable.ic_round_mail_24;
-        }else{*/
-        PopupProfilFragment.button = R.drawable.ic_baseline_add_circle_outline_24;
-        // }
+        PopupProfilFragment.button = 0;
 
         navController.navigate(R.id.action_navigation_amis_to_navigation_popup_profil);
     }
