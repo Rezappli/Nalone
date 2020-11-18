@@ -155,10 +155,10 @@ public class AmisFragment extends Fragment implements CoreListener{
                                                             }
                                                         }
                                                     });
-                                                } else {
-                                                    Log.w("image", "get image from cache");
-                                                    Glide.with(getContext()).load(Cache.getUriFromUid(u.getUid())).fitCenter().centerCrop().into(userViewHolder.imagePerson);
                                                 }
+                                            } else {
+                                                Log.w("image", "get image from cache");
+                                                Glide.with(getContext()).load(Cache.getUriFromUid(u.getUid())).fitCenter().centerCrop().into(userViewHolder.imagePerson);
                                             }
                                         }
 

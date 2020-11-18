@@ -92,7 +92,7 @@ public class SplashActivity extends AppCompatActivity {
                                         USER_ID = USER.getUid();
                                         USER_STORAGE_REF = mStore.getReference("users").child(USER.getUid());
                                          Log.w("SPLASH", "City : " + USER.getCity());
-                                        USER_LATLNG = getLocationFromAddress(USER.getCity());
+                                        USER_LATLNG = new LatLng(USER.getLocation().getLatitude(), USER.getLocation().getLongitude());
                                         USER_REFERENCE = mStoreBase.collection("users").document(USER.getUid());
                                         Log.w("SPLASH", "City : " + USER_LATLNG.toString());
                                         load = true;

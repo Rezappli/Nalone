@@ -210,19 +210,8 @@ public class MesInvitationsFragment extends Fragment implements CoreListener {
     private void acceptFriendRequest(final String uid) {
         UserFriendData data1 = new UserFriendData("add", mStoreBase.collection("users").document(USER.getUid()));
         UserFriendData data2 = new UserFriendData("add", mStoreBase.collection("users").document(uid));
-        mStoreBase.collection("users").document(USER.getUid()).collection("friends").add(data2).addOnCompleteListener(new OnCompleteListener<DocumentReference>() {
-            @Override
-            public void onComplete(@NonNull Task<DocumentReference> task) {
-
-            }
-        });
-
-        mStoreBase.collection("users").document(uid).collection("friends").add(data1).addOnCompleteListener(new OnCompleteListener<DocumentReference>() {
-            @Override
-            public void onComplete(@NonNull Task<DocumentReference> task) {
-
-            }
-        });
+        mStoreBase.collection("users").document(USER.getUid()).collection("friends").document(uid).set(data2);
+        mStoreBase.collection("users").document(uid).collection("friends").document(USER.getUid()).set(data1);
 
         Toast.makeText(getContext(), "Vous avez ajouté(e) cet utilisateur", Toast.LENGTH_SHORT).show();
     }

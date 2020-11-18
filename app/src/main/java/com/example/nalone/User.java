@@ -5,8 +5,10 @@ import android.graphics.Bitmap;
 import com.example.nalone.util.Constants;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.GeoPoint;
 import com.google.firebase.firestore.local.ReferenceSet;
 import com.google.firestore.v1.Document;
+import com.google.android.gms.maps.model.LatLng;
 
 import java.lang.ref.Reference;
 import java.util.ArrayList;
@@ -31,6 +33,7 @@ public class User {
     private String number_events_attend;
     private String birthday_date;
     private String image_url;
+    private GeoPoint location;
 
     public User(){}
 
@@ -157,5 +160,13 @@ public class User {
 
     public void setImage_url(String image_url) {
         this.image_url = image_url;
+    }
+
+    public GeoPoint getLocation() {
+        return location;
+    }
+
+    public void setLocation(GeoPoint location) {
+        this.location = location;
     }
 }
