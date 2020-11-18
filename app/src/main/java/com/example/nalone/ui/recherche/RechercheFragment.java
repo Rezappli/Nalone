@@ -118,40 +118,40 @@ public class RechercheFragment extends Fragment implements CoreListener {
                                 Log.d("TAG", document.getId() + " => " + document.getData());
                                 friends.add(document.getId());
                             }
+                            friends.add(USER.getUid());
+                            //query
+                            Query query = mStoreBase.collection("users").whereNotIn("uid", friends);
+                            FirestoreRecyclerOptions<User> options = new FirestoreRecyclerOptions.Builder<User>().setQuery(query, User.class).build();
+
+                            adapterUsers(options);
+                            adapter.startListening();
+                            addFilters();
+
+                            search_bar.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    search_bar.onActionViewExpanded();
+                                }
+                            });
+
+                            search_bar.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+                                @Override
+                                public boolean onQueryTextSubmit(String query) {
+                                    return false;
+                                }
+
+                                @Override
+                                public boolean onQueryTextChange(String newText) {
+
+                                    return false;
+                                }
+                            });
+
                         } else {
                             Log.d("TAG", "Error getting documents: ", task.getException());
                         }
                     }
                 });
-
-
-        friends.add(USER.getUid());
-        //query
-        Query query = mStoreBase.collection("users").whereNotIn("uid", friends);
-        FirestoreRecyclerOptions<User> options = new FirestoreRecyclerOptions.Builder<User>().setQuery(query, User.class).build();
-
-        adapterUsers(options);
-        addFilters();
-
-        search_bar.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                search_bar.onActionViewExpanded();
-            }
-        });
-
-        search_bar.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-            @Override
-            public boolean onQueryTextSubmit(String query) {
-                return false;
-            }
-
-            @Override
-            public boolean onQueryTextChange(String newText) {
-
-                return false;
-            }
-        });
 
 
         return rootView;
@@ -310,8 +310,8 @@ public class RechercheFragment extends Fragment implements CoreListener {
        }else if(USER.get_friends_requests_received().contains(mStoreBase.collection("users").document(u.getUid()))){
             PopupProfilFragment.button = R.drawable.ic_round_mail_24;
         }else{*/
-            PopupProfilFragment.button = R.drawable.ic_baseline_add_circle_outline_24;
-       // }
+        PopupProfilFragment.button = R.drawable.ic_baseline_add_circle_outline_24;
+        // }
 
         navController.navigate(R.id.action_navigation_recherche_to_navigation_popup_profil);
     }
@@ -398,11 +398,11 @@ public class RechercheFragment extends Fragment implements CoreListener {
 
     @Override
     public void onDataChangeListener() {
-       // updateItems();
+        // updateItems();
         adapter.startListening();
     }
 
-  //  @Override
+    //  @Override
     public void onUpdateAdapter() {
         loading.setVisibility(View.GONE);
         if(items.size() == 0){
@@ -419,7 +419,7 @@ public class RechercheFragment extends Fragment implements CoreListener {
     public void onStart(){
         super.onStart();
         //updateItems();
-        adapter.startListening();
+
     }
 
     @Override

@@ -51,6 +51,7 @@ public class MesInvitationsFragment extends Fragment implements CoreListener {
        rootView = inflater.inflate(R.layout.fragment_mes_invitations, container, false);
         loading = rootView.findViewById(R.id.invits_loading);
 
+
         return rootView;
     }
 
