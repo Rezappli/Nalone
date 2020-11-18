@@ -48,6 +48,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.firestore.Source;
 import com.google.firebase.storage.StorageReference;
 
 import java.util.ArrayList;
@@ -123,14 +124,13 @@ public class RechercheFragment extends Fragment implements CoreListener {
                     }
                 });
 
-        friends.add("090");
 
+        friends.add(USER.getUid());
         //query
         Query query = mStoreBase.collection("users").whereNotIn("uid", friends);
-        //RecyclerOption
         FirestoreRecyclerOptions<User> options = new FirestoreRecyclerOptions.Builder<User>().setQuery(query, User.class).build();
-        adapterUsers(options);
 
+        adapterUsers(options);
         addFilters();
 
         search_bar.setOnClickListener(new View.OnClickListener() {
@@ -185,11 +185,11 @@ public class RechercheFragment extends Fragment implements CoreListener {
 
                 if(filtres.get(position).getBackground() == R.color.colorPrimary){
                     filtres.get(position).setBackground(R.drawable.custom_input);
-                    adapterFiltre("none");
+                    adapterFiltre("none", friends);
                 }
                 else{
                     filtres.get(position).setBackground(R.color.colorPrimary);
-                    adapterFiltre(filtres.get(position).getFiltre());
+                    adapterFiltre(filtres.get(position).getFiltre(), friends);
                 }
                 mAdapterFiltre.notifyDataSetChanged();
                 adapter.startListening();
@@ -198,41 +198,32 @@ public class RechercheFragment extends Fragment implements CoreListener {
         });
     }
 
-    public void adapterFiltre(String filtre){
-        final Query[] query = {null};
+    public void adapterFiltre(String filtre, List friends){
+        Query query = null;
         switch (filtre){
             case "INFO" :
-                query[0] = mStoreBase.collection("users").whereNotEqualTo("uid", USER.getUid()).whereEqualTo("cursus", "Informatique").limit(10);
+                query = mStoreBase.collection("users").whereNotIn("uid", friends).whereEqualTo("cursus", "Informatique").limit(10);
                 break;
             case "GB" :
-                query[0] = mStoreBase.collection("users").whereNotEqualTo("uid", USER.getUid()).whereEqualTo("cursus", "GB").limit(10);
+                query = mStoreBase.collection("users").whereNotIn("uid", friends).whereEqualTo("cursus", "GB").limit(10);
                 break;
             case "MMI" :
-                query[0] = mStoreBase.collection("users").whereNotEqualTo("uid", USER.getUid()).whereEqualTo("cursus", "MMI").limit(10);
+                query = mStoreBase.collection("users").whereNotIn("uid", friends).whereEqualTo("cursus", "MMI").limit(10);
                 break;
             case "TC" :
-                query[0] = mStoreBase.collection("users").whereNotEqualTo("uid", USER.getUid()).whereEqualTo("cursus", "TC").limit(10);
+                query = mStoreBase.collection("users").whereNotIn("uid", friends).whereEqualTo("cursus", "TC").limit(10);
                 break;
             case "LP" :
-                query[0] = mStoreBase.collection("users").whereNotEqualTo("uid", USER.getUid()).whereEqualTo("cursus", "LP").limit(10);
+                query = mStoreBase.collection("users").whereNotIn("uid", friends).whereEqualTo("cursus", "LP").limit(10);
                 break;
             case "none" :
-                mStoreBase.collection("users").document(USER.getUid()).collection("friends").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        List<String> friends = new ArrayList<>();
-                        for(QueryDocumentSnapshot doc : task.getResult()){
-                            friends.add(doc.toObject(UserFriendData.class).getUser().getId());
-                        }
-                        query[0] = mStoreBase.collection("users").whereNotEqualTo("uid", USER.getUid()).whereNotIn(USER.getUid(), friends).limit(10);
-                    }
-                });
+                query = mStoreBase.collection("users").whereNotIn("uid", friends).limit(10);
                 break;
             default:
                 break;
         }
 
-        FirestoreRecyclerOptions<User> options = new FirestoreRecyclerOptions.Builder<User>().setQuery(query[0], User.class).build();
+        FirestoreRecyclerOptions<User> options = new FirestoreRecyclerOptions.Builder<User>().setQuery(query, User.class).build();
         adapterUsers(options);
     }
 

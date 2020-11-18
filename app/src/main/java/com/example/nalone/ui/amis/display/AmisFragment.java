@@ -133,7 +133,7 @@ public class AmisFragment extends Fragment implements CoreListener{
                     public void onDataUpdate(final User u) {
                         userViewHolder.villePers.setText(u.getCity());
                         userViewHolder.nomInvit.setText(u.getFirst_name() + " "+ u.getLast_name());
-                        userViewHolder.button.setImageResource(0);
+                        userViewHolder.button.setImageResource(R.drawable.ic_baseline_delete_24);
 
                         if(!Cache.fileExists(u.getUid())) {
                             StorageReference imgRef = mStore.getReference("users/" + u.getUid());
