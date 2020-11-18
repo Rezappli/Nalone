@@ -38,7 +38,7 @@
                 android:layout_marginEnd="20dp"
                 android:layout_marginBottom="20dp"
                 android:background="@drawable/custom_input1"
-                android:padding="15dp"
+                android:padding="20dp"
                 app:srcCompat="@drawable/ic_baseline_add_a_photo_24" />
 
             <com.google.android.material.textfield.TextInputLayout
@@ -109,6 +109,7 @@
 
                 <TextView
                     android:id="@+id/eventDate"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="20dp"
@@ -116,8 +117,11 @@
                     android:layout_marginEnd="20dp"
                     android:layout_marginBottom="20dp"
                     android:layout_weight="0.5"
-                    android:background="@drawable/custom_input"
+                    android:background="@drawable/custom_input1"
+                    android:drawableStart="@drawable/ic_baseline_calendar_today_15"
                     android:drawableEnd="@drawable/ic_round_arrow_drop_down_24"
+                    android:drawablePadding="10dp"
+                    android:gravity="center_vertical"
                     android:onClick="showCalendrier"
                     android:padding="10dp"
                     android:text="@string/dateEvent" />
@@ -131,8 +135,11 @@
                     android:layout_marginEnd="20dp"
                     android:layout_marginBottom="20dp"
                     android:layout_weight="0.5"
-                    android:background="@drawable/custom_input"
+                    android:background="@drawable/custom_input1"
+                    android:drawableStart="@drawable/ic_baseline_access_time_15"
                     android:drawableEnd="@drawable/ic_round_arrow_drop_down_24"
+                    android:drawablePadding="10dp"
+                    android:gravity="center_vertical"
                     android:onClick="showTimePicker"
                     android:padding="10dp"
                     android:text="@string/horaireEvent" />
