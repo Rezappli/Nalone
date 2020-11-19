@@ -35,7 +35,6 @@ import static com.example.nalone.util.Constants.USER_STORAGE_REF;
 import static com.example.nalone.util.Constants.USER;
 import static com.example.nalone.util.Constants.currentUser;
 import static com.example.nalone.util.Constants.heightScreen;
-import static com.example.nalone.util.Constants.listeners;
 import static com.example.nalone.util.Constants.mAuth;
 import static com.example.nalone.util.Constants.mStore;
 import static com.example.nalone.util.Constants.mStoreBase;
@@ -89,7 +88,6 @@ public class SplashActivity extends AppCompatActivity {
                                         USER_REFERENCE = mStoreBase.collection("users").document(USER.getUid());
                                         Log.w("SPLASH", "City : " + USER_LATLNG.toString());
                                         load = true;
-                                        setUpRealTime();
                                         startActivity(new Intent(SplashActivity.this, HomeActivity.class));
                                     }else{
                                         load = true;
@@ -114,18 +112,6 @@ public class SplashActivity extends AppCompatActivity {
         }
     }
 
-    public void setUpRealTime(){
-        mStoreBase.collection("users").document(USER.getUid()).addSnapshotListener(MetadataChanges.INCLUDE, new EventListener<DocumentSnapshot>() {
-            @Override
-            public void onEvent(@Nullable DocumentSnapshot snapshot,
-                                @Nullable FirebaseFirestoreException e) {
-                USER = snapshot.toObject(User.class);
-                for(CoreListener listener : listeners){
-                    listener.onDataChangeListener();
-                }
-            }
-        });
-    }
 
     public void addUser(){
         User u = new User("11b4ee26-69b8-4ae2-abf9-2a7263f90f96", "Le Gal", "Hugo", "H", "Nantes","0781039461"

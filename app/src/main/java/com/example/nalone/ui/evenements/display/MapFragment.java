@@ -47,7 +47,6 @@ import static com.example.nalone.util.Constants.MAPVIEW_BUNDLE_KEY;
 import static com.example.nalone.util.Constants.USER_LATLNG;
 import static com.example.nalone.util.Constants.USER_REFERENCE;
 import static com.example.nalone.util.Constants.getEventData;
-import static com.example.nalone.util.Constants.listeners;
 import static com.example.nalone.util.Constants.nolonelyBundle;
 import static com.example.nalone.util.Constants.targetZoom;
 

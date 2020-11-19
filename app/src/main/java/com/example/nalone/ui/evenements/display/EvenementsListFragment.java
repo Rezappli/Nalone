@@ -28,7 +28,7 @@ import java.util.List;
 
 import static com.example.nalone.util.Constants.nolonelyBundle;
 
-public class EvenementsListFragment extends Fragment implements CoreListener {
+public class EvenementsListFragment extends Fragment {
 
     private ArrayList<Evenement> itemEvents = new ArrayList<>();
 
@@ -135,10 +135,6 @@ public class EvenementsListFragment extends Fragment implements CoreListener {
         });
     }
 
-    @Override
-    public void onDataChangeListener() {
-        updateItems();
-    }
 
     //@Override
     public void onUpdateAdapter() {

@@ -38,11 +38,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static com.example.nalone.util.Constants.USER;
-import static com.example.nalone.util.Constants.listeners;
 import static com.example.nalone.util.Constants.mStore;
 import static com.example.nalone.util.Constants.mStoreBase;
 
-public class ListAmisFragment extends Fragment implements CoreListener{
+public class ListAmisFragment extends Fragment {
 
     private SearchView search_bar;
 
@@ -67,7 +66,6 @@ public class ListAmisFragment extends Fragment implements CoreListener{
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        listeners.add(this);
         adds = new ArrayList<>();
         rootView = inflater.inflate(R.layout.fragment_list_amis, container, false);
         search_bar = rootView.findViewById(R.id.search_bar_amis);
@@ -254,13 +252,6 @@ public class ListAmisFragment extends Fragment implements CoreListener{
     private void updateItems() {
         ///RecyclerOption
         adapterUsers();
-    }
-
-
-    @Override
-    public void onDataChangeListener() {
-        Log.w("Amis", "Update data on firestore");
-        updateItems();
     }
 
     @Override

@@ -40,7 +40,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static com.example.nalone.util.Constants.USER;
-import static com.example.nalone.util.Constants.listeners;
 import static com.example.nalone.util.Constants.mStore;
 import static com.example.nalone.util.Constants.mStoreBase;
 
