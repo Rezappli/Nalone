@@ -193,7 +193,6 @@ public class PopupProfilFragment extends Fragment {
         UserFriendData data1 = new UserFriendData("received", mStoreBase.collection("users").document(USER.getUid()));
         UserFriendData data2 = new UserFriendData("send", mStoreBase.collection("users").document(USER_LOAD.getUid()));
         mStoreBase.collection("users").document(USER.getUid()).collection("friends").document(USER_LOAD.getUid()).set(data2);
-
         mStoreBase.collection("users").document(USER_LOAD.getUid()).collection("friends").document(USER.getUid()).set(data1);
     }
 

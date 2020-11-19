@@ -35,11 +35,27 @@ public class Cache {
 
     }
 
-    public static void getImageUrl(){
+    public static String getImageUrl(String uid){
+        String file_path = application.getCacheDir().getAbsolutePath();
+        File dir = new File(file_path);
+        File file = new File(dir, uid);
 
+        String data = "";
+        try {
+            Scanner myReader = new Scanner(file);
+            while (myReader.hasNextLine()) {
+                data += myReader.nextLine();
+                System.out.println(data);
+            }
+            myReader.close();
+        } catch (FileNotFoundException e) {
+            System.out.println("An error occurred.");
+            e.printStackTrace();
+        }
+        return data;
     }
 
-    public static Uri getUriFromUid(String uid, String img_url) {
+    public static Uri getUriFromUid(String uid) {
         String file_path = application.getCacheDir().getAbsolutePath();
         File dir = new File(file_path);
         File file = new File(dir, uid);

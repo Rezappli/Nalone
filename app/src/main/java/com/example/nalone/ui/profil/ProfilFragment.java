@@ -237,7 +237,7 @@ public class ProfilFragment extends Fragment  {
                     .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                         @Override
                         public void onSuccess(UploadTask.TaskSnapshot snapshot) {
-                            Toast.makeText(getContext(), "Vous avez changé votre photo de profil !", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getActivity().getBaseContext(), "Vous avez changé votre photo de profil !", Toast.LENGTH_SHORT).show();
                         }
                     })
                     .addOnFailureListener(new OnFailureListener() {
