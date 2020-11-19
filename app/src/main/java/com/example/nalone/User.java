@@ -3,6 +3,7 @@ package com.example.nalone;
 import android.graphics.Bitmap;
 
 import com.example.nalone.util.Constants;
+import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.GeoPoint;
@@ -32,7 +33,7 @@ public class User {
     private String number_events_create;
     private String number_events_attend;
     private String birthday_date;
-    private String image_url;
+    private Timestamp image_date;
     private GeoPoint location;
 
     public User(){}
@@ -54,7 +55,7 @@ public class User {
 
         this.number_events_create = "0";
         this.number_events_attend = "0";
-        this.image_url = null;
+        this.image_date = null;
     }
 
     public String getUid() {
@@ -153,12 +154,12 @@ public class User {
         this.birthday_date = birthday_date;
     }
 
-    public String getImage_url() {
-        return image_url;
+    public Timestamp getImage_url() {
+        return image_date;
     }
 
-    public void setImage_url(String image_url) {
-        this.image_url = image_url;
+    public void setImage_url(Timestamp image_date) {
+        this.image_date = image_date;
     }
 
     public GeoPoint getLocation() {

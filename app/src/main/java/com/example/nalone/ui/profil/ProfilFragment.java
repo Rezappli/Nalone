@@ -3,6 +3,7 @@ package com.example.nalone.ui.profil;
 import android.content.Intent;
 import android.graphics.Color;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -14,6 +15,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
@@ -27,10 +29,12 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.Timestamp;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
 import java.util.ArrayList;
+import java.util.Date;
 
 import static android.app.Activity.RESULT_OK;
 import static com.example.nalone.util.Constants.USER;
@@ -183,6 +187,7 @@ public class ProfilFragment extends Fragment  {
         });
 
         imageUser.post(new Runnable() {
+            @RequiresApi(api = Build.VERSION_CODES.O)
             @Override
             public void run() {
                 if(USER.getImage_url() != null) {
@@ -195,6 +200,8 @@ public class ProfilFragment extends Fragment  {
                                     if (task.isSuccessful()) {
                                         Uri img = task.getResult();
                                         if (img != null) {
+                                            USER.setImage_url(new Timestamp(new Date(System.currentTimeMillis())));
+                                            mStoreBase.collection("users").document(USER.getUid()).set(USER);
                                             Cache.saveUriFile(USER.getUid(), img);
                                             Glide.with(getContext()).load(img).fitCenter().centerCrop().into(imageUser);
                                         }
@@ -204,7 +211,9 @@ public class ProfilFragment extends Fragment  {
                         }
                     }else{
                         Uri imgCache = Cache.getUriFromUid(USER.getUid());
-                        if(imgCache.getPath().equalsIgnoreCase(USER.getImage_url())) {
+                        Log.w("Cache", "Image Cache : " + Cache.getImageDate(USER.getUid()));
+                        Log.w("Cache", "Data Cache : " + USER.getImage_url());
+                        if(Cache.getImageDate(USER.getUid()).equals(USER.getImage_url())) {
                             Log.w("image", "get image from cache");
                             Glide.with(getContext()).load(imgCache).fitCenter().centerCrop().into(imageUser);
                         }else{
@@ -216,7 +225,7 @@ public class ProfilFragment extends Fragment  {
                                         if (task.isSuccessful()) {
                                             Uri img = task.getResult();
                                             if (img != null) {
-                                                USER.setImage_url(img.getPath());
+                                                USER.setImage_url(new Timestamp(new Date(System.currentTimeMillis())));
                                                 mStoreBase.collection("users").document(USER.getUid()).set(USER);
                                                 Cache.saveUriFile(USER.getUid(), img);
                                                 Glide.with(getContext()).load(img).fitCenter().centerCrop().into(imageUser);
@@ -252,7 +261,7 @@ public class ProfilFragment extends Fragment  {
     }
 
 
-    public void uploadFile(Uri imagUri) {
+    public void uploadFile(final Uri imagUri) {
         if (imagUri != null) {
 
             USER_STORAGE_REF.putFile(imagUri)
@@ -260,16 +269,17 @@ public class ProfilFragment extends Fragment  {
                         @Override
                         public void onSuccess(UploadTask.TaskSnapshot snapshot) {
                             Toast.makeText(getActivity().getBaseContext(), "Vous avez changé votre photo de profil !", Toast.LENGTH_SHORT).show();
+                            USER.setImage_url(new Timestamp(new Date(System.currentTimeMillis())));
+                            mStoreBase.collection("users").document(USER.getUid()).set(USER);
                         }
                     })
                     .addOnFailureListener(new OnFailureListener() {
                         @Override
                         public void onFailure(@NonNull Exception exception) {
-                            Log.w("Error", exception.getMessage());
+                            Toast.makeText(getActivity().getBaseContext(), "Une erreur est survenue !", Toast.LENGTH_SHORT).show();
                         }
                     });
-            USER.setImage_url(imagUri.getPath());
-            mStoreBase.collection("users").document(USER.getUid()).set(USER);
+
         }
         Glide.with(getContext()).load(imagUri).fitCenter().centerCrop().into(imageUser);
     }

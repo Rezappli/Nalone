@@ -2,7 +2,12 @@ package com.example.nalone;
 
 import android.content.Context;
 import android.net.Uri;
+import android.os.Build;
 import android.util.Log;
+
+import androidx.annotation.RequiresApi;
+
+import com.google.firebase.Timestamp;
 
 import static com.example.nalone.util.Constants.application;
 import static com.example.nalone.util.Constants.formatD;
@@ -12,6 +17,10 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.nio.file.Files;
+import java.nio.file.attribute.BasicFileAttributes;
+import java.nio.file.attribute.FileTime;
+import java.util.Date;
 import java.util.Scanner;
 
 public class Cache {
@@ -27,7 +36,6 @@ public class Cache {
             fOut.write(uri.toString().getBytes());
             fOut.flush();
             fOut.close();
-            Log.w("image","sauvegarde de : " + uid + " chemin :"+file_path);
         }
         catch (Exception e) {
             e.printStackTrace();
@@ -35,24 +43,20 @@ public class Cache {
 
     }
 
-    public static String getImageUrl(String uid){
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    public static Timestamp getImageDate(String uid){
         String file_path = application.getCacheDir().getAbsolutePath();
         File dir = new File(file_path);
         File file = new File(dir, uid);
-
-        String data = "";
         try {
-            Scanner myReader = new Scanner(file);
-            while (myReader.hasNextLine()) {
-                data += myReader.nextLine();
-                System.out.println(data);
-            }
-            myReader.close();
-        } catch (FileNotFoundException e) {
-            System.out.println("An error occurred.");
-            e.printStackTrace();
+            BasicFileAttributes attrs = Files.readAttributes(file.toPath(), BasicFileAttributes.class);
+            FileTime time = attrs.creationTime();
+            return new Timestamp(new Date(time.toMillis()));
+        }catch (IOException e){
+            Log.e("Cache", e.getMessage());
         }
-        return data;
+        return null;
+
     }
 
     public static Uri getUriFromUid(String uid) {

@@ -1,9 +1,11 @@
 package com.example.nalone.ui.amis.display;
 
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
@@ -30,6 +32,7 @@ import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
@@ -37,6 +40,7 @@ import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.StorageReference;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import static com.example.nalone.util.Constants.USER;
@@ -125,6 +129,7 @@ public class AmisFragment extends Fragment {
                                         return new UserViewHolder(view);
                                     }
 
+                                    @RequiresApi(api = Build.VERSION_CODES.O)
                                     @Override
                                     protected void onBindViewHolder(@NonNull final UserViewHolder userViewHolder, int i, @NonNull final User u) {
                                         userViewHolder.villePers.setText(u.getCity());
@@ -137,7 +142,7 @@ public class AmisFragment extends Fragment {
 
                                             } else {
                                                 Uri imgCache = Cache.getUriFromUid(u.getUid());
-                                                if(imgCache.getPath().equalsIgnoreCase(u.getImage_url())) {
+                                                if(Cache.getImageDate(USER.getUid()).equals(u.getImage_url())) {
                                                     Log.w("image", "get image from cache");
                                                     Glide.with(getContext()).load(imgCache).fitCenter().centerCrop().into(userViewHolder.imagePerson);
                                                 }else{
@@ -149,7 +154,7 @@ public class AmisFragment extends Fragment {
                                                                 if (task.isSuccessful()) {
                                                                     Uri img = task.getResult();
                                                                     if (img != null) {
-                                                                        u.setImage_url(img.getPath());
+                                                                        u.setImage_url(new Timestamp(new Date(System.currentTimeMillis())));
                                                                         mStoreBase.collection("users").document(u.getUid()).set(u);
                                                                         Cache.saveUriFile(u.getUid(), img);
                                                                         Glide.with(getContext()).load(img).fitCenter().centerCrop().into(userViewHolder.imagePerson);

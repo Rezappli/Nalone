@@ -33,6 +33,7 @@ import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
@@ -40,6 +41,7 @@ import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.StorageReference;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import static com.example.nalone.util.Constants.USER;
@@ -246,7 +248,7 @@ public class RechercheFragment extends Fragment {
                                     if (task.isSuccessful()) {
                                         Uri img = task.getResult();
                                         if (img != null) {
-                                            u.setImage_url(img.getPath());
+                                            u.setImage_url(new Timestamp(new Date(System.currentTimeMillis())));
                                             mStoreBase.collection("users").document(u.getUid()).set(u);
                                             Cache.saveUriFile(u.getUid(), img);
                                             Glide.with(getContext()).load(img).fitCenter().centerCrop().into(userViewHolder.imagePerson);
