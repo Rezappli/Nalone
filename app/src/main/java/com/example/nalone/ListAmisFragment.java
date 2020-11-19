@@ -15,6 +15,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
@@ -25,6 +26,8 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.example.nalone.listeners.CoreListener;
 import com.example.nalone.items.ItemPerson;
+import com.example.nalone.ui.amis.display.AmisFragment;
+import com.example.nalone.ui.amis.display.GroupeFragment;
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -58,6 +61,10 @@ public class ListAmisFragment extends Fragment implements CoreListener{
     private FirestoreRecyclerAdapter adapter;
     private RecyclerView mRecyclerView;
     private List<String> friends;
+    private List<String> adds;
+
+    private Button valider;
+    private int remove, add;
 
 
     @Override
@@ -65,15 +72,30 @@ public class ListAmisFragment extends Fragment implements CoreListener{
                              Bundle savedInstanceState) {
 
         listeners.add(this);
-        rootView = inflater.inflate(R.layout.fragment_amis, container, false);
+        adds = new ArrayList<>();
+        rootView = inflater.inflate(R.layout.fragment_list_amis, container, false);
         search_bar = rootView.findViewById(R.id.search_bar_amis);
         resultat = rootView.findViewById(R.id.resultatText_amis);
         resultat.setVisibility(View.GONE);
         navController = Navigation.findNavController(getActivity(), R.id.nav_host_fragment);
         loading = rootView.findViewById(R.id.amis_loading);
+        valider = rootView.findViewById(R.id.validerListAmi);
+        mRecyclerView = rootView.findViewById(R.id.recyclerViewAmisAdd);
+        remove = R.drawable.ic_baseline_remove_24;
+        add = R.drawable.ic_baseline_add_24;
 
-        mRecyclerView = rootView.findViewById(R.id.recyclerViewMesAmis);
+        ajoutMembres();
 
+        valider.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                for (String a : adds){
+                    Log.w("Adds", a);
+                }
+                CreateGroupFragment.adds = adds;
+                navController.navigate(R.id.action_navigation_list_amis_to_navigation_creat_group);
+            }
+        });
         adapterUsers();
         search_bar.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -98,6 +120,12 @@ public class ListAmisFragment extends Fragment implements CoreListener{
         return rootView;
     }
 
+    private void ajoutMembres() {
+        for(String s : CreateGroupFragment.adds ){
+            adds.add(s);
+        }
+    }
+
     private void adapterUsers() {
         friends = new ArrayList<>();
         mStoreBase.collection("users").document(USER.getUid()).collection("friends").whereEqualTo("status", "add").limit(10)
@@ -120,7 +148,7 @@ public class ListAmisFragment extends Fragment implements CoreListener{
                                     @NonNull
                                     @Override
                                     public UserViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-                                        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_invit_amis, parent, false);
+                                        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_person, parent, false);
                                         return new UserViewHolder(view);
                                     }
 
@@ -128,6 +156,27 @@ public class ListAmisFragment extends Fragment implements CoreListener{
                                     protected void onBindViewHolder(@NonNull final UserViewHolder userViewHolder, int i, @NonNull final User u) {
                                         userViewHolder.villePers.setText(u.getCity());
                                         userViewHolder.nomInvit.setText(u.getFirst_name() + " " + u.getLast_name());
+                                        userViewHolder.button.setImageResource(R.drawable.ic_baseline_add_24);
+
+                                        if(adds.contains(u.getUid())){
+                                            userViewHolder.button.setImageDrawable(getResources().getDrawable(remove));
+                                        }else{
+                                            userViewHolder.button.setImageDrawable(getResources().getDrawable(add));
+                                        }
+                                        userViewHolder.button.setOnClickListener(new View.OnClickListener() {
+                                            @Override
+                                            public void onClick(View v) {
+
+                                                if(!adds.contains(u.getUid()) || adds.isEmpty()){
+                                                    userViewHolder.button.setImageDrawable(getResources().getDrawable(remove));
+                                                    adds.add(u.getUid());
+                                                }else{
+                                                    userViewHolder.button.setImageDrawable(getResources().getDrawable(add));
+                                                    adds.remove(u.getUid());
+                                                }
+                                            }
+                                        });
+
 
                                         if (u.getImage_url() != null) {
                                             if (!Cache.fileExists(u.getUid())) {
@@ -147,28 +196,13 @@ public class ListAmisFragment extends Fragment implements CoreListener{
                                                             }
                                                         }
                                                     });
-                                                } else {
-                                                    Log.w("image", "get image from cache");
-                                                    Glide.with(getContext()).load(Cache.getUriFromUid(u.getUid())).fitCenter().centerCrop().into(userViewHolder.imagePerson);
                                                 }
+                                            } else {
+                                                Log.w("image", "get image from cache");
+                                                Glide.with(getContext()).load(Cache.getUriFromUid(u.getUid())).fitCenter().centerCrop().into(userViewHolder.imagePerson);
                                             }
                                         }
 
-                                        userViewHolder.buttonRemove.setOnClickListener(new View.OnClickListener() {
-                                            @Override
-                                            public void onClick(View v) {
-                                                removeFriend(u.getUid());
-                                            }
-                                        });
-
-                                        userViewHolder.buttonAdd.setOnClickListener(new View.OnClickListener() {
-                                            @SuppressLint("ResourceType")
-                                            @Override
-                                            public void onClick(View v) {
-                                                removeFriend(u.getUid());
-                                                userViewHolder.buttonAdd.setImageDrawable(getResources().getDrawable(R.id.addInvitAmis));
-                                            }
-                                        });
                                         loading.setVisibility(View.GONE);
 
 
@@ -178,11 +212,13 @@ public class ListAmisFragment extends Fragment implements CoreListener{
                                 mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
                                 mRecyclerView.setAdapter(adapter);
+
                                 adapter.startListening();
                             }
                         }
                     }
                 });
+
     }
 
 
@@ -190,19 +226,21 @@ public class ListAmisFragment extends Fragment implements CoreListener{
 
         private TextView nomInvit;
         private TextView villePers;
+        private LinearLayout layoutProfil;
         private ImageView imagePerson;
-        private ImageView buttonAdd, buttonRemove;
+        private ImageView button;
 
         public UserViewHolder(@NonNull View itemView) {
             super(itemView);
 
-            nomInvit = itemView.findViewById(R.id.nomAmisInvit);
-            villePers = itemView.findViewById(R.id.villeAmisInvit);
+            nomInvit = itemView.findViewById(R.id.nomInvit);
+            villePers = itemView.findViewById(R.id.villePers);
+            layoutProfil = itemView.findViewById(R.id.layoutProfil);
             imagePerson = itemView.findViewById(R.id.imagePerson);
-            buttonAdd = itemView.findViewById(R.id.addInvitAmis);
-            buttonRemove= itemView.findViewById(R.id.removeInvitAmis);
+            button = itemView.findViewById(R.id.imageView19);
 
         }
+
 
     }
     private void removeFriend(final String uid) {

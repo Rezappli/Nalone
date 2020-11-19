@@ -25,7 +25,7 @@
                 android:layout_height="wrap_content"
                 android:layout_margin="20dp"
                 android:gravity="center"
-                android:text="@string/new_event"
+                android:text="@string/new_groupe"
                 android:textSize="24sp" />
 
             <ImageView
@@ -33,9 +33,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="100dp"
                 android:layout_gravity="center"
-                android:layout_marginStart="20dp"
+                android:layout_marginStart="60dp"
                 android:layout_marginTop="20dp"
-                android:layout_marginEnd="20dp"
+                android:layout_marginEnd="60dp"
                 android:layout_marginBottom="20dp"
                 android:background="@drawable/custom_input1"
                 android:padding="20dp"
@@ -138,7 +138,7 @@
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/recyclerViewCreateGroup"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="0dp"
                 android:layout_marginStart="20dp"
                 android:layout_weight="1"
                 android:visibility="visible">
@@ -156,7 +156,7 @@
                 app:srcCompat="@drawable/ic_baseline_add_24" />
 
             <Button
-                android:id="@+id/button"
+                android:id="@+id/buttonCreateGroup"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="30dp"

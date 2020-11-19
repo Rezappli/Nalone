@@ -1,19 +1,27 @@
 package com.example.nalone;
 
+import com.google.firebase.firestore.DocumentReference;
+
 public class Group {
     private String uid;
     private String name;
+    private String owner;
     private String description;
     private String image_url;
+    private Visibility visibility;
+    private DocumentReference ownerDoc;
 
     public Group(){}
 
-    public Group(String uid,String name,
-                 String description){
+    public Group(String uid,String owner,String name,
+                 String description, Visibility visibility, DocumentReference ownerDoc){
         this.uid = uid;
+        this.owner = owner;
         this.name = name;
         this.description = description;
         this.image_url = null;
+        this.ownerDoc = ownerDoc;
+        this.visibility = visibility;
     }
 
     public String getUid() {
@@ -46,5 +54,29 @@ public class Group {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getOwner() {
+        return owner;
+    }
+
+    public void setOwner(String owner) {
+        this.owner = owner;
+    }
+
+    public Visibility getVisibility() {
+        return visibility;
+    }
+
+    public void setVisibility(Visibility visibility) {
+        this.visibility = visibility;
+    }
+
+    public DocumentReference getOwnerDoc() {
+        return ownerDoc;
+    }
+
+    public void setOwnerDoc(DocumentReference ownerDoc) {
+        this.ownerDoc = ownerDoc;
     }
 }

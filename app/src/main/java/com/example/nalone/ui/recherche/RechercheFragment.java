@@ -232,6 +232,7 @@ public class RechercheFragment extends Fragment implements CoreListener {
             @NonNull
             @Override
             public UserViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+                Log.w("Add", "ViewHolder Recherche");
                 View view= LayoutInflater.from(parent.getContext()).inflate(R.layout.item_person,parent,false);
                 return new UserViewHolder(view);
             }
@@ -241,7 +242,7 @@ public class RechercheFragment extends Fragment implements CoreListener {
                 userViewHolder.villePers.setText(u.getCity());
                 userViewHolder.nomInvit.setText(u.getFirst_name() + " "+ u.getLast_name());
                 userViewHolder.button.setImageResource(0);
-
+                Log.w("Add", "BienHolder Recherche");
                 if(u.getImage_url() != null) {
                     if (!Cache.fileExists(u.getUid())) {
                         StorageReference imgRef = mStore.getReference("users/" + u.getUid());
@@ -273,6 +274,7 @@ public class RechercheFragment extends Fragment implements CoreListener {
                 loading.setVisibility(View.GONE);
             }
         };
+        Log.w("Add", "Set Adapter Recherche");
         mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 

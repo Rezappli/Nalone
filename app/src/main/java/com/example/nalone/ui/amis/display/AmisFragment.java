@@ -62,14 +62,10 @@ public class AmisFragment extends Fragment implements CoreListener{
     private List<String> friends;
 
 
-
-    public AmisFragment() {
-        // Required empty public constructor
-    }
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
 
         listeners.add(this);
         rootView = inflater.inflate(R.layout.fragment_amis, container, false);
@@ -82,6 +78,8 @@ public class AmisFragment extends Fragment implements CoreListener{
         mRecyclerView = rootView.findViewById(R.id.recyclerViewMesAmis);
 
         adapterUsers();
+
+
         search_bar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -185,11 +183,13 @@ public class AmisFragment extends Fragment implements CoreListener{
                                 mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
                                 mRecyclerView.setAdapter(adapter);
+
                                 adapter.startListening();
                             }
                         }
                     }
                 });
+
     }
 
 
@@ -221,14 +221,11 @@ public class AmisFragment extends Fragment implements CoreListener{
                 collection("friends").document(USER.getUid()).delete();
 
         Toast.makeText(getContext(), "Vous avez supprimé un amis !", Toast.LENGTH_SHORT).show();
-    }
 
-
-
-    private void updateItems() {
-        ///RecyclerOption
         adapterUsers();
+
     }
+
 
     public void showPopUpProfil(final User u) {
         PopupProfilFragment.USER_LOAD = u;
@@ -258,7 +255,6 @@ public class AmisFragment extends Fragment implements CoreListener{
     @Override
     public void onDataChangeListener() {
         Log.w("Amis", "Update data on firestore");
-        updateItems();
     }
 
     @Override

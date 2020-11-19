@@ -54,7 +54,6 @@ public class User {
 
         this.number_events_create = "0";
         this.number_events_attend = "0";
-
         this.image_url = null;
     }
 

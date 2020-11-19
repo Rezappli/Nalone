@@ -84,6 +84,8 @@ public class MesEvenementsListFragment extends Fragment implements CoreListener 
             }
         });
 
+
+
         updateEvents();
 
         return rootView;

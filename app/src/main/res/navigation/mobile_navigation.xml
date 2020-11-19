@@ -49,7 +49,11 @@
         android:id="@+id/navigation_list_amis"
         android:name="com.example.nalone.ListAmisFragment"
         android:label="@string/listInvité"
-        tools:layout="@layout/fragment_list_amis" />
+        tools:layout="@layout/fragment_list_amis" >
+        <action
+            android:id="@+id/action_navigation_list_amis_to_navigation_creat_group"
+            app:destination="@id/navigation_creat_group" />
+    </fragment>
 
 
 
@@ -61,6 +65,9 @@
         <action
             android:id="@+id/action_navigation_creat_group_to_navigation_list_amis"
             app:destination="@id/navigation_list_amis" />
+        <action
+            android:id="@+id/action_navigation_creat_group_to_navigation_amis"
+            app:destination="@id/navigation_amis" />
     </fragment>
 
     <fragment

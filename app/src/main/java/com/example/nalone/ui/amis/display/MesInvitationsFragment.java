@@ -65,17 +65,13 @@ public class MesInvitationsFragment extends Fragment implements CoreListener {
     private ProgressBar loading;
     List<String> friends;
 
-
-    public MesInvitationsFragment() {
-        // Required empty public constructor
-    }
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         listeners.add(this);
         rootView = inflater.inflate(R.layout.fragment_mes_invitations, container, false);
         loading = rootView.findViewById(R.id.invits_loading);
+
 
         navController = Navigation.findNavController(getActivity(), R.id.nav_host_fragment);
         mRecyclerView = rootView.findViewById(R.id.recyclerViewInvitAmis);
@@ -85,6 +81,7 @@ public class MesInvitationsFragment extends Fragment implements CoreListener {
     }
 
     private void adapterInvits() {
+
         friends = new ArrayList<>();
         mStoreBase.collection("users").document(USER.getUid()).collection("friends").whereEqualTo("status", "received").limit(10)
                 .get()
@@ -165,6 +162,7 @@ public class MesInvitationsFragment extends Fragment implements CoreListener {
 
                                 mRecyclerView.setAdapter(adapter);
                                 adapter.startListening();
+
                             }
                         }
                     }
@@ -206,7 +204,6 @@ public class MesInvitationsFragment extends Fragment implements CoreListener {
         UserFriendData data2 = new UserFriendData("add", mStoreBase.collection("users").document(uid));
         mStoreBase.collection("users").document(USER.getUid()).collection("friends").document(uid).set(data2);
         mStoreBase.collection("users").document(uid).collection("friends").document(USER.getUid()).set(data1);
-
         Toast.makeText(getContext(), "Vous avez ajouté(e) cet utilisateur", Toast.LENGTH_SHORT).show();
     }
 
@@ -217,12 +214,16 @@ public class MesInvitationsFragment extends Fragment implements CoreListener {
         mStoreBase.collection("users").document(uid).collection("friends").document(USER.getUid()).delete();
 
         Toast.makeText(getContext(), "Vous n'avez pas accepté(e) cet utilisateur", Toast.LENGTH_SHORT).show();
+        adapter.startListening();
+
     }
 
     @Override
     public void onDataChangeListener() {
-        Log.w("Invitations", "Update data on firestore");
+
     }
+
+
 
     @Override
     public void onStop() {
