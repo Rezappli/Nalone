@@ -3,6 +3,7 @@ package com.example.nalone.ui.evenements;
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.cardview.widget.CardView;
+import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
@@ -31,6 +32,8 @@ import android.widget.Toast;
 
 import com.example.nalone.Evenement;
 import com.example.nalone.R;
+import com.example.nalone.SelectDateFragment;
+import com.example.nalone.TimePickerFragment;
 import com.example.nalone.Visibility;
 import com.example.nalone.adapter.ItemAddPersonAdapter;
 import com.example.nalone.adapter.ItemProfilAdapter;
@@ -66,7 +69,7 @@ public class CreateEventFragment extends Fragment {
     private TextInputEditText event_city;
     private TextInputEditText event_resume;
     private Visibility event_visibilite;
-    private TextView event_date;
+    public static TextView event_date;
 
     private Dialog dialogCalendrier;
     private CalendarView calendarDate;
@@ -80,7 +83,7 @@ public class CreateEventFragment extends Fragment {
     private int newYears;
 
     private TimePicker picker;
-    private TextView event_horaire;
+    public static TextView event_horaire;
 
     private Dialog dialogAddPerson;
     private CardView cardViewPrivate;
@@ -212,6 +215,24 @@ public class CreateEventFragment extends Fragment {
             }
         });
 
+        event_date.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                DialogFragment newFragment = new SelectDateFragment();
+                newFragment.show(getActivity().getSupportFragmentManager(), "DatePicker");
+            }
+        });
+
+        event_horaire.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                DialogFragment newFragment = new TimePickerFragment();
+                //newFragment.show(getActivity().getFragmentManager(), DIALOG_TIME);
+                newFragment.show(getActivity().getSupportFragmentManager(), "DIALOG_TIME");
+                // if you are using the nested fragment then user the
+                //newFragment.show(getChildFragmentManager(), DIALOG_TIME);*/
+            }
+        });
 
 
         buttonValidEvent.setOnClickListener(new View.OnClickListener() {

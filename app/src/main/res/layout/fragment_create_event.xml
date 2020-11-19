@@ -125,7 +125,6 @@
                     android:drawableEnd="@drawable/ic_round_arrow_drop_down_24"
                     android:drawablePadding="10dp"
                     android:gravity="center_vertical"
-                    android:onClick="showCalendrier"
                     android:padding="10dp"
                     android:text="@string/dateEvent" />
 
@@ -143,7 +142,6 @@
                     android:drawableEnd="@drawable/ic_round_arrow_drop_down_24"
                     android:drawablePadding="10dp"
                     android:gravity="center_vertical"
-                    android:onClick="showTimePicker"
                     android:padding="10dp"
                     android:text="@string/horaireEvent" />
 
