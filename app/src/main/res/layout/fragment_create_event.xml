@@ -54,6 +54,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="@string/nom"
+                    android:singleLine="true"
                     android:textSize="18sp" />
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -67,7 +68,8 @@
                     android:id="@+id/eventAdress"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="@string/adresse" />
+                    android:hint="@string/adresse"
+                    android:singleLine="true" />
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
@@ -81,7 +83,8 @@
                     android:id="@+id/eventCity"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="@string/ville" />
+                    android:hint="@string/ville"
+                    android:singleLine="true" />
 
             </com.google.android.material.textfield.TextInputLayout>
 
