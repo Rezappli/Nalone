@@ -1,6 +1,5 @@
 package com.example.nalone;
 
-import android.annotation.SuppressLint;
 import android.net.Uri;
 import android.os.Bundle;
 
@@ -24,10 +23,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
-import com.example.nalone.listeners.CoreListener;
 import com.example.nalone.items.ItemPerson;
-import com.example.nalone.ui.amis.display.AmisFragment;
-import com.example.nalone.ui.amis.display.GroupeFragment;
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;

@@ -1,12 +1,7 @@
 package com.example.nalone.ui.evenements.display;
 
-import android.content.DialogInterface;
-import android.location.Location;
-import android.location.LocationListener;
 import android.os.Bundle;
 
-import androidx.appcompat.app.AlertDialog;
-import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
 import android.util.Log;
@@ -16,11 +11,8 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import com.example.nalone.adapter.ItemEventAdapter;
-import com.example.nalone.listeners.CoreListener;
 import com.example.nalone.R;
 import com.example.nalone.listeners.FireStoreEventsListeners;
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import android.Manifest;
@@ -28,7 +20,6 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.widget.ProgressBar;
-import android.widget.Toast;
 
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
@@ -38,25 +29,21 @@ import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.nalone.CreateEventActivity;
 import com.example.nalone.Evenement;
 import com.example.nalone.InfosEvenementsActivity;
 import com.example.nalone.Visibility;
 import com.google.android.gms.maps.CameraUpdateFactory;
 
 import com.google.android.gms.maps.OnMapReadyCallback;
-import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
-import com.google.android.gms.maps.model.MarkerOptions;
 
 
 import java.util.ArrayList;
 
 import static com.example.nalone.util.Constants.MAPVIEW_BUNDLE_KEY;
-import static com.example.nalone.util.Constants.USER;
 import static com.example.nalone.util.Constants.USER_LATLNG;
 import static com.example.nalone.util.Constants.USER_REFERENCE;
 import static com.example.nalone.util.Constants.getEventData;
@@ -65,7 +52,7 @@ import static com.example.nalone.util.Constants.nolonelyBundle;
 import static com.example.nalone.util.Constants.targetZoom;
 
 
-public class MapFragment extends Fragment implements OnMapReadyCallback, CoreListener, FireStoreEventsListeners {
+public class MapFragment extends Fragment implements OnMapReadyCallback, FireStoreEventsListeners {
 
     private View rootView;
     private ProgressBar progressBar;
@@ -99,8 +86,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, CoreLis
         mMapView = rootView.findViewById(R.id.mapView);
         navController = Navigation.findNavController(getActivity(), R.id.nav_host_fragment);
 
-
-        listeners.add(this);
 
         Bundle mapViewBundle = null;
         if (savedInstanceState != null) {
@@ -248,11 +233,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, CoreLis
         return couleur;
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.M)
-    @Override
-    public void onDataChangeListener() {
-        updateMap();
-    }
 
     //@Override
     public void onUpdateAdapter() {

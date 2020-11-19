@@ -2,8 +2,6 @@ package splash;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.location.Address;
-import android.location.Geocoder;
 import android.os.Bundle;
 import android.util.Log;
 
@@ -11,7 +9,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.example.nalone.listeners.CoreListener;
 import com.example.nalone.HomeActivity;
 import com.example.nalone.MainActivity;
 import com.example.nalone.R;
@@ -30,10 +27,6 @@ import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.MetadataChanges;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
-
-import java.io.IOException;
-import java.util.List;
-import java.util.UUID;
 
 import static com.example.nalone.util.Constants.USER_ID;
 import static com.example.nalone.util.Constants.USER_LATLNG;

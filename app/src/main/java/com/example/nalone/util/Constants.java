@@ -7,7 +7,6 @@ import android.util.Log;
 import androidx.annotation.NonNull;
 
 import com.example.nalone.Evenement;
-import com.example.nalone.listeners.CoreListener;
 import com.example.nalone.User;
 import com.example.nalone.listeners.FireStoreEventsListeners;
 import com.example.nalone.listeners.FireStoreUsersListeners;

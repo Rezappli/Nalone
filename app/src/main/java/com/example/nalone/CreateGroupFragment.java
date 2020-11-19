@@ -179,7 +179,7 @@ public class CreateGroupFragment extends Fragment {
 
 
     public void initList(){
-        if(!adds.isEmpty()){
+            adds.add("a");
             Query query = mStoreBase.collection("users").whereIn("uid", adds);
             query.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                 @Override
@@ -204,7 +204,7 @@ public class CreateGroupFragment extends Fragment {
                 }
 
                 @Override
-                protected void onBindViewHolder(@NonNull final PersonViewHolder personViewHolder, int i, @NonNull final  User u) {
+                protected void onBindViewHolder(@NonNull final PersonViewHolder personViewHolder,final int i, @NonNull final  User u) {
 
                     Log.w("Add","BindViewHolder");
                     personViewHolder.villePers.setText(u.getCity());
@@ -213,10 +213,10 @@ public class CreateGroupFragment extends Fragment {
                     personViewHolder.button.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            Log.w("Add", "List : " + adds.get(0));
                             adds.remove(u.getUid());
-                            adapter.notifyDataSetChanged();
                             Log.w("Add", "List : " + adds.isEmpty());
+                            adapter.notifyDataSetChanged();
+                            initList();
                         }
                     });
                     if(u.getImage_url() != null) {
@@ -239,9 +239,12 @@ public class CreateGroupFragment extends Fragment {
                         } else {
                             Glide.with(getContext()).load(Cache.getUriFromUid(u.getUid())).fitCenter().centerCrop().into(personViewHolder.imagePerson);
                         }
+
                     }
                 }
+
             };
+
             //mRecyclerView.setHasFixedSize(true);
             mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
             mRecyclerView.setAdapter(adapter);
@@ -249,7 +252,7 @@ public class CreateGroupFragment extends Fragment {
 
             Log.w("Add", "Set adapter");
 
-        }
+
     }
 
     private class PersonViewHolder extends RecyclerView.ViewHolder {

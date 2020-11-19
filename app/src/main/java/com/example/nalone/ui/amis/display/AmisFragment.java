@@ -23,7 +23,6 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.example.nalone.Cache;
-import com.example.nalone.listeners.CoreListener;
 import com.example.nalone.items.ItemPerson;
 import com.example.nalone.R;
 import com.example.nalone.User;
@@ -45,7 +44,7 @@ import static com.example.nalone.util.Constants.listeners;
 import static com.example.nalone.util.Constants.mStore;
 import static com.example.nalone.util.Constants.mStoreBase;
 
-public class AmisFragment extends Fragment implements CoreListener{
+public class AmisFragment extends Fragment {
 
     private SearchView search_bar;
 
@@ -66,8 +65,6 @@ public class AmisFragment extends Fragment implements CoreListener{
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-
-        listeners.add(this);
         rootView = inflater.inflate(R.layout.fragment_amis, container, false);
         search_bar = rootView.findViewById(R.id.search_bar_amis);
         resultat = rootView.findViewById(R.id.resultatText_amis);
@@ -172,6 +169,8 @@ public class AmisFragment extends Fragment implements CoreListener{
                                             @Override
                                             public void onClick(View v) {
                                                 removeFriend(u.getUid());
+                                                adapter.notifyDataSetChanged();
+                                                adapterUsers();
                                             }
                                         });
                                         loading.setVisibility(View.GONE);
@@ -179,9 +178,7 @@ public class AmisFragment extends Fragment implements CoreListener{
 
                                     }
                                 };
-                                mRecyclerView.setHasFixedSize(true);
                                 mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-
                                 mRecyclerView.setAdapter(adapter);
 
                                 adapter.startListening();
@@ -222,8 +219,8 @@ public class AmisFragment extends Fragment implements CoreListener{
 
         Toast.makeText(getContext(), "Vous avez supprimé un amis !", Toast.LENGTH_SHORT).show();
 
+        adapter.notifyDataSetChanged();
         adapterUsers();
-
     }
 
 
@@ -252,10 +249,6 @@ public class AmisFragment extends Fragment implements CoreListener{
         navController.navigate(R.id.action_navigation_amis_to_navigation_popup_profil);
     }
 
-    @Override
-    public void onDataChangeListener() {
-        Log.w("Amis", "Update data on firestore");
-    }
 
     @Override
     public void onStop() {

@@ -17,7 +17,6 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.example.nalone.Group;
-import com.example.nalone.listeners.CoreListener;
 import com.example.nalone.R;
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
@@ -25,7 +24,7 @@ import com.google.firebase.firestore.Query;
 
 import static com.example.nalone.util.Constants.mStoreBase;
 
-public class GroupeFragment extends Fragment implements CoreListener {
+public class GroupeFragment extends Fragment {
 
 
     private NavController navController;
@@ -135,10 +134,6 @@ public class GroupeFragment extends Fragment implements CoreListener {
         }
 
 
-    @Override
-    public void onDataChangeListener() {
-        //updateItems();
-    }
 
     @Override
     public void onStart(){

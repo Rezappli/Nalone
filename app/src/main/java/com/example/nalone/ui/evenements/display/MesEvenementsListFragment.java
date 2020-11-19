@@ -19,7 +19,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.nalone.adapter.ItemImagePersonAdapter;
 import com.example.nalone.adapter.ItemMesEventListAdapter;
-import com.example.nalone.listeners.CoreListener;
 import com.example.nalone.CreateEventActivity;
 import com.example.nalone.Evenement;
 import com.example.nalone.R;
@@ -39,7 +38,7 @@ import static com.example.nalone.util.Constants.mStoreBase;
 import static com.example.nalone.util.Constants.nolonelyBundle;
 
 
-public class MesEvenementsListFragment extends Fragment implements CoreListener {
+public class MesEvenementsListFragment extends Fragment {
 
     private View rootView;
     private RecyclerView mRecyclerViewEvent;
@@ -196,10 +195,6 @@ public class MesEvenementsListFragment extends Fragment implements CoreListener 
 
     }
 
-    @Override
-    public void onDataChangeListener() {
-        updateEvents();
-    }
 
     //@Override
     public void onUpdateAdapter() {
