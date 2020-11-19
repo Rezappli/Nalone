@@ -219,6 +219,27 @@ public class CreateGroupFragment extends Fragment {
                             Log.w("Add", "List : " + adds.isEmpty());
                         }
                     });
+                    if(u.getImage_url() != null) {
+                        if (!Cache.fileExists(u.getUid())) {
+                            StorageReference imgRef = mStore.getReference("users/" + u.getUid());
+                            if (imgRef != null) {
+                                imgRef.getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<Uri> task) {
+                                        if (task.isSuccessful()) {
+                                            Uri img = task.getResult();
+                                            if (img != null) {
+                                                Cache.saveUriFile(u.getUid(), img);
+                                                Glide.with(getContext()).load(img).fitCenter().centerCrop().into(personViewHolder.imagePerson);
+                                            }
+                                        }
+                                    }
+                                });
+                            }
+                        } else {
+                            Glide.with(getContext()).load(Cache.getUriFromUid(u.getUid())).fitCenter().centerCrop().into(personViewHolder.imagePerson);
+                        }
+                    }
                 }
             };
             //mRecyclerView.setHasFixedSize(true);
@@ -235,7 +256,7 @@ public class CreateGroupFragment extends Fragment {
 
         private TextView nomInvit;
         private TextView villePers;
-        private ImageView button;
+        private ImageView button, imagePerson;
 
         public PersonViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -243,6 +264,7 @@ public class CreateGroupFragment extends Fragment {
             nomInvit = itemView.findViewById(R.id.nomInvit);
             villePers = itemView.findViewById(R.id.villePers);
             button = itemView.findViewById(R.id.imageView19);
+            imagePerson = itemView.findViewById(R.id.imagePerson);
         }
     }
 
