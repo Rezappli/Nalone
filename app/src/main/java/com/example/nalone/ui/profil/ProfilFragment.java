@@ -203,7 +203,29 @@ public class ProfilFragment extends Fragment  {
                             });
                         }
                     }else{
-                        Glide.with(getContext()).load(Cache.getUriFromUid(USER.getUid())).fitCenter().centerCrop().into(imageUser);
+                        Uri imgCache = Cache.getUriFromUid(USER.getUid());
+                        if(imgCache.getPath().equalsIgnoreCase(USER.getImage_url())) {
+                            Log.w("image", "get image from cache");
+                            Glide.with(getContext()).load(imgCache).fitCenter().centerCrop().into(imageUser);
+                        }else{
+                            StorageReference imgRef = mStore.getReference("users/" + USER.getUid());
+                            if (imgRef != null) {
+                                imgRef.getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<Uri> task) {
+                                        if (task.isSuccessful()) {
+                                            Uri img = task.getResult();
+                                            if (img != null) {
+                                                USER.setImage_url(img.getPath());
+                                                mStoreBase.collection("users").document(USER.getUid()).set(USER);
+                                                Cache.saveUriFile(USER.getUid(), img);
+                                                Glide.with(getContext()).load(img).fitCenter().centerCrop().into(imageUser);
+                                            }
+                                        }
+                                    }
+                                });
+                            }
+                        }
                     }
                 }
             }
