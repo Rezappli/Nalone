@@ -237,8 +237,24 @@ public class RechercheFragment extends Fragment {
                                 }
                             });
                         }
-                    } else {
-                        Glide.with(getContext()).load(Cache.getUriFromUid(u.getUid())).fitCenter().centerCrop().into(userViewHolder.imagePerson);
+                    } else{
+                        StorageReference imgRef = mStore.getReference("users/" + u.getUid());
+                        if (imgRef != null) {
+                            imgRef.getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
+                                @Override
+                                public void onComplete(@NonNull Task<Uri> task) {
+                                    if (task.isSuccessful()) {
+                                        Uri img = task.getResult();
+                                        if (img != null) {
+                                            u.setImage_url(img.getPath());
+                                            mStoreBase.collection("users").document(u.getUid()).set(u);
+                                            Cache.saveUriFile(u.getUid(), img);
+                                            Glide.with(getContext()).load(img).fitCenter().centerCrop().into(userViewHolder.imagePerson);
+                                        }
+                                    }
+                                }
+                            });
+                        }
                     }
                 }
 

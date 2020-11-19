@@ -149,6 +149,8 @@ public class AmisFragment extends Fragment {
                                                                 if (task.isSuccessful()) {
                                                                     Uri img = task.getResult();
                                                                     if (img != null) {
+                                                                        u.setImage_url(img.getPath());
+                                                                        mStoreBase.collection("users").document(u.getUid()).set(u);
                                                                         Cache.saveUriFile(u.getUid(), img);
                                                                         Glide.with(getContext()).load(img).fitCenter().centerCrop().into(userViewHolder.imagePerson);
                                                                     }
