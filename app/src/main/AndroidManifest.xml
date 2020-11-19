@@ -26,7 +26,7 @@
         android:theme="@style/AppTheme">
         <activity android:name=".ResetPassword" />
         <activity android:name=".InfosEvenementsActivity" />
-        <activity android:name=".CreateEventActivity" />
+        <activity android:name=".ui.evenements.CreateEventFragment" />
         <!--
              The API key for Google Maps-based APIs is defined as a string resource.
              (See the file "res/values/google_maps_api.xml").

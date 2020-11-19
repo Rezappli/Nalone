@@ -217,6 +217,7 @@ public class RechercheFragment extends Fragment {
             protected void onBindViewHolder(@NonNull final UserViewHolder userViewHolder, int i, @NonNull final User u) {
                 userViewHolder.villePers.setText(u.getCity());
                 userViewHolder.nomInvit.setText(u.getFirst_name() + " "+ u.getLast_name());
+
                 userViewHolder.button.setImageResource(0);
                 Log.w("Add", "BienHolder Recherche");
                 if(u.getImage_url() != null) {

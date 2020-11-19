@@ -35,7 +35,11 @@ public class Cache {
 
     }
 
-    public static Uri getUriFromUid(String uid) {
+    public static void getImageUrl(){
+
+    }
+
+    public static Uri getUriFromUid(String uid, String img_url) {
         String file_path = application.getCacheDir().getAbsolutePath();
         File dir = new File(file_path);
         File file = new File(dir, uid);

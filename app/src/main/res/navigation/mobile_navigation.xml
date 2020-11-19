@@ -113,7 +113,7 @@
 
     <fragment
         android:id="@+id/navigation_create_event"
-        android:name="com.example.nalone.CreateEventActivity"
+        android:name="com.example.nalone.ui.evenements.CreateEventFragment"
         android:label="@string/eventCreateProfil"
         tools:layout="@layout/fragment_create_event" >
         <action

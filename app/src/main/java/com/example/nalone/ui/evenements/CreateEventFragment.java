@@ -1,4 +1,4 @@
-package com.example.nalone;
+package com.example.nalone.ui.evenements;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
@@ -29,6 +29,9 @@ import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
+import com.example.nalone.Evenement;
+import com.example.nalone.R;
+import com.example.nalone.Visibility;
 import com.example.nalone.adapter.ItemAddPersonAdapter;
 import com.example.nalone.adapter.ItemProfilAdapter;
 import com.example.nalone.items.ItemPerson;
@@ -36,6 +39,7 @@ import com.example.nalone.ui.evenements.display.MesEvenementsListFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.Timestamp;
+import com.google.firebase.firestore.GeoPoint;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -46,9 +50,10 @@ import java.util.UUID;
 import static com.example.nalone.util.Constants.USER;
 import static com.example.nalone.util.Constants.USER_REFERENCE;
 import static com.example.nalone.util.Constants.heightScreen;
+import static com.example.nalone.util.Constants.mStoreBase;
 import static com.example.nalone.util.Constants.widthScreen;
 
-public class CreateEventActivity extends Fragment {
+public class CreateEventFragment extends Fragment {
     private List<ItemPerson> items = new ArrayList<>();
     private List<ItemPerson> itemsAdd = new ArrayList<>();
     private List<ItemPerson> adds = new ArrayList<>();
@@ -307,10 +312,11 @@ public class CreateEventActivity extends Fragment {
         !event_horaire.getText().toString().matches("") && locationValid){
 
             calendar.set(newYears, newMonth, newDay);
-
+            LatLng l = getLocationFromAddress(event_adresse+","+event_adresse);
             Evenement e = new Evenement(UUID.randomUUID().toString(),USER.getFirst_name() + " " + USER.getLast_name(), R.drawable.ic_baseline_account_circle_24, event_name.getText().toString(), event_resume.getText().toString(),
-                    event_adresse.getText().toString(), event_city.getText().toString(), event_visibilite, USER_REFERENCE, new Timestamp(calendar.getTime()), null);
+                    event_adresse.getText().toString(), event_city.getText().toString(), event_visibilite, USER_REFERENCE, new Timestamp(calendar.getTime()), new GeoPoint(l.latitude, l.longitude));
 
+            mStoreBase.collection("events").document(e.getUid()).set(e);
 
             Toast.makeText(getContext(), "Vous avez créer votre évènement !", Toast.LENGTH_SHORT).show();
 

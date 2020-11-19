@@ -19,10 +19,10 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.nalone.adapter.ItemImagePersonAdapter;
 import com.example.nalone.adapter.ItemMesEventListAdapter;
-import com.example.nalone.CreateEventActivity;
 import com.example.nalone.Evenement;
 import com.example.nalone.R;
 import com.example.nalone.Visibility;
+import com.example.nalone.ui.evenements.CreateEventFragment;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
@@ -79,7 +79,7 @@ public class MesEvenementsListFragment extends Fragment {
         addEvent.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(getContext(),CreateEventActivity.class));
+                startActivity(new Intent(getContext(), CreateEventFragment.class));
             }
         });
 
