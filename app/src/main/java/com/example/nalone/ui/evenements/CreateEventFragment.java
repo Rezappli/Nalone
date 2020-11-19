@@ -120,8 +120,6 @@ public class CreateEventFragment extends Fragment {
         imageViewPublic = rootView.findViewById(R.id.imageViewPublic);
         imageViewPrivate = rootView.findViewById(R.id.imageViewPrivate);
         dialogAddPerson = new Dialog(getActivity());
-        dialogCalendrier = new Dialog(getActivity());
-        dialogTimePicker = new Dialog(getActivity());
         mRecyclerViewAdd = rootView.findViewById(R.id.recyclerView1);
 
         event_adresse = rootView.findViewById(R.id.eventAdress);
@@ -345,80 +343,6 @@ public class CreateEventFragment extends Fragment {
 
         }
     }
-
-    public void showTimePicker(View v){
-        dialogTimePicker.setContentView(R.layout.time_picker);
-        picker = dialogTimePicker.findViewById(R.id.timePicker);
-
-        calendar = Calendar.getInstance();
-
-        picker.setIs24HourView(true);
-        int hour = calendar.get(Calendar.HOUR_OF_DAY);
-        int min = calendar.get(Calendar.MINUTE);
-
-        dialogTimePicker.show();
-
-
-    }
-
-    public void setTime(View view) {
-        int hour = picker.getCurrentHour();
-        int min = picker.getCurrentMinute();
-        showTime(hour, min);
-        dialogTimePicker.dismiss();
-
-    }
-
-    private void showTime(int hour, int min) {
-        if(hour < 10){
-            mHour = "0"+hour;
-        }else{
-            mHour = ""+hour;
-        }
-
-        if(min < 10){
-            mMin = "0"+min;
-        }else{
-            mMin = ""+min;
-        }
-        event_horaire.setText(new StringBuilder().append(mHour).append(" : ").append(mMin));
-
-    }
-
-    public  void showCalendrier(final View v){
-        dialogCalendrier.setContentView(R.layout.calendrier);
-        calendarDate = dialogCalendrier.findViewById(R.id.calendarView);
-        buttonCalendrier = dialogCalendrier.findViewById(R.id.buttonCalendrier);
-
-        calendar = Calendar.getInstance();
-
-        CalendarView.OnDateChangeListener myCalendarListener = new CalendarView.OnDateChangeListener() {
-
-            public void onSelectedDayChange(CalendarView view, int year, int month, int day) {
-
-                newDay = day;
-                newMonth = month;
-                newYears = year;
-            }
-        };
-
-        calendarDate.setOnDateChangeListener(myCalendarListener);
-
-
-        buttonCalendrier.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                event_date.setText(newDay+"-"+newMonth+"-"+newYears);
-                dialogCalendrier.dismiss();
-            }
-        });
-
-
-
-        dialogCalendrier.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-        dialogCalendrier.show();
-    }
-
 
     public void showPopUp(View v){
         items.clear();
