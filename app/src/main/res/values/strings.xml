@@ -99,5 +99,6 @@
     <string name="couleurCursusParametre"> Couleurs des cursus </string>
     <string name="new_groupe"> Nouveau groupe </string>
     <string name="new_event"> Nouvel évènement </string>
+    <string name="invits"> Invitations </string>
 
 </resources>

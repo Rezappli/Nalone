@@ -6,6 +6,7 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
+import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
@@ -63,6 +64,10 @@ public class AmisFragment extends Fragment {
     private RecyclerView mRecyclerView;
     private List<String> friends;
 
+    private int nbInvit = 0;
+    private TextView textViewNbInvit;
+    private CardView cardViewInvits;
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -74,6 +79,8 @@ public class AmisFragment extends Fragment {
         resultat.setVisibility(View.GONE);
         navController = Navigation.findNavController(getActivity(), R.id.nav_host_fragment);
         loading = rootView.findViewById(R.id.amis_loading);
+        textViewNbInvit = rootView.findViewById(R.id.nbInvits);
+        cardViewInvits = rootView.findViewById(R.id.cardViewInvits);
 
         mRecyclerView = rootView.findViewById(R.id.recyclerViewMesAmis);
 
@@ -99,6 +106,25 @@ public class AmisFragment extends Fragment {
                 return false;
             }
         });
+
+        mStoreBase.collection("users").document(USER.getUid()).collection("friends").whereEqualTo("status", "received")
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            for (QueryDocumentSnapshot document : task.getResult()) {
+                                nbInvit++;
+                            }
+                        }
+                    }
+                });
+
+        if(nbInvit != 0){
+            cardViewInvits.setVisibility(View.VISIBLE);
+            textViewNbInvit.setText(nbInvit+"");
+        }
+
 
         return rootView;
     }
