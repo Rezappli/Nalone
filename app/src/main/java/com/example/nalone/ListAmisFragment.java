@@ -20,10 +20,10 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.SearchView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.example.nalone.items.ItemPerson;
+import com.example.nalone.ui.amis.display.CreateGroupFragment;
 import com.example.nalone.ui.evenements.CreateEventFragment;
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
@@ -64,8 +64,6 @@ public class ListAmisFragment extends Fragment {
     private int remove, add;
 
     public static String type;
-
-    public static CreateGroupFragment.GroupAttente group;
 
 
     @Override
@@ -108,7 +106,6 @@ public class ListAmisFragment extends Fragment {
                 }
                 if(type == "group") {
                     CreateGroupFragment.adds = adds;
-                    CreateGroupFragment.groupAttente = group;
                     navController.navigate(R.id.action_navigation_list_amis_to_navigation_creat_group);
                 }
                 if(type == "event"){

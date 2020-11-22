@@ -11,8 +11,6 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.app.Dialog;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
 import android.location.Address;
 import android.location.Geocoder;
 import android.net.Uri;
@@ -25,26 +23,22 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.CalendarView;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.TimePicker;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.example.nalone.Cache;
-import com.example.nalone.CreateGroupFragment;
 import com.example.nalone.Evenement;
+import com.example.nalone.Group;
 import com.example.nalone.ListAmisFragment;
 import com.example.nalone.R;
 import com.example.nalone.SelectDateFragment;
 import com.example.nalone.TimePickerFragment;
 import com.example.nalone.User;
 import com.example.nalone.Visibility;
-import com.example.nalone.adapter.ItemAddPersonAdapter;
-import com.example.nalone.adapter.ItemProfilAdapter;
-import com.example.nalone.items.ItemPerson;
+import com.example.nalone.ui.amis.display.CreateGroupFragment;
 import com.example.nalone.ui.evenements.display.MesEvenementsListFragment;
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
@@ -53,6 +47,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.Timestamp;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.GeoPoint;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
@@ -61,17 +56,14 @@ import com.google.firebase.storage.StorageReference;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
 import java.util.UUID;
 
 import static com.example.nalone.HomeActivity.buttonBack;
 import static com.example.nalone.util.Constants.USER;
 import static com.example.nalone.util.Constants.USER_REFERENCE;
-import static com.example.nalone.util.Constants.heightScreen;
 import static com.example.nalone.util.Constants.mStore;
 import static com.example.nalone.util.Constants.mStoreBase;
-import static com.example.nalone.util.Constants.widthScreen;
 
 public class CreateEventFragment extends Fragment {
     public static List<String> adds = new ArrayList<>();
@@ -106,13 +98,16 @@ public class CreateEventFragment extends Fragment {
     private FirestoreRecyclerAdapter adapter;
     private RecyclerView mRecyclerView;
 
-    public static String nom;
-    public static String adresse;
-    public static String ville;
-    public static String description;
-    public static String date;
-    public static String horaire;
-    public static Visibility visibility;
+    public static Evenement evenementAttente;
+
+    public class EventAttente extends Evenement {
+
+        public EventAttente(String uid, String owner, int image, String name, String description, String address, String city,
+                            Visibility visibility, DocumentReference ownerDoc, Timestamp date, GeoPoint location){
+            super(uid,  owner,  image,  name,  description,  address,  city,
+                     visibility,  ownerDoc,  date,  location);
+        }
+    }
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                               ViewGroup container, Bundle savedInstanceState) {
@@ -146,9 +141,16 @@ public class CreateEventFragment extends Fragment {
             }
         });
 
+        if(evenementAttente== null){
+            Log.w("group", "Creation groupe vide");
+            evenementAttente  = new EventAttente(UUID.randomUUID().toString(), USER.getFirst_name() + " " + USER.getLast_name(), 0, "", "", "","",null,USER_REFERENCE,null,null);
+        }
+
         if(adds != null){
             initList();
         }
+
+        getData();
 
         if(edit){
             event_city.setText(MesEvenementsListFragment.cityEdit);
@@ -183,6 +185,7 @@ public class CreateEventFragment extends Fragment {
         imageButtonAddInvit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                refreshData();
                 ListAmisFragment.type = "event";
                 navController.navigate(R.id.action_navigation_create_event_to_navigation_list_amis);
             }
@@ -256,19 +259,31 @@ public class CreateEventFragment extends Fragment {
         return rootView;
     }
 
-    private void initWidjets() {
-        event_name.setText(nom);
-        event_adresse.setText(adresse);
-        event_date.setText(date);
-        event_horaire.setText(horaire);
-        event_resume.setText(description);
-        if(visibility == Visibility.PRIVATE){
-            selectPrivate();
-        }
-        if(visibility == Visibility.PUBLIC){
-            selectPublic();
-        }
+    private void refreshData() {
+        evenementAttente.setName(event_name.getText().toString());
+        evenementAttente.setDescription(event_resume.getText().toString());
+        evenementAttente.setVisibility(event_visibilite);
+        evenementAttente.setCity(event_city.getText().toString());
+        evenementAttente.setAddress(event_adresse.getText().toString());
+        //evenementAttente.setDate(event_date);
     }
+
+    private void getData() {
+        Log.w("Group après création", " Nom : "+ evenementAttente.getName());
+        if(!evenementAttente.getName().matches(""))
+            event_name.setText(evenementAttente.getName());
+        if(!evenementAttente.getDescription().matches(""))
+            event_resume.setText(evenementAttente.getDescription());
+        if(evenementAttente.getVisibility() != null)
+            event_visibilite = evenementAttente.getVisibility();
+        if(!evenementAttente.getAddress().matches(""))
+            event_adresse.setText(evenementAttente.getAddress());
+        if(!evenementAttente.getCity().matches(""))
+            event_city.setText(evenementAttente.getCity());
+        if(evenementAttente.getDate() != null)
+            event_date.setText(evenementAttente.getDate().toString());
+    }
+
 
     public void initList(){
         adds.add("a");
@@ -372,16 +387,6 @@ public class CreateEventFragment extends Fragment {
         event_visibilite = Visibility.PUBLIC;
     }
 
-    public static void chargeInfos(String nomI, String adresseI, String villeI, String descriptionI, String dateI, String horaireI, Visibility visibilityI){
-        nom = nomI;
-        adresse = adresseI;
-        ville = villeI;
-        description = descriptionI;
-        date = dateI;
-        horaire = horaireI;
-        visibility = visibilityI;
-
-    }
 
     private void selectPrivate() {
         imageButtonAddInvit.setVisibility(View.VISIBLE);
@@ -422,13 +427,17 @@ public class CreateEventFragment extends Fragment {
         if(!event_name.getText().toString().matches("") && !event_adresse.getText().toString().matches("") &&
         !event_city.getText().toString().matches("") && !event_date.getText().toString().matches("") &&
         !event_horaire.getText().toString().matches("") && locationValid){
-
+            refreshData();
             LatLng l = getLocationFromAddress(event_adresse+","+event_adresse);
-            Evenement e = new Evenement(UUID.randomUUID().toString(),USER.getFirst_name() + " " + USER.getLast_name(), R.drawable.ic_baseline_account_circle_24, event_name.getText().toString(), event_resume.getText().toString(),
-                    event_adresse.getText().toString(), event_city.getText().toString(), event_visibilite, USER_REFERENCE, new Timestamp(null), new GeoPoint(l.latitude, l.longitude));
+            Evenement e = new Evenement(evenementAttente.getUid(),USER.getFirst_name() + " " + USER.getLast_name(), R.drawable.ic_baseline_account_circle_24, evenementAttente.getName(),evenementAttente.getDescription(),
+                    evenementAttente.getAddress(), evenementAttente.getCity(), evenementAttente.getVisibility(), USER_REFERENCE, null, new GeoPoint(l.latitude, l.longitude));
 
             mStoreBase.collection("events").document(e.getUid()).set(e);
 
+            for (String user : adds){
+                Log.d("Ajout", "Ajout de membre dans evenement");
+                mStoreBase.collection("events").document(e.getUid()).collection("members").document(user).set(e);
+            }
             Toast.makeText(getContext(), "Vous avez créer votre évènement !", Toast.LENGTH_SHORT).show();
 
             navController.navigate(R.id.action_navigation_create_event_to_navigation_evenements);
@@ -475,6 +484,5 @@ public class CreateEventFragment extends Fragment {
     @Override
     public void onResume(){
         super.onResume();
-        initWidjets();
     }
 }

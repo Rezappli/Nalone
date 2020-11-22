@@ -76,7 +76,7 @@
 
     <fragment
         android:id="@+id/navigation_creat_group"
-        android:name="com.example.nalone.CreateGroupFragment"
+        android:name="com.example.nalone.ui.amis.display.CreateGroupFragment"
         android:label="@string/new_groupe"
         tools:layout="@layout/fragment_create_group" >
         <action

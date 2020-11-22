@@ -1,4 +1,4 @@
-package com.example.nalone;
+package com.example.nalone.ui.amis.display;
 
 import android.app.Dialog;
 import android.content.Intent;
@@ -33,6 +33,12 @@ import android.widget.TimePicker;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.example.nalone.Cache;
+import com.example.nalone.Group;
+import com.example.nalone.ListAmisFragment;
+import com.example.nalone.R;
+import com.example.nalone.User;
+import com.example.nalone.Visibility;
 import com.example.nalone.adapter.ItemAddPersonAdapter;
 import com.example.nalone.adapter.ItemProfilAdapter;
 import com.example.nalone.items.ItemPerson;
@@ -101,7 +107,7 @@ public class CreateGroupFragment extends Fragment {
 
 
 
-    public class GroupAttente extends Group{
+    public class GroupAttente extends Group {
 
         public GroupAttente(String uid,String owner,String name,
                             String description, Visibility visibility, DocumentReference ownerDoc){
@@ -180,8 +186,6 @@ public class CreateGroupFragment extends Fragment {
                 Log.w("group"," Nom :" + event_name.getText().toString());
 
                 refreshData();
-
-                ListAmisFragment.group = groupAttente;
                 ListAmisFragment.type = "group";
                 navController.navigate(R.id.action_navigation_creat_group_to_navigation_list_amis);
             }

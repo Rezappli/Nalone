@@ -204,7 +204,7 @@ public class AmisFragment extends Fragment {
                                                                         u.setImage_url(new Timestamp(new Date(System.currentTimeMillis())));
                                                                         mStoreBase.collection("users").document(u.getUid()).set(u);
                                                                         Cache.saveUriFile(u.getUid(), img);
-                                                                        Glide.with(getContext()).load(img).fitCenter().centerCrop().into(userViewHolder.imagePerson);
+                                                                     Glide.with(getContext()).load(img).fitCenter().centerCrop().into(userViewHolder.imagePerson);
                                                                     }
                                                                 }
                                                             }
@@ -235,6 +235,7 @@ public class AmisFragment extends Fragment {
 
                                     }
                                 };
+
                                 mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
                                 mRecyclerView.setAdapter(adapter);
 
