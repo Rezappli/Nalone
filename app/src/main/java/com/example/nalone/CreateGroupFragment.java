@@ -42,20 +42,27 @@ import com.example.nalone.ui.message.ChatActivity;
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.Timestamp;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.firestore.SetOptions;
 import com.google.firebase.storage.StorageReference;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 import static com.example.nalone.util.Constants.USER;
+import static com.example.nalone.util.Constants.USER_ID;
 import static com.example.nalone.util.Constants.USER_REFERENCE;
 import static com.example.nalone.util.Constants.heightScreen;
 import static com.example.nalone.util.Constants.mStore;
@@ -64,18 +71,13 @@ import static com.example.nalone.util.Constants.widthScreen;
 
 public class CreateGroupFragment extends Fragment {
 
-    private List<String> friends = new ArrayList<>();
-    private List<ItemPerson> itemsAdd = new ArrayList<>();
-
     private TextInputEditText event_name;
     private TextInputEditText event_resume;
     private Visibility event_visibilite;
 
-    private Dialog dialogAddPerson;
     private CardView cardViewPrivate;
     private ImageView imageViewPrivate;
     private ImageButton imageButtonAddInvit;
-    private TextView textViewListe;
 
     private CardView cardViewPublic;
     private ImageView imageViewPublic;
@@ -92,40 +94,49 @@ public class CreateGroupFragment extends Fragment {
     private RecyclerView mRecyclerView;
     private View rootView;
 
+    public static boolean save;
+
+    public static GroupAttente groupAttente;
+
+
+
+    public class GroupAttente extends Group{
+
+        public GroupAttente(String uid,String owner,String name,
+                            String description, Visibility visibility, DocumentReference ownerDoc){
+            super(uid, owner, name, description, visibility, ownerDoc);
+        }
+    }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         rootView = inflater.inflate(R.layout.fragment_create_group, container, false);
         navController = Navigation.findNavController(getActivity(),R.id.nav_host_fragment);
-
         mRecyclerView = rootView.findViewById(R.id.recyclerViewCreateGroup);
         navController = Navigation.findNavController(getActivity(), R.id.nav_host_fragment);
+
+        if(groupAttente == null){
+            Log.w("group", "Creation groupe vide");
+            groupAttente  = new GroupAttente(UUID.randomUUID().toString(), USER.getFirst_name() + " " + USER.getLast_name(), "", "", null, USER_REFERENCE);
+        }
 
         if(adds != null){
             initList();
         }
 
-        buttonMoreGroup = rootView.findViewById(R.id.buttonMoreGroup);
-        buttonMoreGroup.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                navController.navigate(R.id.action_navigation_creat_group_to_navigation_list_amis);
-            }
-        });
-
-
         cardViewPrivate = rootView.findViewById(R.id.cardViewPrivate);
         cardViewPublic = rootView.findViewById(R.id.cardViewPublic);
         imageButtonAddInvit = rootView.findViewById(R.id.buttonMoreGroup);
-        textViewListe = rootView.findViewById(R.id.textViewListe);
         imageViewPublic = rootView.findViewById(R.id.imageViewPublic);
         imageViewPrivate = rootView.findViewById(R.id.imageViewPrivate);
-        dialogAddPerson = new Dialog(getActivity());
 
         event_name = rootView.findViewById(R.id.groupName);
         event_resume = rootView.findViewById(R.id.groupResume);
         buttonValidEvent = rootView.findViewById(R.id.buttonCreateGroup);
+
+        getData();
 
        /* if(edit){
             event_name.setText(MesEvenementsListFragment.nameEvent);
@@ -157,9 +168,13 @@ public class CreateGroupFragment extends Fragment {
         imageButtonAddInvit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Log.w("group"," Nom :" + event_name.getText().toString());
 
-                    navController.navigate(R.id.action_navigation_creat_group_to_navigation_list_amis);
+                refreshData();
 
+                ListAmisFragment.group = groupAttente;
+                ListAmisFragment.type = "group";
+                navController.navigate(R.id.action_navigation_creat_group_to_navigation_list_amis);
             }
         });
 
@@ -170,11 +185,26 @@ public class CreateGroupFragment extends Fragment {
             @Override
             public void onClick(View v) {
                     saveEvent();
-
             }
         });
 
         return rootView;
+    }
+
+    private void refreshData() {
+        groupAttente.setName(event_name.getText().toString());
+        groupAttente.setDescription(event_resume.getText().toString());
+        groupAttente.setVisibility(event_visibilite);
+    }
+
+    private void getData() {
+        Log.w("Group après création", " Nom : "+ groupAttente.getName());
+        if(!groupAttente.getName().matches(""))
+            event_name.setText(groupAttente.getName());
+        if(!groupAttente.getDescription().matches(""))
+            event_resume.setText(groupAttente.getDescription());
+        if(groupAttente.getVisibility() != null)
+            event_visibilite = groupAttente.getVisibility();
     }
 
 
@@ -213,7 +243,7 @@ public class CreateGroupFragment extends Fragment {
                     personViewHolder.button.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            adds.remove(u.getUid());
+                            adds.remove(u);
                             Log.w("Add", "List : " + adds.isEmpty());
                             adapter.notifyDataSetChanged();
                             initList();
@@ -293,10 +323,15 @@ public class CreateGroupFragment extends Fragment {
             event_name.setError("Champs obligatoire");
         }
 
-
         if(!event_name.getText().toString().matches("")){
-            Group g = new Group(UUID.randomUUID().toString(),USER.getFirst_name()+" "+USER.getLast_name(),event_name.getText().toString(), event_resume.getText().toString(), event_visibilite, USER_REFERENCE);
+            refreshData();
+            Group g = new Group(groupAttente.getUid(), groupAttente.getOwner(), groupAttente.getName(), groupAttente.getDescription(), groupAttente.getVisibility(), groupAttente.getOwnerDoc());
             mStoreBase.collection("groups").document(g.getUid()).set(g);
+
+            for (String user : adds){
+                Log.d("Ajout", "Ajout de membre dans groupe");
+                mStoreBase.collection("groups").document(g.getUid()).collection("members").document(user).set(g);
+            }
             Toast.makeText(getContext(), "Vous avez créer votre groupe !", Toast.LENGTH_SHORT).show();
             navController.navigate(R.id.action_navigation_creat_group_to_navigation_amis);
         }

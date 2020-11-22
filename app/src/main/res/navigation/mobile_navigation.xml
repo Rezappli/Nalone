@@ -45,6 +45,7 @@
         android:label="@string/title_messages"
         tools:layout="@layout/fragment_messages" />
 
+
     <fragment
         android:id="@+id/navigation_list_amis"
         android:name="com.example.nalone.ListAmisFragment"
@@ -53,6 +54,9 @@
         <action
             android:id="@+id/action_navigation_list_amis_to_navigation_creat_group"
             app:destination="@id/navigation_creat_group" />
+        <action
+            android:id="@+id/action_navigation_list_amis_to_navigation_create_event"
+            app:destination="@id/navigation_create_event" />
     </fragment>
 
 
@@ -119,6 +123,9 @@
         <action
             android:id="@+id/action_navigation_create_event_to_navigation_evenements"
             app:destination="@id/navigation_evenements" />
+        <action
+            android:id="@+id/action_navigation_create_event_to_navigation_list_amis"
+            app:destination="@id/navigation_list_amis" />
     </fragment>
 
 

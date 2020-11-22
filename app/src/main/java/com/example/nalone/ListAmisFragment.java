@@ -24,6 +24,7 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.example.nalone.items.ItemPerson;
+import com.example.nalone.ui.evenements.CreateEventFragment;
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -61,6 +62,10 @@ public class ListAmisFragment extends Fragment {
     private Button valider;
     private int remove, add;
 
+    public static String type;
+
+    public static CreateGroupFragment.GroupAttente group;
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -83,11 +88,19 @@ public class ListAmisFragment extends Fragment {
         valider.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Log.w("Type", type);
                 for (String a : adds){
                     Log.w("Adds", a);
                 }
-                CreateGroupFragment.adds = adds;
-                navController.navigate(R.id.action_navigation_list_amis_to_navigation_creat_group);
+                if(type == "group") {
+                    CreateGroupFragment.adds = adds;
+                    CreateGroupFragment.groupAttente = group;
+                    navController.navigate(R.id.action_navigation_list_amis_to_navigation_creat_group);
+                }
+                if(type == "event"){
+                    CreateEventFragment.adds = adds;
+                    navController.navigate(R.id.action_navigation_list_amis_to_navigation_create_event);
+                }
             }
         });
         adapterUsers();
@@ -115,9 +128,17 @@ public class ListAmisFragment extends Fragment {
     }
 
     private void ajoutMembres() {
-        for(String s : CreateGroupFragment.adds ){
-            adds.add(s);
+        if(type == "group"){
+            for(String s : CreateGroupFragment.adds ){
+                adds.add(s);
+            }
         }
+        if(type == "event"){
+            for(String s : CreateEventFragment.adds){
+                adds.add(s);
+            }
+        }
+
     }
 
     private void adapterUsers() {
@@ -236,22 +257,6 @@ public class ListAmisFragment extends Fragment {
         }
 
 
-    }
-    private void removeFriend(final String uid) {
-        mStoreBase.collection("users").document(USER.getUid()).
-                collection("friends").document(uid).delete();
-
-        mStoreBase.collection("users").document(uid).
-                collection("friends").document(USER.getUid()).delete();
-
-        Toast.makeText(getContext(), "Vous avez supprimé un amis !", Toast.LENGTH_SHORT).show();
-    }
-
-
-
-    private void updateItems() {
-        ///RecyclerOption
-        adapterUsers();
     }
 
     @Override
