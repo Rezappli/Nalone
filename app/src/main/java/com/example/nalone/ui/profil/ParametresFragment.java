@@ -11,6 +11,8 @@ import androidx.appcompat.content.res.AppCompatResources;
 import androidx.cardview.widget.CardView;
 import androidx.core.graphics.drawable.DrawableCompat;
 import androidx.fragment.app.Fragment;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -31,6 +33,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 
 import static android.content.Context.MODE_PRIVATE;
+import static com.example.nalone.HomeActivity.buttonBack;
 import static com.example.nalone.util.Constants.USER_ID;
 import static com.example.nalone.util.Constants.maPosition;
 import static com.example.nalone.util.Constants.range;
@@ -44,6 +47,7 @@ public class ParametresFragment extends Fragment {
     public static final String SHARED_PREFS = "sharedPrefs", sharedRange = "sharedRange",sharedNotif = "sharedNotif",sharedPosition = "sharedPosition", sharedIntern = "sharedIntern";
     private int rangeActual;
     private boolean international, notification = true, position;
+    private NavController navController;
 
 
     @Override
@@ -56,7 +60,15 @@ public class ParametresFragment extends Fragment {
                 .requestEmail()
                 .build();
 
+        navController = Navigation.findNavController(getActivity(), R.id.nav_host_fragment);
 
+        buttonBack.setVisibility(View.VISIBLE);
+        buttonBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                navController.navigate(R.id.action_navigation_parametres_to_navigation_profil);
+            }
+        });
 
         SharedPreferences settings = this.getActivity().getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
         international = settings.getBoolean(sharedIntern, false);

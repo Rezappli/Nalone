@@ -40,6 +40,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import static com.example.nalone.HomeActivity.buttonBack;
 import static com.example.nalone.util.Constants.USER;
 import static com.example.nalone.util.Constants.mStore;
 import static com.example.nalone.util.Constants.mStoreBase;
@@ -60,6 +61,13 @@ public class MesInvitationsFragment extends Fragment {
         rootView = inflater.inflate(R.layout.fragment_mes_invitations, container, false);
         loading = rootView.findViewById(R.id.invits_loading);
 
+        buttonBack.setVisibility(View.VISIBLE);
+        buttonBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                navController.navigate(R.id.action_navigation_invitations_to_navigation_amis);
+            }
+        });
 
         navController = Navigation.findNavController(getActivity(), R.id.nav_host_fragment);
         mRecyclerView = rootView.findViewById(R.id.recyclerViewInvitAmis);

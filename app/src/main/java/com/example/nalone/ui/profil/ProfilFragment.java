@@ -37,6 +37,7 @@ import java.util.ArrayList;
 import java.util.Date;
 
 import static android.app.Activity.RESULT_OK;
+import static com.example.nalone.HomeActivity.buttonBack;
 import static com.example.nalone.util.Constants.USER;
 import static com.example.nalone.util.Constants.USER_STORAGE_REF;
 import static com.example.nalone.util.Constants.mStore;
@@ -65,6 +66,7 @@ public class ProfilFragment extends Fragment  {
 
 
         View root = inflater.inflate(R.layout.fragment_profil, container, false);
+        buttonBack.setVisibility(View.GONE);
         navController = Navigation.findNavController(getActivity(), R.id.nav_host_fragment);
         userConnectDesc = root.findViewById(R.id.userConnectDescription);
         userConnectText = root.findViewById(R.id.userConnectText);

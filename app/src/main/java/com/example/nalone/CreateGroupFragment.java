@@ -119,6 +119,12 @@ public class CreateGroupFragment extends Fragment {
         mRecyclerView = rootView.findViewById(R.id.recyclerViewCreateGroup);
         navController = Navigation.findNavController(getActivity(), R.id.nav_host_fragment);
         buttonBack.setVisibility(View.VISIBLE);
+        buttonBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                navController.navigate(R.id.action_navigation_creat_group_to_navigation_amis);
+            }
+        });
 
         if(groupAttente == null){
             Log.w("group", "Creation groupe vide");

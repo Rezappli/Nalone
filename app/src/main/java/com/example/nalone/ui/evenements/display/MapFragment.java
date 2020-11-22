@@ -43,6 +43,7 @@ import com.google.android.gms.maps.model.Marker;
 
 import java.util.ArrayList;
 
+import static com.example.nalone.HomeActivity.buttonBack;
 import static com.example.nalone.util.Constants.MAPVIEW_BUNDLE_KEY;
 import static com.example.nalone.util.Constants.USER_LATLNG;
 import static com.example.nalone.util.Constants.USER_REFERENCE;
@@ -81,7 +82,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, FireSto
         ((AppCompatActivity) getActivity()).getSupportActionBar().hide();
         progressBar = rootView.findViewById(R.id.progressBar2);
         mRecyclerViewEvent = rootView.findViewById(R.id.recyclerViewEventMap);
-
+        buttonBack.setVisibility(View.GONE);
         mMapView = rootView.findViewById(R.id.mapView);
         navController = Navigation.findNavController(getActivity(), R.id.nav_host_fragment);
 

@@ -7,6 +7,8 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
 
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -30,6 +32,7 @@ import com.google.firebase.storage.StorageReference;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.example.nalone.HomeActivity.buttonBack;
 import static com.example.nalone.util.Constants.USER;
 import static com.example.nalone.util.Constants.mStore;
 import static com.example.nalone.util.Constants.mStoreBase;
@@ -40,6 +43,7 @@ public class PopupProfilFragment extends Fragment {
 
     public static User USER_LOAD;
     public static int button;
+    private NavController navController;
 
 
     @Override
@@ -48,6 +52,14 @@ public class PopupProfilFragment extends Fragment {
         // Inflate the layout for this fragment
         View root = inflater.inflate(R.layout.fragment_popup_profil, container, false);
 
+        navController = Navigation.findNavController(getActivity(), R.id.nav_host_fragment);
+        buttonBack.setVisibility(View.VISIBLE);
+        buttonBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                navController.navigate(R.id.action_navigation_popup_profil_to_navigation_recherche);
+            }
+        });
         TextView nameProfil;
         TextView descriptionProfil;
         TextView nbCreateProfil;

@@ -29,6 +29,7 @@ import com.example.nalone.Cache;
 import com.example.nalone.items.ItemPerson;
 import com.example.nalone.R;
 import com.example.nalone.User;
+import com.example.nalone.ui.amis.MesAmisFragment;
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -44,6 +45,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import static com.example.nalone.HomeActivity.buttonBack;
 import static com.example.nalone.util.Constants.USER;
 import static com.example.nalone.util.Constants.mStore;
 import static com.example.nalone.util.Constants.mStoreBase;
@@ -83,6 +85,7 @@ public class AmisFragment extends Fragment {
         cardViewInvits = rootView.findViewById(R.id.cardViewInvits);
 
         mRecyclerView = rootView.findViewById(R.id.recyclerViewMesAmis);
+        buttonBack.setVisibility(View.GONE);
 
         adapterUsers();
 

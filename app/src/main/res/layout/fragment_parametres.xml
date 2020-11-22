@@ -305,6 +305,7 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/sign_out_button"
                 android:layout_marginTop="20dp"
+                android:layout_marginBottom="30dp"
                 android:background="@drawable/custom_button_signup"
                 android:text="@string/delete"
                 android:textColor="#E30505" />

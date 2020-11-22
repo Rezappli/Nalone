@@ -38,6 +38,7 @@ import com.google.firebase.storage.StorageReference;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.example.nalone.HomeActivity.buttonBack;
 import static com.example.nalone.util.Constants.USER;
 import static com.example.nalone.util.Constants.mStore;
 import static com.example.nalone.util.Constants.mStoreBase;
@@ -82,6 +83,19 @@ public class ListAmisFragment extends Fragment {
         mRecyclerView = rootView.findViewById(R.id.recyclerViewAmisAdd);
         remove = R.drawable.ic_baseline_remove_24;
         add = R.drawable.ic_baseline_add_24;
+        buttonBack.setVisibility(View.VISIBLE);
+        buttonBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(type == "group") {
+                    navController.navigate(R.id.action_navigation_list_amis_to_navigation_creat_group);
+                }
+                if(type == "event"){
+                    navController.navigate(R.id.action_navigation_list_amis_to_navigation_create_event);
+                }
+            }
+        });
+
 
         ajoutMembres();
 

@@ -13,6 +13,8 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
 
 import com.example.nalone.R;
 import com.example.nalone.ResetPassword;
@@ -20,6 +22,7 @@ import com.example.nalone.User;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 
+import static com.example.nalone.HomeActivity.buttonBack;
 import static com.example.nalone.util.Constants.USER;
 import static com.example.nalone.util.Constants.mStoreBase;
 
@@ -30,12 +33,21 @@ public class EditFragment extends Fragment {
     TextView profilEditPassword, textProfilEditMail, profilEditMail;
     EditText profilEditNumero,profilEditPrenom,profilEditNom,profilEditVille,profilEditDepartement,profilEditDate;
     Button profilEditValider;
+    private NavController navController;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View root = inflater.inflate(R.layout.fragment_edit, container, false);
 
+        navController = Navigation.findNavController(getActivity(),R.id.nav_host_fragment);
+        buttonBack.setVisibility(View.VISIBLE);
+        buttonBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                navController.navigate(R.id.action_navigation_edit_profil_to_navigation_profil);
+            }
+        });
         profilEditPassword = root.findViewById(R.id.profilEditPassword);
         profilEditDate = root.findViewById(R.id.profilEditNaissance);
         profilEditDepartement = root.findViewById(R.id.profilEditDepartement);

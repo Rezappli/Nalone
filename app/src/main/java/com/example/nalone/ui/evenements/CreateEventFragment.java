@@ -65,6 +65,7 @@ import java.util.Calendar;
 import java.util.List;
 import java.util.UUID;
 
+import static com.example.nalone.HomeActivity.buttonBack;
 import static com.example.nalone.util.Constants.USER;
 import static com.example.nalone.util.Constants.USER_REFERENCE;
 import static com.example.nalone.util.Constants.heightScreen;
@@ -137,6 +138,13 @@ public class CreateEventFragment extends Fragment {
         event_horaire = rootView.findViewById(R.id.eventHoraire);
 
         navController = Navigation.findNavController(getActivity(), R.id.nav_host_fragment);
+        buttonBack.setVisibility(View.VISIBLE);
+        buttonBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                navController.navigate(R.id.action_navigation_create_event_to_navigation_evenements);
+            }
+        });
 
         if(adds != null){
             initList();

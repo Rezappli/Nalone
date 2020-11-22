@@ -44,6 +44,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import static com.example.nalone.HomeActivity.buttonBack;
 import static com.example.nalone.util.Constants.USER;
 import static com.example.nalone.util.Constants.mStore;
 import static com.example.nalone.util.Constants.mStoreBase;
@@ -76,6 +77,7 @@ public class RechercheFragment extends Fragment {
                 ViewModelProviders.of(this).get(RechercheViewModel.class);
         rootView = inflater.inflate(R.layout.fragment_recherche, container, false);
         loading = rootView.findViewById(R.id.search_loading);
+        buttonBack.setVisibility(View.GONE);
 
         search_bar = rootView.findViewById(R.id.search_bar);
         resultat = rootView.findViewById(R.id.resultatText);
