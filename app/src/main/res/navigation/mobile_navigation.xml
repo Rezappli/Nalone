@@ -37,6 +37,9 @@
         <action
             android:id="@+id/action_navigation_amis_to_navigation_creat_group"
             app:destination="@id/navigation_creat_group" />
+        <action
+            android:id="@+id/action_navigation_amis_to_navigation_invitations"
+            app:destination="@id/navigation_invitations" />
     </fragment>
 
     <fragment
@@ -44,6 +47,12 @@
         android:name="com.example.nalone.ui.message.MessagesFragment"
         android:label="@string/title_messages"
         tools:layout="@layout/fragment_messages" />
+
+    <fragment
+        android:id="@+id/navigation_invitations"
+        android:name="com.example.nalone.ui.amis.display.MesInvitationsFragment"
+        android:label="@string/invits"
+        tools:layout="@layout/fragment_mes_invitations" />
 
 
     <fragment

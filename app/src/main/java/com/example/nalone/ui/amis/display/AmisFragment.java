@@ -107,6 +107,13 @@ public class AmisFragment extends Fragment {
             }
         });
 
+        cardViewInvits.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                navController.navigate(R.id.action_navigation_amis_to_navigation_invitations);
+            }
+        });
+
         mStoreBase.collection("users").document(USER.getUid()).collection("friends").whereEqualTo("status", "received")
                 .get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
@@ -114,16 +121,27 @@ public class AmisFragment extends Fragment {
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
                         if (task.isSuccessful()) {
                             for (QueryDocumentSnapshot document : task.getResult()) {
+                                Log.w("Invitations", document.getId());
                                 nbInvit++;
+                                Log.w("Invitations", nbInvit+"");
                             }
                         }
+                        Log.w("Invitations", nbInvit+"");
+                        if(nbInvit != 0){
+                            Log.w("Invitations", "Pop up");
+                            cardViewInvits.setVisibility(View.VISIBLE);
+                            textViewNbInvit.setText(nbInvit+"");
+
+                        }else{
+                            cardViewInvits.setVisibility(View.GONE);
+                        }
+                        loading.setVisibility(View.GONE);
+
+
                     }
+
                 });
 
-        if(nbInvit != 0){
-            cardViewInvits.setVisibility(View.VISIBLE);
-            textViewNbInvit.setText(nbInvit+"");
-        }
 
 
         return rootView;

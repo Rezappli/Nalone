@@ -54,7 +54,6 @@ public class MesAmisFragment extends Fragment {
         tabLayout.setupWithViewPager(viewPager);
         tabLayout.getTabAt(0).setIcon(R.drawable.ic_round_people_24);
         tabLayout.getTabAt(1).setIcon(R.drawable.ic_round_groups_24);
-        tabLayout.getTabAt(2).setIcon(R.drawable.ic_baseline_person_add_alt_1_24);
 
         tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
@@ -79,7 +78,6 @@ public class MesAmisFragment extends Fragment {
 
         adapter.addFragment(new AmisFragment());
         adapter.addFragment(new GroupeFragment());
-        adapter.addFragment(new MesInvitationsFragment());
 
         viewPager.setAdapter(adapter);
     }
