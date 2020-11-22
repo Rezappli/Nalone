@@ -162,6 +162,10 @@ public class RechercheFragment extends Fragment {
             @Override
             public void onAddClick(int position) {
                 Log.w("filtre", "click : "+filtres.get(position).getFiltre());
+                for (int i = 0; i < filtres.size(); i++){
+                    if(i != position)
+                        filtres.get(i).setBackground(R.drawable.custom_input);
+                }
 
                 if(filtres.get(position).getBackground() == R.color.colorPrimary){
                     filtres.get(position).setBackground(R.drawable.custom_input);

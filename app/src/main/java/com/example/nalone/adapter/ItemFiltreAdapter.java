@@ -15,7 +15,7 @@ import com.example.nalone.R;
 import java.util.List;
 
 public class ItemFiltreAdapter extends RecyclerView.Adapter<ItemFiltreAdapter.ItemFiltreViewHolder> {
-    private List<ItemFiltre> mItemFiltreList;
+    public static List<ItemFiltre> mItemFiltreList;
     public OnItemClickListener mListener;
 
     public interface OnItemClickListener {
