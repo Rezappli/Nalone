@@ -61,6 +61,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import static com.example.nalone.HomeActivity.buttonBack;
 import static com.example.nalone.util.Constants.USER;
 import static com.example.nalone.util.Constants.USER_ID;
 import static com.example.nalone.util.Constants.USER_REFERENCE;
@@ -108,6 +109,7 @@ public class CreateGroupFragment extends Fragment {
         }
     }
 
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -116,6 +118,7 @@ public class CreateGroupFragment extends Fragment {
         navController = Navigation.findNavController(getActivity(),R.id.nav_host_fragment);
         mRecyclerView = rootView.findViewById(R.id.recyclerViewCreateGroup);
         navController = Navigation.findNavController(getActivity(), R.id.nav_host_fragment);
+        buttonBack.setVisibility(View.VISIBLE);
 
         if(groupAttente == null){
             Log.w("group", "Creation groupe vide");

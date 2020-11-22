@@ -9,6 +9,9 @@ import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -29,6 +32,7 @@ import static com.example.nalone.util.Constants.USER_STORAGE_REF;
 public class HomeActivity extends AppCompatActivity{
 
     private NavController navController;
+    public static ImageView buttonBack;
 
     @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
@@ -38,7 +42,8 @@ public class HomeActivity extends AppCompatActivity{
 
         BottomNavigationView navView = findViewById(R.id.nav_view);
 
-
+        buttonBack = findViewById(R.id.buttonBack);
+        buttonBack.setVisibility(View.GONE);
         AppBarConfiguration appBarConfiguration = new AppBarConfiguration.Builder(
                 R.id.navigation_recherche, R.id.navigation_amis, R.id.navigation_evenements, R.id.navigation_messages, R.id.navigation_profil)
                 .build();
