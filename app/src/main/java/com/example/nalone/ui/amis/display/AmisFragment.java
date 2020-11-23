@@ -87,15 +87,6 @@ public class AmisFragment extends Fragment {
         cardViewInvits = rootView.findViewById(R.id.cardViewInvits);
         textViewNbInvit = rootView.findViewById(R.id.nbInvits);
 
-        adapterUsers();
-
-        cardViewInvits.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                navController.navigate(R.id.action_navigation_amis_to_navigation_invitations);
-            }
-        });
-
         mStoreBase.collection("users").document(USER.getUid()).collection("friends").whereEqualTo("status", "received")
                 .get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
@@ -119,6 +110,17 @@ public class AmisFragment extends Fragment {
                         loading.setVisibility(View.GONE);
                     }
                 });
+
+        adapterUsers();
+
+        cardViewInvits.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                navController.navigate(R.id.action_navigation_amis_to_navigation_invitations);
+            }
+        });
+
+
 
         search_bar.setOnClickListener(new View.OnClickListener() {
             @Override
