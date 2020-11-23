@@ -216,8 +216,14 @@ public class CreateGroupFragment extends Fragment {
             event_name.setText(groupAttente.getName());
         if(!groupAttente.getDescription().matches(""))
             event_resume.setText(groupAttente.getDescription());
-        if(groupAttente.getVisibility() != null)
+        if(groupAttente.getVisibility() != null){
             event_visibilite = groupAttente.getVisibility();
+            if(event_visibilite == Visibility.PUBLIC){
+                selectPublic();
+            }else{
+                selectPrivate();
+            }
+        }
     }
 
 

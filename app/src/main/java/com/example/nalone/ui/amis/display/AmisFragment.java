@@ -44,6 +44,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import static com.example.nalone.HomeActivity.buttonBack;
 import static com.example.nalone.util.Constants.USER;
 import static com.example.nalone.util.Constants.mStore;
 import static com.example.nalone.util.Constants.mStoreBase;
@@ -75,7 +76,7 @@ public class AmisFragment extends Fragment {
         resultat.setVisibility(View.GONE);
         navController = Navigation.findNavController(getActivity(), R.id.nav_host_fragment);
         loading = rootView.findViewById(R.id.amis_loading);
-
+        buttonBack.setVisibility(View.GONE);
         mRecyclerView = rootView.findViewById(R.id.recyclerViewMesAmis);
 
         adapterUsers();
