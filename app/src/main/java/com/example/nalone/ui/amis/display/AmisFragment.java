@@ -25,6 +25,7 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.example.nalone.Cache;
+import com.example.nalone.UserFriendData;
 import com.example.nalone.items.ItemPerson;
 import com.example.nalone.R;
 import com.example.nalone.User;
@@ -33,6 +34,7 @@ import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.Timestamp;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
@@ -255,27 +257,20 @@ public class AmisFragment extends Fragment {
 
     public void showPopUpProfil(final User u) {
         PopupProfilFragment.USER_LOAD = u;
-        mStoreBase.collection("users").document(USER.getUid()).collection("friends").whereEqualTo("status", "add").whereEqualTo("uid", u.getUid()).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+        mStoreBase.collection("users").document(USER.getUid()).collection("friends").document(u.getUid()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
-            public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                PopupProfilFragment.button = 0;
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                UserFriendData data = task.getResult().toObject(UserFriendData.class);
+                    if(data.getStatus().equalsIgnoreCase("send")){
+                        PopupProfilFragment.button = R.drawable.ic_round_hourglass_top_24;
+                    }else if(data.getStatus().equalsIgnoreCase("received")){
+                        PopupProfilFragment.button = R.drawable.ic_round_mail_24;
+                    }
+                    navController.navigate(R.id.action_navigation_amis_to_navigation_popup_profil);
+
             }
         });
 
-        mStoreBase.collection("users").document(USER.getUid()).collection("friends").whereEqualTo("status", "send").whereEqualTo("uid", u.getUid()).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                PopupProfilFragment.button = R.drawable.ic_round_hourglass_top_24;
-            }
-        });
-
-        mStoreBase.collection("users").document(USER.getUid()).collection("friends").whereEqualTo("status", "received").whereEqualTo("uid", u.getUid()).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                PopupProfilFragment.button = R.drawable.ic_round_mail_24;
-            }
-        });
-        navController.navigate(R.id.action_navigation_amis_to_navigation_popup_profil);
     }
 
 
