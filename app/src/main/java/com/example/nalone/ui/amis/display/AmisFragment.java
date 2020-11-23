@@ -6,6 +6,7 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
+import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
@@ -66,6 +67,9 @@ public class AmisFragment extends Fragment {
     private FirestoreRecyclerAdapter adapter;
     private RecyclerView mRecyclerView;
     private List<String> friends;
+    private int nbInvit;
+    private CardView cardViewInvits;
+    private TextView textViewNbInvit;
 
 
     @Override
@@ -80,9 +84,40 @@ public class AmisFragment extends Fragment {
         loading = rootView.findViewById(R.id.amis_loading);
         buttonBack.setVisibility(View.GONE);
         mRecyclerView = rootView.findViewById(R.id.recyclerViewMesAmis);
+        cardViewInvits = rootView.findViewById(R.id.cardViewInvits);
+        textViewNbInvit = rootView.findViewById(R.id.nbInvits);
 
         adapterUsers();
 
+        cardViewInvits.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                navController.navigate(R.id.action_navigation_amis_to_navigation_invitations);
+            }
+        });
+        mStoreBase.collection("users").document(USER.getUid()).collection("friends").whereEqualTo("status", "received")
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            for (QueryDocumentSnapshot document : task.getResult()) {
+                                Log.w("Invitations", document.getId());
+                                nbInvit++;
+                                Log.w("Invitations", nbInvit+"");
+                            }
+                        }
+                        Log.w("Invitations", nbInvit+"");
+                        if(nbInvit != 0){
+                            Log.w("Invitations", "Pop up");
+                            cardViewInvits.setVisibility(View.VISIBLE);
+                            textViewNbInvit.setText(nbInvit+"");
+                        }else{
+                            cardViewInvits.setVisibility(View.GONE);
+                        }
+                        loading.setVisibility(View.GONE);
+                    }
+                });
 
         search_bar.setOnClickListener(new View.OnClickListener() {
             @Override
