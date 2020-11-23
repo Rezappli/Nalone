@@ -77,6 +77,7 @@ public class AmisFragment extends Fragment {
                              Bundle savedInstanceState) {
 
         rootView = inflater.inflate(R.layout.fragment_amis, container, false);
+        nbInvit = 0;
         search_bar = rootView.findViewById(R.id.search_bar_amis);
         resultat = rootView.findViewById(R.id.resultatText_amis);
         resultat.setVisibility(View.GONE);
