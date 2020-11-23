@@ -325,6 +325,7 @@ public class RechercheFragment extends Fragment {
         PopupProfilFragment.USER_LOAD = u;
         PopupProfilFragment.button = R.drawable.ic_baseline_add_circle_outline_24;
 
+        PopupProfilFragment.type = "recherche";
         navController.navigate(R.id.action_navigation_recherche_to_navigation_popup_profil);
     }
 

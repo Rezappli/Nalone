@@ -45,6 +45,8 @@ public class PopupProfilFragment extends Fragment {
     public static int button = 0;
     private NavController navController;
 
+    public static String type;
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -54,12 +56,22 @@ public class PopupProfilFragment extends Fragment {
 
         navController = Navigation.findNavController(getActivity(), R.id.nav_host_fragment);
         buttonBack.setVisibility(View.VISIBLE);
-        buttonBack.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                navController.navigate(R.id.action_navigation_popup_profil_to_navigation_recherche);
-            }
-        });
+        if(type == "amis"){
+            buttonBack.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    navController.navigate(R.id.action_navigation_popup_profil_to_navigation_amis2);
+                }
+            });
+        }
+        if(type == "recherche"){
+            buttonBack.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    navController.navigate(R.id.action_navigation_popup_profil_to_navigation_recherche);
+                }
+            });
+        }
         TextView nameProfil;
         TextView descriptionProfil;
         TextView nbCreateProfil;

@@ -142,6 +142,9 @@
         <action
             android:id="@+id/action_navigation_popup_profil_to_navigation_recherche"
             app:destination="@id/navigation_recherche" />
+        <action
+            android:id="@+id/action_navigation_popup_profil_to_navigation_amis2"
+            app:destination="@id/navigation_amis" />
     </fragment>
 
     <fragment

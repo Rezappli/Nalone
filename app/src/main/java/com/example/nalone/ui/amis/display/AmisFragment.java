@@ -95,6 +95,7 @@ public class AmisFragment extends Fragment {
                 navController.navigate(R.id.action_navigation_amis_to_navigation_invitations);
             }
         });
+
         mStoreBase.collection("users").document(USER.getUid()).collection("friends").whereEqualTo("status", "received")
                 .get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
@@ -235,8 +236,7 @@ public class AmisFragment extends Fragment {
                                             @Override
                                             public void onClick(View v) {
                                                 removeFriend(u.getUid());
-                                                adapter.notifyDataSetChanged();
-                                                adapterUsers();
+                                                adapter.notifyItemRemoved(userViewHolder.getAdapterPosition());
                                             }
                                         });
                                         loading.setVisibility(View.GONE);
@@ -246,7 +246,6 @@ public class AmisFragment extends Fragment {
                                 };
                                 mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
                                 mRecyclerView.setAdapter(adapter);
-
                                 adapter.startListening();
                             }
                         }
@@ -301,6 +300,7 @@ public class AmisFragment extends Fragment {
                     }else if(data.getStatus().equalsIgnoreCase("received")){
                         PopupProfilFragment.button = R.drawable.ic_round_mail_24;
                     }
+                    PopupProfilFragment.type = "amis";
                     navController.navigate(R.id.action_navigation_amis_to_navigation_popup_profil);
 
             }
