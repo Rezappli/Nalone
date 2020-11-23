@@ -38,6 +38,7 @@ import com.example.nalone.Group;
 import com.example.nalone.ListAmisFragment;
 import com.example.nalone.R;
 import com.example.nalone.User;
+import com.example.nalone.UserFriendData;
 import com.example.nalone.Visibility;
 import com.example.nalone.adapter.ItemAddPersonAdapter;
 import com.example.nalone.adapter.ItemProfilAdapter;
@@ -137,7 +138,7 @@ public class CreateGroupFragment extends Fragment {
             groupAttente  = new GroupAttente(UUID.randomUUID().toString(), USER.getFirst_name() + " " + USER.getLast_name(), "", "", null, USER_REFERENCE);
         }
 
-        if(adds != null){
+        if(adds != null && !adds.isEmpty()){
             initList();
         }
 
@@ -228,7 +229,7 @@ public class CreateGroupFragment extends Fragment {
 
 
     public void initList(){
-            adds.add("a");
+            //adds.add("a");
             Query query = mStoreBase.collection("users").whereIn("uid", adds);
             query.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                 @Override
@@ -349,7 +350,8 @@ public class CreateGroupFragment extends Fragment {
 
             for (String user : adds){
                 Log.d("Ajout", "Ajout de membre dans groupe");
-                mStoreBase.collection("groups").document(g.getUid()).collection("members").document(user).set(g);
+                UserFriendData ufd = new UserFriendData("waiting",mStoreBase.collection("users").document(user));
+                mStoreBase.collection("groups").document(g.getUid()).collection("members").document(user).set(ufd);
             }
             Toast.makeText(getContext(), "Vous avez créer votre groupe !", Toast.LENGTH_SHORT).show();
             navController.navigate(R.id.action_navigation_creat_group_to_navigation_amis);
