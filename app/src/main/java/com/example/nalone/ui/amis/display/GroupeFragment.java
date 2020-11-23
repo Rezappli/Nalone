@@ -9,6 +9,7 @@ import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,10 +19,18 @@ import android.widget.TextView;
 
 import com.example.nalone.Group;
 import com.example.nalone.R;
+import com.example.nalone.User;
+import com.example.nalone.UserFriendData;
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 
+import static com.example.nalone.util.Constants.USER;
 import static com.example.nalone.util.Constants.mStoreBase;
 
 public class GroupeFragment extends Fragment {
@@ -74,7 +83,7 @@ public class GroupeFragment extends Fragment {
                     userViewHolder.layoutGroup.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                           // showPopUpProfil(user);
+                           showPopUpGroup(group);
                         }
                     });
 
@@ -133,6 +142,12 @@ public class GroupeFragment extends Fragment {
 
         }
 
+    public void showPopUpGroup(final Group g) {
+        PopUpGroupFragment.GROUP_LOAD = g;
+        navController.navigate(R.id.action_navigation_amis_to_navigation_popup_group);
+
+
+    }
 
 
     @Override

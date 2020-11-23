@@ -43,6 +43,9 @@
         <action
             android:id="@+id/action_navigation_amis_self"
             app:destination="@id/navigation_amis" />
+        <action
+            android:id="@+id/action_navigation_amis_to_navigation_popup_group"
+            app:destination="@id/navigation_popup_group" />
     </fragment>
 
     <fragment
@@ -50,6 +53,19 @@
         android:name="com.example.nalone.ui.message.MessagesFragment"
         android:label="@string/title_messages"
         tools:layout="@layout/fragment_messages" />
+
+    <fragment
+        android:id="@+id/navigation_popup_group"
+        android:name="com.example.nalone.ui.amis.display.PopUpGroupFragment"
+        android:label="@string/new_groupe"
+        tools:layout="@layout/fragment_pop_up_group" >
+        <action
+            android:id="@+id/action_navigation_popup_group_to_navigation_amis"
+            app:destination="@id/navigation_amis" />
+        <action
+            android:id="@+id/action_navigation_popup_group_self"
+            app:destination="@id/navigation_popup_group" />
+    </fragment>
 
     <fragment
         android:id="@+id/navigation_invitations"

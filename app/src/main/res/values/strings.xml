@@ -69,7 +69,7 @@
     <string name="title_activity_amis_fragment">AmisFragment</string>
     <string name="dateEvent"> Date </string>
     <string name="horaireEvent"> Horaire </string>
-    <string name="proprio"> Propriétaire </string>
+    <string name="proprio"> Propriétaire : </string>
     <string name="organisateur"> Organisateur : </string>
     <string name="membre_inscrits"> Membres inscrits : </string>
     <!-- TODO: Remove or change this placeholder text -->
@@ -100,5 +100,7 @@
     <string name="new_groupe"> Nouveau groupe </string>
     <string name="new_event"> Nouvel évènement </string>
     <string name="invits"> Invitations </string>
+    <string name="rejoindre"> Rejoindre </string>
+    <string name="voir_plus"> Voir plus</string>
 
 </resources>
