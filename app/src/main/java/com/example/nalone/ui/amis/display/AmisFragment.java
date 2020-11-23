@@ -279,16 +279,18 @@ public class AmisFragment extends Fragment {
 
     }
     private void removeFriend(final String uid) {
-        mStoreBase.collection("users").document(USER.getUid()).
-                collection("friends").document(uid).delete();
+        if(mStoreBase.collection("users").document(USER.getUid()).
+                collection("friends").document(uid) != null){
+            mStoreBase.collection("users").document(USER.getUid()).
+                    collection("friends").document(uid).delete();
 
-        mStoreBase.collection("users").document(uid).
-                collection("friends").document(USER.getUid()).delete();
+            mStoreBase.collection("users").document(uid).
+                    collection("friends").document(USER.getUid()).delete();
 
-        Toast.makeText(getContext(), "Vous avez supprimé un amis !", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getContext(), "Vous avez supprimé un amis !", Toast.LENGTH_SHORT).show();
 
-        adapter.notifyDataSetChanged();
-        adapterUsers();
+        }
+
     }
 
 
