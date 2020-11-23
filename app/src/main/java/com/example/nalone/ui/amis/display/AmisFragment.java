@@ -6,7 +6,6 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
-import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
@@ -29,7 +28,6 @@ import com.example.nalone.Cache;
 import com.example.nalone.items.ItemPerson;
 import com.example.nalone.R;
 import com.example.nalone.User;
-import com.example.nalone.ui.amis.MesAmisFragment;
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -41,11 +39,11 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.StorageReference;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import static com.example.nalone.HomeActivity.buttonBack;
 import static com.example.nalone.util.Constants.USER;
 import static com.example.nalone.util.Constants.mStore;
 import static com.example.nalone.util.Constants.mStoreBase;
@@ -66,10 +64,6 @@ public class AmisFragment extends Fragment {
     private RecyclerView mRecyclerView;
     private List<String> friends;
 
-    private int nbInvit = 0;
-    private TextView textViewNbInvit;
-    private CardView cardViewInvits;
-
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -81,11 +75,8 @@ public class AmisFragment extends Fragment {
         resultat.setVisibility(View.GONE);
         navController = Navigation.findNavController(getActivity(), R.id.nav_host_fragment);
         loading = rootView.findViewById(R.id.amis_loading);
-        textViewNbInvit = rootView.findViewById(R.id.nbInvits);
-        cardViewInvits = rootView.findViewById(R.id.cardViewInvits);
 
         mRecyclerView = rootView.findViewById(R.id.recyclerViewMesAmis);
-        buttonBack.setVisibility(View.GONE);
 
         adapterUsers();
 
@@ -109,43 +100,6 @@ public class AmisFragment extends Fragment {
                 return false;
             }
         });
-
-        cardViewInvits.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                navController.navigate(R.id.action_navigation_amis_to_navigation_invitations);
-            }
-        });
-
-        mStoreBase.collection("users").document(USER.getUid()).collection("friends").whereEqualTo("status", "received")
-                .get()
-                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        if (task.isSuccessful()) {
-                            for (QueryDocumentSnapshot document : task.getResult()) {
-                                Log.w("Invitations", document.getId());
-                                nbInvit++;
-                                Log.w("Invitations", nbInvit+"");
-                            }
-                        }
-                        Log.w("Invitations", nbInvit+"");
-                        if(nbInvit != 0){
-                            Log.w("Invitations", "Pop up");
-                            cardViewInvits.setVisibility(View.VISIBLE);
-                            textViewNbInvit.setText(nbInvit+"");
-
-                        }else{
-                            cardViewInvits.setVisibility(View.GONE);
-                        }
-                        loading.setVisibility(View.GONE);
-
-
-                    }
-
-                });
-
-
 
         return rootView;
     }
@@ -183,13 +137,30 @@ public class AmisFragment extends Fragment {
                                         userViewHolder.nomInvit.setText(u.getFirst_name() + " " + u.getLast_name());
                                         userViewHolder.button.setImageResource(R.drawable.ic_baseline_delete_24);
 
-                                        if (u.getImage_url() != null) {
-                                            if (!Cache.fileExists(u.getUid())) {
-                                                Log.w("Cache", "Loading : " + u.getFirst_name());
-
-                                            } else {
+                                        if(u.getImage_url() != null) {
+                                            if(!Cache.fileExists(u.getUid())) {
+                                                StorageReference imgRef = mStore.getReference("users/" + u.getUid());
+                                                if (imgRef != null) {
+                                                    imgRef.getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
+                                                        @Override
+                                                        public void onComplete(@NonNull Task<Uri> task) {
+                                                            if (task.isSuccessful()) {
+                                                                Uri img = task.getResult();
+                                                                if (img != null) {
+                                                                    Cache.saveUriFile(u.getUid(), img);
+                                                                    u.setImage_url(Cache.getImageDate(u.getUid()));
+                                                                    mStoreBase.collection("users").document(u.getUid()).set(u);
+                                                                    Glide.with(getContext()).load(img).fitCenter().centerCrop().into(userViewHolder.imagePerson);
+                                                                }
+                                                            }
+                                                        }
+                                                    });
+                                                }
+                                            }else{
                                                 Uri imgCache = Cache.getUriFromUid(u.getUid());
-                                                if(Cache.getImageDate(USER.getUid()).equals(u.getImage_url())) {
+                                                Log.w("Cache", "Image Cache : " + Cache.getImageDate(u.getUid()));
+                                                Log.w("Cache", "Data Cache : " + u.getImage_url());
+                                                if(Cache.getImageDate(u.getUid()).equalsIgnoreCase(u.getImage_url())) {
                                                     Log.w("image", "get image from cache");
                                                     Glide.with(getContext()).load(imgCache).fitCenter().centerCrop().into(userViewHolder.imagePerson);
                                                 }else{
@@ -201,10 +172,10 @@ public class AmisFragment extends Fragment {
                                                                 if (task.isSuccessful()) {
                                                                     Uri img = task.getResult();
                                                                     if (img != null) {
-                                                                        u.setImage_url(new Timestamp(new Date(System.currentTimeMillis())));
-                                                                        mStoreBase.collection("users").document(u.getUid()).set(u);
                                                                         Cache.saveUriFile(u.getUid(), img);
-                                                                     Glide.with(getContext()).load(img).fitCenter().centerCrop().into(userViewHolder.imagePerson);
+                                                                        u.setImage_url(Cache.getImageDate(u.getUid()));
+                                                                        mStoreBase.collection("users").document(u.getUid()).set(u);
+                                                                        Glide.with(getContext()).load(img).fitCenter().centerCrop().into(userViewHolder.imagePerson);
                                                                     }
                                                                 }
                                                             }
@@ -235,7 +206,6 @@ public class AmisFragment extends Fragment {
 
                                     }
                                 };
-
                                 mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
                                 mRecyclerView.setAdapter(adapter);
 

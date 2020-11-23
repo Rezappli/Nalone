@@ -33,6 +33,7 @@ import com.google.firebase.Timestamp;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
@@ -202,9 +203,9 @@ public class ProfilFragment extends Fragment  {
                                     if (task.isSuccessful()) {
                                         Uri img = task.getResult();
                                         if (img != null) {
-                                            USER.setImage_url(new Timestamp(new Date(System.currentTimeMillis())));
-                                            mStoreBase.collection("users").document(USER.getUid()).set(USER);
                                             Cache.saveUriFile(USER.getUid(), img);
+                                            //USER.setImage_url(Cache.getImageDate(USER.getUid()));
+                                            mStoreBase.collection("users").document(USER.getUid()).set(USER);
                                             Glide.with(getContext()).load(img).fitCenter().centerCrop().into(imageUser);
                                         }
                                     }
@@ -215,7 +216,7 @@ public class ProfilFragment extends Fragment  {
                         Uri imgCache = Cache.getUriFromUid(USER.getUid());
                         Log.w("Cache", "Image Cache : " + Cache.getImageDate(USER.getUid()));
                         Log.w("Cache", "Data Cache : " + USER.getImage_url());
-                        if(Cache.getImageDate(USER.getUid()).equals(USER.getImage_url())) {
+                        if(Cache.getImageDate(USER.getUid()).equalsIgnoreCase(USER.getImage_url())) {
                             Log.w("image", "get image from cache");
                             Glide.with(getContext()).load(imgCache).fitCenter().centerCrop().into(imageUser);
                         }else{
@@ -227,9 +228,9 @@ public class ProfilFragment extends Fragment  {
                                         if (task.isSuccessful()) {
                                             Uri img = task.getResult();
                                             if (img != null) {
-                                                USER.setImage_url(new Timestamp(new Date(System.currentTimeMillis())));
-                                                mStoreBase.collection("users").document(USER.getUid()).set(USER);
                                                 Cache.saveUriFile(USER.getUid(), img);
+                                                USER.setImage_url(Cache.getImageDate(USER.getUid()));
+                                                mStoreBase.collection("users").document(USER.getUid()).set(USER);
                                                 Glide.with(getContext()).load(img).fitCenter().centerCrop().into(imageUser);
                                             }
                                         }
@@ -271,7 +272,7 @@ public class ProfilFragment extends Fragment  {
                         @Override
                         public void onSuccess(UploadTask.TaskSnapshot snapshot) {
                             Toast.makeText(getActivity().getBaseContext(), "Vous avez changé votre photo de profil !", Toast.LENGTH_SHORT).show();
-                            USER.setImage_url(new Timestamp(new Date(System.currentTimeMillis())));
+                            USER.setImage_url(new SimpleDateFormat("dd-MM-yy hh:mm:ss").format(new Date(System.currentTimeMillis())));
                             mStoreBase.collection("users").document(USER.getUid()).set(USER);
                         }
                     })

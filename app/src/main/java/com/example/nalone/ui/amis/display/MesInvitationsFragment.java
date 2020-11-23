@@ -1,9 +1,11 @@
 package com.example.nalone.ui.amis.display;
 
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
@@ -102,45 +104,58 @@ public class MesInvitationsFragment extends Fragment {
                                         return new UserViewHolder(view);
                                     }
 
+                                    @RequiresApi(api = Build.VERSION_CODES.O)
                                     @Override
                                     protected void onBindViewHolder(@NonNull final UserViewHolder userViewHolder, int i, @NonNull final User u) {
                                         userViewHolder.villePers.setText(u.getCity());
                                         userViewHolder.nomInvit.setText(u.getFirst_name() + " " + u.getLast_name());
 
-                                        if (!Cache.fileExists(u.getUid())) {
-                                            StorageReference imgRef = mStore.getReference("users/" + u.getUid());
-                                            if (imgRef != null) {
-                                                imgRef.getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
-                                                    @Override
-                                                    public void onComplete(@NonNull Task<Uri> task) {
-                                                        if (task.isSuccessful()) {
-                                                            Uri img = task.getResult();
-                                                            if (img != null) {
-                                                                Log.w("image", "save image from cache");
-                                                                Cache.saveUriFile(u.getUid(), img);
-                                                                Glide.with(getContext()).load(img).fitCenter().centerCrop().into(userViewHolder.imagePerson);
+                                        if (u.getImage_url() != null) {
+                                            if (!Cache.fileExists(u.getUid())) {
+                                                StorageReference imgRef = mStore.getReference("users/" + u.getUid());
+                                                if (imgRef != null) {
+                                                    imgRef.getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
+                                                        @RequiresApi(api = Build.VERSION_CODES.O)
+                                                        @Override
+                                                        public void onComplete(@NonNull Task<Uri> task) {
+                                                            if (task.isSuccessful()) {
+                                                                Uri img = task.getResult();
+                                                                if (img != null) {
+                                                                    mStoreBase.collection("users").document(u.getUid()).set(u);
+                                                                    Cache.saveUriFile(u.getUid(), img);
+                                                                    //u.setImage_url(Cache.getImageDate(u.getUid()));
+                                                                    Glide.with(getContext()).load(img).fitCenter().centerCrop().into(userViewHolder.imagePerson);
+                                                                }
                                                             }
                                                         }
-                                                    }
-                                                });
-                                            }
-                                        }else{
-                                            StorageReference imgRef = mStore.getReference("users/" + u.getUid());
-                                            if (imgRef != null) {
-                                                imgRef.getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
-                                                    @Override
-                                                    public void onComplete(@NonNull Task<Uri> task) {
-                                                        if (task.isSuccessful()) {
-                                                            Uri img = task.getResult();
-                                                            if (img != null) {
-                                                                u.setImage_url(new Timestamp(new Date(System.currentTimeMillis())));
-                                                                mStoreBase.collection("users").document(u.getUid()).set(u);
-                                                                Cache.saveUriFile(u.getUid(), img);
-                                                                Glide.with(getContext()).load(img).fitCenter().centerCrop().into(userViewHolder.imagePerson);
+                                                    });
+                                                }
+                                            } else {
+                                                Uri imgCache = Cache.getUriFromUid(u.getUid());
+                                                Log.w("Cache", "Image Cache : " + Cache.getImageDate(u.getUid()));
+                                                Log.w("Cache", "Data Cache : " + u.getImage_url());
+                                                if(Cache.getImageDate(u.getUid()).equals(u.getImage_url())) {
+                                                    Log.w("image", "get image from cache");
+                                                    Glide.with(getContext()).load(imgCache).fitCenter().centerCrop().into(userViewHolder.imagePerson);
+                                                }else{
+                                                    StorageReference imgRef = mStore.getReference("users/" + u.getUid());
+                                                    if (imgRef != null) {
+                                                        imgRef.getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
+                                                            @Override
+                                                            public void onComplete(@NonNull Task<Uri> task) {
+                                                                if (task.isSuccessful()) {
+                                                                    Uri img = task.getResult();
+                                                                    if (img != null) {
+                                                                        mStoreBase.collection("users").document(u.getUid()).set(u);
+                                                                        Cache.saveUriFile(u.getUid(), img);
+                                                                        //u.setImage_url(Cache.getImageDate(u.getUid()));
+                                                                        Glide.with(getContext()).load(img).fitCenter().centerCrop().into(userViewHolder.imagePerson);
+                                                                    }
+                                                                }
                                                             }
-                                                        }
+                                                        });
                                                     }
-                                                });
+                                                }
                                             }
                                         }
 

@@ -33,7 +33,7 @@ public class User {
     private String number_events_create;
     private String number_events_attend;
     private String birthday_date;
-    private Timestamp image_date;
+    private String image_date;
     private GeoPoint location;
 
     public User(){}
@@ -154,11 +154,11 @@ public class User {
         this.birthday_date = birthday_date;
     }
 
-    public Timestamp getImage_url() {
+    public String getImage_url() {
         return image_date;
     }
 
-    public void setImage_url(Timestamp image_date) {
+    public void setImage_url(String image_date) {
         this.image_date = image_date;
     }
 
