@@ -68,12 +68,21 @@ public class PopUpGroupFragment extends Fragment {
     CardView c1,c2,c3,c4,c5,c6;
 
     FrameLayout fenetrePrincipal;
+    View root;
+    private boolean buttonQuitter;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        View root = inflater.inflate(R.layout.fragment_pop_up_group, container, false);
+        root = inflater.inflate(R.layout.fragment_pop_up_group, container, false);
+
+        createFragment(root);
+
+        return root;
+    }
+
+    private void createFragment(final View root) {
+        nbMembers = 0;
         navController = Navigation.findNavController(getActivity(), R.id.nav_host_fragment);
         textViewNbMembers = root.findViewById(R.id.groupNbMembers);
         buttonPlus = root.findViewById(R.id.buttonPlus);
@@ -121,9 +130,17 @@ public class PopUpGroupFragment extends Fragment {
                         if (task.isSuccessful()) {
                             for (QueryDocumentSnapshot document : task.getResult()) {
                                 nbMembers++;
+                                if(document.getId().equals(USER_ID) || buttonQuitter){
+                                    changeButtonQuitter();
+                                }else{
+                                    changeButtonRejoindre();
+                                }
                             }
                         }
                         textViewNbMembers.setText(nbMembers+" membres");
+                        if(buttonQuitter){
+                            nbMembers -= 1;
+                        }
                         if(nbMembers == 0){
                             relativeLayout.setVisibility(View.GONE);
                         }
@@ -147,6 +164,12 @@ public class PopUpGroupFragment extends Fragment {
         visibilityGroup = root.findViewById(R.id.groupVisibility);
 
         cardViewPhotoPerson = root.findViewById(R.id.cardViewPhotoPerson);
+
+        if(buttonQuitter){
+            changeButtonQuitter();
+        }else{
+            changeButtonRejoindre();
+        }
 
         if (GROUP_LOAD.getImage_url() != null) {
             if(!Cache.fileExists(GROUP_LOAD.getUid())) {
@@ -188,36 +211,56 @@ public class PopUpGroupFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 if(GROUP_LOAD.getVisibility() == Visibility.PUBLIC){
-                    Toast.makeText(getContext(), "Vous avez rejoint " + GROUP_LOAD.getName() + " !", Toast.LENGTH_SHORT).show();
-                    joinPublic();
+                    if(!buttonQuitter){
+                        joinPublic();
+                        buttonQuitter = true;
+                    } else{
+                        quitterGroup();
+                        buttonQuitter = false;
+                    }
+
 
                 }else {
-                    Toast.makeText(getContext(), "Vous avez envoyé une demande pour rejoindre le groupe "+ GROUP_LOAD.getName() + " !", Toast.LENGTH_SHORT).show();
                     joinPrive();
 
                 }
+                createFragment(root);
             }
+
         });
 
+    }
 
+    private void changeButtonRejoindre() {
+        buttonAdd.setBackground(getResources().getDrawable(R.drawable.custom_button_simple));
+        buttonAdd.setText("Rejoindre");
+        buttonAdd.setTextColor(Color.WHITE);
+        buttonQuitter = false;
+    }
 
-        return root;
+    private void quitterGroup() {
+        mStoreBase.collection("groups").document(GROUP_LOAD.getUid()).collection("members").document(USER.getUid()).delete();
+        Toast.makeText(getContext(), "Vous avez quitter le groupe " + GROUP_LOAD.getName() + " !", Toast.LENGTH_SHORT).show();
+
+    }
+
+    private void changeButtonQuitter() {
+        buttonAdd.setBackground(getResources().getDrawable(R.drawable.custom_button_signup));
+        buttonAdd.setText("Quitter");
+        buttonAdd.setTextColor(Color.BLACK);
+        buttonQuitter = true;
     }
 
     public void joinPublic() {
         UserFriendData data1 = new UserFriendData("add", mStoreBase.collection("users").document(USER.getUid()));
         mStoreBase.collection("groups").document(GROUP_LOAD.getUid()).collection("members").document(USER.getUid()).set(data1);
-        buttonAdd.setBackground(getResources().getDrawable(R.drawable.custom_button_signup));
-        buttonAdd.setText("Quitter");
-        buttonAdd.setTextColor(Color.BLACK);
-        navController.navigate(R.id.action_navigation_popup_group_self);
+        Toast.makeText(getContext(), "Vous avez rejoint le groupe " + GROUP_LOAD.getName() + " !", Toast.LENGTH_SHORT).show();
     }
 
     public void joinPrive() {
         UserFriendData data1 = new UserFriendData("received", mStoreBase.collection("users").document(USER.getUid()));
         mStoreBase.collection("groups").document(GROUP_LOAD.getUid()).collection("members").document(USER.getUid()).set(data1);
-        navController.navigate(R.id.action_navigation_popup_group_self);
-
+        Toast.makeText(getContext(), "Vous avez envoyé une demande pour rejoindre le groupe "+ GROUP_LOAD.getName() + " !", Toast.LENGTH_SHORT).show();
     }
 
     }

@@ -16,13 +16,16 @@
     </fragment>
 
     <fragment
-        android:id="@+id/navigation_recherche"
-        android:name="com.example.nalone.ui.recherche.RechercheFragment"
+        android:id="@+id/navigation_recherche_amis"
+        android:name="com.example.nalone.ui.recherche.RechercheAmisFragment"
         android:label="@string/title_recherche"
-        tools:layout="@layout/fragment_recherche" >
+        tools:layout="@layout/fragment_recherche_amis" >
         <action
-            android:id="@+id/action_navigation_recherche_to_navigation_popup_profil"
+            android:id="@+id/action_navigation_recherche_amis_to_navigation_popup_profil"
             app:destination="@id/navigation_popup_profil" />
+        <action
+            android:id="@+id/action_navigation_recherche_amis_to_navigation_recherche"
+            app:destination="@id/navigation_recherche" />
     </fragment>
 
 
@@ -53,6 +56,40 @@
         android:name="com.example.nalone.ui.message.MessagesFragment"
         android:label="@string/title_messages"
         tools:layout="@layout/fragment_messages" />
+
+    <fragment
+        android:id="@+id/navigation_group"
+        android:name="com.example.nalone.ui.amis.display.GroupeFragment"
+        android:label="@string/listGroup"
+        tools:layout="@layout/fragment_groupe" >
+        <action
+            android:id="@+id/action_navigation_group_to_navigation_recherche"
+            app:destination="@id/navigation_recherche" />
+        <action
+            android:id="@+id/action_navigation_group_to_navigation_popup_group"
+            app:destination="@id/navigation_popup_group" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/navigation_recherche"
+        android:name="com.example.nalone.ui.recherche.RechercheActivity"
+        android:label="@string/title_recherche"
+        tools:layout="@layout/fragment_recherche" >
+        <action
+            android:id="@+id/action_navigation_recherche_to_navigation_recherche_amis"
+            app:destination="@id/navigation_recherche_amis" />
+        <action
+            android:id="@+id/action_navigation_recherche_to_navigation_group"
+            app:destination="@id/navigation_group" />
+        <action
+            android:id="@+id/action_navigation_recherche_to_navigation_popup_profil"
+            app:destination="@id/navigation_popup_profil" />
+        <action
+            android:id="@+id/action_navigation_recherche_to_navigation_popup_group"
+            app:destination="@id/navigation_popup_group" />
+    </fragment>
+
+
 
     <fragment
         android:id="@+id/navigation_popup_group"
@@ -162,11 +199,14 @@
         android:label="@string/title_profil"
         tools:layout="@layout/fragment_popup_profil" >
         <action
-            android:id="@+id/action_navigation_popup_profil_to_navigation_recherche"
-            app:destination="@id/navigation_recherche" />
+            android:id="@+id/action_navigation_popup_profil_to_navigation_recherche_amis"
+            app:destination="@id/navigation_recherche_amis" />
         <action
             android:id="@+id/action_navigation_popup_profil_to_navigation_amis2"
             app:destination="@id/navigation_amis" />
+        <action
+            android:id="@+id/action_navigation_popup_profil_to_navigation_recherche"
+            app:destination="@id/navigation_recherche" />
     </fragment>
 
     <fragment

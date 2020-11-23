@@ -25,8 +25,6 @@ import com.example.nalone.User;
 import com.example.nalone.UserFriendData;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
-import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.storage.StorageReference;
 
 import java.util.ArrayList;
@@ -36,7 +34,6 @@ import static com.example.nalone.HomeActivity.buttonBack;
 import static com.example.nalone.util.Constants.USER;
 import static com.example.nalone.util.Constants.mStore;
 import static com.example.nalone.util.Constants.mStoreBase;
-import static com.example.nalone.util.Constants.updateUserData;
 
 public class PopupProfilFragment extends Fragment {
 
@@ -68,7 +65,7 @@ public class PopupProfilFragment extends Fragment {
             buttonBack.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    navController.navigate(R.id.action_navigation_popup_profil_to_navigation_recherche);
+                    navController.navigate(R.id.action_navigation_popup_profil_to_navigation_recherche_amis);
                 }
             });
         }
