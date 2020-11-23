@@ -40,6 +40,9 @@
         <action
             android:id="@+id/action_navigation_amis_to_navigation_invitations"
             app:destination="@id/navigation_invitations" />
+        <action
+            android:id="@+id/action_navigation_amis_self"
+            app:destination="@id/navigation_amis" />
     </fragment>
 
     <fragment
@@ -56,6 +59,9 @@
         <action
             android:id="@+id/action_navigation_invitations_to_navigation_amis"
             app:destination="@id/navigation_amis" />
+        <action
+            android:id="@+id/action_navigation_invitations_self"
+            app:destination="@id/navigation_invitations" />
     </fragment>
 
 

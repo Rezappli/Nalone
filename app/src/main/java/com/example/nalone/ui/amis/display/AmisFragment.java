@@ -239,7 +239,7 @@ public class AmisFragment extends Fragment {
                                             @Override
                                             public void onClick(View v) {
                                                 removeFriend(u.getUid());
-                                                adapter.notifyItemRemoved(userViewHolder.getAdapterPosition());
+                                                navController.navigate(R.id.action_navigation_amis_self);
                                             }
                                         });
                                         loading.setVisibility(View.GONE);

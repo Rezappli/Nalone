@@ -231,6 +231,7 @@ public class MesInvitationsFragment extends Fragment {
         mStoreBase.collection("users").document(USER.getUid()).collection("friends").document(uid).set(data2);
         mStoreBase.collection("users").document(uid).collection("friends").document(USER.getUid()).set(data1);
         Toast.makeText(getContext(), "Vous avez ajouté(e) cet utilisateur", Toast.LENGTH_SHORT).show();
+        navController.navigate(R.id.action_navigation_invitations_self);
     }
 
     private void declineFriendRequest(final String uid) {
@@ -240,8 +241,7 @@ public class MesInvitationsFragment extends Fragment {
         mStoreBase.collection("users").document(uid).collection("friends").document(USER.getUid()).delete();
 
         Toast.makeText(getContext(), "Vous n'avez pas accepté(e) cet utilisateur", Toast.LENGTH_SHORT).show();
-        adapter.startListening();
-
+        navController.navigate(R.id.action_navigation_invitations_self);
     }
 
 
