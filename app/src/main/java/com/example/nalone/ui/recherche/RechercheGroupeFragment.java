@@ -20,8 +20,10 @@ import com.example.nalone.R;
 import com.example.nalone.ui.amis.display.PopUpGroupFragment;
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.Query;
 
+import static com.example.nalone.util.Constants.USER_ID;
 import static com.example.nalone.util.Constants.mStoreBase;
 
 public class RechercheGroupeFragment extends Fragment {
@@ -55,7 +57,8 @@ public class RechercheGroupeFragment extends Fragment {
     }
 
     private void adapterGroups() {
-        Query query = mStoreBase.collection("groups");
+        DocumentReference ref = mStoreBase.document("users/"+USER_ID);
+        Query query = mStoreBase.collection("groups").whereNotEqualTo("ownerDoc", ref);
         FirestoreRecyclerOptions<Group> options = new FirestoreRecyclerOptions.Builder<Group>().setQuery(query, Group.class).build();
 
         adapter = new FirestoreRecyclerAdapter<Group, UserViewHolder>(options) {

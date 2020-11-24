@@ -30,7 +30,7 @@ public class EditGroupFragment extends Fragment {
 
 
     TextInputEditText groupName;
-    Button profilEditValider;
+    Button profilEditValider, buttonDeleteGroup;
     private ImageView imageViewPublic, imageViewPrive;
     private NavController navController;
     public static Group GROUP_LOAD;
@@ -54,7 +54,15 @@ public class EditGroupFragment extends Fragment {
         profilEditValider = root.findViewById(R.id.profilEditValider);
         imageViewPublic = root.findViewById(R.id.imageViewPublic);
         imageViewPrive = root.findViewById(R.id.imageViewPrivate);
+        buttonDeleteGroup = root.findViewById(R.id.buttonDeleteGroup);
 
+        buttonDeleteGroup.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mStoreBase.collection("groups").document(GROUP_LOAD.getUid()).delete();
+                navController.navigate(R.id.action_navigation_edit_group_to_navigation_mes_groupes);
+            }
+        });
         groupName.setText(GROUP_LOAD.getName());
 
         if(GROUP_LOAD.getVisibility() == Visibility.PUBLIC){

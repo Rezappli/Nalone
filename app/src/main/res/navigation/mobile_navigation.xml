@@ -68,6 +68,9 @@
         <action
             android:id="@+id/action_navigation_edit_group_to_navigation_popup_mes_groupes"
             app:destination="@id/navigation_popup_mes_groupes" />
+        <action
+            android:id="@+id/action_navigation_edit_group_to_navigation_mes_groupes"
+            app:destination="@id/navigation_mes_groupes" />
     </fragment>
 
     <fragment
