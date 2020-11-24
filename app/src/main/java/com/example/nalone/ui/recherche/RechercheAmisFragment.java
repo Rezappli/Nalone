@@ -2,6 +2,7 @@ package com.example.nalone.ui.recherche;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -17,6 +18,7 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
+import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.navigation.NavController;
@@ -240,6 +242,26 @@ public class RechercheAmisFragment extends Fragment {
                 userViewHolder.villePers.setText(u.getCity());
                 userViewHolder.nomInvit.setText(u.getFirst_name() + " "+ u.getLast_name());
 
+                if(u.getCursus().equalsIgnoreCase("Informatique")){
+                    userViewHolder.cardViewPhotoPerson.setCardBackgroundColor(Color.RED);
+                }
+
+                if(u.getCursus().equalsIgnoreCase("TC")){
+                    userViewHolder.cardViewPhotoPerson.setCardBackgroundColor(Color.GREEN);
+                }
+
+                if(u.getCursus().equalsIgnoreCase("MMI")){
+                    userViewHolder.cardViewPhotoPerson.setCardBackgroundColor(Color.parseColor("#4B0082"));
+                }
+
+                if(u.getCursus().equalsIgnoreCase("GB")){
+                    userViewHolder.cardViewPhotoPerson.setCardBackgroundColor(Color.BLUE);
+                }
+
+                if(u.getCursus().equalsIgnoreCase("LP")){
+                    userViewHolder.cardViewPhotoPerson.setCardBackgroundColor(Color.GRAY);
+                }
+
                 userViewHolder.button.setImageResource(0);
                 Log.w("Add", "BienHolder Recherche");
 
@@ -316,6 +338,7 @@ public class RechercheAmisFragment extends Fragment {
         private LinearLayout layoutProfil;
         private ImageView imagePerson;
         private ImageView button;
+        private CardView cardViewPhotoPerson;
 
         public UserViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -325,6 +348,7 @@ public class RechercheAmisFragment extends Fragment {
             layoutProfil = itemView.findViewById(R.id.layoutProfil);
             imagePerson = itemView.findViewById(R.id.imagePerson);
             button = itemView.findViewById(R.id.imageView19);
+            cardViewPhotoPerson = itemView.findViewById(R.id.cardViewPhotoPerson);
 
         }
 

@@ -14,20 +14,17 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-        <LinearLayout
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            android:layout_height="50dp">
 
             <SearchView
                 android:id="@+id/search_bar"
-                style="@style/Platform.MaterialComponents.Light"
                 android:layout_width="match_parent"
                 android:layout_height="40dp"
                 android:layout_marginStart="10dp"
                 android:layout_marginTop="10dp"
                 android:layout_marginEnd="10dp"
-                android:layout_weight="1"
                 android:background="@drawable/custom_input"
                 android:queryHint="Entrer votre texte">
 
@@ -35,12 +32,17 @@
 
             <ImageView
                 android:id="@+id/qr_code_image"
-                android:layout_width="100dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                app:srcCompat="@drawable/ic_baseline_qr_code_2_24"/>
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignTop="@+id/search_bar"
+                android:layout_alignEnd="@+id/search_bar"
+                android:layout_alignParentBottom="true"
+                android:layout_marginTop="0dp"
+                android:layout_marginEnd="10dp"
+                android:layout_marginBottom="0dp"
+                app:srcCompat="@drawable/ic_baseline_qr_code_2_24" />
 
-        </LinearLayout>
+        </RelativeLayout>
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recyclerViewFiltre"

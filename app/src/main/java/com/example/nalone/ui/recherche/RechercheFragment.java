@@ -9,6 +9,7 @@ import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -157,6 +158,7 @@ public class RechercheFragment extends Fragment {
                     }
                 });
 
+
                 if(g.getImage_url() != null) {
                     if(!Cache.fileExists(g.getUid())) {
                         StorageReference imgRef = mStore.getReference("groups/" + g.getUid());
@@ -249,6 +251,26 @@ public class RechercheFragment extends Fragment {
                 userViewHolder.villePers.setText(u.getCity());
                 userViewHolder.nomInvit.setText(u.getFirst_name() + " "+ u.getLast_name());
 
+                if(u.getCursus().equalsIgnoreCase("Informatique")){
+                    userViewHolder.cardViewPhotoPerson.setCardBackgroundColor(Color.RED);
+                }
+
+                if(u.getCursus().equalsIgnoreCase("TC")){
+                    userViewHolder.cardViewPhotoPerson.setCardBackgroundColor(Color.GREEN);
+                }
+
+                if(u.getCursus().equalsIgnoreCase("MMI")){
+                    userViewHolder.cardViewPhotoPerson.setCardBackgroundColor(Color.parseColor("#4B0082"));
+                }
+
+                if(u.getCursus().equalsIgnoreCase("GB")){
+                    userViewHolder.cardViewPhotoPerson.setCardBackgroundColor(Color.BLUE);
+                }
+
+                if(u.getCursus().equalsIgnoreCase("LP")){
+                    userViewHolder.cardViewPhotoPerson.setCardBackgroundColor(Color.GRAY);
+                }
+
                 userViewHolder.button.setImageResource(0);
                 Log.w("Add", "BienHolder Recherche");
                 if(u.getImage_url() != null) {
@@ -325,6 +347,7 @@ public class RechercheFragment extends Fragment {
         private LinearLayout layoutProfil;
         private ImageView imagePerson;
         private ImageView button;
+        private CardView cardViewPhotoPerson;
 
         public UserViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -334,6 +357,7 @@ public class RechercheFragment extends Fragment {
             layoutProfil = itemView.findViewById(R.id.layoutProfil);
             imagePerson = itemView.findViewById(R.id.imagePerson);
             button = itemView.findViewById(R.id.imageView19);
+            cardViewPhotoPerson = itemView.findViewById(R.id.cardViewPhotoPerson);
 
         }
 

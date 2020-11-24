@@ -188,6 +188,10 @@ public class MesInvitationsFragment extends Fragment {
                                 mRecyclerView.setAdapter(adapter);
                                 adapter.startListening();
 
+
+
+                            }else{
+                                navController.navigate(R.id.action_navigation_invitations_to_navigation_amis);
                             }
                         }
                     }

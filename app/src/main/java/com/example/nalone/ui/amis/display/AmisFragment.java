@@ -1,5 +1,6 @@
 package com.example.nalone.ui.amis.display;
 
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -77,6 +78,13 @@ public class AmisFragment extends Fragment {
                              Bundle savedInstanceState) {
 
         rootView = inflater.inflate(R.layout.fragment_amis, container, false);
+
+        createFragment(rootView);
+
+        return rootView;
+    }
+
+    private void createFragment(View rootView) {
         nbInvit = 0;
         search_bar = rootView.findViewById(R.id.search_bar_amis);
         resultat = rootView.findViewById(R.id.resultatText_amis);
@@ -143,7 +151,6 @@ public class AmisFragment extends Fragment {
             }
         });
 
-        return rootView;
     }
 
     private void adapterUsers() {
@@ -178,6 +185,26 @@ public class AmisFragment extends Fragment {
                                         userViewHolder.villePers.setText(u.getCity());
                                         userViewHolder.nomInvit.setText(u.getFirst_name() + " " + u.getLast_name());
                                         userViewHolder.button.setImageResource(R.drawable.ic_baseline_delete_24);
+
+                                        if(u.getCursus().equalsIgnoreCase("Informatique")){
+                                            userViewHolder.cardViewPhotoPerson.setCardBackgroundColor(Color.RED);
+                                        }
+
+                                        if(u.getCursus().equalsIgnoreCase("TC")){
+                                            userViewHolder.cardViewPhotoPerson.setCardBackgroundColor(Color.GREEN);
+                                        }
+
+                                        if(u.getCursus().equalsIgnoreCase("MMI")){
+                                            userViewHolder.cardViewPhotoPerson.setCardBackgroundColor(Color.parseColor("#4B0082"));
+                                        }
+
+                                        if(u.getCursus().equalsIgnoreCase("GB")){
+                                            userViewHolder.cardViewPhotoPerson.setCardBackgroundColor(Color.BLUE);
+                                        }
+
+                                        if(u.getCursus().equalsIgnoreCase("LP")){
+                                            userViewHolder.cardViewPhotoPerson.setCardBackgroundColor(Color.GRAY);
+                                        }
 
                                         if(u.getImage_url() != null) {
                                             if(!Cache.fileExists(u.getUid())) {
@@ -239,7 +266,7 @@ public class AmisFragment extends Fragment {
                                             @Override
                                             public void onClick(View v) {
                                                 removeFriend(u.getUid());
-                                                navController.navigate(R.id.action_navigation_amis_self);
+                                                createFragment(rootView);
                                             }
                                         });
                                         loading.setVisibility(View.GONE);
@@ -265,6 +292,7 @@ public class AmisFragment extends Fragment {
         private LinearLayout layoutProfil;
         private ImageView imagePerson;
         private ImageView button;
+        private CardView cardViewPhotoPerson;
 
         public UserViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -274,6 +302,8 @@ public class AmisFragment extends Fragment {
             layoutProfil = itemView.findViewById(R.id.layoutProfil);
             imagePerson = itemView.findViewById(R.id.imagePerson);
             button = itemView.findViewById(R.id.imageView19);
+            cardViewPhotoPerson = itemView.findViewById(R.id.cardViewPhotoPerson);
+
 
         }
 
