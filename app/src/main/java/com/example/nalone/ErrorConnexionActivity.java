@@ -40,8 +40,7 @@ public class ErrorConnexionActivity extends AppCompatActivity {
 
     public void retry(){
         if(isInternetConnected()){
-            Intent intent = new Intent(getBaseContext(), MainActivity.class);
-            startActivityForResult(intent, 0);
+            finish();
         }else{
             Toast.makeText(getApplicationContext(), "Impossible de se connecter à Internet", Toast.LENGTH_LONG).show();
         }
@@ -65,5 +64,11 @@ public class ErrorConnexionActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
+    }
+
+    @Override
+    public void onDestroy(){
+        ConnectionService.onPage = false;
+        super.onDestroy();
     }
 }

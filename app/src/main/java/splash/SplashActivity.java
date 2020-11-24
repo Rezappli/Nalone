@@ -1,16 +1,21 @@
 package splash;
 
+import android.app.NotificationManager;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.nalone.ConnectionService;
 import com.example.nalone.HomeActivity;
 import com.example.nalone.MainActivity;
+import com.example.nalone.Notification;
 import com.example.nalone.R;
 import com.example.nalone.User;
 import com.example.nalone.ui.profil.ParametresFragment;
@@ -21,10 +26,6 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
-import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.EventListener;
-import com.google.firebase.firestore.FirebaseFirestoreException;
-import com.google.firebase.firestore.MetadataChanges;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
@@ -60,7 +61,10 @@ public class SplashActivity extends AppCompatActivity {
         super.onStart();
         widthScreen = getResources().getDisplayMetrics().widthPixels;
         heightScreen = getResources().getDisplayMetrics().heightPixels;
+        Log.w("Service", "Start service");
+        startService(new Intent(this, ConnectionService.class));
         init();
+
     }
 
     public void init() {
@@ -74,6 +78,7 @@ public class SplashActivity extends AppCompatActivity {
                         .whereEqualTo("mail", currentUser.getEmail())
                         .get()
                         .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                            @RequiresApi(api = Build.VERSION_CODES.M)
                             @Override
                             public void onComplete(@NonNull Task<QuerySnapshot> task) {
                                 if (task.isSuccessful()) {
@@ -88,6 +93,7 @@ public class SplashActivity extends AppCompatActivity {
                                         USER_REFERENCE = mStoreBase.collection("users").document(USER.getUid());
                                         Log.w("SPLASH", "City : " + USER_LATLNG.toString());
                                         load = true;
+                                        userListener();
                                         startActivity(new Intent(SplashActivity.this, HomeActivity.class));
                                     }else{
                                         load = true;
@@ -112,6 +118,12 @@ public class SplashActivity extends AppCompatActivity {
         }
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.M)
+    public void userListener(){
+        Notification.SystemService = this.getSystemService(NotificationManager.class);
+
+    }
+
 
     public void addUser(){
         User u = new User("11b4ee26-69b8-4ae2-abf9-2a7263f90f96", "Le Gal", "Hugo", "H", "Nantes","0781039461"
@@ -133,5 +145,6 @@ public class SplashActivity extends AppCompatActivity {
                     }
                 });
     }
+
 }
 

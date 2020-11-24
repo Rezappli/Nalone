@@ -169,4 +169,9 @@ public class MainActivity extends AppCompatActivity{
     public void onBackPressed(){
         //super.onBackPressed();
     }
+
+    @Override
+    public void onStop(){
+        super.onStop();
+    }
 }
