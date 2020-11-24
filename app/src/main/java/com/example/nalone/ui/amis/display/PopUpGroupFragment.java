@@ -91,37 +91,6 @@ public class PopUpGroupFragment extends Fragment {
         fenetrePrincipal = root.findViewById(R.id.fenetrePrincipal);
         fenetrePrincipal.setVisibility(View.GONE);
 
-        img1 = root.findViewById(R.id.image1);
-        img2 = root.findViewById(R.id.image2);
-        img3 = root.findViewById(R.id.image3);
-        img4 = root.findViewById(R.id.image4);
-        img5 = root.findViewById(R.id.image5);
-        img6 = root.findViewById(R.id.image6);
-
-        c1 = root.findViewById(R.id.img1);
-        c2 = root.findViewById(R.id.img2);
-        c3 = root.findViewById(R.id.img3);
-        c4 = root.findViewById(R.id.img4);
-        c5 = root.findViewById(R.id.img5);
-        c6 = root.findViewById(R.id.img6);
-
-
-        final List<ImageView> images = new ArrayList<>();
-        images.add(img1);
-        images.add(img2);
-        images.add(img3);
-        images.add(img4);
-        images.add(img5);
-        images.add(img6);
-
-        final List<CardView> cardViews = new ArrayList<>();
-        cardViews.add(c1);
-        cardViews.add(c2);
-        cardViews.add(c3);
-        cardViews.add(c4);
-        cardViews.add(c5);
-        cardViews.add(c6);
-
         mStoreBase.collection("groups").document(GROUP_LOAD.getUid()).collection("members").whereEqualTo("status", "add")
                 .get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
@@ -138,18 +107,6 @@ public class PopUpGroupFragment extends Fragment {
                             }
                         }
                         textViewNbMembers.setText(nbMembers+" membres");
-                        if(buttonQuitter){
-                            nbMembers -= 1;
-                        }
-                        if(nbMembers == 0){
-                            relativeLayout.setVisibility(View.GONE);
-                        }
-                        if(nbMembers <= 6){
-                            buttonPlus.setVisibility(View.GONE);
-                        }
-                        for(int i = 0; i < nbMembers && i < 6; i++){
-                            cardViews.get(i).setVisibility(View.VISIBLE);
-                        }
                         fenetrePrincipal.setVisibility(View.VISIBLE);
                     }
                 });

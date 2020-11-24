@@ -95,14 +95,14 @@
     <string name="editMail"> Changer d\'adresse mail </string>
     <string name="rayonTitle"> Rayon de recherche </string>
     <string name="internationalTitle"> Recherche à l\'international </string>
-    <string name="notification"> Notification </string>
+    <string name="notification"> Notifications </string>
     <string name="lieuParametre"> Lieu par défault </string>
     <string name="couleurCursusParametre"> Couleurs des cursus </string>
     <string name="new_groupe"> Nouveau groupe </string>
     <string name="new_event"> Nouvel évènement </string>
     <string name="invits"> Invitations </string>
     <string name="rejoindre"> Rejoindre </string>
-    <string name="voir_plus"> Voir plus</string>
+    <string name="voir_plus"> Voir les membres</string>
     <string name="recherche_utilisateur"> Rechercher des utilisateurs </string>
     <string name="recherche_groupes"> Rechercher des groupes </string>
     <string name="mes_groupes"> Mes groupes </string>

@@ -177,7 +177,6 @@ public class CreateGroupFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 selectPrivate();
-                adapter.startListening();
             }
         });
 

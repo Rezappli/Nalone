@@ -34,6 +34,7 @@ import com.google.android.gms.tasks.Task;
 
 import static android.content.Context.MODE_PRIVATE;
 import static com.example.nalone.HomeActivity.buttonBack;
+import static com.example.nalone.util.Constants.USER;
 import static com.example.nalone.util.Constants.USER_ID;
 import static com.example.nalone.util.Constants.maPosition;
 import static com.example.nalone.util.Constants.range;
@@ -44,9 +45,9 @@ public class ParametresFragment extends Fragment {
     private GoogleSignInClient mGoogleSignInClient;
     private SeekBar seekBar;
     private TextView textViewRayon, textViewLocationActuel, textViewMaPosition;
-    public static final String SHARED_PREFS = "sharedPrefs", sharedRange = "sharedRange",sharedNotif = "sharedNotif",sharedPosition = "sharedPosition", sharedIntern = "sharedIntern";
+    public static final String SHARED_PREFS = "sharedPrefs", sharedRange = "sharedRange",sharedNotif = "sharedNotif",sharedPosition = "sharedPosition";
     private int rangeActual;
-    private boolean international, notification = true, position;
+    private boolean  notification = true, position;
     private NavController navController;
 
 
@@ -71,7 +72,6 @@ public class ParametresFragment extends Fragment {
         });
 
         SharedPreferences settings = this.getActivity().getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
-        international = settings.getBoolean(sharedIntern, false);
         notification = settings.getBoolean(sharedNotif, false);
         position = settings.getBoolean(sharedPosition, false);
 
@@ -79,6 +79,8 @@ public class ParametresFragment extends Fragment {
         textViewRayon = root.findViewById(R.id.textViewRayon);
         textViewLocationActuel = root.findViewById(R.id.textViewLocationActuel);
         textViewMaPosition = root.findViewById(R.id.textViewMaPosition);
+
+        textViewLocationActuel.setText(USER.getCity());
 
         //textViewLocationActuel.setText(USERS_LIST.get(USER_ID).getVille()+"");
 
@@ -159,9 +161,6 @@ public class ParametresFragment extends Fragment {
         });
 
 
-        if(international){
-            seekBar.setEnabled(false);
-        }
 
         if(notification){
 
@@ -169,10 +168,8 @@ public class ParametresFragment extends Fragment {
 
         }
 
-        Switch sw = (Switch) root.findViewById(R.id.switch1);
         Switch swNotif = (Switch) root.findViewById(R.id.switchNotif);
 
-        sw.setChecked(international);
         swNotif.setChecked(notification);
 
         swNotif.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
@@ -187,25 +184,6 @@ public class ParametresFragment extends Fragment {
             }
         });
 
-        sw.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (isChecked) {
-                    rangeActual = range;
-                    range = 1000000*100;
-                    seekBar.setProgress(seekBar.getMax());
-                    textViewRayon.setText(range/1000+" km");
-                    seekBar.setEnabled(false);
-                    international = true;
-                } else {
-                    range = 50000;
-                    textViewRayon.setText(range/1000+" km");
-                    seekBar.setProgress(range);
-                    international = false;
-                    seekBar.setEnabled(true);
-
-                }
-            }
-        });
 
         mGoogleSignInClient = GoogleSignIn.getClient(getContext(), gso);
 
@@ -245,7 +223,6 @@ public class ParametresFragment extends Fragment {
         SharedPreferences.Editor editor = settings.edit();
 
         editor.putInt(sharedRange, range);
-        editor.putBoolean(sharedIntern, international);
         editor.putBoolean(sharedNotif, notification);
         editor.putBoolean(sharedPosition, maPosition);
 
