@@ -57,7 +57,7 @@ public class MesGroupeFragment extends Fragment {
         addGroup.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                navController.navigate(R.id.action_navigation_amis_to_navigation_creat_group);
+                navController.navigate(R.id.action_navigation_mes_groupes_to_navigation_creat_group);
             }
         });
 
