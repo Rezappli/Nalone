@@ -45,8 +45,6 @@ import static com.example.nalone.util.Constants.USER;
 import static com.example.nalone.util.Constants.USER_STORAGE_REF;
 import static com.example.nalone.util.Constants.mStore;
 import static com.example.nalone.util.Constants.mStoreBase;
-import static com.example.nalone.util.Constants.nolonelyBundle;
-import static com.example.nalone.util.Constants.updateUserData;
 
 public class ProfilFragment extends Fragment  {
 

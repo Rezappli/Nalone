@@ -17,8 +17,6 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.nalone.adapter.ItemImagePersonAdapter;
-import com.example.nalone.adapter.ItemMesEventListAdapter;
 import com.example.nalone.Evenement;
 import com.example.nalone.R;
 import com.example.nalone.Visibility;
@@ -35,18 +33,15 @@ import java.util.ArrayList;
 
 import static com.example.nalone.util.Constants.USER_REFERENCE;
 import static com.example.nalone.util.Constants.mStoreBase;
-import static com.example.nalone.util.Constants.nolonelyBundle;
 
 
 public class MesEvenementsListFragment extends Fragment {
 
     private View rootView;
     private RecyclerView mRecyclerViewEvent;
-    private ItemMesEventListAdapter mAdapterEventList;
     private RecyclerView.LayoutManager mLayoutManagerMesEvent;
 
     private RecyclerView mRecyclerViewInscrit;
-    private ItemImagePersonAdapter mAdapterInscrits;
     private RecyclerView.LayoutManager mLayoutManagerInscrit;
 
     public static String nameEvent;
@@ -91,7 +86,7 @@ public class MesEvenementsListFragment extends Fragment {
     }
 
     private void updateEvents() {
-        itemEvents.clear();
+        /*itemEvents.clear();
 
         mStoreBase.collection("events")
                 .whereEqualTo("ownerdoc", USER_REFERENCE)
@@ -116,7 +111,7 @@ public class MesEvenementsListFragment extends Fragment {
             }
         });
 
-        /*for(int i = 0; i < EVENTS_LIST.size(); i++){
+        for(int i = 0; i < EVENTS_LIST.size(); i++){
             MarkerOptions m = new MarkerOptions();
             Evenement e = Constants.EVENTS_LIST.get(i+"");
 
@@ -125,7 +120,7 @@ public class MesEvenementsListFragment extends Fragment {
             if (e.getProprietaire().equalsIgnoreCase(USER_ID)) {
                 itemEvents.add(e);
             }
-        }*/
+        }
 
         if(itemEvents.isEmpty()){
             mRecyclerViewEvent.setVisibility(View.GONE);
@@ -148,8 +143,8 @@ public class MesEvenementsListFragment extends Fragment {
         mAdapterEventList.setOnItemClickListener(new ItemMesEventListAdapter.OnItemClickListener() {
             @Override
             public void onDisplayClick(int position) {
-                /*Constants.targetZoom = MARKERS_EVENT.get(itemEvents.get(position).getId()+"").getPosition();
-                EvenementsFragment.viewPager.setCurrentItem(0);*/
+                Constants.targetZoom = MARKERS_EVENT.get(itemEvents.get(position).getId()+"").getPosition();
+                EvenementsFragment.viewPager.setCurrentItem(0);
             }
 
             @Override
@@ -188,39 +183,11 @@ public class MesEvenementsListFragment extends Fragment {
                 CreateEventActivity.edit = true;
 
                 startActivity(new Intent(getContext(), CreateEventActivity.class));
-                Toast.makeText(getContext(), "Edit event", Toast.LENGTH_SHORT).show();*/
+                Toast.makeText(getContext(), "Edit event", Toast.LENGTH_SHORT).show();
 
             }
-        });
+        });*/
 
     }
 
-
-    //@Override
-    public void onUpdateAdapter() {
-
-    }
-
-    private void removeEvent(int position) {
-
-    }
-
-    @Override
-    public void onDestroy(){
-        super.onDestroy();
-        if(nolonelyBundle.getSerializable("my_events") == null) {
-            nolonelyBundle.putSerializable("my_events", itemEvents);
-        }
-    }
-
-    @Override
-    public void onResume(){
-        super.onResume();
-            if (nolonelyBundle.getSerializable("my_events") != null) {
-                itemEvents = (ArrayList<Evenement>) nolonelyBundle.getSerializable("my_events");
-                onUpdateAdapter();
-            } else {
-                updateEvents();
-            }
-        }
 }

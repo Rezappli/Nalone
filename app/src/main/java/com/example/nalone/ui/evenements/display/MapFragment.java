@@ -10,7 +10,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
-import com.example.nalone.adapter.ItemEventAdapter;
 import com.example.nalone.R;
 import com.example.nalone.listeners.FireStoreEventsListeners;
 import com.google.android.gms.maps.GoogleMap;
@@ -47,12 +46,10 @@ import static com.example.nalone.HomeActivity.buttonBack;
 import static com.example.nalone.util.Constants.MAPVIEW_BUNDLE_KEY;
 import static com.example.nalone.util.Constants.USER_LATLNG;
 import static com.example.nalone.util.Constants.USER_REFERENCE;
-import static com.example.nalone.util.Constants.getEventData;
-import static com.example.nalone.util.Constants.nolonelyBundle;
 import static com.example.nalone.util.Constants.targetZoom;
 
 
-public class MapFragment extends Fragment implements OnMapReadyCallback, FireStoreEventsListeners {
+public class MapFragment extends Fragment implements OnMapReadyCallback {
 
     private View rootView;
     private ProgressBar progressBar;
@@ -62,7 +59,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, FireSto
     private ImageView buttonAdd;
 
     private RecyclerView mRecyclerViewEvent;
-    private ItemEventAdapter mAdapterEvent;
     private RecyclerView.LayoutManager mLayoutManagerEvent;
 
     private static ArrayList<Evenement> itemEvents = new ArrayList<>();
@@ -236,14 +232,14 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, FireSto
 
     //@Override
     public void onUpdateAdapter() {
-            mAdapterEvent = new ItemEventAdapter(itemEvents);
+            //mAdapterEvent = new ItemEventAdapter(itemEvents);
 
             mLayoutManagerEvent = new LinearLayoutManager(
                     rootView.getContext(),
                     LinearLayoutManager.HORIZONTAL,
                     false);
             mRecyclerViewEvent.setLayoutManager(mLayoutManagerEvent);
-            mRecyclerViewEvent.setAdapter(mAdapterEvent);
+            //mRecyclerViewEvent.setAdapter(mAdapterEvent);
 
             if(mMap != null) {
                 mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
@@ -265,56 +261,26 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, FireSto
                 mMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
                     @Override
                     public void onInfoWindowClick(Marker marker) {
-                        getEventData((String) marker.getTag(), new FireStoreEventsListeners() {
+                        /*getEventData((String) marker.getTag(), new FireStoreEventsListeners() {
                             @Override
                             public void onDataUpdate(Evenement e) {
                                 InfosEvenementsActivity.EVENT_LOAD = e;
                                 startActivity(new Intent(getContext(), InfosEvenementsActivity.class));
                             }
-                        });
+                        });*/
                     }
                 });
             }
 
-            mAdapterEvent.setOnItemClickListener(new ItemEventAdapter.OnItemClickListener() {
+            /*mAdapterEvent.setOnItemClickListener(new ItemEventAdapter.OnItemClickListener() {
                 @Override
                 public void onAddClick(int position) {
                     mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(itemEvents.get(position).getLocation().getLatitude(), itemEvents.get(position).getLocation().getLongitude()), 13));
                 }
-            });
+            });*/
 
 
         mRecyclerViewEvent.setVisibility(View.VISIBLE);
         progressBar.setVisibility(View.GONE);
     }
-
-    @Override
-    public void onDataUpdate(Evenement e) {
-
-    }
-
-    @Override
-    public void onDestroy(){
-        super.onDestroy();
-        if(nolonelyBundle.getSerializable("events") == null) {
-            nolonelyBundle.putSerializable("events", itemEvents);
-        }
-        targetZoom = null;
-        mMapView.onDestroy();
-    }
-
-    @RequiresApi(api = Build.VERSION_CODES.M)
-    @Override
-    public void onResume(){
-        super.onResume();
-        if (nolonelyBundle.getSerializable("events") != null) {
-            itemEvents = (ArrayList<Evenement>) nolonelyBundle.getSerializable("events");
-            onUpdateAdapter();
-        } else {
-            updateMap();
-        }
-
-        mMapView.onResume();
-    }
-
 }

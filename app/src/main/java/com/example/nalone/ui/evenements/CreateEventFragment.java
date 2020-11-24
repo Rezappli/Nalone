@@ -55,7 +55,10 @@ import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.StorageReference;
 
 import java.io.IOException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
@@ -87,8 +90,6 @@ public class CreateEventFragment extends Fragment {
     private ImageView imageViewPublic;
 
     private Button buttonValidEvent;
-
-    private ImageView locationValidImageView;
 
     private boolean locationValid = false;
 
@@ -248,7 +249,11 @@ public class CreateEventFragment extends Fragment {
             public void onClick(View v) {
                 if(getLocationFromAddress(event_adresse.getText().toString()+","+event_city.getText().toString()) != null){
                     locationValid = true;
-                    saveEvent();
+                    try {
+                        saveEvent();
+                    } catch (ParseException e) {
+                        e.printStackTrace();
+                    }
                 }else{
                     event_adresse.setError("Adresse introuvable");
                 }
@@ -327,7 +332,7 @@ public class CreateEventFragment extends Fragment {
                     }
                 });
                 if(u.getImage_url() != null) {
-                    if (!Cache.fileExists(u.getUid())) {
+                    if(!Cache.fileExists(u.getUid())) {
                         StorageReference imgRef = mStore.getReference("users/" + u.getUid());
                         if (imgRef != null) {
                             imgRef.getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
@@ -337,22 +342,46 @@ public class CreateEventFragment extends Fragment {
                                         Uri img = task.getResult();
                                         if (img != null) {
                                             Cache.saveUriFile(u.getUid(), img);
+                                            u.setImage_url(Cache.getImageDate(u.getUid()));
+                                            mStoreBase.collection("users").document(u.getUid()).set(u);
                                             Glide.with(getContext()).load(img).fitCenter().centerCrop().into(personViewHolder.imagePerson);
                                         }
                                     }
                                 }
                             });
                         }
-                    } else {
-                        Glide.with(getContext()).load(Cache.getUriFromUid(u.getUid())).fitCenter().centerCrop().into(personViewHolder.imagePerson);
+                    }else{
+                        Uri imgCache = Cache.getUriFromUid(u.getUid());
+                        Log.w("Cache", "Image Cache : " + Cache.getImageDate(u.getUid()));
+                        Log.w("Cache", "Data Cache : " + u.getImage_url());
+                        if(Cache.getImageDate(u.getUid()).equalsIgnoreCase(u.getImage_url())) {
+                            Log.w("image", "get image from cache");
+                            Glide.with(getContext()).load(imgCache).fitCenter().centerCrop().into(personViewHolder.imagePerson);
+                        }else{
+                            StorageReference imgRef = mStore.getReference("users/" + u.getUid());
+                            if (imgRef != null) {
+                                imgRef.getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<Uri> task) {
+                                        if (task.isSuccessful()) {
+                                            Uri img = task.getResult();
+                                            if (img != null) {
+                                                Cache.saveUriFile(u.getUid(), img);
+                                                u.setImage_url(Cache.getImageDate(u.getUid()));
+                                                mStoreBase.collection("users").document(u.getUid()).set(u);
+                                                Glide.with(getContext()).load(img).fitCenter().centerCrop().into(personViewHolder.imagePerson);
+                                            }
+                                        }
+                                    }
+                                });
+                            }
+                        }
                     }
-
                 }
             }
 
         };
 
-        //mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         mRecyclerView.setAdapter(adapter);
         adapter.startListening();
@@ -373,7 +402,7 @@ public class CreateEventFragment extends Fragment {
 
             nomInvit = itemView.findViewById(R.id.nomInvit);
             villePers = itemView.findViewById(R.id.villePers);
-            button = itemView.findViewById(R.id.imageView19);
+            button = itemView.findViewById(R.id.buttonImage);
             imagePerson = itemView.findViewById(R.id.imagePerson);
         }
     }
@@ -397,8 +426,7 @@ public class CreateEventFragment extends Fragment {
     }
 
 
-    @RequiresApi(api = Build.VERSION_CODES.M)
-    public void saveEvent(){
+    private void saveEvent() throws ParseException {
 
         if(event_name.getText().toString().matches("")){
             event_name.setError("Champs obligatoire");
@@ -412,11 +440,11 @@ public class CreateEventFragment extends Fragment {
             event_city.setError("Champs obligatoire");
         }
 
-        if(event_date.getText().toString().matches("")){
+        if(event_date.getText().toString().equalsIgnoreCase("date")){
             event_date.setError("Champs obligatoire");
         }
 
-        if(event_horaire.getText().toString().matches("")){
+        if(event_horaire.getText().toString().equalsIgnoreCase("horaire")){
             event_horaire.setError("Champs obligatoire");
         }
 
@@ -425,36 +453,53 @@ public class CreateEventFragment extends Fragment {
         }
 
         if(!event_name.getText().toString().matches("") && !event_adresse.getText().toString().matches("") &&
-        !event_city.getText().toString().matches("") && !event_date.getText().toString().matches("") &&
-        !event_horaire.getText().toString().matches("") && locationValid){
+        !event_city.getText().toString().matches("") && !event_date.getText().toString().equalsIgnoreCase("date") &&
+        !event_horaire.getText().toString().equalsIgnoreCase("horaire") && locationValid){
             refreshData();
-            LatLng l = getLocationFromAddress(event_adresse+","+event_adresse);
-            Evenement e = new Evenement(evenementAttente.getUid(),USER.getFirst_name() + " " + USER.getLast_name(), R.drawable.ic_baseline_account_circle_24, evenementAttente.getName(),evenementAttente.getDescription(),
-                    evenementAttente.getAddress(), evenementAttente.getCity(), evenementAttente.getVisibility(), USER_REFERENCE, null, new GeoPoint(l.latitude, l.longitude));
+            LatLng l = getLocationFromAddress(evenementAttente.getAddress() + "," + evenementAttente.getCity());
+            if(l != null) {
 
-            mStoreBase.collection("events").document(e.getUid()).set(e);
+                SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy hh:mm");
 
-            for (String user : adds){
-                Log.d("Ajout", "Ajout de membre dans evenement");
-                mStoreBase.collection("events").document(e.getUid()).collection("members").document(user).set(e);
+                String new_event_time = event_horaire.getText().toString().replaceAll(" ", "");
+                String final_event_time = "";
+                for(char c : new_event_time.toCharArray()){
+                    if(c != ' '){
+                        final_event_time += c;
+                    }
+                }
+
+
+
+                Evenement e = new Evenement(evenementAttente.getUid(), USER.getFirst_name() + " " + USER.getLast_name(), R.drawable.ic_baseline_account_circle_24, evenementAttente.getName(), evenementAttente.getDescription(),
+                        evenementAttente.getAddress(), evenementAttente.getCity(), evenementAttente.getVisibility(), USER_REFERENCE, new Timestamp(sdf.parse(event_date.getText().toString()+" "+final_event_time)), new GeoPoint(l.latitude, l.longitude));
+
+                mStoreBase.collection("events").document(e.getUid()).set(e);
+
+                for (String user : adds) {
+                    Log.d("Ajout", "Ajout de membre dans evenement");
+                    mStoreBase.collection("events").document(e.getUid()).collection("members").document(user).set(e);
+                }
+                Toast.makeText(getContext(), "Vous avez créer votre évènement !", Toast.LENGTH_SHORT).show();
+
+                navController.navigate(R.id.action_navigation_create_event_to_navigation_evenements);
+            }else{
+                event_adresse.setError("Adresse non trouvée");
+                event_city.setError("Adresse non trouvée");
             }
-            Toast.makeText(getContext(), "Vous avez créer votre évènement !", Toast.LENGTH_SHORT).show();
-
-            navController.navigate(R.id.action_navigation_create_event_to_navigation_evenements);
-
         }
     }
 
 
     private LatLng getLocationFromAddress(String strAddress) {
 
-        Geocoder coder = new Geocoder(getContext());
+        Geocoder coder = new Geocoder(getActivity());
         List<Address> address;
         LatLng p1 = null;
 
         try {
             // May throw an IOException
-            address = coder.getFromLocationName(strAddress, 5);
+            address = coder.getFromLocationName(strAddress, 10);
             if (address == null) {
                 return null;
             }

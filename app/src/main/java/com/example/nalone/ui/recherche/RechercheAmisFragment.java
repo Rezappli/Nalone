@@ -1,7 +1,6 @@
 package com.example.nalone.ui.recherche;
 
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Build;
@@ -28,7 +27,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.example.nalone.Cache;
-import com.example.nalone.CameraFragment;
 import com.example.nalone.adapter.ItemFiltreAdapter;
 import com.example.nalone.items.ItemFiltre;
 import com.example.nalone.items.ItemPerson;
@@ -347,7 +345,7 @@ public class RechercheAmisFragment extends Fragment {
             villePers = itemView.findViewById(R.id.villePers);
             layoutProfil = itemView.findViewById(R.id.layoutProfil);
             imagePerson = itemView.findViewById(R.id.imagePerson);
-            button = itemView.findViewById(R.id.imageView19);
+            button = itemView.findViewById(R.id.buttonImage);
             cardViewPhotoPerson = itemView.findViewById(R.id.cardViewPhotoPerson);
 
         }

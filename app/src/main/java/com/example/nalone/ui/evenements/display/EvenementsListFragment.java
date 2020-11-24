@@ -11,9 +11,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.example.nalone.adapter.ItemEventListAdapter;
-import com.example.nalone.adapter.ItemFiltreAdapter;
-import com.example.nalone.adapter.ItemImagePersonAdapter;
 import com.example.nalone.Evenement;
 import com.example.nalone.InfosEvenementsActivity;
 import com.example.nalone.R;
@@ -26,24 +23,19 @@ import com.google.android.gms.maps.model.LatLng;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.example.nalone.util.Constants.nolonelyBundle;
-
 public class EvenementsListFragment extends Fragment {
 
     private ArrayList<Evenement> itemEvents = new ArrayList<>();
 
     private View rootView;
     private RecyclerView mRecyclerViewEvent;
-    private ItemEventListAdapter mAdapterEventList;
     private RecyclerView.LayoutManager mLayoutManagerEvent;
 
     private final List<ItemFiltre> filtres = new ArrayList<>();
     private RecyclerView mRecyclerViewFiltre;
-    private ItemFiltreAdapter mAdapterFiltre;
     private RecyclerView.LayoutManager mLayoutManagerFiltre;
 
     private RecyclerView mRecyclerViewInscrit;
-    private ItemImagePersonAdapter mAdapterInscrits;
     private RecyclerView.LayoutManager mLayoutManagerInscrit;
 
 
@@ -68,7 +60,7 @@ public class EvenementsListFragment extends Fragment {
         filtres.add(new ItemFiltre("Informatique"));
         filtres.add(new ItemFiltre("Manifestation"));
 
-        mAdapterFiltre = new ItemFiltreAdapter(filtres);
+        //mAdapterFiltre = new ItemFiltreAdapter(filtres);
 
         mRecyclerViewFiltre = rootView.findViewById(R.id.recyclerViewFiltre);
         mLayoutManagerFiltre = new LinearLayoutManager(
@@ -76,7 +68,7 @@ public class EvenementsListFragment extends Fragment {
                 LinearLayoutManager.HORIZONTAL,
                 false);
         mRecyclerViewFiltre.setLayoutManager(mLayoutManagerFiltre);
-        mRecyclerViewFiltre.setAdapter(mAdapterFiltre);
+        //mRecyclerViewFiltre.setAdapter(mAdapterFiltre);
 
         updateItems();
 
@@ -110,7 +102,7 @@ public class EvenementsListFragment extends Fragment {
 
         }*/
 
-        mAdapterEventList = new ItemEventListAdapter(itemEvents);
+        //mAdapterEventList = new ItemEventListAdapter(itemEvents);
 
         mRecyclerViewEvent = rootView.findViewById(R.id.recyclerViewEventList);
         mLayoutManagerEvent = new LinearLayoutManager(
@@ -118,9 +110,9 @@ public class EvenementsListFragment extends Fragment {
                 LinearLayoutManager.VERTICAL,
                 false);
         mRecyclerViewEvent.setLayoutManager(mLayoutManagerEvent);
-        mRecyclerViewEvent.setAdapter(mAdapterEventList);
+        //mRecyclerViewEvent.setAdapter(mAdapterEventList);
 
-        mAdapterEventList.setOnItemClickListener(new ItemEventListAdapter.OnItemClickListener() {
+        /*mAdapterEventList.setOnItemClickListener(new ItemEventListAdapter.OnItemClickListener() {
             @Override
             public void onDisplayClick(int position) {
                 Constants.targetZoom = new LatLng(itemEvents.get(position).getLocation().getLatitude(), itemEvents.get(position).getLocation().getLongitude());
@@ -132,7 +124,7 @@ public class EvenementsListFragment extends Fragment {
                 InfosEvenementsActivity.EVENT_LOAD = itemEvents.get(position);
                 startActivity(new Intent(getContext(), InfosEvenementsActivity.class));
             }
-        });
+        });*/
     }
 
 
@@ -141,23 +133,4 @@ public class EvenementsListFragment extends Fragment {
 
     }
 
-    @Override
-    public void onDestroy(){
-        super.onDestroy();
-        if(nolonelyBundle.getSerializable("events_list") == null) {
-            nolonelyBundle.putSerializable("events_list", itemEvents);
-        }
-    }
-
-    @Override
-    public void onResume(){
-        super.onResume();
-            if (nolonelyBundle.getSerializable("events_list") != null) {
-                itemEvents = (ArrayList<Evenement>) nolonelyBundle.getSerializable("events_list");
-                onUpdateAdapter();
-            } else {
-                updateItems();
-            }
-
-    }
 }

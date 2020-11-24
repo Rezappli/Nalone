@@ -300,7 +300,7 @@ public class CreateGroupFragment extends Fragment {
 
             nomInvit = itemView.findViewById(R.id.nomInvit);
             villePers = itemView.findViewById(R.id.villePers);
-            button = itemView.findViewById(R.id.imageView19);
+            button = itemView.findViewById(R.id.buttonImage);
             imagePerson = itemView.findViewById(R.id.imagePerson);
         }
     }

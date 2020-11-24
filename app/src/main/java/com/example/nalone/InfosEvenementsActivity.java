@@ -9,7 +9,6 @@ import android.os.Bundle;
 import android.util.Log;
 import android.widget.TextView;
 
-import com.example.nalone.adapter.ItemImagePersonAdapter;
 import com.example.nalone.items.ItemImagePerson;
 import com.example.nalone.util.Constants;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -24,7 +23,6 @@ import static com.example.nalone.util.Constants.mStoreBase;
 public class InfosEvenementsActivity extends AppCompatActivity {
 
     private RecyclerView mRecyclerView;
-    private ItemImagePersonAdapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
     private TextView mTitle;
     private TextView mDate;
@@ -84,7 +82,7 @@ public class InfosEvenementsActivity extends AppCompatActivity {
         }
 
 
-        mAdapter = new ItemImagePersonAdapter(membres_inscrits, this);
+        //mAdapter = new ItemImagePersonAdapter(membres_inscrits, this);
 
         mRecyclerView = findViewById(R.id.recyclerViewMembresInscrits);
         mLayoutManager = new LinearLayoutManager(
@@ -93,6 +91,6 @@ public class InfosEvenementsActivity extends AppCompatActivity {
                 false);
 
         mRecyclerView.setLayoutManager(mLayoutManager);
-        mRecyclerView.setAdapter(mAdapter);
+        //mRecyclerView.setAdapter(mAdapter);
     }
 }

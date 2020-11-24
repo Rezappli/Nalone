@@ -356,7 +356,7 @@ public class RechercheFragment extends Fragment {
             villePers = itemView.findViewById(R.id.villePers);
             layoutProfil = itemView.findViewById(R.id.layoutProfil);
             imagePerson = itemView.findViewById(R.id.imagePerson);
-            button = itemView.findViewById(R.id.imageView19);
+            button = itemView.findViewById(R.id.buttonImage);
             cardViewPhotoPerson = itemView.findViewById(R.id.cardViewPhotoPerson);
 
         }

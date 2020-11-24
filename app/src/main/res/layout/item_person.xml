@@ -70,7 +70,7 @@
         </LinearLayout>
 
         <ImageView
-            android:id="@+id/imageView19"
+            android:id="@+id/buttonImage"
             android:layout_width="match_parent"
             android:layout_height="30dp"
             android:layout_gravity="center"
