@@ -1,6 +1,5 @@
 package com.example.nalone.ui.recherche;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
@@ -27,7 +26,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.example.nalone.Cache;
-import com.example.nalone.CameraActivity;
+import com.example.nalone.CameraFragment;
 import com.example.nalone.adapter.ItemFiltreAdapter;
 import com.example.nalone.items.ItemFiltre;
 import com.example.nalone.items.ItemPerson;
@@ -89,7 +88,7 @@ public class RechercheAmisFragment extends Fragment {
         qr_code.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(getContext(), CameraActivity.class));
+                navController.navigate(R.id.action_navigation_recherche_amis_to_navigation_camera);
             }
         });
 

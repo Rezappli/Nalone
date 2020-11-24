@@ -8,13 +8,19 @@ import android.graphics.Camera;
 import android.os.Bundle;
 import android.os.Vibrator;
 import android.util.SparseArray;
+import android.view.LayoutInflater;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
+import android.view.View;
+import android.view.ViewGroup;
 
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
+import androidx.fragment.app.Fragment;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
 
 import com.example.nalone.ui.amis.display.PopupProfilFragment;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -31,19 +37,20 @@ import java.io.IOException;
 
 import static com.example.nalone.util.Constants.mStoreBase;
 
-public class CameraActivity extends AppCompatActivity {
+public class CameraFragment extends Fragment {
 
     private SurfaceView cameraPreview;
     private BarcodeDetector barcodeDetector;
     private CameraSource cameraSource;
     final int RequestCameraPermissionID = 1001;
+    private NavController navController;
 
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
         switch (requestCode) {
             case RequestCameraPermissionID:
                 if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    if (ActivityCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+                    if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
                         return;
                     }
                     try {
@@ -56,26 +63,28 @@ public class CameraActivity extends AppCompatActivity {
     }
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_camera);
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
 
-        cameraPreview = findViewById(R.id.camerPreview);
+        View rootView = inflater.inflate(R.layout.activity_camera, container, false);
 
-        barcodeDetector = new BarcodeDetector.Builder(this)
+        navController = Navigation.findNavController(getActivity(), R.id.nav_host_fragment);
+        cameraPreview = rootView.findViewById(R.id.camerPreview);
+
+        barcodeDetector = new BarcodeDetector.Builder(getContext())
                 .setBarcodeFormats(Barcode.QR_CODE)
                 .build();
         cameraSource = new CameraSource
-                .Builder(this, barcodeDetector)
+                .Builder(getContext(), barcodeDetector)
                 .setRequestedPreviewSize(640, 480)
                 .build();
 
         cameraPreview.getHolder().addCallback(new SurfaceHolder.Callback() {
             @Override
             public void surfaceCreated(@NonNull SurfaceHolder holder) {
-                if (ActivityCompat.checkSelfPermission(CameraActivity.this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
-                    ActivityCompat.requestPermissions(CameraActivity.this,
-                            new String []{Manifest.permission.CAMERA}, RequestCameraPermissionID);
+                if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+                    ActivityCompat.requestPermissions(getActivity(),
+                            new String[]{Manifest.permission.CAMERA}, RequestCameraPermissionID);
                     return;
                 }
                 try {
@@ -105,16 +114,16 @@ public class CameraActivity extends AppCompatActivity {
             @Override
             public void receiveDetections(Detector.Detections<Barcode> detections) {
                 SparseArray<Barcode> qrcodes = detections.getDetectedItems();
-                if(qrcodes.size() != 0){
-                    Vibrator v =  (Vibrator)getApplicationContext().getSystemService(Context.VIBRATOR_SERVICE);
+                if (qrcodes.size() != 0) {
+                    Vibrator v = (Vibrator) getActivity().getApplicationContext().getSystemService(Context.VIBRATOR_SERVICE);
                     v.vibrate(1000);
                     mStoreBase.collection("users").document(qrcodes.valueAt(0).displayValue).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                         @Override
                         public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                             User u = task.getResult().toObject(User.class);
-                            if(u != null) {
+                            if (u != null) {
                                 PopupProfilFragment.USER_LOAD = u;
-                                startActivity(new Intent(CameraActivity.this, PopupProfilFragment.class));
+                                navController.navigate(R.id.action_navigation_camera_to_navigation_popup_profil);
                             }
                         }
                     });
@@ -122,5 +131,7 @@ public class CameraActivity extends AppCompatActivity {
                 }
             }
         });
+
+        return rootView;
     }
 }
