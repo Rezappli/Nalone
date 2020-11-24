@@ -93,7 +93,7 @@
                 android:background="@drawable/custom_button_signup"
                 android:paddingStart="10dp"
                 android:paddingEnd="10dp"
-                android:text="@string/voir_plus" />
+                android:text="@string/voir_membres" />
 
             <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"

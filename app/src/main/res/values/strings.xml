@@ -102,7 +102,8 @@
     <string name="new_event"> Nouvel évènement </string>
     <string name="invits"> Invitations </string>
     <string name="rejoindre"> Rejoindre </string>
-    <string name="voir_plus"> Voir les membres</string>
+    <string name="voir_plus"> Voir plus</string>
+    <string name="voir_membres"> Voir les membres</string>
     <string name="recherche_utilisateur"> Rechercher des utilisateurs </string>
     <string name="recherche_groupes"> Rechercher des groupes </string>
     <string name="mes_groupes"> Mes groupes </string>
