@@ -24,6 +24,7 @@ import androidx.navigation.Navigation;
 
 import com.bumptech.glide.Glide;
 import com.example.nalone.Cache;
+import com.example.nalone.LoadFragment;
 import com.example.nalone.QRCodeFragment;
 import com.example.nalone.R;
 import com.example.nalone.items.ItemPerson;
@@ -58,6 +59,7 @@ public class ProfilFragment extends Fragment  {
     private boolean editPhoto;
     private Uri imageUri = null;
     private boolean hasSelectedImage = false;
+    private DialogFragment load;
 
     private int RESULT_LOAD_IMG = 1;
 
@@ -279,6 +281,8 @@ public class ProfilFragment extends Fragment  {
 
 
     public void uploadFile(final Uri imagUri) {
+        load = new LoadFragment();
+        load.show(getActivity().getSupportFragmentManager(), "LOAD");
         if (imagUri != null) {
 
             USER_STORAGE_REF.putFile(imagUri)
@@ -286,6 +290,7 @@ public class ProfilFragment extends Fragment  {
                         @Override
                         public void onSuccess(UploadTask.TaskSnapshot snapshot) {
                             Toast.makeText(getActivity().getBaseContext(), "Vous avez changé votre photo de profil !", Toast.LENGTH_SHORT).show();
+                            load.dismiss();
                             USER.setImage_url(new SimpleDateFormat("dd-MM-yy hh:mm:ss").format(new Date(System.currentTimeMillis())));
                             mStoreBase.collection("users").document(USER.getUid()).set(USER);
                         }
