@@ -1,6 +1,8 @@
 package com.example.nalone.ui.recherche;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -25,6 +27,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.example.nalone.Cache;
+import com.example.nalone.CameraActivity;
 import com.example.nalone.adapter.ItemFiltreAdapter;
 import com.example.nalone.items.ItemFiltre;
 import com.example.nalone.items.ItemPerson;
@@ -67,6 +70,8 @@ public class RechercheAmisFragment extends Fragment {
     private ItemFiltreAdapter mAdapterFiltre;
     private RecyclerView.LayoutManager mLayoutManagerFiltre;
     private FirestoreRecyclerAdapter adapter;
+
+    private ImageView qr_code;
     List<String> friends;
 
 
@@ -78,6 +83,15 @@ public class RechercheAmisFragment extends Fragment {
         rootView = inflater.inflate(R.layout.fragment_recherche_amis, container, false);
         loading = rootView.findViewById(R.id.search_loading);
         buttonBack.setVisibility(View.GONE);
+
+        qr_code = rootView.findViewById(R.id.qr_code_image);
+
+        qr_code.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(getContext(), CameraActivity.class));
+            }
+        });
 
         search_bar = rootView.findViewById(R.id.search_bar);
         resultat = rootView.findViewById(R.id.resultatText);
