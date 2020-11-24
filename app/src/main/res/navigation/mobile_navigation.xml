@@ -26,6 +26,9 @@
         <action
             android:id="@+id/action_navigation_recherche_amis_to_navigation_recherche"
             app:destination="@id/navigation_recherche" />
+        <action
+            android:id="@+id/action_navigation_recherche_amis_to_navigation_camera"
+            app:destination="@id/navigation_camera" />
     </fragment>
 
 
@@ -59,6 +62,19 @@
         android:name="com.example.nalone.ui.message.MessagesFragment"
         android:label="@string/title_messages"
         tools:layout="@layout/fragment_messages" />
+
+    <fragment
+        android:id="@+id/navigation_camera"
+        android:name="com.example.nalone.CameraFragment"
+        android:label="@string/title_messages"
+        tools:layout="@layout/activity_camera" >
+        <action
+            android:id="@+id/action_navigation_camera_to_navigation_popup_profil"
+            app:destination="@id/navigation_popup_profil" />
+        <action
+            android:id="@+id/action_navigation_camera_to_navigation_recherche_amis"
+            app:destination="@id/navigation_recherche_amis" />
+    </fragment>
 
     <fragment
         android:id="@+id/navigation_edit_group"
