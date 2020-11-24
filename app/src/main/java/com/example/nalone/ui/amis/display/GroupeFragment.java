@@ -156,7 +156,7 @@ public class GroupeFragment extends Fragment {
 
     public void showPopUpGroup(final Group g) {
         PopUpGroupFragment.GROUP_LOAD = g;
-        navController.navigate(R.id.action_navigation_group_to_navigation_popup_group);
+        navController.navigate(R.id.action_navigation_amis_to_navigation_popup_group);
 
 
     }
