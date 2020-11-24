@@ -63,10 +63,18 @@ public class EditGroupFragment extends Fragment {
             modePrive();
         }
 
+
         imageViewPublic.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 modePublic();
+            }
+        });
+
+        imageViewPrive.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                modePrive();
             }
         });
 

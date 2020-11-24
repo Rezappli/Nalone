@@ -107,6 +107,11 @@ public class PopUpMesGroupesFragment extends Fragment {
         ownerGroup = root.findViewById(R.id.groupOwner);
         visibilityGroup = root.findViewById(R.id.groupVisibility);
 
+        if(GROUP_LOAD.getVisibility() == Visibility.PUBLIC)
+         visibilityGroup.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_baseline_public_24, 0, 0, 0);
+        else
+            visibilityGroup.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_baseline_lock_24,0,0,0);
+
         cardViewPhotoPerson = root.findViewById(R.id.cardViewPhotoPerson);
 
         nameGroup.setText(GROUP_LOAD.getName());

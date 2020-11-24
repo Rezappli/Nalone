@@ -201,6 +201,11 @@ public class PopUpGroupFragment extends Fragment {
         ownerGroup.setText(GROUP_LOAD.getOwner());
         visibilityGroup.setText(GROUP_LOAD.getVisibility().toString());
 
+        if(GROUP_LOAD.getVisibility() == Visibility.PUBLIC)
+            visibilityGroup.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_baseline_public_24, 0, 0, 0);
+        else
+            visibilityGroup.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_baseline_lock_24,0,0,0);
+
         //nbCreateGroup.setText(GROUP_LOAD.get);
 
         if (GROUP_LOAD.getDescription().matches("")) {
