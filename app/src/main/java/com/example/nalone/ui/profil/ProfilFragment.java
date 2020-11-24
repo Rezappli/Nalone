@@ -216,7 +216,7 @@ public class ProfilFragment extends Fragment  {
                                         Uri img = task.getResult();
                                         if (img != null) {
                                             Cache.saveUriFile(USER.getUid(), img);
-                                            //USER.setImage_url(Cache.getImageDate(USER.getUid()));
+                                            USER.setImage_url(Cache.getImageDate(USER.getUid()));
                                             mStoreBase.collection("users").document(USER.getUid()).set(USER);
                                             Glide.with(getContext()).load(img).fitCenter().centerCrop().into(imageUser);
                                         }
@@ -226,10 +226,7 @@ public class ProfilFragment extends Fragment  {
                         }
                     }else{
                         Uri imgCache = Cache.getUriFromUid(USER.getUid());
-                        Log.w("Cache", "Image Cache : " + Cache.getImageDate(USER.getUid()));
-                        Log.w("Cache", "Data Cache : " + USER.getImage_url());
                         if(Cache.getImageDate(USER.getUid()).equalsIgnoreCase(USER.getImage_url())) {
-                            Log.w("image", "get image from cache");
                             Glide.with(getContext()).load(imgCache).fitCenter().centerCrop().into(imageUser);
                         }else{
                             StorageReference imgRef = mStore.getReference("users/" + USER.getUid());

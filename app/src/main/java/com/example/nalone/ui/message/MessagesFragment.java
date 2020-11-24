@@ -20,8 +20,6 @@ import com.bumptech.glide.Glide;
 import com.example.nalone.Cache;
 import com.example.nalone.User;
 import com.example.nalone.R;
-import com.example.nalone.UserFriendData;
-import com.example.nalone.listeners.FireStoreUsersListeners;
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -54,95 +52,102 @@ public class MessagesFragment extends Fragment {
         mRecyclerView = root.findViewById(R.id.recycler);
 
         friends = new ArrayList<>();
-
-        mStoreBase.collection("users").document(USER.getUid()).collection("friends").whereEqualTo("status", "add").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                for (QueryDocumentSnapshot doc : task.getResult()) {
-                    friends.add(doc.toObject(User.class).getUid());
-                }
-                friends.add(USER.getUid());
-
-                Query query = mStoreBase.collection("users").whereNotIn("uid", friends);
-
-                //RecyclerOption
-                FirestoreRecyclerOptions<User> options = new FirestoreRecyclerOptions.Builder<User>().setQuery(query, User.class).build();
-
-                adapter = new FirestoreRecyclerAdapter<User, PersonViewHolder>(options) {
-                    @NonNull
+        mStoreBase.collection("users").document(USER.getUid()).collection("friends").whereEqualTo("status", "add").limit(10)
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
-                    public PersonViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-                        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_person, parent, false);
-                        return new PersonViewHolder(view);
-                    }
-
-                    @Override
-                    protected void onBindViewHolder(@NonNull final PersonViewHolder personViewHolder, int i, @NonNull final User u) {
-
-                        personViewHolder.villePers.setText(u.getCity());
-                        personViewHolder.nomInvit.setText(u.getFirst_name() + " " + u.getLast_name());
-                        personViewHolder.buttonImage.setVisibility(View.GONE);
-
-                        personViewHolder.layoutProfil.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                ChatActivity.USER_LOAD = u;
-                                startActivity(new Intent(getContext(), ChatActivity.class));
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            for (QueryDocumentSnapshot document : task.getResult()) {
+                                Log.d("TAG", document.getId() + " => " + document.getData());
+                                friends.add(document.getId());
                             }
-                        });
 
-                        if(u.getImage_url() != null) {
-                            if(!Cache.fileExists(u.getUid())) {
-                                StorageReference imgRef = mStore.getReference("users/" + u.getUid());
-                                if (imgRef != null) {
-                                    imgRef.getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
-                                        @Override
-                                        public void onComplete(@NonNull Task<Uri> task) {
-                                            if (task.isSuccessful()) {
-                                                Uri img = task.getResult();
-                                                if (img != null) {
-                                                    Cache.saveUriFile(u.getUid(), img);
-                                                    u.setImage_url(Cache.getImageDate(u.getUid()));
-                                                    mStoreBase.collection("users").document(u.getUid()).set(u);
-                                                    Glide.with(getContext()).load(img).fitCenter().centerCrop().into(personViewHolder.imagePerson);
-                                                }
-                                            }
-                                        }
-                                    });
-                                }
-                            }else{
-                                Uri imgCache = Cache.getUriFromUid(u.getUid());
-                                if(Cache.getImageDate(u.getUid()).equalsIgnoreCase(u.getImage_url())) {
-                                    Glide.with(getContext()).load(imgCache).fitCenter().centerCrop().into(personViewHolder.imagePerson);
-                                }else{
-                                    StorageReference imgRef = mStore.getReference("users/" + u.getUid());
-                                    if (imgRef != null) {
-                                        imgRef.getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
+                            //query
+                            if (!friends.isEmpty()) {
+
+                                Query query = mStoreBase.collection("users").whereIn("uid", friends);
+
+                                //RecyclerOption
+                                FirestoreRecyclerOptions<User> options = new FirestoreRecyclerOptions.Builder<User>().setQuery(query, User.class).build();
+
+                                adapter = new FirestoreRecyclerAdapter<User, PersonViewHolder>(options) {
+                                    @NonNull
+                                    @Override
+                                    public PersonViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+                                        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_person, parent, false);
+                                        return new PersonViewHolder(view);
+                                    }
+
+                                    @Override
+                                    protected void onBindViewHolder(@NonNull final PersonViewHolder personViewHolder, int i, @NonNull final User u) {
+
+                                        personViewHolder.villePers.setText(u.getCity());
+                                        personViewHolder.nomInvit.setText(u.getFirst_name() + " " + u.getLast_name());
+                                        personViewHolder.buttonImage.setVisibility(View.GONE);
+
+                                        personViewHolder.layoutProfil.setOnClickListener(new View.OnClickListener() {
                                             @Override
-                                            public void onComplete(@NonNull Task<Uri> task) {
-                                                if (task.isSuccessful()) {
-                                                    Uri img = task.getResult();
-                                                    if (img != null) {
-                                                        Cache.saveUriFile(u.getUid(), img);
-                                                        u.setImage_url(Cache.getImageDate(u.getUid()));
-                                                        mStoreBase.collection("users").document(u.getUid()).set(u);
-                                                        Glide.with(getContext()).load(img).fitCenter().centerCrop().into(personViewHolder.imagePerson);
+                                            public void onClick(View v) {
+                                                ChatActivity.USER_LOAD = u;
+                                                startActivity(new Intent(getContext(), ChatActivity.class));
+                                            }
+                                        });
+
+                                        if (u.getImage_url() != null) {
+                                            if (!Cache.fileExists(u.getUid())) {
+                                                StorageReference imgRef = mStore.getReference("users/" + u.getUid());
+                                                if (imgRef != null) {
+                                                    imgRef.getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
+                                                        @Override
+                                                        public void onComplete(@NonNull Task<Uri> task) {
+                                                            if (task.isSuccessful()) {
+                                                                Uri img = task.getResult();
+                                                                if (img != null) {
+                                                                    Cache.saveUriFile(u.getUid(), img);
+                                                                    u.setImage_url(Cache.getImageDate(u.getUid()));
+                                                                    mStoreBase.collection("users").document(u.getUid()).set(u);
+                                                                    Glide.with(getContext()).load(img).fitCenter().centerCrop().into(personViewHolder.imagePerson);
+                                                                }
+                                                            }
+                                                        }
+                                                    });
+                                                }
+                                            } else {
+                                                Uri imgCache = Cache.getUriFromUid(u.getUid());
+                                                if (Cache.getImageDate(u.getUid()).equalsIgnoreCase(u.getImage_url())) {
+                                                    Glide.with(getContext()).load(imgCache).fitCenter().centerCrop().into(personViewHolder.imagePerson);
+                                                } else {
+                                                    StorageReference imgRef = mStore.getReference("users/" + u.getUid());
+                                                    if (imgRef != null) {
+                                                        imgRef.getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
+                                                            @Override
+                                                            public void onComplete(@NonNull Task<Uri> task) {
+                                                                if (task.isSuccessful()) {
+                                                                    Uri img = task.getResult();
+                                                                    if (img != null) {
+                                                                        Cache.saveUriFile(u.getUid(), img);
+                                                                        u.setImage_url(Cache.getImageDate(u.getUid()));
+                                                                        mStoreBase.collection("users").document(u.getUid()).set(u);
+                                                                        Glide.with(getContext()).load(img).fitCenter().centerCrop().into(personViewHolder.imagePerson);
+                                                                    }
+                                                                }
+                                                            }
+                                                        });
                                                     }
                                                 }
                                             }
-                                        });
+                                        }
                                     }
-                                }
+                                };
+                                mRecyclerView.setHasFixedSize(true);
+                                mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+                                mRecyclerView.setAdapter(adapter);
+                                adapter.startListening();
                             }
                         }
                     }
-                };
-                mRecyclerView.setHasFixedSize(true);
-                mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-                mRecyclerView.setAdapter(adapter);
-                adapter.startListening();
-            }
-        });
+            });
 
         return root;
     }

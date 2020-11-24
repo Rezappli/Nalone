@@ -206,7 +206,6 @@ public class RechercheFragment extends Fragment {
 
             }
         };
-        //recyclerGroupes.setHasFixedSize(true);
         recyclerGroupes.setLayoutManager(new LinearLayoutManager(getContext()));
         recyclerGroupes.setAdapter(adapter);
         adapter.startListening();
