@@ -27,7 +27,7 @@
             android:id="@+id/action_navigation_recherche_amis_to_navigation_recherche"
             app:destination="@id/navigation_recherche" />
         <action
-            android:id="@+id/action_navigation_recherche_amis_to_navigation_camera"
+            android:id="@+id/action_navigation_recherche_amis_to_navigation_camera2"
             app:destination="@id/navigation_camera" />
     </fragment>
 
@@ -66,13 +66,16 @@
     <fragment
         android:id="@+id/navigation_camera"
         android:name="com.example.nalone.CameraFragment"
-        android:label="@string/title_messages"
+        android:label="@string/quitter"
         tools:layout="@layout/activity_camera" >
         <action
             android:id="@+id/action_navigation_camera_to_navigation_popup_profil"
             app:destination="@id/navigation_popup_profil" />
         <action
-            android:id="@+id/action_navigation_camera_to_navigation_recherche_amis"
+            android:id="@+id/action_navigation_camera_to_navigation_recherche"
+            app:destination="@id/navigation_recherche" />
+        <action
+            android:id="@+id/action_navigation_camera_to_navigation_recherche_amis2"
             app:destination="@id/navigation_recherche_amis" />
     </fragment>
 

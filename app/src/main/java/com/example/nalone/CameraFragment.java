@@ -126,7 +126,6 @@ public class CameraFragment extends Fragment {
                                 User u = task.getResult().toObject(User.class);
                                 if (u != null) {
                                     PopupProfilFragment.USER_LOAD = u;
-                                    navController.navigate(R.id.action_navigation_camera_to_navigation_popup_profil);
                                 }
                             }
                         });
@@ -134,6 +133,9 @@ public class CameraFragment extends Fragment {
                 }
             }
         });
+
+        navController.navigate(R.id.action_navigation_camera_to_navigation_popup_profil);
+
 
         return rootView;
     }

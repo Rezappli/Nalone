@@ -88,7 +88,7 @@ public class RechercheAmisFragment extends Fragment {
         qr_code.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                navController.navigate(R.id.action_navigation_recherche_amis_to_navigation_camera);
+                navController.navigate(R.id.action_navigation_recherche_amis_to_navigation_camera2);
             }
         });
 
