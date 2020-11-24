@@ -31,14 +31,13 @@
             <ImageView
                 android:id="@+id/imageGroupCreation"
                 android:layout_width="match_parent"
-                android:layout_height="100dp"
+                android:layout_height="150dp"
                 android:layout_gravity="center"
                 android:layout_marginStart="20dp"
-                android:layout_marginTop="20dp"
+                android:layout_marginTop="0dp"
                 android:layout_marginEnd="20dp"
                 android:layout_marginBottom="20dp"
                 android:background="@drawable/custom_input1"
-                android:padding="20dp"
                 app:srcCompat="@drawable/ic_baseline_add_a_photo_24" />
 
             <com.google.android.material.textfield.TextInputLayout
@@ -150,7 +149,7 @@
             <ImageButton
                 android:id="@+id/buttonMoreGroup"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:layout_marginStart="40dp"
                 android:layout_marginTop="10dp"
                 android:background="@android:color/transparent"

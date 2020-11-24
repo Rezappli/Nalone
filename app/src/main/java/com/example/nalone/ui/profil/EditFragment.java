@@ -141,7 +141,7 @@ public class EditFragment extends Fragment {
                         mStoreBase.collection("users").document(USER.getUid()).set(USER);
                         Toast.makeText(getContext(), "Vous avez mis à jour vos informations", Toast.LENGTH_SHORT).show();
                     }else{
-                        //POUR TOI MATHIS -> RETOUR VERS PROFIL
+                        //navController.navigate(R.id.action_navigation_edit_profil_to_navigation_profil);
                     }
 
                 }

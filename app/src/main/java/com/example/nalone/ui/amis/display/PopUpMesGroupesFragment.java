@@ -97,6 +97,14 @@ public class PopUpMesGroupesFragment extends Fragment {
         cardViewPhotoEdit = root.findViewById(R.id.cardViewPhotoEditImg);
         cardViewPhotoEditDesc = root.findViewById(R.id.cardViewPhotoEditDesc);
         cardViewProfilMembers = root.findViewById(R.id.cardViewEditMembers);
+
+        cardViewProfilMembers.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ListMembresFragment.GROUP_LOAD = GROUP_LOAD;
+                navController.navigate(R.id.action_navigation_popup_mes_groupes_to_navigation_list_membres);
+            }
+        });
         groupDesc = root.findViewById(R.id.groupDesc);
         imageViewEditDescription = root.findViewById(R.id.imageViewEditDescription);
 

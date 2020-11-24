@@ -64,6 +64,16 @@
         tools:layout="@layout/fragment_messages" />
 
     <fragment
+        android:id="@+id/navigation_list_membres"
+        android:name="com.example.nalone.ui.amis.display.ListMembresFragment"
+        android:label="@string/title_messages"
+        tools:layout="@layout/fragment_list_membres" >
+        <action
+            android:id="@+id/action_navigation_list_membres_to_navigation_popup_mes_groupes"
+            app:destination="@id/navigation_popup_mes_groupes" />
+    </fragment>
+
+    <fragment
         android:id="@+id/navigation_camera"
         android:name="com.example.nalone.CameraFragment"
         android:label="@string/quitter"
@@ -103,6 +113,9 @@
         <action
             android:id="@+id/action_navigation_popup_mes_groupes_to_navigation_edit_group"
             app:destination="@id/navigation_edit_group" />
+        <action
+            android:id="@+id/action_navigation_popup_mes_groupes_to_navigation_list_membres"
+            app:destination="@id/navigation_list_membres" />
     </fragment>
 
     <fragment
