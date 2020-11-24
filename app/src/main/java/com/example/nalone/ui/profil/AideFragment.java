@@ -23,8 +23,6 @@ public class AideFragment extends Fragment {
         // Inflate the layout for this fragment
         View root = inflater.inflate(R.layout.fragment_aide, container, false);
 
-        qr_code = root.findViewById(R.id.qr_code_image);
-        qr_code.setImageBitmap(QrCode.generate(USER.getUid()));
 
         return root;
     }

@@ -2,6 +2,7 @@ package com.example.nalone.ui.profil;
 
 import android.content.Intent;
 import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -283,6 +284,7 @@ public class ProfilFragment extends Fragment  {
     public void uploadFile(final Uri imagUri) {
         load = new LoadFragment();
         load.show(getActivity().getSupportFragmentManager(), "LOAD");
+        load.setCancelable(false);
         if (imagUri != null) {
 
             USER_STORAGE_REF.putFile(imagUri)
