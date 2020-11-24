@@ -2,9 +2,7 @@ package com.example.nalone;
 
 import android.Manifest;
 import android.content.Context;
-import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.graphics.Camera;
 import android.os.Bundle;
 import android.os.Vibrator;
 import android.util.SparseArray;
@@ -16,7 +14,6 @@ import android.view.ViewGroup;
 
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
@@ -29,9 +26,7 @@ import com.google.android.gms.vision.CameraSource;
 import com.google.android.gms.vision.Detector;
 import com.google.android.gms.vision.barcode.Barcode;
 import com.google.android.gms.vision.barcode.BarcodeDetector;
-import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 import java.io.IOException;
 
@@ -45,6 +40,7 @@ public class CameraFragment extends Fragment {
     private CameraSource cameraSource;
     final int RequestCameraPermissionID = 1001;
     private NavController navController;
+    private boolean found;
 
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
@@ -69,6 +65,7 @@ public class CameraFragment extends Fragment {
 
         View rootView = inflater.inflate(R.layout.activity_camera, container, false);
 
+        found = false;
         navController = Navigation.findNavController(getActivity(), R.id.nav_host_fragment);
         cameraPreview = rootView.findViewById(R.id.camerPreview);
 
@@ -118,24 +115,25 @@ public class CameraFragment extends Fragment {
                 SparseArray<Barcode> qrcodes = detections.getDetectedItems();
                 if (qrcodes.size() != 0) {
                     if(qrcodes.valueAt(0).displayValue.length() == USER.getUid().length()) {
-                        Vibrator v = (Vibrator) getActivity().getApplicationContext().getSystemService(Context.VIBRATOR_SERVICE);
-                        v.vibrate(1000);
-                        mStoreBase.collection("users").document(qrcodes.valueAt(0).displayValue).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                            @Override
-                            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                                User u = task.getResult().toObject(User.class);
-                                if (u != null) {
-                                    PopupProfilFragment.USER_LOAD = u;
+                        if(!found) {
+                            found = true;
+                            Vibrator v = (Vibrator) getActivity().getApplicationContext().getSystemService(Context.VIBRATOR_SERVICE);
+                            v.vibrate(400);
+                            mStoreBase.collection("users").document(qrcodes.valueAt(0).displayValue).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                                @Override
+                                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                                    User u = task.getResult().toObject(User.class);
+                                    if (u != null) {
+                                        PopupProfilFragment.USER_LOAD = u;
+                                        navController.navigate(R.id.action_navigation_camera_to_navigation_popup_profil);
+                                    }
                                 }
-                            }
-                        });
+                            });
+                        }
                     }
                 }
             }
         });
-
-        navController.navigate(R.id.action_navigation_camera_to_navigation_popup_profil);
-
 
         return rootView;
     }
