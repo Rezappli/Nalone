@@ -24,7 +24,7 @@
         android:roundIcon="@mipmap/ic_logo_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".ui.recherche.RechercheActivity"></activity>
+        <activity android:name=".ui.recherche.RechercheFragment"></activity>
         <activity android:name=".ResetPassword" />
         <activity android:name=".InfosEvenementsActivity" />
         <!--

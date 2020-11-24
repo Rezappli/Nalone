@@ -104,5 +104,6 @@
     <string name="voir_plus"> Voir plus</string>
     <string name="recherche_utilisateur"> Rechercher des utilisateurs </string>
     <string name="recherche_groupes"> Rechercher des groupes </string>
+    <string name="mes_groupes"> Mes groupes </string>
 
 </resources>

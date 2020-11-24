@@ -48,7 +48,7 @@ import static com.example.nalone.util.Constants.USER;
 import static com.example.nalone.util.Constants.mStore;
 import static com.example.nalone.util.Constants.mStoreBase;
 
-public class RechercheActivity extends Fragment {
+public class RechercheFragment extends Fragment {
 
     private RecyclerView recyclerAmis;
     private RecyclerView recyclerGroupes;
@@ -89,7 +89,7 @@ public class RechercheActivity extends Fragment {
         textViewRechercheGroupes.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                navController.navigate(R.id.action_navigation_recherche_to_navigation_group);
+                navController.navigate(R.id.action_navigation_recherche_to_navigation_rcherche_groupe);
             }
         });
 
