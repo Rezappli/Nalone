@@ -105,5 +105,8 @@
     <string name="recherche_utilisateur"> Rechercher des utilisateurs </string>
     <string name="recherche_groupes"> Rechercher des groupes </string>
     <string name="mes_groupes"> Mes groupes </string>
+    <string name="edit_group"> Editer</string>
+    <string name="gerer_membres"> Gérer membres</string>
+    <string name="delte_group"> Supprimer le groupe </string>
 
 </resources>

@@ -1,15 +1,6 @@
 package com.example.nalone.ui.amis.display;
 
 import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-import androidx.cardview.widget.CardView;
-import androidx.fragment.app.Fragment;
-import androidx.navigation.NavController;
-import androidx.navigation.Navigation;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,16 +9,20 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.fragment.app.Fragment;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.example.nalone.Group;
 import com.example.nalone.R;
-import com.example.nalone.User;
-import com.example.nalone.UserFriendData;
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
@@ -36,32 +31,24 @@ import static com.example.nalone.util.Constants.USER;
 import static com.example.nalone.util.Constants.USER_ID;
 import static com.example.nalone.util.Constants.mStoreBase;
 
-public class GroupeFragment extends Fragment {
+public class MesGroupeFragment extends Fragment {
 
 
     private NavController navController;
     private RecyclerView mRecyclerView;
     private FirestoreRecyclerAdapter adapter;
     private ImageView addGroup;
-    private CardView mesGroupes;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View root =  inflater.inflate(R.layout.fragment_groupe, container, false);
+        View root =  inflater.inflate(R.layout.fragment_mes_groupe, container, false);
 
         mRecyclerView = root.findViewById(R.id.recyclerViewGroupe);
         addGroup = root.findViewById(R.id.create_group_button);
         navController = Navigation.findNavController(getActivity(), R.id.nav_host_fragment);
-        mesGroupes = root.findViewById(R.id.mesGroupes);
 
-        mesGroupes.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                navController.navigate(R.id.action_navigation_amis_to_navigation_mes_groupes);
-            }
-        });
         addGroup.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -76,7 +63,8 @@ public class GroupeFragment extends Fragment {
 
     private void adapterGroups() {
         DocumentReference ref = mStoreBase.document("users/"+USER_ID);
-        Query query = mStoreBase.collection("groups").whereNotEqualTo("ownerDoc", ref);
+
+        Query query = mStoreBase.collection("groups").whereEqualTo("ownerDoc", ref);
         FirestoreRecyclerOptions<Group> options = new FirestoreRecyclerOptions.Builder<Group>().setQuery(query, Group.class).build();
 
         adapter = new FirestoreRecyclerAdapter<Group, UserViewHolder>(options) {
@@ -155,8 +143,8 @@ public class GroupeFragment extends Fragment {
         }
 
     public void showPopUpGroup(final Group g) {
-        PopUpGroupFragment.GROUP_LOAD = g;
-        navController.navigate(R.id.action_navigation_group_to_navigation_popup_group);
+        PopUpMesGroupesFragment.GROUP_LOAD = g;
+        navController.navigate(R.id.action_navigation_mes_groupes_to_navigation_popup_mes_groupes);
 
 
     }

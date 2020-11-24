@@ -34,6 +34,7 @@ import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
@@ -45,6 +46,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static com.example.nalone.util.Constants.USER;
+import static com.example.nalone.util.Constants.USER_ID;
 import static com.example.nalone.util.Constants.mStore;
 import static com.example.nalone.util.Constants.mStoreBase;
 
@@ -131,7 +133,8 @@ public class RechercheFragment extends Fragment {
     }
 
     private void adapterGroups() {
-        Query query = mStoreBase.collection("groups").limit(3);
+        DocumentReference ref = mStoreBase.document("users/"+USER_ID);
+        Query query = mStoreBase.collection("groups").whereNotEqualTo("ownerDoc", ref).limit(3);
         FirestoreRecyclerOptions<Group> options = new FirestoreRecyclerOptions.Builder<Group>().setQuery(query, Group.class).build();
 
         adapter = new FirestoreRecyclerAdapter<Group, GroupViewHolder>(options) {
