@@ -115,15 +115,14 @@ public class MesInvitationsFragment extends Fragment {
                                                 StorageReference imgRef = mStore.getReference("users/" + u.getUid());
                                                 if (imgRef != null) {
                                                     imgRef.getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
-                                                        @RequiresApi(api = Build.VERSION_CODES.O)
                                                         @Override
                                                         public void onComplete(@NonNull Task<Uri> task) {
                                                             if (task.isSuccessful()) {
                                                                 Uri img = task.getResult();
                                                                 if (img != null) {
-                                                                    mStoreBase.collection("users").document(u.getUid()).set(u);
                                                                     Cache.saveUriFile(u.getUid(), img);
-                                                                    //u.setImage_url(Cache.getImageDate(u.getUid()));
+                                                                    u.setImage_url(Cache.getImageDate(u.getUid()));
+                                                                    mStoreBase.collection("users").document(u.getUid()).set(u);
                                                                     Glide.with(getContext()).load(img).fitCenter().centerCrop().into(userViewHolder.imagePerson);
                                                                 }
                                                             }
@@ -134,10 +133,10 @@ public class MesInvitationsFragment extends Fragment {
                                                 Uri imgCache = Cache.getUriFromUid(u.getUid());
                                                 Log.w("Cache", "Image Cache : " + Cache.getImageDate(u.getUid()));
                                                 Log.w("Cache", "Data Cache : " + u.getImage_url());
-                                                if(Cache.getImageDate(u.getUid()).equals(u.getImage_url())) {
+                                                if (Cache.getImageDate(u.getUid()).equalsIgnoreCase(u.getImage_url())) {
                                                     Log.w("image", "get image from cache");
                                                     Glide.with(getContext()).load(imgCache).fitCenter().centerCrop().into(userViewHolder.imagePerson);
-                                                }else{
+                                                } else {
                                                     StorageReference imgRef = mStore.getReference("users/" + u.getUid());
                                                     if (imgRef != null) {
                                                         imgRef.getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
@@ -146,9 +145,9 @@ public class MesInvitationsFragment extends Fragment {
                                                                 if (task.isSuccessful()) {
                                                                     Uri img = task.getResult();
                                                                     if (img != null) {
-                                                                        mStoreBase.collection("users").document(u.getUid()).set(u);
                                                                         Cache.saveUriFile(u.getUid(), img);
-                                                                        //u.setImage_url(Cache.getImageDate(u.getUid()));
+                                                                        u.setImage_url(Cache.getImageDate(u.getUid()));
+                                                                        mStoreBase.collection("users").document(u.getUid()).set(u);
                                                                         Glide.with(getContext()).load(img).fitCenter().centerCrop().into(userViewHolder.imagePerson);
                                                                     }
                                                                 }

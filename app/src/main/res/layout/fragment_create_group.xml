@@ -29,7 +29,7 @@
                 android:textSize="24sp" />
 
             <ImageView
-                android:id="@+id/imageView20"
+                android:id="@+id/imageGroupCreation"
                 android:layout_width="match_parent"
                 android:layout_height="100dp"
                 android:layout_gravity="center"

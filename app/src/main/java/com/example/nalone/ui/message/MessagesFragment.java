@@ -71,8 +71,6 @@ public class MessagesFragment extends Fragment {
                         });
                     }
                 });
-
-
             }
         };
         mRecyclerView.setHasFixedSize(true);
@@ -107,7 +105,7 @@ public class MessagesFragment extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
-        adapter.startListening(); 
+        adapter.startListening();
     }
 
 }

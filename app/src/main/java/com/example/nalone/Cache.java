@@ -56,7 +56,6 @@ public class Cache {
 
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.O)
     public static String getImageDate(String uid){
         String file_path = application.getCacheDir().getAbsolutePath();
         File dir = new File(file_path);

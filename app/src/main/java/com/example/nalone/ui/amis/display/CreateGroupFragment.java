@@ -1,9 +1,6 @@
 package com.example.nalone.ui.amis.display;
 
-import android.app.Dialog;
 import android.content.Intent;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -17,19 +14,14 @@ import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.CalendarView;
 import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.TimePicker;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
@@ -40,12 +32,6 @@ import com.example.nalone.R;
 import com.example.nalone.User;
 import com.example.nalone.UserFriendData;
 import com.example.nalone.Visibility;
-import com.example.nalone.adapter.ItemAddPersonAdapter;
-import com.example.nalone.adapter.ItemProfilAdapter;
-import com.example.nalone.items.ItemPerson;
-import com.example.nalone.ui.amis.display.AmisFragment;
-import com.example.nalone.ui.evenements.display.MesEvenementsListFragment;
-import com.example.nalone.ui.message.ChatActivity;
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -53,29 +39,26 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.textfield.TextInputEditText;
-import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
-import com.google.firebase.firestore.SetOptions;
 import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.HashMap;
+import java.util.Date;
 import java.util.List;
-import java.util.Map;
 import java.util.UUID;
 
+import static android.app.Activity.RESULT_OK;
 import static com.example.nalone.HomeActivity.buttonBack;
 import static com.example.nalone.util.Constants.USER;
-import static com.example.nalone.util.Constants.USER_ID;
 import static com.example.nalone.util.Constants.USER_REFERENCE;
-import static com.example.nalone.util.Constants.heightScreen;
+import static com.example.nalone.util.Constants.USER_STORAGE_REF;
 import static com.example.nalone.util.Constants.mStore;
 import static com.example.nalone.util.Constants.mStoreBase;
-import static com.example.nalone.util.Constants.widthScreen;
 
 public class CreateGroupFragment extends Fragment {
 
@@ -104,8 +87,16 @@ public class CreateGroupFragment extends Fragment {
 
     public static boolean save;
 
+    private ImageView imageGroup;
+
     public static GroupAttente groupAttente;
 
+    private int RESULT_LOAD_IMG = 1;
+
+    private static Uri imageUri = null;
+    private boolean hasSelectedImage = false;
+
+    private Group g;
 
 
     public class GroupAttente extends Group {
@@ -125,6 +116,17 @@ public class CreateGroupFragment extends Fragment {
         navController = Navigation.findNavController(getActivity(),R.id.nav_host_fragment);
         mRecyclerView = rootView.findViewById(R.id.recyclerViewCreateGroup);
         navController = Navigation.findNavController(getActivity(), R.id.nav_host_fragment);
+
+        imageGroup = rootView.findViewById(R.id.imageGroupCreation);
+        imageGroup.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent photoPickerIntent = new Intent(Intent.ACTION_PICK);
+                photoPickerIntent.setType("image/*");
+                startActivityForResult(photoPickerIntent, RESULT_LOAD_IMG);
+            }
+        });
+
         buttonBack.setVisibility(View.VISIBLE);
         buttonBack.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -151,6 +153,11 @@ public class CreateGroupFragment extends Fragment {
         event_name = rootView.findViewById(R.id.groupName);
         event_resume = rootView.findViewById(R.id.groupResume);
         buttonValidEvent = rootView.findViewById(R.id.buttonCreateGroup);
+
+        if(imageUri != null){
+            hasSelectedImage = true;
+            Glide.with(getContext()).load(imageUri).fitCenter().centerCrop().into(imageGroup);
+        }
 
         getData();
 
@@ -198,7 +205,7 @@ public class CreateGroupFragment extends Fragment {
             @RequiresApi(api = Build.VERSION_CODES.M)
             @Override
             public void onClick(View v) {
-                    saveEvent();
+                    saveGroup();
             }
         });
 
@@ -269,28 +276,6 @@ public class CreateGroupFragment extends Fragment {
                             initList();
                         }
                     });
-                    if(u.getImage_url() != null) {
-                        if (!Cache.fileExists(u.getUid())) {
-                            StorageReference imgRef = mStore.getReference("users/" + u.getUid());
-                            if (imgRef != null) {
-                                imgRef.getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
-                                    @Override
-                                    public void onComplete(@NonNull Task<Uri> task) {
-                                        if (task.isSuccessful()) {
-                                            Uri img = task.getResult();
-                                            if (img != null) {
-                                                Cache.saveUriFile(u.getUid(), img);
-                                                Glide.with(getContext()).load(img).fitCenter().centerCrop().into(personViewHolder.imagePerson);
-                                            }
-                                        }
-                                    }
-                                });
-                            }
-                        } else {
-                            Glide.with(getContext()).load(Cache.getUriFromUid(u.getUid())).fitCenter().centerCrop().into(personViewHolder.imagePerson);
-                        }
-
-                    }
                 }
 
             };
@@ -337,7 +322,7 @@ public class CreateGroupFragment extends Fragment {
     }
 
     @RequiresApi(api = Build.VERSION_CODES.M)
-    public void saveEvent(){
+    public void saveGroup(){
 
         if(event_name.getText().toString().matches("")){
             event_name.setError("Champs obligatoire");
@@ -345,7 +330,7 @@ public class CreateGroupFragment extends Fragment {
 
         if(!event_name.getText().toString().matches("")){
             refreshData();
-            Group g = new Group(groupAttente.getUid(), groupAttente.getOwner(), groupAttente.getName(), groupAttente.getDescription(), groupAttente.getVisibility(), groupAttente.getOwnerDoc());
+            g = new Group(groupAttente.getUid(), groupAttente.getOwner(), groupAttente.getName(), groupAttente.getDescription(), groupAttente.getVisibility(), groupAttente.getOwnerDoc());
             mStoreBase.collection("groups").document(g.getUid()).set(g);
 
             for (String user : adds){
@@ -353,9 +338,43 @@ public class CreateGroupFragment extends Fragment {
                 UserFriendData ufd = new UserFriendData("waiting",mStoreBase.collection("users").document(user));
                 mStoreBase.collection("groups").document(g.getUid()).collection("members").document(user).set(ufd);
             }
-            Toast.makeText(getContext(), "Vous avez créer votre groupe !", Toast.LENGTH_SHORT).show();
-            navController.navigate(R.id.action_navigation_creat_group_to_navigation_amis);
+
+            if(hasSelectedImage){
+                uploadImage(imageUri);
+            }else{
+                imageUri = null;
+                Toast.makeText(getContext(), "Vous avez créer votre groupe !", Toast.LENGTH_SHORT).show();
+                navController.navigate(R.id.action_navigation_creat_group_to_navigation_amis);
+            }
         }
+    }
+
+    private void uploadImage(final Uri imagUri) {
+        if (imagUri != null) {
+
+            StorageReference groupRef = mStore.getReference("groups/"+g.getUid());
+            groupRef.putFile(imagUri)
+                    .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                        @Override
+                        public void onSuccess(UploadTask.TaskSnapshot snapshot) {
+                            Toast.makeText(getActivity().getBaseContext(), "Vous avez mis une image à ce groupe !", Toast.LENGTH_SHORT).show();
+                            g.setImage_url(new SimpleDateFormat("dd-MM-yy hh:mm:ss").format(new Date(System.currentTimeMillis())));
+                            mStoreBase.collection("groups").document(g.getUid()).set(g);
+                            Toast.makeText(getContext(), "Vous avez créer votre groupe !", Toast.LENGTH_SHORT).show();
+                            imageUri = null;
+                            navController.navigate(R.id.action_navigation_creat_group_to_navigation_amis);
+
+                        }
+                    })
+                    .addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception exception) {
+                            Toast.makeText(getActivity().getBaseContext(), "Une erreur est survenue !", Toast.LENGTH_SHORT).show();
+                        }
+                    });
+
+        }
+        Glide.with(getContext()).load(imagUri).fitCenter().centerCrop().into(imageGroup);
     }
 
     @Override
@@ -369,8 +388,20 @@ public class CreateGroupFragment extends Fragment {
     @Override
     public void onStart(){
         super.onStart();
-
-      //  adapter.startListening();
     }
 
+    @Override
+    public void onActivityResult(int reqCode, int resultCode, Intent data) {
+        super.onActivityResult(reqCode, resultCode, data);
+
+        if (resultCode == RESULT_OK) {
+            imageUri = data.getData();
+            assert imageUri != null;
+            Glide.with(getContext()).load(imageUri).fitCenter().centerCrop().into(imageGroup);
+            hasSelectedImage = true;
+            Log.w("Image", "Select image");
+        }else {
+            Toast.makeText(getContext(),"Vous n'avez pas choisi d'image", Toast.LENGTH_LONG).show();
+        }
     }
+}

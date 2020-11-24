@@ -235,19 +235,18 @@ public class RechercheFragment extends Fragment {
 
                 userViewHolder.button.setImageResource(0);
                 Log.w("Add", "BienHolder Recherche");
-                if (u.getImage_url() != null) {
-                    if (!Cache.fileExists(u.getUid())) {
+                if(u.getImage_url() != null) {
+                    if(!Cache.fileExists(u.getUid())) {
                         StorageReference imgRef = mStore.getReference("users/" + u.getUid());
                         if (imgRef != null) {
                             imgRef.getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
-                                @RequiresApi(api = Build.VERSION_CODES.O)
                                 @Override
                                 public void onComplete(@NonNull Task<Uri> task) {
                                     if (task.isSuccessful()) {
                                         Uri img = task.getResult();
                                         if (img != null) {
                                             Cache.saveUriFile(u.getUid(), img);
-                                            //u.setImage_url(Cache.getImageDate(u.getUid()));
+                                            u.setImage_url(Cache.getImageDate(u.getUid()));
                                             mStoreBase.collection("users").document(u.getUid()).set(u);
                                             Glide.with(getContext()).load(img).fitCenter().centerCrop().into(userViewHolder.imagePerson);
                                         }
@@ -255,11 +254,11 @@ public class RechercheFragment extends Fragment {
                                 }
                             });
                         }
-                    } else {
+                    }else{
                         Uri imgCache = Cache.getUriFromUid(u.getUid());
                         Log.w("Cache", "Image Cache : " + Cache.getImageDate(u.getUid()));
                         Log.w("Cache", "Data Cache : " + u.getImage_url());
-                        if(Cache.getImageDate(u.getUid()).equals(u.getImage_url())) {
+                        if(Cache.getImageDate(u.getUid()).equalsIgnoreCase(u.getImage_url())) {
                             Log.w("image", "get image from cache");
                             Glide.with(getContext()).load(imgCache).fitCenter().centerCrop().into(userViewHolder.imagePerson);
                         }else{
@@ -272,7 +271,7 @@ public class RechercheFragment extends Fragment {
                                             Uri img = task.getResult();
                                             if (img != null) {
                                                 Cache.saveUriFile(u.getUid(), img);
-                                                //u.setImage_url(Cache.getImageDate(u.getUid()));
+                                                u.setImage_url(Cache.getImageDate(u.getUid()));
                                                 mStoreBase.collection("users").document(u.getUid()).set(u);
                                                 Glide.with(getContext()).load(img).fitCenter().centerCrop().into(userViewHolder.imagePerson);
                                             }

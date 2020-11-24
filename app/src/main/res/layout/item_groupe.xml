@@ -25,7 +25,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_gravity="center"
-                android:contentDescription="@string/TODO" />
+                android:contentDescription="@string/TODO"
+                app:srcCompat="@drawable/ic_baseline_groups_icon" />
 
         </androidx.cardview.widget.CardView>
 
