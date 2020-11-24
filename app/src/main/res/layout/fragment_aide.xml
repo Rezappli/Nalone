@@ -18,11 +18,6 @@
             android:layout_height="wrap_content"
             android:text="@string/hello_blank_fragment" />
 
-        <ImageView
-            android:id="@+id/qr_code_image"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            tools:src="@tools:sample/avatars" />
     </LinearLayout>
 
 </FrameLayout>

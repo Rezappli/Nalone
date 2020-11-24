@@ -109,5 +109,6 @@
     <string name="edit_group"> Editer</string>
     <string name="gerer_membres"> Gérer membres</string>
     <string name="delte_group"> Supprimer le groupe </string>
+    <string name="qr_code"> Mon QR Code </string>
 
 </resources>

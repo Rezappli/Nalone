@@ -17,12 +17,14 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.cardview.widget.CardView;
+import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 
 import com.bumptech.glide.Glide;
 import com.example.nalone.Cache;
+import com.example.nalone.QRCodeFragment;
 import com.example.nalone.R;
 import com.example.nalone.items.ItemPerson;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -52,7 +54,7 @@ public class ProfilFragment extends Fragment  {
     private TextView userConnectText;
     private EditText userConnectDesc;
     private TextView userConnectVille, userConnectNbC, userConnectNbP;
-    private CardView cardViewPhotoPerson,cardViewProfilParametres,cardViewProfilEdit,cardViewProfilAide, cardViewPhotoEditDesc, cardViewPhotoEdit;
+    private CardView cardViewQR,cardViewPhotoPerson,cardViewProfilParametres,cardViewProfilEdit,cardViewProfilAide, cardViewPhotoEditDesc, cardViewPhotoEdit;
     private ImageView imageViewEditDescription, imageUser, imageViewEditPhoto;
     private boolean editDescription;
     private boolean editPhoto;
@@ -83,6 +85,15 @@ public class ProfilFragment extends Fragment  {
         imageUser = root.findViewById(R.id.imageUser);
         imageViewEditPhoto = root.findViewById(R.id.imageViewEditPhoto);
         cardViewPhotoPerson = root.findViewById(R.id.cardViewUser);
+
+        cardViewQR = root.findViewById(R.id.cardViewQR);
+
+        cardViewQR.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showQRCode();
+            }
+        });
 
         userConnectText.setText(USER.getFirst_name() + " " + USER.getLast_name());
         userConnectVille.setText(USER.getCity());
@@ -244,6 +255,11 @@ public class ProfilFragment extends Fragment  {
         });
 
         return root;
+    }
+
+    public void showQRCode() {
+        DialogFragment qrcode = new QRCodeFragment();
+        qrcode.show(getActivity().getSupportFragmentManager(), "QR_CODE");
     }
 
     @Override
