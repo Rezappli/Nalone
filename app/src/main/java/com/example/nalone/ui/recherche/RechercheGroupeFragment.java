@@ -1,5 +1,6 @@
 package com.example.nalone.ui.recherche;
 
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,15 +16,21 @@ import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
+import com.example.nalone.Cache;
 import com.example.nalone.Group;
 import com.example.nalone.R;
 import com.example.nalone.ui.amis.display.PopUpGroupFragment;
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.Query;
+import com.google.firebase.storage.StorageReference;
 
 import static com.example.nalone.util.Constants.USER_ID;
+import static com.example.nalone.util.Constants.mStore;
 import static com.example.nalone.util.Constants.mStoreBase;
 
 public class RechercheGroupeFragment extends Fragment {
@@ -81,12 +88,31 @@ public class RechercheGroupeFragment extends Fragment {
                         }
                     });
 
-                /*getUserData(u.getUid(), new FireStoreUsersListeners() {
-                    @Override
-                    public void onDataUpdate(final User u) {
-                        if (u.getImage_url() != null) {
-                            if(!Cache.fileExists(u.getUid())) {
-                                StorageReference imgRef = mStore.getReference("users/" + u.getUid());
+                    if(g.getImage_url() != null) {
+                        if(!Cache.fileExists(g.getUid())) {
+                            StorageReference imgRef = mStore.getReference("groups/" + g.getUid());
+                            if (imgRef != null) {
+                                imgRef.getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<Uri> task) {
+                                        if (task.isSuccessful()) {
+                                            Uri img = task.getResult();
+                                            if (img != null) {
+                                                Cache.saveUriFile(g.getUid(), img);
+                                                g.setImage_url(Cache.getImageDate(g.getUid()));
+                                                mStoreBase.collection("groups").document(g.getUid()).set(g);
+                                                Glide.with(getContext()).load(img).fitCenter().centerCrop().into(userViewHolder.imageGroup);
+                                            }
+                                        }
+                                    }
+                                });
+                            }
+                        }else{
+                            Uri imgCache = Cache.getUriFromUid(g.getUid());
+                            if(Cache.getImageDate(g.getUid()).equalsIgnoreCase(g.getImage_url())) {
+                                Glide.with(getContext()).load(imgCache).fitCenter().centerCrop().into(userViewHolder.imageGroup);
+                            }else{
+                                StorageReference imgRef = mStore.getReference("groups/" + g.getUid());
                                 if (imgRef != null) {
                                     imgRef.getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
                                         @Override
@@ -94,21 +120,18 @@ public class RechercheGroupeFragment extends Fragment {
                                             if (task.isSuccessful()) {
                                                 Uri img = task.getResult();
                                                 if (img != null) {
-                                                    Log.w("image", "save image from cache");
-                                                    Cache.saveUriFile(u.getUid(), img);
-                                                    Glide.with(context).load(img).fitCenter().centerCrop().into(userViewHolder.imagePerson);
+                                                    Cache.saveUriFile(g.getUid(), img);
+                                                    g.setImage_url(Cache.getImageDate(g.getUid()));
+                                                    mStoreBase.collection("groups").document(g.getUid()).set(g);
+                                                    Glide.with(getContext()).load(img).fitCenter().centerCrop().into(userViewHolder.imageGroup);
                                                 }
                                             }
                                         }
                                     });
                                 }
-                            }else{
-                                Log.w("image", "get image from cache");
-                                Glide.with(context).load(Cache.getUriFromUid(u.getUid())).fitCenter().centerCrop().into(userViewHolder.imagePerson);
                             }
                         }
                     }
-                });*/
 
                 }
             };

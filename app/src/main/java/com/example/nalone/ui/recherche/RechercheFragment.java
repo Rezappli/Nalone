@@ -157,34 +157,50 @@ public class RechercheFragment extends Fragment {
                     }
                 });
 
-                /*getUserData(u.getUid(), new FireStoreUsersListeners() {
-                    @Override
-                    public void onDataUpdate(final User u) {
-                        if (u.getImage_url() != null) {
-                            if(!Cache.fileExists(u.getUid())) {
-                                StorageReference imgRef = mStore.getReference("users/" + u.getUid());
-                                if (imgRef != null) {
-                                    imgRef.getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
-                                        @Override
-                                        public void onComplete(@NonNull Task<Uri> task) {
-                                            if (task.isSuccessful()) {
-                                                Uri img = task.getResult();
-                                                if (img != null) {
-                                                    Log.w("image", "save image from cache");
-                                                    Cache.saveUriFile(u.getUid(), img);
-                                                    Glide.with(context).load(img).fitCenter().centerCrop().into(userViewHolder.imagePerson);
-                                                }
+                if(g.getImage_url() != null) {
+                    if(!Cache.fileExists(g.getUid())) {
+                        StorageReference imgRef = mStore.getReference("groups/" + g.getUid());
+                        if (imgRef != null) {
+                            imgRef.getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
+                                @Override
+                                public void onComplete(@NonNull Task<Uri> task) {
+                                    if (task.isSuccessful()) {
+                                        Uri img = task.getResult();
+                                        if (img != null) {
+                                            Cache.saveUriFile(g.getUid(), img);
+                                            g.setImage_url(Cache.getImageDate(g.getUid()));
+                                            mStoreBase.collection("groups").document(g.getUid()).set(g);
+                                            Glide.with(getContext()).load(img).fitCenter().centerCrop().into(userViewHolder.imageGroup);
+                                        }
+                                    }
+                                }
+                            });
+                        }
+                    }else{
+                        Uri imgCache = Cache.getUriFromUid(g.getUid());
+                        if(Cache.getImageDate(g.getUid()).equalsIgnoreCase(g.getImage_url())) {
+                            Glide.with(getContext()).load(imgCache).fitCenter().centerCrop().into(userViewHolder.imageGroup);
+                        }else{
+                            StorageReference imgRef = mStore.getReference("groups/" + g.getUid());
+                            if (imgRef != null) {
+                                imgRef.getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<Uri> task) {
+                                        if (task.isSuccessful()) {
+                                            Uri img = task.getResult();
+                                            if (img != null) {
+                                                Cache.saveUriFile(g.getUid(), img);
+                                                g.setImage_url(Cache.getImageDate(g.getUid()));
+                                                mStoreBase.collection("groups").document(g.getUid()).set(g);
+                                                Glide.with(getContext()).load(img).fitCenter().centerCrop().into(userViewHolder.imageGroup);
                                             }
                                         }
-                                    });
-                                }
-                            }else{
-                                Log.w("image", "get image from cache");
-                                Glide.with(context).load(Cache.getUriFromUid(u.getUid())).fitCenter().centerCrop().into(userViewHolder.imagePerson);
+                                    }
+                                });
                             }
                         }
                     }
-                });*/
+                }
 
             }
         };
