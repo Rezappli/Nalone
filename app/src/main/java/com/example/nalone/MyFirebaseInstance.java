@@ -5,11 +5,17 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Color;
+import android.media.RingtoneManager;
+import android.net.Uri;
 import android.os.Build;
 import android.util.Log;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.core.app.NotificationCompat;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -17,19 +23,26 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 
+import java.util.Random;
+
 import static com.example.nalone.util.Constants.USER;
 import static com.example.nalone.util.Constants.mMessaging;
 
 public class MyFirebaseInstance extends FirebaseMessagingService {
 
     public static String user_id;
-    private final int NOTIFICATION_ID = 007;
+    private final String ADMIN_CHANNEL_ID = "admin_channel";
     private final String NOTIFICATION_TAG = "FIREBASEOC";
 
     @Override
-    public void onCreate(){
+    public void onNewToken(String s) {
+        Log.e("NEW_TOKEN", s);
+    }
+
+    @Override
+    public void onCreate() {
         super.onCreate();
-        Log.w(NOTIFICATION_TAG," to : " + user_id);
+        Log.w(NOTIFICATION_TAG, " to : " + user_id);
         mMessaging.subscribeToTopic(user_id).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
@@ -46,57 +59,60 @@ public class MyFirebaseInstance extends FirebaseMessagingService {
 
     @Override
     public void onMessageReceived(RemoteMessage remoteMessage) {
-        if (remoteMessage.getNotification() != null) {
-            String title = remoteMessage.getNotification().getTitle();
-            String description = remoteMessage.getNotification().getBody();
-            // 8 - Show notification after received message
-            this.sendVisualNotification(title, description);
+        final Intent intent = new Intent(this, MainActivity.class);
+        NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        int notificationID = new Random().nextInt(3000);
+
+      /*
+        Apps targeting SDK 26 or above (Android O) must implement notification channels and add its notifications
+        to at least one of them. Therefore, confirm if version is Oreo or higher, then setup notification channel
+      */
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+            setupChannels(notificationManager);
         }
+
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent,
+                PendingIntent.FLAG_ONE_SHOT);
+
+        Bitmap largeIcon = BitmapFactory.decodeResource(getResources(),
+                R.drawable.logo);
+
+        Uri notificationSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+        NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this, ADMIN_CHANNEL_ID)
+                .setSmallIcon(R.drawable.logo)
+                .setLargeIcon(largeIcon)
+                .setContentTitle(remoteMessage.getData().get("title"))
+                .setContentText(remoteMessage.getData().get("message"))
+                .setAutoCancel(true)
+                .setSound(notificationSoundUri)
+                .setContentIntent(pendingIntent);
+
+        //Set notification color to match your app color template
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            notificationBuilder.setColor(getResources().getColor(R.color.colorPrimaryDark));
+        }
+        notificationManager.notify(notificationID, notificationBuilder.build());
     }
 
-    // ---
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    private void setupChannels(NotificationManager notificationManager){
+        CharSequence adminChannelName = "New notification";
+        String adminChannelDescription = "Device to devie notification";
 
-    private void sendVisualNotification(String title, String description) {
-
-        // 1 - Create an Intent that will be shown when user will click on the Notification
-        Intent intent = new Intent(this, MainActivity.class);
-        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_ONE_SHOT);
-
-        // 2 - Create a Style for the Notification
-        NotificationCompat.InboxStyle inboxStyle = new NotificationCompat.InboxStyle();
-        inboxStyle.setBigContentTitle("Notification");
-        inboxStyle.addLine(title);
-
-        // 3 - Create a Channel (Android 8)
-        String channelId = "nolonely";
-
-        // 4 - Build a Notification object
-        NotificationCompat.Builder notificationBuilder =
-                new NotificationCompat.Builder(this, channelId)
-                        .setSmallIcon(R.drawable.logo)
-                        .setContentTitle(title)
-                        .setContentText(description)
-                        .setAutoCancel(true)
-                        .setContentIntent(pendingIntent)
-                        .setStyle(inboxStyle);
-
-        // 5 - Add the Notification to the Notification Manager and show it.
-        NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-
-        // 6 - Support Version >= Android 8
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            CharSequence channelName = "Message provenant de Firebase";
-            int importance = NotificationManager.IMPORTANCE_HIGH;
-            NotificationChannel mChannel = new NotificationChannel(channelId, channelName, importance);
-            notificationManager.createNotificationChannel(mChannel);
+        NotificationChannel adminChannel;
+        adminChannel = new NotificationChannel(ADMIN_CHANNEL_ID, adminChannelName, NotificationManager.IMPORTANCE_HIGH);
+        adminChannel.setDescription(adminChannelDescription);
+        adminChannel.enableLights(true);
+        adminChannel.setLightColor(Color.RED);
+        adminChannel.enableVibration(true);
+        if (notificationManager != null) {
+            notificationManager.createNotificationChannel(adminChannel);
         }
-
-        // 7 - Show notification
-        notificationManager.notify(NOTIFICATION_TAG, NOTIFICATION_ID, notificationBuilder.build());
     }
 
     @Override
-    public void onDestroy(){
+    public void onDestroy() {
         super.onDestroy();
         Log.w(NOTIFICATION_TAG, "Service stop");
     }

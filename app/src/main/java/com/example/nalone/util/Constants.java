@@ -51,4 +51,6 @@ public class Constants {
     public static boolean maPosition;
 
     public static Application application;
+
+    public static String FCM_Token;
 }

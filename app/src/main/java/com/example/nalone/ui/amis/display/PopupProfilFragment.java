@@ -18,20 +18,34 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.AuthFailureError;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
 import com.bumptech.glide.Glide;
 import com.example.nalone.Cache;
 import com.example.nalone.R;
 import com.example.nalone.User;
 import com.example.nalone.UserFriendData;
+import com.example.nalone.fcm.MySingleton;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.messaging.FirebaseMessaging;
+import com.google.firebase.messaging.RemoteMessage;
 import com.google.firebase.storage.StorageReference;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static com.example.nalone.HomeActivity.buttonBack;
+import static com.example.nalone.util.Constants.FCM_Token;
 import static com.example.nalone.util.Constants.USER;
+import static com.example.nalone.util.Constants.mMessaging;
 import static com.example.nalone.util.Constants.mStore;
 import static com.example.nalone.util.Constants.mStoreBase;
 
@@ -42,6 +56,15 @@ public class PopupProfilFragment extends Fragment {
     public static int button = 0;
     private NavController navController;
     public static String type;
+
+    final private String FCM_API = "https://fcm.googleapis.com/fcm/send";
+    final private String serverKey = "key=AAAA4ZRDAW0:APA91bErNdSatj13ahbk5w8kqEtjnJ4B4BI70KPYBvJNBnLjKjXn0y-FfB73j9p-A6Iw2sVDN93UfrjkhXxqqU3H_rVm1RuB5IwPfrcB85CgAZH2ZN-SopzO-Pp2r5p_V7R5Er_X7wl7";
+    final private String contentType = "application/json";
+    final String TAG = "NOTIFICATION TAG";
+
+    String NOTIFICATION_TITLE;
+    String NOTIFICATION_MESSAGE;
+    String TOPIC;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -192,9 +215,11 @@ public class PopupProfilFragment extends Fragment {
                 } else if (button == R.drawable.ic_round_hourglass_top_24) {
                     Toast.makeText(getContext(), "Votre demande d'amis est en attente !", Toast.LENGTH_SHORT).show();
                 } else {
-                    Toast.makeText(getContext(), "Vous avez envoyé une demande d'amis !", Toast.LENGTH_SHORT).show();
-                    addFriend();
-                    buttonAdd.setImageResource(R.drawable.ic_round_hourglass_top_24);
+
+                        Toast.makeText(getContext(), "Vous avez envoyé une demande d'amis !", Toast.LENGTH_SHORT).show();
+                        addFriend();
+                        buttonAdd.setImageResource(R.drawable.ic_round_hourglass_top_24);
+
                 }
             }
         });
@@ -209,6 +234,50 @@ public class PopupProfilFragment extends Fragment {
         UserFriendData data2 = new UserFriendData("send", mStoreBase.collection("users").document(USER_LOAD.getUid()));
         mStoreBase.collection("users").document(USER.getUid()).collection("friends").document(USER_LOAD.getUid()).set(data2);
         mStoreBase.collection("users").document(USER_LOAD.getUid()).collection("friends").document(USER.getUid()).set(data1);
+
+        TOPIC = "/topics/"+ data1.getUser().getId(); //topic must match with what the receiver subscribed to
+        NOTIFICATION_TITLE = "Test";
+        NOTIFICATION_MESSAGE = "Mon message";
+
+        JSONObject notification = new JSONObject();
+        JSONObject notifcationBody = new JSONObject();
+        try {
+            notifcationBody.put("title", NOTIFICATION_TITLE);
+            notifcationBody.put("message", NOTIFICATION_MESSAGE);
+
+            notification.put("to", TOPIC);
+            notification.put("data", notifcationBody);
+        } catch (JSONException e) {
+            Log.e(TAG, "onCreate: " + e.getMessage());
+        }
+        sendNotification(notification);
+
+    }
+
+    private void sendNotification(JSONObject notification) {
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(FCM_API, notification,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        Log.i(TAG, "onResponse: " + response.toString());
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Toast.makeText(getContext(), "Request error", Toast.LENGTH_LONG).show();
+                        Log.i(TAG, "onErrorResponse: Didn't work");
+                    }
+                }) {
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String> params = new HashMap<>();
+                params.put("Authorization", serverKey);
+                params.put("Content-Type", contentType);
+                return params;
+            }
+        };
+        MySingleton.getInstance(getContext()).addToRequestQueue(jsonObjectRequest);
     }
 
 }
