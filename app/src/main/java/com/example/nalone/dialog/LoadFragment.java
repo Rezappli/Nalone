@@ -1,4 +1,4 @@
-package com.example.nalone;
+package com.example.nalone.dialog;
 
 import android.app.Dialog;
 import android.graphics.Color;
@@ -11,6 +11,8 @@ import android.view.WindowManager;
 import android.widget.ImageView;
 
 import androidx.fragment.app.DialogFragment;
+
+import com.example.nalone.R;
 
 import static com.example.nalone.util.Constants.USER;
 

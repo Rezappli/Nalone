@@ -1,11 +1,11 @@
-package com.example.nalone;
+package com.example.nalone.qrcode;
 
 import android.graphics.Bitmap;
 
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.WriterException;
 
-public class QrCode {
+public class QRCode {
     public static Bitmap generate(String data){
         int qrCodeDimention = 500;
         QRCodeEncoder qrCodeEncoder = new QRCodeEncoder(data, null,

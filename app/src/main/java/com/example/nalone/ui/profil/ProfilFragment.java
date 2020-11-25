@@ -2,11 +2,9 @@ package com.example.nalone.ui.profil;
 
 import android.content.Intent;
 import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,20 +23,17 @@ import androidx.navigation.Navigation;
 
 import com.bumptech.glide.Glide;
 import com.example.nalone.Cache;
-import com.example.nalone.LoadFragment;
-import com.example.nalone.QRCodeFragment;
+import com.example.nalone.dialog.LoadFragment;
+import com.example.nalone.qrcode.QRCodeFragment;
 import com.example.nalone.R;
-import com.example.nalone.items.ItemPerson;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
-import com.google.firebase.Timestamp;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
 
 import static android.app.Activity.RESULT_OK;

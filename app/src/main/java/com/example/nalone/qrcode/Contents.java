@@ -1,4 +1,4 @@
-package com.example.nalone;
+package com.example.nalone.qrcode;
 
 //
 // * Copyright (C) 2008 ZXing authors

@@ -1,4 +1,4 @@
-package com.example.nalone;
+package com.example.nalone.dialog;
 
 import android.app.DatePickerDialog;
 import android.app.Dialog;

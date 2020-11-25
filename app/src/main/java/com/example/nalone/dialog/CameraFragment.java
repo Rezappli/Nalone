@@ -1,4 +1,4 @@
-package com.example.nalone;
+package com.example.nalone.dialog;
 
 import android.Manifest;
 import android.content.Context;
@@ -18,6 +18,8 @@ import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 
+import com.example.nalone.R;
+import com.example.nalone.User;
 import com.example.nalone.ui.amis.display.PopupProfilFragment;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;

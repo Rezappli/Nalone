@@ -8,10 +8,7 @@ import android.widget.ImageView;
 
 import androidx.fragment.app.Fragment;
 
-import com.example.nalone.QrCode;
 import com.example.nalone.R;
-
-import static com.example.nalone.util.Constants.USER;
 
 public class AideFragment extends Fragment {
 

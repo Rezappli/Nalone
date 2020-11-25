@@ -75,7 +75,7 @@
 
     <fragment
         android:id="@+id/navigation_camera"
-        android:name="com.example.nalone.CameraFragment"
+        android:name="com.example.nalone.dialog.CameraFragment"
         android:label="@string/quitter"
         tools:layout="@layout/activity_camera" >
         <action
@@ -220,7 +220,7 @@
 
     <fragment
         android:id="@+id/navigation_list_amis"
-        android:name="com.example.nalone.ListAmisFragment"
+        android:name="com.example.nalone.dialog.ListAmisFragment"
         android:label="@string/listInvité"
         tools:layout="@layout/fragment_list_amis" >
         <action

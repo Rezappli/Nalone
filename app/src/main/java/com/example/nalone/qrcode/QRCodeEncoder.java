@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.example.nalone;
+package com.example.nalone.qrcode;
 
 import android.provider.ContactsContract;
 import android.graphics.Bitmap;

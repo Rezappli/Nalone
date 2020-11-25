@@ -25,9 +25,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
-import com.example.nalone.Cache;
 import com.example.nalone.Group;
-import com.example.nalone.ListAmisFragment;
+import com.example.nalone.dialog.ListAmisFragment;
 import com.example.nalone.R;
 import com.example.nalone.User;
 import com.example.nalone.UserFriendData;
@@ -56,7 +55,6 @@ import static android.app.Activity.RESULT_OK;
 import static com.example.nalone.HomeActivity.buttonBack;
 import static com.example.nalone.util.Constants.USER;
 import static com.example.nalone.util.Constants.USER_REFERENCE;
-import static com.example.nalone.util.Constants.USER_STORAGE_REF;
 import static com.example.nalone.util.Constants.mStore;
 import static com.example.nalone.util.Constants.mStoreBase;
 

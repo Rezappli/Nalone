@@ -1,4 +1,4 @@
-package com.example.nalone;
+package com.example.nalone.dialog;
 
 import android.net.Uri;
 import android.os.Bundle;
@@ -22,6 +22,9 @@ import android.widget.SearchView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.example.nalone.Cache;
+import com.example.nalone.R;
+import com.example.nalone.User;
 import com.example.nalone.items.ItemPerson;
 import com.example.nalone.ui.amis.display.CreateGroupFragment;
 import com.example.nalone.ui.evenements.CreateEventFragment;
