@@ -235,7 +235,8 @@ public class PopupProfilFragment extends Fragment {
         mStoreBase.collection("users").document(USER.getUid()).collection("friends").document(USER_LOAD.getUid()).set(data2);
         mStoreBase.collection("users").document(USER_LOAD.getUid()).collection("friends").document(USER.getUid()).set(data1);
 
-        TOPIC = "/topics/"+ data1.getUser().getId(); //topic must match with what the receiver subscribed to
+        TOPIC = "/topics/"+ USER_LOAD.getUid(); //topic must match with what the receiver subscribed to
+        Log.w("TOPIC", "Topic : " + TOPIC);
         NOTIFICATION_TITLE = "Test";
         NOTIFICATION_MESSAGE = "Mon message";
 
