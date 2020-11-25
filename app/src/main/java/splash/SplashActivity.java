@@ -15,7 +15,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.example.nalone.ConnectionService;
 import com.example.nalone.HomeActivity;
 import com.example.nalone.MainActivity;
-import com.example.nalone.Notification;
+import com.example.nalone.notification.Notification;
 import com.example.nalone.R;
 import com.example.nalone.User;
 import com.example.nalone.ui.profil.ParametresFragment;

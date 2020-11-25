@@ -1,4 +1,4 @@
-package com.example.nalone;
+package com.example.nalone.notification;
 
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
@@ -9,6 +9,9 @@ import android.os.Build;
 
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
+
+import com.example.nalone.MainActivity;
+import com.example.nalone.R;
 
 public class Notification {
 
