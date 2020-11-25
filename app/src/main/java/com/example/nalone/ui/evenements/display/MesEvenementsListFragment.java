@@ -114,7 +114,7 @@ public class MesEvenementsListFragment extends Fragment {
 
     private void adapterEvents() {
         DocumentReference ref = mStoreBase.document("users/"+USER_ID);
-        Query query = mStoreBase.collection("events");//.whereEqualTo("ownerDoc", ref);
+        Query query = mStoreBase.collection("events").whereEqualTo("ownerDoc", ref);
         FirestoreRecyclerOptions<Evenement> options = new FirestoreRecyclerOptions.Builder<Evenement>().setQuery(query, Evenement.class).build();
 
         adapter = new FirestoreRecyclerAdapter<Evenement, EventViewHolder>(options) {
@@ -140,12 +140,11 @@ public class MesEvenementsListFragment extends Fragment {
                     @Override
                     public void onClick(View v) {
                         final AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-                        builder.setMessage("Vous êtes sur le point de supprimer un évènement ! Cette action est irréversible ! Voulez-vous continuez ?")
+                        builder.setMessage("Vous êtes sur le point de supprimer un évènement ! Cette action est irréversible ! \n Voulez-vous continuez ?")
                                 .setPositiveButton("Oui", new DialogInterface.OnClickListener() {
                                     public void onClick(DialogInterface dialog, int id) {
                                         mStoreBase.collection("event").document(event.getUid()).delete();
                                         Toast.makeText(getContext(), "Vous avez supprimé(e) un évènement !", Toast.LENGTH_SHORT).show();
-
                                     }
                                 })
                                 .setNegativeButton("Non", new DialogInterface.OnClickListener() {
@@ -222,7 +221,7 @@ public class MesEvenementsListFragment extends Fragment {
             }
         };
         //mRecyclerView.setHasFixedSize(true);
-        mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext(),LinearLayoutManager.HORIZONTAL, false));
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
         mRecyclerView.setAdapter(adapter);
         adapter.startListening();
