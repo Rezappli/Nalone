@@ -43,9 +43,7 @@ import java.util.List;
 import java.util.Map;
 
 import static com.example.nalone.HomeActivity.buttonBack;
-import static com.example.nalone.util.Constants.FCM_Token;
 import static com.example.nalone.util.Constants.USER;
-import static com.example.nalone.util.Constants.mMessaging;
 import static com.example.nalone.util.Constants.mStore;
 import static com.example.nalone.util.Constants.mStoreBase;
 

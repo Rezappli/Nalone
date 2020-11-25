@@ -43,6 +43,7 @@ public class MyFirebaseInstance extends FirebaseMessagingService {
     @Override
     public void onCreate() {
         super.onCreate();
+        Log.w(NOTIFICATION_TAG, "ID : " + user_id);
         Log.w(NOTIFICATION_TAG, " to : " + user_id);
         mMessaging.subscribeToTopic(user_id).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
@@ -50,8 +51,6 @@ public class MyFirebaseInstance extends FirebaseMessagingService {
                 String msg = "subscribe !";
                 if (!task.isSuccessful()) {
                     msg = "unsubscribe";
-                }else{
-                    Log.w(NOTIFICATION_TAG, "Error : "+task.getException().getMessage());
                 }
                 Log.w(NOTIFICATION_TAG, msg + " to : " + user_id);
             }
