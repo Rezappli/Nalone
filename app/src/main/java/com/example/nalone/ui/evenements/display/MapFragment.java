@@ -1,7 +1,10 @@
 package com.example.nalone.ui.evenements.display;
 
+import android.net.Uri;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
+import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
 
 import android.util.Log;
@@ -10,15 +13,22 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
+import com.bumptech.glide.Glide;
+import com.example.nalone.Cache;
+import com.example.nalone.Group;
 import com.example.nalone.R;
-import com.example.nalone.listeners.FireStoreEventsListeners;
+import com.example.nalone.ui.amis.display.GroupeFragment;
+import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
+import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Build;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
@@ -38,14 +48,24 @@ import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
+import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.Query;
+import com.google.firebase.storage.StorageReference;
 
 
 import java.util.ArrayList;
 
 import static com.example.nalone.HomeActivity.buttonBack;
 import static com.example.nalone.util.Constants.MAPVIEW_BUNDLE_KEY;
+import static com.example.nalone.util.Constants.USER;
+import static com.example.nalone.util.Constants.USER_ID;
 import static com.example.nalone.util.Constants.USER_LATLNG;
 import static com.example.nalone.util.Constants.USER_REFERENCE;
+import static com.example.nalone.util.Constants.mStore;
+import static com.example.nalone.util.Constants.mStoreBase;
 import static com.example.nalone.util.Constants.targetZoom;
 
 
@@ -58,12 +78,12 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     private GoogleMap mMap;
     private ImageView buttonAdd;
 
-    private RecyclerView mRecyclerViewEvent;
-    private RecyclerView.LayoutManager mLayoutManagerEvent;
-
     private static ArrayList<Evenement> itemEvents = new ArrayList<>();
 
     private NavController navController;
+
+    private RecyclerView mRecyclerView;
+    private FirestoreRecyclerAdapter adapter;
 
 
 
@@ -77,16 +97,18 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         rootView = inflater.inflate(R.layout.fragment_map, container, false);
         ((AppCompatActivity) getActivity()).getSupportActionBar().hide();
         progressBar = rootView.findViewById(R.id.progressBar2);
-        mRecyclerViewEvent = rootView.findViewById(R.id.recyclerViewEventMap);
         buttonBack.setVisibility(View.GONE);
         mMapView = rootView.findViewById(R.id.mapView);
         navController = Navigation.findNavController(getActivity(), R.id.nav_host_fragment);
+        mRecyclerView = rootView.findViewById(R.id.recyclerViewEventMap);
 
 
         Bundle mapViewBundle = null;
         if (savedInstanceState != null) {
             mapViewBundle = savedInstanceState.getBundle(MAPVIEW_BUNDLE_KEY);
         }
+
+        adapterEvents();
 
         mMapView.onCreate(mapViewBundle);
 
@@ -109,76 +131,216 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         return rootView;
     }
 
+    private void adapterEvents() {
+        DocumentReference ref = mStoreBase.document("users/"+USER_ID);
+        Query query = mStoreBase.collection("events").whereNotEqualTo("ownerDoc", ref);
+        FirestoreRecyclerOptions<Evenement> options = new FirestoreRecyclerOptions.Builder<Evenement>().setQuery(query, Evenement.class).build();
 
-
-    private void initGoogleMap(Bundle savedInstanceState) {
-        Bundle mapViewBundle = null;
-        if (savedInstanceState != null) {
-            mapViewBundle = savedInstanceState.getBundle(MAPVIEW_BUNDLE_KEY);
-        }
-
-        mMapView.onCreate(mapViewBundle);
-
-        mMapView.getMapAsync(this);
-
-    }
-
-    @Override
-    public void onSaveInstanceState(Bundle outState) {
-
-        super.onSaveInstanceState(outState);
-        Bundle mapViewBundel = outState.getBundle(MAPVIEW_BUNDLE_KEY);
-        if (mapViewBundel == null) {
-            mapViewBundel = new Bundle();
-            outState.putBundle(MAPVIEW_BUNDLE_KEY, mapViewBundel);
-        }
-    }
-
-    @Override
-    public void onStart() {
-        super.onStart();
-        mMapView.onStart();
-    }
-
-    @Override
-    public void onStop() {
-        mMapView.onStop();
-        super.onStop();
-    }
-
-    @RequiresApi(api = Build.VERSION_CODES.M)
-    @Override
-    public void onMapReady(GoogleMap googleMap) {
-        mMap = googleMap;
-        updateMap();
-        if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION)
-                != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getActivity(),
-                Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            getActivity().requestPermissions(new String[]{Manifest.permission.ACCESS_COARSE_LOCATION},0);
-            getActivity().requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION},0);
-            return;
-        }
-        mMap.setMyLocationEnabled(true);
-    }
-
-    @RequiresApi(api = Build.VERSION_CODES.M)
-    public void updateMap() {
-        if (mMap != null) {
-            mMap.clear();
-
-            Log.w("Map", "LatLng : " + USER_LATLNG);
-
-            if (targetZoom == null) {
-                mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(USER_LATLNG, 13));
-            } else {
-                mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(targetZoom, 13));
+        adapter = new FirestoreRecyclerAdapter<Evenement, EventViewHolder>(options) {
+            @NonNull
+            @Override
+            public EventViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+                View view= LayoutInflater.from(parent.getContext()).inflate(R.layout.item_evenement,parent,false);
+                return new EventViewHolder(view);
             }
 
-            itemEvents.clear();
+            @Override
+            protected void onBindViewHolder(@NonNull final EventViewHolder holder, int i, @NonNull final Evenement e) {
+                final Evenement event = e;
 
-            float[] results = new float[1];
+                holder.mImageView.setImageResource(e.getImage());
+                holder.mTitle.setText((e.getName()));
+                holder.mDate.setText((e.getDate().toDate().toString()));
+                holder.mVille.setText((e.getCity()));
+                holder.mDescription.setText((e.getDescription()));
+                holder.mProprietaire.setText(e.getOwner());
 
-            /*if(USER.get_register_events() != null) {
+                holder.mCardView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+
+                    }
+                });
+
+               /* if(e.getImage_url() != null) {
+                    if(!Cache.fileExists(e.getUid())) {
+                        StorageReference imgRef = mStore.getReference("groups/" + g.getUid());
+                        if (imgRef != null) {
+                            imgRef.getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
+                                @Override
+                                public void onComplete(@NonNull Task<Uri> task) {
+                                    if (task.isSuccessful()) {
+                                        Uri img = task.getResult();
+                                        if (img != null) {
+                                            Cache.saveUriFile(g.getUid(), img);
+                                            g.setImage_url(Cache.getImageDate(g.getUid()));
+                                            mStoreBase.collection("groups").document(g.getUid()).set(g);
+                                            Glide.with(getContext()).load(img).fitCenter().centerCrop().into(userViewHolder.imageGroup);
+                                        }
+                                    }
+                                }
+                            });
+                        }
+                    }else{
+                        Uri imgCache = Cache.getUriFromUid(g.getUid());
+                        if(Cache.getImageDate(g.getUid()).equalsIgnoreCase(g.getImage_url())) {
+                            Glide.with(getContext()).load(imgCache).fitCenter().centerCrop().into(userViewHolder.imageGroup);
+                        }else{
+                            StorageReference imgRef = mStore.getReference("groups/" + g.getUid());
+                            if (imgRef != null) {
+                                imgRef.getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<Uri> task) {
+                                        if (task.isSuccessful()) {
+                                            Uri img = task.getResult();
+                                            if (img != null) {
+                                                Cache.saveUriFile(g.getUid(), img);
+                                                g.setImage_url(Cache.getImageDate(g.getUid()));
+                                                mStoreBase.collection("groups").document(g.getUid()).set(g);
+                                                Glide.with(getContext()).load(img).fitCenter().centerCrop().into(userViewHolder.imageGroup);
+                                            }
+                                        }
+                                    }
+                                });
+                            }
+                        }
+                    }
+                }
+                */
+            }
+        };
+        //mRecyclerView.setHasFixedSize(true);
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext(),LinearLayoutManager.HORIZONTAL, false));
+
+        mRecyclerView.setAdapter(adapter);
+        adapter.startListening();
+
+        if(mMap != null) {
+            mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
+                @Override
+                public boolean onMarkerClick(Marker marker) {
+                    mRecyclerView.setPadding(0, 0, 0, 60);
+                    return false;
+                }
+            });
+
+
+            mMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
+                @Override
+                public void onMapClick(LatLng latLng) {
+                    mRecyclerView.setPadding(0, 0, 0, 0);
+                }
+            });
+
+            mMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
+                @Override
+                public void onInfoWindowClick(Marker marker) {
+                        /*getEventData((String) marker.getTag(), new FireStoreEventsListeners() {
+                            @Override
+                            public void onDataUpdate(Evenement e) {
+                                InfosEvenementsActivity.EVENT_LOAD = e;
+                                startActivity(new Intent(getContext(), InfosEvenementsActivity.class));
+                            }
+                        });*/
+                }
+            });
+        }
+    }
+
+    private class EventViewHolder extends RecyclerView.ViewHolder {
+
+        public CardView mCardView;
+        public ImageView mImageView;
+        public TextView mTitle;
+        public TextView mDate;
+        public TextView mTime;
+        public TextView mVille;
+        public TextView mDescription;
+        public TextView mProprietaire;
+
+        public EventViewHolder(@NonNull View itemView) {
+            super(itemView);
+            mCardView= itemView.findViewById(R.id.cardViewEvent);
+            mImageView = itemView.findViewById(R.id.imageUser1);
+            mTitle = itemView.findViewById(R.id.title1);
+            mDate = itemView.findViewById(R.id.date1);
+            mTime = itemView.findViewById(R.id.time1);
+            mVille = itemView.findViewById(R.id.ville1);
+            mDescription = itemView.findViewById(R.id.description1);
+            mProprietaire = itemView.findViewById(R.id.owner1);
+
+        }
+    }
+
+
+        private void initGoogleMap(Bundle savedInstanceState) {
+            Bundle mapViewBundle = null;
+            if (savedInstanceState != null) {
+                mapViewBundle = savedInstanceState.getBundle(MAPVIEW_BUNDLE_KEY);
+            }
+
+            mMapView.onCreate(mapViewBundle);
+
+            mMapView.getMapAsync(this);
+
+        }
+
+        @Override
+        public void onSaveInstanceState(Bundle outState) {
+
+            super.onSaveInstanceState(outState);
+            Bundle mapViewBundel = outState.getBundle(MAPVIEW_BUNDLE_KEY);
+            if (mapViewBundel == null) {
+                mapViewBundel = new Bundle();
+                outState.putBundle(MAPVIEW_BUNDLE_KEY, mapViewBundel);
+            }
+        }
+
+        @Override
+        public void onStart() {
+            super.onStart();
+            mMapView.onStart();
+        }
+
+        @Override
+        public void onStop() {
+            mMapView.onStop();
+            super.onStop();
+        }
+
+        @RequiresApi(api = Build.VERSION_CODES.M)
+        @Override
+        public void onMapReady(GoogleMap googleMap) {
+            mMap = googleMap;
+            updateMap();
+            if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION)
+                    != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getActivity(),
+                    Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                getActivity().requestPermissions(new String[]{Manifest.permission.ACCESS_COARSE_LOCATION}, 0);
+                getActivity().requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 0);
+                return;
+            }
+            mMap.setMyLocationEnabled(true);
+        }
+
+        @RequiresApi(api = Build.VERSION_CODES.M)
+        public void updateMap() {
+            if (mMap != null) {
+                mMap.clear();
+
+                Log.w("Map", "LatLng : " + USER_LATLNG);
+
+                if (targetZoom == null) {
+                    mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(USER_LATLNG, 13));
+                } else {
+                    mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(targetZoom, 13));
+                }
+
+                itemEvents.clear();
+
+                float[] results = new float[1];
+
+           /* if(USER.get_register_events() != null) {
                 for (int i = 0; i < USER.get_register_events().size(); i++) {
                     getEventData(USER.get_register_events().get(i).getId(), new FireStoreEventsListeners() {
                         @Override
@@ -191,96 +353,43 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                     });
                 }
             }*/
-        }
-    }
-
-
-
-    @Override
-    public void onPause(){
-        mMapView.onPause();
-        super.onPause();
-    }
-
-    @Override
-    public void onLowMemory(){
-        mMapView.onLowMemory();
-        super.onLowMemory();
-    }
-
-    private BitmapDescriptor getEventColor(Evenement e) {
-        BitmapDescriptor couleur;
-        if(e.getVisibility().equals(Visibility.PRIVATE)) {
-            if (e.getOwnerDoc().equals(USER_REFERENCE)) {
-                couleur = (BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));
-            } else if(e.getRegister_users().contains(USER_REFERENCE)){
-                couleur = (BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE));
-            }else{
-                couleur = null;
-            }
-        }else{
-            if (e.getOwnerDoc().equals(USER_REFERENCE)) {
-                couleur = (BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));
-            }else{
-                couleur = (BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));
             }
         }
 
-        return couleur;
-    }
 
+        @Override
+        public void onPause() {
+            mMapView.onPause();
+            super.onPause();
+        }
 
-    //@Override
-    public void onUpdateAdapter() {
-            //mAdapterEvent = new ItemEventAdapter(itemEvents);
+        @Override
+        public void onLowMemory() {
+            mMapView.onLowMemory();
+            super.onLowMemory();
+        }
 
-            mLayoutManagerEvent = new LinearLayoutManager(
-                    rootView.getContext(),
-                    LinearLayoutManager.HORIZONTAL,
-                    false);
-            mRecyclerViewEvent.setLayoutManager(mLayoutManagerEvent);
-            //mRecyclerViewEvent.setAdapter(mAdapterEvent);
-
-            if(mMap != null) {
-                mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
-                    @Override
-                    public boolean onMarkerClick(Marker marker) {
-                        mRecyclerViewEvent.setPadding(0, 0, 0, 60);
-                        return false;
-                    }
-                });
-
-
-                mMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
-                    @Override
-                    public void onMapClick(LatLng latLng) {
-                        mRecyclerViewEvent.setPadding(0, 0, 0, 0);
-                    }
-                });
-
-                mMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
-                    @Override
-                    public void onInfoWindowClick(Marker marker) {
-                        /*getEventData((String) marker.getTag(), new FireStoreEventsListeners() {
-                            @Override
-                            public void onDataUpdate(Evenement e) {
-                                InfosEvenementsActivity.EVENT_LOAD = e;
-                                startActivity(new Intent(getContext(), InfosEvenementsActivity.class));
-                            }
-                        });*/
-                    }
-                });
-            }
-
-            /*mAdapterEvent.setOnItemClickListener(new ItemEventAdapter.OnItemClickListener() {
-                @Override
-                public void onAddClick(int position) {
-                    mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(itemEvents.get(position).getLocation().getLatitude(), itemEvents.get(position).getLocation().getLongitude()), 13));
+        private BitmapDescriptor getEventColor(Evenement e) {
+            BitmapDescriptor couleur;
+            if (e.getVisibility().equals(Visibility.PRIVATE)) {
+                if (e.getOwnerDoc().equals(USER_REFERENCE)) {
+                    couleur = (BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));
+                } else if (e.getRegister_users().contains(USER_REFERENCE)) {
+                    couleur = (BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE));
+                } else {
+                    couleur = null;
                 }
-            });*/
+            } else {
+                if (e.getOwnerDoc().equals(USER_REFERENCE)) {
+                    couleur = (BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));
+                } else {
+                    couleur = (BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));
+                }
+            }
+
+            return couleur;
+        }
 
 
-        mRecyclerViewEvent.setVisibility(View.VISIBLE);
-        progressBar.setVisibility(View.GONE);
-    }
+
 }

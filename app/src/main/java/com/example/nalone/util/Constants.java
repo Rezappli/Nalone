@@ -8,8 +8,7 @@ import androidx.annotation.NonNull;
 
 import com.example.nalone.Evenement;
 import com.example.nalone.User;
-import com.example.nalone.listeners.FireStoreEventsListeners;
-import com.example.nalone.listeners.FireStoreUsersListeners;
+
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;

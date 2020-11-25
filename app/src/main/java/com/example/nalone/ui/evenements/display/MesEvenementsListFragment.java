@@ -8,8 +8,10 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -21,9 +23,16 @@ import com.example.nalone.Evenement;
 import com.example.nalone.R;
 import com.example.nalone.Visibility;
 import com.example.nalone.ui.evenements.CreateEventFragment;
+import com.example.nalone.ui.evenements.EvenementsFragment;
+import com.example.nalone.util.Constants;
+import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
+import com.firebase.ui.firestore.FirestoreRecyclerOptions;
+import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
@@ -31,6 +40,7 @@ import com.google.firebase.firestore.QuerySnapshot;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
+import static com.example.nalone.util.Constants.USER_ID;
 import static com.example.nalone.util.Constants.USER_REFERENCE;
 import static com.example.nalone.util.Constants.mStoreBase;
 
@@ -38,11 +48,6 @@ import static com.example.nalone.util.Constants.mStoreBase;
 public class MesEvenementsListFragment extends Fragment {
 
     private View rootView;
-    private RecyclerView mRecyclerViewEvent;
-    private RecyclerView.LayoutManager mLayoutManagerMesEvent;
-
-    private RecyclerView mRecyclerViewInscrit;
-    private RecyclerView.LayoutManager mLayoutManagerInscrit;
 
     public static String nameEvent;
     public static String cityEdit;
@@ -55,6 +60,9 @@ public class MesEvenementsListFragment extends Fragment {
     private LinearLayout linearSansEvent;
     private ImageView addEvent;
 
+    private RecyclerView mRecyclerView;
+    private FirestoreRecyclerAdapter adapter;
+
     private ArrayList<Evenement> itemEvents = new ArrayList<>();
 
     public MesEvenementsListFragment() {
@@ -66,9 +74,8 @@ public class MesEvenementsListFragment extends Fragment {
                              Bundle savedInstanceState) {
         rootView = inflater.inflate(R.layout.fragment_mes_evenements_lits, container, false);
 
-
         linearSansEvent = rootView.findViewById(R.id.linearSansEvent);
-        mRecyclerViewEvent = rootView.findViewById(R.id.recyclerViewMesEventList);
+        mRecyclerView = rootView.findViewById(R.id.recyclerViewMesEventList);
         addEvent = rootView.findViewById(R.id.create_event_button);
         SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yy");
         addEvent.setOnClickListener(new View.OnClickListener() {
@@ -80,9 +87,146 @@ public class MesEvenementsListFragment extends Fragment {
 
 
 
-        updateEvents();
+        adapterEvents();
 
         return rootView;
+    }
+
+    private void adapterEvents() {
+        DocumentReference ref = mStoreBase.document("users/"+USER_ID);
+        Query query = mStoreBase.collection("events").whereEqualTo("ownerDoc", ref);
+        FirestoreRecyclerOptions<Evenement> options = new FirestoreRecyclerOptions.Builder<Evenement>().setQuery(query, Evenement.class).build();
+
+        adapter = new FirestoreRecyclerAdapter<Evenement, EventViewHolder>(options) {
+            @NonNull
+            @Override
+            public EventViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+                View view= LayoutInflater.from(parent.getContext()).inflate(R.layout.item_mes_evenements_list,parent,false);
+                return new EventViewHolder(view);
+            }
+
+            @Override
+            protected void onBindViewHolder(@NonNull final EventViewHolder holder, int i, @NonNull final Evenement e) {
+                final Evenement event = e;
+
+                holder.mImageView.setImageResource(e.getImage());
+                holder.mTitle.setText((e.getName()));
+                holder.mDate.setText((e.getDate().toDate().toString()));
+                holder.mVille.setText((e.getCity()));
+                holder.mDescription.setText((e.getDescription()));
+                holder.mProprietaire.setText(e.getOwner());
+
+                holder.mImageViewDelete.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Constants.targetZoom = new LatLng(event.getLocation().getLatitude(), event.getLocation().getLongitude());
+                        EvenementsFragment.viewPager.setCurrentItem(0);
+                    }
+                });
+
+                holder.mImageViewDisplay.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+
+                    }
+                });
+
+                holder.mImageViewEdit.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+
+                    }
+                });
+
+               /* if(e.getImage_url() != null) {
+                    if(!Cache.fileExists(e.getUid())) {
+                        StorageReference imgRef = mStore.getReference("groups/" + g.getUid());
+                        if (imgRef != null) {
+                            imgRef.getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
+                                @Override
+                                public void onComplete(@NonNull Task<Uri> task) {
+                                    if (task.isSuccessful()) {
+                                        Uri img = task.getResult();
+                                        if (img != null) {
+                                            Cache.saveUriFile(g.getUid(), img);
+                                            g.setImage_url(Cache.getImageDate(g.getUid()));
+                                            mStoreBase.collection("groups").document(g.getUid()).set(g);
+                                            Glide.with(getContext()).load(img).fitCenter().centerCrop().into(userViewHolder.imageGroup);
+                                        }
+                                    }
+                                }
+                            });
+                        }
+                    }else{
+                        Uri imgCache = Cache.getUriFromUid(g.getUid());
+                        if(Cache.getImageDate(g.getUid()).equalsIgnoreCase(g.getImage_url())) {
+                            Glide.with(getContext()).load(imgCache).fitCenter().centerCrop().into(userViewHolder.imageGroup);
+                        }else{
+                            StorageReference imgRef = mStore.getReference("groups/" + g.getUid());
+                            if (imgRef != null) {
+                                imgRef.getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<Uri> task) {
+                                        if (task.isSuccessful()) {
+                                            Uri img = task.getResult();
+                                            if (img != null) {
+                                                Cache.saveUriFile(g.getUid(), img);
+                                                g.setImage_url(Cache.getImageDate(g.getUid()));
+                                                mStoreBase.collection("groups").document(g.getUid()).set(g);
+                                                Glide.with(getContext()).load(img).fitCenter().centerCrop().into(userViewHolder.imageGroup);
+                                            }
+                                        }
+                                    }
+                                });
+                            }
+                        }
+                    }
+                }
+                */
+            }
+        };
+        //mRecyclerView.setHasFixedSize(true);
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext(),LinearLayoutManager.HORIZONTAL, false));
+
+        mRecyclerView.setAdapter(adapter);
+        adapter.startListening();
+
+        Log.w("count", adapter.getItemCount() + "");
+        /*if(adapter.getItemCount() == 0){
+            linearSansEvent.setVisibility(View.VISIBLE);
+        }else{
+            linearSansEvent.setVisibility(View.GONE);
+        }*/
+
+    }
+
+
+    private class EventViewHolder extends RecyclerView.ViewHolder {
+
+        public ImageView mImageView, mImageViewEdit, mImageViewDisplay, mImageViewDelete;
+        public TextView mTitle;
+        public TextView mDate;
+        public TextView mTime;
+        public TextView mVille;
+        public TextView mDescription;
+        public TextView mProprietaire;
+
+
+        public EventViewHolder(@NonNull View itemView) {
+            super(itemView);
+            mImageView = itemView.findViewById(R.id.imageOwnerEventList);
+            mTitle = itemView.findViewById(R.id.titleEventList);
+            mDate = itemView.findViewById(R.id.dateEventList);
+            mTime = itemView.findViewById(R.id.timeEventList);
+            mVille = itemView.findViewById(R.id.villeEventList);
+            mDescription = itemView.findViewById(R.id.descriptionEventList);
+            mProprietaire = itemView.findViewById(R.id.ownerEventList);
+            mImageViewDelete = itemView.findViewById(R.id.imageViewDeleteMesEvent);
+            mImageViewEdit = itemView.findViewById(R.id.imageViewEdit);
+            mImageViewDisplay = itemView.findViewById(R.id.imageViewAfficher);
+
+
+        }
     }
 
     private void updateEvents() {

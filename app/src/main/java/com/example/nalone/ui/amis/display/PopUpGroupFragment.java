@@ -87,7 +87,6 @@ public class PopUpGroupFragment extends Fragment {
         textViewNbMembers = root.findViewById(R.id.groupNbMembers);
         buttonPlus = root.findViewById(R.id.buttonPlus);
         buttonBack.setVisibility(View.VISIBLE);
-        relativeLayout = root.findViewById(R.id.relativeImages);
         fenetrePrincipal = root.findViewById(R.id.fenetrePrincipal);
         fenetrePrincipal.setVisibility(View.GONE);
 

@@ -3,13 +3,20 @@ package com.example.nalone.ui.evenements.display;
 import android.content.Intent;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
+import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.example.nalone.Evenement;
 import com.example.nalone.InfosEvenementsActivity;
@@ -18,10 +25,19 @@ import com.example.nalone.items.ItemFiltre;
 import com.example.nalone.items.ItemImagePerson;
 import com.example.nalone.ui.evenements.EvenementsFragment;
 import com.example.nalone.util.Constants;
+import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
+import com.firebase.ui.firestore.FirestoreRecyclerOptions;
+import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.Query;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static com.example.nalone.util.Constants.USER_ID;
+import static com.example.nalone.util.Constants.mStoreBase;
 
 public class EvenementsListFragment extends Fragment {
 
@@ -35,8 +51,9 @@ public class EvenementsListFragment extends Fragment {
     private RecyclerView mRecyclerViewFiltre;
     private RecyclerView.LayoutManager mLayoutManagerFiltre;
 
-    private RecyclerView mRecyclerViewInscrit;
-    private RecyclerView.LayoutManager mLayoutManagerInscrit;
+    private RecyclerView mRecyclerView;
+    private FirestoreRecyclerAdapter adapter;
+    private LinearLayout linearSansEvent;
 
 
     public EvenementsListFragment() {
@@ -60,6 +77,8 @@ public class EvenementsListFragment extends Fragment {
         filtres.add(new ItemFiltre("Informatique"));
         filtres.add(new ItemFiltre("Manifestation"));
 
+        linearSansEvent = rootView.findViewById(R.id.linearSansEvent);
+
         //mAdapterFiltre = new ItemFiltreAdapter(filtres);
 
         mRecyclerViewFiltre = rootView.findViewById(R.id.recyclerViewFiltre);
@@ -70,9 +89,137 @@ public class EvenementsListFragment extends Fragment {
         mRecyclerViewFiltre.setLayoutManager(mLayoutManagerFiltre);
         //mRecyclerViewFiltre.setAdapter(mAdapterFiltre);
 
-        updateItems();
+        mRecyclerView = rootView.findViewById(R.id.recyclerViewEventList);
+        adapterEvents();
 
         return rootView;
+    }
+
+    private void adapterEvents() {
+        DocumentReference ref = mStoreBase.document("users/"+USER_ID);
+        Query query = mStoreBase.collection("events").whereNotEqualTo("ownerDoc", ref);
+        FirestoreRecyclerOptions<Evenement> options = new FirestoreRecyclerOptions.Builder<Evenement>().setQuery(query, Evenement.class).build();
+
+        adapter = new FirestoreRecyclerAdapter<Evenement, EventViewHolder>(options) {
+            @NonNull
+            @Override
+            public EventViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+                View view= LayoutInflater.from(parent.getContext()).inflate(R.layout.item_evenements_list,parent,false);
+                return new EventViewHolder(view);
+            }
+
+            @Override
+            protected void onBindViewHolder(@NonNull final EventViewHolder holder, int i, @NonNull final Evenement e) {
+                final Evenement event = e;
+
+                holder.mImageView.setImageResource(e.getImage());
+                holder.mTitle.setText((e.getName()));
+                holder.mDate.setText((e.getDate().toDate().toString()));
+                holder.mVille.setText((e.getCity()));
+                holder.mDescription.setText((e.getDescription()));
+                holder.mProprietaire.setText(e.getOwner());
+
+                holder.mAfficher.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Constants.targetZoom = new LatLng(event.getLocation().getLatitude(), event.getLocation().getLongitude());
+                        EvenementsFragment.viewPager.setCurrentItem(0);
+                    }
+                });
+
+                holder.mInscrire.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+
+                    }
+                });
+
+               /* if(e.getImage_url() != null) {
+                    if(!Cache.fileExists(e.getUid())) {
+                        StorageReference imgRef = mStore.getReference("groups/" + g.getUid());
+                        if (imgRef != null) {
+                            imgRef.getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
+                                @Override
+                                public void onComplete(@NonNull Task<Uri> task) {
+                                    if (task.isSuccessful()) {
+                                        Uri img = task.getResult();
+                                        if (img != null) {
+                                            Cache.saveUriFile(g.getUid(), img);
+                                            g.setImage_url(Cache.getImageDate(g.getUid()));
+                                            mStoreBase.collection("groups").document(g.getUid()).set(g);
+                                            Glide.with(getContext()).load(img).fitCenter().centerCrop().into(userViewHolder.imageGroup);
+                                        }
+                                    }
+                                }
+                            });
+                        }
+                    }else{
+                        Uri imgCache = Cache.getUriFromUid(g.getUid());
+                        if(Cache.getImageDate(g.getUid()).equalsIgnoreCase(g.getImage_url())) {
+                            Glide.with(getContext()).load(imgCache).fitCenter().centerCrop().into(userViewHolder.imageGroup);
+                        }else{
+                            StorageReference imgRef = mStore.getReference("groups/" + g.getUid());
+                            if (imgRef != null) {
+                                imgRef.getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<Uri> task) {
+                                        if (task.isSuccessful()) {
+                                            Uri img = task.getResult();
+                                            if (img != null) {
+                                                Cache.saveUriFile(g.getUid(), img);
+                                                g.setImage_url(Cache.getImageDate(g.getUid()));
+                                                mStoreBase.collection("groups").document(g.getUid()).set(g);
+                                                Glide.with(getContext()).load(img).fitCenter().centerCrop().into(userViewHolder.imageGroup);
+                                            }
+                                        }
+                                    }
+                                });
+                            }
+                        }
+                    }
+                }
+                */
+            }
+        };
+        //mRecyclerView.setHasFixedSize(true);
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext(),LinearLayoutManager.HORIZONTAL, false));
+
+        mRecyclerView.setAdapter(adapter);
+        adapter.startListening();
+
+        Log.w("count", adapter.getItemCount() + "");
+        /*if(adapter.getItemCount() == 0){
+            linearSansEvent.setVisibility(View.VISIBLE);
+        }else{
+            linearSansEvent.setVisibility(View.GONE);
+        }*/
+        }
+
+
+    private class EventViewHolder extends RecyclerView.ViewHolder {
+
+        public ImageView mImageView;
+        public TextView mTitle;
+        public TextView mDate;
+        public TextView mTime;
+        public TextView mVille;
+        public TextView mDescription;
+        public TextView mProprietaire;
+        public Button mInscrire, mAfficher;
+
+        public EventViewHolder(@NonNull View itemView) {
+            super(itemView);
+            mImageView = itemView.findViewById(R.id.imageOwnerEventList);
+            mTitle = itemView.findViewById(R.id.titleEventList);
+            mDate = itemView.findViewById(R.id.dateEventList);
+            mTime = itemView.findViewById(R.id.timeEventList);
+            mVille = itemView.findViewById(R.id.villeEventList);
+            mDescription = itemView.findViewById(R.id.descriptionEventList);
+            mProprietaire = itemView.findViewById(R.id.ownerEventList);
+            mAfficher = itemView.findViewById(R.id.buttonAfficherEventList);
+            mInscrire = itemView.findViewById(R.id.buttonInscrirEventList);
+
+        }
     }
 
     private void updateItems(){
@@ -104,12 +251,12 @@ public class EvenementsListFragment extends Fragment {
 
         //mAdapterEventList = new ItemEventListAdapter(itemEvents);
 
-        mRecyclerViewEvent = rootView.findViewById(R.id.recyclerViewEventList);
+        /*mRecyclerViewEvent = rootView.findViewById(R.id.recyclerViewEventList);
         mLayoutManagerEvent = new LinearLayoutManager(
                 rootView.getContext(),
                 LinearLayoutManager.VERTICAL,
                 false);
-        mRecyclerViewEvent.setLayoutManager(mLayoutManagerEvent);
+        mRecyclerViewEvent.setLayoutManager(mLayoutManagerEvent);*/
         //mRecyclerViewEvent.setAdapter(mAdapterEventList);
 
         /*mAdapterEventList.setOnItemClickListener(new ItemEventListAdapter.OnItemClickListener() {
