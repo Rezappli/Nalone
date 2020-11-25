@@ -63,6 +63,8 @@ public class MesEvenementsListFragment extends Fragment {
     private RecyclerView mRecyclerView;
     private FirestoreRecyclerAdapter adapter;
 
+    private int iterator = 0;
+
     private ArrayList<Evenement> itemEvents = new ArrayList<>();
 
     public MesEvenementsListFragment() {
@@ -86,15 +88,33 @@ public class MesEvenementsListFragment extends Fragment {
         });
 
 
+        DocumentReference ref = mStoreBase.document("users/"+USER_ID);
+        mStoreBase.collection("events").whereEqualTo("ownerDoc", ref)
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            for (QueryDocumentSnapshot document : task.getResult()) {
+                                iterator++;
+                            }
+                            if(iterator == 0){
+                                linearSansEvent.setVisibility(View.VISIBLE);
+                            }else{
+                                linearSansEvent.setVisibility(View.GONE);
+                            }
+                            adapterEvents();
 
-        adapterEvents();
+                        }
+                    }
+                });
 
         return rootView;
     }
 
     private void adapterEvents() {
         DocumentReference ref = mStoreBase.document("users/"+USER_ID);
-        Query query = mStoreBase.collection("events").whereEqualTo("ownerDoc", ref);
+        Query query = mStoreBase.collection("events");//.whereEqualTo("ownerDoc", ref);
         FirestoreRecyclerOptions<Evenement> options = new FirestoreRecyclerOptions.Builder<Evenement>().setQuery(query, Evenement.class).build();
 
         adapter = new FirestoreRecyclerAdapter<Evenement, EventViewHolder>(options) {
@@ -119,15 +139,31 @@ public class MesEvenementsListFragment extends Fragment {
                 holder.mImageViewDelete.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        Constants.targetZoom = new LatLng(event.getLocation().getLatitude(), event.getLocation().getLongitude());
-                        EvenementsFragment.viewPager.setCurrentItem(0);
+                        final AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+                        builder.setMessage("Vous êtes sur le point de supprimer un évènement ! Cette action est irréversible ! Voulez-vous continuez ?")
+                                .setPositiveButton("Oui", new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int id) {
+                                        mStoreBase.collection("event").document(event.getUid()).delete();
+                                        Toast.makeText(getContext(), "Vous avez supprimé(e) un évènement !", Toast.LENGTH_SHORT).show();
+
+                                    }
+                                })
+                                .setNegativeButton("Non", new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int id) {
+                                        dialog.dismiss();
+                                    }
+                                });
+                        builder.create();
+                        builder.show();
+
                     }
                 });
 
                 holder.mImageViewDisplay.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-
+                        Constants.targetZoom = new LatLng(event.getLocation().getLatitude(), event.getLocation().getLongitude());
+                        EvenementsFragment.viewPager.setCurrentItem(0);
                     }
                 });
 
@@ -191,12 +227,6 @@ public class MesEvenementsListFragment extends Fragment {
         mRecyclerView.setAdapter(adapter);
         adapter.startListening();
 
-        Log.w("count", adapter.getItemCount() + "");
-        /*if(adapter.getItemCount() == 0){
-            linearSansEvent.setVisibility(View.VISIBLE);
-        }else{
-            linearSansEvent.setVisibility(View.GONE);
-        }*/
 
     }
 

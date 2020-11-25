@@ -21,6 +21,7 @@ import android.widget.TextView;
 import com.example.nalone.Evenement;
 import com.example.nalone.InfosEvenementsActivity;
 import com.example.nalone.R;
+import com.example.nalone.adapter.ItemFiltreAdapter;
 import com.example.nalone.items.ItemFiltre;
 import com.example.nalone.items.ItemImagePerson;
 import com.example.nalone.ui.evenements.EvenementsFragment;
@@ -30,8 +31,12 @@ import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -44,8 +49,6 @@ public class EvenementsListFragment extends Fragment {
     private ArrayList<Evenement> itemEvents = new ArrayList<>();
 
     private View rootView;
-    private RecyclerView mRecyclerViewEvent;
-    private RecyclerView.LayoutManager mLayoutManagerEvent;
 
     private final List<ItemFiltre> filtres = new ArrayList<>();
     private RecyclerView mRecyclerViewFiltre;
@@ -54,6 +57,9 @@ public class EvenementsListFragment extends Fragment {
     private RecyclerView mRecyclerView;
     private FirestoreRecyclerAdapter adapter;
     private LinearLayout linearSansEvent;
+    private ItemFiltreAdapter mAdapterFiltre;
+
+    private int iterator = 0;
 
 
     public EvenementsListFragment() {
@@ -68,6 +74,7 @@ public class EvenementsListFragment extends Fragment {
 
         final List<ItemImagePerson> membres_inscrits = new ArrayList<>();
 
+
         filtres.add(new ItemFiltre("Art"));
         filtres.add(new ItemFiltre("Sport"));
         filtres.add(new ItemFiltre("Musique"));
@@ -77,9 +84,31 @@ public class EvenementsListFragment extends Fragment {
         filtres.add(new ItemFiltre("Informatique"));
         filtres.add(new ItemFiltre("Manifestation"));
 
+        DocumentReference ref = mStoreBase.document("users/"+USER_ID);
+        mStoreBase.collection("events").whereNotEqualTo("ownerDoc", ref)
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            for (QueryDocumentSnapshot document : task.getResult()) {
+                               iterator++;
+                            }
+                            adapterEvents();
+                            if(iterator == 0){
+                                linearSansEvent.setVisibility(View.VISIBLE);
+                            }else{
+                                linearSansEvent.setVisibility(View.GONE);
+                            }
+                        }
+                    }
+                });
+
         linearSansEvent = rootView.findViewById(R.id.linearSansEvent);
 
-        //mAdapterFiltre = new ItemFiltreAdapter(filtres);
+        linearSansEvent.setVisibility(View.GONE);
+
+        mAdapterFiltre = new ItemFiltreAdapter(filtres);
 
         mRecyclerViewFiltre = rootView.findViewById(R.id.recyclerViewFiltre);
         mLayoutManagerFiltre = new LinearLayoutManager(
@@ -87,10 +116,10 @@ public class EvenementsListFragment extends Fragment {
                 LinearLayoutManager.HORIZONTAL,
                 false);
         mRecyclerViewFiltre.setLayoutManager(mLayoutManagerFiltre);
-        //mRecyclerViewFiltre.setAdapter(mAdapterFiltre);
+        mRecyclerViewFiltre.setAdapter(mAdapterFiltre);
 
         mRecyclerView = rootView.findViewById(R.id.recyclerViewEventList);
-        adapterEvents();
+
 
         return rootView;
     }
@@ -111,13 +140,13 @@ public class EvenementsListFragment extends Fragment {
             @Override
             protected void onBindViewHolder(@NonNull final EventViewHolder holder, int i, @NonNull final Evenement e) {
                 final Evenement event = e;
-
                 holder.mImageView.setImageResource(e.getImage());
                 holder.mTitle.setText((e.getName()));
                 holder.mDate.setText((e.getDate().toDate().toString()));
                 holder.mVille.setText((e.getCity()));
                 holder.mDescription.setText((e.getDescription()));
                 holder.mProprietaire.setText(e.getOwner());
+
 
                 holder.mAfficher.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -182,17 +211,13 @@ public class EvenementsListFragment extends Fragment {
             }
         };
         //mRecyclerView.setHasFixedSize(true);
-        mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext(),LinearLayoutManager.HORIZONTAL, false));
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
         mRecyclerView.setAdapter(adapter);
         adapter.startListening();
 
-        Log.w("count", adapter.getItemCount() + "");
-        /*if(adapter.getItemCount() == 0){
-            linearSansEvent.setVisibility(View.VISIBLE);
-        }else{
-            linearSansEvent.setVisibility(View.GONE);
-        }*/
+        Log.w("count", iterator + "");
+
         }
 
 
