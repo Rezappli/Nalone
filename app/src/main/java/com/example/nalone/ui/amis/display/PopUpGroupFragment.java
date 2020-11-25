@@ -64,9 +64,6 @@ public class PopUpGroupFragment extends Fragment {
     private List<String> friends;
     RelativeLayout relativeLayout;
 
-    ImageView img1,img2,img3,img4,img5,img6;
-    CardView c1,c2,c3,c4,c5,c6;
-
     FrameLayout fenetrePrincipal;
     View root;
     private boolean buttonQuitter;

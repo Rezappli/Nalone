@@ -6,6 +6,7 @@ import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -15,6 +16,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.example.nalone.ConnectionService;
 import com.example.nalone.HomeActivity;
 import com.example.nalone.MainActivity;
+import com.example.nalone.MyFirebaseInstance;
 import com.example.nalone.notification.Notification;
 import com.example.nalone.R;
 import com.example.nalone.User;
@@ -28,6 +30,7 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.messaging.FirebaseMessaging;
 
 import static com.example.nalone.util.Constants.USER_ID;
 import static com.example.nalone.util.Constants.USER_LATLNG;
@@ -37,6 +40,7 @@ import static com.example.nalone.util.Constants.USER;
 import static com.example.nalone.util.Constants.currentUser;
 import static com.example.nalone.util.Constants.heightScreen;
 import static com.example.nalone.util.Constants.mAuth;
+import static com.example.nalone.util.Constants.mMessaging;
 import static com.example.nalone.util.Constants.mStore;
 import static com.example.nalone.util.Constants.mStoreBase;
 import static com.example.nalone.util.Constants.range;
@@ -87,6 +91,7 @@ public class SplashActivity extends AppCompatActivity {
                                             USER = document.toObject(User.class);
                                         }
                                         USER_ID = USER.getUid();
+                                        MyFirebaseInstance.user_id = USER_ID;
                                         USER_STORAGE_REF = mStore.getReference("users").child(USER.getUid());
                                         Log.w("SPLASH", "City : " + USER.getCity());
                                         USER_LATLNG = new LatLng(USER.getLocation().getLatitude(), USER.getLocation().getLongitude());

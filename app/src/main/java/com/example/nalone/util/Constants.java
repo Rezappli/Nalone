@@ -1,30 +1,18 @@
 package com.example.nalone.util;
 
 import android.app.Application;
-import android.os.Bundle;
-import android.util.Log;
-
-import androidx.annotation.NonNull;
-
-import com.example.nalone.Evenement;
 import com.example.nalone.User;
-
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
 import java.text.DateFormat;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Locale;
 
 public class Constants {
@@ -37,6 +25,8 @@ public class Constants {
 
     public static FirebaseStorage mStore = FirebaseStorage.getInstance();
     public static StorageReference USER_STORAGE_REF;
+
+    public static FirebaseMessaging mMessaging = FirebaseMessaging.getInstance();
 
     public static FirebaseUser currentUser;
 
