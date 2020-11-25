@@ -47,13 +47,6 @@ public class AideFragment extends Fragment {
         // Inflate the layout for this fragment
         View root = inflater.inflate(R.layout.fragment_aide, container, false);
 
-        /*RemoteMessage message = new RemoteMessage.Builder(FCM_Token)
-                .setMessageId(FCM_Token)
-                .addData("title", "test")
-                .addData("content", "mon contenu")
-                .build();
-        mMessaging.send(message);*/
-
         TOPIC = "/topics/"+ USER.getUid(); //topic must match with what the receiver subscribed to
         NOTIFICATION_TITLE = "Test";
         NOTIFICATION_MESSAGE = "Mon message";

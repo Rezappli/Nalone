@@ -237,8 +237,8 @@ public class PopupProfilFragment extends Fragment {
 
         TOPIC = "/topics/"+ USER_LOAD.getUid(); //topic must match with what the receiver subscribed to
         Log.w("TOPIC", "Topic : " + TOPIC);
-        NOTIFICATION_TITLE = "Test";
-        NOTIFICATION_MESSAGE = "Mon message";
+        NOTIFICATION_TITLE = "Toc toc toc...";
+        NOTIFICATION_MESSAGE = USER_LOAD.getFirst_name() + " " + USER_LOAD.getLast_name() + " vient de vous envoyez une demande d'amis !";
 
         JSONObject notification = new JSONObject();
         JSONObject notifcationBody = new JSONObject();
