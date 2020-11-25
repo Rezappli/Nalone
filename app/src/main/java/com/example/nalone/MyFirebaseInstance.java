@@ -50,6 +50,8 @@ public class MyFirebaseInstance extends FirebaseMessagingService {
                 String msg = "subscribe !";
                 if (!task.isSuccessful()) {
                     msg = "unsubscribe";
+                }else{
+                    Log.w(NOTIFICATION_TAG, "Error : "+task.getException().getMessage());
                 }
                 Log.w(NOTIFICATION_TAG, msg + " to : " + user_id);
             }

@@ -5,7 +5,6 @@ import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -28,10 +27,7 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
-import com.google.firebase.messaging.FirebaseMessaging;
-import com.google.firebase.messaging.RemoteMessage;
 
-import static com.example.nalone.util.Constants.FCM_Token;
 import static com.example.nalone.util.Constants.USER_ID;
 import static com.example.nalone.util.Constants.USER_LATLNG;
 import static com.example.nalone.util.Constants.USER_REFERENCE;
@@ -98,7 +94,6 @@ public class SplashActivity extends AppCompatActivity {
                                         USER_REFERENCE = mStoreBase.collection("users").document(USER.getUid());
                                         Log.w("SPLASH", "City : " + USER_LATLNG.toString());
                                         load = true;
-                                        userListener();
                                         startActivity(new Intent(SplashActivity.this, HomeActivity.class));
                                     }else{
                                         load = true;
@@ -121,30 +116,6 @@ public class SplashActivity extends AppCompatActivity {
             load = true;
             startActivity(new Intent(SplashActivity.this, MainActivity.class));
         }
-    }
-
-
-    public void userListener(){
-        FirebaseMessaging.getInstance().getToken()
-                .addOnCompleteListener(new OnCompleteListener<String>() {
-                    @Override
-                    public void onComplete(@NonNull Task<String> task) {
-                        if (!task.isSuccessful()) {
-                            Log.w("FCM", "Fetching FCM registration token failed", task.getException());
-                            return;
-                        }
-
-                        // Get new FCM registration token
-                        String token = task.getResult();
-
-                        // Log and toast
-                        String msg = "Token : " + token;
-                        Log.d("FCM", msg);
-                        Constants.FCM_Token = token;
-
-                        Toast.makeText(SplashActivity.this, msg, Toast.LENGTH_SHORT).show();
-                    }
-                });
     }
 
 
