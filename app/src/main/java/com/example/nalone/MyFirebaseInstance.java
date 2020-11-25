@@ -19,6 +19,7 @@ import androidx.annotation.RequiresApi;
 import androidx.core.app.NotificationCompat;
 
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
@@ -50,8 +51,12 @@ public class MyFirebaseInstance extends FirebaseMessagingService {
                 if (!task.isSuccessful()) {
                     msg = "unsubscribe";
                 }
-                Log.d("Notifications", msg);
-                Log.w("Service", msg + " to : " + user_id);
+                Log.w(NOTIFICATION_TAG, msg + " to : " + user_id);
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Log.w(NOTIFICATION_TAG, "Error " + e.getMessage());
             }
         });
         Log.w(NOTIFICATION_TAG, "Service start");
