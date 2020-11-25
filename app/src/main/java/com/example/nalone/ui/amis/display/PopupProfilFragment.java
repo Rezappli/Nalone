@@ -41,9 +41,7 @@ public class PopupProfilFragment extends Fragment {
     public static User USER_LOAD;
     public static int button = 0;
     private NavController navController;
-
     public static String type;
-
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,

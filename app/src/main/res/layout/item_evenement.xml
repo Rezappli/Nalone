@@ -4,7 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:paddingEnd="10dp">
+    android:paddingStart="5dp"
+    android:paddingEnd="5dp">
 
     <androidx.cardview.widget.CardView
         android:id="@+id/cardViewEvent"
@@ -13,7 +14,7 @@
         android:layout_margin="5dp"
         android:padding="5dp"
         app:cardCornerRadius="10dp"
-        app:cardElevation="3dp"
+        app:cardElevation="0dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
@@ -112,11 +113,13 @@
                     </LinearLayout>
 
                     <androidx.cardview.widget.CardView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
+                        android:id="@+id/backGroundOwner"
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
                         android:layout_gravity="center"
                         android:layout_marginTop="5dp"
-                        app:cardCornerRadius="150dp">
+                        app:cardCornerRadius="150dp"
+                        app:cardElevation="0dp">
 
                         <LinearLayout
                             android:layout_width="match_parent"
@@ -125,8 +128,8 @@
                             android:orientation="vertical">
 
                             <androidx.cardview.widget.CardView
-                                android:layout_width="50dp"
-                                android:layout_height="50dp"
+                                android:layout_width="47dp"
+                                android:layout_height="47dp"
                                 android:layout_gravity="center|clip_vertical"
                                 app:cardCornerRadius="150dp">
 

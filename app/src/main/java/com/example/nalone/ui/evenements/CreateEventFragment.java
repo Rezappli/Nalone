@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.app.Dialog;
+import android.graphics.Color;
 import android.location.Address;
 import android.location.Geocoder;
 import android.net.Uri;
@@ -61,6 +62,7 @@ import java.util.UUID;
 
 import static com.example.nalone.HomeActivity.buttonBack;
 import static com.example.nalone.util.Constants.USER;
+import static com.example.nalone.util.Constants.USER_ID;
 import static com.example.nalone.util.Constants.USER_REFERENCE;
 import static com.example.nalone.util.Constants.mStore;
 import static com.example.nalone.util.Constants.mStoreBase;
@@ -328,6 +330,8 @@ public class CreateEventFragment extends Fragment {
                         initList();
                     }
                 });
+
+
                 if(u.getImage_url() != null) {
                     if(!Cache.fileExists(u.getUid())) {
                         StorageReference imgRef = mStore.getReference("users/" + u.getUid());
@@ -472,6 +476,7 @@ public class CreateEventFragment extends Fragment {
                         evenementAttente.getAddress(), evenementAttente.getCity(), evenementAttente.getVisibility(), USER_REFERENCE, new Timestamp(sdf.parse(event_date.getText().toString()+" "+final_event_time)), new GeoPoint(l.latitude, l.longitude));
 
                 mStoreBase.collection("events").document(e.getUid()).set(e);
+                mStoreBase.collection("users").document(USER_ID).collection("events").document(e.getUid()).set(e);
 
                 for (String user : adds) {
                     Log.d("Ajout", "Ajout de membre dans evenement");

@@ -6,6 +6,7 @@
     <string name="hintConfirmPass"> Confirmer le mot de passe </string>
     <string name="pasInscrit"> Pas encore inscrit ?</string>
     <string name="inscrireButton">S\'inscrire </string>
+    <string name="desinscriptionButton">Se désinscrire </string>
     <string name="buttonConnexion"> Se connecter </string>
     <string name="titleSignUpOne"> Qui êtes-vous ? </string>
     <string name="titleSignUpTwo"> Inscription (2/3) </string>
@@ -107,6 +108,7 @@
     <string name="recherche_utilisateur"> Rechercher des utilisateurs </string>
     <string name="recherche_groupes"> Rechercher des groupes </string>
     <string name="mes_groupes"> Mes groupes </string>
+    <string name="mes_events"> Mes évènements </string>
     <string name="edit_group"> Editer</string>
     <string name="gerer_membres"> Gérer membres</string>
     <string name="delte_group"> Supprimer le groupe </string>

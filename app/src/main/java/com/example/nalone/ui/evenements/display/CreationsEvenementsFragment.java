@@ -9,7 +9,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -18,15 +17,12 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
-import androidx.navigation.NavController;
-import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.nalone.Evenement;
 import com.example.nalone.R;
 import com.example.nalone.User;
-import com.example.nalone.UserFriendData;
 import com.example.nalone.Visibility;
 import com.example.nalone.ui.evenements.CreateEventFragment;
 import com.example.nalone.ui.evenements.EvenementsFragment;
@@ -46,12 +42,11 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.example.nalone.util.Constants.USER;
 import static com.example.nalone.util.Constants.USER_ID;
 import static com.example.nalone.util.Constants.mStoreBase;
 
 
-public class MesEvenementsListFragment extends Fragment {
+public class CreationsEvenementsFragment extends Fragment {
 
     private View rootView;
 
@@ -74,33 +69,15 @@ public class MesEvenementsListFragment extends Fragment {
 
     private ArrayList<Evenement> itemEvents = new ArrayList<>();
 
-    private CardView mesEvents;
-    private NavController navController;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        rootView = inflater.inflate(R.layout.fragment_mes_evenements_list, container, false);
+        rootView = inflater.inflate(R.layout.fragment_creations_evenements, container, false);
 
-        createFragment();
-
-
-
-        return rootView;
-    }
-
-    private void createFragment() {
         linearSansEvent = rootView.findViewById(R.id.linearSansEvent);
         mRecyclerView = rootView.findViewById(R.id.recyclerViewMesEventList);
         addEvent = rootView.findViewById(R.id.create_event_button);
-        mesEvents = rootView.findViewById(R.id.mesEvents);
-        navController = Navigation.findNavController(getActivity(), R.id.nav_host_fragment);
-        mesEvents.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                navController.navigate(R.id.action_navigation_evenements_to_navigation_creations_evenements);
-            }
-        });
         SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yy");
         addEvent.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -109,9 +86,8 @@ public class MesEvenementsListFragment extends Fragment {
             }
         });
 
-
         DocumentReference ref = mStoreBase.document("users/"+USER_ID);
-        mStoreBase.collection("users").document(USER_ID).collection("events").whereNotEqualTo("ownerDoc", ref)
+        mStoreBase.collection("users").document(USER_ID).collection("events").whereEqualTo("ownerDoc", ref)
                 .get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
@@ -145,85 +121,109 @@ public class MesEvenementsListFragment extends Fragment {
                     }
                 });
 
+
+        return rootView;
     }
 
     private void adapterEvents() {
-
-
+        DocumentReference ref = mStoreBase.document("users/"+USER_ID);
+        Query query;
         if(!events.isEmpty()){
-            DocumentReference ref = mStoreBase.document("users/"+USER_ID);
-            Query query = mStoreBase.collection("events").whereIn("uid", events);
-            FirestoreRecyclerOptions<Evenement> options = new FirestoreRecyclerOptions.Builder<Evenement>().setQuery(query, Evenement.class).build();
+            query = mStoreBase.collection("events").whereIn("uid", events);
+        }else{
+            query = mStoreBase.collection("events").whereEqualTo("ownerDoc", ref);
+        }
+        FirestoreRecyclerOptions<Evenement> options = new FirestoreRecyclerOptions.Builder<Evenement>().setQuery(query, Evenement.class).build();
 
-            adapter = new FirestoreRecyclerAdapter<Evenement, EventViewHolder>(options) {
-                @NonNull
-                @Override
-                public EventViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-                    View view= LayoutInflater.from(parent.getContext()).inflate(R.layout.item_evenements_join,parent,false);
-                    return new EventViewHolder(view);
-                }
+        adapter = new FirestoreRecyclerAdapter<Evenement, EventViewHolder>(options) {
+            @NonNull
+            @Override
+            public EventViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+                View view= LayoutInflater.from(parent.getContext()).inflate(R.layout.item_mes_evenements_list,parent,false);
+                return new EventViewHolder(view);
+            }
 
-                @Override
-                protected void onBindViewHolder(@NonNull final EventViewHolder holder, int i, @NonNull final Evenement e) {
-                    final Evenement event = e;
-                    holder.mImageView.setImageResource(e.getImage());
-                    holder.mTitle.setText((e.getName()));
-                    holder.mDate.setText((e.getDate().toDate().toString()));
-                    holder.mVille.setText((e.getCity()));
-                    holder.mDescription.setText((e.getDescription()));
-                    holder.mProprietaire.setText(e.getOwner());
+            @Override
+            protected void onBindViewHolder(@NonNull final EventViewHolder holder, int i, @NonNull final Evenement e) {
+                final Evenement event = e;
 
-                    mStoreBase.collection("users").whereEqualTo("uid", e.getOwnerDoc().getId())
-                            .get()
-                            .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                                @Override
-                                public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                                    if (task.isSuccessful()) {
-                                        for (QueryDocumentSnapshot document : task.getResult()) {
-                                            User u = document.toObject(User.class);
-                                            if(u.getCursus().equalsIgnoreCase("Informatique")){
-                                                holder.mCarwViewOwner.setCardBackgroundColor(Color.RED);
-                                            }
+                holder.mImageView.setImageResource(e.getImage());
+                holder.mTitle.setText((e.getName()));
+                holder.mDate.setText((e.getDate().toDate().toString()));
+                holder.mVille.setText((e.getCity()));
+                holder.mDescription.setText((e.getDescription()));
+                holder.mProprietaire.setText(e.getOwner());
 
-                                            if(u.getCursus().equalsIgnoreCase("TC")){
-                                                holder.mCarwViewOwner.setCardBackgroundColor(Color.parseColor("#00E9FD"));
-                                            }
+                mStoreBase.collection("users").whereEqualTo("uid", e.getOwnerDoc().getId())
+                        .get()
+                        .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                            @Override
+                            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                if (task.isSuccessful()) {
+                                    for (QueryDocumentSnapshot document : task.getResult()) {
+                                        User u = document.toObject(User.class);
+                                        if(u.getCursus().equalsIgnoreCase("Informatique")){
+                                            holder.mCarwViewOwner.setCardBackgroundColor(Color.RED);
+                                        }
 
-                                            if(u.getCursus().equalsIgnoreCase("MMI")){
-                                                holder.mCarwViewOwner.setCardBackgroundColor(Color.parseColor("#FF1EED"));
-                                            }
+                                        if(u.getCursus().equalsIgnoreCase("TC")){
+                                            holder.mCarwViewOwner.setCardBackgroundColor(Color.parseColor("#00E9FD"));
+                                        }
 
-                                            if(u.getCursus().equalsIgnoreCase("GB")){
-                                                holder.mCarwViewOwner.setCardBackgroundColor(Color.parseColor("#41EC57"));
-                                            }
+                                        if(u.getCursus().equalsIgnoreCase("MMI")){
+                                            holder.mCarwViewOwner.setCardBackgroundColor(Color.parseColor("#FF1EED"));
+                                        }
 
-                                            if(u.getCursus().equalsIgnoreCase("LP")){
-                                                holder.mCarwViewOwner.setCardBackgroundColor((Color.parseColor("#EC9538")));
-                                            }
+                                        if(u.getCursus().equalsIgnoreCase("GB")){
+                                            holder.mCarwViewOwner.setCardBackgroundColor(Color.parseColor("#41EC57"));
+                                        }
 
+                                        if(u.getCursus().equalsIgnoreCase("LP")){
+                                            holder.mCarwViewOwner.setCardBackgroundColor((Color.parseColor("#EC9538")));
                                         }
 
                                     }
-                                }});
+
+                                }
+                            }});
 
 
-                    holder.mAfficher.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            Constants.targetZoom = new LatLng(event.getLocation().getLatitude(), event.getLocation().getLongitude());
-                            EvenementsFragment.viewPager.setCurrentItem(0);
-                        }
-                    });
+                holder.mImageViewDelete.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        final AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+                        builder.setMessage("Vous êtes sur le point de supprimer un évènement ! Cette action est irréversible ! \n Voulez-vous continuez ?")
+                                .setPositiveButton("Oui", new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int id) {
+                                        mStoreBase.collection("event").document(event.getUid()).delete();
+                                        Toast.makeText(getContext(), "Vous avez supprimé(e) un évènement !", Toast.LENGTH_SHORT).show();
+                                    }
+                                })
+                                .setNegativeButton("Non", new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int id) {
+                                        dialog.dismiss();
+                                    }
+                                });
+                        builder.create();
+                        builder.show();
 
-                    holder.mInscrire.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            mStoreBase.collection("events").document(e.getUid()).collection("members").document(USER.getUid()).delete();
-                            mStoreBase.collection("users").document(USER_ID).collection("events").document(e.getUid()).delete();
-                            Toast.makeText(getContext(), "Vous vous êtes désinscrit de l'évènement " + e.getName() + " !", Toast.LENGTH_SHORT).show();
-                            createFragment();
-                        }
-                    });
+                    }
+                });
+
+                holder.mImageViewDisplay.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Constants.targetZoom = new LatLng(event.getLocation().getLatitude(), event.getLocation().getLongitude());
+                        EvenementsFragment.viewPager.setCurrentItem(0);
+                    }
+                });
+
+                holder.mImageViewEdit.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+
+                    }
+                });
 
                /* if(e.getImage_url() != null) {
                     if(!Cache.fileExists(e.getUid())) {
@@ -270,16 +270,13 @@ public class MesEvenementsListFragment extends Fragment {
                     }
                 }
                 */
-                }
-            };
-            //mRecyclerView.setHasFixedSize(true);
-            mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+            }
+        };
+        //mRecyclerView.setHasFixedSize(true);
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
-            mRecyclerView.setAdapter(adapter);
-            adapter.startListening();
-
-            Log.w("count", iterator + "");
-        }
+        mRecyclerView.setAdapter(adapter);
+        adapter.startListening();
 
 
     }
@@ -287,15 +284,15 @@ public class MesEvenementsListFragment extends Fragment {
 
     private class EventViewHolder extends RecyclerView.ViewHolder {
 
-        public ImageView mImageView;
+        public ImageView mImageView, mImageViewEdit, mImageViewDisplay, mImageViewDelete;
         public TextView mTitle;
         public TextView mDate;
         public TextView mTime;
         public TextView mVille;
         public TextView mDescription;
         public TextView mProprietaire;
-        public Button mInscrire, mAfficher;
         public CardView mCarwViewOwner;
+
 
         public EventViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -306,9 +303,11 @@ public class MesEvenementsListFragment extends Fragment {
             mVille = itemView.findViewById(R.id.villeEventList);
             mDescription = itemView.findViewById(R.id.descriptionEventList);
             mProprietaire = itemView.findViewById(R.id.ownerEventList);
-            mAfficher = itemView.findViewById(R.id.buttonAfficherEventList);
-            mInscrire = itemView.findViewById(R.id.buttonInscrirEventList);
+            mImageViewDelete = itemView.findViewById(R.id.imageViewDeleteMesEvent);
+            mImageViewEdit = itemView.findViewById(R.id.imageViewEdit);
+            mImageViewDisplay = itemView.findViewById(R.id.imageViewAfficher);
             mCarwViewOwner = itemView.findViewById(R.id.backGroundOwner);
+
 
         }
     }
@@ -416,12 +415,6 @@ public class MesEvenementsListFragment extends Fragment {
             }
         });*/
 
-    }
-
-    @Override
-    public void onResume() {
-        createFragment();
-        super.onResume();
     }
 
 }

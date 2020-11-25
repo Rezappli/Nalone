@@ -2,6 +2,7 @@
 
 package com.example.nalone.ui.evenements.display;
 
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 
@@ -19,7 +20,8 @@ import android.os.Bundle;
         import com.example.nalone.Cache;
         import com.example.nalone.Group;
         import com.example.nalone.R;
-        import com.example.nalone.ui.amis.display.GroupeFragment;
+import com.example.nalone.User;
+import com.example.nalone.ui.amis.display.GroupeFragment;
         import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
         import com.firebase.ui.firestore.FirestoreRecyclerOptions;
         import com.google.android.gms.maps.GoogleMap;
@@ -55,7 +57,9 @@ import android.os.Bundle;
         import com.google.android.gms.tasks.Task;
         import com.google.firebase.firestore.DocumentReference;
         import com.google.firebase.firestore.Query;
-        import com.google.firebase.storage.StorageReference;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.storage.StorageReference;
 
 
         import java.util.ArrayList;
@@ -155,6 +159,40 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                 holder.mVille.setText((e.getCity()));
                 holder.mDescription.setText((e.getDescription()));
                 holder.mProprietaire.setText(e.getOwner());
+
+                mStoreBase.collection("users").whereEqualTo("uid", e.getOwnerDoc().getId())
+                        .get()
+                        .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                            @Override
+                            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                if (task.isSuccessful()) {
+                                    for (QueryDocumentSnapshot document : task.getResult()) {
+                                        User u = document.toObject(User.class);
+                                        if(u.getCursus().equalsIgnoreCase("Informatique")){
+                                            holder.mCarwViewOwner.setCardBackgroundColor(Color.RED);
+                                        }
+
+                                        if(u.getCursus().equalsIgnoreCase("TC")){
+                                            holder.mCarwViewOwner.setCardBackgroundColor(Color.parseColor("#00E9FD"));
+                                        }
+
+                                        if(u.getCursus().equalsIgnoreCase("MMI")){
+                                            holder.mCarwViewOwner.setCardBackgroundColor(Color.parseColor("#FF1EED"));
+                                        }
+
+                                        if(u.getCursus().equalsIgnoreCase("GB")){
+                                            holder.mCarwViewOwner.setCardBackgroundColor(Color.parseColor("#41EC57"));
+                                        }
+
+                                        if(u.getCursus().equalsIgnoreCase("LP")){
+                                            holder.mCarwViewOwner.setCardBackgroundColor((Color.parseColor("#EC9538")));
+                                        }
+
+                                    }
+
+                            }
+                        }});
+
 
                 holder.mCardView.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -258,6 +296,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         public TextView mVille;
         public TextView mDescription;
         public TextView mProprietaire;
+        public CardView mCarwViewOwner;
 
         public EventViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -269,6 +308,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
             mVille = itemView.findViewById(R.id.ville1);
             mDescription = itemView.findViewById(R.id.description1);
             mProprietaire = itemView.findViewById(R.id.owner1);
+            mCarwViewOwner = itemView.findViewById(R.id.backGroundOwner);
 
         }
     }

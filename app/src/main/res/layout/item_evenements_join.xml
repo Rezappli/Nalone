@@ -184,16 +184,6 @@
                 android:orientation="horizontal">
 
                 <Button
-                    android:id="@+id/buttonInscrirEventList"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="10dp"
-                    android:layout_marginEnd="10dp"
-                    android:layout_weight="0.5"
-                    android:background="@drawable/custom_button_simple"
-                    android:text="@string/inscrireButton" />
-
-                <Button
                     android:id="@+id/buttonAfficherEventList"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -202,6 +192,18 @@
                     android:layout_weight="0.5"
                     android:background="@drawable/custom_button_signup"
                     android:text="@string/afficher" />
+
+                <Button
+                    android:id="@+id/buttonInscrirEventList"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginEnd="10dp"
+                    android:layout_weight="0.5"
+                    android:background="@drawable/custom_button_signup"
+                    android:text="@string/desinscriptionButton"
+                    android:textColor="#DC1919" />
+
             </LinearLayout>
 
         </LinearLayout>

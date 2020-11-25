@@ -1,6 +1,7 @@
 package com.example.nalone.ui.evenements.display;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -17,10 +18,13 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.nalone.Evenement;
 import com.example.nalone.InfosEvenementsActivity;
 import com.example.nalone.R;
+import com.example.nalone.User;
+import com.example.nalone.UserFriendData;
 import com.example.nalone.adapter.ItemFiltreAdapter;
 import com.example.nalone.items.ItemFiltre;
 import com.example.nalone.items.ItemImagePerson;
@@ -41,6 +45,7 @@ import com.google.firebase.firestore.QuerySnapshot;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.example.nalone.util.Constants.USER;
 import static com.example.nalone.util.Constants.USER_ID;
 import static com.example.nalone.util.Constants.mStoreBase;
 
@@ -60,6 +65,7 @@ public class EvenementsListFragment extends Fragment {
     private ItemFiltreAdapter mAdapterFiltre;
 
     private int iterator = 0;
+    private List<String> events = new ArrayList<>();
 
 
     public EvenementsListFragment() {
@@ -72,6 +78,14 @@ public class EvenementsListFragment extends Fragment {
         // Inflate the layout for this fragment
         rootView = inflater.inflate(R.layout.fragment_evenements_list, container, false);
 
+        createFragment();
+
+
+
+        return rootView;
+    }
+
+    private void createFragment() {
         final List<ItemImagePerson> membres_inscrits = new ArrayList<>();
 
 
@@ -84,25 +98,43 @@ public class EvenementsListFragment extends Fragment {
         filtres.add(new ItemFiltre("Informatique"));
         filtres.add(new ItemFiltre("Manifestation"));
 
-        DocumentReference ref = mStoreBase.document("users/"+USER_ID);
-        mStoreBase.collection("events").whereNotEqualTo("ownerDoc", ref)
+        mStoreBase.collection("users").document(USER_ID).collection("events")
                 .get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
                         if (task.isSuccessful()) {
                             for (QueryDocumentSnapshot document : task.getResult()) {
-                               iterator++;
+                                events.add(document.getId());
+                                Log.w("event", " Ajout list");
                             }
-                            adapterEvents();
-                            if(iterator == 0){
-                                linearSansEvent.setVisibility(View.VISIBLE);
-                            }else{
-                                linearSansEvent.setVisibility(View.GONE);
-                            }
+                            DocumentReference ref = mStoreBase.document("users/"+USER_ID);
+                            mStoreBase.collection("events").whereNotEqualTo("ownerDoc", ref)
+                                    .get()
+                                    .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                                        @Override
+                                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                            if (task.isSuccessful()) {
+                                                for (QueryDocumentSnapshot document : task.getResult()) {
+                                                    iterator++;
+                                                }
+                                                Log.w("event", " Check list");
+                                                adapterEvents();
+                                                if(iterator == 0){
+                                                    linearSansEvent.setVisibility(View.VISIBLE);
+                                                }else{
+                                                    linearSansEvent.setVisibility(View.GONE);
+                                                }
+                                            }
+                                        }
+                                    });
                         }
                     }
                 });
+
+
+
+
 
         linearSansEvent = rootView.findViewById(R.id.linearSansEvent);
 
@@ -119,14 +151,17 @@ public class EvenementsListFragment extends Fragment {
         mRecyclerViewFiltre.setAdapter(mAdapterFiltre);
 
         mRecyclerView = rootView.findViewById(R.id.recyclerViewEventList);
-
-
-        return rootView;
     }
 
     private void adapterEvents() {
         DocumentReference ref = mStoreBase.document("users/"+USER_ID);
-        Query query = mStoreBase.collection("events").whereNotEqualTo("ownerDoc", ref);
+        Query query;
+        if(!events.isEmpty()){
+            query = mStoreBase.collection("events").whereNotIn("uid", events);
+        }else{
+            query = mStoreBase.collection("events").whereNotEqualTo("ownerDoc", ref);
+        }
+
         FirestoreRecyclerOptions<Evenement> options = new FirestoreRecyclerOptions.Builder<Evenement>().setQuery(query, Evenement.class).build();
 
         adapter = new FirestoreRecyclerAdapter<Evenement, EventViewHolder>(options) {
@@ -147,6 +182,39 @@ public class EvenementsListFragment extends Fragment {
                 holder.mDescription.setText((e.getDescription()));
                 holder.mProprietaire.setText(e.getOwner());
 
+                mStoreBase.collection("users").whereEqualTo("uid", e.getOwnerDoc().getId())
+                        .get()
+                        .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                            @Override
+                            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                if (task.isSuccessful()) {
+                                    for (QueryDocumentSnapshot document : task.getResult()) {
+                                        User u = document.toObject(User.class);
+                                        if(u.getCursus().equalsIgnoreCase("Informatique")){
+                                            holder.mCarwViewOwner.setCardBackgroundColor(Color.RED);
+                                        }
+
+                                        if(u.getCursus().equalsIgnoreCase("TC")){
+                                            holder.mCarwViewOwner.setCardBackgroundColor(Color.parseColor("#00E9FD"));
+                                        }
+
+                                        if(u.getCursus().equalsIgnoreCase("MMI")){
+                                            holder.mCarwViewOwner.setCardBackgroundColor(Color.parseColor("#FF1EED"));
+                                        }
+
+                                        if(u.getCursus().equalsIgnoreCase("GB")){
+                                            holder.mCarwViewOwner.setCardBackgroundColor(Color.parseColor("#41EC57"));
+                                        }
+
+                                        if(u.getCursus().equalsIgnoreCase("LP")){
+                                            holder.mCarwViewOwner.setCardBackgroundColor((Color.parseColor("#EC9538")));
+                                        }
+
+                                    }
+
+                                }
+                            }});
+
 
                 holder.mAfficher.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -159,7 +227,10 @@ public class EvenementsListFragment extends Fragment {
                 holder.mInscrire.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-
+                        mStoreBase.collection("events").document(e.getUid()).collection("members").document(USER.getUid()).set(new UserFriendData("add", mStoreBase.collection("users").document(USER_ID)));
+                        mStoreBase.collection("users").document(USER_ID).collection("events").document(e.getUid()).set(e);
+                        Toast.makeText(getContext(), "Vous êtes inscrit à l'évènement " + e.getName() + " !", Toast.LENGTH_SHORT).show();
+                        createFragment();
                     }
                 });
 
@@ -231,6 +302,7 @@ public class EvenementsListFragment extends Fragment {
         public TextView mDescription;
         public TextView mProprietaire;
         public Button mInscrire, mAfficher;
+        public CardView mCarwViewOwner;
 
         public EventViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -243,6 +315,7 @@ public class EvenementsListFragment extends Fragment {
             mProprietaire = itemView.findViewById(R.id.ownerEventList);
             mAfficher = itemView.findViewById(R.id.buttonAfficherEventList);
             mInscrire = itemView.findViewById(R.id.buttonInscrirEventList);
+            mCarwViewOwner = itemView.findViewById(R.id.backGroundOwner);
 
         }
     }

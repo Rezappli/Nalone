@@ -109,10 +109,12 @@
                         android:textSize="12sp" />
 
                     <androidx.cardview.widget.CardView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
+                        android:id="@+id/backGroundOwner"
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
                         android:layout_gravity="center"
-                        app:cardCornerRadius="150dp">
+                        app:cardCornerRadius="150dp"
+                        app:cardElevation="0dp">
 
                         <LinearLayout
                             android:layout_width="match_parent"
@@ -121,8 +123,8 @@
                             android:orientation="vertical">
 
                             <androidx.cardview.widget.CardView
-                                android:layout_width="50dp"
-                                android:layout_height="50dp"
+                                android:layout_width="47dp"
+                                android:layout_height="47dp"
                                 android:layout_gravity="center"
                                 app:cardCornerRadius="150dp">
 
