@@ -103,19 +103,20 @@ public class ProfilFragment extends Fragment  {
             cardViewPhotoPerson.setCardBackgroundColor(Color.RED);
         }
         if(USER.getCursus().equalsIgnoreCase("TC")){
-            cardViewPhotoPerson.setCardBackgroundColor(Color.GREEN);
+            cardViewPhotoPerson.setCardBackgroundColor(Color.parseColor("#00E9FD"));
         }
         if(USER.getCursus().equalsIgnoreCase("MMI")){
-            cardViewPhotoPerson.setCardBackgroundColor(Color.parseColor("#4B0082"));
+            cardViewPhotoPerson.setCardBackgroundColor(Color.parseColor("#FF1EED"));
         }
         if(USER.getCursus().equalsIgnoreCase("GB")){
-            cardViewPhotoPerson.setCardBackgroundColor(Color.BLUE);
+            cardViewPhotoPerson.setCardBackgroundColor(Color.parseColor("#41EC57"));
         }
         if(USER.getCursus().equalsIgnoreCase("LP")){
-            cardViewPhotoPerson.setCardBackgroundColor(Color.GRAY);
+            cardViewPhotoPerson.setCardBackgroundColor(Color.parseColor("#EC9538"));
         }
 
-            cardViewPhotoEditDesc.setOnClickListener(new View.OnClickListener() {
+
+        cardViewPhotoEditDesc.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     if(!editDescription){

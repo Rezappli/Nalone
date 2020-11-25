@@ -64,9 +64,6 @@ public class PopUpMesGroupesFragment extends Fragment {
     private List<String> friends;
     RelativeLayout relativeLayout;
 
-    ImageView img1,img2,img3,img4,img5,img6;
-    CardView c1,c2,c3,c4,c5,c6;
-
     private CardView cardViewPhotoEdit, cardViewPhotoEditDesc,cardViewProfilEdit,cardViewProfilMembers, getCardViewPhotoEditDesc;
     private ImageView imageViewEditDescription;
     FrameLayout fenetrePrincipal;
@@ -156,25 +153,9 @@ public class PopUpMesGroupesFragment extends Fragment {
                         Toast.makeText(getContext(), "Vous avez mis à jour la description du groupe", Toast.LENGTH_SHORT).show();
                     }
                 }
-
             }
         });
 
-        final List<ImageView> images = new ArrayList<>();
-        images.add(img1);
-        images.add(img2);
-        images.add(img3);
-        images.add(img4);
-        images.add(img5);
-        images.add(img6);
-
-        final List<CardView> cardViews = new ArrayList<>();
-        cardViews.add(c1);
-        cardViews.add(c2);
-        cardViews.add(c3);
-        cardViews.add(c4);
-        cardViews.add(c5);
-        cardViews.add(c6);
 
         mStoreBase.collection("groups").document(GROUP_LOAD.getUid()).collection("members").whereEqualTo("status", "add")
                 .get()
@@ -187,15 +168,7 @@ public class PopUpMesGroupesFragment extends Fragment {
                             }
                         }
                         textViewNbMembers.setText(nbMembers+" membres");
-                        if(nbMembers == 0){
-                            relativeLayout.setVisibility(View.GONE);
-                        }
-                        if(nbMembers <= 6){
-                            buttonPlus.setVisibility(View.GONE);
-                        }
-                        for(int i = 0; i < nbMembers && i < 6; i++){
-                            cardViews.get(i).setVisibility(View.VISIBLE);
-                        }
+
                         fenetrePrincipal.setVisibility(View.VISIBLE);
                     }
                 });

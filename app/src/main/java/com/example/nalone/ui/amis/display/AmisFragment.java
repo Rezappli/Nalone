@@ -191,20 +191,21 @@ public class AmisFragment extends Fragment {
                                         }
 
                                         if(u.getCursus().equalsIgnoreCase("TC")){
-                                            userViewHolder.cardViewPhotoPerson.setCardBackgroundColor(Color.GREEN);
+                                            userViewHolder.cardViewPhotoPerson.setCardBackgroundColor(Color.parseColor("#00E9FD"));
                                         }
 
                                         if(u.getCursus().equalsIgnoreCase("MMI")){
-                                            userViewHolder.cardViewPhotoPerson.setCardBackgroundColor(Color.parseColor("#4B0082"));
+                                            userViewHolder.cardViewPhotoPerson.setCardBackgroundColor(Color.parseColor("#FF1EED"));
                                         }
 
                                         if(u.getCursus().equalsIgnoreCase("GB")){
-                                            userViewHolder.cardViewPhotoPerson.setCardBackgroundColor(Color.BLUE);
+                                            userViewHolder.cardViewPhotoPerson.setCardBackgroundColor(Color.parseColor("#41EC57"));
                                         }
 
                                         if(u.getCursus().equalsIgnoreCase("LP")){
-                                            userViewHolder.cardViewPhotoPerson.setCardBackgroundColor(Color.GRAY);
+                                            userViewHolder.cardViewPhotoPerson.setCardBackgroundColor((Color.parseColor("#EC9538")));
                                         }
+
 
                                         if(u.getImage_url() != null) {
                                             if(!Cache.fileExists(u.getUid())) {

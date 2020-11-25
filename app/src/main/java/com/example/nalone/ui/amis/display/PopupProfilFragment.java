@@ -96,21 +96,17 @@ public class PopupProfilFragment extends Fragment {
         if(USER_LOAD.getCursus().equalsIgnoreCase("Informatique")){
             cardViewPhotoPerson.setCardBackgroundColor(Color.RED);
         }
-
         if(USER_LOAD.getCursus().equalsIgnoreCase("TC")){
-            cardViewPhotoPerson.setCardBackgroundColor(Color.GREEN);
+            cardViewPhotoPerson.setCardBackgroundColor(Color.parseColor("#00E9FD"));
         }
-
         if(USER_LOAD.getCursus().equalsIgnoreCase("MMI")){
-            cardViewPhotoPerson.setCardBackgroundColor(Color.parseColor("#4B0082"));
+            cardViewPhotoPerson.setCardBackgroundColor(Color.parseColor("#FF1EED"));
         }
-
         if(USER_LOAD.getCursus().equalsIgnoreCase("GB")){
-            cardViewPhotoPerson.setCardBackgroundColor(Color.BLUE);
+            cardViewPhotoPerson.setCardBackgroundColor(Color.parseColor("#41EC57"));
         }
-
         if(USER_LOAD.getCursus().equalsIgnoreCase("LP")){
-            cardViewPhotoPerson.setCardBackgroundColor(Color.GRAY);
+            cardViewPhotoPerson.setCardBackgroundColor(Color.parseColor("#EC9538"));
         }
 
         if (USER_LOAD.getImage_url() != null) {
