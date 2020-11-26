@@ -24,7 +24,7 @@ import java.util.HashMap;
 
 public class ChatActivity extends AppCompatActivity {
 
-    private Button buttonSend;
+    private ImageView buttonSend;
     private TextInputEditText messageEditText;
     private ImageView profile_view;
     private TextView username;
@@ -37,7 +37,7 @@ public class ChatActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chatbox);
 
-        buttonSend = (Button) findViewById(R.id.buttonSend);
+        buttonSend = (ImageView) findViewById(R.id.buttonSend);
         messageEditText = (TextInputEditText) findViewById(R.id.messageEditText);
 
 

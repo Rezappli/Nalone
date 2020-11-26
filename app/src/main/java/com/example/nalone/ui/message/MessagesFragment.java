@@ -1,186 +1,88 @@
 package com.example.nalone.ui.message;
 
-import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.TextView;
+import android.widget.Button;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
+import androidx.lifecycle.ViewModelProviders;
+import androidx.viewpager.widget.ViewPager;
 
-import com.bumptech.glide.Glide;
-import com.example.nalone.Cache;
-import com.example.nalone.User;
 import com.example.nalone.R;
-import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
-import com.firebase.ui.firestore.FirestoreRecyclerOptions;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.firestore.Query;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.firebase.firestore.QuerySnapshot;
-import com.google.firebase.storage.StorageReference;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import static com.example.nalone.util.Constants.USER;
-import static com.example.nalone.util.Constants.mStore;
-import static com.example.nalone.util.Constants.mStoreBase;
-
+import com.example.nalone.adapter.SectionPageAdapter;
+import com.example.nalone.ui.amis.AmisViewModel;
+import com.example.nalone.ui.amis.display.AmisFragment;
+import com.example.nalone.ui.amis.display.GroupeFragment;
+import com.example.nalone.ui.message.display.MessagesAmisFragment;
+import com.example.nalone.ui.message.display.MessagesGroupeFragment;
+import com.google.android.gms.auth.api.signin.GoogleSignInClient;
+import com.google.android.material.tabs.TabLayout;
 
 public class MessagesFragment extends Fragment {
 
-    private RecyclerView mRecyclerView;
-    private FirestoreRecyclerAdapter adapter;
-    private List<String> friends;
+    private AmisViewModel amisViewModel;
+    private Button signOutButton;
+    private GoogleSignInClient mGoogleSignInClient;
 
-    @Override
+    View myFragment;
+
+    ViewPager viewPager;
+    TabLayout tabLayout;
+    
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
 
 
-        View root = inflater.inflate(R.layout.fragment_messages, container, false);
-        mRecyclerView = root.findViewById(R.id.recycler);
 
-        friends = new ArrayList<>();
-        mStoreBase.collection("users").document(USER.getUid()).collection("friends").whereEqualTo("status", "add").limit(10)
-                .get()
-                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        if (task.isSuccessful()) {
-                            for (QueryDocumentSnapshot document : task.getResult()) {
-                                Log.d("TAG", document.getId() + " => " + document.getData());
-                                friends.add(document.getId());
-                            }
+        amisViewModel =
+                ViewModelProviders.of(this).get(AmisViewModel.class);
+        myFragment = inflater.inflate(R.layout.fragment_messages, container, false);
 
-                            //query
-                            if (!friends.isEmpty()) {
+        viewPager = myFragment.findViewById(R.id.viewPager);
+        tabLayout = myFragment.findViewById(R.id.tabLayout);
 
-                                Query query = mStoreBase.collection("users").whereIn("uid", friends);
-
-                                //RecyclerOption
-                                FirestoreRecyclerOptions<User> options = new FirestoreRecyclerOptions.Builder<User>().setQuery(query, User.class).build();
-
-                                adapter = new FirestoreRecyclerAdapter<User, PersonViewHolder>(options) {
-                                    @NonNull
-                                    @Override
-                                    public PersonViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-                                        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_person, parent, false);
-                                        return new PersonViewHolder(view);
-                                    }
-
-                                    @Override
-                                    protected void onBindViewHolder(@NonNull final PersonViewHolder personViewHolder, int i, @NonNull final User u) {
-
-                                        personViewHolder.villePers.setText(u.getCity());
-                                        personViewHolder.nomInvit.setText(u.getFirst_name() + " " + u.getLast_name());
-                                        personViewHolder.buttonImage.setVisibility(View.GONE);
-
-                                        personViewHolder.layoutProfil.setOnClickListener(new View.OnClickListener() {
-                                            @Override
-                                            public void onClick(View v) {
-                                                ChatActivity.USER_LOAD = u;
-                                                startActivity(new Intent(getContext(), ChatActivity.class));
-                                            }
-                                        });
-
-                                        if (u.getImage_url() != null) {
-                                            if (!Cache.fileExists(u.getUid())) {
-                                                StorageReference imgRef = mStore.getReference("users/" + u.getUid());
-                                                if (imgRef != null) {
-                                                    imgRef.getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
-                                                        @Override
-                                                        public void onComplete(@NonNull Task<Uri> task) {
-                                                            if (task.isSuccessful()) {
-                                                                Uri img = task.getResult();
-                                                                if (img != null) {
-                                                                    Cache.saveUriFile(u.getUid(), img);
-                                                                    u.setImage_url(Cache.getImageDate(u.getUid()));
-                                                                    mStoreBase.collection("users").document(u.getUid()).set(u);
-                                                                    Glide.with(getContext()).load(img).fitCenter().centerCrop().into(personViewHolder.imagePerson);
-                                                                }
-                                                            }
-                                                        }
-                                                    });
-                                                }
-                                            } else {
-                                                Uri imgCache = Cache.getUriFromUid(u.getUid());
-                                                if (Cache.getImageDate(u.getUid()).equalsIgnoreCase(u.getImage_url())) {
-                                                    Glide.with(getContext()).load(imgCache).fitCenter().centerCrop().into(personViewHolder.imagePerson);
-                                                } else {
-                                                    StorageReference imgRef = mStore.getReference("users/" + u.getUid());
-                                                    if (imgRef != null) {
-                                                        imgRef.getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
-                                                            @Override
-                                                            public void onComplete(@NonNull Task<Uri> task) {
-                                                                if (task.isSuccessful()) {
-                                                                    Uri img = task.getResult();
-                                                                    if (img != null) {
-                                                                        Cache.saveUriFile(u.getUid(), img);
-                                                                        u.setImage_url(Cache.getImageDate(u.getUid()));
-                                                                        mStoreBase.collection("users").document(u.getUid()).set(u);
-                                                                        Glide.with(getContext()).load(img).fitCenter().centerCrop().into(personViewHolder.imagePerson);
-                                                                    }
-                                                                }
-                                                            }
-                                                        });
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    }
-                                };
-                                mRecyclerView.setHasFixedSize(true);
-                                mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-                                mRecyclerView.setAdapter(adapter);
-                                adapter.startListening();
-                            }
-                        }
-                    }
-            });
-
-        return root;
-    }
-
-    private class PersonViewHolder extends RecyclerView.ViewHolder {
-
-        private TextView nomInvit;
-        private TextView villePers;
-        private LinearLayout layoutProfil;
-        private ImageView imagePerson;
-        private ImageView buttonImage;
-
-        public PersonViewHolder(@NonNull View itemView) {
-            super(itemView);
-
-            nomInvit = itemView.findViewById(R.id.nomInvit);
-            villePers = itemView.findViewById(R.id.villePers);
-            layoutProfil = itemView.findViewById(R.id.layoutProfil);
-            imagePerson = itemView.findViewById(R.id.imagePerson);
-            buttonImage = itemView.findViewById(R.id.buttonImage);
-
-        }
-
+        return myFragment;
     }
 
     @Override
-    public void onStop() {
-        super.onStop();
-        if(adapter != null) {
-            adapter.stopListening();
-        }
+    public void onActivityCreated(@Nullable Bundle savedInstanceBundle){
+        super.onActivityCreated(savedInstanceBundle);
+        
+        setUpViewPager(viewPager);
+        tabLayout.setupWithViewPager(viewPager);
+        tabLayout.getTabAt(0).setIcon(R.drawable.ic_round_people_24);
+        tabLayout.getTabAt(1).setIcon(R.drawable.ic_round_groups_24);
+
+        tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+            @Override
+            public void onTabSelected(TabLayout.Tab tab) {
+                
+            }
+
+            @Override
+            public void onTabUnselected(TabLayout.Tab tab) {
+
+            }
+
+            @Override
+            public void onTabReselected(TabLayout.Tab tab) {
+
+            }
+        });
     }
 
+    private void setUpViewPager(ViewPager viewPager) {
+        SectionPageAdapter adapter = new SectionPageAdapter(getChildFragmentManager(), 0);
+
+        adapter.addFragment(new MessagesAmisFragment());
+        adapter.addFragment(new MessagesGroupeFragment());
+
+        viewPager.setAdapter(adapter);
+    }
+
+
 }
-
-

@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string-array name="titles">titles
-        <item>ALL</item>
-        <item>FRIENDS</item>
-        <item>FAMILY</item>
+        <item>Amis</item>
+        <item> Groupes </item>
     </string-array>
 </resources>

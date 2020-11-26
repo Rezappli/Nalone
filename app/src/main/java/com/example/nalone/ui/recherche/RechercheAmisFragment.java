@@ -101,7 +101,7 @@ public class RechercheAmisFragment extends Fragment {
 
         friends = new ArrayList<>();
 
-        mStoreBase.collection("users").document(USER.getUid()).collection("friends")
+        mStoreBase.collection("users").document(USER.getUid()).collection("friends").whereEqualTo("status","add")
                 .get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override

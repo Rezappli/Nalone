@@ -28,6 +28,9 @@
         android:theme="@style/AppTheme">
         <activity android:name=".ResetPassword" />
         <activity android:name=".InfosEvenementsActivity" />
+        <activity android:name=".ui.message.ChatActivity" android:theme="@style/AppTheme.NoActionBar">
+
+        </activity>
         <!--
              The API key for Google Maps-based APIs is defined as a string resource.
              (See the file "res/values/google_maps_api.xml").
@@ -55,7 +58,6 @@
         <activity android:name=".signUpActivities.SignUpProfilActivity" />
         <activity android:name=".signUpActivities.SignUpHobbiesActivity" />
         <activity android:name=".signUpActivities.SignUpInformationActivity" />
-        <activity android:name=".ui.message.ChatActivity" />
         <!--
 <activity
             android:name=".MainActivity"
