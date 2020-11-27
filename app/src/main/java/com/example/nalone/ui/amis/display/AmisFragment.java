@@ -27,7 +27,7 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.example.nalone.Cache;
-import com.example.nalone.UserFriendData;
+import com.example.nalone.ModelData;
 import com.example.nalone.items.ItemPerson;
 import com.example.nalone.R;
 import com.example.nalone.User;
@@ -35,7 +35,6 @@ import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
-import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
@@ -43,9 +42,7 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.StorageReference;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import static com.example.nalone.HomeActivity.buttonBack;
@@ -330,7 +327,7 @@ public class AmisFragment extends Fragment {
         mStoreBase.collection("users").document(USER.getUid()).collection("friends").document(u.getUid()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                UserFriendData data = task.getResult().toObject(UserFriendData.class);
+                ModelData data = task.getResult().toObject(ModelData.class);
                     if(data.getStatus().equalsIgnoreCase("send")){
                         PopupProfilFragment.button = R.drawable.ic_round_hourglass_top_24;
                     }else if(data.getStatus().equalsIgnoreCase("received")){

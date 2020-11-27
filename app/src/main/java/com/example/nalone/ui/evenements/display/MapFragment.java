@@ -3,6 +3,7 @@
 package com.example.nalone.ui.evenements.display;
 
 import android.graphics.Color;
+import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
 
@@ -50,13 +51,17 @@ import com.example.nalone.ui.amis.display.GroupeFragment;
         import com.google.android.gms.maps.OnMapReadyCallback;
         import com.google.android.gms.maps.model.BitmapDescriptor;
         import com.google.android.gms.maps.model.BitmapDescriptorFactory;
-        import com.google.android.gms.maps.model.LatLng;
-        import com.google.android.gms.maps.model.Marker;
+import com.google.android.gms.maps.model.Circle;
+import com.google.android.gms.maps.model.CircleOptions;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
+import com.google.android.gms.maps.model.Marker;
         import com.google.android.gms.maps.model.MarkerOptions;
         import com.google.android.gms.tasks.OnCompleteListener;
         import com.google.android.gms.tasks.Task;
         import com.google.firebase.firestore.DocumentReference;
-        import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.GeoPoint;
+import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.StorageReference;
@@ -72,7 +77,8 @@ import com.google.firebase.storage.StorageReference;
         import static com.example.nalone.util.Constants.USER_REFERENCE;
         import static com.example.nalone.util.Constants.mStore;
         import static com.example.nalone.util.Constants.mStoreBase;
-        import static com.example.nalone.util.Constants.targetZoom;
+import static com.example.nalone.util.Constants.range;
+import static com.example.nalone.util.Constants.targetZoom;
 
 
 public class MapFragment extends Fragment implements OnMapReadyCallback {
@@ -90,7 +96,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
 
     private RecyclerView mRecyclerView;
     private FirestoreRecyclerAdapter adapter;
-
 
 
     public MapFragment() {
@@ -369,7 +374,11 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         if (mMap != null) {
             mMap.clear();
 
-            Log.w("Map", "LatLng : " + USER_LATLNG);
+            Circle circle = mMap.addCircle(new CircleOptions()
+                    .center(new LatLng(USER.getLocation().getLatitude(), USER.getLocation().getLongitude()))
+                    .radius(range*1000)
+                    .strokeWidth(3f)
+                    .strokeColor(Color.BLUE));
 
             if (targetZoom == null) {
                 mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(USER_LATLNG, 13));
@@ -379,7 +388,43 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
 
             itemEvents.clear();
 
-            float[] results = new float[1];
+            Log.w("Events", "Range :"+range);
+
+            float units = 78.567f; //km
+
+            //50 => borne inf latitude - (50/78) longitude - (50/78)
+            //50 => borne sup latitude + (50/78) longitude + (50/78)
+
+            //si Evenet e : location : inf > location > sup = affiche
+
+            GeoPoint infBorn = new GeoPoint((USER.getLocation().getLatitude()-(range/units)), (USER.getLocation().getLongitude()-(range/units)));
+            GeoPoint supBorn = new GeoPoint((USER.getLocation().getLatitude()+(range/units)), (USER.getLocation().getLongitude()+(range/units)));
+
+            Log.w("Events", "Info born : " + infBorn.toString());
+            Log.w("Events", "Sup born : " + supBorn.toString());
+
+            mStoreBase.collection("events").whereGreaterThanOrEqualTo("location", infBorn).whereLessThanOrEqualTo("location", supBorn).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                @Override
+                public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                    for(QueryDocumentSnapshot doc : task.getResult()){
+                        float[] result = new float[3];
+                        Evenement e  = doc.toObject(Evenement.class);
+                        Log.w("Events", "Event : " + e.getLocation().toString());
+                        Log.w("Events", "Event : " + USER.getLocation().toString());
+                        Location.distanceBetween(e.getLocation().getLatitude(), e.getLocation().getLongitude(), USER.getLocation().getLatitude(), USER.getLocation().getLongitude(), result);
+                        Log.w("Events", "Event : " + e.getName() + " " + result[0]);
+                        if(result[0] <= range * 1000) {
+                            Log.w("Events", "Event : " + e.getLocation().toString());
+                            MarkerOptions m = new MarkerOptions().title(e.getName())
+                                    .snippet("Cliquez pour plus d'informations")
+                                    .icon(getEventColor(e))
+                                    .position(new LatLng(e.getLocation().getLatitude(), e.getLocation().getLongitude()));
+                            mMap.addMarker(m).setTag(e.getUid());
+                        }
+                    }
+
+                }
+            });
 
            /* if(USER.get_register_events() != null) {
                 for (int i = 0; i < USER.get_register_events().size(); i++) {

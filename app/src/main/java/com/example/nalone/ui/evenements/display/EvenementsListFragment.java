@@ -1,6 +1,5 @@
 package com.example.nalone.ui.evenements.display;
 
-import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 
@@ -21,10 +20,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.nalone.Evenement;
-import com.example.nalone.InfosEvenementsActivity;
 import com.example.nalone.R;
 import com.example.nalone.User;
-import com.example.nalone.UserFriendData;
+import com.example.nalone.ModelData;
 import com.example.nalone.adapter.ItemFiltreAdapter;
 import com.example.nalone.items.ItemFiltre;
 import com.example.nalone.items.ItemImagePerson;
@@ -32,9 +30,7 @@ import com.example.nalone.ui.evenements.EvenementsFragment;
 import com.example.nalone.util.Constants;
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
-import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentReference;
@@ -227,8 +223,9 @@ public class EvenementsListFragment extends Fragment {
                 holder.mInscrire.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        mStoreBase.collection("events").document(e.getUid()).collection("members").document(USER.getUid()).set(new UserFriendData("add", mStoreBase.collection("users").document(USER_ID)));
-                        mStoreBase.collection("users").document(USER_ID).collection("events").document(e.getUid()).set(e);
+                        ModelData m = new ModelData("add", mStoreBase.collection("users").document(USER_ID));
+                        mStoreBase.collection("events").document(e.getUid()).collection("members").document(USER.getUid()).set(m);
+                        mStoreBase.collection("users").document(USER_ID).collection("events").document(e.getUid()).set(m);
                         Toast.makeText(getContext(), "Vous êtes inscrit à l'évènement " + e.getName() + " !", Toast.LENGTH_SHORT).show();
                         createFragment();
                     }
@@ -371,11 +368,4 @@ public class EvenementsListFragment extends Fragment {
             }
         });*/
     }
-
-
-    //@Override
-    public void onUpdateAdapter() {
-
-    }
-
 }

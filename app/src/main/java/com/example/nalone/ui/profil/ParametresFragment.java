@@ -14,6 +14,7 @@ import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -130,7 +131,7 @@ public class ParametresFragment extends Fragment {
             }
         });
 
-        textViewRayon.setText(range/1000+" km");
+        textViewRayon.setText(range+" km");
 
         final SeekBar seekBar =  root.findViewById(R.id.seekBarRayon);
 
@@ -156,7 +157,7 @@ public class ParametresFragment extends Fragment {
             // Notification that the user has finished a touch gesture
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
-                range = progress;
+                range = progress/1000;
             }
         });
 
@@ -222,11 +223,12 @@ public class ParametresFragment extends Fragment {
         SharedPreferences settings = this.getActivity().getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
         SharedPreferences.Editor editor = settings.edit();
 
-        editor.putInt(sharedRange, range);
+        Log.w("Range", "Range : " + range);
+        /*editor.putInt(sharedRange, range);
         editor.putBoolean(sharedNotif, notification);
         editor.putBoolean(sharedPosition, maPosition);
 
-        editor.apply();
+        editor.apply();*/
     }
 
 }

@@ -29,7 +29,6 @@ import com.bumptech.glide.Glide;
 import com.example.nalone.Cache;
 import com.example.nalone.R;
 import com.example.nalone.User;
-import com.example.nalone.UserFriendData;
 import com.example.nalone.items.ItemPerson;
 import com.example.nalone.ui.amis.display.PopupProfilFragment;
 import com.example.nalone.ui.message.ChatActivity;

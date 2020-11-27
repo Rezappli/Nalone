@@ -29,7 +29,7 @@ import com.example.nalone.Group;
 import com.example.nalone.dialog.ListAmisFragment;
 import com.example.nalone.R;
 import com.example.nalone.User;
-import com.example.nalone.UserFriendData;
+import com.example.nalone.ModelData;
 import com.example.nalone.Visibility;
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
@@ -332,7 +332,7 @@ public class CreateGroupFragment extends Fragment {
 
             for (String user : adds){
                 Log.d("Ajout", "Ajout de membre dans groupe");
-                UserFriendData ufd = new UserFriendData("waiting",mStoreBase.collection("users").document(user));
+                ModelData ufd = new ModelData("waiting",mStoreBase.collection("users").document(user));
                 mStoreBase.collection("groups").document(g.getUid()).collection("members").document(user).set(ufd);
             }
 

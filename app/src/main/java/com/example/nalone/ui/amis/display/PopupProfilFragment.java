@@ -26,12 +26,10 @@ import com.bumptech.glide.Glide;
 import com.example.nalone.Cache;
 import com.example.nalone.R;
 import com.example.nalone.User;
-import com.example.nalone.UserFriendData;
+import com.example.nalone.ModelData;
 import com.example.nalone.fcm.MySingleton;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
-import com.google.firebase.messaging.FirebaseMessaging;
-import com.google.firebase.messaging.RemoteMessage;
 import com.google.firebase.storage.StorageReference;
 
 import org.json.JSONException;
@@ -228,8 +226,8 @@ public class PopupProfilFragment extends Fragment {
     }
 
     public void addFriend() {
-        UserFriendData data1 = new UserFriendData("received", mStoreBase.collection("users").document(USER.getUid()));
-        UserFriendData data2 = new UserFriendData("send", mStoreBase.collection("users").document(USER_LOAD.getUid()));
+        ModelData data1 = new ModelData("received", mStoreBase.collection("users").document(USER.getUid()));
+        ModelData data2 = new ModelData("send", mStoreBase.collection("users").document(USER_LOAD.getUid()));
         mStoreBase.collection("users").document(USER.getUid()).collection("friends").document(USER_LOAD.getUid()).set(data2);
         mStoreBase.collection("users").document(USER_LOAD.getUid()).collection("friends").document(USER.getUid()).set(data1);
 

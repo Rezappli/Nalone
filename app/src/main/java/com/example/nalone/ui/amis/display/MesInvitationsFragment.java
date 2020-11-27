@@ -24,7 +24,7 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.example.nalone.Cache;
-import com.example.nalone.UserFriendData;
+import com.example.nalone.ModelData;
 import com.example.nalone.User;
 import com.example.nalone.items.ItemPerson;
 import com.example.nalone.R;
@@ -32,14 +32,12 @@ import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
-import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.StorageReference;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import static com.example.nalone.HomeActivity.buttonBack;
@@ -229,8 +227,8 @@ public class MesInvitationsFragment extends Fragment {
     }
 
     private void acceptFriendRequest(final String uid) {
-        UserFriendData data1 = new UserFriendData("add", mStoreBase.collection("users").document(USER.getUid()));
-        UserFriendData data2 = new UserFriendData("add", mStoreBase.collection("users").document(uid));
+        ModelData data1 = new ModelData("add", mStoreBase.collection("users").document(USER.getUid()));
+        ModelData data2 = new ModelData("add", mStoreBase.collection("users").document(uid));
         mStoreBase.collection("users").document(USER.getUid()).collection("friends").document(uid).set(data2);
         mStoreBase.collection("users").document(uid).collection("friends").document(USER.getUid()).set(data1);
         Toast.makeText(getContext(), "Vous avez ajouté(e) cet utilisateur", Toast.LENGTH_SHORT).show();

@@ -80,18 +80,27 @@ public class MyFirebaseInstance extends FirebaseMessagingService {
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent,
                 PendingIntent.FLAG_ONE_SHOT);
 
-        Bitmap largeIcon = BitmapFactory.decodeResource(getResources(),
-                R.drawable.logo);
 
         Uri notificationSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
-        NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this, ADMIN_CHANNEL_ID)
-                .setSmallIcon(R.drawable.logo)
-                .setLargeIcon(largeIcon)
-                .setContentTitle(remoteMessage.getData().get("title"))
-                .setContentText(remoteMessage.getData().get("message"))
-                .setAutoCancel(true)
-                .setSound(notificationSoundUri)
-                .setContentIntent(pendingIntent);
+        NotificationCompat.Builder notificationBuilder;
+
+        if(remoteMessage.getNotification() != null){
+            notificationBuilder = new NotificationCompat.Builder(this, ADMIN_CHANNEL_ID)
+                    .setSmallIcon(R.drawable.logo)
+                    .setContentTitle(remoteMessage.getNotification().getTitle())
+                    .setContentText(remoteMessage.getNotification().getBody())
+                    .setAutoCancel(true)
+                    .setSound(notificationSoundUri)
+                    .setContentIntent(pendingIntent);
+        }else{
+            notificationBuilder =new NotificationCompat. Builder(this, ADMIN_CHANNEL_ID)
+                    .setSmallIcon(R.drawable.logo)
+                    .setContentTitle(remoteMessage.getData().get("title"))
+                    .setContentText(remoteMessage.getData().get("message"))
+                    .setAutoCancel(true)
+                    .setSound(notificationSoundUri)
+                    .setContentIntent(pendingIntent);
+        }
 
         //Set notification color to match your app color template
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {

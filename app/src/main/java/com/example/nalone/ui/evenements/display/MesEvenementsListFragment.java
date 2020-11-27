@@ -1,7 +1,5 @@
 package com.example.nalone.ui.evenements.display;
 
-import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -26,7 +24,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.nalone.Evenement;
 import com.example.nalone.R;
 import com.example.nalone.User;
-import com.example.nalone.UserFriendData;
 import com.example.nalone.Visibility;
 import com.example.nalone.ui.evenements.CreateEventFragment;
 import com.example.nalone.ui.evenements.EvenementsFragment;

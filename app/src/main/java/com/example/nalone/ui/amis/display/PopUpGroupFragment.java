@@ -25,8 +25,7 @@ import com.bumptech.glide.Glide;
 import com.example.nalone.Cache;
 import com.example.nalone.Group;
 import com.example.nalone.R;
-import com.example.nalone.User;
-import com.example.nalone.UserFriendData;
+import com.example.nalone.ModelData;
 import com.example.nalone.Visibility;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -34,7 +33,6 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.StorageReference;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import static com.example.nalone.HomeActivity.buttonBack;
@@ -210,13 +208,13 @@ public class PopUpGroupFragment extends Fragment {
     }
 
     public void joinPublic() {
-        UserFriendData data1 = new UserFriendData("add", mStoreBase.collection("users").document(USER.getUid()));
+        ModelData data1 = new ModelData("add", mStoreBase.collection("users").document(USER.getUid()));
         mStoreBase.collection("groups").document(GROUP_LOAD.getUid()).collection("members").document(USER.getUid()).set(data1);
         Toast.makeText(getContext(), "Vous avez rejoint le groupe " + GROUP_LOAD.getName() + " !", Toast.LENGTH_SHORT).show();
     }
 
     public void joinPrive() {
-        UserFriendData data1 = new UserFriendData("received", mStoreBase.collection("users").document(USER.getUid()));
+        ModelData data1 = new ModelData("received", mStoreBase.collection("users").document(USER.getUid()));
         mStoreBase.collection("groups").document(GROUP_LOAD.getUid()).collection("members").document(USER.getUid()).set(data1);
         Toast.makeText(getContext(), "Vous avez envoyé une demande pour rejoindre le groupe "+ GROUP_LOAD.getName() + " !", Toast.LENGTH_SHORT).show();
     }

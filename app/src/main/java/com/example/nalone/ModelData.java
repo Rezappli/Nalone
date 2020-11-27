@@ -5,19 +5,19 @@ import com.google.firebase.firestore.DocumentReference;
 
 import java.util.Date;
 
-public class UserFriendData {
+public class ModelData {
 
     private Timestamp add_time;
     private String status;
     private DocumentReference user;
 
-    public UserFriendData(){}
+    public ModelData(){}
 
-    public UserFriendData(String status, DocumentReference user){
+    public ModelData(String status, DocumentReference user){
         this(status, user, new Timestamp(new Date()));
     }
 
-    public UserFriendData(String status, DocumentReference user, Timestamp add_time){
+    public ModelData(String status, DocumentReference user, Timestamp add_time){
         this.status = status;
         this.user = user;
         this.add_time = add_time;
