@@ -223,7 +223,7 @@ public class EvenementsListFragment extends Fragment {
                 holder.mInscrire.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        ModelData m = new ModelData("add", mStoreBase.collection("users").document(USER_ID));
+                        ModelData m = new ModelData("add", e.getOwnerDoc());
                         mStoreBase.collection("events").document(e.getUid()).collection("members").document(USER.getUid()).set(m);
                         mStoreBase.collection("users").document(USER_ID).collection("events").document(e.getUid()).set(m);
                         Toast.makeText(getContext(), "Vous êtes inscrit à l'évènement " + e.getName() + " !", Toast.LENGTH_SHORT).show();

@@ -108,7 +108,7 @@ public class MesEvenementsListFragment extends Fragment {
 
 
         DocumentReference ref = mStoreBase.document("users/"+USER_ID);
-        mStoreBase.collection("users").document(USER_ID).collection("events").whereNotEqualTo("ownerDoc", ref)
+        mStoreBase.collection("users").document(USER_ID).collection("events").whereNotEqualTo("user", ref)
                 .get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
@@ -117,27 +117,15 @@ public class MesEvenementsListFragment extends Fragment {
                             for (QueryDocumentSnapshot document : task.getResult()) {
                                 events.add(document.getId());
                                 Log.w("event", " Ajout list");
+                                iterator++;
                             }
-                            DocumentReference ref = mStoreBase.document("users/"+USER_ID);
-                            mStoreBase.collection("events").whereNotEqualTo("ownerDoc", ref)
-                                    .get()
-                                    .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                                        @Override
-                                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                                            if (task.isSuccessful()) {
-                                                for (QueryDocumentSnapshot document : task.getResult()) {
-                                                    iterator++;
-                                                }
-                                                Log.w("event", " Check list");
-                                                adapterEvents();
-                                                if(iterator == 0){
-                                                    linearSansEvent.setVisibility(View.VISIBLE);
-                                                }else{
-                                                    linearSansEvent.setVisibility(View.GONE);
-                                                }
-                                            }
-                                        }
-                                    });
+                            Log.w("event", " Check list");
+                            adapterEvents();
+                            if(iterator == 0){
+                                linearSansEvent.setVisibility(View.VISIBLE);
+                            }else{
+                                linearSansEvent.setVisibility(View.GONE);
+                            }
                         }
                     }
                 });
@@ -148,7 +136,6 @@ public class MesEvenementsListFragment extends Fragment {
 
 
         if(!events.isEmpty()){
-            DocumentReference ref = mStoreBase.document("users/"+USER_ID);
             Query query = mStoreBase.collection("events").whereIn("uid", events);
             FirestoreRecyclerOptions<Evenement> options = new FirestoreRecyclerOptions.Builder<Evenement>().setQuery(query, Evenement.class).build();
 
