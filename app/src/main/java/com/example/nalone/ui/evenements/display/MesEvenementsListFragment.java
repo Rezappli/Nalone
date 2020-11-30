@@ -68,6 +68,7 @@ public class MesEvenementsListFragment extends Fragment {
     private CardView mesEvents;
     private NavController navController;
 
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -85,6 +86,7 @@ public class MesEvenementsListFragment extends Fragment {
         mRecyclerView = rootView.findViewById(R.id.recyclerViewMesEventList);
         addEvent = rootView.findViewById(R.id.create_event_button);
         mesEvents = rootView.findViewById(R.id.mesEvents);
+
         navController = Navigation.findNavController(getActivity(), R.id.nav_host_fragment);
         mesEvents.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -150,6 +152,7 @@ public class MesEvenementsListFragment extends Fragment {
                     holder.mVille.setText((e.getCity()));
                     holder.mDescription.setText((e.getDescription()));
                     holder.mProprietaire.setText(e.getOwner());
+                    holder.textViewNbMembers.setText(e.getNbMembers() + " membres inscrits");
 
                     mStoreBase.collection("users").whereEqualTo("uid", e.getOwnerDoc().getId())
                             .get()
@@ -274,6 +277,7 @@ public class MesEvenementsListFragment extends Fragment {
         public TextView mProprietaire;
         public Button mInscrire, mAfficher;
         public CardView mCarwViewOwner;
+        private TextView textViewNbMembers;
 
         public EventViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -287,6 +291,7 @@ public class MesEvenementsListFragment extends Fragment {
             mAfficher = itemView.findViewById(R.id.buttonAfficherEventList);
             mInscrire = itemView.findViewById(R.id.buttonInscrirEventList);
             mCarwViewOwner = itemView.findViewById(R.id.backGroundOwner);
+            textViewNbMembers = itemView.findViewById(R.id.textViewNbMembers);
 
         }
     }

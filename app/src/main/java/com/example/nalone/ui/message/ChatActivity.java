@@ -57,6 +57,8 @@ public class ChatActivity extends AppCompatActivity {
     private LinearLayout.LayoutParams myLayoutMessages;
     private LinearLayout.LayoutParams otherLayoutMessages;
 
+    private int countAdapter = 0;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -72,7 +74,7 @@ public class ChatActivity extends AppCompatActivity {
         buttonSend.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mRecyclerView.smoothScrollToPosition(adapter.getItemCount() - 1);
+                mRecyclerView.smoothScrollToPosition(countAdapter);
                 if (messageEditText.getText().length() > 0) {
                     sendMessage(new Message(USER_REFERENCE, messageEditText.getText().toString()));
                 }
@@ -133,6 +135,7 @@ public class ChatActivity extends AppCompatActivity {
                     messageViewHolder.messageLayout.setLayoutParams(otherLayoutMessages);
                     messageViewHolder.backgroundItem.setCardBackgroundColor(Color.LTGRAY);
                 }
+
                 messageViewHolder.messageText.setText(m.getMessage());
 
             }

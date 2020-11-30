@@ -104,12 +104,14 @@ public class CreateEventFragment extends Fragment {
 
     public static Evenement EVENT_LOAD;
 
+    private View rootView;
+
     public class EventAttente extends Evenement {
 
         public EventAttente(String uid, String owner, int image, String name, String description, String address, String city,
                             Visibility visibility, DocumentReference ownerDoc, Timestamp date){
             super(uid,  owner,  image,  name,  description,  address,  city,
-                     visibility,  ownerDoc,  date, null);
+                     visibility,  ownerDoc,  date, null, 0);
         }
     }
 
@@ -117,7 +119,14 @@ public class CreateEventFragment extends Fragment {
                               ViewGroup container, Bundle savedInstanceState) {
 
 
-        View rootView = inflater.inflate(R.layout.fragment_create_event, container, false);
+        rootView = inflater.inflate(R.layout.fragment_create_event, container, false);
+
+        createFragment();
+
+        return rootView;
+    }
+
+    private void createFragment(){
 
         cardViewPrivate = rootView.findViewById(R.id.cardViewPrivate);
         cardViewPublic = rootView.findViewById(R.id.cardViewPublic);
@@ -263,8 +272,6 @@ public class CreateEventFragment extends Fragment {
 
             }
         });
-
-        return rootView;
     }
 
     private void refreshData() {
@@ -290,79 +297,64 @@ public class CreateEventFragment extends Fragment {
             event_city.setText(evenementAttente.getCity());
         if(evenementAttente.getDate() != null)
             event_date.setText(evenementAttente.getDate().toString());
+        if(evenementAttente.getVisibility() == Visibility.PUBLIC){
+            selectPublic();
+        }
+        if(evenementAttente.getVisibility() == Visibility.PRIVATE){
+            selectPrivate();
+        }
     }
 
 
     public void initList(){
-        adds.add("a");
-        Query query = mStoreBase.collection("users").whereIn("uid", adds);
-        query.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                for (QueryDocumentSnapshot doc : task.getResult()){
-                    User u = doc.toObject(User.class);
-                    Log.w("Add", u.getFirst_name());
-                }
-            }
-        });
-
-        //RecyclerOption
-        FirestoreRecyclerOptions<User> options = new FirestoreRecyclerOptions.Builder<User>().setQuery(query, User.class).build();
-
-        adapter = new FirestoreRecyclerAdapter<User, PersonViewHolder>(options) {
-            @NonNull
-            @Override
-            public PersonViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-                Log.w("Add", "ViewHolder");
-                View view= LayoutInflater.from(parent.getContext()).inflate(R.layout.item_person,parent,false);
-                return new PersonViewHolder(view);
-            }
-
-            @Override
-            protected void onBindViewHolder(@NonNull final PersonViewHolder personViewHolder, final int i, @NonNull final  User u) {
-
-                Log.w("Add","BindViewHolder");
-                personViewHolder.villePers.setText(u.getCity());
-                personViewHolder.nomInvit.setText(u.getFirst_name() + " "+ u.getLast_name());
-                personViewHolder.button.setImageDrawable(getResources().getDrawable(R.drawable.ic_baseline_remove_24));
-                personViewHolder.button.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        adds.remove(u.getUid());
-                        Log.w("Add", "List : " + adds.isEmpty());
-                        adapter.notifyDataSetChanged();
-                        initList();
+        Query query;
+        if(!adds.isEmpty()) {
+            query = mStoreBase.collection("users").whereIn("uid", adds);
+            query.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                @Override
+                public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                    for (QueryDocumentSnapshot doc : task.getResult()) {
+                        User u = doc.toObject(User.class);
+                        Log.w("Add", u.getFirst_name());
                     }
-                });
+                }
+            });
+        }else{
+            query = mStoreBase.collection("usejkhdskjfhkjhrjdhfks");
+        }
 
+            //RecyclerOption
+            FirestoreRecyclerOptions<User> options = new FirestoreRecyclerOptions.Builder<User>().setQuery(query, User.class).build();
 
-                if(u.getImage_url() != null) {
-                    if(!Cache.fileExists(u.getUid())) {
-                        StorageReference imgRef = mStore.getReference("users/" + u.getUid());
-                        if (imgRef != null) {
-                            imgRef.getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
-                                @Override
-                                public void onComplete(@NonNull Task<Uri> task) {
-                                    if (task.isSuccessful()) {
-                                        Uri img = task.getResult();
-                                        if (img != null) {
-                                            Cache.saveUriFile(u.getUid(), img);
-                                            u.setImage_url(Cache.getImageDate(u.getUid()));
-                                            mStoreBase.collection("users").document(u.getUid()).set(u);
-                                            Glide.with(getContext()).load(img).fitCenter().centerCrop().into(personViewHolder.imagePerson);
-                                        }
-                                    }
-                                }
-                            });
+            adapter = new FirestoreRecyclerAdapter<User, PersonViewHolder>(options) {
+                @NonNull
+                @Override
+                public PersonViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+                    Log.w("Add", "ViewHolder");
+                    View view= LayoutInflater.from(parent.getContext()).inflate(R.layout.item_person,parent,false);
+                    return new PersonViewHolder(view);
+                }
+
+                @Override
+                protected void onBindViewHolder(@NonNull final PersonViewHolder personViewHolder, final int i, @NonNull final  User u) {
+
+                    Log.w("Add","BindViewHolder");
+                    personViewHolder.villePers.setText(u.getCity());
+                    personViewHolder.nomInvit.setText(u.getFirst_name() + " "+ u.getLast_name());
+                    personViewHolder.button.setImageDrawable(getResources().getDrawable(R.drawable.ic_baseline_remove_24));
+                    personViewHolder.button.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            adds.remove(u.getUid());
+                            Log.w("Add", "List : " + adds.isEmpty());
+                            adapter.notifyDataSetChanged();
+                            createFragment();
                         }
-                    }else{
-                        Uri imgCache = Cache.getUriFromUid(u.getUid());
-                        Log.w("Cache", "Image Cache : " + Cache.getImageDate(u.getUid()));
-                        Log.w("Cache", "Data Cache : " + u.getImage_url());
-                        if(Cache.getImageDate(u.getUid()).equalsIgnoreCase(u.getImage_url())) {
-                            Log.w("image", "get image from cache");
-                            Glide.with(getContext()).load(imgCache).fitCenter().centerCrop().into(personViewHolder.imagePerson);
-                        }else{
+                    });
+
+
+                    if(u.getImage_url() != null) {
+                        if(!Cache.fileExists(u.getUid())) {
                             StorageReference imgRef = mStore.getReference("users/" + u.getUid());
                             if (imgRef != null) {
                                 imgRef.getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
@@ -380,18 +372,45 @@ public class CreateEventFragment extends Fragment {
                                     }
                                 });
                             }
+                        }else{
+                            Uri imgCache = Cache.getUriFromUid(u.getUid());
+                            Log.w("Cache", "Image Cache : " + Cache.getImageDate(u.getUid()));
+                            Log.w("Cache", "Data Cache : " + u.getImage_url());
+                            if(Cache.getImageDate(u.getUid()).equalsIgnoreCase(u.getImage_url())) {
+                                Log.w("image", "get image from cache");
+                                Glide.with(getContext()).load(imgCache).fitCenter().centerCrop().into(personViewHolder.imagePerson);
+                            }else{
+                                StorageReference imgRef = mStore.getReference("users/" + u.getUid());
+                                if (imgRef != null) {
+                                    imgRef.getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
+                                        @Override
+                                        public void onComplete(@NonNull Task<Uri> task) {
+                                            if (task.isSuccessful()) {
+                                                Uri img = task.getResult();
+                                                if (img != null) {
+                                                    Cache.saveUriFile(u.getUid(), img);
+                                                    u.setImage_url(Cache.getImageDate(u.getUid()));
+                                                    mStoreBase.collection("users").document(u.getUid()).set(u);
+                                                    Glide.with(getContext()).load(img).fitCenter().centerCrop().into(personViewHolder.imagePerson);
+                                                }
+                                            }
+                                        }
+                                    });
+                                }
+                            }
                         }
                     }
                 }
-            }
 
-        };
+            };
 
-        mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        mRecyclerView.setAdapter(adapter);
-        adapter.startListening();
+            mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+            mRecyclerView.setAdapter(adapter);
+            adapter.startListening();
 
-        Log.w("Add", "Set adapter");
+            Log.w("Add", "Set adapter");
+
+
 
 
     }
@@ -478,7 +497,7 @@ public class CreateEventFragment extends Fragment {
                         R.drawable.ic_baseline_account_circle_24, evenementAttente.getName(), evenementAttente.getDescription(),
                         evenementAttente.getAddress(), evenementAttente.getCity(), evenementAttente.getVisibility(),
                         USER_REFERENCE, new Timestamp(sdf.parse(event_date.getText().toString()+" "+final_event_time))
-                        , new GeoPoint(l.latitude, l.longitude));
+                        , new GeoPoint(l.latitude, l.longitude), adds.size());
 
                 mStoreBase.collection("events").document(e.getUid()).set(e);
                 mStoreBase.collection("users").document(USER_ID).collection("events").document(e.getUid()).set(e);
@@ -528,8 +547,8 @@ public class CreateEventFragment extends Fragment {
     @Override
     public void onStop(){
         super.onStop();
-        adapter.stopListening();
-        adds.clear();
+        if(adapter != null)
+            adapter.stopListening();
     }
 
     @Override

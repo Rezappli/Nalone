@@ -111,6 +111,13 @@ public class CreateGroupFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         rootView = inflater.inflate(R.layout.fragment_create_group, container, false);
+
+        createFragment();
+
+        return rootView;
+    }
+
+    private void createFragment(){
         navController = Navigation.findNavController(getActivity(),R.id.nav_host_fragment);
         mRecyclerView = rootView.findViewById(R.id.recyclerViewCreateGroup);
         navController = Navigation.findNavController(getActivity(), R.id.nav_host_fragment);
@@ -202,12 +209,11 @@ public class CreateGroupFragment extends Fragment {
             @RequiresApi(api = Build.VERSION_CODES.M)
             @Override
             public void onClick(View v) {
-                    saveGroup();
+                saveGroup();
             }
         });
-
-        return rootView;
     }
+
 
     private void refreshData() {
         groupAttente.setName(event_name.getText().toString());
@@ -234,16 +240,21 @@ public class CreateGroupFragment extends Fragment {
 
     public void initList(){
             //adds.add("a");
-            Query query = mStoreBase.collection("users").whereIn("uid", adds);
+        Query query;
+        if(!adds.isEmpty()) {
+            query = mStoreBase.collection("users").whereIn("uid", adds);
             query.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                 @Override
                 public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                    for (QueryDocumentSnapshot doc : task.getResult()){
+                    for (QueryDocumentSnapshot doc : task.getResult()) {
                         User u = doc.toObject(User.class);
                         Log.w("Add", u.getFirst_name());
                     }
                 }
             });
+        }else{
+            query = mStoreBase.collection("usejkhdskjfhkjhrjdhfks");
+        }
 
             //RecyclerOption
             FirestoreRecyclerOptions<User> options = new FirestoreRecyclerOptions.Builder<User>().setQuery(query, User.class).build();
@@ -267,10 +278,9 @@ public class CreateGroupFragment extends Fragment {
                     personViewHolder.button.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            adds.remove(u);
+                            adds.remove(u.getUid());
                             Log.w("Add", "List : " + adds.isEmpty());
-                            adapter.notifyDataSetChanged();
-                            initList();
+                            createFragment();
                         }
                     });
                 }

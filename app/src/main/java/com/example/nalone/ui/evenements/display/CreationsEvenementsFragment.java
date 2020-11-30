@@ -158,6 +158,8 @@ public class CreationsEvenementsFragment extends Fragment {
                 holder.mVille.setText((e.getCity()));
                 holder.mDescription.setText((e.getDescription()));
                 holder.mProprietaire.setText(e.getOwner());
+                holder.textViewNbMembers.setText(e.getNbMembers() + " membres inscrits");
+
 
                 mStoreBase.collection("users").whereEqualTo("uid", e.getOwnerDoc().getId())
                         .get()
@@ -299,6 +301,7 @@ public class CreationsEvenementsFragment extends Fragment {
         public TextView mDescription;
         public TextView mProprietaire;
         public CardView mCarwViewOwner;
+        public TextView textViewNbMembers;
 
 
         public EventViewHolder(@NonNull View itemView) {
@@ -313,6 +316,7 @@ public class CreationsEvenementsFragment extends Fragment {
             mImageViewDelete = itemView.findViewById(R.id.imageViewDeleteMesEvent);
             mImageViewEdit = itemView.findViewById(R.id.imageViewEdit);
             mImageViewDisplay = itemView.findViewById(R.id.imageViewAfficher);
+            textViewNbMembers = itemView.findViewById(R.id.textViewNbMembers);
             mCarwViewOwner = itemView.findViewById(R.id.backGroundOwner);
         }
     }

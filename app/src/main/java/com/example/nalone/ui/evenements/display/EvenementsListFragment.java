@@ -181,6 +181,8 @@ public class EvenementsListFragment extends Fragment {
                 holder.mVille.setText((e.getCity()));
                 holder.mDescription.setText((e.getDescription()));
                 holder.mProprietaire.setText(e.getOwner());
+                holder.textViewNbMembers.setText(e.getNbMembers() + " membres inscrits");
+
 
                 mStoreBase.collection("users").whereEqualTo("uid", e.getOwnerDoc().getId())
                         .get()
@@ -227,9 +229,10 @@ public class EvenementsListFragment extends Fragment {
                 holder.mInscrire.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        ModelData m = new ModelData("add", e.getOwnerDoc());
+                        ModelData owner = new ModelData("add", e.getOwnerDoc());
+                        ModelData m = new ModelData("add", mStoreBase.collection("users").document(USER_ID));
                         mStoreBase.collection("events").document(e.getUid()).collection("members").document(USER.getUid()).set(m);
-                        mStoreBase.collection("users").document(USER_ID).collection("events").document(e.getUid()).set(m);
+                        mStoreBase.collection("users").document(USER_ID).collection("events").document(e.getUid()).set(owner);
                         Toast.makeText(getContext(), "Vous êtes inscrit à l'évènement " + e.getName() + " !", Toast.LENGTH_SHORT).show();
                         createFragment();
                     }
@@ -304,6 +307,7 @@ public class EvenementsListFragment extends Fragment {
         public TextView mProprietaire;
         public Button mInscrire, mAfficher;
         public CardView mCarwViewOwner;
+        public  TextView textViewNbMembers;
 
         public EventViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -317,6 +321,7 @@ public class EvenementsListFragment extends Fragment {
             mAfficher = itemView.findViewById(R.id.buttonAfficherEventList);
             mInscrire = itemView.findViewById(R.id.buttonInscrirEventList);
             mCarwViewOwner = itemView.findViewById(R.id.backGroundOwner);
+            textViewNbMembers = itemView.findViewById(R.id.textViewNbMembers);
 
         }
     }

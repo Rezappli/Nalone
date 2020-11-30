@@ -24,12 +24,13 @@ public class Evenement implements Serializable {
     private String owner;
     private List<DocumentReference> register_users;
     private List<DocumentReference> wainting_users;
+    private int nbMembers;
 
     public Evenement() {}
 
 
     public Evenement(String uid, String owner, int image, String name, String description, String address, String city,
-                     Visibility visibility, DocumentReference ownerDoc, Timestamp date, GeoPoint location){
+                     Visibility visibility, DocumentReference ownerDoc, Timestamp date, GeoPoint location, int nbMembers){
         this.uid = uid;
         this.image = image;
         this.name = name;
@@ -44,6 +45,7 @@ public class Evenement implements Serializable {
             this.latitude = location.getLatitude();
             this.longitude = location.getLongitude();
         }
+        this.nbMembers = nbMembers;
     }
 
     public List<DocumentReference> getRegister_users() {
@@ -173,4 +175,7 @@ public class Evenement implements Serializable {
         return final_date_text;
     }
 
+    public int getNbMembers() {
+        return nbMembers;
+    }
 }
