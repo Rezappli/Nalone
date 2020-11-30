@@ -4,9 +4,11 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.content.res.AppCompatResources;
 import androidx.cardview.widget.CardView;
 import androidx.core.graphics.drawable.DrawableCompat;
@@ -52,6 +54,7 @@ public class ParametresFragment extends Fragment {
     private NavController navController;
 
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -82,8 +85,6 @@ public class ParametresFragment extends Fragment {
         textViewMaPosition = root.findViewById(R.id.textViewMaPosition);
 
         textViewLocationActuel.setText(USER.getCity());
-
-        //textViewLocationActuel.setText(USERS_LIST.get(USER_ID).getVille()+"");
 
         if(position) {
             Drawable img = getContext().getResources().getDrawable(R.drawable.ic_baseline_my_location_focused);
@@ -135,7 +136,8 @@ public class ParametresFragment extends Fragment {
 
         final SeekBar seekBar =  root.findViewById(R.id.seekBarRayon);
 
-        seekBar.setMax(200000);
+        seekBar.setMax(200);
+        seekBar.setMin(50);
         seekBar.setProgress(range);
 
         seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
@@ -145,7 +147,7 @@ public class ParametresFragment extends Fragment {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progressValue, boolean fromUser) {
                 progress = progressValue;
-                textViewRayon.setText(progressValue/1000 + " km");
+                textViewRayon.setText(progressValue + " km");
             }
 
             // Notification that the user has started a touch gesture.
@@ -157,7 +159,7 @@ public class ParametresFragment extends Fragment {
             // Notification that the user has finished a touch gesture
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
-                range = progress/1000;
+                range = progress;
             }
         });
 
@@ -224,11 +226,11 @@ public class ParametresFragment extends Fragment {
         SharedPreferences.Editor editor = settings.edit();
 
         Log.w("Range", "Range : " + range);
-        /*editor.putInt(sharedRange, range);
+        editor.putInt(sharedRange, range);
         editor.putBoolean(sharedNotif, notification);
         editor.putBoolean(sharedPosition, maPosition);
 
-        editor.apply();*/
+        editor.apply();
     }
 
 }
