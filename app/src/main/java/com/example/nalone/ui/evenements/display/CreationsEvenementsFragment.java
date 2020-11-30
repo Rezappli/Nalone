@@ -314,8 +314,6 @@ public class CreationsEvenementsFragment extends Fragment {
             mImageViewEdit = itemView.findViewById(R.id.imageViewEdit);
             mImageViewDisplay = itemView.findViewById(R.id.imageViewAfficher);
             mCarwViewOwner = itemView.findViewById(R.id.backGroundOwner);
-
-
         }
     }
 

@@ -1,6 +1,7 @@
 package com.example.nalone.ui.message;
 
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -51,6 +52,7 @@ public class ChatActivity extends AppCompatActivity {
     private FirestoreRecyclerAdapter adapter;
     private RecyclerView mRecyclerView;
     private ProgressBar loading;
+    private LinearLayoutManager llm;
 
     private LinearLayout.LayoutParams myLayoutMessages;
     private LinearLayout.LayoutParams otherLayoutMessages;
@@ -65,15 +67,18 @@ public class ChatActivity extends AppCompatActivity {
         nameUser = findViewById(R.id.nameUser);
         nameUser.setText(USER_LOAD.getFirst_name() + " " + USER_LOAD.getLast_name());
         mRecyclerView = findViewById(R.id.messagesRecyclerView);
+        mRecyclerView.scrollToPosition(ScrollView.FOCUS_DOWN);
         loading = findViewById(R.id.messageLoading);
         buttonSend.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                mRecyclerView.smoothScrollToPosition(adapter.getItemCount() - 1);
                 if (messageEditText.getText().length() > 0) {
                     sendMessage(new Message(USER_REFERENCE, messageEditText.getText().toString()));
                 }
             }
         });
+
 
         myLayoutMessages = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         myLayoutMessages.setMargins(80, 1, 10, 1);
@@ -103,6 +108,7 @@ public class ChatActivity extends AppCompatActivity {
             mStoreBase.collection("chat").document(chatRef.getId()).collection("messages").document(UUID.randomUUID().toString()).set(msg);
             messageEditText.setText("");
             hideKeyboard();
+
         }
     }
 
@@ -122,19 +128,23 @@ public class ChatActivity extends AppCompatActivity {
             protected void onBindViewHolder(@NonNull MessageViewHolder messageViewHolder, int i, @NonNull Message m) {
                 if(m.getSender().equals(USER_REFERENCE)){
                     messageViewHolder.messageLayout.setLayoutParams(myLayoutMessages);
+                    messageViewHolder.backgroundItem.setCardBackgroundColor(Color.parseColor("#18ECC5"));
                 }else{
                     messageViewHolder.messageLayout.setLayoutParams(otherLayoutMessages);
+                    messageViewHolder.backgroundItem.setCardBackgroundColor(Color.LTGRAY);
                 }
                 messageViewHolder.messageText.setText(m.getMessage());
 
             }
 
         };
+        llm = new LinearLayoutManager(ChatActivity.this);
+        llm.setStackFromEnd(true);
         loading.setVisibility(View.GONE);
-        mRecyclerView.setLayoutManager(new LinearLayoutManager(ChatActivity.this));
+        mRecyclerView.setLayoutManager(llm);
         mRecyclerView.setAdapter(adapter);
         adapter.startListening();
-        mRecyclerView.scrollToPosition(ScrollView.FOCUS_DOWN);
+      //  mRecyclerView.scrollToPosition(ScrollView.FOCUS_DOWN);
     }
 
 
@@ -147,6 +157,8 @@ public class ChatActivity extends AppCompatActivity {
         private ImageView button;
         private LinearLayout messageLayout;
         private TextView messageText;
+        private CardView backgroundItem;
+
 
         public MessageViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -158,6 +170,7 @@ public class ChatActivity extends AppCompatActivity {
             button = itemView.findViewById(R.id.buttonImage);
             messageLayout = itemView.findViewById(R.id.messageLayout);
             messageText = itemView.findViewById(R.id.messageText);
+            backgroundItem = itemView.findViewById(R.id.bgMessage);
         }
     }
 
