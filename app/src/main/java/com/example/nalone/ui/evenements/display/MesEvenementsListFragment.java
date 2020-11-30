@@ -52,12 +52,6 @@ public class MesEvenementsListFragment extends Fragment {
 
     private View rootView;
 
-    public static String nameEvent;
-    public static String cityEdit;
-    public static String adresseEdit;
-    public static String dateEdit;
-    public static String timeEdit;
-    public static String descEdit;
     public static Visibility visibiliteEdit;
 
     private LinearLayout linearSansEvent;

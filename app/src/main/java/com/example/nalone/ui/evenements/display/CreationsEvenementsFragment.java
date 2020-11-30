@@ -17,6 +17,8 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -24,6 +26,7 @@ import com.example.nalone.Evenement;
 import com.example.nalone.R;
 import com.example.nalone.User;
 import com.example.nalone.Visibility;
+import com.example.nalone.ui.amis.display.CreateGroupFragment;
 import com.example.nalone.ui.evenements.CreateEventFragment;
 import com.example.nalone.ui.evenements.EvenementsFragment;
 import com.example.nalone.util.Constants;
@@ -68,6 +71,7 @@ public class CreationsEvenementsFragment extends Fragment {
     private List<String> events = new ArrayList<>();
 
     private ArrayList<Evenement> itemEvents = new ArrayList<>();
+    private NavController navController;
 
 
     @Override
@@ -78,6 +82,7 @@ public class CreationsEvenementsFragment extends Fragment {
         linearSansEvent = rootView.findViewById(R.id.linearSansEvent);
         mRecyclerView = rootView.findViewById(R.id.recyclerViewMesEventList);
         addEvent = rootView.findViewById(R.id.create_event_button);
+        navController = Navigation.findNavController(getActivity(),R.id.nav_host_fragment);
         SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yy");
         addEvent.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -221,7 +226,9 @@ public class CreationsEvenementsFragment extends Fragment {
                 holder.mImageViewEdit.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-
+                        CreateEventFragment.EVENT_LOAD = e;
+                        CreateEventFragment.edit = true;
+                        navController.navigate(R.id.action_navigation_creations_evenements_to_navigation_create_event);
                     }
                 });
 

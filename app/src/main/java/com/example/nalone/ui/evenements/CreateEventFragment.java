@@ -102,6 +102,8 @@ public class CreateEventFragment extends Fragment {
 
     public static Evenement evenementAttente;
 
+    public static Evenement EVENT_LOAD;
+
     public class EventAttente extends Evenement {
 
         public EventAttente(String uid, String owner, int image, String name, String description, String address, String city,
@@ -155,12 +157,12 @@ public class CreateEventFragment extends Fragment {
         getData();
 
         if(edit){
-            event_city.setText(MesEvenementsListFragment.cityEdit);
-            event_name.setText(MesEvenementsListFragment.nameEvent);
-            event_resume.setText(MesEvenementsListFragment.descEdit);
-            event_horaire.setText(MesEvenementsListFragment.timeEdit);
-            event_adresse.setText(MesEvenementsListFragment.adresseEdit);
-            event_date.setText(MesEvenementsListFragment.dateEdit);
+            event_city.setText(EVENT_LOAD.getCity());
+            event_name.setText(EVENT_LOAD.getName());
+            event_resume.setText(EVENT_LOAD.getDescription());
+            event_horaire.setText(EVENT_LOAD.getDate().toDate().toString());
+            event_adresse.setText(EVENT_LOAD.getAddress());
+            //event_date.setText(MesEvenementsListFragment.dateEdit);
 
             if(MesEvenementsListFragment.visibiliteEdit == Visibility.PUBLIC){
                 selectPublic();
