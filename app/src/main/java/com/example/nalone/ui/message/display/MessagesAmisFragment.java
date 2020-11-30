@@ -36,12 +36,15 @@ import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.StorageReference;
+
+import org.w3c.dom.Document;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -66,6 +69,8 @@ public class MessagesAmisFragment extends Fragment {
     private FirestoreRecyclerAdapter adapter;
     private RecyclerView mRecyclerView;
     private List<String> chats;
+    private ImageView addMessage;
+    private DocumentReference refChat;
 
 
     @Override
@@ -87,8 +92,6 @@ public class MessagesAmisFragment extends Fragment {
         mRecyclerView = rootView.findViewById(R.id.recyclerViewMessagesAmis);
 
         adapterUsers();
-
-
 
         search_bar.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -113,7 +116,7 @@ public class MessagesAmisFragment extends Fragment {
     }
 
     private void adapterUsers() {
-        mStoreBase.collection("users").document(USER.getUid()).collection("chats").limit(10)
+        mStoreBase.collection("users").document(USER.getUid()).collection("chat_friends").limit(10)
                 .get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
@@ -279,11 +282,9 @@ public class MessagesAmisFragment extends Fragment {
 
 
     public void showPopUpProfil(final User u) {
-        PopupProfilFragment.USER_LOAD = u;
+        ChatActivity.USER_LOAD = u;
         startActivity(new Intent(getContext(), ChatActivity.class));
-
     }
-
 
     @Override
     public void onStop() {
