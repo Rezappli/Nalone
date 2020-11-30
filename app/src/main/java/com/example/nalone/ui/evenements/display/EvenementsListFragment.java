@@ -38,12 +38,15 @@ import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
 import static com.example.nalone.util.Constants.USER;
 import static com.example.nalone.util.Constants.USER_ID;
+import static com.example.nalone.util.Constants.dateFormat;
 import static com.example.nalone.util.Constants.mStoreBase;
+import static com.example.nalone.util.Constants.timeFormat;
 
 public class EvenementsListFragment extends Fragment {
 
@@ -173,7 +176,8 @@ public class EvenementsListFragment extends Fragment {
                 final Evenement event = e;
                 holder.mImageView.setImageResource(e.getImage());
                 holder.mTitle.setText((e.getName()));
-                holder.mDate.setText((e.getDate().toDate().toString()));
+                holder.mDate.setText((dateFormat.format(e.getDate().toDate())));
+                holder.mTime.setText((timeFormat.format(e.getDate().toDate())));
                 holder.mVille.setText((e.getCity()));
                 holder.mDescription.setText((e.getDescription()));
                 holder.mProprietaire.setText(e.getOwner());
@@ -315,57 +319,5 @@ public class EvenementsListFragment extends Fragment {
             mCarwViewOwner = itemView.findViewById(R.id.backGroundOwner);
 
         }
-    }
-
-    private void updateItems(){
-        itemEvents.clear();
-        /*float[] results = new float[1];
-        for(int i = 0; i < EVENTS_LIST.size(); i++){
-            Evenement e = EVENTS_LIST.get(i+"");
-            MarkerOptions m = MARKERS_EVENT.get(e.getId()+"");
-
-            m.title(e.getNom());
-
-            if(e.getVisibilite().equals(Visibility.PRIVE)){
-                if(e.getMembres_inscrits().contains(USER_ID)){
-                    Location.distanceBetween(USER_LATLNG.latitude, USER_LATLNG.longitude,
-                            m.getPosition().latitude, m.getPosition().longitude, results);
-                    if(results[0] < range) {
-                        itemEvents.add(e);
-                    }
-                }
-            }else{
-                Location.distanceBetween(USER_LATLNG.latitude, USER_LATLNG.longitude,
-                        m.getPosition().latitude, m.getPosition().longitude, results);
-                if(results[0] < 50000) {
-                    itemEvents.add(e);
-                }
-            }
-
-        }*/
-
-        //mAdapterEventList = new ItemEventListAdapter(itemEvents);
-
-        /*mRecyclerViewEvent = rootView.findViewById(R.id.recyclerViewEventList);
-        mLayoutManagerEvent = new LinearLayoutManager(
-                rootView.getContext(),
-                LinearLayoutManager.VERTICAL,
-                false);
-        mRecyclerViewEvent.setLayoutManager(mLayoutManagerEvent);*/
-        //mRecyclerViewEvent.setAdapter(mAdapterEventList);
-
-        /*mAdapterEventList.setOnItemClickListener(new ItemEventListAdapter.OnItemClickListener() {
-            @Override
-            public void onDisplayClick(int position) {
-                Constants.targetZoom = new LatLng(itemEvents.get(position).getLocation().getLatitude(), itemEvents.get(position).getLocation().getLongitude());
-                EvenementsFragment.viewPager.setCurrentItem(0);
-            }
-
-            @Override
-            public void onSignInClick(int position) {
-                InfosEvenementsActivity.EVENT_LOAD = itemEvents.get(position);
-                startActivity(new Intent(getContext(), InfosEvenementsActivity.class));
-            }
-        });*/
     }
 }

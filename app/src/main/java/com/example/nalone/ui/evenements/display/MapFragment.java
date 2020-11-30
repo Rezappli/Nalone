@@ -64,9 +64,11 @@ import static com.example.nalone.HomeActivity.buttonBack;
 import static com.example.nalone.util.Constants.MAPVIEW_BUNDLE_KEY;
 import static com.example.nalone.util.Constants.USER;
 import static com.example.nalone.util.Constants.USER_REFERENCE;
+import static com.example.nalone.util.Constants.dateFormat;
 import static com.example.nalone.util.Constants.mStoreBase;
 import static com.example.nalone.util.Constants.range;
 import static com.example.nalone.util.Constants.targetZoom;
+import static com.example.nalone.util.Constants.timeFormat;
 
 
 public class MapFragment extends Fragment implements OnMapReadyCallback {
@@ -86,7 +88,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     private FirestoreRecyclerAdapter adapter;
 
     private double unitLat = 74.6554;
-    private double unitLong = 111;
+    private double unitLong = 74;
 
     private double minLat = USER.getLocation().getLatitude() - (range / unitLat);
     private double maxLat = USER.getLocation().getLatitude() + (range / unitLat);
@@ -153,7 +155,8 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
             protected void onBindViewHolder(@NonNull final EventViewHolder holder, int i, @NonNull final Evenement e) {
                 holder.mImageView.setImageResource(e.getImage());
                 holder.mTitle.setText((e.getName()));
-                holder.mDate.setText((e.getDate().toDate().toString()));
+                holder.mDate.setText((dateFormat.format(e.getDate().toDate())));
+                holder.mTime.setText((timeFormat.format(e.getDate().toDate())));
                 holder.mVille.setText((e.getCity()));
                 holder.mDescription.setText((e.getDescription()));
                 holder.mProprietaire.setText(e.getOwner());
@@ -360,7 +363,10 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                 public void onComplete(@NonNull Task<QuerySnapshot> task) {
                     for(QueryDocumentSnapshot doc : task.getResult()){
                         Evenement e = doc.toObject(Evenement.class);
+                        Log.w("Events", "Found " + e.getName());
+                        Log.w("Events", "E longitude " + e.getLongitude());
                         if(e.getLongitude() > minLong && e.getLongitude() < maxLong){
+                            Log.w("Events", "Found and add" + e.getName());
                             Location.distanceBetween(USER.getLocation().getLatitude(), USER.getLocation().getLongitude(),
                                     e.getLatitude(), e.getLongitude(), results);
                             if(results[0] <= range * 1000) {

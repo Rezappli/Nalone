@@ -16,6 +16,7 @@ import com.google.firebase.storage.StorageReference;
 import com.koalap.geofirestore.GeoFire;
 
 import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.Locale;
 
@@ -46,6 +47,9 @@ public class Constants {
 
     public static final DateFormat formatD = DateFormat.getDateInstance(DateFormat.FULL,
             new Locale("fr", "FR"));
+
+    public static SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yy");
+    public static SimpleDateFormat timeFormat = new SimpleDateFormat("hh:mm");
 
     public static LatLng targetZoom;
 

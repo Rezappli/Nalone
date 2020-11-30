@@ -77,6 +77,9 @@ public class MyFirebaseInstance extends FirebaseMessagingService {
 
     @Override
     public void onMessageReceived(RemoteMessage remoteMessage) {
+
+        boolean isGlobalNotification = false;
+
         final Intent intent = new Intent(this, SplashActivity.class);
         NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         int notificationID = new Random().nextInt(3000);
@@ -105,6 +108,7 @@ public class MyFirebaseInstance extends FirebaseMessagingService {
                     .setAutoCancel(true)
                     .setSound(notificationSoundUri)
                     .setContentIntent(pendingIntent);
+            isGlobalNotification = true;
         } else {
             notificationBuilder = new NotificationCompat.Builder(this, ADMIN_CHANNEL_ID)
                     .setSmallIcon(R.drawable.logo)
@@ -118,6 +122,12 @@ public class MyFirebaseInstance extends FirebaseMessagingService {
         //Set notification color to match your app color template
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             notificationBuilder.setColor(getResources().getColor(R.color.colorPrimaryDark));
+        }
+
+        if(!isGlobalNotification) {
+            if (!isAppRunning(getBaseContext())) {
+                return;
+            }
         }
         notificationManager.notify(notificationID, notificationBuilder.build());
     }
