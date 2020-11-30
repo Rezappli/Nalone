@@ -40,8 +40,6 @@ public class Constants {
 
     public static boolean load = false;
 
-    public static GeoHash USER_GEOHASH;
-
     public static final DateFormat formatD = DateFormat.getDateInstance(DateFormat.FULL,
             new Locale("fr", "FR"));
 

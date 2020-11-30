@@ -27,7 +27,6 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
-import static com.example.nalone.util.Constants.USER_GEOHASH;
 import static com.example.nalone.util.Constants.USER_ID;
 import static com.example.nalone.util.Constants.USER_REFERENCE;
 import static com.example.nalone.util.Constants.USER_STORAGE_REF;
@@ -89,8 +88,6 @@ public class SplashActivity extends AppCompatActivity {
                                             MyFirebaseInstance.user_id = USER_ID;
                                             USER_STORAGE_REF = mStore.getReference("users").child(USER.getUid());
                                             Log.w("SPLASH", "City : " + USER.getCity());
-                                            USER_GEOHASH = new GeoHash(USER.getLocation().getLatitude(), USER.getLocation().getLongitude());
-                                            Log.w("GeoHash", "User geohash : " + USER_GEOHASH);
 
                                             USER_REFERENCE = mStoreBase.collection("users").document(USER.getUid());
                                             load = true;

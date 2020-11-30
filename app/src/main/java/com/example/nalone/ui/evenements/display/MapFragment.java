@@ -4,7 +4,6 @@ package com.example.nalone.ui.evenements.display;
 
 import android.graphics.Color;
 import android.location.Location;
-import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -30,7 +29,6 @@ import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Build;
-import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -48,37 +46,24 @@ import com.example.nalone.Visibility;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
-import com.google.android.gms.maps.model.Circle;
 import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
-import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.GeoPoint;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
-import com.koalap.geofirestore.GeoFire;
-import com.koalap.geofirestore.GeoLocation;
-import com.koalap.geofirestore.GeoQuery;
-import com.koalap.geofirestore.GeoQueryEventListener;
-import com.koalap.geofirestore.LocationCallback;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.example.nalone.util.Constants.USER_GEOHASH;
-import static com.example.nalone.util.Constants.geoFirestore;
 
 import static com.example.nalone.HomeActivity.buttonBack;
 import static com.example.nalone.util.Constants.MAPVIEW_BUNDLE_KEY;
 import static com.example.nalone.util.Constants.USER;
-import static com.example.nalone.util.Constants.USER_ID;
 import static com.example.nalone.util.Constants.USER_REFERENCE;
-import static com.example.nalone.util.Constants.mStore;
 import static com.example.nalone.util.Constants.mStoreBase;
 import static com.example.nalone.util.Constants.range;
 import static com.example.nalone.util.Constants.targetZoom;
@@ -148,8 +133,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                 navController.navigate(R.id.action_navigation_evenements_to_navigation_create_event);
             }
         });
-
-
 
         return rootView;
     }
