@@ -20,7 +20,6 @@ import com.example.nalone.User;
 import com.example.nalone.ui.profil.ParametresFragment;
 import com.example.nalone.util.Constants;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
-import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -28,15 +27,14 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
+import static com.example.nalone.util.Constants.USER_GEOHASH;
 import static com.example.nalone.util.Constants.USER_ID;
-import static com.example.nalone.util.Constants.USER_LATLNG;
 import static com.example.nalone.util.Constants.USER_REFERENCE;
 import static com.example.nalone.util.Constants.USER_STORAGE_REF;
 import static com.example.nalone.util.Constants.USER;
 import static com.example.nalone.util.Constants.currentUser;
 import static com.example.nalone.util.Constants.heightScreen;
 import static com.example.nalone.util.Constants.mAuth;
-import static com.example.nalone.util.Constants.mMessaging;
 import static com.example.nalone.util.Constants.mStore;
 import static com.example.nalone.util.Constants.mStoreBase;
 import static com.example.nalone.util.Constants.range;
@@ -74,43 +72,48 @@ public class SplashActivity extends AppCompatActivity {
         //addUser();
         if (currentUser != null) {
             if (!load) {
-                mStoreBase.collection("users")
-                        .whereEqualTo("mail", currentUser.getEmail())
-                        .get()
-                        .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                            @RequiresApi(api = Build.VERSION_CODES.M)
-                            @Override
-                            public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                                if (task.isSuccessful()) {
-                                     if(task.getResult().size() > 0) {
-                                        for (QueryDocumentSnapshot document : task.getResult()) {
-                                            USER = document.toObject(User.class);
+                if (currentUser.isEmailVerified()) {
+                    mStoreBase.collection("users")
+                            .whereEqualTo("mail", currentUser.getEmail())
+                            .get()
+                            .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                                @RequiresApi(api = Build.VERSION_CODES.M)
+                                @Override
+                                public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                    if (task.isSuccessful()) {
+                                        if (task.getResult().size() > 0) {
+                                            for (QueryDocumentSnapshot document : task.getResult()) {
+                                                USER = document.toObject(User.class);
+                                            }
+                                            USER_ID = USER.getUid();
+                                            MyFirebaseInstance.user_id = USER_ID;
+                                            USER_STORAGE_REF = mStore.getReference("users").child(USER.getUid());
+                                            Log.w("SPLASH", "City : " + USER.getCity());
+                                            USER_GEOHASH = new GeoHash(USER.getLocation().getLatitude(), USER.getLocation().getLongitude());
+                                            Log.w("GeoHash", "User geohash : " + USER_GEOHASH);
+
+                                            USER_REFERENCE = mStoreBase.collection("users").document(USER.getUid());
+                                            load = true;
+                                            startActivity(new Intent(SplashActivity.this, HomeActivity.class));
+                                        } else {
+                                            load = true;
+                                            startActivity(new Intent(SplashActivity.this, MainActivity.class));
                                         }
-                                        USER_ID = USER.getUid();
-                                        MyFirebaseInstance.user_id = USER_ID;
-                                        USER_STORAGE_REF = mStore.getReference("users").child(USER.getUid());
-                                        Log.w("SPLASH", "City : " + USER.getCity());
-                                        USER_LATLNG = new LatLng(USER.getLocation().getLatitude(), USER.getLocation().getLongitude());
-                                        USER_REFERENCE = mStoreBase.collection("users").document(USER.getUid());
-                                        Log.w("SPLASH", "City : " + USER_LATLNG.toString());
-                                        load = true;
-                                        startActivity(new Intent(SplashActivity.this, HomeActivity.class));
-                                    }else{
+                                    } else {
+                                        Log.d("SPLASH", "Error getting documents: ", task.getException());
                                         load = true;
                                         startActivity(new Intent(SplashActivity.this, MainActivity.class));
                                     }
-                                } else {
-                                    Log.d("SPLASH", "Error getting documents: ", task.getException());
-                                    load = true;
-                                    startActivity(new Intent(SplashActivity.this, MainActivity.class));
                                 }
-                            }
-                        }).addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Log.w("SPLASH", "Erreur : " + e.getMessage());
-                    }
-                });
+                            }).addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            Log.w("SPLASH", "Erreur : " + e.getMessage());
+                        }
+                    });
+                }
+            }else{
+                startActivity(new Intent(SplashActivity.this, MainActivity.class));
             }
         } else {
             load = true;

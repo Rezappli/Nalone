@@ -213,7 +213,7 @@ public class CreationsEvenementsFragment extends Fragment {
                 holder.mImageViewDisplay.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        Constants.targetZoom = new LatLng(event.getLocation().getLatitude(), event.getLocation().getLongitude());
+                        //Constants.targetZoom = new LatLng(event.getLocation().getLatitude(), event.getLocation().getLongitude());
                         EvenementsFragment.viewPager.setCurrentItem(0);
                     }
                 });

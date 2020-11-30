@@ -1,14 +1,11 @@
 package com.example.nalone;
 
-import com.example.nalone.items.ItemPerson;
 import com.example.nalone.util.Constants;
 import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.GeoPoint;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 public class Evenement implements Serializable {
@@ -19,10 +16,11 @@ public class Evenement implements Serializable {
     private String description;
     private String address;
     private String city;
+    private Double latitude;
+    private Double longitude;
     private Visibility visibility;
     private DocumentReference ownerDoc;
     private Timestamp date;
-    private GeoPoint location;
     private String owner;
     private List<DocumentReference> register_users;
     private List<DocumentReference> wainting_users;
@@ -41,8 +39,11 @@ public class Evenement implements Serializable {
         this.visibility = visibility;
         this.ownerDoc = ownerDoc;
         this.date = date;
-        this.location = location;
         this.owner = owner;
+        if(location != null) {
+            this.latitude = location.getLatitude();
+            this.longitude = location.getLongitude();
+        }
     }
 
     public List<DocumentReference> getRegister_users() {
@@ -133,20 +134,28 @@ public class Evenement implements Serializable {
         this.date = date;
     }
 
-    public GeoPoint getLocation() {
-        return location;
-    }
-
-    public void setLocation(GeoPoint location) {
-        this.location = location;
-    }
-
     public String getUid() {
         return uid;
     }
 
     public void setUid(String uid) {
         this.uid = uid;
+    }
+
+    public Double getLatitude() {
+        return latitude;
+    }
+
+    public void setLatitude(Double latitude) {
+        this.latitude = latitude;
+    }
+
+    public Double getLongitude() {
+        return longitude;
+    }
+
+    public void setLongitude(Double longitude) {
+        this.longitude = longitude;
     }
 
     @Override

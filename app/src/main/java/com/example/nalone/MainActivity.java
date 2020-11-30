@@ -4,6 +4,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
@@ -15,6 +17,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.nalone.signUpActivities.SignUpInformationActivity;
+import com.example.nalone.signUpActivities.SignUpProfilActivity;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
@@ -29,6 +32,7 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
 
 import static com.example.nalone.util.Constants.currentUser;
+import static com.example.nalone.util.Constants.load;
 import static com.example.nalone.util.Constants.mAuth;
 
 public class MainActivity extends AppCompatActivity{
@@ -41,7 +45,6 @@ public class MainActivity extends AppCompatActivity{
 
     private GoogleSignInClient mGoogleSignInClient;
 
-    @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -149,12 +152,27 @@ public class MainActivity extends AppCompatActivity{
                                 currentUser = mAuth.getCurrentUser();
 
                                 Log.w("INSCRIPTION", "current user : " + currentUser.getEmail());
+                                Log.w("INSCRIPTION", "email valide : " + currentUser.isEmailVerified());
 
-                                if (!currentUser.isEmailVerified()) {
+                                if (currentUser.isEmailVerified()) {
                                     startActivity(new Intent(MainActivity.this, HomeActivity.class));
                                 } else {
-                                    Toast.makeText(MainActivity.this, "Votre adresse mail n'a pas été vérifiée",
-                                            Toast.LENGTH_SHORT).show();
+                                    final AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+                                    builder.setMessage("Votre adresse mail n'a pas été vérifiée")
+                                            .setPositiveButton("Renvoyer", new DialogInterface.OnClickListener() {
+                                                public void onClick(DialogInterface dialog, int id) {
+                                                    sendVerificationEmail();
+                                                    progressBar.setVisibility(View.GONE);
+                                                }
+                                            })
+                                            .setNegativeButton("OK", new DialogInterface.OnClickListener() {
+                                                public void onClick(DialogInterface dialog, int id) {
+                                                    dialog.dismiss();
+                                                    progressBar.setVisibility(View.GONE);
+                                                }
+                                            });
+                                    builder.create();
+                                    builder.show();
                                 }
                             } else {
                                 progressBar.setVisibility(View.GONE);
@@ -173,5 +191,23 @@ public class MainActivity extends AppCompatActivity{
     @Override
     public void onStop(){
         super.onStop();
+    }
+
+    private void sendVerificationEmail() {
+        Log.w("INSCRIPTION", "Envoye d'un mail!");
+        mAuth.getCurrentUser().sendEmailVerification()
+                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        if (task.isSuccessful()) {
+                            Toast.makeText(MainActivity.this, "Fiouuuu... Le mail vient de partir !",
+                                    Toast.LENGTH_SHORT).show();
+                        }else{
+                            Toast.makeText(MainActivity.this, "Une erreur est survenu : " + task.getException(),
+                                    Toast.LENGTH_SHORT).show();
+                        }
+
+                    }
+                });
     }
 }

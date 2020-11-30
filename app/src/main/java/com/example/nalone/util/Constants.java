@@ -6,11 +6,11 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
+import com.koalap.geofirestore.GeoFire;
 
 import java.text.DateFormat;
 import java.util.Locale;
@@ -21,6 +21,7 @@ public class Constants {
 
     public static FirebaseAuth mAuth = FirebaseAuth.getInstance();
     public static FirebaseFirestore mStoreBase = FirebaseFirestore.getInstance();
+    public static GeoFire geoFirestore = new GeoFire(mStoreBase.collection("events"));
 
 
     public static FirebaseStorage mStore = FirebaseStorage.getInstance();
@@ -39,14 +40,14 @@ public class Constants {
 
     public static boolean load = false;
 
-    public static LatLng USER_LATLNG;
+    public static GeoHash USER_GEOHASH;
 
     public static final DateFormat formatD = DateFormat.getDateInstance(DateFormat.FULL,
             new Locale("fr", "FR"));
 
     public static LatLng targetZoom;
 
-    public static int range = 50;
+    public static int range = 5;
 
     public static boolean maPosition;
 

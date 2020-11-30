@@ -52,6 +52,7 @@ import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.StorageReference;
+import com.koalap.geofirestore.GeoLocation;
 
 import java.io.IOException;
 import java.text.ParseException;
@@ -64,6 +65,7 @@ import static com.example.nalone.HomeActivity.buttonBack;
 import static com.example.nalone.util.Constants.USER;
 import static com.example.nalone.util.Constants.USER_ID;
 import static com.example.nalone.util.Constants.USER_REFERENCE;
+import static com.example.nalone.util.Constants.geoFirestore;
 import static com.example.nalone.util.Constants.mStore;
 import static com.example.nalone.util.Constants.mStoreBase;
 
@@ -103,9 +105,9 @@ public class CreateEventFragment extends Fragment {
     public class EventAttente extends Evenement {
 
         public EventAttente(String uid, String owner, int image, String name, String description, String address, String city,
-                            Visibility visibility, DocumentReference ownerDoc, Timestamp date, GeoPoint location){
+                            Visibility visibility, DocumentReference ownerDoc, Timestamp date){
             super(uid,  owner,  image,  name,  description,  address,  city,
-                     visibility,  ownerDoc,  date,  location);
+                     visibility,  ownerDoc,  date, null);
         }
     }
 
@@ -143,7 +145,7 @@ public class CreateEventFragment extends Fragment {
 
         if(evenementAttente== null){
             Log.w("group", "Creation groupe vide");
-            evenementAttente  = new EventAttente(UUID.randomUUID().toString(), USER.getFirst_name() + " " + USER.getLast_name(), 0, "", "", "","",null,USER_REFERENCE,null,null);
+            evenementAttente  = new EventAttente(UUID.randomUUID().toString(), USER.getFirst_name() + " " + USER.getLast_name(), 0, "", "", "","",null,USER_REFERENCE,null);
         }
 
         if(adds != null){
@@ -457,23 +459,24 @@ public class CreateEventFragment extends Fragment {
         !event_city.getText().toString().matches("") && !event_date.getText().toString().equalsIgnoreCase("date") &&
         !event_horaire.getText().toString().equalsIgnoreCase("horaire") && locationValid){
             refreshData();
-            LatLng l = getLocationFromAddress(evenementAttente.getAddress() + "," + evenementAttente.getCity());
+            final LatLng l = getLocationFromAddress(evenementAttente.getAddress() + "," + evenementAttente.getCity());
             if(l != null) {
 
                 SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy hh:mm");
 
                 String new_event_time = event_horaire.getText().toString().replaceAll(" ", "");
                 String final_event_time = "";
-                for(char c : new_event_time.toCharArray()){
-                    if(c != ' '){
+                for(char c : new_event_time.toCharArray()) {
+                    if (c != ' ') {
                         final_event_time += c;
                     }
                 }
 
-
-
-                Evenement e = new Evenement(evenementAttente.getUid(), USER.getFirst_name() + " " + USER.getLast_name(), R.drawable.ic_baseline_account_circle_24, evenementAttente.getName(), evenementAttente.getDescription(),
-                        evenementAttente.getAddress(), evenementAttente.getCity(), evenementAttente.getVisibility(), USER_REFERENCE, new Timestamp(sdf.parse(event_date.getText().toString()+" "+final_event_time)), new GeoPoint(l.latitude, l.longitude));
+                final Evenement e = new Evenement(evenementAttente.getUid(), USER.getFirst_name() + " " + USER.getLast_name(),
+                        R.drawable.ic_baseline_account_circle_24, evenementAttente.getName(), evenementAttente.getDescription(),
+                        evenementAttente.getAddress(), evenementAttente.getCity(), evenementAttente.getVisibility(),
+                        USER_REFERENCE, new Timestamp(sdf.parse(event_date.getText().toString()+" "+final_event_time))
+                        , new GeoPoint(l.latitude, l.longitude));
 
                 mStoreBase.collection("events").document(e.getUid()).set(e);
                 mStoreBase.collection("users").document(USER_ID).collection("events").document(e.getUid()).set(e);
@@ -483,7 +486,6 @@ public class CreateEventFragment extends Fragment {
                     mStoreBase.collection("events").document(e.getUid()).collection("members").document(user).set(e);
                 }
                 Toast.makeText(getContext(), "Vous avez créer votre évènement !", Toast.LENGTH_SHORT).show();
-
                 navController.navigate(R.id.action_navigation_create_event_to_navigation_evenements);
             }else{
                 event_adresse.setError("Adresse non trouvée");
