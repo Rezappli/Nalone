@@ -1,51 +1,41 @@
 package com.example.nalone.ui.message;
 
 
-import android.graphics.Color;
-import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.EditText;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toolbar;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.bumptech.glide.Glide;
-import com.example.nalone.Cache;
+import com.example.nalone.Chat;
+import com.example.nalone.Message;
 import com.example.nalone.R;
 import com.example.nalone.User;
-import com.example.nalone.ui.message.display.MessagesAmisFragment;
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.textfield.TextInputEditText;
-import com.google.android.material.textfield.TextInputLayout;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
-import com.google.firebase.firestore.model.Document;
-import com.google.firebase.storage.StorageReference;
 
-import java.util.HashMap;
+import java.util.UUID;
 
 import static com.example.nalone.util.Constants.USER;
-import static com.example.nalone.util.Constants.USER_ID;
-import static com.example.nalone.util.Constants.mStore;
+import static com.example.nalone.util.Constants.USER_REFERENCE;
 import static com.example.nalone.util.Constants.mStoreBase;
 
 public class ChatActivity extends AppCompatActivity {
@@ -55,11 +45,13 @@ public class ChatActivity extends AppCompatActivity {
     private ImageView profile_view;
     private TextView username;
     public static User USER_LOAD;
-    public DatabaseReference databaseReference;
     private TextView nameUser;
-    private Document currentChat;
-    private DocumentReference refChat;
+    private DocumentReference chatRef;
+    private FirestoreRecyclerAdapter adapter;
+    private RecyclerView mRecyclerView;
+    private ProgressBar loading;
 
+    private LinearLayout.LayoutParams myLayoutMessages;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,44 +62,112 @@ public class ChatActivity extends AppCompatActivity {
         messageEditText = (TextInputEditText) findViewById(R.id.messageEditText);
         nameUser = findViewById(R.id.nameUser);
         nameUser.setText(USER_LOAD.getFirst_name() + " " + USER_LOAD.getLast_name());
-
+        mRecyclerView = findViewById(R.id.messagesRecyclerView);
+        loading = findViewById(R.id.messageLoading);
         buttonSend.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(messageEditText.getText().length()>0){
-                    sendMessage("hugo","thibaulk",messageEditText.getText().toString());
+                if (messageEditText.getText().length() > 0) {
+                    sendMessage(new Message(USER_REFERENCE, messageEditText.getText().toString()));
                 }
             }
         });
-    }
 
-    private void sendMessage(String sender , String recever , String message){
+        myLayoutMessages = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        myLayoutMessages.setMargins(80, 1, 10, 1);
 
-        DatabaseReference reference = FirebaseDatabase.getInstance().getReference("chat");
+        mStoreBase.collection("users").document(USER.getUid()).collection("chat_friends").whereEqualTo("uid", USER_LOAD.getUid()).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                for(QueryDocumentSnapshot doc : task.getResult()) {
+                    Chat c = doc.toObject(Chat.class);
+                    Log.w("Message", "Message channel : " + c.getChatRef().toString());
+                    chatRef = c.getChatRef();
+                }
 
-        HashMap<String, Object> hashMap = new HashMap<>();
-        hashMap.put("sender", sender);
-        hashMap.put("recever",recever);
-        hashMap.put("message",message);
-
-        reference.child("").push().setValue(hashMap);
-
-
-    }
-
-    private void displayMessage (String sender, String recever, String message){
-        DatabaseReference reference = FirebaseDatabase.getInstance().getReference("chat");
-
-        HashMap<String, Object> hashMap = new HashMap<>();
-        hashMap.get(sender);
-        hashMap.get(recever);
-        hashMap.get(message);
-
-        reference.child("0").push().setValue(hashMap);
+                if(chatRef != null) {
+                    adapterMessages();
+                }
+            }
+        });
 
     }
 
+    private void sendMessage(Message msg) {
+        if(msg != null || msg.getSender() != null || msg.getMessage() != null || msg.getTime() != null) {
+            mStoreBase.collection("chat").document(chatRef.getId()).collection("messages").document(UUID.randomUUID().toString()).set(msg);
+            messageEditText.setText("");
+            hideKeyboard();
+        }
+    }
 
+    private void adapterMessages() {
+        Query query = mStoreBase.collection("chat").document(chatRef.getId()).collection("messages").orderBy("time", Query.Direction.ASCENDING);
+        FirestoreRecyclerOptions<Message> options = new FirestoreRecyclerOptions.Builder<Message>().setQuery(query, Message.class).build();
+
+        adapter = new FirestoreRecyclerAdapter<Message, ChatActivity.MessageViewHolder>(options) {
+            @NonNull
+            @Override
+            public ChatActivity.MessageViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+                View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_message, parent, false);
+                return new ChatActivity.MessageViewHolder(view);
+            }
+
+            @Override
+            protected void onBindViewHolder(@NonNull MessageViewHolder messageViewHolder, int i, @NonNull Message m) {
+                if(m.getSender().equals(USER_REFERENCE)){
+                    messageViewHolder.messageLayout.setLayoutParams(myLayoutMessages);
+                    messageViewHolder.cardViewPhotoPerson.setVisibility(View.GONE);
+                }else{
+                    //load image user
+                }
+                messageViewHolder.messageText.setText(m.getMessage());
+
+            }
+
+        };
+        loading.setVisibility(View.GONE);
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(ChatActivity.this));
+        mRecyclerView.setAdapter(adapter);
+        adapter.startListening();
+    }
+
+
+    private class MessageViewHolder extends RecyclerView.ViewHolder {
+
+        private TextView nomInvit;
+        private TextView villePers;
+        private LinearLayout layoutProfil;
+        private ImageView imagePerson;
+        private ImageView button;
+        private CardView cardViewPhotoPerson;
+        private LinearLayout messageLayout;
+        private TextView messageText;
+
+        public MessageViewHolder(@NonNull View itemView) {
+            super(itemView);
+
+            nomInvit = itemView.findViewById(R.id.nomInvit);
+            villePers = itemView.findViewById(R.id.villePers);
+            layoutProfil = itemView.findViewById(R.id.layoutProfil);
+            imagePerson = itemView.findViewById(R.id.imagePerson);
+            button = itemView.findViewById(R.id.buttonImage);
+            cardViewPhotoPerson = itemView.findViewById(R.id.cardViewPhotoPerson);
+            messageLayout = itemView.findViewById(R.id.messageLayout);
+            messageText = itemView.findViewById(R.id.messageText);
+        }
+    }
+
+    private void hideKeyboard() {
+        InputMethodManager imm = (InputMethodManager) this.getSystemService(this.INPUT_METHOD_SERVICE);
+        //Find the currently focused view, so we can grab the correct window token from it.
+        View view = this.getCurrentFocus();
+        //If no view currently has focus, create a new one, just so we can grab a window token from it
+        if (view == null) {
+            view = new View(this);
+        }
+        imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+    }
 
 
 }
