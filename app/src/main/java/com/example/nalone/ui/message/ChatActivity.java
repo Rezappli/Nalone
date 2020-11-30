@@ -10,6 +10,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -133,6 +134,7 @@ public class ChatActivity extends AppCompatActivity {
         mRecyclerView.setLayoutManager(new LinearLayoutManager(ChatActivity.this));
         mRecyclerView.setAdapter(adapter);
         adapter.startListening();
+        mRecyclerView.scrollToPosition(ScrollView.FOCUS_DOWN);
     }
 
 
