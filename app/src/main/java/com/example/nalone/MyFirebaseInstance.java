@@ -1,5 +1,6 @@
 package com.example.nalone;
 
+import android.app.ActivityManager;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -14,25 +15,37 @@ import android.os.Build;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.core.app.NotificationCompat;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.DocumentChange;
+import com.google.firebase.firestore.EventListener;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
+
+import splash.SplashActivity;
 
 import static com.example.nalone.util.Constants.USER;
 import static com.example.nalone.util.Constants.mMessaging;
+import static com.example.nalone.util.Constants.mStoreBase;
 
 public class MyFirebaseInstance extends FirebaseMessagingService {
 
     public static String user_id;
     private final String ADMIN_CHANNEL_ID = "admin_channel";
     private final String NOTIFICATION_TAG = "FIREBASEOC";
+    private static List<String> channels = new ArrayList<>();
 
     @Override
     public void onNewToken(String s) {
@@ -64,7 +77,7 @@ public class MyFirebaseInstance extends FirebaseMessagingService {
 
     @Override
     public void onMessageReceived(RemoteMessage remoteMessage) {
-        final Intent intent = new Intent(this, MainActivity.class);
+        final Intent intent = new Intent(this, SplashActivity.class);
         NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         int notificationID = new Random().nextInt(3000);
 
@@ -84,7 +97,7 @@ public class MyFirebaseInstance extends FirebaseMessagingService {
         Uri notificationSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
         NotificationCompat.Builder notificationBuilder;
 
-        if(remoteMessage.getNotification() != null){
+        if (remoteMessage.getNotification() != null) {
             notificationBuilder = new NotificationCompat.Builder(this, ADMIN_CHANNEL_ID)
                     .setSmallIcon(R.drawable.logo)
                     .setContentTitle(remoteMessage.getNotification().getTitle())
@@ -92,8 +105,8 @@ public class MyFirebaseInstance extends FirebaseMessagingService {
                     .setAutoCancel(true)
                     .setSound(notificationSoundUri)
                     .setContentIntent(pendingIntent);
-        }else{
-            notificationBuilder =new NotificationCompat. Builder(this, ADMIN_CHANNEL_ID)
+        } else {
+            notificationBuilder = new NotificationCompat.Builder(this, ADMIN_CHANNEL_ID)
                     .setSmallIcon(R.drawable.logo)
                     .setContentTitle(remoteMessage.getData().get("title"))
                     .setContentText(remoteMessage.getData().get("message"))
@@ -110,7 +123,7 @@ public class MyFirebaseInstance extends FirebaseMessagingService {
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
-    private void setupChannels(NotificationManager notificationManager){
+    private void setupChannels(NotificationManager notificationManager) {
         CharSequence adminChannelName = "New notification";
         String adminChannelDescription = "Device to devie notification";
 
@@ -129,5 +142,17 @@ public class MyFirebaseInstance extends FirebaseMessagingService {
     public void onDestroy() {
         super.onDestroy();
         Log.w(NOTIFICATION_TAG, "Service stop");
+    }
+
+    private boolean isAppRunning(final Context ctx) {
+        ActivityManager activityManager = (ActivityManager) ctx.getSystemService(Context.ACTIVITY_SERVICE);
+
+        List<ActivityManager.RunningTaskInfo> tasks = activityManager.getRunningTasks(Integer.MAX_VALUE);
+
+        for (ActivityManager.RunningTaskInfo task : tasks) {
+            if (ctx.getPackageName().equalsIgnoreCase(task.baseActivity.getPackageName()))
+                return true;
+        }
+        return false;
     }
 }

@@ -52,6 +52,7 @@ public class ChatActivity extends AppCompatActivity {
     private ProgressBar loading;
 
     private LinearLayout.LayoutParams myLayoutMessages;
+    private LinearLayout.LayoutParams otherLayoutMessages;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,6 +76,9 @@ public class ChatActivity extends AppCompatActivity {
 
         myLayoutMessages = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         myLayoutMessages.setMargins(80, 1, 10, 1);
+
+        otherLayoutMessages = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        otherLayoutMessages.setMargins(10, 1, 80, 1);
 
         mStoreBase.collection("users").document(USER.getUid()).collection("chat_friends").whereEqualTo("uid", USER_LOAD.getUid()).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
@@ -117,9 +121,8 @@ public class ChatActivity extends AppCompatActivity {
             protected void onBindViewHolder(@NonNull MessageViewHolder messageViewHolder, int i, @NonNull Message m) {
                 if(m.getSender().equals(USER_REFERENCE)){
                     messageViewHolder.messageLayout.setLayoutParams(myLayoutMessages);
-                    messageViewHolder.cardViewPhotoPerson.setVisibility(View.GONE);
                 }else{
-                    //load image user
+                    messageViewHolder.messageLayout.setLayoutParams(otherLayoutMessages);
                 }
                 messageViewHolder.messageText.setText(m.getMessage());
 
@@ -140,7 +143,6 @@ public class ChatActivity extends AppCompatActivity {
         private LinearLayout layoutProfil;
         private ImageView imagePerson;
         private ImageView button;
-        private CardView cardViewPhotoPerson;
         private LinearLayout messageLayout;
         private TextView messageText;
 
@@ -152,7 +154,6 @@ public class ChatActivity extends AppCompatActivity {
             layoutProfil = itemView.findViewById(R.id.layoutProfil);
             imagePerson = itemView.findViewById(R.id.imagePerson);
             button = itemView.findViewById(R.id.buttonImage);
-            cardViewPhotoPerson = itemView.findViewById(R.id.cardViewPhotoPerson);
             messageLayout = itemView.findViewById(R.id.messageLayout);
             messageText = itemView.findViewById(R.id.messageText);
         }

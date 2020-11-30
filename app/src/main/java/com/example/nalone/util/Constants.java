@@ -1,6 +1,9 @@
 package com.example.nalone.util;
 
+import android.app.ActivityManager;
 import android.app.Application;
+import android.content.Context;
+
 import com.example.nalone.User;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.firebase.auth.FirebaseAuth;
@@ -13,6 +16,7 @@ import com.google.firebase.storage.StorageReference;
 import com.koalap.geofirestore.GeoFire;
 
 import java.text.DateFormat;
+import java.util.List;
 import java.util.Locale;
 
 public class Constants {
