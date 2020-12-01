@@ -24,6 +24,7 @@ import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.bumptech.glide.Glide;
 import com.example.nalone.Cache;
@@ -73,6 +74,8 @@ public class RechercheAmisFragment extends Fragment {
     private ImageView qr_code;
     List<String> friends;
 
+    private SwipeRefreshLayout swipeContainer;
+
 
 
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -80,8 +83,21 @@ public class RechercheAmisFragment extends Fragment {
         rechercheViewModel =
                 ViewModelProviders.of(this).get(RechercheViewModel.class);
         rootView = inflater.inflate(R.layout.fragment_recherche_amis, container, false);
+
+        createFragment();
+
+        return rootView;
+
+    }
+
+    public void createFragment(){
         loading = rootView.findViewById(R.id.search_loading);
         buttonBack.setVisibility(View.GONE);
+        swipeContainer = (SwipeRefreshLayout) rootView.findViewById(R.id.swipeContainer);
+
+        swipeContainer.setColorSchemeResources(android.R.color.holo_blue_bright);
+
+        this.configureSwipeRefreshLayout();
 
         qr_code = rootView.findViewById(R.id.qr_code_image);
 
@@ -113,10 +129,9 @@ public class RechercheAmisFragment extends Fragment {
                             }
                             friends.add(USER.getUid());
                             //query
-                            Query query = mStoreBase.collection("users").whereNotIn("uid", friends);
-                            FirestoreRecyclerOptions<User> options = new FirestoreRecyclerOptions.Builder<User>().setQuery(query, User.class).build();
 
-                            adapterUsers(options);
+
+                            adapterUsers();
                             adapter.startListening();
                             addFilters();
 
@@ -146,10 +161,24 @@ public class RechercheAmisFragment extends Fragment {
             }
         });
 
-
-        return rootView;
-
     }
+
+    private void configureSwipeRefreshLayout(){
+        swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                adapterUsers();
+            }
+        });
+    }
+
+
+    /*private void updateUI(){
+        // 3 - Stop refreshing and clear actual list of users
+
+        adapter.notifyDataSetChanged();
+        createFragment();
+    }*/
 
     private void addFilters() {
 
@@ -221,10 +250,12 @@ public class RechercheAmisFragment extends Fragment {
         }
 
         FirestoreRecyclerOptions<User> options = new FirestoreRecyclerOptions.Builder<User>().setQuery(query, User.class).build();
-        adapterUsers(options);
+        adapterUsers();
     }
 
-    private void adapterUsers(FirestoreRecyclerOptions<User> options) {
+    private void adapterUsers() {
+        Query query = mStoreBase.collection("users").whereNotIn("uid", friends);
+        FirestoreRecyclerOptions<User> options = new FirestoreRecyclerOptions.Builder<User>().setQuery(query, User.class).build();
         adapter = new FirestoreRecyclerAdapter<User, UserViewHolder>(options) {
             @NonNull
             @Override
@@ -327,6 +358,7 @@ public class RechercheAmisFragment extends Fragment {
 
         mRecyclerView.setAdapter(adapter);
         adapter.startListening();
+        swipeContainer.setRefreshing(false);
 
     }
 
@@ -361,6 +393,13 @@ public class RechercheAmisFragment extends Fragment {
 
         PopupProfilFragment.type = "recherche";
         navController.navigate(R.id.action_navigation_recherche_amis_to_navigation_popup_profil);
+    }
+
+
+    // Add a list of items -- change to type used
+    public void addAll() {
+        adapter.notifyDataSetChanged();
+        createFragment();
     }
 
 

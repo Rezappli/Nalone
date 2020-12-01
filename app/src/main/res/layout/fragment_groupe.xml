@@ -74,6 +74,7 @@
                 app:drawableEndCompat="@drawable/ic_baseline_keyboard_arrow_right_24" />
         </androidx.cardview.widget.CardView>
 
+        
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recyclerViewGroupe"
             android:layout_width="match_parent"

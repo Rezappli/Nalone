@@ -20,6 +20,7 @@ import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.example.nalone.Evenement;
 import com.example.nalone.R;
@@ -67,6 +68,7 @@ public class MesEvenementsListFragment extends Fragment {
 
     private CardView mesEvents;
     private NavController navController;
+    private SwipeRefreshLayout swipeContainer;
 
 
     @Override
@@ -82,6 +84,9 @@ public class MesEvenementsListFragment extends Fragment {
     }
 
     private void createFragment() {
+        swipeContainer = (SwipeRefreshLayout) rootView.findViewById(R.id.swipeContainer);
+        swipeContainer.setColorSchemeResources(android.R.color.holo_blue_bright);
+        this.configureSwipeRefreshLayout();
         linearSansEvent = rootView.findViewById(R.id.linearSansEvent);
         mRecyclerView = rootView.findViewById(R.id.recyclerViewMesEventList);
         addEvent = rootView.findViewById(R.id.create_event_button);
@@ -128,11 +133,23 @@ public class MesEvenementsListFragment extends Fragment {
 
     }
 
+    private void configureSwipeRefreshLayout(){
+        swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                adapterEvents();
+            }
+        });
+    }
+
     private void adapterEvents() {
 
-
-        if(!events.isEmpty()){
-            Query query = mStoreBase.collection("events").whereIn("uid", events);
+        Query query;
+        if(!events.isEmpty()) {
+            query = mStoreBase.collection("events").whereIn("uid", events);
+        }else {
+            query = mStoreBase.collection("eveskjfhddsjkfhsdkjfhnts");
+        }
             FirestoreRecyclerOptions<Evenement> options = new FirestoreRecyclerOptions.Builder<Evenement>().setQuery(query, Evenement.class).build();
 
             adapter = new FirestoreRecyclerAdapter<Evenement, EventViewHolder>(options) {
@@ -253,14 +270,14 @@ public class MesEvenementsListFragment extends Fragment {
                 */
                 }
             };
-            //mRecyclerView.setHasFixedSize(true);
+            mRecyclerView.setHasFixedSize(true);
             mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
             mRecyclerView.setAdapter(adapter);
             adapter.startListening();
+            swipeContainer.setRefreshing(false);
 
             Log.w("count", iterator + "");
-        }
 
 
     }

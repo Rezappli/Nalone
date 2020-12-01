@@ -54,12 +54,21 @@
             android:layout_below="@id/search_bar"
             android:background="?attr/colorButtonNormal" />
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recyclerViewGroupe"
+        <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+            android:id="@+id/swipeContainer"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_below="@id/divider7"
-            android:layout_marginTop="0dp" />
-    </RelativeLayout>
+            android:layout_marginTop="0dp">
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recyclerViewGroupe"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_below="@id/divider7"
+                android:layout_marginTop="0dp" />
+        </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+
+</RelativeLayout>
 
 </FrameLayout>

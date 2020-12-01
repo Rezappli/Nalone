@@ -15,6 +15,7 @@ import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.bumptech.glide.Glide;
 import com.example.nalone.Cache;
@@ -40,12 +41,23 @@ public class RechercheGroupeFragment extends Fragment {
     private RecyclerView mRecyclerView;
     private FirestoreRecyclerAdapter adapter;
     private ImageView addGroup;
+    private SwipeRefreshLayout swipeContainer;
+    private View root;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View root =  inflater.inflate(R.layout.fragment_recherche_groupe, container, false);
+        root =  inflater.inflate(R.layout.fragment_recherche_groupe, container, false);
+
+        createFragment();
+        return root;
+    }
+
+    private void createFragment(){
+        swipeContainer = (SwipeRefreshLayout) root.findViewById(R.id.swipeContainer);
+        swipeContainer.setColorSchemeResources(android.R.color.holo_blue_bright);
+        this.configureSwipeRefreshLayout();
 
         mRecyclerView = root.findViewById(R.id.recyclerViewGroupe);
         addGroup = root.findViewById(R.id.create_group_button);
@@ -60,8 +72,17 @@ public class RechercheGroupeFragment extends Fragment {
 
         adapterGroups();
 
-        return root;
     }
+
+    private void configureSwipeRefreshLayout(){
+        swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                createFragment();
+            }
+        });
+    }
+
 
     private void adapterGroups() {
         DocumentReference ref = mStoreBase.document("users/"+USER_ID);
@@ -137,8 +158,9 @@ public class RechercheGroupeFragment extends Fragment {
             };
             mRecyclerView.setHasFixedSize(true);
             mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-
             mRecyclerView.setAdapter(adapter);
+            adapter.startListening();
+            swipeContainer.setRefreshing(false);
         }
 
         private class UserViewHolder extends RecyclerView.ViewHolder {
