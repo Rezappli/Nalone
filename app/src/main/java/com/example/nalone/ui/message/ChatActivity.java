@@ -13,12 +13,15 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.ScrollView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
+import androidx.paging.PagedList;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.example.nalone.Chat;
 import com.example.nalone.Message;
@@ -26,14 +29,19 @@ import com.example.nalone.R;
 import com.example.nalone.User;
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
+import com.firebase.ui.firestore.paging.FirestorePagingAdapter;
+import com.firebase.ui.firestore.paging.FirestorePagingOptions;
+import com.firebase.ui.firestore.paging.LoadingState;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.textfield.TextInputEditText;
+import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
+import java.util.Date;
 import java.util.UUID;
 
 import static com.example.nalone.util.Constants.USER;
@@ -49,13 +57,14 @@ public class ChatActivity extends AppCompatActivity {
     public static User USER_LOAD;
     private TextView nameUser;
     private DocumentReference chatRef;
-    private FirestoreRecyclerAdapter adapter;
+    private FirestorePagingAdapter adapter;
     private RecyclerView mRecyclerView;
-    private ProgressBar loading;
-    private LinearLayoutManager llm;
+    private SwipeRefreshLayout mSwipeRefreshLayout;
 
     private LinearLayout.LayoutParams myLayoutMessages;
     private LinearLayout.LayoutParams otherLayoutMessages;
+
+    private int limit = 2;
 
     private int countAdapter = 0;
 
@@ -64,13 +73,13 @@ public class ChatActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chatbox);
 
-        buttonSend = (ImageView) findViewById(R.id.buttonSend);
-        messageEditText = (TextInputEditText) findViewById(R.id.messageEditText);
+        mSwipeRefreshLayout = findViewById(R.id.messageSwipeRefreshLayout);
+        buttonSend = findViewById(R.id.buttonSend);
+        messageEditText = findViewById(R.id.messageEditText);
         nameUser = findViewById(R.id.nameUser);
         nameUser.setText(USER_LOAD.getFirst_name() + " " + USER_LOAD.getLast_name());
         mRecyclerView = findViewById(R.id.messagesRecyclerView);
         mRecyclerView.scrollToPosition(ScrollView.FOCUS_DOWN);
-        loading = findViewById(R.id.messageLoading);
         buttonSend.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -98,8 +107,16 @@ public class ChatActivity extends AppCompatActivity {
                 }
 
                 if(chatRef != null) {
+                    mSwipeRefreshLayout.setRefreshing(false);
                     adapterMessages();
                 }
+            }
+        });
+
+        mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                adapter.retry();
             }
         });
 
@@ -109,16 +126,23 @@ public class ChatActivity extends AppCompatActivity {
         if(msg != null || msg.getSender() != null || msg.getMessage() != null || msg.getTime() != null) {
             mStoreBase.collection("chat").document(chatRef.getId()).collection("messages").document(UUID.randomUUID().toString()).set(msg);
             messageEditText.setText("");
-            hideKeyboard();
-
+            adapterMessages();
         }
     }
 
     private void adapterMessages() {
-        Query query = mStoreBase.collection("chat").document(chatRef.getId()).collection("messages").orderBy("time", Query.Direction.ASCENDING);
-        FirestoreRecyclerOptions<Message> options = new FirestoreRecyclerOptions.Builder<Message>().setQuery(query, Message.class).build();
 
-        adapter = new FirestoreRecyclerAdapter<Message, ChatActivity.MessageViewHolder>(options) {
+        Query query = mStoreBase.collection("chat").document(chatRef.getId()).collection("messages").orderBy("time").limit(limit);
+
+        PagedList.Config config = new PagedList.Config.Builder()
+                .setEnablePlaceholders(false)
+                .setPrefetchDistance(2)
+                .setPageSize(limit)
+                .build();
+
+        FirestorePagingOptions<Message> options = new FirestorePagingOptions.Builder<Message>().setQuery(query, config, Message.class).build();
+
+        adapter = new FirestorePagingAdapter<Message, MessageViewHolder>(options) {
             @NonNull
             @Override
             public ChatActivity.MessageViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -137,18 +161,48 @@ public class ChatActivity extends AppCompatActivity {
                 }
 
                 messageViewHolder.messageText.setText(m.getMessage());
-
             }
 
+            @Override
+            protected void onLoadingStateChanged(@NonNull LoadingState state) {
+                switch (state) {
+                    case LOADING_INITIAL:
+                    case LOADING_MORE:
+                        mSwipeRefreshLayout.setRefreshing(true);
+                        break;
+
+                    case LOADED:
+                        mSwipeRefreshLayout.setRefreshing(false);
+                        break;
+
+                    case ERROR:
+                        Toast.makeText(
+                                getApplicationContext(),
+                                "Error Occurred!",
+                                Toast.LENGTH_SHORT
+                        ).show();
+
+                        mSwipeRefreshLayout.setRefreshing(false);
+                        break;
+
+                    case FINISHED:
+                        mSwipeRefreshLayout.setRefreshing(false);
+                        break;
+                }
+            }
+
+
+
         };
-        llm = new LinearLayoutManager(ChatActivity.this);
-        llm.setStackFromEnd(true);
-        loading.setVisibility(View.GONE);
-        mRecyclerView.setLayoutManager(llm);
+
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(ChatActivity.this));
         mRecyclerView.setAdapter(adapter);
         adapter.startListening();
-      //  mRecyclerView.scrollToPosition(ScrollView.FOCUS_DOWN);
+        mRecyclerView.scrollToPosition(adapter.getItemCount()-1);
+
+
     }
+
 
 
     private class MessageViewHolder extends RecyclerView.ViewHolder {
@@ -175,17 +229,6 @@ public class ChatActivity extends AppCompatActivity {
             messageText = itemView.findViewById(R.id.messageText);
             backgroundItem = itemView.findViewById(R.id.bgMessage);
         }
-    }
-
-    private void hideKeyboard() {
-        InputMethodManager imm = (InputMethodManager) this.getSystemService(this.INPUT_METHOD_SERVICE);
-        //Find the currently focused view, so we can grab the correct window token from it.
-        View view = this.getCurrentFocus();
-        //If no view currently has focus, create a new one, just so we can grab a window token from it
-        if (view == null) {
-            view = new View(this);
-        }
-        imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
     }
 
 
