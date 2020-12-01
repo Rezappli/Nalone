@@ -167,7 +167,7 @@ public class RechercheAmisFragment extends Fragment {
         swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                adapterUsers();
+                createFragment();
             }
         });
     }

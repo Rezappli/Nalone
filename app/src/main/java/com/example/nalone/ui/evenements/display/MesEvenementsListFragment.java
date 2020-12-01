@@ -143,7 +143,6 @@ public class MesEvenementsListFragment extends Fragment {
     }
 
     private void adapterEvents() {
-
         Query query;
         if(!events.isEmpty()) {
             query = mStoreBase.collection("events").whereIn("uid", events);
@@ -270,9 +269,7 @@ public class MesEvenementsListFragment extends Fragment {
                 */
                 }
             };
-            mRecyclerView.setHasFixedSize(true);
             mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-
             mRecyclerView.setAdapter(adapter);
             adapter.startListening();
             swipeContainer.setRefreshing(false);
@@ -311,111 +308,6 @@ public class MesEvenementsListFragment extends Fragment {
             textViewNbMembers = itemView.findViewById(R.id.textViewNbMembers);
 
         }
-    }
-
-    private void updateEvents() {
-        /*itemEvents.clear();
-
-        mStoreBase.collection("events")
-                .whereEqualTo("ownerdoc", USER_REFERENCE)
-                .get()
-                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        if (task.isSuccessful()) {
-                            if(task.getResult().size() > 0) {
-                                for (QueryDocumentSnapshot document : task.getResult()) {
-                                    Evenement e = document.toObject(Evenement.class);
-                                    itemEvents.add(e);
-                                }
-                                onUpdateAdapter();
-                            }
-                        }
-                    }
-                }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                Log.w("SPLASH", "Erreur : " + e.getMessage());
-            }
-        });
-
-        for(int i = 0; i < EVENTS_LIST.size(); i++){
-            MarkerOptions m = new MarkerOptions();
-            Evenement e = Constants.EVENTS_LIST.get(i+"");
-
-            m.title(e.getNom());
-
-            if (e.getProprietaire().equalsIgnoreCase(USER_ID)) {
-                itemEvents.add(e);
-            }
-        }
-
-        if(itemEvents.isEmpty()){
-            mRecyclerViewEvent.setVisibility(View.GONE);
-            linearSansEvent.setVisibility(View.VISIBLE);
-        }else{
-            mRecyclerViewEvent.setVisibility(View.VISIBLE);
-            linearSansEvent.setVisibility(View.GONE);
-        }
-
-        mAdapterEventList = new ItemMesEventListAdapter(itemEvents);
-
-
-        mLayoutManagerMesEvent = new LinearLayoutManager(
-                rootView.getContext(),
-                LinearLayoutManager.VERTICAL,
-                false);
-        mRecyclerViewEvent.setLayoutManager(mLayoutManagerMesEvent);
-        mRecyclerViewEvent.setAdapter(mAdapterEventList);
-
-        mAdapterEventList.setOnItemClickListener(new ItemMesEventListAdapter.OnItemClickListener() {
-            @Override
-            public void onDisplayClick(int position) {
-                Constants.targetZoom = MARKERS_EVENT.get(itemEvents.get(position).getId()+"").getPosition();
-                EvenementsFragment.viewPager.setCurrentItem(0);
-            }
-
-            @Override
-            public void onDeleteClick(final int position) {
-                final AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-                builder.setMessage("Vous êtes sur le point de supprimer un évènement ! Cette action est irréversible ! Voulez-vous continuez ?")
-                        .setPositiveButton("Oui", new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int id) {
-                                Toast.makeText(getContext(), "Vous avez supprimé(e) un évènement !", Toast.LENGTH_SHORT).show();
-                                removeEvent(position);
-                                updateEvents();
-                            }
-                        })
-                        .setNegativeButton("Non", new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int id) {
-
-                            }
-                        });
-                builder.create();
-                builder.show();
-            }
-
-            @Override
-            public void onEditClick(int position) {
-
-                /*Evenement e = EVENTS_LIST.get(itemEvents.get(position).getId()+"");
-
-                nameEvent = e.getNom();
-                cityEdit = e.getVille();
-                adresseEdit = e.getAdresse();
-                dateEdit = sdf.format(e.getDate());
-                timeEdit = e.getTime();
-                descEdit = e.getDescription();
-                visibiliteEdit = e.getVisibilite();
-
-                CreateEventActivity.edit = true;
-
-                startActivity(new Intent(getContext(), CreateEventActivity.class));
-                Toast.makeText(getContext(), "Edit event", Toast.LENGTH_SHORT).show();
-
-            }
-        });*/
-
     }
 
     @Override
