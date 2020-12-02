@@ -44,6 +44,7 @@ import static com.example.nalone.HomeActivity.buttonBack;
 import static com.example.nalone.util.Constants.USER;
 import static com.example.nalone.util.Constants.mStore;
 import static com.example.nalone.util.Constants.mStoreBase;
+import static com.example.nalone.util.Constants.sendNotification;
 
 public class PopupProfilFragment extends Fragment {
 
@@ -53,9 +54,6 @@ public class PopupProfilFragment extends Fragment {
     private NavController navController;
     public static String type;
 
-    final private String FCM_API = "https://fcm.googleapis.com/fcm/send";
-    final private String serverKey = "key=AAAA4ZRDAW0:APA91bErNdSatj13ahbk5w8kqEtjnJ4B4BI70KPYBvJNBnLjKjXn0y-FfB73j9p-A6Iw2sVDN93UfrjkhXxqqU3H_rVm1RuB5IwPfrcB85CgAZH2ZN-SopzO-Pp2r5p_V7R5Er_X7wl7";
-    final private String contentType = "application/json";
     final String TAG = "NOTIFICATION TAG";
 
     String NOTIFICATION_TITLE;
@@ -234,7 +232,7 @@ public class PopupProfilFragment extends Fragment {
         TOPIC = "/topics/"+ USER_LOAD.getUid(); //topic must match with what the receiver subscribed to
         Log.w("TOPIC", "Topic : " + TOPIC);
         NOTIFICATION_TITLE = "Toc toc toc...";
-        NOTIFICATION_MESSAGE = USER.getFirst_name() + " " + USER.getLast_name() + " vient de vous envoyez une demande d'amis !";
+        NOTIFICATION_MESSAGE = USER.getFirst_name() + " " + USER.getLast_name() + " vient de vous envoyer une demande d'amis !";
 
         JSONObject notification = new JSONObject();
         JSONObject notifcationBody = new JSONObject();
@@ -247,34 +245,8 @@ public class PopupProfilFragment extends Fragment {
         } catch (JSONException e) {
             Log.e(TAG, "onCreate: " + e.getMessage());
         }
-        sendNotification(notification);
+        sendNotification(notification, getContext());
 
-    }
-
-    private void sendNotification(JSONObject notification) {
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(FCM_API, notification,
-                new Response.Listener<JSONObject>() {
-                    @Override
-                    public void onResponse(JSONObject response) {
-                        Log.i(TAG, "onResponse: " + response.toString());
-                    }
-                },
-                new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        Toast.makeText(getContext(), "Request error", Toast.LENGTH_LONG).show();
-                        Log.i(TAG, "onErrorResponse: Didn't work");
-                    }
-                }) {
-            @Override
-            public Map<String, String> getHeaders() throws AuthFailureError {
-                Map<String, String> params = new HashMap<>();
-                params.put("Authorization", serverKey);
-                params.put("Content-Type", contentType);
-                return params;
-            }
-        };
-        MySingleton.getInstance(getContext()).addToRequestQueue(jsonObjectRequest);
     }
 
 }

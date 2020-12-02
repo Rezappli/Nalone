@@ -45,6 +45,9 @@ import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.Date;
 import java.util.UUID;
 
@@ -52,6 +55,7 @@ import static androidx.recyclerview.widget.LinearLayoutManager.VERTICAL;
 import static com.example.nalone.util.Constants.USER;
 import static com.example.nalone.util.Constants.USER_REFERENCE;
 import static com.example.nalone.util.Constants.mStoreBase;
+import static com.example.nalone.util.Constants.sendNotification;
 
 public class ChatActivity extends AppCompatActivity {
 
@@ -68,6 +72,10 @@ public class ChatActivity extends AppCompatActivity {
 
     private LinearLayout.LayoutParams myLayoutMessages;
     private LinearLayout.LayoutParams otherLayoutMessages;
+
+    private String NOTIFICATION_TITLE;
+    private String NOTIFICATION_MESSAGE;
+    private String TOPIC;
 
     private int limit = 2;
 
@@ -138,7 +146,27 @@ public class ChatActivity extends AppCompatActivity {
         if(msg != null || msg.getSender() != null || msg.getMessage() != null || msg.getTime() != null) {
             mStoreBase.collection("chat").document(chatRef.getId()).collection("messages").document(UUID.randomUUID().toString()).set(msg);
             messageEditText.setText("");
+
+            TOPIC = "/topics/"+ USER_LOAD.getUid(); //topic must match with what the receiver subscribed to
+            Log.w("TOPIC", "Topic : " + TOPIC);
+            NOTIFICATION_TITLE = "Toc toc toc...";
+            NOTIFICATION_MESSAGE = USER.getFirst_name() + " " + USER.getLast_name() + " vient de vous envoyer un message !";
+
+            JSONObject notification = new JSONObject();
+            JSONObject notifcationBody = new JSONObject();
+            try {
+                notifcationBody.put("title", NOTIFICATION_TITLE);
+                notifcationBody.put("message", NOTIFICATION_MESSAGE);
+
+                notification.put("to", TOPIC);
+                notification.put("data", notifcationBody);
+            } catch (JSONException e) {
+                Log.e("Notification", "onCreate: " + e.getMessage());
+            }
+            sendNotification(notification, ChatActivity.this);
+
             adapterMessages();
+
         }
     }
 
