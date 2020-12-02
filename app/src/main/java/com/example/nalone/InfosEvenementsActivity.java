@@ -62,7 +62,7 @@ public class InfosEvenementsActivity extends AppCompatActivity {
 
         mDate.setText(final_date_text);
 
-        for (int i = 0; i < EVENT_LOAD.getRegister_users().size(); i++) {
+        /*for (int i = 0; i < EVENT_LOAD.getRegister_users().size(); i++) {
             final int finalI = i;
             mStoreBase.collection("users").document(EVENT_LOAD.getRegister_users().get(i).getId()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                 @Override
@@ -79,7 +79,7 @@ public class InfosEvenementsActivity extends AppCompatActivity {
                     }
                 }
             });
-        }
+        }*/
 
 
         //mAdapter = new ItemImagePersonAdapter(membres_inscrits, this);

@@ -22,8 +22,6 @@ public class Evenement implements Serializable {
     private DocumentReference ownerDoc;
     private Timestamp date;
     private String owner;
-    private List<DocumentReference> register_users;
-    private List<DocumentReference> wainting_users;
     private int nbMembers;
 
     public Evenement() {}
@@ -46,22 +44,6 @@ public class Evenement implements Serializable {
             this.longitude = location.getLongitude();
         }
         this.nbMembers = nbMembers;
-    }
-
-    public List<DocumentReference> getRegister_users() {
-        return register_users;
-    }
-
-    public void addRegister_users(DocumentReference user) {
-        this.register_users.add(user);
-    }
-
-    public List<DocumentReference> getWainting_users() {
-        return wainting_users;
-    }
-
-    public void addWainting_users(DocumentReference user) {
-        this.wainting_users.add(user);
     }
 
     public void setOwner(String owner) {

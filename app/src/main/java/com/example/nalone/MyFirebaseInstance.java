@@ -78,8 +78,6 @@ public class MyFirebaseInstance extends FirebaseMessagingService {
     @Override
     public void onMessageReceived(RemoteMessage remoteMessage) {
 
-        boolean isGlobalNotification = false;
-
         final Intent intent = new Intent(this, SplashActivity.class);
 
         NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
@@ -109,7 +107,6 @@ public class MyFirebaseInstance extends FirebaseMessagingService {
                     .setAutoCancel(true)
                     .setSound(notificationSoundUri)
                     .setContentIntent(pendingIntent);
-            isGlobalNotification = true;
         } else {
             notificationBuilder = new NotificationCompat.Builder(this, ADMIN_CHANNEL_ID)
                     .setSmallIcon(R.drawable.logo)
@@ -128,11 +125,6 @@ public class MyFirebaseInstance extends FirebaseMessagingService {
             notificationBuilder.setColor(getResources().getColor(R.color.colorPrimaryDark));
         }
 
-        if(!isGlobalNotification) {
-            if (isAppRunning(getBaseContext())) {
-                return;
-            }
-        }
         notificationManager.notify(notificationID, notificationBuilder.build());
     }
 
@@ -156,17 +148,5 @@ public class MyFirebaseInstance extends FirebaseMessagingService {
     public void onDestroy() {
         super.onDestroy();
         Log.w(NOTIFICATION_TAG, "Service stop");
-    }
-
-    private boolean isAppRunning(final Context ctx) {
-        ActivityManager activityManager = (ActivityManager) ctx.getSystemService(Context.ACTIVITY_SERVICE);
-
-        List<ActivityManager.RunningTaskInfo> tasks = activityManager.getRunningTasks(Integer.MAX_VALUE);
-
-        for (ActivityManager.RunningTaskInfo task : tasks) {
-            if (ctx.getPackageName().equalsIgnoreCase(task.baseActivity.getPackageName()))
-                return true;
-        }
-        return false;
     }
 }

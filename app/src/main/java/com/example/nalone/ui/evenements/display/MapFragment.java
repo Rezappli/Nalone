@@ -52,6 +52,7 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
@@ -232,11 +233,11 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
             mMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
                 @Override
                 public void onInfoWindowClick(Marker marker) {
-                    if(marker.getTag() != null) {
+                    if (marker.getTag() != null) {
                         mStoreBase.collection("events").whereEqualTo("uid", marker.getTag()).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                             @Override
                             public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                                for(QueryDocumentSnapshot doc : task.getResult()) {
+                                for (QueryDocumentSnapshot doc : task.getResult()) {
                                     InfosEvenementsActivity.EVENT_LOAD = doc.toObject(Evenement.class);
                                     startActivity(new Intent(getContext(), InfosEvenementsActivity.class));
                                 }
@@ -347,11 +348,11 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
 
             itemEvents.clear();
 
-            Log.w("Events", "MinLat : "+minLat);
-            Log.w("Events", "MaxLat : "+maxLat);
-            Log.w("Events", "MinLong : "+minLong);
-            Log.w("Events", "MaxLong : "+maxLong);
-            Log.w("Events", "Coordinate : "+USER.getLocation());
+            Log.w("Events", "MinLat : " + minLat);
+            Log.w("Events", "MaxLat : " + maxLat);
+            Log.w("Events", "MinLong : " + minLong);
+            Log.w("Events", "MaxLong : " + maxLong);
+            Log.w("Events", "Coordinate : " + USER.getLocation());
 
             final float[] results = new float[3];
 
@@ -361,15 +362,15 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                     .get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                 @Override
                 public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                    for(QueryDocumentSnapshot doc : task.getResult()){
+                    for (QueryDocumentSnapshot doc : task.getResult()) {
                         Evenement e = doc.toObject(Evenement.class);
                         Log.w("Events", "Found " + e.getName());
                         Log.w("Events", "E longitude " + e.getLongitude());
-                        if(e.getLongitude() > minLong && e.getLongitude() < maxLong){
+                        if (e.getLongitude() > minLong && e.getLongitude() < maxLong) {
                             Log.w("Events", "Found and add" + e.getName());
                             Location.distanceBetween(USER.getLocation().getLatitude(), USER.getLocation().getLongitude(),
                                     e.getLatitude(), e.getLongitude(), results);
-                            if(results[0] <= range * 1000) {
+                            if (results[0] <= range * 1000) {
                                 MarkerOptions m = new MarkerOptions().title(e.getName())
                                         .snippet("Cliquez pour plus d'informations")
                                         .icon(getEventColor(e))
@@ -380,7 +381,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                         }
                     }
 
-                    if(nearby_events.size() > 0) {
+                    if (nearby_events.size() > 0) {
                         adapterEvents();
                     }
                 }
@@ -402,25 +403,36 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     }
 
     private BitmapDescriptor getEventColor(Evenement e) {
-        BitmapDescriptor couleur;
+        final BitmapDescriptor[] couleur = new BitmapDescriptor[1];
         if (e.getVisibility().equals(Visibility.PRIVATE)) {
             if (e.getOwnerDoc().equals(USER_REFERENCE)) {
-                couleur = (BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));
-            } else if (e.getRegister_users().contains(USER_REFERENCE)) {
-                couleur = (BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE));
+                couleur[0] = (BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));
             } else {
-                couleur = null;
+                mStoreBase.collection("events").document(e.getUid()).collection("members").document(USER.getUid()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                        if (task.isSuccessful()) {
+                            DocumentSnapshot doc = task.getResult();
+                            if (doc.exists()) {
+                                couleur[0] = (BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE));
+                            } else {
+                                couleur[0] = null;
+                            }
+                        } else {
+                            Log.w("Error", "Error : " + task.getException());
+                            couleur[0] = null;
+                        }
+                    }
+                });
             }
         } else {
             if (e.getOwnerDoc().equals(USER_REFERENCE)) {
-                couleur = (BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));
+                couleur[0] = (BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));
             } else {
-                couleur = (BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));
+                couleur[0] = (BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));
             }
         }
 
-        return couleur;
+        return couleur[0];
     }
-
-
 }
