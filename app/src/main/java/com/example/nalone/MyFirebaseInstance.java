@@ -81,6 +81,7 @@ public class MyFirebaseInstance extends FirebaseMessagingService {
         boolean isGlobalNotification = false;
 
         final Intent intent = new Intent(this, SplashActivity.class);
+
         NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         int notificationID = new Random().nextInt(3000);
 
@@ -118,6 +119,9 @@ public class MyFirebaseInstance extends FirebaseMessagingService {
                     .setSound(notificationSoundUri)
                     .setContentIntent(pendingIntent);
         }
+        if(remoteMessage.getData().get("target")!=null) {
+            intent.putExtra("target", remoteMessage.getData().get("target"));
+        }
 
         //Set notification color to match your app color template
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
@@ -125,7 +129,7 @@ public class MyFirebaseInstance extends FirebaseMessagingService {
         }
 
         if(!isGlobalNotification) {
-            if (!isAppRunning(getBaseContext())) {
+            if (isAppRunning(getBaseContext())) {
                 return;
             }
         }

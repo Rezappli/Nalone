@@ -225,8 +225,8 @@ public class ParametresFragment extends Fragment {
         SharedPreferences settings = this.getActivity().getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
         SharedPreferences.Editor editor = settings.edit();
 
-        Log.w("Range", "Range : " + range);
-        editor.putInt(sharedRange, range);
+        Log.w("Range", "Range : " + range/1000);
+        editor.putInt(sharedRange, range/1000);
         editor.putBoolean(sharedNotif, notification);
         editor.putBoolean(sharedPosition, maPosition);
 

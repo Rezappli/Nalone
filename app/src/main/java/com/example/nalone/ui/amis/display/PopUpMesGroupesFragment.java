@@ -85,6 +85,8 @@ public class PopUpMesGroupesFragment extends Fragment {
         fenetrePrincipal = root.findViewById(R.id.fenetrePrincipal);
         fenetrePrincipal.setVisibility(View.GONE);
 
+        descriptionGroup = root.findViewById(R.id.groupDescription);
+
         cardViewProfilEdit = root.findViewById(R.id.cardViewEditGroup);
         cardViewPhotoEdit = root.findViewById(R.id.cardViewPhotoEditImg);
         cardViewPhotoEditDesc = root.findViewById(R.id.cardViewPhotoEditDesc);
