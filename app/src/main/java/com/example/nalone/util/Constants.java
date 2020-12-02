@@ -60,7 +60,7 @@ public class Constants {
             new Locale("fr", "FR"));
 
     public static SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yy");
-    public static SimpleDateFormat timeFormat = new SimpleDateFormat("hh:mm");
+    public static SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm");
 
     public static LatLng targetZoom;
 
@@ -97,6 +97,7 @@ public class Constants {
                 return params;
             }
         };
+        Log.w("Notification", "Send notification");
         MySingleton.getInstance(context).addToRequestQueue(jsonObjectRequest);
     }
 }
