@@ -16,6 +16,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
 import androidx.paging.PagedList;
@@ -37,6 +38,9 @@ import com.google.android.gms.tasks.Task;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
+import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
@@ -101,13 +105,21 @@ public class ChatActivity extends AppCompatActivity {
         mStoreBase.collection("users").document(USER.getUid()).collection("chat_friends").whereEqualTo("uid", USER_LOAD.getUid()).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                for(QueryDocumentSnapshot doc : task.getResult()) {
+                for (QueryDocumentSnapshot doc : task.getResult()) {
                     Chat c = doc.toObject(Chat.class);
                     Log.w("Message", "Message channel : " + c.getChatRef().toString());
                     chatRef = c.getChatRef();
+                    mStoreBase.collection("chat").document(chatRef.getId()).collection("messages").addSnapshotListener(new EventListener<QuerySnapshot>() {
+                        @Override
+                        public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
+                            if(error == null) {
+                                adapterMessages();
+                            }
+                        }
+                    });
                 }
 
-                if(chatRef != null) {
+                if (chatRef != null) {
                     adapterMessages();
                 }
             }
@@ -132,15 +144,6 @@ public class ChatActivity extends AppCompatActivity {
 
     private void adapterMessages() {
         Log.w("Message", "Descending");
-        mStoreBase.collection("chat").document(chatRef.getId()).collection("messages").limit(10).orderBy("time", Query.Direction.DESCENDING).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                for(QueryDocumentSnapshot doc : task.getResult()){
-                    Message m = doc.toObject(Message.class);
-                    Log.w("Message", "Charge : " + m.getMessage());
-                }
-            }
-        });
 
         Query query = mStoreBase.collection("chat").document(chatRef.getId()).collection("messages").limit(10).orderBy("time", Query.Direction.DESCENDING);
         PagedList.Config config = new PagedList.Config.Builder()
@@ -174,15 +177,13 @@ public class ChatActivity extends AppCompatActivity {
                 countAdapter++;
             }
         };
+
         LinearLayoutManager linearlayoutManager = new LinearLayoutManager(ChatActivity.this, VERTICAL, true);
         mRecyclerView.setLayoutManager(linearlayoutManager);
         mRecyclerView.setAdapter(adapter);
         adapter.startListening();
         mRecyclerView.scrollToPosition(adapter.getItemCount()-1);
         mSwipeRefreshLayout.setRefreshing(false);
-        Log.w("Messsage", "Load items : " + countAdapter);
-
-
     }
 
 
