@@ -61,6 +61,7 @@ public class Constants {
 
     public static SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yy");
     public static SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm");
+    public static SimpleDateFormat allTimeFormat = new SimpleDateFormat("dd-MM-yy HH:mm");
 
     public static LatLng targetZoom;
 

@@ -7,19 +7,13 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ProgressBar;
-import android.widget.ScrollView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
-import androidx.paging.PagedList;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
@@ -30,32 +24,20 @@ import com.example.nalone.R;
 import com.example.nalone.User;
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
-import com.firebase.ui.firestore.paging.FirestorePagingAdapter;
-import com.firebase.ui.firestore.paging.FirestorePagingOptions;
-import com.firebase.ui.firestore.paging.LoadingState;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.textfield.TextInputEditText;
-import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.EventListener;
-import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.util.Date;
 import java.util.UUID;
 
-import static androidx.recyclerview.widget.LinearLayoutManager.VERTICAL;
 import static com.example.nalone.util.Constants.USER;
 import static com.example.nalone.util.Constants.USER_REFERENCE;
+import static com.example.nalone.util.Constants.allTimeFormat;
 import static com.example.nalone.util.Constants.mStoreBase;
-import static com.example.nalone.util.Constants.sendNotification;
 
 public class ChatActivity extends AppCompatActivity {
 
@@ -66,20 +48,17 @@ public class ChatActivity extends AppCompatActivity {
     public static User USER_LOAD;
     private TextView nameUser;
     private DocumentReference chatRef;
-    private FirestorePagingAdapter adapter;
+    private FirestoreRecyclerAdapter adapter;
     private RecyclerView mRecyclerView;
-    private SwipeRefreshLayout mSwipeRefreshLayout;
 
     private LinearLayout.LayoutParams myLayoutMessages;
     private LinearLayout.LayoutParams otherLayoutMessages;
+    private CardView newMessagePopUp;
+    private SwipeRefreshLayout mSwipeRefreshLayout;
 
-    private String NOTIFICATION_TITLE;
-    private String NOTIFICATION_MESSAGE;
-    private String TOPIC;
+    private int scrollPosition = 0;
 
-    private int limit = 2;
-
-    private int countAdapter = 0;
+    private int limit = 10;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -87,22 +66,20 @@ public class ChatActivity extends AppCompatActivity {
         setContentView(R.layout.activity_chatbox);
 
         mSwipeRefreshLayout = findViewById(R.id.messageSwipeRefreshLayout);
+        newMessagePopUp = findViewById(R.id.newMessagePopUp);
         buttonSend = findViewById(R.id.buttonSend);
         messageEditText = findViewById(R.id.messageEditText);
         nameUser = findViewById(R.id.nameUser);
         nameUser.setText(USER_LOAD.getFirst_name() + " " + USER_LOAD.getLast_name());
         mRecyclerView = findViewById(R.id.messagesRecyclerView);
-        mRecyclerView.scrollToPosition(ScrollView.FOCUS_DOWN);
         buttonSend.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mRecyclerView.smoothScrollToPosition(countAdapter);
                 if (messageEditText.getText().length() > 0) {
                     sendMessage(new Message(USER_REFERENCE, messageEditText.getText().toString()));
                 }
             }
         });
-
 
         myLayoutMessages = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         myLayoutMessages.setMargins(80, 1, 10, 1);
@@ -113,22 +90,16 @@ public class ChatActivity extends AppCompatActivity {
         mStoreBase.collection("users").document(USER.getUid()).collection("chat_friends").whereEqualTo("uid", USER_LOAD.getUid()).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                for (QueryDocumentSnapshot doc : task.getResult()) {
+                for(QueryDocumentSnapshot doc : task.getResult()) {
                     Chat c = doc.toObject(Chat.class);
                     Log.w("Message", "Message channel : " + c.getChatRef().toString());
                     chatRef = c.getChatRef();
-                    mStoreBase.collection("chat").document(chatRef.getId()).collection("messages").addSnapshotListener(new EventListener<QuerySnapshot>() {
-                        @Override
-                        public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
-                            if(error == null) {
-                                adapterMessages();
-                            }
-                        }
-                    });
                 }
 
-                if (chatRef != null) {
+                if(chatRef != null) {
                     adapterMessages();
+                    Log.w("Message", "Scroll to down");
+                    mRecyclerView.scrollToPosition(0);
                 }
             }
         });
@@ -136,7 +107,11 @@ public class ChatActivity extends AppCompatActivity {
         mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
+                mSwipeRefreshLayout.setRefreshing(false);
+                limit += 10;
                 adapterMessages();
+                Log.w("Message", "Scroll position : " + scrollPosition);
+                mRecyclerView.scrollToPosition(scrollPosition);
             }
         });
 
@@ -146,43 +121,14 @@ public class ChatActivity extends AppCompatActivity {
         if(msg != null || msg.getSender() != null || msg.getMessage() != null || msg.getTime() != null) {
             mStoreBase.collection("chat").document(chatRef.getId()).collection("messages").document(UUID.randomUUID().toString()).set(msg);
             messageEditText.setText("");
-
-            TOPIC = "/topics/"+ USER_LOAD.getUid(); //topic must match with what the receiver subscribed to
-            Log.w("TOPIC", "Topic : " + TOPIC);
-            NOTIFICATION_TITLE = "Toc toc toc...";
-            NOTIFICATION_MESSAGE = USER.getFirst_name() + " " + USER.getLast_name() + " vient de vous envoyer un message !";
-
-            JSONObject notification = new JSONObject();
-            JSONObject notifcationBody = new JSONObject();
-            try {
-                notifcationBody.put("title", NOTIFICATION_TITLE);
-                notifcationBody.put("message", NOTIFICATION_MESSAGE);
-
-                notification.put("to", TOPIC);
-                notification.put("data", notifcationBody);
-            } catch (JSONException e) {
-                Log.e("Notification", "onCreate: " + e.getMessage());
-            }
-            sendNotification(notification, ChatActivity.this);
-
-            adapterMessages();
-
         }
     }
 
     private void adapterMessages() {
-        Log.w("Message", "Descending");
+        Query query = mStoreBase.collection("chat").document(chatRef.getId()).collection("messages").limit(limit).orderBy("time", Query.Direction.DESCENDING);
+        FirestoreRecyclerOptions<Message> options = new FirestoreRecyclerOptions.Builder<Message>().setQuery(query, Message.class).build();
 
-        Query query = mStoreBase.collection("chat").document(chatRef.getId()).collection("messages").limit(10).orderBy("time", Query.Direction.DESCENDING);
-        PagedList.Config config = new PagedList.Config.Builder()
-                .setEnablePlaceholders(false)
-                .setPrefetchDistance(2)
-                .setPageSize(10)
-                .build();
-
-        FirestorePagingOptions<Message> options = new FirestorePagingOptions.Builder<Message>().setQuery(query, config, Message.class).build();
-
-        adapter = new FirestorePagingAdapter<Message, MessageViewHolder>(options) {
+        adapter = new FirestoreRecyclerAdapter<Message, ChatActivity.MessageViewHolder>(options) {
             @NonNull
             @Override
             public ChatActivity.MessageViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -191,30 +137,56 @@ public class ChatActivity extends AppCompatActivity {
             }
 
             @Override
-            protected void onBindViewHolder(@NonNull MessageViewHolder messageViewHolder, int i, @NonNull Message m) {
-                if (m.getSender().equals(USER_REFERENCE)) {
+            protected void onBindViewHolder(@NonNull final MessageViewHolder messageViewHolder, int i, @NonNull Message m) {
+                Log.w("Message", "I : " + i);
+                if(m.getSender().equals(USER_REFERENCE)){
                     messageViewHolder.messageLayout.setLayoutParams(myLayoutMessages);
                     messageViewHolder.backgroundItem.setCardBackgroundColor(Color.parseColor("#18ECC5"));
-                } else {
+                }else{
                     messageViewHolder.messageLayout.setLayoutParams(otherLayoutMessages);
                     messageViewHolder.backgroundItem.setCardBackgroundColor(Color.LTGRAY);
                 }
-
                 messageViewHolder.messageText.setText(m.getMessage());
-                Log.w("Messsage", "Ajout item");
-                countAdapter++;
+                messageViewHolder.dateText.setText(allTimeFormat.format(m.getTime().toDate()));
+
+                messageViewHolder.messageLayout.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        if(messageViewHolder.dateText.getVisibility() == View.GONE) {
+                            messageViewHolder.dateText.setVisibility(View.VISIBLE);
+                        }else{
+                            messageViewHolder.dateText.setVisibility(View.GONE);
+                        }
+                    }
+                });
             }
         };
 
-        LinearLayoutManager linearlayoutManager = new LinearLayoutManager(ChatActivity.this, VERTICAL, true);
-        mRecyclerView.setLayoutManager(linearlayoutManager);
+        LinearLayoutManager mLayoutManager = new LinearLayoutManager(ChatActivity.this, RecyclerView.VERTICAL, true);
+        mRecyclerView.setLayoutManager(mLayoutManager);
         mRecyclerView.setAdapter(adapter);
         adapter.startListening();
-        mRecyclerView.scrollToPosition(adapter.getItemCount()-1);
-        mSwipeRefreshLayout.setRefreshing(false);
+
+        mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+                if(recyclerView.getVerticalScrollbarPosition() == 0){
+                    if(newMessagePopUp.getVisibility() == View.VISIBLE){
+                        newMessagePopUp.setVisibility(View.GONE);
+                    }
+                }
+            }
+        });
+
+        adapter.registerAdapterDataObserver(new RecyclerView.AdapterDataObserver() {
+            @Override
+            public void onChanged() {
+                super.onChanged();
+                Log.w("Message", "Data changed");
+            }
+        });
     }
-
-
 
     private class MessageViewHolder extends RecyclerView.ViewHolder {
 
@@ -225,8 +197,8 @@ public class ChatActivity extends AppCompatActivity {
         private ImageView button;
         private LinearLayout messageLayout;
         private TextView messageText;
+        private TextView dateText;
         private CardView backgroundItem;
-
 
         public MessageViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -238,9 +210,9 @@ public class ChatActivity extends AppCompatActivity {
             button = itemView.findViewById(R.id.buttonImage);
             messageLayout = itemView.findViewById(R.id.messageLayout);
             messageText = itemView.findViewById(R.id.messageText);
+            dateText = itemView.findViewById(R.id.dateText);
             backgroundItem = itemView.findViewById(R.id.bgMessage);
         }
     }
-
 
 }
