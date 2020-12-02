@@ -4,6 +4,7 @@ package com.example.nalone.ui.evenements.display;
 
 import android.graphics.Color;
 import android.location.Location;
+import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -16,6 +17,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
+import com.bumptech.glide.Glide;
+import com.example.nalone.Cache;
 import com.example.nalone.InfosEvenementsActivity;
 import com.example.nalone.R;
 import com.example.nalone.User;
@@ -56,6 +59,7 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.storage.StorageReference;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -66,6 +70,7 @@ import static com.example.nalone.util.Constants.MAPVIEW_BUNDLE_KEY;
 import static com.example.nalone.util.Constants.USER;
 import static com.example.nalone.util.Constants.USER_REFERENCE;
 import static com.example.nalone.util.Constants.dateFormat;
+import static com.example.nalone.util.Constants.mStore;
 import static com.example.nalone.util.Constants.mStoreBase;
 import static com.example.nalone.util.Constants.range;
 import static com.example.nalone.util.Constants.targetZoom;
@@ -174,7 +179,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                             public void onComplete(@NonNull Task<QuerySnapshot> task) {
                                 if (task.isSuccessful()) {
                                     for (QueryDocumentSnapshot document : task.getResult()) {
-                                        User u = document.toObject(User.class);
+                                        final User u = document.toObject(User.class);
                                         if (u.getCursus().equalsIgnoreCase("Informatique")) {
                                             holder.mCarwViewOwner.setCardBackgroundColor(Color.RED);
                                         }
@@ -195,11 +200,61 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                                             holder.mCarwViewOwner.setCardBackgroundColor((Color.parseColor("#EC9538")));
                                         }
 
+                                        if(u.getImage_url() != null) {
+                                            if(!Cache.fileExists(u.getUid())) {
+                                                StorageReference imgRef = mStore.getReference("users/" + u.getUid());
+                                                if (imgRef != null) {
+                                                    imgRef.getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
+                                                        @Override
+                                                        public void onComplete(@NonNull Task<Uri> task) {
+                                                            if (task.isSuccessful()) {
+                                                                Uri img = task.getResult();
+                                                                if (img != null) {
+                                                                    Cache.saveUriFile(u.getUid(), img);
+                                                                    u.setImage_url(Cache.getImageDate(u.getUid()));
+                                                                    mStoreBase.collection("users").document(u.getUid()).set(u);
+                                                                    Glide.with(getContext()).load(img).fitCenter().centerCrop().into(holder.mImageView);
+                                                                }
+                                                            }
+                                                        }
+                                                    });
+                                                }
+                                            }else{
+                                                Uri imgCache = Cache.getUriFromUid(u.getUid());
+                                                Log.w("Cache", "Image Cache : " + Cache.getImageDate(u.getUid()));
+                                                Log.w("Cache", "Data Cache : " + u.getImage_url());
+                                                if(Cache.getImageDate(u.getUid()).equalsIgnoreCase(u.getImage_url())) {
+                                                    Log.w("image", "get image from cache");
+                                                    Glide.with(getContext()).load(imgCache).fitCenter().centerCrop().into(holder.mImageView);
+                                                }else{
+                                                    StorageReference imgRef = mStore.getReference("users/" + u.getUid());
+                                                    if (imgRef != null) {
+                                                        imgRef.getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
+                                                            @Override
+                                                            public void onComplete(@NonNull Task<Uri> task) {
+                                                                if (task.isSuccessful()) {
+                                                                    Uri img = task.getResult();
+                                                                    if (img != null) {
+                                                                        Cache.saveUriFile(u.getUid(), img);
+                                                                        u.setImage_url(Cache.getImageDate(u.getUid()));
+                                                                        mStoreBase.collection("users").document(u.getUid()).set(u);
+                                                                        Glide.with(getContext()).load(img).fitCenter().centerCrop().into(holder.mImageView);
+                                                                    }
+                                                                }
+                                                            }
+                                                        });
+                                                    }
+                                                }
+                                            }
+                                        }
+
                                     }
 
                                 }
                             }
                         });
+
+
 
 
                 holder.mCardView.setOnClickListener(new View.OnClickListener() {
