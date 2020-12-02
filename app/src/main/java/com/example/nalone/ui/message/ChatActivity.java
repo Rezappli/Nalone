@@ -57,7 +57,7 @@ public class ChatActivity extends AppCompatActivity {
     private SwipeRefreshLayout mSwipeRefreshLayout;
 
     private int scrollPosition = 0;
-
+    private int nbItems = 0;
     private int limit = 10;
 
     @Override
@@ -125,6 +125,7 @@ public class ChatActivity extends AppCompatActivity {
     }
 
     private void adapterMessages() {
+        nbItems = 0;
         Query query = mStoreBase.collection("chat").document(chatRef.getId()).collection("messages").limit(limit).orderBy("time", Query.Direction.DESCENDING);
         FirestoreRecyclerOptions<Message> options = new FirestoreRecyclerOptions.Builder<Message>().setQuery(query, Message.class).build();
 
@@ -159,6 +160,7 @@ public class ChatActivity extends AppCompatActivity {
                         }
                     }
                 });
+                nbItems = i;
             }
         };
 
@@ -179,11 +181,19 @@ public class ChatActivity extends AppCompatActivity {
             }
         });
 
-        adapter.registerAdapterDataObserver(new RecyclerView.AdapterDataObserver() {
+        mRecyclerView.addOnLayoutChangeListener(new View.OnLayoutChangeListener() {
             @Override
-            public void onChanged() {
-                super.onChanged();
-                Log.w("Message", "Data changed");
+            public void onLayoutChange(View v, int left, int top, int right, int bottom, int oldLeft, int oldTop, int oldRight, int oldBottom) {
+                Log.w("Message", "Nombre items : " + nbItems);
+                Log.w("Message", "Nombre items layout : "+(mRecyclerView.getAdapter().getItemCount()-1));
+                if(nbItems ==  mRecyclerView.getAdapter().getItemCount()-1) {
+                    mRecyclerView.scrollToPosition(oldTop);
+                }else{
+                    Log.w("Message", "New message received");
+                    if(mRecyclerView.getScrollY() != 0){
+                        newMessagePopUp.setVisibility(View.VISIBLE);
+                    }
+                }
             }
         });
     }
