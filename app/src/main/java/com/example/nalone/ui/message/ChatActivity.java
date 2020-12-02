@@ -107,7 +107,6 @@ public class ChatActivity extends AppCompatActivity {
                 }
 
                 if(chatRef != null) {
-                    mSwipeRefreshLayout.setRefreshing(false);
                     adapterMessages();
                 }
             }
@@ -116,7 +115,7 @@ public class ChatActivity extends AppCompatActivity {
         mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                adapter.retry();
+                adapterMessages();
             }
         });
 
@@ -132,12 +131,12 @@ public class ChatActivity extends AppCompatActivity {
 
     private void adapterMessages() {
 
-        Query query = mStoreBase.collection("chat").document(chatRef.getId()).collection("messages").orderBy("time").limit(limit);
+        Query query = mStoreBase.collection("chat").document(chatRef.getId()).collection("messages").orderBy("time").limit(10);
 
         PagedList.Config config = new PagedList.Config.Builder()
                 .setEnablePlaceholders(false)
                 .setPrefetchDistance(2)
-                .setPageSize(limit)
+                .setPageSize(10)
                 .build();
 
         FirestorePagingOptions<Message> options = new FirestorePagingOptions.Builder<Message>().setQuery(query, config, Message.class).build();
@@ -152,47 +151,16 @@ public class ChatActivity extends AppCompatActivity {
 
             @Override
             protected void onBindViewHolder(@NonNull MessageViewHolder messageViewHolder, int i, @NonNull Message m) {
-                if(m.getSender().equals(USER_REFERENCE)){
+                if (m.getSender().equals(USER_REFERENCE)) {
                     messageViewHolder.messageLayout.setLayoutParams(myLayoutMessages);
                     messageViewHolder.backgroundItem.setCardBackgroundColor(Color.parseColor("#18ECC5"));
-                }else{
+                } else {
                     messageViewHolder.messageLayout.setLayoutParams(otherLayoutMessages);
                     messageViewHolder.backgroundItem.setCardBackgroundColor(Color.LTGRAY);
                 }
 
                 messageViewHolder.messageText.setText(m.getMessage());
             }
-
-            @Override
-            protected void onLoadingStateChanged(@NonNull LoadingState state) {
-                switch (state) {
-                    case LOADING_INITIAL:
-                    case LOADING_MORE:
-                        mSwipeRefreshLayout.setRefreshing(true);
-                        break;
-
-                    case LOADED:
-                        mSwipeRefreshLayout.setRefreshing(false);
-                        break;
-
-                    case ERROR:
-                        Toast.makeText(
-                                getApplicationContext(),
-                                "Error Occurred!",
-                                Toast.LENGTH_SHORT
-                        ).show();
-
-                        mSwipeRefreshLayout.setRefreshing(false);
-                        break;
-
-                    case FINISHED:
-                        mSwipeRefreshLayout.setRefreshing(false);
-                        break;
-                }
-            }
-
-
-
         };
 
         mRecyclerView.setLayoutManager(new LinearLayoutManager(ChatActivity.this));

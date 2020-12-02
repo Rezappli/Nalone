@@ -39,6 +39,7 @@ import static android.content.Context.MODE_PRIVATE;
 import static com.example.nalone.HomeActivity.buttonBack;
 import static com.example.nalone.util.Constants.USER;
 import static com.example.nalone.util.Constants.USER_ID;
+import static com.example.nalone.util.Constants.mAuth;
 import static com.example.nalone.util.Constants.maPosition;
 import static com.example.nalone.util.Constants.range;
 
@@ -78,6 +79,8 @@ public class ParametresFragment extends Fragment {
         SharedPreferences settings = this.getActivity().getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
         notification = settings.getBoolean(sharedNotif, false);
         position = settings.getBoolean(sharedPosition, false);
+        range = settings.getInt(sharedRange, 0);
+        Log.w("Range", "Load preferences : " + range);
 
 
         textViewRayon = root.findViewById(R.id.textViewRayon);
@@ -171,7 +174,7 @@ public class ParametresFragment extends Fragment {
 
         }
 
-        Switch swNotif = (Switch) root.findViewById(R.id.switchNotif);
+        Switch swNotif = root.findViewById(R.id.switchNotif);
 
         swNotif.setChecked(notification);
 
@@ -205,6 +208,7 @@ public class ParametresFragment extends Fragment {
     }
 
     private void signOut() {
+        mAuth.signOut();
         mGoogleSignInClient.signOut()
                 .addOnCompleteListener(getActivity(), new OnCompleteListener<Void>() {
                     @Override
@@ -224,8 +228,7 @@ public class ParametresFragment extends Fragment {
     private void setData(){
         SharedPreferences settings = this.getActivity().getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
         SharedPreferences.Editor editor = settings.edit();
-
-        Log.w("Range", "Range : " + range/1000);
+        Log.w("Range", "Save : " +range/1000);
         editor.putInt(sharedRange, range/1000);
         editor.putBoolean(sharedNotif, notification);
         editor.putBoolean(sharedPosition, maPosition);
