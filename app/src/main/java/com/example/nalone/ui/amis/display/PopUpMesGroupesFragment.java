@@ -56,7 +56,6 @@ public class PopUpMesGroupesFragment extends Fragment {
     Button buttonAdd;
     CardView cardViewPhotoPerson;
     private EditText groupDesc;
-    Button buttonPlus;
     private int nbMembers;
     private List<String> friends;
     RelativeLayout relativeLayout;
@@ -82,7 +81,6 @@ public class PopUpMesGroupesFragment extends Fragment {
         nbMembers = 0;
         navController = Navigation.findNavController(getActivity(), R.id.nav_host_fragment);
         textViewNbMembers = root.findViewById(R.id.groupNbMembers);
-        buttonPlus = root.findViewById(R.id.buttonPlus);
         buttonBack.setVisibility(View.VISIBLE);
         fenetrePrincipal = root.findViewById(R.id.fenetrePrincipal);
         fenetrePrincipal.setVisibility(View.GONE);

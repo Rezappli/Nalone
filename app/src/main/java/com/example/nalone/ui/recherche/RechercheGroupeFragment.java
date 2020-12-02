@@ -2,6 +2,7 @@ package com.example.nalone.ui.recherche;
 
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,6 +22,7 @@ import com.bumptech.glide.Glide;
 import com.example.nalone.Cache;
 import com.example.nalone.Group;
 import com.example.nalone.R;
+import com.example.nalone.User;
 import com.example.nalone.ui.amis.display.PopUpGroupFragment;
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
@@ -28,8 +30,14 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.StorageReference;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import static com.example.nalone.util.Constants.USER;
 import static com.example.nalone.util.Constants.USER_ID;
 import static com.example.nalone.util.Constants.mStore;
 import static com.example.nalone.util.Constants.mStoreBase;
@@ -43,6 +51,7 @@ public class RechercheGroupeFragment extends Fragment {
     private ImageView addGroup;
     private SwipeRefreshLayout swipeContainer;
     private View root;
+    private List<String> myGroups;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -55,6 +64,7 @@ public class RechercheGroupeFragment extends Fragment {
     }
 
     private void createFragment(){
+        myGroups = new ArrayList<>();
         swipeContainer = (SwipeRefreshLayout) root.findViewById(R.id.swipeContainer);
         swipeContainer.setColorSchemeResources(android.R.color.holo_blue_bright);
         this.configureSwipeRefreshLayout();
@@ -70,7 +80,26 @@ public class RechercheGroupeFragment extends Fragment {
             }
         });
 
-        adapterGroups();
+        mStoreBase.collection("users").document(USER.getUid()).collection("groups").whereEqualTo("status","add")
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            for (QueryDocumentSnapshot document : task.getResult()) {
+                                Log.d("TAG", document.getId() + " => " + document.getData());
+                                myGroups.add(document.getId());
+                            }
+                            //friends.add(USER.getUid());
+                            //query
+                            adapterGroups();
+                        } else {
+                            Log.d("TAG", "Error getting documents: ", task.getException());
+                        }
+                    }
+                });
+
+
 
     }
 
@@ -85,8 +114,14 @@ public class RechercheGroupeFragment extends Fragment {
 
 
     private void adapterGroups() {
-        DocumentReference ref = mStoreBase.document("users/"+USER_ID);
-        Query query = mStoreBase.collection("groups").whereNotEqualTo("ownerDoc", ref);
+
+        Query query;
+        if(myGroups.isEmpty()){
+            DocumentReference ref = mStoreBase.document("users/"+USER_ID);
+            query = mStoreBase.collection("groups").whereNotEqualTo("ownerDoc", ref);
+        }
+        else
+            query = mStoreBase.collection("groups").whereNotIn("uid", myGroups);
         FirestoreRecyclerOptions<Group> options = new FirestoreRecyclerOptions.Builder<Group>().setQuery(query, Group.class).build();
 
         adapter = new FirestoreRecyclerAdapter<Group, UserViewHolder>(options) {
@@ -191,13 +226,14 @@ public class RechercheGroupeFragment extends Fragment {
     public void onStart(){
         super.onStart();
         //updateItems();
-        adapter.startListening();
+        //adapter.startListening();
     }
 
     @Override
     public void onStop() {
         super.onStop();
-        adapter.stopListening();
+        if(adapter != null)
+            adapter.stopListening();
     }
 
 

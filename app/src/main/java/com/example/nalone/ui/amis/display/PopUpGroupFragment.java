@@ -57,7 +57,7 @@ public class PopUpGroupFragment extends Fragment {
     TextView visibilityGroup, textViewNbMembers;
     Button buttonAdd;
     CardView cardViewPhotoPerson;
-    Button buttonPlus;
+    Button buttonVoirMembres;
     private int nbMembers;
     private List<String> friends;
     RelativeLayout relativeLayout;
@@ -80,7 +80,7 @@ public class PopUpGroupFragment extends Fragment {
         nbMembers = 0;
         navController = Navigation.findNavController(getActivity(), R.id.nav_host_fragment);
         textViewNbMembers = root.findViewById(R.id.groupNbMembers);
-        buttonPlus = root.findViewById(R.id.buttonPlus);
+        buttonVoirMembres = root.findViewById(R.id.buttonVoirMembres);
         buttonBack.setVisibility(View.VISIBLE);
         fenetrePrincipal = root.findViewById(R.id.fenetrePrincipal);
         fenetrePrincipal.setVisibility(View.GONE);
@@ -101,6 +101,11 @@ public class PopUpGroupFragment extends Fragment {
                             }
                         }
                         textViewNbMembers.setText(nbMembers+" membres");
+                        if (nbMembers != 0){
+                            buttonVoirMembres.setVisibility(View.VISIBLE);
+                        }else{
+                            buttonVoirMembres.setVisibility(View.GONE);
+                        }
                         fenetrePrincipal.setVisibility(View.VISIBLE);
                     }
                 });
@@ -196,6 +201,7 @@ public class PopUpGroupFragment extends Fragment {
 
     private void quitterGroup() {
         mStoreBase.collection("groups").document(GROUP_LOAD.getUid()).collection("members").document(USER.getUid()).delete();
+        mStoreBase.collection("users").document(USER_ID).collection("groups").document(GROUP_LOAD.getUid()).delete();
         Toast.makeText(getContext(), "Vous avez quitter le groupe " + GROUP_LOAD.getName() + " !", Toast.LENGTH_SHORT).show();
 
     }
@@ -209,7 +215,9 @@ public class PopUpGroupFragment extends Fragment {
 
     public void joinPublic() {
         ModelData data1 = new ModelData("add", mStoreBase.collection("users").document(USER.getUid()));
+        ModelData data2 = new ModelData("add", mStoreBase.collection("groups").document(GROUP_LOAD.getUid()));
         mStoreBase.collection("groups").document(GROUP_LOAD.getUid()).collection("members").document(USER.getUid()).set(data1);
+        mStoreBase.collection("users").document(USER_ID).collection("groups").document(GROUP_LOAD.getUid()).set(data2);
         Toast.makeText(getContext(), "Vous avez rejoint le groupe " + GROUP_LOAD.getName() + " !", Toast.LENGTH_SHORT).show();
     }
 
