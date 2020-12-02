@@ -119,8 +119,7 @@ public class RechercheGroupeFragment extends Fragment {
         if(myGroups.isEmpty()){
             DocumentReference ref = mStoreBase.document("users/"+USER_ID);
             query = mStoreBase.collection("groups").whereNotEqualTo("ownerDoc", ref);
-        }
-        else
+        }else
             query = mStoreBase.collection("groups").whereNotIn("uid", myGroups);
         FirestoreRecyclerOptions<Group> options = new FirestoreRecyclerOptions.Builder<Group>().setQuery(query, Group.class).build();
 
