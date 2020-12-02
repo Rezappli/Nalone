@@ -114,5 +114,6 @@
     <string name="delte_group"> Supprimer le groupe </string>
     <string name="qr_code"> Mon QR Code </string>
     <string name="enter_message"> Entrez votre message </string>
+    <string name="ajout_desc"> <u>Ajouter une description</u> </string>
 
 </resources>

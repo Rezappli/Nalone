@@ -76,11 +76,7 @@ public class EvenementsListFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         rootView = inflater.inflate(R.layout.fragment_evenements_list, container, false);
-
         createFragment();
-
-
-
         return rootView;
     }
 

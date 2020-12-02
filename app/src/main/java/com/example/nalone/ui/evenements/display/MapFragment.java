@@ -98,6 +98,8 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     private final double maxLong = USER.getLocation().getLongitude() + (range / unitLong);
 
     private List<String> nearby_events;
+    private int iterator = 0;
+    private CardView cardViewButtonAdd;
 
     public MapFragment() {
         // Required empty public constructor
@@ -113,6 +115,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         mMapView = rootView.findViewById(R.id.mapView);
         navController = Navigation.findNavController(getActivity(), R.id.nav_host_fragment);
         mRecyclerView = rootView.findViewById(R.id.recyclerViewEventMap);
+        cardViewButtonAdd = rootView.findViewById(R.id.addEvent);
 
         nearby_events = new ArrayList<>();
 
@@ -161,6 +164,8 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                 holder.mVille.setText((e.getCity()));
                 holder.mDescription.setText((e.getDescription()));
                 holder.mProprietaire.setText(e.getOwner());
+
+                iterator++;
 
                 mStoreBase.collection("users").whereEqualTo("uid", e.getOwnerDoc().getId())
                         .get()
@@ -248,6 +253,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                 }
             });
         }
+
     }
 
     private class EventViewHolder extends RecyclerView.ViewHolder {
@@ -384,6 +390,11 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                     if (nearby_events.size() > 0) {
                         adapterEvents();
                     }
+                    Log.w("iterator", iterator+"");
+                   /* if (nearby_events.size() <= 1){
+
+                        cardViewButtonAdd.setPadding(100, 0, 0, 0);
+                    }*/
                 }
             });
         }

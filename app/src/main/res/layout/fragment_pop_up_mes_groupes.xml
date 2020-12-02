@@ -122,7 +122,17 @@
                 android:paddingEnd="10dp"
                 android:text="@string/voir_membres" />
 
+            <TextView
+                android:id="@+id/ajoutDesc"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="20dp"
+                android:gravity="center"
+                android:text="@string/ajout_desc"
+                android:textColor="@color/colorPrimary" />
+
             <RelativeLayout
+                android:id="@+id/relativeDesc"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
 

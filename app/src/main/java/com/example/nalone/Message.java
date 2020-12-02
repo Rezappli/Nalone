@@ -14,7 +14,8 @@ public class Message {
     private Timestamp time;
 
 
-    public Message(){}
+    public Message(){
+    }
 
     public Message(DocumentReference sender, String message){
         this.sender = sender;

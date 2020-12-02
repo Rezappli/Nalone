@@ -49,6 +49,7 @@ public class PopUpMesGroupesFragment extends Fragment {
     TextView descriptionGroup;
     TextView nbCreateGroup;
     TextView nbParticipateGroup;
+    RelativeLayout relativeDesc;
 
     ImageView imageGroup;
     TextView visibilityGroup, textViewNbMembers;
@@ -59,6 +60,7 @@ public class PopUpMesGroupesFragment extends Fragment {
     private int nbMembers;
     private List<String> friends;
     RelativeLayout relativeLayout;
+    private TextView ajoutDesc;
 
     private CardView cardViewPhotoEdit, cardViewPhotoEditDesc,cardViewProfilEdit,cardViewProfilMembers, getCardViewPhotoEditDesc;
     private ImageView imageViewEditDescription;
@@ -71,12 +73,12 @@ public class PopUpMesGroupesFragment extends Fragment {
                              Bundle savedInstanceState) {
         root = inflater.inflate(R.layout.fragment_pop_up_mes_groupes, container, false);
 
-        createFragment(root);
+        createFragment();
 
         return root;
     }
 
-    private void createFragment(final View root) {
+    private void createFragment() {
         nbMembers = 0;
         navController = Navigation.findNavController(getActivity(), R.id.nav_host_fragment);
         textViewNbMembers = root.findViewById(R.id.groupNbMembers);
@@ -86,7 +88,16 @@ public class PopUpMesGroupesFragment extends Fragment {
         fenetrePrincipal.setVisibility(View.GONE);
 
         descriptionGroup = root.findViewById(R.id.groupDescription);
+        ajoutDesc = root.findViewById(R.id.ajoutDesc);
+        ajoutDesc.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                afficherDescription();
+                modifierDescription();
+            }
+        });
 
+        relativeDesc = root.findViewById(R.id.relativeDesc);
         cardViewProfilEdit = root.findViewById(R.id.cardViewEditGroup);
         cardViewPhotoEdit = root.findViewById(R.id.cardViewPhotoEditImg);
         cardViewPhotoEditDesc = root.findViewById(R.id.cardViewPhotoEditDesc);
@@ -136,10 +147,7 @@ public class PopUpMesGroupesFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 if(!editDescription){
-                    groupDesc.setClickable(true);
-                    groupDesc.setEnabled(true);
-                    imageViewEditDescription.setImageResource(R.drawable.ic_baseline_check_24);
-                    editDescription = true;
+                    modifierDescription();
                 }else{
                     groupDesc.setClickable(false);
                     groupDesc.setEnabled(false);
@@ -198,8 +206,23 @@ public class PopUpMesGroupesFragment extends Fragment {
             }
         }
 
-        if (GROUP_LOAD.getDescription().matches("")) {
-            descriptionGroup.setVisibility(View.GONE);
+        if (GROUP_LOAD.getDescription().equalsIgnoreCase("")) {
+            relativeDesc.setVisibility(View.GONE);
+            ajoutDesc.setVisibility(View.VISIBLE);
+        }else{
+            afficherDescription();
         }
+    }
+
+    private void modifierDescription() {
+        groupDesc.setClickable(true);
+        groupDesc.setEnabled(true);
+        imageViewEditDescription.setImageResource(R.drawable.ic_baseline_check_24);
+        editDescription = true;
+    }
+
+    private void afficherDescription() {
+        relativeDesc.setVisibility(View.VISIBLE);
+        ajoutDesc.setVisibility(View.GONE);
     }
 }
