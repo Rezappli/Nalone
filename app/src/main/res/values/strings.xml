@@ -87,7 +87,7 @@
     <string name="delete"> Supprimer son compte  </string>
     <string name="change_pwd"> Changer de mot de passe  </string>
     <string name="aucunEvent"> Aucun évènement en approche ! </string>
-    <string name="aucunMesEvent"> Aucun évènement créer ! </string>
+    <string name="aucunMesEvent"> Aucun évènement planifié ! </string>
     <string name="insiterCreer"> Les autres utilisateurs n\'attendent que toi </string>
     <string name="parametres"> Paramètres </string>
     <string name="Profil"> Profil </string>

@@ -56,7 +56,6 @@ public class MesEvenementsListFragment extends Fragment {
     public static Visibility visibiliteEdit;
 
     private LinearLayout linearSansEvent;
-    private ImageView addEvent;
 
     private RecyclerView mRecyclerView;
     private FirestoreRecyclerAdapter adapter;
@@ -89,7 +88,6 @@ public class MesEvenementsListFragment extends Fragment {
         this.configureSwipeRefreshLayout();
         linearSansEvent = rootView.findViewById(R.id.linearSansEvent);
         mRecyclerView = rootView.findViewById(R.id.recyclerViewMesEventList);
-        addEvent = rootView.findViewById(R.id.create_event_button);
         mesEvents = rootView.findViewById(R.id.mesEvents);
 
         navController = Navigation.findNavController(getActivity(), R.id.nav_host_fragment);
@@ -100,12 +98,6 @@ public class MesEvenementsListFragment extends Fragment {
             }
         });
         SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yy");
-        addEvent.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(getContext(), CreateEventFragment.class));
-            }
-        });
 
 
         DocumentReference ref = mStoreBase.document("users/"+USER_ID);

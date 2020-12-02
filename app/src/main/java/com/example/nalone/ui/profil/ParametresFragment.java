@@ -139,7 +139,7 @@ public class ParametresFragment extends Fragment {
 
         final SeekBar seekBar =  root.findViewById(R.id.seekBarRayon);
 
-        seekBar.setMax(200);
+        seekBar.setMax(300);
         seekBar.setMin(50);
         seekBar.setProgress(range);
 

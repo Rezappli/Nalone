@@ -62,57 +62,24 @@
             <TextView
                 android:id="@+id/textViewSansEvent"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:layout_gravity="bottom"
-                android:layout_weight="0.3"
+                android:layout_weight="0.8"
                 android:fontFamily="@font/baloo"
                 android:gravity="bottom|center_horizontal"
                 android:text="@string/aucunMesEvent"
                 android:textSize="24sp" />
 
-            <TextView
-                android:id="@+id/textViewSansEvent1"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="0.3"
-                android:fontFamily="@font/baloo"
-                android:gravity="center"
-                android:text="@string/insiterCreer"
-                android:textSize="18sp" />
-
             <ImageView
-                android:id="@+id/imageViewSansEvent"
-                android:layout_width="100dp"
-                android:layout_height="48dp"
-                android:layout_gravity="center"
-                android:layout_marginBottom="10dp"
-                android:layout_weight="0.1"
-                android:src="@drawable/fleche_event" />
+                android:id="@+id/imageView27"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginStart="80dp"
+                android:layout_marginEnd="80dp"
+                android:layout_marginBottom="60dp"
+                android:layout_weight="0.2"
+                android:src="@drawable/sans_mes_events" />
 
-            <androidx.cardview.widget.CardView
-                android:id="@+id/addSansEvent"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentEnd="false"
-                android:layout_gravity="center"
-                android:layout_marginBottom="20dp"
-                android:foregroundGravity="bottom|center_horizontal"
-                app:cardBackgroundColor="#18ECC5"
-                app:cardCornerRadius="50dp"
-                app:cardElevation="10dp"
-                app:layout_constraintBottom_toTopOf="@+id/linearLayout3">
-
-                <ImageView
-                    android:id="@+id/create_event_button"
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
-                    android:layout_centerHorizontal="true"
-                    android:layout_centerVertical="true"
-                    android:layout_gravity="bottom|center"
-                    android:layout_margin="5dp"
-                    android:clickable="false"
-                    app:srcCompat="@drawable/ic_baseline_add_circle_24" />
-            </androidx.cardview.widget.CardView>
         </LinearLayout>
 
         <TextView
@@ -126,7 +93,8 @@
             android:id="@+id/swipeContainer"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginTop="0dp">
+            android:layout_marginTop="0dp"
+            android:visibility="visible">
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/recyclerViewMesEventList"
