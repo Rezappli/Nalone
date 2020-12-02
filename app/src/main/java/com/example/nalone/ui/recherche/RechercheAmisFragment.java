@@ -70,7 +70,6 @@ public class RechercheAmisFragment extends Fragment {
     private ItemFiltreAdapter mAdapterFiltre;
     private RecyclerView.LayoutManager mLayoutManagerFiltre;
     private FirestoreRecyclerAdapter adapter;
-
     private ImageView qr_code;
     List<String> friends;
 
@@ -129,12 +128,12 @@ public class RechercheAmisFragment extends Fragment {
                             }
                             friends.add(USER.getUid());
                             //query
-
-
-                            adapterUsers();
-                            adapter.startListening();
+                            Query query = mStoreBase.collection("users").whereNotIn("uid", friends);
+                            FirestoreRecyclerOptions<User> options = new FirestoreRecyclerOptions.Builder<User>().setQuery(query, User.class).build();
+                            adapterUsers(options);
                             addFilters();
 
+                            adapter.startListening();
                         } else {
                             Log.d("TAG", "Error getting documents: ", task.getException());
                         }
@@ -215,6 +214,10 @@ public class RechercheAmisFragment extends Fragment {
                 }
                 else{
                     filtres.get(position).setBackground(R.color.colorPrimary);
+                    Log.w("filtre", filtres.get(position).getFiltre()+"");
+                    for (int i = 0; i < friends.size(); i++){
+                        Log.w("filtres", "Friends : " + friends.get(i));
+                    }
                     adapterFiltre(filtres.get(position).getFiltre(), friends);
                 }
                 mAdapterFiltre.notifyDataSetChanged();
@@ -250,12 +253,11 @@ public class RechercheAmisFragment extends Fragment {
         }
 
         FirestoreRecyclerOptions<User> options = new FirestoreRecyclerOptions.Builder<User>().setQuery(query, User.class).build();
-        adapterUsers();
+        adapterUsers(options);
     }
 
-    private void adapterUsers() {
-        Query query = mStoreBase.collection("users").whereNotIn("uid", friends);
-        FirestoreRecyclerOptions<User> options = new FirestoreRecyclerOptions.Builder<User>().setQuery(query, User.class).build();
+    private void adapterUsers(FirestoreRecyclerOptions<User> options) {
+
         adapter = new FirestoreRecyclerAdapter<User, UserViewHolder>(options) {
             @NonNull
             @Override
@@ -394,14 +396,6 @@ public class RechercheAmisFragment extends Fragment {
         PopupProfilFragment.type = "recherche";
         navController.navigate(R.id.action_navigation_recherche_amis_to_navigation_popup_profil);
     }
-
-
-    // Add a list of items -- change to type used
-    public void addAll() {
-        adapter.notifyDataSetChanged();
-        createFragment();
-    }
-
 
     @Override
     public void onStop() {
