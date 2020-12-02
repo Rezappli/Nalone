@@ -25,7 +25,7 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_logo_round"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme">
+        android:theme="@style/AppTheme.NoActionBar">
         <activity android:name=".ResetPassword" />
         <activity android:name=".InfosEvenementsActivity" />
         <activity android:name=".ui.message.ChatActivity" android:theme="@style/AppTheme.NoActionBar">
@@ -54,7 +54,8 @@
         <activity android:name=".signUpActivities.SignUpStudiesActivity" />
         <activity
             android:name=".HomeActivity"
-            android:label="@string/title_activity_home" />
+            android:label="@string/title_activity_home"
+            android:theme="@style/AppTheme"/>
         <activity android:name=".signUpActivities.SignUpProfilActivity" />
         <activity android:name=".signUpActivities.SignUpHobbiesActivity" />
         <activity android:name=".signUpActivities.SignUpInformationActivity" />
