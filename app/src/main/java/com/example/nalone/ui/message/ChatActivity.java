@@ -44,6 +44,7 @@ import com.google.firebase.firestore.QuerySnapshot;
 import java.util.Date;
 import java.util.UUID;
 
+import static androidx.recyclerview.widget.LinearLayoutManager.VERTICAL;
 import static com.example.nalone.util.Constants.USER;
 import static com.example.nalone.util.Constants.USER_REFERENCE;
 import static com.example.nalone.util.Constants.mStoreBase;
@@ -130,9 +131,18 @@ public class ChatActivity extends AppCompatActivity {
     }
 
     private void adapterMessages() {
+        Log.w("Message", "Descending");
+        mStoreBase.collection("chat").document(chatRef.getId()).collection("messages").limit(10).orderBy("time", Query.Direction.DESCENDING).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                for(QueryDocumentSnapshot doc : task.getResult()){
+                    Message m = doc.toObject(Message.class);
+                    Log.w("Message", "Charge : " + m.getMessage());
+                }
+            }
+        });
 
-        Query query = mStoreBase.collection("chat").document(chatRef.getId()).collection("messages").orderBy("time").limit(10);
-
+        Query query = mStoreBase.collection("chat").document(chatRef.getId()).collection("messages").limit(10).orderBy("time", Query.Direction.DESCENDING);
         PagedList.Config config = new PagedList.Config.Builder()
                 .setEnablePlaceholders(false)
                 .setPrefetchDistance(2)
@@ -160,13 +170,17 @@ public class ChatActivity extends AppCompatActivity {
                 }
 
                 messageViewHolder.messageText.setText(m.getMessage());
+                Log.w("Messsage", "Ajout item");
+                countAdapter++;
             }
         };
-
-        mRecyclerView.setLayoutManager(new LinearLayoutManager(ChatActivity.this));
+        LinearLayoutManager linearlayoutManager = new LinearLayoutManager(ChatActivity.this, VERTICAL, true);
+        mRecyclerView.setLayoutManager(linearlayoutManager);
         mRecyclerView.setAdapter(adapter);
         adapter.startListening();
         mRecyclerView.scrollToPosition(adapter.getItemCount()-1);
+        mSwipeRefreshLayout.setRefreshing(false);
+        Log.w("Messsage", "Load items : " + countAdapter);
 
 
     }
