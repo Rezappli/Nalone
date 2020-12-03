@@ -55,6 +55,7 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
@@ -68,6 +69,7 @@ import java.util.List;
 import static com.example.nalone.HomeActivity.buttonBack;
 import static com.example.nalone.util.Constants.MAPVIEW_BUNDLE_KEY;
 import static com.example.nalone.util.Constants.USER;
+import static com.example.nalone.util.Constants.USER_ID;
 import static com.example.nalone.util.Constants.USER_REFERENCE;
 import static com.example.nalone.util.Constants.dateFormat;
 import static com.example.nalone.util.Constants.mStore;
@@ -162,7 +164,8 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                                 Log.d("TAG", document.getId() + " => " + document.getData());
                                 myEvents.add(document.getId());
                             }
-                            Query query = mStoreBase.collection("events").whereIn("uid", nearby_events);
+                            DocumentReference ref = mStoreBase.document("users/"+USER_ID);
+                            Query query = mStoreBase.collection("events").whereIn("uid", nearby_events).whereNotEqualTo("ownerDoc",ref);
                             FirestoreRecyclerOptions<Evenement> options = new FirestoreRecyclerOptions.Builder<Evenement>().setQuery(query, Evenement.class).build();
 
                             adapter = new FirestoreRecyclerAdapter<Evenement, EventViewHolder>(options) {

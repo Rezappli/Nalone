@@ -108,10 +108,6 @@ public class EvenementsListFragment extends Fragment {
                     }
                 });
 
-
-
-
-
         linearSansEvent = rootView.findViewById(R.id.linearSansEvent);
 
         linearSansEvent.setVisibility(View.GONE);
