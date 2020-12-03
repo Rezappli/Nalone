@@ -77,8 +77,6 @@ public class MesEvenementsListFragment extends Fragment {
 
         createFragment();
 
-
-
         return rootView;
     }
 
@@ -114,14 +112,17 @@ public class MesEvenementsListFragment extends Fragment {
                             }
                             Log.w("event", " Check list");
                             adapterEvents();
-                            if(adapter.getItemCount() == 0 || events.isEmpty()){
-                                linearSansEvent.setVisibility(View.VISIBLE);
-                            }
+
 
                         }
                     }
                 });
 
+        if(adapter != null){
+            if(adapter.getItemCount() == 0){
+                linearSansEvent.setVisibility(View.VISIBLE);
+            }
+        }
     }
 
     private void configureSwipeRefreshLayout(){
@@ -134,19 +135,17 @@ public class MesEvenementsListFragment extends Fragment {
     }
 
     private void adapterEvents() {
-        Query query;
+
         if(!events.isEmpty()) {
-            query = mStoreBase.collection("events").whereIn("uid", events);
-        }else {
-            query = mStoreBase.collection("eveskjfhddsjkfhsdkjfhnts");
-        }
+            Query query = mStoreBase.collection("events").whereIn("uid", events);
+
             FirestoreRecyclerOptions<Evenement> options = new FirestoreRecyclerOptions.Builder<Evenement>().setQuery(query, Evenement.class).build();
 
             adapter = new FirestoreRecyclerAdapter<Evenement, EventViewHolder>(options) {
                 @NonNull
                 @Override
                 public EventViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-                    View view= LayoutInflater.from(parent.getContext()).inflate(R.layout.item_evenements_join,parent,false);
+                    View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_evenements_join, parent, false);
                     return new EventViewHolder(view);
                 }
 
@@ -169,30 +168,31 @@ public class MesEvenementsListFragment extends Fragment {
                                     if (task.isSuccessful()) {
                                         for (QueryDocumentSnapshot document : task.getResult()) {
                                             User u = document.toObject(User.class);
-                                            if(u.getCursus().equalsIgnoreCase("Informatique")){
+                                            if (u.getCursus().equalsIgnoreCase("Informatique")) {
                                                 holder.mCarwViewOwner.setCardBackgroundColor(Color.RED);
                                             }
 
-                                            if(u.getCursus().equalsIgnoreCase("TC")){
+                                            if (u.getCursus().equalsIgnoreCase("TC")) {
                                                 holder.mCarwViewOwner.setCardBackgroundColor(Color.parseColor("#00E9FD"));
                                             }
 
-                                            if(u.getCursus().equalsIgnoreCase("MMI")){
+                                            if (u.getCursus().equalsIgnoreCase("MMI")) {
                                                 holder.mCarwViewOwner.setCardBackgroundColor(Color.parseColor("#FF1EED"));
                                             }
 
-                                            if(u.getCursus().equalsIgnoreCase("GB")){
+                                            if (u.getCursus().equalsIgnoreCase("GB")) {
                                                 holder.mCarwViewOwner.setCardBackgroundColor(Color.parseColor("#41EC57"));
                                             }
 
-                                            if(u.getCursus().equalsIgnoreCase("LP")){
+                                            if (u.getCursus().equalsIgnoreCase("LP")) {
                                                 holder.mCarwViewOwner.setCardBackgroundColor((Color.parseColor("#EC9538")));
                                             }
 
                                         }
 
                                     }
-                                }});
+                                }
+                            });
 
 
                     holder.mAfficher.setOnClickListener(new View.OnClickListener() {
@@ -266,7 +266,9 @@ public class MesEvenementsListFragment extends Fragment {
             swipeContainer.setRefreshing(false);
 
             Log.w("count", iterator + "");
-
+        }else{
+            linearSansEvent.setVisibility(View.VISIBLE);
+        }
 
     }
 
@@ -305,6 +307,15 @@ public class MesEvenementsListFragment extends Fragment {
     public void onResume() {
         createFragment();
         super.onResume();
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        if(adapter != null){
+            adapter.stopListening();
+            adapter = null;
+        }
     }
 
 }

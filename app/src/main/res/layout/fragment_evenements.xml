@@ -17,7 +17,9 @@
         <com.google.android.material.tabs.TabLayout
             android:id="@+id/tabLayoutEvenement"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:focusableInTouchMode="false"
+            app:tabIndicatorColor="#18ECC5">
 
         </com.google.android.material.tabs.TabLayout>
 

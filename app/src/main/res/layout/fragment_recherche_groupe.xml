@@ -60,7 +60,7 @@
             android:layout_height="match_parent"
             android:layout_below="@id/divider7"
             android:orientation="vertical"
-            android:visibility="visible">
+            android:visibility="gone">
 
             <TextView
                 android:id="@+id/textViewSansEvent"
@@ -71,7 +71,7 @@
                 android:layout_weight="0.8"
                 android:fontFamily="@font/baloo"
                 android:gravity="bottom|center_horizontal"
-                android:text="@string/aucunRechercheGroupe"
+                android:text="@string/aucunMesGroupes"
                 android:textSize="24sp" />
 
             <ImageView

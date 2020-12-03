@@ -103,26 +103,7 @@ public class EvenementsListFragment extends Fragment {
                                 events.add(document.getId());
                                 Log.w("event", " Ajout list");
                             }
-                            DocumentReference ref = mStoreBase.document("users/"+USER_ID);
-                            mStoreBase.collection("events").whereNotEqualTo("ownerDoc", ref)
-                                    .get()
-                                    .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                                        @Override
-                                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                                            if (task.isSuccessful()) {
-                                                for (QueryDocumentSnapshot document : task.getResult()) {
-                                                    iterator++;
-                                                }
-                                                Log.w("event", " Check list");
-                                                adapterEvents();
-                                                if(iterator == 0){
-                                                    linearSansEvent.setVisibility(View.VISIBLE);
-                                                }else{
-                                                    linearSansEvent.setVisibility(View.GONE);
-                                                }
-                                            }
-                                        }
-                                    });
+                            adapterEvents();
                         }
                     }
                 });
@@ -146,6 +127,15 @@ public class EvenementsListFragment extends Fragment {
         mRecyclerViewFiltre.setAdapter(mAdapterFiltre);
 
         mRecyclerView = rootView.findViewById(R.id.recyclerViewEventList);
+
+        if(adapter != null){
+            if(adapter.getItemCount() == 0){
+                linearSansEvent.setVisibility(View.VISIBLE);
+            }else{
+                linearSansEvent.setVisibility(View.GONE);
+            }
+        }
+
     }
 
     private void adapterEvents() {

@@ -1,5 +1,6 @@
 package com.example.nalone.ui.evenements;
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -54,7 +55,7 @@ public class EvenementsFragment extends Fragment {
         setUpViewPager(viewPager);
         tabLayout.setupWithViewPager(viewPager);
         tabLayout.getTabAt(0).setIcon(R.drawable.ic_baseline_map_24);
-        tabLayout.getTabAt(1).setIcon(R.drawable.ic_baseline_format_list_bulleted_24);
+        tabLayout.getTabAt(1).setIcon(R.drawable.ic_round_search_event);
         tabLayout.getTabAt(2).setIcon(R.drawable.ic_baseline_mesevent);
     }
 
