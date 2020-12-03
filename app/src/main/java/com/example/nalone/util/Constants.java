@@ -71,6 +71,13 @@ public class Constants {
 
     public static Application application;
 
+    public static int ID_NOTIFICATION_GLOBAL = 100;
+    public static int ID_NOTIFICATION_INVITATIONS = 101;
+    public static int ID_NOTIFICATION_MESSAGES = 102;
+
+    public static boolean ON_MESSAGE_ACTIVITY = false;
+    public static boolean ON_FRIENDS_ACTIVITY = false;
+
     private static String FCM_API = "https://fcm.googleapis.com/fcm/send";
     private static String serverKey = "key=AAAA4ZRDAW0:APA91bErNdSatj13ahbk5w8kqEtjnJ4B4BI70KPYBvJNBnLjKjXn0y-FfB73j9p-A6Iw2sVDN93UfrjkhXxqqU3H_rVm1RuB5IwPfrcB85CgAZH2ZN-SopzO-Pp2r5p_V7R5Er_X7wl7";
     private static String contentType = "application/json";
@@ -98,7 +105,6 @@ public class Constants {
                 return params;
             }
         };
-        Log.w("Notification", "Send notification");
         MySingleton.getInstance(context).addToRequestQueue(jsonObjectRequest);
     }
 }

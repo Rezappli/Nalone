@@ -1,6 +1,8 @@
 package com.example.nalone.ui.message;
 
 
+import android.app.NotificationManager;
+import android.content.Context;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
@@ -43,11 +45,13 @@ import org.json.JSONObject;
 import java.util.MissingResourceException;
 import java.util.UUID;
 
+import static com.example.nalone.util.Constants.ID_NOTIFICATION_MESSAGES;
 import static com.example.nalone.util.Constants.USER;
 import static com.example.nalone.util.Constants.USER_REFERENCE;
 import static com.example.nalone.util.Constants.allTimeFormat;
 import static com.example.nalone.util.Constants.mStoreBase;
 import static com.example.nalone.util.Constants.sendNotification;
+import static com.example.nalone.util.Constants.ON_MESSAGE_ACTIVITY;
 
 public class ChatActivity extends AppCompatActivity {
 
@@ -80,6 +84,7 @@ public class ChatActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chatbox);
 
+        ON_MESSAGE_ACTIVITY = true;
         mSwipeRefreshLayout = findViewById(R.id.messageSwipeRefreshLayout);
         newMessagePopUp = findViewById(R.id.newMessagePopUp);
         buttonSend = findViewById(R.id.buttonSend);
@@ -247,6 +252,8 @@ public class ChatActivity extends AppCompatActivity {
                 }
             }
         });
+
+        clearNotifications();
     }
 
     private class MessageViewHolder extends RecyclerView.ViewHolder {
@@ -294,6 +301,8 @@ public class ChatActivity extends AppCompatActivity {
         try {
             notificationBody.put("title", NOTIFICATION_TITLE);
             notificationBody.put("message", NOTIFICATION_MESSAGE);
+            notificationBody.put("sender", USER.getUid());
+            notificationBody.put("type", "message");
 
             notification.put("to", TOPIC);
             notification.put("data", notificationBody);
@@ -301,6 +310,17 @@ public class ChatActivity extends AppCompatActivity {
             Log.e(TAG, "onCreate: " + e.getMessage());
         }
         sendNotification(notification, ChatActivity.this);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        ON_MESSAGE_ACTIVITY = false;
+    }
+
+    private void clearNotifications(){
+        NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        notificationManager.cancel(USER_LOAD.getUid(), ID_NOTIFICATION_MESSAGES);
     }
 
 }

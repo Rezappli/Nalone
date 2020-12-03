@@ -36,6 +36,11 @@ import java.util.Random;
 
 import splash.SplashActivity;
 
+import static com.example.nalone.util.Constants.ID_NOTIFICATION_GLOBAL;
+import static com.example.nalone.util.Constants.ID_NOTIFICATION_INVITATIONS;
+import static com.example.nalone.util.Constants.ID_NOTIFICATION_MESSAGES;
+import static com.example.nalone.util.Constants.ON_FRIENDS_ACTIVITY;
+import static com.example.nalone.util.Constants.ON_MESSAGE_ACTIVITY;
 import static com.example.nalone.util.Constants.USER;
 import static com.example.nalone.util.Constants.mMessaging;
 import static com.example.nalone.util.Constants.mStoreBase;
@@ -44,7 +49,8 @@ public class MyFirebaseInstance extends FirebaseMessagingService {
 
     public static String user_id;
     private final String ADMIN_CHANNEL_ID = "admin_channel";
-    private final String NOTIFICATION_TAG = "FIREBASEOC";
+    private final String NOTIFICATION_TAG_LOGCAT = "FIREBASEOC";
+    private String NOTIFICATION_TAG = "TAG_EMPTY";
     private static List<String> channels = new ArrayList<>();
 
     @Override
@@ -55,8 +61,8 @@ public class MyFirebaseInstance extends FirebaseMessagingService {
     @Override
     public void onCreate() {
         super.onCreate();
-        Log.w(NOTIFICATION_TAG, "ID : " + user_id);
-        Log.w(NOTIFICATION_TAG, " to : " + user_id);
+        Log.w(NOTIFICATION_TAG_LOGCAT, "ID : " + user_id);
+        Log.w(NOTIFICATION_TAG_LOGCAT, " to : " + user_id);
         mMessaging.subscribeToTopic(user_id).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
@@ -64,15 +70,15 @@ public class MyFirebaseInstance extends FirebaseMessagingService {
                 if (!task.isSuccessful()) {
                     msg = "unsubscribe";
                 }
-                Log.w(NOTIFICATION_TAG, msg + " to : " + user_id);
+                Log.w(NOTIFICATION_TAG_LOGCAT, msg + " to : " + user_id);
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
-                Log.w(NOTIFICATION_TAG, "Error " + e.getMessage());
+                Log.w(NOTIFICATION_TAG_LOGCAT, "Error " + e.getMessage());
             }
         });
-        Log.w(NOTIFICATION_TAG, "Service start");
+        Log.w(NOTIFICATION_TAG_LOGCAT, "Service start");
     }
 
     @Override
@@ -81,7 +87,7 @@ public class MyFirebaseInstance extends FirebaseMessagingService {
         final Intent intent = new Intent(this, SplashActivity.class);
 
         NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-        int notificationID = new Random().nextInt(3000);
+        int notificationID = 0;
 
       /*
         Apps targeting SDK 26 or above (Android O) must implement notification channels and add its notifications
@@ -107,7 +113,19 @@ public class MyFirebaseInstance extends FirebaseMessagingService {
                     .setAutoCancel(true)
                     .setSound(notificationSoundUri)
                     .setContentIntent(pendingIntent);
+            notificationID = ID_NOTIFICATION_GLOBAL;
         } else {
+            if(remoteMessage.getData().get("type") != null) {
+                if (remoteMessage.getData().get("type").equalsIgnoreCase("message")) {
+                    notificationID = ID_NOTIFICATION_MESSAGES;
+                    NOTIFICATION_TAG = remoteMessage.getData().get("sender");
+                } else if (remoteMessage.getData().get("type").equalsIgnoreCase("invitation")) {
+                    notificationID = ID_NOTIFICATION_INVITATIONS;
+                    NOTIFICATION_TAG = remoteMessage.getData().get("sender");
+                }
+            }else{
+                notificationID = new Random().nextInt(3000);
+            }
             notificationBuilder = new NotificationCompat.Builder(this, ADMIN_CHANNEL_ID)
                     .setSmallIcon(R.drawable.logo)
                     .setContentTitle(remoteMessage.getData().get("title"))
@@ -116,6 +134,7 @@ public class MyFirebaseInstance extends FirebaseMessagingService {
                     .setSound(notificationSoundUri)
                     .setContentIntent(pendingIntent);
         }
+
         if(remoteMessage.getData().get("target")!=null) {
             intent.putExtra("target", remoteMessage.getData().get("target"));
         }
@@ -125,13 +144,22 @@ public class MyFirebaseInstance extends FirebaseMessagingService {
             notificationBuilder.setColor(getResources().getColor(R.color.colorPrimaryDark));
         }
 
-        notificationManager.notify(notificationID, notificationBuilder.build());
+        if(NOTIFICATION_TAG.equalsIgnoreCase("TAG_EMPTY")) {
+            notificationManager.notify(notificationID, notificationBuilder.build());
+        }else{
+            if(notificationID == ID_NOTIFICATION_MESSAGES && ON_MESSAGE_ACTIVITY) {
+                return;
+            }else if(notificationID == ID_NOTIFICATION_INVITATIONS && ON_FRIENDS_ACTIVITY){
+                return;
+            }
+            notificationManager.notify(NOTIFICATION_TAG, notificationID, notificationBuilder.build());
+        }
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     private void setupChannels(NotificationManager notificationManager) {
         CharSequence adminChannelName = "New notification";
-        String adminChannelDescription = "Device to devie notification";
+        String adminChannelDescription = "Device to device notification";
 
         NotificationChannel adminChannel;
         adminChannel = new NotificationChannel(ADMIN_CHANNEL_ID, adminChannelName, NotificationManager.IMPORTANCE_HIGH);

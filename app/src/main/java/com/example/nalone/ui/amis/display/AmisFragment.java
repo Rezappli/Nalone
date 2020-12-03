@@ -46,6 +46,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static com.example.nalone.HomeActivity.buttonBack;
+import static com.example.nalone.util.Constants.ON_FRIENDS_ACTIVITY;
 import static com.example.nalone.util.Constants.USER;
 import static com.example.nalone.util.Constants.mStore;
 import static com.example.nalone.util.Constants.mStoreBase;
@@ -77,7 +78,7 @@ public class AmisFragment extends Fragment {
                              Bundle savedInstanceState) {
 
         rootView = inflater.inflate(R.layout.fragment_amis, container, false);
-
+        ON_FRIENDS_ACTIVITY = true;
         createFragment(rootView);
 
         return rootView;
@@ -349,6 +350,11 @@ public class AmisFragment extends Fragment {
 
     }
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        ON_FRIENDS_ACTIVITY = false;
+    }
 
     @Override
     public void onStop() {

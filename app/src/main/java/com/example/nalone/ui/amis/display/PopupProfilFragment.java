@@ -239,6 +239,8 @@ public class PopupProfilFragment extends Fragment {
         try {
             notifcationBody.put("title", NOTIFICATION_TITLE);
             notifcationBody.put("message", NOTIFICATION_MESSAGE);
+            notifcationBody.put("sender", USER.getUid());
+            notifcationBody.put("type", "invitation");
 
             notification.put("to", TOPIC);
             notification.put("data", notifcationBody);
