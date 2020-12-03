@@ -163,8 +163,6 @@ public class MessagesGroupeFragment extends Fragment {
     public void showPopUpGroup(final Group g) {
         PopUpMesGroupesFragment.GROUP_LOAD = g;
         navController.navigate(R.id.action_navigation_mes_groupes_to_navigation_popup_mes_groupes);
-
-
     }
 
 

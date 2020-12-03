@@ -37,12 +37,17 @@ import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.MissingResourceException;
 import java.util.UUID;
 
 import static com.example.nalone.util.Constants.USER;
 import static com.example.nalone.util.Constants.USER_REFERENCE;
 import static com.example.nalone.util.Constants.allTimeFormat;
 import static com.example.nalone.util.Constants.mStoreBase;
+import static com.example.nalone.util.Constants.sendNotification;
 
 public class ChatActivity extends AppCompatActivity {
 
@@ -64,6 +69,11 @@ public class ChatActivity extends AppCompatActivity {
     private int limit = 10;
 
     private Message lastMessage = null;
+
+    private String NOTIFICATION_TITLE;
+    private String NOTIFICATION_MESSAGE;
+    private String TOPIC;
+    private final String TAG = "NOTIFICATION TAG";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -152,6 +162,7 @@ public class ChatActivity extends AppCompatActivity {
         if(msg != null || msg.getSender() != null || msg.getMessage() != null || msg.getTime() != null) {
             mStoreBase.collection("chat").document(chatRef.getId()).collection("messages").document(UUID.randomUUID().toString()).set(msg);
             messageEditText.setText("");
+            sendMessageNotification(msg.getMessage());
         }
     }
 
@@ -206,26 +217,32 @@ public class ChatActivity extends AppCompatActivity {
                 boolean newMessage = false;
                 super.onItemRangeInserted(positionStart, itemCount);
 
-                if(positionStart == 0){
-                    Message m = (Message) adapter.getItem(0);
-                    if(lastMessage == null){
-                        if (!m.getSender().equals(USER_REFERENCE)) {
-                           newMessage = true;
-                        }
-                    }else{
-                        if(!lastMessage.equals(m)) {
+                if(positionStart == 0) {
+                    try {
+                        Message m = (Message) adapter.getItem(0);
+                        if (lastMessage == null) {
                             if (!m.getSender().equals(USER_REFERENCE)) {
                                 newMessage = true;
                             }
+                        } else {
+                            if (!lastMessage.equals(m)) {
+                                if (!m.getSender().equals(USER_REFERENCE)) {
+                                    newMessage = true;
+                                }
+                            }
                         }
-                    }
-                    if(newMessage){
-                        lastMessage = m;
-                        if (!isLastVisible()) {
-                            newMessagePopUp.setVisibility(View.VISIBLE);
+                        if (newMessage) {
+                            lastMessage = m;
+                            if (!isLastVisible()) {
+                                newMessagePopUp.setVisibility(View.VISIBLE);
+                            } else {
+                                mRecyclerView.scrollToPosition(0);
+                            }
                         } else {
                             mRecyclerView.scrollToPosition(0);
                         }
+                    } catch (Exception e) {
+                        e.printStackTrace();
                     }
                 }
             }
@@ -264,6 +281,26 @@ public class ChatActivity extends AppCompatActivity {
         int pos = layoutManager.findFirstCompletelyVisibleItemPosition();
         int numItems = mRecyclerView.getAdapter().getItemCount();
         return (pos == 0);
+    }
+
+    public void sendMessageNotification(String msg){
+        TOPIC = "/topics/"+ USER_LOAD.getUid(); //topic must match with what the receiver subscribed to
+        Log.w("TOPIC", "Topic : " + TOPIC);
+        NOTIFICATION_TITLE = "Message de " + USER.getFirst_name() + " " + USER.getLast_name();
+        NOTIFICATION_MESSAGE = msg;
+
+        JSONObject notification = new JSONObject();
+        JSONObject notificationBody = new JSONObject();
+        try {
+            notificationBody.put("title", NOTIFICATION_TITLE);
+            notificationBody.put("message", NOTIFICATION_MESSAGE);
+
+            notification.put("to", TOPIC);
+            notification.put("data", notificationBody);
+        } catch (JSONException e) {
+            Log.e(TAG, "onCreate: " + e.getMessage());
+        }
+        sendNotification(notification, ChatActivity.this);
     }
 
 }
