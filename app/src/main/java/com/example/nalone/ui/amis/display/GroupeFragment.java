@@ -50,6 +50,7 @@ public class GroupeFragment extends Fragment {
     private ImageView addGroup;
     private CardView mesGroupes;
     private List<String> myGroups;
+    private LinearLayout linearSansMesGroupes;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -59,6 +60,7 @@ public class GroupeFragment extends Fragment {
 
         myGroups = new ArrayList<>();
         mRecyclerView = root.findViewById(R.id.recyclerViewGroupe);
+        linearSansMesGroupes = root.findViewById(R.id.linearSansMesGroupes);
         addGroup = root.findViewById(R.id.create_group_button);
         navController = Navigation.findNavController(getActivity(), R.id.nav_host_fragment);
         mesGroupes = root.findViewById(R.id.mesGroupes);
@@ -99,10 +101,11 @@ public class GroupeFragment extends Fragment {
 
     private void adapterGroups() {
 
-        Query query = mStoreBase.collection("groups").whereIn("uid", myGroups);
-        FirestoreRecyclerOptions<Group> options = new FirestoreRecyclerOptions.Builder<Group>().setQuery(query, Group.class).build();
+        if(!myGroups.isEmpty()){
+            Query query = mStoreBase.collection("groups").whereIn("uid", myGroups);
+            FirestoreRecyclerOptions<Group> options = new FirestoreRecyclerOptions.Builder<Group>().setQuery(query, Group.class).build();
 
-        adapter = new FirestoreRecyclerAdapter<Group, UserViewHolder>(options) {
+            adapter = new FirestoreRecyclerAdapter<Group, UserViewHolder>(options) {
                 @NonNull
                 @Override
                 public UserViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -118,7 +121,7 @@ public class GroupeFragment extends Fragment {
                     userViewHolder.layoutGroup.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                           showPopUpGroup(group);
+                            showPopUpGroup(group);
                         }
                     });
 
@@ -174,6 +177,10 @@ public class GroupeFragment extends Fragment {
 
             mRecyclerView.setAdapter(adapter);
             adapter.startListening();
+        }else{
+            linearSansMesGroupes.setVisibility(View.VISIBLE);
+        }
+
         }
 
         private class UserViewHolder extends RecyclerView.ViewHolder {

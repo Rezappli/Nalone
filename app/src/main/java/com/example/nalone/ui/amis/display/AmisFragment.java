@@ -281,9 +281,6 @@ public class AmisFragment extends Fragment {
                                 mRecyclerView.setAdapter(adapter);
                                 adapter.startListening();
 
-                                if(adapter.getItemCount() == 0){
-                                    linearSansMesAmis.setVisibility(View.VISIBLE);
-                                }
                             }else{
                                 linearSansMesAmis.setVisibility(View.VISIBLE);
                             }
