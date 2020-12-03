@@ -147,10 +147,19 @@ public class MyFirebaseInstance extends FirebaseMessagingService {
         if(NOTIFICATION_TAG.equalsIgnoreCase("TAG_EMPTY")) {
             notificationManager.notify(notificationID, notificationBuilder.build());
         }else{
-            if(notificationID == ID_NOTIFICATION_MESSAGES && ON_MESSAGE_ACTIVITY) {
-                return;
-            }else if(notificationID == ID_NOTIFICATION_INVITATIONS && ON_FRIENDS_ACTIVITY){
-                return;
+            Log.w(NOTIFICATION_TAG_LOGCAT, "Envoye notification");
+            Log.w(NOTIFICATION_TAG_LOGCAT, "Notification TAG : " + NOTIFICATION_TAG);
+            Log.w(NOTIFICATION_TAG_LOGCAT, "Notification ID : " + notificationID);
+            if(notificationID == ID_NOTIFICATION_INVITATIONS){
+                if(ON_FRIENDS_ACTIVITY){
+                    return;
+                }
+            }
+
+            if(notificationID == ID_NOTIFICATION_MESSAGES){
+                if(ON_MESSAGE_ACTIVITY){
+                    return;
+                }
             }
             notificationManager.notify(NOTIFICATION_TAG, notificationID, notificationBuilder.build());
         }
