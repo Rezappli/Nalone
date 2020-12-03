@@ -12,8 +12,10 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
+import androidx.core.widget.NestedScrollView;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
@@ -22,11 +24,14 @@ import com.example.nalone.Chat;
 import com.example.nalone.Message;
 import com.example.nalone.R;
 import com.example.nalone.User;
+import com.firebase.ui.common.ChangeEventType;
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.textfield.TextInputEditText;
+import com.google.firebase.database.ChildEventListener;
+import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
@@ -56,9 +61,9 @@ public class ChatActivity extends AppCompatActivity {
     private CardView newMessagePopUp;
     private SwipeRefreshLayout mSwipeRefreshLayout;
 
-    private int scrollPosition = 0;
-    private int nbItems = 0;
     private int limit = 10;
+
+    private Message lastMessage = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,6 +77,14 @@ public class ChatActivity extends AppCompatActivity {
         nameUser = findViewById(R.id.nameUser);
         nameUser.setText(USER_LOAD.getFirst_name() + " " + USER_LOAD.getLast_name());
         mRecyclerView = findViewById(R.id.messagesRecyclerView);
+
+        messageEditText.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
+
         buttonSend.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -92,17 +105,17 @@ public class ChatActivity extends AppCompatActivity {
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
                 for(QueryDocumentSnapshot doc : task.getResult()) {
                     Chat c = doc.toObject(Chat.class);
-                    Log.w("Message", "Message channel : " + c.getChatRef().toString());
                     chatRef = c.getChatRef();
                 }
 
                 if(chatRef != null) {
                     adapterMessages();
-                    Log.w("Message", "Scroll to down");
-                    mRecyclerView.scrollToPosition(0);
+                    mRecyclerView.getLayoutManager().scrollToPosition(0);
                 }
             }
         });
+
+
 
         mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
@@ -110,11 +123,29 @@ public class ChatActivity extends AppCompatActivity {
                 mSwipeRefreshLayout.setRefreshing(false);
                 limit += 10;
                 adapterMessages();
-                Log.w("Message", "Scroll position : " + scrollPosition);
-                mRecyclerView.scrollToPosition(scrollPosition);
+                mRecyclerView.scrollToPosition(mRecyclerView.getAdapter().getItemCount());
             }
         });
 
+        newMessagePopUp.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                newMessagePopUp.setVisibility(View.GONE);
+                mRecyclerView.scrollToPosition(0);
+            }
+        });
+
+        mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+                if(isLastVisible()){
+                    if(newMessagePopUp.getVisibility() == View.VISIBLE){
+                        newMessagePopUp.setVisibility(View.GONE);
+                    }
+                }
+            }
+        });
     }
 
     private void sendMessage(Message msg) {
@@ -125,7 +156,6 @@ public class ChatActivity extends AppCompatActivity {
     }
 
     private void adapterMessages() {
-        nbItems = 0;
         Query query = mStoreBase.collection("chat").document(chatRef.getId()).collection("messages").limit(limit).orderBy("time", Query.Direction.DESCENDING);
         FirestoreRecyclerOptions<Message> options = new FirestoreRecyclerOptions.Builder<Message>().setQuery(query, Message.class).build();
 
@@ -139,7 +169,6 @@ public class ChatActivity extends AppCompatActivity {
 
             @Override
             protected void onBindViewHolder(@NonNull final MessageViewHolder messageViewHolder, int i, @NonNull Message m) {
-                Log.w("Message", "I : " + i);
                 if(m.getSender().equals(USER_REFERENCE)){
                     messageViewHolder.messageLayout.setLayoutParams(myLayoutMessages);
                     messageViewHolder.backgroundItem.setCardBackgroundColor(Color.parseColor("#18ECC5"));
@@ -160,38 +189,43 @@ public class ChatActivity extends AppCompatActivity {
                         }
                     }
                 });
-                nbItems = i;
             }
         };
-
-        LinearLayoutManager mLayoutManager = new LinearLayoutManager(ChatActivity.this, RecyclerView.VERTICAL, true);
-        mRecyclerView.setLayoutManager(mLayoutManager);
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(ChatActivity.this, RecyclerView.VERTICAL, true));
         mRecyclerView.setAdapter(adapter);
         adapter.startListening();
 
-        mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+        adapter.registerAdapterDataObserver(new RecyclerView.AdapterDataObserver() {
             @Override
-            public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
-                super.onScrolled(recyclerView, dx, dy);
-                if(recyclerView.getVerticalScrollbarPosition() == 0){
-                    if(newMessagePopUp.getVisibility() == View.VISIBLE){
-                        newMessagePopUp.setVisibility(View.GONE);
-                    }
-                }
+            public void onChanged() {
+                super.onChanged();
             }
-        });
 
-        mRecyclerView.addOnLayoutChangeListener(new View.OnLayoutChangeListener() {
             @Override
-            public void onLayoutChange(View v, int left, int top, int right, int bottom, int oldLeft, int oldTop, int oldRight, int oldBottom) {
-                Log.w("Message", "Nombre items : " + nbItems);
-                Log.w("Message", "Nombre items layout : "+(mRecyclerView.getAdapter().getItemCount()-1));
-                if(nbItems ==  mRecyclerView.getAdapter().getItemCount()-1) {
-                    mRecyclerView.scrollToPosition(oldTop);
-                }else{
-                    Log.w("Message", "New message received");
-                    if(mRecyclerView.getScrollY() != 0){
-                        newMessagePopUp.setVisibility(View.VISIBLE);
+            public void onItemRangeInserted(int positionStart, int itemCount) {
+                boolean newMessage = false;
+                super.onItemRangeInserted(positionStart, itemCount);
+
+                if(positionStart == 0){
+                    Message m = (Message) adapter.getItem(0);
+                    if(lastMessage == null){
+                        if (!m.getSender().equals(USER_REFERENCE)) {
+                           newMessage = true;
+                        }
+                    }else{
+                        if(!lastMessage.equals(m)) {
+                            if (!m.getSender().equals(USER_REFERENCE)) {
+                                newMessage = true;
+                            }
+                        }
+                    }
+                    if(newMessage){
+                        lastMessage = m;
+                        if (!isLastVisible()) {
+                            newMessagePopUp.setVisibility(View.VISIBLE);
+                        } else {
+                            mRecyclerView.scrollToPosition(0);
+                        }
                     }
                 }
             }
@@ -223,6 +257,13 @@ public class ChatActivity extends AppCompatActivity {
             dateText = itemView.findViewById(R.id.dateText);
             backgroundItem = itemView.findViewById(R.id.bgMessage);
         }
+    }
+
+    private boolean isLastVisible() {
+        LinearLayoutManager layoutManager = ((LinearLayoutManager)mRecyclerView.getLayoutManager());
+        int pos = layoutManager.findFirstCompletelyVisibleItemPosition();
+        int numItems = mRecyclerView.getAdapter().getItemCount();
+        return (pos == 0);
     }
 
 }

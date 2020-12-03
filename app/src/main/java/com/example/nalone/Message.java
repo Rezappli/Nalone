@@ -1,11 +1,14 @@
 package com.example.nalone;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.DocumentReference;
 
 import java.util.Date;
+
+import static com.example.nalone.util.Constants.USER_REFERENCE;
 
 public class Message {
 
@@ -50,5 +53,16 @@ public class Message {
     @Override
     public String toString(){
         return "Message : {sender:" + sender.toString() + ",message:"+message+",time:"+time+"}";
+    }
+
+    @Override
+    public boolean equals(@Nullable Object obj) {
+        if(obj instanceof Message){
+            if(((Message) obj).getSender().equals(USER_REFERENCE) && ((Message) obj).getMessage().equals(message)
+            && ((Message) obj).getTime().equals(time)){
+                return true;
+            }
+        }
+        return false;
     }
 }
