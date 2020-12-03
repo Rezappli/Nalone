@@ -69,6 +69,8 @@ public class AmisFragment extends Fragment {
     private CardView cardViewInvits;
     private TextView textViewNbInvit;
 
+    private LinearLayout linearSansMesAmis;
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -86,6 +88,7 @@ public class AmisFragment extends Fragment {
         search_bar = rootView.findViewById(R.id.search_bar_amis);
         resultat = rootView.findViewById(R.id.resultatText_amis);
         resultat.setVisibility(View.GONE);
+        linearSansMesAmis = rootView.findViewById(R.id.linearSansMesAmis);
         navController = Navigation.findNavController(getActivity(), R.id.nav_host_fragment);
         loading = rootView.findViewById(R.id.amis_loading);
         buttonBack.setVisibility(View.GONE);
@@ -118,6 +121,8 @@ public class AmisFragment extends Fragment {
                 });
 
         adapterUsers();
+
+
 
         cardViewInvits.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -275,6 +280,12 @@ public class AmisFragment extends Fragment {
                                 mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
                                 mRecyclerView.setAdapter(adapter);
                                 adapter.startListening();
+
+                                if(adapter.getItemCount() == 0){
+                                    linearSansMesAmis.setVisibility(View.VISIBLE);
+                                }
+                            }else{
+                                linearSansMesAmis.setVisibility(View.VISIBLE);
                             }
                         }
                     }

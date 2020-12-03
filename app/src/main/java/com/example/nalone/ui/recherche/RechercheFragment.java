@@ -61,16 +61,19 @@ public class RechercheFragment extends Fragment {
     private NavController navController;
     private List<String> friends;
     private List<String> mesGroupes;
-    private FirestoreRecyclerAdapter adapter;
+    private FirestoreRecyclerAdapter adapterG;
+    private FirestoreRecyclerAdapter adapterU;
     private TextView textViewRechercheAmis;
     private TextView textViewRechercheGroupes;
     private ProgressBar loading;
+    private List<String> myGroups;
 
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         rootView = inflater.inflate(R.layout.fragment_recherche, container, false);
 
+        myGroups = new ArrayList<>();
         recyclerAmis = rootView.findViewById(R.id.recyclerViewRechercheAmis);
         recyclerGroupes = rootView.findViewById(R.id.recyclerViewRechercheGroupes);
         cardViewRechercheAmis = rootView.findViewById(R.id.cardViewRechercheAmis);
@@ -98,7 +101,22 @@ public class RechercheFragment extends Fragment {
 
         navController = Navigation.findNavController(getActivity(), R.id.nav_host_fragment);
 
-        adapterGroups();
+        mStoreBase.collection("users").document(USER.getUid()).collection("groups").whereEqualTo("status","add")
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            for (QueryDocumentSnapshot document : task.getResult()) {
+                                Log.d("TAG", document.getId() + " => " + document.getData());
+                                myGroups.add(document.getId());
+                            }
+                            adapterGroups();
+                        } else {
+                            Log.d("TAG", "Error getting documents: ", task.getException());
+                        }
+                    }
+                });
 
         friends = new ArrayList<>();
 
@@ -128,17 +146,34 @@ public class RechercheFragment extends Fragment {
 
 
 
+        if(adapterU != null){
+            if(adapterU.getItemCount() == 0){
+                cardViewRechercheAmis.setVisibility(View.GONE);
+            }
+        }
+
+        if(adapterG != null){
+            if(adapterG.getItemCount() == 0){
+                cardViewRechercheGroupes.setVisibility(View.GONE);
+            }
+        }
+
         return rootView;
 
 
     }
 
     private void adapterGroups() {
-        DocumentReference ref = mStoreBase.document("users/"+USER_ID);
-        Query query = mStoreBase.collection("groups").whereNotEqualTo("ownerDoc", ref).limit(3);
+        Query query;
+        if(myGroups.isEmpty()){
+            DocumentReference ref = mStoreBase.document("users/"+USER_ID);
+            query = mStoreBase.collection("groups").whereNotEqualTo("ownerDoc",ref).limit(3);
+        }else{
+            query = mStoreBase.collection("groups").whereNotIn("uid", myGroups).limit(3);
+        }
         FirestoreRecyclerOptions<Group> options = new FirestoreRecyclerOptions.Builder<Group>().setQuery(query, Group.class).build();
 
-        adapter = new FirestoreRecyclerAdapter<Group, GroupViewHolder>(options) {
+        adapterG = new FirestoreRecyclerAdapter<Group, GroupViewHolder>(options) {
             @NonNull
             @Override
             public GroupViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -210,8 +245,8 @@ public class RechercheFragment extends Fragment {
             }
         };
         recyclerGroupes.setLayoutManager(new LinearLayoutManager(getContext()));
-        recyclerGroupes.setAdapter(adapter);
-        adapter.startListening();
+        recyclerGroupes.setAdapter(adapterG);
+        adapterG.startListening();
     }
 
     private class GroupViewHolder extends RecyclerView.ViewHolder {
@@ -238,7 +273,7 @@ public class RechercheFragment extends Fragment {
     }
 
     private void adapterUsers(FirestoreRecyclerOptions<User> options) {
-        adapter = new FirestoreRecyclerAdapter<User, UserViewHolder>(options) {
+        adapterU = new FirestoreRecyclerAdapter<User, UserViewHolder>(options) {
             @NonNull
             @Override
             public UserViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -338,8 +373,8 @@ public class RechercheFragment extends Fragment {
         recyclerAmis.setHasFixedSize(true);
         recyclerAmis.setLayoutManager(new LinearLayoutManager(getContext()));
 
-        recyclerAmis.setAdapter(adapter);
-        adapter.startListening();
+        recyclerAmis.setAdapter(adapterU);
+        adapterU.startListening();
 
     }
     private class UserViewHolder extends RecyclerView.ViewHolder {
@@ -372,5 +407,17 @@ public class RechercheFragment extends Fragment {
 
         PopupProfilFragment.type = "recherche";
         navController.navigate(R.id.action_navigation_recherche_to_navigation_popup_profil);
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        if(adapterG != null){
+            adapterG.stopListening();
+        }
+        if(adapterU != null){
+            adapterU.stopListening();
+        }
+
     }
 }

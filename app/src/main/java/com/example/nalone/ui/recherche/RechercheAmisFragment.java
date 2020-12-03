@@ -75,6 +75,7 @@ public class RechercheAmisFragment extends Fragment {
 
     private SwipeRefreshLayout swipeContainer;
 
+    private LinearLayout linearSansRechercheAmis;
 
 
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -92,6 +93,7 @@ public class RechercheAmisFragment extends Fragment {
     public void createFragment(){
         loading = rootView.findViewById(R.id.search_loading);
         buttonBack.setVisibility(View.GONE);
+        linearSansRechercheAmis = rootView.findViewById(R.id.linearSansRechercheGroupe);
         swipeContainer = (SwipeRefreshLayout) rootView.findViewById(R.id.swipeContainer);
 
         swipeContainer.setColorSchemeResources(android.R.color.holo_blue_bright);
@@ -133,6 +135,7 @@ public class RechercheAmisFragment extends Fragment {
                             adapterUsers(options);
                             addFilters();
 
+
                             adapter.startListening();
                         } else {
                             Log.d("TAG", "Error getting documents: ", task.getException());
@@ -160,6 +163,12 @@ public class RechercheAmisFragment extends Fragment {
             }
         });
 
+        if(adapter != null){
+            if(adapter.getItemCount() == 0){
+                linearSansRechercheAmis.setVisibility(View.VISIBLE);
+                loading.setVisibility(View.GONE);
+            }
+        }
     }
 
     private void configureSwipeRefreshLayout(){
@@ -402,7 +411,16 @@ public class RechercheAmisFragment extends Fragment {
         super.onStop();
         if(adapter != null) {
             adapter.stopListening();
+            adapter = null;
         }
+    }
+
+    @Override
+    public void onResume(){
+        if(adapter != null) {
+            adapter.startListening();
+        }
+        super.onResume();
     }
 
 

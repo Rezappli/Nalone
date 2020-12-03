@@ -52,6 +52,7 @@ public class RechercheGroupeFragment extends Fragment {
     private SwipeRefreshLayout swipeContainer;
     private View root;
     private List<String> myGroups;
+    private LinearLayout linearSansRechercheGroupe;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -65,6 +66,8 @@ public class RechercheGroupeFragment extends Fragment {
 
     private void createFragment(){
         myGroups = new ArrayList<>();
+
+        linearSansRechercheGroupe = root.findViewById(R.id.linearSansRechercheGroupe);
         swipeContainer = (SwipeRefreshLayout) root.findViewById(R.id.swipeContainer);
         swipeContainer.setColorSchemeResources(android.R.color.holo_blue_bright);
         this.configureSwipeRefreshLayout();
@@ -90,8 +93,6 @@ public class RechercheGroupeFragment extends Fragment {
                                 Log.d("TAG", document.getId() + " => " + document.getData());
                                 myGroups.add(document.getId());
                             }
-                            //friends.add(USER.getUid());
-                            //query
                             adapterGroups();
                         } else {
                             Log.d("TAG", "Error getting documents: ", task.getException());
@@ -99,7 +100,11 @@ public class RechercheGroupeFragment extends Fragment {
                     }
                 });
 
-
+        if(adapter != null){
+            if(adapter.getItemCount() == 0){
+                linearSansRechercheGroupe.setVisibility(View.VISIBLE);
+            }
+        }
 
     }
 
@@ -118,9 +123,11 @@ public class RechercheGroupeFragment extends Fragment {
         Query query;
         if(myGroups.isEmpty()){
             DocumentReference ref = mStoreBase.document("users/"+USER_ID);
-            query = mStoreBase.collection("groups").whereNotEqualTo("ownerDoc", ref);
-        }else
+            query = mStoreBase.collection("groups").whereNotEqualTo("ownerDoc",ref);
+        }else{
             query = mStoreBase.collection("groups").whereNotIn("uid", myGroups);
+        }
+
         FirestoreRecyclerOptions<Group> options = new FirestoreRecyclerOptions.Builder<Group>().setQuery(query, Group.class).build();
 
         adapter = new FirestoreRecyclerAdapter<Group, UserViewHolder>(options) {
@@ -231,8 +238,10 @@ public class RechercheGroupeFragment extends Fragment {
     @Override
     public void onStop() {
         super.onStop();
-        if(adapter != null)
+        if(adapter != null){
             adapter.stopListening();
+        }
+
     }
 
 

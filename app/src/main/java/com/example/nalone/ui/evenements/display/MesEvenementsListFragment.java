@@ -114,11 +114,10 @@ public class MesEvenementsListFragment extends Fragment {
                             }
                             Log.w("event", " Check list");
                             adapterEvents();
-                            if(iterator == 0){
+                            if(adapter.getItemCount() == 0 || events.isEmpty()){
                                 linearSansEvent.setVisibility(View.VISIBLE);
-                            }else{
-                                linearSansEvent.setVisibility(View.GONE);
                             }
+
                         }
                     }
                 });

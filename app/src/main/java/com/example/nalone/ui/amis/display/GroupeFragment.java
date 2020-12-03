@@ -11,6 +11,7 @@ import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -28,8 +29,14 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.StorageReference;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import static com.example.nalone.util.Constants.USER;
 import static com.example.nalone.util.Constants.USER_ID;
 import static com.example.nalone.util.Constants.mStore;
 import static com.example.nalone.util.Constants.mStoreBase;
@@ -42,6 +49,7 @@ public class GroupeFragment extends Fragment {
     private FirestoreRecyclerAdapter adapter;
     private ImageView addGroup;
     private CardView mesGroupes;
+    private List<String> myGroups;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -49,6 +57,7 @@ public class GroupeFragment extends Fragment {
         // Inflate the layout for this fragment
         View root =  inflater.inflate(R.layout.fragment_groupe, container, false);
 
+        myGroups = new ArrayList<>();
         mRecyclerView = root.findViewById(R.id.recyclerViewGroupe);
         addGroup = root.findViewById(R.id.create_group_button);
         navController = Navigation.findNavController(getActivity(), R.id.nav_host_fragment);
@@ -68,14 +77,29 @@ public class GroupeFragment extends Fragment {
             }
         });
 
-        adapterGroups();
+        mStoreBase.collection("users").document(USER.getUid()).collection("groups").whereEqualTo("status","add")
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            for (QueryDocumentSnapshot document : task.getResult()) {
+                                Log.d("TAG", document.getId() + " => " + document.getData());
+                                myGroups.add(document.getId());
+                            }
+                            adapterGroups();
+                        } else {
+                            Log.d("TAG", "Error getting documents: ", task.getException());
+                        }
+                    }
+                });
 
         return root;
     }
 
     private void adapterGroups() {
-        DocumentReference ref = mStoreBase.document("users/"+USER_ID);
-        Query query = mStoreBase.collection("groups").whereNotEqualTo("ownerDoc", ref);
+
+        Query query = mStoreBase.collection("groups").whereIn("uid", myGroups);
         FirestoreRecyclerOptions<Group> options = new FirestoreRecyclerOptions.Builder<Group>().setQuery(query, Group.class).build();
 
         adapter = new FirestoreRecyclerAdapter<Group, UserViewHolder>(options) {
@@ -149,6 +173,7 @@ public class GroupeFragment extends Fragment {
             mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
             mRecyclerView.setAdapter(adapter);
+            adapter.startListening();
         }
 
         private class UserViewHolder extends RecyclerView.ViewHolder {
@@ -181,13 +206,15 @@ public class GroupeFragment extends Fragment {
     public void onStart(){
         super.onStart();
         //updateItems();
-        adapter.startListening();
+        if(adapter != null)
+            adapter.startListening();
     }
 
     @Override
     public void onStop() {
         super.onStop();
-        adapter.stopListening();
+        if(adapter != null)
+            adapter.stopListening();
     }
 
 

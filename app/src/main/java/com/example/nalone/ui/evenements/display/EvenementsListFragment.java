@@ -152,9 +152,9 @@ public class EvenementsListFragment extends Fragment {
         DocumentReference ref = mStoreBase.document("users/"+USER_ID);
         Query query;
         if(!events.isEmpty()){
-            query = mStoreBase.collection("events").whereNotIn("uid", events);
+            query = mStoreBase.collection("events").whereNotIn("uid", events).limit(10);
         }else{
-            query = mStoreBase.collection("events").whereNotEqualTo("ownerDoc", ref);
+            query = mStoreBase.collection("events").whereNotEqualTo("ownerDoc", ref).limit(10);
         }
 
         FirestoreRecyclerOptions<Evenement> options = new FirestoreRecyclerOptions.Builder<Evenement>().setQuery(query, Evenement.class).build();

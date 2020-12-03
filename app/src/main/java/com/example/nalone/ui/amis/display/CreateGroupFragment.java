@@ -54,6 +54,7 @@ import java.util.UUID;
 import static android.app.Activity.RESULT_OK;
 import static com.example.nalone.HomeActivity.buttonBack;
 import static com.example.nalone.util.Constants.USER;
+import static com.example.nalone.util.Constants.USER_ID;
 import static com.example.nalone.util.Constants.USER_REFERENCE;
 import static com.example.nalone.util.Constants.mStore;
 import static com.example.nalone.util.Constants.mStoreBase;
@@ -339,6 +340,9 @@ public class CreateGroupFragment extends Fragment {
             refreshData();
             g = new Group(groupAttente.getUid(), groupAttente.getOwner(), groupAttente.getName(), groupAttente.getDescription(), groupAttente.getVisibility(), groupAttente.getOwnerDoc());
             mStoreBase.collection("groups").document(g.getUid()).set(g);
+            DocumentReference ref = mStoreBase.collection("users").document(USER_ID);
+            ModelData md = new ModelData("add",ref);
+            mStoreBase.collection("users").document(USER_ID).collection("groups").document(g.getUid()).set(md);
 
             for (String user : adds){
                 Log.d("Ajout", "Ajout de membre dans groupe");
@@ -367,6 +371,7 @@ public class CreateGroupFragment extends Fragment {
                             Toast.makeText(getActivity().getBaseContext(), "Vous avez mis une image à ce groupe !", Toast.LENGTH_SHORT).show();
                             g.setImage_url(new SimpleDateFormat("dd-MM-yy hh:mm:ss").format(new Date(System.currentTimeMillis())));
                             mStoreBase.collection("groups").document(g.getUid()).set(g);
+
                             Toast.makeText(getContext(), "Vous avez créer votre groupe !", Toast.LENGTH_SHORT).show();
                             imageUri = null;
                             navController.navigate(R.id.action_navigation_creat_group_to_navigation_amis);
