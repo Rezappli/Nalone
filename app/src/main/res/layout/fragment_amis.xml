@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.swiperefreshlayout.widget.SwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/AmisSwipeRefreshLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".ui.amis.display.AmisFragment">
@@ -34,12 +35,6 @@
             android:gravity="clip_horizontal|center|center_vertical"
             android:text="@string/aucun_resultat"
             android:visibility="gone" />
-
-        <ProgressBar
-            android:id="@+id/amis_loading"
-            style="?android:attr/progressBarStyle"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
 
         <androidx.cardview.widget.CardView
             android:id="@+id/cardViewInvits"
@@ -167,4 +162,4 @@
         </androidx.recyclerview.widget.RecyclerView>
 
     </LinearLayout>
-</FrameLayout>
+</androidx.swiperefreshlayout.widget.SwipeRefreshLayout>

@@ -11,7 +11,6 @@ import java.util.List;
 public class Evenement implements Serializable {
 
     private String uid;
-    private int image;
     private String name;
     private String description;
     private String address;
@@ -30,7 +29,6 @@ public class Evenement implements Serializable {
     public Evenement(String uid, String owner, int image, String name, String description, String address, String city,
                      Visibility visibility, DocumentReference ownerDoc, Timestamp date, GeoPoint location, int nbMembers){
         this.uid = uid;
-        this.image = image;
         this.name = name;
         this.description = description;
         this.address = address;
@@ -50,16 +48,8 @@ public class Evenement implements Serializable {
         this.owner = owner;
     }
 
-    public String getOwner(){
+    public String getOwner() {
         return owner;
-    }
-
-    public int getImage() {
-        return image;
-    }
-
-    public void setImage(int image) {
-        this.image = image;
     }
 
     public String getName() {

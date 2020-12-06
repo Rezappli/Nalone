@@ -1,5 +1,6 @@
 package com.example.nalone.ui.message.display;
 
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.net.Uri;
@@ -19,6 +20,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.cardview.widget.CardView;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
@@ -32,6 +34,7 @@ import com.example.nalone.User;
 import com.example.nalone.items.ItemPerson;
 import com.example.nalone.ui.amis.display.PopupProfilFragment;
 import com.example.nalone.ui.message.ChatActivity;
+import com.example.nalone.util.Constants;
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -162,55 +165,7 @@ public class MessagesAmisFragment extends Fragment {
                                             userViewHolder.cardViewPhotoPerson.setCardBackgroundColor((Color.parseColor("#EC9538")));
                                         }
 
-
-                                        if(u.getImage_url() != null) {
-                                            if(!Cache.fileExists(u.getUid())) {
-                                                StorageReference imgRef = mStore.getReference("users/" + u.getUid());
-                                                if (imgRef != null) {
-                                                    imgRef.getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
-                                                        @Override
-                                                        public void onComplete(@NonNull Task<Uri> task) {
-                                                            if (task.isSuccessful()) {
-                                                                Uri img = task.getResult();
-                                                                if (img != null) {
-                                                                    Cache.saveUriFile(u.getUid(), img);
-                                                                    u.setImage_url(Cache.getImageDate(u.getUid()));
-                                                                    mStoreBase.collection("users").document(u.getUid()).set(u);
-                                                                    Glide.with(getContext()).load(img).fitCenter().centerCrop().into(userViewHolder.imagePerson);
-                                                                }
-                                                            }
-                                                        }
-                                                    });
-                                                }
-                                            }else{
-                                                Uri imgCache = Cache.getUriFromUid(u.getUid());
-                                                Log.w("Cache", "Image Cache : " + Cache.getImageDate(u.getUid()));
-                                                Log.w("Cache", "Data Cache : " + u.getImage_url());
-                                                if(Cache.getImageDate(u.getUid()).equalsIgnoreCase(u.getImage_url())) {
-                                                    Log.w("image", "get image from cache");
-                                                    Glide.with(getContext()).load(imgCache).fitCenter().centerCrop().into(userViewHolder.imagePerson);
-                                                }else{
-                                                    StorageReference imgRef = mStore.getReference("users/" + u.getUid());
-                                                    if (imgRef != null) {
-                                                        imgRef.getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
-                                                            @Override
-                                                            public void onComplete(@NonNull Task<Uri> task) {
-                                                                if (task.isSuccessful()) {
-                                                                    Uri img = task.getResult();
-                                                                    if (img != null) {
-                                                                        Cache.saveUriFile(u.getUid(), img);
-                                                                        u.setImage_url(Cache.getImageDate(u.getUid()));
-                                                                        mStoreBase.collection("users").document(u.getUid()).set(u);
-                                                                        Glide.with(getContext()).load(img).fitCenter().centerCrop().into(userViewHolder.imagePerson);
-                                                                    }
-                                                                }
-                                                            }
-                                                        });
-                                                    }
-                                                }
-                                            }
-                                        }
-
+                                        Constants.setUserImage(u, getContext(), userViewHolder.imagePerson);
 
                                         userViewHolder.layoutProfil.setOnClickListener(new View.OnClickListener() {
                                             @Override

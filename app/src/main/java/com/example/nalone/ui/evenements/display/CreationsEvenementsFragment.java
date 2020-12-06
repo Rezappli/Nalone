@@ -83,6 +83,12 @@ public class CreationsEvenementsFragment extends Fragment {
             }
         });
 
+        return rootView;
+    }
+    
+    @Override
+    public void onResume(){
+        super.onResume();
         DocumentReference ref = mStoreBase.document("users/"+USER_ID);
         mStoreBase.collection("users").document(USER_ID).collection("events").whereEqualTo("ownerDoc", ref)
                 .get()
@@ -117,9 +123,6 @@ public class CreationsEvenementsFragment extends Fragment {
                         }
                     }
                 });
-
-
-        return rootView;
     }
 
     private void adapterEvents() {
@@ -144,7 +147,7 @@ public class CreationsEvenementsFragment extends Fragment {
             protected void onBindViewHolder(@NonNull final EventViewHolder holder, int i, @NonNull final Evenement e) {
                 final Evenement event = e;
 
-                holder.mImageView.setImageResource(e.getImage());
+                //holder.mImageView.setImageResource(e.getImage());
                 holder.mTitle.setText((e.getName()));
                 holder.mDate.setText((e.getDate().toDate().toString()));
                 holder.mVille.setText((e.getCity()));
@@ -194,7 +197,7 @@ public class CreationsEvenementsFragment extends Fragment {
                         builder.setMessage("Vous êtes sur le point de supprimer un évènement ! Cette action est irréversible ! \n Voulez-vous continuez ?")
                                 .setPositiveButton("Oui", new DialogInterface.OnClickListener() {
                                     public void onClick(DialogInterface dialog, int id) {
-                                        mStoreBase.collection("event").document(event.getUid()).delete();
+                                        mStoreBase.collection("events").document(event.getUid()).delete();
                                         Toast.makeText(getContext(), "Vous avez supprimé(e) un évènement !", Toast.LENGTH_SHORT).show();
                                     }
                                 })
@@ -212,7 +215,7 @@ public class CreationsEvenementsFragment extends Fragment {
                 holder.mImageViewDisplay.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        //Constants.targetZoom = new LatLng(event.getLocation().getLatitude(), event.getLocation().getLongitude());
+                        Constants.targetZoom = new LatLng(event.getLatitude(), event.getLongitude());
                         EvenementsFragment.viewPager.setCurrentItem(0);
                     }
                 });
@@ -225,55 +228,8 @@ public class CreationsEvenementsFragment extends Fragment {
                         navController.navigate(R.id.action_navigation_creations_evenements_to_navigation_create_event);
                     }
                 });
-
-               /* if(e.getImage_url() != null) {
-                    if(!Cache.fileExists(e.getUid())) {
-                        StorageReference imgRef = mStore.getReference("groups/" + g.getUid());
-                        if (imgRef != null) {
-                            imgRef.getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
-                                @Override
-                                public void onComplete(@NonNull Task<Uri> task) {
-                                    if (task.isSuccessful()) {
-                                        Uri img = task.getResult();
-                                        if (img != null) {
-                                            Cache.saveUriFile(g.getUid(), img);
-                                            g.setImage_url(Cache.getImageDate(g.getUid()));
-                                            mStoreBase.collection("groups").document(g.getUid()).set(g);
-                                            Glide.with(getContext()).load(img).fitCenter().centerCrop().into(userViewHolder.imageGroup);
-                                        }
-                                    }
-                                }
-                            });
-                        }
-                    }else{
-                        Uri imgCache = Cache.getUriFromUid(g.getUid());
-                        if(Cache.getImageDate(g.getUid()).equalsIgnoreCase(g.getImage_url())) {
-                            Glide.with(getContext()).load(imgCache).fitCenter().centerCrop().into(userViewHolder.imageGroup);
-                        }else{
-                            StorageReference imgRef = mStore.getReference("groups/" + g.getUid());
-                            if (imgRef != null) {
-                                imgRef.getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
-                                    @Override
-                                    public void onComplete(@NonNull Task<Uri> task) {
-                                        if (task.isSuccessful()) {
-                                            Uri img = task.getResult();
-                                            if (img != null) {
-                                                Cache.saveUriFile(g.getUid(), img);
-                                                g.setImage_url(Cache.getImageDate(g.getUid()));
-                                                mStoreBase.collection("groups").document(g.getUid()).set(g);
-                                                Glide.with(getContext()).load(img).fitCenter().centerCrop().into(userViewHolder.imageGroup);
-                                            }
-                                        }
-                                    }
-                                });
-                            }
-                        }
-                    }
-                }
-                */
             }
         };
-        //mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
         mRecyclerView.setAdapter(adapter);
@@ -312,110 +268,4 @@ public class CreationsEvenementsFragment extends Fragment {
             mCarwViewOwner = itemView.findViewById(R.id.backGroundOwner);
         }
     }
-
-    private void updateEvents() {
-        /*itemEvents.clear();
-
-        mStoreBase.collection("events")
-                .whereEqualTo("ownerdoc", USER_REFERENCE)
-                .get()
-                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        if (task.isSuccessful()) {
-                            if(task.getResult().size() > 0) {
-                                for (QueryDocumentSnapshot document : task.getResult()) {
-                                    Evenement e = document.toObject(Evenement.class);
-                                    itemEvents.add(e);
-                                }
-                                onUpdateAdapter();
-                            }
-                        }
-                    }
-                }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                Log.w("SPLASH", "Erreur : " + e.getMessage());
-            }
-        });
-
-        for(int i = 0; i < EVENTS_LIST.size(); i++){
-            MarkerOptions m = new MarkerOptions();
-            Evenement e = Constants.EVENTS_LIST.get(i+"");
-
-            m.title(e.getNom());
-
-            if (e.getProprietaire().equalsIgnoreCase(USER_ID)) {
-                itemEvents.add(e);
-            }
-        }
-
-        if(itemEvents.isEmpty()){
-            mRecyclerViewEvent.setVisibility(View.GONE);
-            linearSansEvent.setVisibility(View.VISIBLE);
-        }else{
-            mRecyclerViewEvent.setVisibility(View.VISIBLE);
-            linearSansEvent.setVisibility(View.GONE);
-        }
-
-        mAdapterEventList = new ItemMesEventListAdapter(itemEvents);
-
-
-        mLayoutManagerMesEvent = new LinearLayoutManager(
-                rootView.getContext(),
-                LinearLayoutManager.VERTICAL,
-                false);
-        mRecyclerViewEvent.setLayoutManager(mLayoutManagerMesEvent);
-        mRecyclerViewEvent.setAdapter(mAdapterEventList);
-
-        mAdapterEventList.setOnItemClickListener(new ItemMesEventListAdapter.OnItemClickListener() {
-            @Override
-            public void onDisplayClick(int position) {
-                Constants.targetZoom = MARKERS_EVENT.get(itemEvents.get(position).getId()+"").getPosition();
-                EvenementsFragment.viewPager.setCurrentItem(0);
-            }
-
-            @Override
-            public void onDeleteClick(final int position) {
-                final AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-                builder.setMessage("Vous êtes sur le point de supprimer un évènement ! Cette action est irréversible ! Voulez-vous continuez ?")
-                        .setPositiveButton("Oui", new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int id) {
-                                Toast.makeText(getContext(), "Vous avez supprimé(e) un évènement !", Toast.LENGTH_SHORT).show();
-                                removeEvent(position);
-                                updateEvents();
-                            }
-                        })
-                        .setNegativeButton("Non", new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int id) {
-
-                            }
-                        });
-                builder.create();
-                builder.show();
-            }
-
-            @Override
-            public void onEditClick(int position) {
-
-                /*Evenement e = EVENTS_LIST.get(itemEvents.get(position).getId()+"");
-
-                nameEvent = e.getNom();
-                cityEdit = e.getVille();
-                adresseEdit = e.getAdresse();
-                dateEdit = sdf.format(e.getDate());
-                timeEdit = e.getTime();
-                descEdit = e.getDescription();
-                visibiliteEdit = e.getVisibilite();
-
-                CreateEventActivity.edit = true;
-
-                startActivity(new Intent(getContext(), CreateEventActivity.class));
-                Toast.makeText(getContext(), "Edit event", Toast.LENGTH_SHORT).show();
-
-            }
-        });*/
-
-    }
-
 }

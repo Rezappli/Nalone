@@ -13,6 +13,7 @@ import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -31,6 +32,7 @@ import com.example.nalone.ModelData;
 import com.example.nalone.items.ItemPerson;
 import com.example.nalone.R;
 import com.example.nalone.User;
+import com.example.nalone.util.Constants;
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -54,22 +56,16 @@ import static com.example.nalone.util.Constants.mStoreBase;
 public class AmisFragment extends Fragment {
 
     private SearchView search_bar;
-
+    private SwipeRefreshLayout mSwipeRefreshLayout;
     private NavController navController;
     private TextView resultat;
-    private ArrayList<ItemPerson> items = new ArrayList<>();
-    private static String message = "null";
     private View rootView;
-    private ProgressBar loading;
-
-    private FirebaseFirestore firebaseFirestore;
     private FirestoreRecyclerAdapter adapter;
     private RecyclerView mRecyclerView;
     private List<String> friends;
     private int nbInvit;
     private CardView cardViewInvits;
     private TextView textViewNbInvit;
-
     private LinearLayout linearSansMesAmis;
 
 
@@ -78,52 +74,22 @@ public class AmisFragment extends Fragment {
                              Bundle savedInstanceState) {
 
         rootView = inflater.inflate(R.layout.fragment_amis, container, false);
-        ON_FRIENDS_ACTIVITY = true;
-        createFragment(rootView);
-
+        createFragment();
         return rootView;
     }
 
-    private void createFragment(View rootView) {
+    private void createFragment() {
         nbInvit = 0;
         search_bar = rootView.findViewById(R.id.search_bar_amis);
         resultat = rootView.findViewById(R.id.resultatText_amis);
         resultat.setVisibility(View.GONE);
         linearSansMesAmis = rootView.findViewById(R.id.linearSansMesAmis);
         navController = Navigation.findNavController(getActivity(), R.id.nav_host_fragment);
-        loading = rootView.findViewById(R.id.amis_loading);
         buttonBack.setVisibility(View.GONE);
         mRecyclerView = rootView.findViewById(R.id.recyclerViewMesAmis);
         cardViewInvits = rootView.findViewById(R.id.cardViewInvits);
         textViewNbInvit = rootView.findViewById(R.id.nbInvits);
-
-        mStoreBase.collection("users").document(USER.getUid()).collection("friends").whereEqualTo("status", "received")
-                .get()
-                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        if (task.isSuccessful()) {
-                            for (QueryDocumentSnapshot document : task.getResult()) {
-                                Log.w("Invitations", document.getId());
-                                nbInvit++;
-                                Log.w("Invitations", nbInvit+"");
-                            }
-                        }
-                        Log.w("Invitations", nbInvit+"");
-                        if(nbInvit != 0){
-                            Log.w("Invitations", "Pop up");
-                            cardViewInvits.setVisibility(View.VISIBLE);
-                            textViewNbInvit.setText(nbInvit+"");
-                        }else{
-                            cardViewInvits.setVisibility(View.GONE);
-                        }
-                        loading.setVisibility(View.GONE);
-                    }
-                });
-
-        adapterUsers();
-
-
+        mSwipeRefreshLayout = rootView.findViewById(R.id.AmisSwipeRefreshLayout);
 
         cardViewInvits.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -131,8 +97,6 @@ public class AmisFragment extends Fragment {
                 navController.navigate(R.id.action_navigation_amis_to_navigation_invitations);
             }
         });
-
-
 
         search_bar.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -154,9 +118,18 @@ public class AmisFragment extends Fragment {
             }
         });
 
+        mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                createFragment();
+            }
+        });
+
+        adapterUsers();
     }
 
     private void adapterUsers() {
+        mSwipeRefreshLayout.setRefreshing(true);
         friends = new ArrayList<>();
         mStoreBase.collection("users").document(USER.getUid()).collection("friends").whereEqualTo("status", "add").limit(10)
                 .get()
@@ -169,7 +142,6 @@ public class AmisFragment extends Fragment {
                                 friends.add(document.getId());
                             }
 
-                            //query
                             if (!friends.isEmpty()) {
                                 Query query = mStoreBase.collection("users").whereIn("uid", friends);
                                 FirestoreRecyclerOptions<User> options = new FirestoreRecyclerOptions.Builder<User>().setQuery(query, User.class).build();
@@ -209,55 +181,7 @@ public class AmisFragment extends Fragment {
                                             userViewHolder.cardViewPhotoPerson.setCardBackgroundColor((Color.parseColor("#EC9538")));
                                         }
 
-
-                                        if(u.getImage_url() != null) {
-                                            if(!Cache.fileExists(u.getUid())) {
-                                                StorageReference imgRef = mStore.getReference("users/" + u.getUid());
-                                                if (imgRef != null) {
-                                                    imgRef.getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
-                                                        @Override
-                                                        public void onComplete(@NonNull Task<Uri> task) {
-                                                            if (task.isSuccessful()) {
-                                                                Uri img = task.getResult();
-                                                                if (img != null) {
-                                                                    Cache.saveUriFile(u.getUid(), img);
-                                                                    u.setImage_url(Cache.getImageDate(u.getUid()));
-                                                                    mStoreBase.collection("users").document(u.getUid()).set(u);
-                                                                    Glide.with(getContext()).load(img).fitCenter().centerCrop().into(userViewHolder.imagePerson);
-                                                                }
-                                                            }
-                                                        }
-                                                    });
-                                                }
-                                            }else{
-                                                Uri imgCache = Cache.getUriFromUid(u.getUid());
-                                                Log.w("Cache", "Image Cache : " + Cache.getImageDate(u.getUid()));
-                                                Log.w("Cache", "Data Cache : " + u.getImage_url());
-                                                if(Cache.getImageDate(u.getUid()).equalsIgnoreCase(u.getImage_url())) {
-                                                    Log.w("image", "get image from cache");
-                                                    Glide.with(getContext()).load(imgCache).fitCenter().centerCrop().into(userViewHolder.imagePerson);
-                                                }else{
-                                                    StorageReference imgRef = mStore.getReference("users/" + u.getUid());
-                                                    if (imgRef != null) {
-                                                        imgRef.getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
-                                                            @Override
-                                                            public void onComplete(@NonNull Task<Uri> task) {
-                                                                if (task.isSuccessful()) {
-                                                                    Uri img = task.getResult();
-                                                                    if (img != null) {
-                                                                        Cache.saveUriFile(u.getUid(), img);
-                                                                        u.setImage_url(Cache.getImageDate(u.getUid()));
-                                                                        mStoreBase.collection("users").document(u.getUid()).set(u);
-                                                                        Glide.with(getContext()).load(img).fitCenter().centerCrop().into(userViewHolder.imagePerson);
-                                                                    }
-                                                                }
-                                                            }
-                                                        });
-                                                    }
-                                                }
-                                            }
-                                        }
-
+                                        Constants.setUserImage(u, getContext(), userViewHolder.imagePerson);
 
                                         userViewHolder.layoutProfil.setOnClickListener(new View.OnClickListener() {
                                             @Override
@@ -270,12 +194,9 @@ public class AmisFragment extends Fragment {
                                             @Override
                                             public void onClick(View v) {
                                                 removeFriend(u.getUid());
-                                                createFragment(rootView);
+                                                createFragment();
                                             }
                                         });
-                                        loading.setVisibility(View.GONE);
-
-
                                     }
                                 };
                                 mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
@@ -288,12 +209,12 @@ public class AmisFragment extends Fragment {
                         }
                     }
                 });
-
+        mSwipeRefreshLayout.setRefreshing(false);
+        Log.w("Refresh", "Set refresing false");
     }
 
 
     private class UserViewHolder extends RecyclerView.ViewHolder {
-
         private TextView nomInvit;
         private TextView villePers;
         private LinearLayout layoutProfil;
@@ -310,24 +231,19 @@ public class AmisFragment extends Fragment {
             imagePerson = itemView.findViewById(R.id.imagePerson);
             button = itemView.findViewById(R.id.buttonImage);
             cardViewPhotoPerson = itemView.findViewById(R.id.cardViewPhotoPerson);
-
-
         }
 
     }
     private void removeFriend(final String uid) {
-        if(mStoreBase.collection("users").document(USER.getUid()).
-                collection("friends").document(uid) != null){
-            mStoreBase.collection("users").document(USER.getUid()).
-                    collection("friends").document(uid).delete();
+        mStoreBase.collection("users").document(USER.getUid()).
+                collection("friends").document(uid);
+        mStoreBase.collection("users").document(USER.getUid()).
+                collection("friends").document(uid).delete();
 
-            mStoreBase.collection("users").document(uid).
-                    collection("friends").document(USER.getUid()).delete();
+        mStoreBase.collection("users").document(uid).
+                collection("friends").document(USER.getUid()).delete();
 
-            Toast.makeText(getContext(), "Vous avez supprimé un amis !", Toast.LENGTH_SHORT).show();
-
-        }
-
+        Toast.makeText(getContext(), "Vous avez supprimé un amis !", Toast.LENGTH_SHORT).show();
     }
 
 
@@ -344,10 +260,19 @@ public class AmisFragment extends Fragment {
                     }
                     PopupProfilFragment.type = "amis";
                     navController.navigate(R.id.action_navigation_amis_to_navigation_popup_profil);
-
             }
         });
+    }
 
+    @Override
+    public void onResume(){
+        ON_FRIENDS_ACTIVITY = true;
+        if(adapter != null) {
+            adapter.startListening();
+        }else{
+            createFragment();
+        }
+        super.onResume();
     }
 
     @Override

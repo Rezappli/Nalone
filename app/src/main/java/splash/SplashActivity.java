@@ -68,7 +68,6 @@ public class SplashActivity extends AppCompatActivity {
 
         Constants.application = getApplication();
         currentUser = mAuth.getCurrentUser();
-        //addUser();
         if (currentUser != null) {
             if (!load) {
                 if (currentUser.isEmailVerified()) {
@@ -91,7 +90,11 @@ public class SplashActivity extends AppCompatActivity {
 
                                             USER_REFERENCE = mStoreBase.collection("users").document(USER.getUid());
                                             load = true;
-                                            startActivity(new Intent(SplashActivity.this, HomeActivity.class));
+                                            if(!USER.isBan()) {
+                                                startActivity(new Intent(SplashActivity.this, HomeActivity.class));
+                                            }else{
+                                                startActivity(new Intent(SplashActivity.this, MainActivity.class));
+                                            }
                                         } else {
                                             load = true;
                                             startActivity(new Intent(SplashActivity.this, MainActivity.class));
@@ -108,6 +111,8 @@ public class SplashActivity extends AppCompatActivity {
                             Log.w("SPLASH", "Erreur : " + e.getMessage());
                         }
                     });
+                }else{
+                    startActivity(new Intent(SplashActivity.this, MainActivity.class));
                 }
             }else{
                 startActivity(new Intent(SplashActivity.this, MainActivity.class));
@@ -116,28 +121,6 @@ public class SplashActivity extends AppCompatActivity {
             load = true;
             startActivity(new Intent(SplashActivity.this, MainActivity.class));
         }
-    }
-
-
-    public void addUser(){
-        User u = new User("11b4ee26-69b8-4ae2-abf9-2a7263f90f96", "Le Gal", "Hugo", "H", "Nantes","0781039461"
-        ,"hlegal44@gmail.com", "Informatique",
-                "Nantais", "25/04/2001");
-
-        mStoreBase.collection("users").document(u.getUid())
-                .set(u)
-                .addOnSuccessListener(new OnSuccessListener<Void>() {
-                    @Override
-                    public void onSuccess(Void aVoid) {
-                        Log.d("FIREBASE", "DocumentSnapshot successfully written!");
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Log.w("FIREBASE", "Error writing document", e);
-                    }
-                });
     }
 
 }

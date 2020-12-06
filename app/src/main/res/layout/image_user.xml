@@ -2,7 +2,7 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="wrap_content"
-    android:layout_height="match_parent">
+    android:layout_height="wrap_content">
 
     <androidx.cardview.widget.CardView
         android:id="@+id/cardViewUser"
@@ -23,7 +23,8 @@
                 android:id="@+id/imageUser"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:contentDescription="@string/TODO" />
+                android:contentDescription="@string/TODO"
+                app:srcCompat="@drawable/ic_round_person_edit_focused" />
         </androidx.cardview.widget.CardView>
 
     </androidx.cardview.widget.CardView>

@@ -3,16 +3,25 @@ package com.example.nalone.util;
 import android.app.ActivityManager;
 import android.app.Application;
 import android.content.Context;
+import android.net.Uri;
 import android.util.Log;
+import android.widget.ImageView;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.bumptech.glide.Glide;
+import com.example.nalone.Cache;
+import com.example.nalone.Group;
 import com.example.nalone.User;
 import com.example.nalone.fcm.MySingleton;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
@@ -106,5 +115,99 @@ public class Constants {
             }
         };
         MySingleton.getInstance(context).addToRequestQueue(jsonObjectRequest);
+    }
+
+    public static void setUserImage(final User u, final Context context, final ImageView imageView){
+        if(u.getImage_url() != null) {
+            if(!Cache.fileExists(u.getUid())) {
+                StorageReference imgRef = mStore.getReference("users/" + u.getUid());
+                if (imgRef != null) {
+                    imgRef.getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Uri> task) {
+                            if (task.isSuccessful()) {
+                                Uri img = task.getResult();
+                                if (img != null) {
+                                    Cache.saveUriFile(u.getUid(), img);
+                                    u.setImage_url(Cache.getImageDate(u.getUid()));
+                                    mStoreBase.collection("users").document(u.getUid()).set(u);
+                                    Glide.with(context).load(img).fitCenter().centerCrop().into(imageView);
+                                }
+                            }
+                        }
+                    });
+                }
+            }else{
+                Uri imgCache = Cache.getUriFromUid(u.getUid());
+                if(Cache.getImageDate(u.getUid()).equalsIgnoreCase(u.getImage_url())) {
+                    Glide.with(context).load(imgCache).fitCenter().centerCrop().into(imageView);
+                }else{
+                    StorageReference imgRef = mStore.getReference("users/" + u.getUid());
+                    if (imgRef != null) {
+                        imgRef.getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
+                            @Override
+                            public void onComplete(@NonNull Task<Uri> task) {
+                                if (task.isSuccessful()) {
+                                    Uri img = task.getResult();
+                                    if (img != null) {
+                                        Cache.saveUriFile(u.getUid(), img);
+                                        u.setImage_url(Cache.getImageDate(u.getUid()));
+                                        mStoreBase.collection("users").document(u.getUid()).set(u);
+                                        Glide.with(context).load(img).fitCenter().centerCrop().into(imageView);
+                                    }
+                                }
+                            }
+                        });
+                    }
+                }
+            }
+        }
+    }
+
+    public static void setGroupImage(final Group g, final Context context, final ImageView imageView){
+        if(g.getImage_url() != null) {
+            if(!Cache.fileExists(g.getUid())) {
+                StorageReference imgRef = mStore.getReference("groups/" + g.getUid());
+                if (imgRef != null) {
+                    imgRef.getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Uri> task) {
+                            if (task.isSuccessful()) {
+                                Uri img = task.getResult();
+                                if (img != null) {
+                                    Cache.saveUriFile(g.getUid(), img);
+                                    g.setImage_url(Cache.getImageDate(g.getUid()));
+                                    mStoreBase.collection("groups").document(g.getUid()).set(g);
+                                    Glide.with(context).load(img).fitCenter().centerCrop().into(imageView);
+                                }
+                            }
+                        }
+                    });
+                }
+            }else{
+                Uri imgCache = Cache.getUriFromUid(g.getUid());
+                if(Cache.getImageDate(g.getUid()).equalsIgnoreCase(g.getImage_url())) {
+                    Glide.with(context).load(imgCache).fitCenter().centerCrop().into(imageView);
+                }else{
+                    StorageReference imgRef = mStore.getReference("groups/" + g.getUid());
+                    if (imgRef != null) {
+                        imgRef.getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
+                            @Override
+                            public void onComplete(@NonNull Task<Uri> task) {
+                                if (task.isSuccessful()) {
+                                    Uri img = task.getResult();
+                                    if (img != null) {
+                                        Cache.saveUriFile(g.getUid(), img);
+                                        g.setImage_url(Cache.getImageDate(g.getUid()));
+                                        mStoreBase.collection("groups").document(g.getUid()).set(g);
+                                        Glide.with(context).load(img).fitCenter().centerCrop().into(imageView);
+                                    }
+                                }
+                            }
+                        });
+                    }
+                }
+            }
+        }
     }
 }

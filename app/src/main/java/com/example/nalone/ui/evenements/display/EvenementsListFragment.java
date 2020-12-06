@@ -155,8 +155,7 @@ public class EvenementsListFragment extends Fragment {
 
             @Override
             protected void onBindViewHolder(@NonNull final EventViewHolder holder, int i, @NonNull final Evenement e) {
-                final Evenement event = e;
-                holder.mImageView.setImageResource(e.getImage());
+                //holder.mImageView.setImageResource(e.getImage());
                 holder.mTitle.setText((e.getName()));
                 holder.mDate.setText((dateFormat.format(e.getDate().toDate())));
                 holder.mTime.setText((timeFormat.format(e.getDate().toDate())));
@@ -194,6 +193,7 @@ public class EvenementsListFragment extends Fragment {
                                             holder.mCarwViewOwner.setCardBackgroundColor((Color.parseColor("#EC9538")));
                                         }
 
+                                        Constants.setUserImage(u, getContext(), holder.mImageView);
                                     }
 
                                 }
@@ -220,51 +220,6 @@ public class EvenementsListFragment extends Fragment {
                     }
                 });
 
-               /* if(e.getImage_url() != null) {
-                    if(!Cache.fileExists(e.getUid())) {
-                        StorageReference imgRef = mStore.getReference("groups/" + g.getUid());
-                        if (imgRef != null) {
-                            imgRef.getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
-                                @Override
-                                public void onComplete(@NonNull Task<Uri> task) {
-                                    if (task.isSuccessful()) {
-                                        Uri img = task.getResult();
-                                        if (img != null) {
-                                            Cache.saveUriFile(g.getUid(), img);
-                                            g.setImage_url(Cache.getImageDate(g.getUid()));
-                                            mStoreBase.collection("groups").document(g.getUid()).set(g);
-                                            Glide.with(getContext()).load(img).fitCenter().centerCrop().into(userViewHolder.imageGroup);
-                                        }
-                                    }
-                                }
-                            });
-                        }
-                    }else{
-                        Uri imgCache = Cache.getUriFromUid(g.getUid());
-                        if(Cache.getImageDate(g.getUid()).equalsIgnoreCase(g.getImage_url())) {
-                            Glide.with(getContext()).load(imgCache).fitCenter().centerCrop().into(userViewHolder.imageGroup);
-                        }else{
-                            StorageReference imgRef = mStore.getReference("groups/" + g.getUid());
-                            if (imgRef != null) {
-                                imgRef.getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
-                                    @Override
-                                    public void onComplete(@NonNull Task<Uri> task) {
-                                        if (task.isSuccessful()) {
-                                            Uri img = task.getResult();
-                                            if (img != null) {
-                                                Cache.saveUriFile(g.getUid(), img);
-                                                g.setImage_url(Cache.getImageDate(g.getUid()));
-                                                mStoreBase.collection("groups").document(g.getUid()).set(g);
-                                                Glide.with(getContext()).load(img).fitCenter().centerCrop().into(userViewHolder.imageGroup);
-                                            }
-                                        }
-                                    }
-                                });
-                            }
-                        }
-                    }
-                }
-                */
             }
         };
         //mRecyclerView.setHasFixedSize(true);

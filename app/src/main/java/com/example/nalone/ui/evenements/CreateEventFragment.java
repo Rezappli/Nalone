@@ -32,6 +32,7 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.example.nalone.Cache;
 import com.example.nalone.Evenement;
+import com.example.nalone.ModelData;
 import com.example.nalone.dialog.ListAmisFragment;
 import com.example.nalone.R;
 import com.example.nalone.dialog.SelectDateFragment;
@@ -503,8 +504,12 @@ public class CreateEventFragment extends Fragment {
                 mStoreBase.collection("users").document(USER_ID).collection("events").document(e.getUid()).set(e);
 
                 for (String user : adds) {
-                    Log.d("Ajout", "Ajout de membre dans evenement");
-                    mStoreBase.collection("events").document(e.getUid()).collection("members").document(user).set(e);
+                    String status = "add";
+                    if(e.getVisibility().equals(Visibility.PRIVATE)){
+                        status = "wait";
+                    }
+                    ModelData m = new ModelData(status, mStoreBase.collection("users").document(user));
+                    mStoreBase.collection("events").document(e.getUid()).collection("members").document(user).set(m);
                 }
                 Toast.makeText(getContext(), "Vous avez créer votre évènement !", Toast.LENGTH_SHORT).show();
                 navController.navigate(R.id.action_navigation_create_event_to_navigation_evenements);

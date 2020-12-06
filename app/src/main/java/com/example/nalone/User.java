@@ -35,6 +35,9 @@ public class User {
     private String birthday_date;
     private String image_date;
     private GeoPoint location;
+    private boolean ban;
+    private String banReason;
+    private Timestamp time_ban;
 
     public User(){}
 
@@ -56,6 +59,8 @@ public class User {
         this.number_events_create = "0";
         this.number_events_attend = "0";
         this.image_date = null;
+        ban = false;
+        time_ban = null;
     }
 
     public String getUid() {
@@ -168,5 +173,25 @@ public class User {
 
     public void setLocation(GeoPoint location) {
         this.location = location;
+    }
+
+    public boolean isBan() {
+        return ban;
+    }
+
+    public void setBan(boolean ban) {
+        this.ban = ban;
+    }
+
+    public Timestamp getTime_ban() {
+        return time_ban;
+    }
+
+    public void setTime_ban(Timestamp time_ban) {
+        this.time_ban = time_ban;
+    }
+
+    public String getBanReason() {
+        return banReason;
     }
 }

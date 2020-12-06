@@ -25,15 +25,26 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.SignInButton;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 
+import splash.SplashActivity;
+
+import static com.example.nalone.util.Constants.USER;
+import static com.example.nalone.util.Constants.USER_ID;
+import static com.example.nalone.util.Constants.USER_REFERENCE;
+import static com.example.nalone.util.Constants.USER_STORAGE_REF;
 import static com.example.nalone.util.Constants.currentUser;
 import static com.example.nalone.util.Constants.load;
 import static com.example.nalone.util.Constants.mAuth;
+import static com.example.nalone.util.Constants.mStore;
+import static com.example.nalone.util.Constants.mStoreBase;
 
 public class MainActivity extends AppCompatActivity{
     private TextView textViewSinscrire;
@@ -110,7 +121,6 @@ public class MainActivity extends AppCompatActivity{
                 }
             }
         });
-
     }
 
     private void signIn() {
@@ -151,11 +161,8 @@ public class MainActivity extends AppCompatActivity{
                             if (task.isSuccessful()) {
                                 currentUser = mAuth.getCurrentUser();
 
-                                Log.w("INSCRIPTION", "current user : " + currentUser.getEmail());
-                                Log.w("INSCRIPTION", "email valide : " + currentUser.isEmailVerified());
-
                                 if (currentUser.isEmailVerified()) {
-                                    startActivity(new Intent(MainActivity.this, HomeActivity.class));
+                                    loadUser();
                                 } else {
                                     final AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
                                     builder.setMessage("Votre adresse mail n'a pas été vérifiée")
@@ -210,4 +217,52 @@ public class MainActivity extends AppCompatActivity{
                     }
                 });
     }
+
+    private void loadUser(){
+        mStoreBase.collection("users")
+                .whereEqualTo("mail", currentUser.getEmail())
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @RequiresApi(api = Build.VERSION_CODES.M)
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            if (task.getResult().size() > 0) {
+                                for (QueryDocumentSnapshot document : task.getResult()) {
+                                    USER = document.toObject(User.class);
+                                }
+                                USER_ID = USER.getUid();
+                                MyFirebaseInstance.user_id = USER_ID;
+                                USER_STORAGE_REF = mStore.getReference("users").child(USER.getUid());
+
+                                USER_REFERENCE = mStoreBase.collection("users").document(USER.getUid());
+                                if(!USER.isBan()) {
+                                    startActivity(new Intent(MainActivity.this, HomeActivity.class));
+                                }else{
+                                    final AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+                                    builder.setMessage("Votre compte à été suspendu pour la raison : \n\n"+USER.getBanReason() + "\n\nJusqu'au : " + USER.getTime_ban().toDate().toString())
+                                            .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                                                public void onClick(DialogInterface dialog, int id) {
+                                                    dialog.dismiss();
+                                                    progressBar.setVisibility(View.GONE);
+                                                }
+                                            });
+                                    builder.create();
+                                    builder.show();
+                                }
+                            }
+                        } else {
+                            Log.d("SPLASH", "Error getting documents: ", task.getException());
+                            Toast.makeText(MainActivity.this, "Une erreur est survenue !", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Log.w("SPLASH", "Erreur : " + e.getMessage());
+            }
+        });
+    }
 }
+
+

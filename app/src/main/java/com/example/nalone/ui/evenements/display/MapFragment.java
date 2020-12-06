@@ -22,6 +22,7 @@ import com.example.nalone.Cache;
 import com.example.nalone.InfosEvenementsActivity;
 import com.example.nalone.R;
 import com.example.nalone.User;
+import com.example.nalone.util.Constants;
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -95,14 +96,13 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     private RecyclerView mRecyclerView;
     private FirestoreRecyclerAdapter adapter;
 
-    private double unitLat = 74.6554;
-    private double unitLong = 74;
+    private double unit = 74.6554;
 
-    private double minLat = USER.getLocation().getLatitude() - (range / unitLat);
-    private double maxLat = USER.getLocation().getLatitude() + (range / unitLat);
+    private double minLat = USER.getLocation().getLatitude() - (range / unit);
+    private double maxLat = USER.getLocation().getLatitude() + (range / unit);
 
-    private final double minLong = USER.getLocation().getLongitude() - (range / unitLong);
-    private final double maxLong = USER.getLocation().getLongitude() + (range / unitLong);
+    private final double minLong = USER.getLocation().getLongitude() - (range / unit);
+    private final double maxLong = USER.getLocation().getLongitude() + (range / unit);
 
     private List<String> nearby_events;
     private int iterator = 0;
@@ -178,13 +178,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
 
                                 @Override
                                 protected void onBindViewHolder(@NonNull final EventViewHolder holder, int i, @NonNull final Evenement e) {
-                /*for (String events : myEvents){
-                    if(e.getUid().equals(events)){
-                    }
-                }*/
-
-
-                                    holder.mImageView.setImageResource(e.getImage());
+                                    //holder.mImageView.setImageResource(e.getImage());
                                     holder.mTitle.setText((e.getName()));
                                     holder.mDate.setText((dateFormat.format(e.getDate().toDate())));
                                     holder.mTime.setText((timeFormat.format(e.getDate().toDate())));
@@ -224,53 +218,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                                                                 holder.mCarwViewOwner.setCardBackgroundColor((Color.parseColor("#EC9538")));
                                                             }
 
-                                                            if(u.getImage_url() != null) {
-                                                                if(!Cache.fileExists(u.getUid())) {
-                                                                    StorageReference imgRef = mStore.getReference("users/" + u.getUid());
-                                                                    if (imgRef != null) {
-                                                                        imgRef.getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
-                                                                            @Override
-                                                                            public void onComplete(@NonNull Task<Uri> task) {
-                                                                                if (task.isSuccessful()) {
-                                                                                    Uri img = task.getResult();
-                                                                                    if (img != null) {
-                                                                                        Cache.saveUriFile(u.getUid(), img);
-                                                                                        u.setImage_url(Cache.getImageDate(u.getUid()));
-                                                                                        mStoreBase.collection("users").document(u.getUid()).set(u);
-                                                                                        Glide.with(getContext()).load(img).fitCenter().centerCrop().into(holder.mImageView);
-                                                                                    }
-                                                                                }
-                                                                            }
-                                                                        });
-                                                                    }
-                                                                }else{
-                                                                    Uri imgCache = Cache.getUriFromUid(u.getUid());
-                                                                    Log.w("Cache", "Image Cache : " + Cache.getImageDate(u.getUid()));
-                                                                    Log.w("Cache", "Data Cache : " + u.getImage_url());
-                                                                    if(Cache.getImageDate(u.getUid()).equalsIgnoreCase(u.getImage_url())) {
-                                                                        Log.w("image", "get image from cache");
-                                                                        Glide.with(getContext()).load(imgCache).fitCenter().centerCrop().into(holder.mImageView);
-                                                                    }else{
-                                                                        StorageReference imgRef = mStore.getReference("users/" + u.getUid());
-                                                                        if (imgRef != null) {
-                                                                            imgRef.getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
-                                                                                @Override
-                                                                                public void onComplete(@NonNull Task<Uri> task) {
-                                                                                    if (task.isSuccessful()) {
-                                                                                        Uri img = task.getResult();
-                                                                                        if (img != null) {
-                                                                                            Cache.saveUriFile(u.getUid(), img);
-                                                                                            u.setImage_url(Cache.getImageDate(u.getUid()));
-                                                                                            mStoreBase.collection("users").document(u.getUid()).set(u);
-                                                                                            Glide.with(getContext()).load(img).fitCenter().centerCrop().into(holder.mImageView);
-                                                                                        }
-                                                                                    }
-                                                                                }
-                                                                            });
-                                                                        }
-                                                                    }
-                                                                }
-                                                            }
+                                                            Constants.setUserImage(u, getContext(), holder.mImageView);
 
                                                         }
 
@@ -474,7 +422,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                     }
 
                     if (nearby_events.size() > 0) {
-
                        adapterEvents();
                     }
                     Log.w("iterator", iterator+"");

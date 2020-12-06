@@ -95,8 +95,6 @@ public class MesEvenementsListFragment extends Fragment {
                 navController.navigate(R.id.action_navigation_evenements_to_navigation_creations_evenements);
             }
         });
-        SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yy");
-
 
         DocumentReference ref = mStoreBase.document("users/"+USER_ID);
         mStoreBase.collection("users").document(USER_ID).collection("events").whereNotEqualTo("user", ref)
@@ -151,8 +149,7 @@ public class MesEvenementsListFragment extends Fragment {
 
                 @Override
                 protected void onBindViewHolder(@NonNull final EventViewHolder holder, int i, @NonNull final Evenement e) {
-                    final Evenement event = e;
-                    holder.mImageView.setImageResource(e.getImage());
+                    //holder.mImageView.setImageResource(e.getImage());
                     holder.mTitle.setText((e.getName()));
                     holder.mDate.setText((e.getDate().toDate().toString()));
                     holder.mVille.setText((e.getCity()));

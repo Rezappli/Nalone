@@ -26,6 +26,7 @@ import com.example.nalone.Chat;
 import com.example.nalone.Message;
 import com.example.nalone.R;
 import com.example.nalone.User;
+import com.example.nalone.util.Constants;
 import com.firebase.ui.common.ChangeEventType;
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
@@ -92,13 +93,7 @@ public class ChatActivity extends AppCompatActivity {
         nameUser = findViewById(R.id.nameUser);
         nameUser.setText(USER_LOAD.getFirst_name() + " " + USER_LOAD.getLast_name());
         mRecyclerView = findViewById(R.id.messagesRecyclerView);
-
-        messageEditText.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-            }
-        });
+        profile_view = findViewById(R.id.profile_view);
 
         buttonSend.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -161,6 +156,8 @@ public class ChatActivity extends AppCompatActivity {
                 }
             }
         });
+
+        Constants.setUserImage(USER_LOAD, ChatActivity.this, profile_view);
     }
 
     private void sendMessage(Message msg) {

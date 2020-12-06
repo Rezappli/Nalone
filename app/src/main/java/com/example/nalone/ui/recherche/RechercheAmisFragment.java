@@ -34,6 +34,7 @@ import com.example.nalone.items.ItemPerson;
 import com.example.nalone.R;
 import com.example.nalone.User;
 import com.example.nalone.ui.amis.display.PopupProfilFragment;
+import com.example.nalone.util.Constants;
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -94,7 +95,7 @@ public class RechercheAmisFragment extends Fragment {
         loading = rootView.findViewById(R.id.search_loading);
         buttonBack.setVisibility(View.GONE);
         linearSansRechercheAmis = rootView.findViewById(R.id.linearSansRechercheGroupe);
-        swipeContainer = (SwipeRefreshLayout) rootView.findViewById(R.id.swipeContainer);
+        swipeContainer = rootView.findViewById(R.id.swipeContainer);
 
         swipeContainer.setColorSchemeResources(android.R.color.holo_blue_bright);
 
@@ -306,53 +307,7 @@ public class RechercheAmisFragment extends Fragment {
                 userViewHolder.button.setImageResource(0);
                 Log.w("Add", "BienHolder Recherche");
 
-                if(u.getImage_url() != null) {
-                    if(!Cache.fileExists(u.getUid())) {
-                        StorageReference imgRef = mStore.getReference("users/" + u.getUid());
-                        if (imgRef != null) {
-                            imgRef.getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
-                                @Override
-                                public void onComplete(@NonNull Task<Uri> task) {
-                                    if (task.isSuccessful()) {
-                                        Uri img = task.getResult();
-                                        if (img != null) {
-                                            Cache.saveUriFile(u.getUid(), img);
-                                            u.setImage_url(Cache.getImageDate(u.getUid()));
-                                            mStoreBase.collection("users").document(u.getUid()).set(u);
-                                            Glide.with(getContext()).load(img).fitCenter().centerCrop().into(userViewHolder.imagePerson);
-                                        }
-                                    }
-                                }
-                            });
-                        }
-                    }else{
-                        Uri imgCache = Cache.getUriFromUid(u.getUid());
-                        Log.w("Cache", "Image Cache : " + Cache.getImageDate(u.getUid()));
-                        Log.w("Cache", "Data Cache : " + u.getImage_url());
-                        if(Cache.getImageDate(u.getUid()).equalsIgnoreCase(u.getImage_url())) {
-                            Log.w("image", "get image from cache");
-                            Glide.with(getContext()).load(imgCache).fitCenter().centerCrop().into(userViewHolder.imagePerson);
-                        }else{
-                            StorageReference imgRef = mStore.getReference("users/" + u.getUid());
-                            if (imgRef != null) {
-                                imgRef.getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
-                                    @Override
-                                    public void onComplete(@NonNull Task<Uri> task) {
-                                        if (task.isSuccessful()) {
-                                            Uri img = task.getResult();
-                                            if (img != null) {
-                                                Cache.saveUriFile(u.getUid(), img);
-                                                u.setImage_url(Cache.getImageDate(u.getUid()));
-                                                mStoreBase.collection("users").document(u.getUid()).set(u);
-                                                Glide.with(getContext()).load(img).fitCenter().centerCrop().into(userViewHolder.imagePerson);
-                                            }
-                                        }
-                                    }
-                                });
-                            }
-                        }
-                    }
-                }
+                Constants.setUserImage(u, getContext(), userViewHolder.imagePerson);
 
                 userViewHolder.layoutProfil.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -419,6 +374,8 @@ public class RechercheAmisFragment extends Fragment {
     public void onResume(){
         if(adapter != null) {
             adapter.startListening();
+        }else{
+            createFragment();
         }
         super.onResume();
     }
