@@ -16,6 +16,9 @@
         <action
             android:id="@+id/action_navigation_evenements_to_navigation_creations_evenements"
             app:destination="@id/navigation_creations_evenements" />
+        <action
+            android:id="@+id/action_navigation_evenements_to_navigation_infos_events"
+            app:destination="@id/navigation_infos_events" />
     </fragment>
 
     <fragment
@@ -23,6 +26,16 @@
         android:name="com.example.nalone.ui.evenements.display.MesEvenementsListFragment"
         android:label="@string/title_evenements"
         tools:layout="@layout/fragment_mes_evenements_list">
+    </fragment>
+
+    <fragment
+        android:id="@+id/navigation_infos_events"
+        android:name="com.example.nalone.InfosEvenementsActivity"
+        android:label="@string/title_evenements"
+        tools:layout="@layout/activity_infos_evenements">
+        <action
+            android:id="@+id/action_navigation_infos_events_to_navigation_evenements"
+            app:destination="@id/navigation_evenements" />
     </fragment>
 
 

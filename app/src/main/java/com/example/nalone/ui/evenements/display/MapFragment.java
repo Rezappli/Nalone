@@ -271,7 +271,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                                                 public void onComplete(@NonNull Task<QuerySnapshot> task) {
                                                     for (QueryDocumentSnapshot doc : task.getResult()) {
                                                         InfosEvenementsActivity.EVENT_LOAD = doc.toObject(Evenement.class);
-                                                        startActivity(new Intent(getContext(), InfosEvenementsActivity.class));
+                                                        navController.navigate(R.id.action_navigation_evenements_to_navigation_infos_events);
                                                     }
                                                 }
                                             });

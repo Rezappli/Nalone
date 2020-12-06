@@ -125,6 +125,30 @@ public class AmisFragment extends Fragment {
             }
         });
 
+        mStoreBase.collection("users").document(USER.getUid()).collection("friends").whereEqualTo("status", "received")
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            for (QueryDocumentSnapshot document : task.getResult()) {
+                                Log.w("Invitations", document.getId());
+                                nbInvit++;
+                                Log.w("Invitations", nbInvit+"");
+                            }
+                        }
+                        Log.w("Invitations", nbInvit+"");
+                        if(nbInvit != 0){
+                            Log.w("Invitations", "Pop up");
+                            cardViewInvits.setVisibility(View.VISIBLE);
+                            textViewNbInvit.setText(nbInvit+"");
+                        }else{
+                            cardViewInvits.setVisibility(View.GONE);
+                        }
+                        //loading.setVisibility(View.GONE);
+                    }
+                });
+
         adapterUsers();
     }
 
@@ -264,16 +288,14 @@ public class AmisFragment extends Fragment {
         });
     }
 
-    @Override
+    /*@Override
     public void onResume(){
         ON_FRIENDS_ACTIVITY = true;
-        if(adapter != null) {
-            adapter.startListening();
-        }else{
+
             createFragment();
-        }
+       // }
         super.onResume();
-    }
+    }*/
 
     @Override
     public void onDestroy() {

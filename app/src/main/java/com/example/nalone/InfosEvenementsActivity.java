@@ -4,6 +4,9 @@ import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
+import androidx.fragment.app.Fragment;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -42,7 +45,7 @@ import static com.example.nalone.util.Constants.formatD;
 import static com.example.nalone.util.Constants.mStore;
 import static com.example.nalone.util.Constants.mStoreBase;
 
-public class InfosEvenementsActivity extends AppCompatActivity {
+public class InfosEvenementsActivity extends Fragment {
 
     private RecyclerView mRecyclerView;
     private RecyclerView.LayoutManager mLayoutManager;
@@ -56,18 +59,24 @@ public class InfosEvenementsActivity extends AppCompatActivity {
 
     public static Evenement EVENT_LOAD;
 
+    public static String type;
+    private View rootView;
+    private NavController navController;
+    private TextView textViewNbMembers;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_infos_evenements);
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
 
-        mTitle = findViewById(R.id.title);
-        mDate = findViewById(R.id.date);
-        mTimer = findViewById(R.id.time);
-        mOwner = findViewById(R.id.owner);
-        mDescription = findViewById(R.id.description);
-        mRecyclerView = findViewById(R.id.recyclerViewMembresInscrits);
+        rootView = inflater.inflate(R.layout.activity_infos_evenements, container, false);
+        navController = Navigation.findNavController(getActivity(), R.id.nav_host_fragment);
+        mTitle = rootView.findViewById(R.id.title);
+        mDate = rootView.findViewById(R.id.date);
+        mTimer = rootView.findViewById(R.id.time);
+        mOwner = rootView.findViewById(R.id.owner);
+        mDescription = rootView.findViewById(R.id.description);
+        mRecyclerView = rootView.findViewById(R.id.recyclerViewMembresInscrits);
+        textViewNbMembers = rootView.findViewById(R.id.textViewNbMembers);
 
         String date_text = formatD.format(EVENT_LOAD.getDate().toDate());
         String final_date_text = "";
@@ -94,36 +103,42 @@ public class InfosEvenementsActivity extends AppCompatActivity {
                     members.add(doc.toObject(ModelData.class).getUser().getId());
                 }
 
-                Query query = mStoreBase.collection("users").whereIn("uid", members);
-                FirestoreRecyclerOptions<User> options = new FirestoreRecyclerOptions.Builder<User>().setQuery(query, User.class).build();
+                if(!members.isEmpty()){
+                    Query query = mStoreBase.collection("users").whereIn("uid", members);
+                    FirestoreRecyclerOptions<User> options = new FirestoreRecyclerOptions.Builder<User>().setQuery(query, User.class).build();
 
-                adapter = new FirestoreRecyclerAdapter<User, InfosEvenementsActivity.UserViewHolder>(options) {
-                    @NonNull
-                    @Override
-                    public InfosEvenementsActivity.UserViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-                        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.image_user, parent, false);
-                        return new InfosEvenementsActivity.UserViewHolder(view);
-                    }
+                    adapter = new FirestoreRecyclerAdapter<User, InfosEvenementsActivity.UserViewHolder>(options) {
+                        @NonNull
+                        @Override
+                        public InfosEvenementsActivity.UserViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+                            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.image_user, parent, false);
+                            return new InfosEvenementsActivity.UserViewHolder(view);
+                        }
 
-                    @RequiresApi(api = Build.VERSION_CODES.O)
-                    @Override
-                    protected void onBindViewHolder(@NonNull final InfosEvenementsActivity.UserViewHolder userViewHolder, int i, @NonNull final User u) {
-                        Constants.setUserImage(u, InfosEvenementsActivity.this, userViewHolder.imagePerson);
-                    }
-                };
+                        @RequiresApi(api = Build.VERSION_CODES.O)
+                        @Override
+                        protected void onBindViewHolder(@NonNull final InfosEvenementsActivity.UserViewHolder userViewHolder, int i, @NonNull final User u) {
+                            Constants.setUserImage(u, getContext(), userViewHolder.imagePerson);
+                        }
+                    };
 
-                mRecyclerView.setAdapter(adapter);
-                adapter.startListening();
+                    mRecyclerView.setAdapter(adapter);
+                    adapter.startListening();
 
 
-                mLayoutManager = new LinearLayoutManager(
-                        InfosEvenementsActivity.this,
-                        LinearLayoutManager.HORIZONTAL,
-                        false);
-                mRecyclerView.setLayoutManager(mLayoutManager);
+                    mLayoutManager = new LinearLayoutManager(
+                            getContext(),
+                            LinearLayoutManager.HORIZONTAL,
+                            false);
+                    mRecyclerView.setLayoutManager(mLayoutManager);
+                }else{
+                    textViewNbMembers.setText("Aucun membre inscrit pour le moment");
+                }
+
             }
         });
 
+        return rootView;
     }
 
     private class UserViewHolder extends RecyclerView.ViewHolder {
