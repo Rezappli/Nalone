@@ -288,14 +288,13 @@ public class AmisFragment extends Fragment {
         });
     }
 
-    /*@Override
+    @Override
     public void onResume(){
         ON_FRIENDS_ACTIVITY = true;
 
-            createFragment();
-       // }
+        createFragment();
         super.onResume();
-    }*/
+    }
 
     @Override
     public void onDestroy() {

@@ -264,13 +264,22 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
 
                                 mMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
                                     @Override
-                                    public void onInfoWindowClick(Marker marker) {
+                                    public void onInfoWindowClick(final Marker marker) {
                                         if (marker.getTag() != null) {
                                             mStoreBase.collection("events").whereEqualTo("uid", marker.getTag()).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                                                 @Override
                                                 public void onComplete(@NonNull Task<QuerySnapshot> task) {
                                                     for (QueryDocumentSnapshot doc : task.getResult()) {
+
                                                         InfosEvenementsActivity.EVENT_LOAD = doc.toObject(Evenement.class);
+                                                        if(myEvents.contains(InfosEvenementsActivity.EVENT_LOAD.getUid())) {
+                                                            InfosEvenementsActivity.type = "inscrit";
+                                                        }else if(InfosEvenementsActivity.EVENT_LOAD.getOwnerDoc().equals(USER_REFERENCE)){
+                                                            InfosEvenementsActivity.type = "creer";
+                                                        }else{
+                                                            InfosEvenementsActivity.type = "nouveau";
+                                                        }
+
                                                         navController.navigate(R.id.action_navigation_evenements_to_navigation_infos_events);
                                                     }
                                                 }
