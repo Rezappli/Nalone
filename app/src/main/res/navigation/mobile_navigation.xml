@@ -30,7 +30,7 @@
 
     <fragment
         android:id="@+id/navigation_infos_events"
-        android:name="com.example.nalone.InfosEvenementsActivity"
+        android:name="com.example.nalone.ui.evenements.InfosEvenementsActivity"
         android:label="@string/title_evenements"
         tools:layout="@layout/activity_infos_evenements">
         <action

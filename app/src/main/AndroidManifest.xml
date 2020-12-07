@@ -27,7 +27,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme.NoActionBar">
         <activity android:name=".ResetPassword" />
-        <activity android:name=".InfosEvenementsActivity" />
+        <activity android:name=".ui.evenements.InfosEvenementsActivity" />
         <activity android:name=".ui.message.ChatActivity" android:theme="@style/AppTheme.NoActionBar">
 
         </activity>

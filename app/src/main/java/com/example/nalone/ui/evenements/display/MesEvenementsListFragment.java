@@ -110,13 +110,12 @@ public class MesEvenementsListFragment extends Fragment {
                             }
                             Log.w("event", " Check list");
                             adapterEvents();
-
-
                         }
                     }
                 });
 
         if(adapter != null){
+            Log.w("ItemCount", adapter.getItemCount()+"");
             if(adapter.getItemCount() == 0){
                 linearSansEvent.setVisibility(View.VISIBLE);
             }
@@ -264,6 +263,7 @@ public class MesEvenementsListFragment extends Fragment {
 
             Log.w("count", iterator + "");
         }else{
+            Log.w("sans_event", "Liste vide");
             linearSansEvent.setVisibility(View.VISIBLE);
         }
 

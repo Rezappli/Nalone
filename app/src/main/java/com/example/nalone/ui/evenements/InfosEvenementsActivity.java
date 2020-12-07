@@ -1,8 +1,7 @@
-package com.example.nalone;
+package com.example.nalone.ui.evenements;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
@@ -13,33 +12,33 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.graphics.Color;
-import android.net.Uri;
+import android.graphics.drawable.ColorDrawable;
+import android.media.MediaPlayer;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.bumptech.glide.Glide;
-import com.example.nalone.items.ItemImagePerson;
-import com.example.nalone.ui.amis.display.AmisFragment;
-import com.example.nalone.ui.evenements.CreateEventFragment;
+import com.example.nalone.Evenement;
+import com.example.nalone.ModelData;
+import com.example.nalone.R;
+import com.example.nalone.User;
 import com.example.nalone.util.Constants;
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
-import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
-import com.google.firebase.storage.StorageReference;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -47,9 +46,7 @@ import java.util.List;
 
 import static com.example.nalone.util.Constants.USER;
 import static com.example.nalone.util.Constants.USER_ID;
-import static com.example.nalone.util.Constants.dateFormat;
 import static com.example.nalone.util.Constants.formatD;
-import static com.example.nalone.util.Constants.mStore;
 import static com.example.nalone.util.Constants.mStoreBase;
 import static com.example.nalone.util.Constants.timeFormat;
 
@@ -75,6 +72,8 @@ public class InfosEvenementsActivity extends Fragment {
     private int participants;
     private Button buttonInscription;
     private Button buttonAnnuler;
+    private TextView diffDate;
+    private Handler handler = new Handler();
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -103,6 +102,7 @@ public class InfosEvenementsActivity extends Fragment {
                 incription();
             }
         });
+        diffDate = rootView.findViewById(R.id.differenceDate);
 
         buttonAnnuler = rootView.findViewById(R.id.buttonAnnuler);
         buttonAnnuler.setOnClickListener(new View.OnClickListener() {
@@ -118,6 +118,13 @@ public class InfosEvenementsActivity extends Fragment {
         mTimer.setText(timeFormat.format(EVENT_LOAD.getDate().toDate()));
         mOwner.setText(EVENT_LOAD.getOwner());
         mDescription.setText(EVENT_LOAD.getDescription());
+
+
+        handler = new Handler();
+        handler.postDelayed(runnable,0);
+
+
+
 
         for (int i = 0; i < date_text.length() - 5; i++) {
             char character = date_text.charAt(i);
@@ -195,13 +202,56 @@ public class InfosEvenementsActivity extends Fragment {
         setData(type);
     }
 
+
+    private final Runnable runnable = new Runnable() {
+        @Override
+        public void run() {
+            diffDate.setText(differenceDate(new Date(),EVENT_LOAD.getDate().toDate()));
+            handler.postDelayed(this,0);
+
+        }
+    };
+
+
+    public String differenceDate(Date startDate, Date endDate) {
+        //milliseconds
+        long different = endDate.getTime() - startDate.getTime();
+
+        Log.w("date","startDate : " + startDate);
+        Log.w("date","endDate : "+ endDate);
+        Log.w("date","different : " + different);
+
+        long secondsInMilli = 1000;
+        long minutesInMilli = secondsInMilli * 60;
+        long hoursInMilli = minutesInMilli * 60;
+        long daysInMilli = hoursInMilli * 24;
+
+        long elapsedDays = different / daysInMilli;
+        different = different % daysInMilli;
+
+        long elapsedHours = different / hoursInMilli;
+        different = different % hoursInMilli;
+
+        long elapsedMinutes = different / minutesInMilli;
+        different = different % minutesInMilli;
+
+        long elapsedSeconds = different / secondsInMilli;
+
+        Log.w("date",
+                elapsedDays + "d " + elapsedHours + "h " + elapsedMinutes +"m "+ elapsedSeconds+"secondes ");
+
+        return  elapsedDays + "j " + elapsedHours + "h " + elapsedMinutes +"m "+ elapsedSeconds+"s ";
+    }
+
     private void suppression() {
         final AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
         builder.setMessage("Vous êtes sur le point de supprimer un évènement ! Cette action est irréversible ! \n Voulez-vous continuez ?")
                 .setPositiveButton("Oui", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         mStoreBase.collection("events").document(EVENT_LOAD.getUid()).delete();
+                        mStoreBase.collection("users").document(USER_ID).collection("events").document(EVENT_LOAD.getUid()).delete();
                         Toast.makeText(getContext(), "Vous avez supprimé(e) un évènement !", Toast.LENGTH_SHORT).show();
+                        navController.navigate(R.id.action_navigation_infos_events_to_navigation_evenements);
                     }
                 })
                 .setNegativeButton("Non", new DialogInterface.OnClickListener() {
@@ -259,5 +309,18 @@ public class InfosEvenementsActivity extends Fragment {
 
         }
 
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        handler.removeCallbacks(runnable);
+    }
+
+    @Override
+    public void onResume() {
+
+        handler.postDelayed(runnable,0);
+        super.onResume();
     }
 }

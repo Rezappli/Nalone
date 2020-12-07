@@ -71,6 +71,11 @@ public class CreationsEvenementsFragment extends Fragment {
                              Bundle savedInstanceState) {
         rootView = inflater.inflate(R.layout.fragment_creations_evenements, container, false);
 
+        createFragment();
+        return rootView;
+    }
+
+    public void createFragment(){
         linearSansEvent = rootView.findViewById(R.id.linearSansEvent);
         mRecyclerView = rootView.findViewById(R.id.recyclerViewMesEventList);
         addEvent = rootView.findViewById(R.id.create_event_button);
@@ -83,7 +88,6 @@ public class CreationsEvenementsFragment extends Fragment {
             }
         });
 
-        return rootView;
     }
     
     @Override
@@ -198,7 +202,9 @@ public class CreationsEvenementsFragment extends Fragment {
                                 .setPositiveButton("Oui", new DialogInterface.OnClickListener() {
                                     public void onClick(DialogInterface dialog, int id) {
                                         mStoreBase.collection("events").document(event.getUid()).delete();
+                                        mStoreBase.collection("users").document(USER_ID).collection("events").document(event.getUid()).delete();
                                         Toast.makeText(getContext(), "Vous avez supprimé(e) un évènement !", Toast.LENGTH_SHORT).show();
+                                        createFragment();
                                     }
                                 })
                                 .setNegativeButton("Non", new DialogInterface.OnClickListener() {

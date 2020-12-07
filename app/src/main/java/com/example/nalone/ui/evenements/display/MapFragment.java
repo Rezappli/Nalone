@@ -4,7 +4,6 @@ package com.example.nalone.ui.evenements.display;
 
 import android.graphics.Color;
 import android.location.Location;
-import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -17,9 +16,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
-import com.bumptech.glide.Glide;
-import com.example.nalone.Cache;
-import com.example.nalone.InfosEvenementsActivity;
+import com.example.nalone.ui.evenements.InfosEvenementsActivity;
 import com.example.nalone.R;
 import com.example.nalone.User;
 import com.example.nalone.util.Constants;
@@ -31,7 +28,6 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 
 import android.Manifest;
-import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.widget.ProgressBar;
@@ -62,7 +58,6 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
-import com.google.firebase.storage.StorageReference;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -74,7 +69,6 @@ import static com.example.nalone.util.Constants.USER;
 import static com.example.nalone.util.Constants.USER_ID;
 import static com.example.nalone.util.Constants.USER_REFERENCE;
 import static com.example.nalone.util.Constants.dateFormat;
-import static com.example.nalone.util.Constants.mStore;
 import static com.example.nalone.util.Constants.mStoreBase;
 import static com.example.nalone.util.Constants.range;
 import static com.example.nalone.util.Constants.targetZoom;
@@ -392,7 +386,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                 mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(USER.getLocation().getLatitude(), USER.getLocation().getLongitude()), 13));
             } else {
                 CameraUpdate location = CameraUpdateFactory.newLatLngZoom(
-                        targetZoom, 15);
+                        targetZoom, 30);
                 mMap.animateCamera(location);
             }
 
