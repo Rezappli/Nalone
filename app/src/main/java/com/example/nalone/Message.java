@@ -6,6 +6,7 @@ import androidx.annotation.Nullable;
 import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.DocumentReference;
 
+import java.util.Calendar;
 import java.util.Date;
 
 import static com.example.nalone.util.Constants.USER_REFERENCE;
@@ -17,13 +18,12 @@ public class Message {
     private Timestamp time;
 
 
-    public Message(){
-    }
+    public Message(){}
 
     public Message(DocumentReference sender, String message){
         this.sender = sender;
         this.message = message;
-        this.time = new Timestamp(new Date(System.currentTimeMillis()));
+        this.time = new Timestamp(new Date(Calendar.getInstance().getTimeInMillis()));
     }
 
     public DocumentReference getSender() {

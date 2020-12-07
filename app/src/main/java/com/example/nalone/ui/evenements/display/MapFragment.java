@@ -25,6 +25,7 @@ import com.example.nalone.User;
 import com.example.nalone.util.Constants;
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
+import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
@@ -226,20 +227,18 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                                                 }
                                             });
 
-
-
-
                                     holder.mCardView.setOnClickListener(new View.OnClickListener() {
                                         @Override
                                         public void onClick(View v) {
-
+                                            CameraUpdate location = CameraUpdateFactory.newLatLngZoom(
+                                                    new LatLng(e.getLatitude(), e.getLongitude()), 15);
+                                            mMap.animateCamera(location);
                                         }
                                     });
 
 
                                 }
                             };
-                            //mRecyclerView.setHasFixedSize(true);
                             mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
 
                             mRecyclerView.setAdapter(adapter);
@@ -392,7 +391,9 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
             if (targetZoom == null) {
                 mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(USER.getLocation().getLatitude(), USER.getLocation().getLongitude()), 13));
             } else {
-                mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(targetZoom, 13));
+                CameraUpdate location = CameraUpdateFactory.newLatLngZoom(
+                        targetZoom, 15);
+                mMap.animateCamera(location);
             }
 
             itemEvents.clear();
