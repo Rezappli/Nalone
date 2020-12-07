@@ -78,6 +78,7 @@
     <string name="descriptionNF"> Description : </string>
     <string name="afficher"> Afficher </string>
     <string name="CI"> Centres d\'interêt </string>
+    <string name="scanQR"> Scannez le QR Code d\'un utilisateur </string>
     <string name="reset_text"> Entrez votre adresse mail </string>
     <string name="reset_text_password"> Un email va vous être envoyé pour changer votre mot de passe </string>
     <string name="reset"> Envoyer </string>
