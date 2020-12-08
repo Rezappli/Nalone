@@ -59,11 +59,19 @@
                 android:text="@string/aucunEvent"
                 android:textSize="24sp" />
 
+            <ImageView
+                android:id="@+id/imageView32"
+                android:layout_width="200dp"
+                android:layout_height="200dp"
+                android:layout_gravity="center"
+                android:layout_weight="0.5"
+                android:src="@drawable/sans_mes_events" />
+
             <TextView
                 android:id="@+id/textViewSansEvent1"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="0.3"
+                android:layout_weight="0.2"
                 android:fontFamily="@font/baloo"
                 android:gravity="center"
                 android:text="@string/insiterCreer"
@@ -75,7 +83,6 @@
                 android:layout_height="48dp"
                 android:layout_gravity="center"
                 android:layout_marginBottom="10dp"
-                android:layout_weight="0.1"
                 android:src="@drawable/fleche_event" />
 
             <androidx.cardview.widget.CardView
