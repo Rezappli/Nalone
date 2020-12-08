@@ -72,6 +72,7 @@ public class CreationsEvenementsFragment extends Fragment {
         rootView = inflater.inflate(R.layout.fragment_creations_evenements, container, false);
 
         createFragment();
+
         return rootView;
     }
 
@@ -92,7 +93,7 @@ public class CreationsEvenementsFragment extends Fragment {
     
     @Override
     public void onResume(){
-        super.onResume();
+
         DocumentReference ref = mStoreBase.document("users/"+USER_ID);
         mStoreBase.collection("users").document(USER_ID).collection("events").whereEqualTo("ownerDoc", ref)
                 .get()
@@ -127,6 +128,7 @@ public class CreationsEvenementsFragment extends Fragment {
                         }
                     }
                 });
+        super.onResume();
     }
 
     private void adapterEvents() {
@@ -274,4 +276,13 @@ public class CreationsEvenementsFragment extends Fragment {
             mCarwViewOwner = itemView.findViewById(R.id.backGroundOwner);
         }
     }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        if(adapter != null){
+            adapter.startListening();
+        }
+    }
+
 }
