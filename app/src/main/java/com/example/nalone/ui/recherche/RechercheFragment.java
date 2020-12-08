@@ -76,6 +76,12 @@ public class RechercheFragment extends Fragment {
                              ViewGroup container, Bundle savedInstanceState) {
         rootView = inflater.inflate(R.layout.fragment_recherche, container, false);
 
+        return rootView;
+
+
+    }
+
+    public void createFragment(){
         myGroups = new ArrayList<>();
         recyclerAmis = rootView.findViewById(R.id.recyclerViewRechercheAmis);
         recyclerGroupes = rootView.findViewById(R.id.recyclerViewRechercheGroupes);
@@ -164,10 +170,12 @@ public class RechercheFragment extends Fragment {
                 textViewRechercheGroupes.setVisibility(View.GONE);
             }
         }
+    }
 
-        return rootView;
-
-
+    @Override
+    public void onResume() {
+        createFragment();
+        super.onResume();
     }
 
     private void adapterGroups() {
