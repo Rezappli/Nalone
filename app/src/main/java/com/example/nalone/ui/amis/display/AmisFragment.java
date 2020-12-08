@@ -74,7 +74,7 @@ public class AmisFragment extends Fragment {
                              Bundle savedInstanceState) {
 
         rootView = inflater.inflate(R.layout.fragment_amis, container, false);
-        createFragment();
+        //createFragment();
         return rootView;
     }
 
@@ -290,8 +290,8 @@ public class AmisFragment extends Fragment {
 
     @Override
     public void onResume(){
+        nbInvit = 0;
         ON_FRIENDS_ACTIVITY = true;
-
         createFragment();
         super.onResume();
     }
