@@ -274,9 +274,10 @@ public class InfosEvenementsActivity extends Fragment {
             textViewTitleDebut.setTextColor(Color.GRAY);
             linearButton.setVisibility(View.GONE);
             cardViewTermine.setVisibility(View.VISIBLE);
+            diffDate.setTextColor(Color.GRAY);
         }
         diffDate.setText(elapsedDays + "j " + elapsedHours + "h " + elapsedMinutes +"m "+ elapsedSeconds+"s ");
-        diffDate.setTextColor(Color.GRAY);
+
 
 
 
