@@ -123,5 +123,7 @@
     <string name="ajout_desc"> <u>Ajouter une description</u> </string>
     <string name="new_message"> Nouveau message </string>
     <string name="desc"> Description </string>
+    <string name="aucun_group"> Aucun groupe </string>
+    <string name="aucun_user"> Aucun utilisateur </string>
 
 </resources>

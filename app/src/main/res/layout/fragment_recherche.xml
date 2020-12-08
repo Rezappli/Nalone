@@ -59,16 +59,39 @@
                         android:drawableEnd="@drawable/ic_baseline_keyboard_arrow_right_24"
                         android:drawablePadding="10dp"
                         android:gravity="center"
-                        android:text="@string/voir_plus" />
+                        android:text="@string/voir_plus"
+                        android:visibility="visible" />
 
                 </LinearLayout>
+
+                <RelativeLayout
+                    android:id="@+id/relativeSansAmis"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:visibility="gone">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_above="@id/imageSansAmis"
+                        android:layout_centerInParent="true"
+                        android:layout_marginBottom="20dp"
+                        android:text="@string/aucun_user" />
+
+                    <ImageView
+                        android:id="@+id/imageSansAmis"
+                        android:layout_width="80dp"
+                        android:layout_height="80dp"
+                        android:layout_centerInParent="true"
+                        app:srcCompat="@drawable/sans_amis" />
+                </RelativeLayout>
 
             </androidx.cardview.widget.CardView>
 
             <androidx.cardview.widget.CardView
                 android:id="@+id/cardViewRechercheGroupes"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:layout_marginStart="20dp"
                 android:layout_marginEnd="20dp"
                 android:layout_marginBottom="20dp"
@@ -104,8 +127,32 @@
                         android:drawableEnd="@drawable/ic_baseline_keyboard_arrow_right_24"
                         android:drawablePadding="10dp"
                         android:gravity="center"
-                        android:text="@string/voir_plus" />
+                        android:text="@string/voir_plus"
+                        android:visibility="visible" />
                 </LinearLayout>
+
+                <RelativeLayout
+                    android:id="@+id/relativeSansGroup"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:visibility="gone">
+
+                    <TextView
+                        android:id="@+id/textView40"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_above="@+id/imageView31"
+                        android:layout_centerInParent="true"
+                        android:layout_marginBottom="20dp"
+                        android:text="@string/aucun_group" />
+
+                    <ImageView
+                        android:id="@+id/imageView31"
+                        android:layout_width="80dp"
+                        android:layout_height="80dp"
+                        android:layout_centerInParent="true"
+                        android:src="@drawable/sans_recherche_groupe" />
+                </RelativeLayout>
 
             </androidx.cardview.widget.CardView>
         </LinearLayout>

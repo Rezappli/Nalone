@@ -20,6 +20,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.SearchView;
 import android.widget.TextView;
 
@@ -68,6 +69,7 @@ public class RechercheFragment extends Fragment {
     private TextView textViewRechercheGroupes;
     private ProgressBar loading;
     private List<String> myGroups;
+    private RelativeLayout relativeAmis, relativeGroup;
 
 
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -84,6 +86,8 @@ public class RechercheFragment extends Fragment {
         loading = rootView.findViewById(R.id.search_loading);
         cardViewRechercheAmis.setVisibility(View.INVISIBLE);
         cardViewRechercheGroupes.setVisibility(View.INVISIBLE);
+        relativeAmis = rootView.findViewById(R.id.relativeSansAmis);
+        relativeGroup = rootView.findViewById(R.id.relativeSansGroup);
 
 
         textViewRechercheAmis.setOnClickListener(new View.OnClickListener() {
@@ -149,13 +153,15 @@ public class RechercheFragment extends Fragment {
 
         if(adapterU != null){
             if(adapterU.getItemCount() == 0){
-                cardViewRechercheAmis.setVisibility(View.GONE);
+                relativeAmis.setVisibility(View.VISIBLE);
+                textViewRechercheAmis.setVisibility(View.GONE);
             }
         }
 
         if(adapterG != null){
             if(adapterG.getItemCount() == 0){
-                cardViewRechercheGroupes.setVisibility(View.GONE);
+                relativeGroup.setVisibility(View.VISIBLE);
+                textViewRechercheGroupes.setVisibility(View.GONE);
             }
         }
 
@@ -166,45 +172,46 @@ public class RechercheFragment extends Fragment {
 
     private void adapterGroups() {
         Query query;
-        if(myGroups.isEmpty()){
-            DocumentReference ref = mStoreBase.document("users/"+USER_ID);
-            query = mStoreBase.collection("groups").whereNotEqualTo("ownerDoc",ref).limit(3);
-        }else{
+        if(!myGroups.isEmpty()) {
             query = mStoreBase.collection("groups").whereNotIn("uid", myGroups).limit(3);
+
+            FirestoreRecyclerOptions<Group> options = new FirestoreRecyclerOptions.Builder<Group>().setQuery(query, Group.class).build();
+
+            adapterG = new FirestoreRecyclerAdapter<Group, GroupViewHolder>(options) {
+                @NonNull
+                @Override
+                public GroupViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+                    View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_groupe, parent, false);
+                    return new GroupViewHolder(view);
+                }
+
+                @Override
+                protected void onBindViewHolder(@NonNull final GroupViewHolder userViewHolder, int i, @NonNull final Group g) {
+                    final Group group = g;
+                    userViewHolder.nomGroup.setText(g.getName());
+
+                    userViewHolder.layoutGroup.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            showPopUpGroup(group);
+                        }
+                    });
+
+                    userViewHolder.imageGroup.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            Constants.setGroupImage(g, getContext(), userViewHolder.imageGroup);
+                        }
+                    });
+                }
+            };
+            recyclerGroupes.setLayoutManager(new LinearLayoutManager(getContext()));
+            recyclerGroupes.setAdapter(adapterG);
+            adapterG.startListening();
+        }else{
+            relativeGroup.setVisibility(View.VISIBLE);
+            textViewRechercheGroupes.setVisibility(View.GONE);
         }
-        FirestoreRecyclerOptions<Group> options = new FirestoreRecyclerOptions.Builder<Group>().setQuery(query, Group.class).build();
-
-        adapterG = new FirestoreRecyclerAdapter<Group, GroupViewHolder>(options) {
-            @NonNull
-            @Override
-            public GroupViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-                View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_groupe, parent, false);
-                return new GroupViewHolder(view);
-            }
-
-            @Override
-            protected void onBindViewHolder(@NonNull final GroupViewHolder userViewHolder, int i, @NonNull final Group g) {
-                final Group group = g;
-                userViewHolder.nomGroup.setText(g.getName());
-
-                userViewHolder.layoutGroup.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        showPopUpGroup(group);
-                    }
-                });
-
-                userViewHolder.imageGroup.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        Constants.setGroupImage(g, getContext(), userViewHolder.imageGroup);
-                    }
-                });
-            }
-        };
-        recyclerGroupes.setLayoutManager(new LinearLayoutManager(getContext()));
-        recyclerGroupes.setAdapter(adapterG);
-        adapterG.startListening();
     }
 
     private class GroupViewHolder extends RecyclerView.ViewHolder {
@@ -327,9 +334,11 @@ public class RechercheFragment extends Fragment {
         super.onStop();
         if(adapterG != null){
             adapterG.stopListening();
+            adapterG = null;
         }
         if(adapterU != null){
             adapterU.stopListening();
+            adapterU = null;
         }
 
     }
