@@ -80,7 +80,7 @@
             android:layout_height="match_parent"
             android:layout_below="@id/mesGroupes"
             android:orientation="vertical"
-            android:visibility="gone">
+            android:visibility="visible">
 
             <TextView
                 android:id="@+id/textViewSansEvent"
@@ -91,7 +91,7 @@
                 android:layout_weight="0.8"
                 android:fontFamily="@font/baloo"
                 android:gravity="bottom|center_horizontal"
-                android:text="@string/aucunRechercheGroupe"
+                android:text="@string/aucunMesGroupes"
                 android:textSize="24sp" />
 
             <ImageView
@@ -112,7 +112,6 @@
                 android:layout_weight="0.7"
                 android:fontFamily="@font/baloo"
                 android:gravity="center_horizontal|top"
-                android:text="@string/insiterCreer"
                 android:textSize="24sp" />
 
         </LinearLayout>
