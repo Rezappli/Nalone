@@ -67,6 +67,7 @@ public class EvenementsListFragment extends Fragment {
     private List<String> events = new ArrayList<>();
 
 
+
     public EvenementsListFragment() {
         // Required empty public constructor
     }

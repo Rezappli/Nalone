@@ -66,6 +66,7 @@ public class CreationsEvenementsFragment extends Fragment {
     private NavController navController;
 
 
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -85,7 +86,7 @@ public class CreationsEvenementsFragment extends Fragment {
         addEvent.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(getContext(), CreateEventFragment.class));
+                navController.navigate(R.id.action_navigation_infos_events_to_navigation_create_event);
             }
         });
 
