@@ -26,6 +26,7 @@ import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.bumptech.glide.Glide;
 import com.example.nalone.Cache;
@@ -63,17 +64,11 @@ public class MessagesAmisFragment extends Fragment {
     private SearchView search_bar;
 
     private NavController navController;
-    private ArrayList<ItemPerson> items = new ArrayList<>();
-    private static String message = "null";
     private View rootView;
-    private ProgressBar loading;
-
-    private FirebaseFirestore firebaseFirestore;
     private FirestoreRecyclerAdapter adapter;
     private RecyclerView mRecyclerView;
-    private List<String> chats;
-    private ImageView addMessage;
-    private DocumentReference refChat;
+    private String search = "";
+    private SwipeRefreshLayout mSwipeRefreshLayout;
 
 
     @Override
@@ -82,17 +77,17 @@ public class MessagesAmisFragment extends Fragment {
 
         rootView = inflater.inflate(R.layout.fragment_messages_amis, container, false);
 
-        createFragment(rootView);
+        createFragment();
 
         return rootView;
     }
 
-    private void createFragment(View rootView) {
+    private void createFragment() {
         search_bar = rootView.findViewById(R.id.search_bar_amis);
         navController = Navigation.findNavController(getActivity(), R.id.nav_host_fragment);
-        loading = rootView.findViewById(R.id.amis_loading);
         buttonBack.setVisibility(View.GONE);
         mRecyclerView = rootView.findViewById(R.id.recyclerViewMessagesAmis);
+        mSwipeRefreshLayout = rootView.findViewById(R.id.messageFriendSwipeRefreshLayout);
 
         adapterUsers();
 
@@ -111,8 +106,17 @@ public class MessagesAmisFragment extends Fragment {
 
             @Override
             public boolean onQueryTextChange(String newText) {
-
+                    search = newText;
+                    Log.w("Search", "Search : "+search);
+                    adapterUsers();
                 return false;
+            }
+        });
+
+        mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                createFragment();
             }
         });
 
@@ -125,75 +129,79 @@ public class MessagesAmisFragment extends Fragment {
                     @Override
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
                         if (task.isSuccessful()) {
+                            List<String> uid = new ArrayList<>();
                             for (QueryDocumentSnapshot document : task.getResult()) {
-
-                                Query query = mStoreBase.collection("users").whereEqualTo("uid", document.getId());
-                                FirestoreRecyclerOptions<User> options = new FirestoreRecyclerOptions.Builder<User>().setQuery(query, User.class).build();
-
-                                adapter = new FirestoreRecyclerAdapter<User, UserViewHolder>(options) {
-                                    @NonNull
-                                    @Override
-                                    public UserViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-                                        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_person, parent, false);
-                                        return new UserViewHolder(view);
-                                    }
-
-                                    @RequiresApi(api = Build.VERSION_CODES.O)
-                                    @Override
-                                    protected void onBindViewHolder(@NonNull final UserViewHolder userViewHolder, int i, @NonNull final User u) {
-                                        userViewHolder.villePers.setText(u.getCity());
-                                        userViewHolder.nomInvit.setText(u.getFirst_name() + " " + u.getLast_name());
-                                        userViewHolder.button.setImageResource(R.drawable.ic_baseline_keyboard_arrow_right_24);
-
-                                        if(u.getCursus().equalsIgnoreCase("Informatique")){
-                                            userViewHolder.cardViewPhotoPerson.setCardBackgroundColor(Color.RED);
-                                        }
-
-                                        if(u.getCursus().equalsIgnoreCase("TC")){
-                                            userViewHolder.cardViewPhotoPerson.setCardBackgroundColor(Color.parseColor("#00E9FD"));
-                                        }
-
-                                        if(u.getCursus().equalsIgnoreCase("MMI")){
-                                            userViewHolder.cardViewPhotoPerson.setCardBackgroundColor(Color.parseColor("#FF1EED"));
-                                        }
-
-                                        if(u.getCursus().equalsIgnoreCase("GB")){
-                                            userViewHolder.cardViewPhotoPerson.setCardBackgroundColor(Color.parseColor("#41EC57"));
-                                        }
-
-                                        if(u.getCursus().equalsIgnoreCase("LP")){
-                                            userViewHolder.cardViewPhotoPerson.setCardBackgroundColor((Color.parseColor("#EC9538")));
-                                        }
-
-                                        Constants.setUserImage(u, getContext(), userViewHolder.imagePerson);
-
-                                        userViewHolder.layoutProfil.setOnClickListener(new View.OnClickListener() {
-                                            @Override
-                                            public void onClick(View v) {
-                                                showPopUpProfil(u);
-                                            }
-                                        });
-
-                                        userViewHolder.button.setOnClickListener(new View.OnClickListener() {
-                                            @Override
-                                            public void onClick(View v) {
-                                                showPopUpProfil(u);
-                                            }
-                                        });
-                                        loading.setVisibility(View.GONE);
-
-
-                                    }
-                                };
-                                mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-                                mRecyclerView.setAdapter(adapter);
-                                adapter.startListening();
+                                User u = document.toObject(User.class);
+                                if(search.equalsIgnoreCase("")){
+                                    uid.add(u.getUid());
+                                }else{
+                                    Log.w("User", "User : " + u.getFirst_name());
+                                    //if(u.getFirst_name().contains(search) || u.getLast_name().contains(search)){
+                                     //   uid.add(u.getUid());
+                                    //}
+                                }
+                                uid.add(document.toObject(User.class).getUid());
                             }
+                            Query query = mStoreBase.collection("users").whereIn("uid", uid);
+                            FirestoreRecyclerOptions<User> options = new FirestoreRecyclerOptions.Builder<User>().setQuery(query, User.class).build();
+
+                            adapter = new FirestoreRecyclerAdapter<User, UserViewHolder>(options) {
+                                @NonNull
+                                @Override
+                                public UserViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+                                    View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_person, parent, false);
+                                    return new UserViewHolder(view);
+                                }
+
+                                @RequiresApi(api = Build.VERSION_CODES.O)
+                                @Override
+                                protected void onBindViewHolder(@NonNull final UserViewHolder userViewHolder, int i, @NonNull final User u) {
+                                    userViewHolder.villePers.setText(u.getCity());
+                                    userViewHolder.nomInvit.setText(u.getFirst_name() + " " + u.getLast_name());
+                                    userViewHolder.button.setImageResource(R.drawable.ic_baseline_keyboard_arrow_right_24);
+
+                                    if(u.getCursus().equalsIgnoreCase("Informatique")){
+                                        userViewHolder.cardViewPhotoPerson.setCardBackgroundColor(Color.RED);
+                                    }
+
+                                    if(u.getCursus().equalsIgnoreCase("TC")){
+                                        userViewHolder.cardViewPhotoPerson.setCardBackgroundColor(Color.parseColor("#00E9FD"));
+                                    }
+
+                                    if(u.getCursus().equalsIgnoreCase("MMI")){
+                                        userViewHolder.cardViewPhotoPerson.setCardBackgroundColor(Color.parseColor("#FF1EED"));
+                                    }
+
+                                    if(u.getCursus().equalsIgnoreCase("GB")){
+                                        userViewHolder.cardViewPhotoPerson.setCardBackgroundColor(Color.parseColor("#41EC57"));
+                                    }
+
+                                    if(u.getCursus().equalsIgnoreCase("LP")){
+                                        userViewHolder.cardViewPhotoPerson.setCardBackgroundColor((Color.parseColor("#EC9538")));
+                                    }
+
+                                    Constants.setUserImage(u, getContext(), userViewHolder.imagePerson);
+
+                                    userViewHolder.layoutProfil.setOnClickListener(new View.OnClickListener() {
+                                        @Override
+                                        public void onClick(View v) {
+                                            showPopUpProfil(u);
+                                        }
+                                    });
+
+                                    userViewHolder.button.setOnClickListener(new View.OnClickListener() {
+                                        @Override
+                                        public void onClick(View v) {
+                                            showPopUpProfil(u);
+                                        }
+                                    });
+                                }
+                            };
+                            mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+                            mRecyclerView.setAdapter(adapter);
+                            adapter.startListening();
+                            mSwipeRefreshLayout.setRefreshing(false);
                         }}});
-
-
-
-
     }
 
 
@@ -230,7 +238,6 @@ public class MessagesAmisFragment extends Fragment {
                     collection("friends").document(USER.getUid()).delete();
 
             Toast.makeText(getContext(), "Vous avez supprimé un amis !", Toast.LENGTH_SHORT).show();
-
         }
 
     }
@@ -239,6 +246,12 @@ public class MessagesAmisFragment extends Fragment {
     public void showPopUpProfil(final User u) {
         ChatActivity.USER_LOAD = u;
         startActivity(new Intent(getContext(), ChatActivity.class));
+    }
+
+    @Override
+    public void onResume(){
+        super.onResume();
+        createFragment();
     }
 
     @Override
