@@ -269,7 +269,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                                         holder.mDate.setText((dateFormat.format(e.getDate().toDate())));
                                         holder.mTime.setText((timeFormat.format(e.getDate().toDate())));
                                         holder.mVille.setText((e.getCity()));
-                                        holder.mDescription.setText((e.getDescription()));
                                         holder.mProprietaire.setText(e.getOwner());
                                         if(event_inscrit.contains(e.getUid()))
                                             holder.mImageInscrit.setVisibility(View.VISIBLE);
@@ -392,7 +391,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         public TextView mDate;
         public TextView mTime;
         public TextView mVille;
-        public TextView mDescription;
         public TextView mProprietaire;
         public CardView mCarwViewOwner;
         public ImageView mImageInscrit;
@@ -405,7 +403,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
             mDate = itemView.findViewById(R.id.date1);
             mTime = itemView.findViewById(R.id.time1);
             mVille = itemView.findViewById(R.id.ville1);
-            mDescription = itemView.findViewById(R.id.description1);
             mProprietaire = itemView.findViewById(R.id.owner1);
             mCarwViewOwner = itemView.findViewById(R.id.backGroundOwner);
             mImageInscrit = itemView.findViewById(R.id.imageView29);

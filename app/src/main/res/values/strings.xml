@@ -6,6 +6,7 @@
     <string name="hintConfirmPass"> Confirmer le mot de passe </string>
     <string name="pasInscrit"> Pas encore inscrit ?</string>
     <string name="inscrireButton">S\'inscrire </string>
+    <string name="participer"> Participer</string>
     <string name="desinscriptionButton">Se désinscrire </string>
     <string name="buttonConnexion"> Se connecter </string>
     <string name="titleSignUpOne"> Qui êtes-vous ? </string>
@@ -52,6 +53,7 @@
     <string name="TODO"> TODO </string>
     <string name="retry"> Reesayer </string>
     <string name="quitter"> Quitter </string>
+    <string name="terminer"> Terminé </string>
     <string name="textErrorWifi"> Nous ne parvenons pas à établir une connexion. Veuillez verifier l\'état de votre réseau </string>
     <string name="mdpOublie"> Mot de passe oublié ? </string>
     <string name="title_activity_maps">Map</string>
@@ -63,6 +65,10 @@
 
     <string name="cancel"> Annuler </string>
     <string name="back"> Retour </string>
+    <string name="quand"> Quand ? </string>
+    <string name="qui"> Avec qui ? </string>
+    <string name="par_qui"> Par qui ? </string>
+    <string name="ou"> Ou ? </string>
     <string name="search_title"> Rechercher un ami </string>
     <string name="aucun_resultat"> Aucun résultat trouvé </string>
     <string name="eventCreateProfil"> Création </string>
@@ -83,6 +89,7 @@
     <string name="descriptionNF"> Description : </string>
     <string name="afficher"> Afficher </string>
     <string name="CI"> Centres d\'interêt </string>
+    <string name="partager"> Partager </string>
     <string name="scanQR"> Scannez le QR Code d\'un utilisateur </string>
     <string name="reset_text"> Entrez votre adresse mail </string>
     <string name="reset_text_password"> Un email va vous être envoyé pour changer votre mot de passe </string>

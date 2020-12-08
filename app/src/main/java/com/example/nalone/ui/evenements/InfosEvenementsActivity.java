@@ -23,6 +23,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -70,15 +71,20 @@ public class InfosEvenementsActivity extends Fragment {
     private TextView textViewNbMembers;
     private TextView nbParticipants;
     private int participants;
-    private Button buttonInscription;
-    private Button buttonAnnuler;
+    private ImageView buttonInscription;
+    private TextView textViewInscription;
+    private ImageView buttonPartager;
     private TextView diffDate;
     private Handler handler = new Handler();
+    private boolean inscrit;
+    private TextView textViewPartager;
+    private TextView textViewTitleDebut;
+    private LinearLayout linearButton;
+    private CardView cardViewTermine;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-
         rootView = inflater.inflate(R.layout.activity_infos_evenements, container, false);
         createFragment();
         return rootView;
@@ -96,6 +102,12 @@ public class InfosEvenementsActivity extends Fragment {
         textViewNbMembers = rootView.findViewById(R.id.textViewNbMembers);
         nbParticipants = rootView.findViewById(R.id.nbParticipants);
         buttonInscription = rootView.findViewById(R.id.buttonInscription);
+        textViewInscription = rootView.findViewById(R.id.textViewParticiper);
+        textViewPartager = rootView.findViewById(R.id.textViewPartager);
+        textViewTitleDebut = rootView.findViewById(R.id.textViewTitleDebut);
+        linearButton = rootView.findViewById(R.id.linearButton);
+        cardViewTermine = rootView.findViewById(R.id.cardViewTermine);
+
         buttonInscription.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -104,8 +116,8 @@ public class InfosEvenementsActivity extends Fragment {
         });
         diffDate = rootView.findViewById(R.id.differenceDate);
 
-        buttonAnnuler = rootView.findViewById(R.id.buttonAnnuler);
-        buttonAnnuler.setOnClickListener(new View.OnClickListener() {
+        buttonPartager = rootView.findViewById(R.id.buttonPartager);
+        buttonPartager.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 suppression();
@@ -117,7 +129,13 @@ public class InfosEvenementsActivity extends Fragment {
         mTitle.setText(EVENT_LOAD.getName());
         mTimer.setText(timeFormat.format(EVENT_LOAD.getDate().toDate()));
         mOwner.setText(EVENT_LOAD.getOwner());
-        mDescription.setText(EVENT_LOAD.getDescription());
+        if(EVENT_LOAD.getDescription().matches("")){
+            mDescription.setVisibility(View.GONE);
+        }else{
+            mDescription.setText(EVENT_LOAD.getDescription());
+        }
+
+
 
 
         handler = new Handler();
@@ -206,14 +224,14 @@ public class InfosEvenementsActivity extends Fragment {
     private final Runnable runnable = new Runnable() {
         @Override
         public void run() {
-            diffDate.setText(differenceDate(new Date(),EVENT_LOAD.getDate().toDate()));
+            differenceDate(new Date(),EVENT_LOAD.getDate().toDate());
             handler.postDelayed(this,0);
 
         }
     };
 
 
-    public String differenceDate(Date startDate, Date endDate) {
+    public void differenceDate(Date startDate, Date endDate) {
         //milliseconds
         long different = endDate.getTime() - startDate.getTime();
 
@@ -240,7 +258,28 @@ public class InfosEvenementsActivity extends Fragment {
         Log.w("date",
                 elapsedDays + "d " + elapsedHours + "h " + elapsedMinutes +"m "+ elapsedSeconds+"secondes ");
 
-        return  elapsedDays + "j " + elapsedHours + "h " + elapsedMinutes +"m "+ elapsedSeconds+"s ";
+        if(elapsedDays < 0 || elapsedHours < 0 || elapsedMinutes < 0 || elapsedSeconds < 0){
+            if(elapsedDays < 0)
+                elapsedDays = elapsedDays*-1;
+            if(elapsedHours < 0 )
+                elapsedHours = elapsedHours*-1;
+            if(elapsedMinutes < 0)
+                elapsedMinutes = elapsedMinutes*-1;
+            if(elapsedSeconds < 0)
+                elapsedSeconds = elapsedSeconds*-1;
+
+
+
+            textViewTitleDebut.setText("Terminé depuis : ");
+            textViewTitleDebut.setTextColor(Color.GRAY);
+            linearButton.setVisibility(View.GONE);
+            cardViewTermine.setVisibility(View.VISIBLE);
+        }
+        diffDate.setText(elapsedDays + "j " + elapsedHours + "h " + elapsedMinutes +"m "+ elapsedSeconds+"s ");
+        diffDate.setTextColor(Color.GRAY);
+
+
+
     }
 
     private void suppression() {
@@ -265,14 +304,15 @@ public class InfosEvenementsActivity extends Fragment {
 
     private void setData(String type) {
         if(type.equalsIgnoreCase("inscrit")){
-            buttonInscription.setText("Se désinscrire");
-            buttonInscription.setTextColor(Color.RED);
-            buttonInscription.setBackground(getResources().getDrawable(R.drawable.custom_button_signup));
+            textViewInscription.setText("Se désinscrire");
+            textViewInscription.setTextColor(Color.RED);
+            buttonInscription.setImageDrawable(getResources().getDrawable(R.drawable.inscrit_oui_50));
         }
 
         if(type.equalsIgnoreCase("creer")){
-            buttonInscription.setText("Modifier");
-            buttonAnnuler.setVisibility(View.VISIBLE);
+            textViewInscription.setText("Modifier");
+            buttonInscription.setImageDrawable(getResources().getDrawable(R.drawable.ic_baseline_edit_50));
+            buttonPartager.setImageDrawable(getResources().getDrawable(R.drawable.ic_baseline_delete_50));
             buttonInscription.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -281,19 +321,54 @@ public class InfosEvenementsActivity extends Fragment {
                     navController.navigate(R.id.action_navigation_infos_events_to_navigation_create_event);
                 }
             });
+            buttonPartager.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    final AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+                    builder.setMessage("Vous êtes sur le point de supprimer un évènement ! Cette action est irréversible ! \n Voulez-vous continuez ?")
+                            .setPositiveButton("Oui", new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int id) {
+                                    mStoreBase.collection("events").document(EVENT_LOAD.getUid()).delete();
+                                    mStoreBase.collection("users").document(USER_ID).collection("events").document(EVENT_LOAD.getUid()).delete();
+                                    Toast.makeText(getContext(), "Vous avez supprimé(e) un évènement !", Toast.LENGTH_SHORT).show();
+                                    createFragment();
+                                }
+                            })
+                            .setNegativeButton("Non", new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int id) {
+                                    dialog.dismiss();
+                                }
+                            });
+                    builder.create();
+                    builder.show();
+                }
+            });
+            textViewPartager.setText("Annuler");
+
         }
     }
 
     private void incription() {
-        ModelData owner = new ModelData("add", EVENT_LOAD.getOwnerDoc());
-        ModelData m = new ModelData("add", mStoreBase.collection("users").document(USER_ID));
-        mStoreBase.collection("events").document(EVENT_LOAD.getUid()).collection("members").document(USER.getUid()).set(m);
-        mStoreBase.collection("users").document(USER_ID).collection("events").document(EVENT_LOAD.getUid()).set(owner);
-        Toast.makeText(getContext(), "Vous êtes inscrit à l'évènement " + EVENT_LOAD.getName() + " !", Toast.LENGTH_SHORT).show();
-        buttonInscription.setText("Se désinscrire");
-        buttonInscription.setTextColor(Color.RED);
-        buttonInscription.setBackground(getResources().getDrawable(R.drawable.custom_button_signup));
-        createFragment();
+        if(!inscrit){
+            ModelData owner = new ModelData("add", EVENT_LOAD.getOwnerDoc());
+            ModelData m = new ModelData("add", mStoreBase.collection("users").document(USER_ID));
+            mStoreBase.collection("events").document(EVENT_LOAD.getUid()).collection("members").document(USER.getUid()).set(m);
+            mStoreBase.collection("users").document(USER_ID).collection("events").document(EVENT_LOAD.getUid()).set(owner);
+            Toast.makeText(getContext(), "Vous êtes inscrit à l'évènement " + EVENT_LOAD.getName() + " !", Toast.LENGTH_SHORT).show();
+            textViewInscription.setText("Se désinscrire");
+            buttonInscription.setImageDrawable(getResources().getDrawable(R.drawable.inscrit_oui_50));
+            inscrit = true;
+            createFragment();
+        }else{
+            mStoreBase.collection("events").document(EVENT_LOAD.getUid()).collection("members").document(USER.getUid()).delete();
+            mStoreBase.collection("users").document(USER_ID).collection("events").document(EVENT_LOAD.getUid()).delete();
+            Toast.makeText(getContext(), "Vous ne participez plus à l'évènement " + EVENT_LOAD.getName() + " !", Toast.LENGTH_SHORT).show();
+            textViewInscription.setText("Participer");
+            buttonInscription.setImageDrawable(getResources().getDrawable(R.drawable.inscrit_50));
+            inscrit = false;
+            createFragment();
+        }
+
     }
 
     private class UserViewHolder extends RecyclerView.ViewHolder {
