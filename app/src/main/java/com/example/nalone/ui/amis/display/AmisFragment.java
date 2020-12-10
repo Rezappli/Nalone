@@ -233,6 +233,7 @@ public class AmisFragment extends Fragment {
 
                             }else{
                                 linearSansMesAmis.setVisibility(View.VISIBLE);
+                                loading.setVisibility(View.GONE);
                             }
                         }
                     }

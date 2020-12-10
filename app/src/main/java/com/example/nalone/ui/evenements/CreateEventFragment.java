@@ -106,6 +106,7 @@ public class CreateEventFragment extends Fragment {
     public static Evenement EVENT_LOAD;
 
     private View rootView;
+    private boolean haveFriends;
 
     public class EventAttente extends Evenement {
 
@@ -199,9 +200,27 @@ public class CreateEventFragment extends Fragment {
         imageButtonAddInvit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                refreshData();
-                ListAmisFragment.type = "event";
-                navController.navigate(R.id.action_navigation_create_event_to_navigation_list_amis);
+                mStoreBase.collection("users").document(USER_ID).collection("friends").whereEqualTo("status", "add")
+                        .get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if(task.isSuccessful()){
+                            for (QueryDocumentSnapshot document : task.getResult()) {
+                                haveFriends = true;
+                                Log.w("event", " Ajout list");
+                            }
+
+                        }
+                        if(haveFriends = true){
+                            refreshData();
+                            ListAmisFragment.type = "event";
+                            navController.navigate(R.id.action_navigation_create_event_to_navigation_list_amis);
+                        }else
+                            Toast.makeText(getContext(), "Vous n'avez pas d'ami", Toast.LENGTH_SHORT).show();
+
+                    }
+                });
+
             }
         });
 

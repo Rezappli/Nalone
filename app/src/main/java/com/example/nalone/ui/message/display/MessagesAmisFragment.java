@@ -32,6 +32,7 @@ import com.bumptech.glide.Glide;
 import com.example.nalone.Cache;
 import com.example.nalone.R;
 import com.example.nalone.User;
+import com.example.nalone.dialog.ListAmisFragment;
 import com.example.nalone.items.ItemPerson;
 import com.example.nalone.ui.amis.display.PopupProfilFragment;
 import com.example.nalone.ui.message.ChatActivity;
@@ -69,6 +70,8 @@ public class MessagesAmisFragment extends Fragment {
     private RecyclerView mRecyclerView;
     private String search = "";
     private SwipeRefreshLayout mSwipeRefreshLayout;
+    private ImageView addMessage;
+    private List<String> uid;
 
 
     @Override
@@ -88,6 +91,7 @@ public class MessagesAmisFragment extends Fragment {
         buttonBack.setVisibility(View.GONE);
         mRecyclerView = rootView.findViewById(R.id.recyclerViewMessagesAmis);
         mSwipeRefreshLayout = rootView.findViewById(R.id.messageFriendSwipeRefreshLayout);
+        addMessage = rootView.findViewById(R.id.create_event_button);
 
         adapterUsers();
 
@@ -113,6 +117,14 @@ public class MessagesAmisFragment extends Fragment {
             }
         });
 
+        addMessage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ListAmisFragment.type = "message";
+                navController.navigate(R.id.action_navigation_messages_to_navigation_list_amis);
+            }
+        });
+
         mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
@@ -123,84 +135,84 @@ public class MessagesAmisFragment extends Fragment {
     }
 
     private void adapterUsers() {
+        uid = new ArrayList<>();
         mStoreBase.collection("users").document(USER.getUid()).collection("chat_friends").limit(10)
                 .get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
                         if (task.isSuccessful()) {
-                            List<String> uid = new ArrayList<>();
+
                             for (QueryDocumentSnapshot document : task.getResult()) {
                                 User u = document.toObject(User.class);
-                                if(search.equalsIgnoreCase("")){
-                                    uid.add(u.getUid());
-                                }else{
-                                    Log.w("User", "User : " + u.getFirst_name());
-                                    //if(u.getFirst_name().contains(search) || u.getLast_name().contains(search)){
-                                     //   uid.add(u.getUid());
-                                    //}
-                                }
+
+                                uid.add(u.getUid());
+
                                 uid.add(document.toObject(User.class).getUid());
                             }
-                            Query query = mStoreBase.collection("users").whereIn("uid", uid);
-                            FirestoreRecyclerOptions<User> options = new FirestoreRecyclerOptions.Builder<User>().setQuery(query, User.class).build();
+                            if(!uid.isEmpty()){
+                                Log.w("liste uid", uid.toString());
+                                Query query = mStoreBase.collection("users").whereIn("uid", uid);
+                                FirestoreRecyclerOptions<User> options = new FirestoreRecyclerOptions.Builder<User>().setQuery(query, User.class).build();
 
-                            adapter = new FirestoreRecyclerAdapter<User, UserViewHolder>(options) {
-                                @NonNull
-                                @Override
-                                public UserViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-                                    View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_person, parent, false);
-                                    return new UserViewHolder(view);
-                                }
-
-                                @RequiresApi(api = Build.VERSION_CODES.O)
-                                @Override
-                                protected void onBindViewHolder(@NonNull final UserViewHolder userViewHolder, int i, @NonNull final User u) {
-                                    userViewHolder.villePers.setText(u.getCity());
-                                    userViewHolder.nomInvit.setText(u.getFirst_name() + " " + u.getLast_name());
-                                    userViewHolder.button.setImageResource(R.drawable.ic_baseline_keyboard_arrow_right_24);
-
-                                    if(u.getCursus().equalsIgnoreCase("Informatique")){
-                                        userViewHolder.cardViewPhotoPerson.setCardBackgroundColor(Color.RED);
+                                adapter = new FirestoreRecyclerAdapter<User, UserViewHolder>(options) {
+                                    @NonNull
+                                    @Override
+                                    public UserViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+                                        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_person, parent, false);
+                                        return new UserViewHolder(view);
                                     }
 
-                                    if(u.getCursus().equalsIgnoreCase("TC")){
-                                        userViewHolder.cardViewPhotoPerson.setCardBackgroundColor(Color.parseColor("#00E9FD"));
-                                    }
+                                    @RequiresApi(api = Build.VERSION_CODES.O)
+                                    @Override
+                                    protected void onBindViewHolder(@NonNull final UserViewHolder userViewHolder, int i, @NonNull final User u) {
+                                        userViewHolder.villePers.setText(u.getCity());
+                                        userViewHolder.nomInvit.setText(u.getFirst_name() + " " + u.getLast_name());
+                                        userViewHolder.button.setImageResource(R.drawable.ic_baseline_keyboard_arrow_right_24);
 
-                                    if(u.getCursus().equalsIgnoreCase("MMI")){
-                                        userViewHolder.cardViewPhotoPerson.setCardBackgroundColor(Color.parseColor("#FF1EED"));
-                                    }
-
-                                    if(u.getCursus().equalsIgnoreCase("GB")){
-                                        userViewHolder.cardViewPhotoPerson.setCardBackgroundColor(Color.parseColor("#41EC57"));
-                                    }
-
-                                    if(u.getCursus().equalsIgnoreCase("LP")){
-                                        userViewHolder.cardViewPhotoPerson.setCardBackgroundColor((Color.parseColor("#EC9538")));
-                                    }
-
-                                    Constants.setUserImage(u, getContext(), userViewHolder.imagePerson);
-
-                                    userViewHolder.layoutProfil.setOnClickListener(new View.OnClickListener() {
-                                        @Override
-                                        public void onClick(View v) {
-                                            showPopUpProfil(u);
+                                        if(u.getCursus().equalsIgnoreCase("Informatique")){
+                                            userViewHolder.cardViewPhotoPerson.setCardBackgroundColor(Color.RED);
                                         }
-                                    });
 
-                                    userViewHolder.button.setOnClickListener(new View.OnClickListener() {
-                                        @Override
-                                        public void onClick(View v) {
-                                            showPopUpProfil(u);
+                                        if(u.getCursus().equalsIgnoreCase("TC")){
+                                            userViewHolder.cardViewPhotoPerson.setCardBackgroundColor(Color.parseColor("#00E9FD"));
                                         }
-                                    });
-                                }
-                            };
-                            mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-                            mRecyclerView.setAdapter(adapter);
-                            adapter.startListening();
-                            mSwipeRefreshLayout.setRefreshing(false);
+
+                                        if(u.getCursus().equalsIgnoreCase("MMI")){
+                                            userViewHolder.cardViewPhotoPerson.setCardBackgroundColor(Color.parseColor("#FF1EED"));
+                                        }
+
+                                        if(u.getCursus().equalsIgnoreCase("GB")){
+                                            userViewHolder.cardViewPhotoPerson.setCardBackgroundColor(Color.parseColor("#41EC57"));
+                                        }
+
+                                        if(u.getCursus().equalsIgnoreCase("LP")){
+                                            userViewHolder.cardViewPhotoPerson.setCardBackgroundColor((Color.parseColor("#EC9538")));
+                                        }
+
+                                        Constants.setUserImage(u, getContext(), userViewHolder.imagePerson);
+
+                                        userViewHolder.layoutProfil.setOnClickListener(new View.OnClickListener() {
+                                            @Override
+                                            public void onClick(View v) {
+                                                showPopUpProfil(u);
+                                            }
+                                        });
+
+                                        userViewHolder.button.setOnClickListener(new View.OnClickListener() {
+                                            @Override
+                                            public void onClick(View v) {
+                                                showPopUpProfil(u);
+                                            }
+                                        });
+                                    }
+                                };
+                                mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+                                mRecyclerView.setAdapter(adapter);
+                                adapter.startListening();
+                                mSwipeRefreshLayout.setRefreshing(false);
+                            }
+
                         }}});
     }
 

@@ -64,6 +64,7 @@ public class ListMembresFragment extends Fragment {
     private int nbInvit;
     private CardView cardViewInvits;
     private TextView textViewNbInvit;
+    public static String type;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,

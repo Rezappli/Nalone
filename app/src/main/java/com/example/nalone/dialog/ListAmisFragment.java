@@ -1,5 +1,6 @@
 package com.example.nalone.dialog;
 
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 
@@ -23,26 +24,33 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.example.nalone.Cache;
+import com.example.nalone.Chat;
+import com.example.nalone.ModelData;
 import com.example.nalone.R;
 import com.example.nalone.User;
 import com.example.nalone.items.ItemPerson;
 import com.example.nalone.ui.amis.display.CreateGroupFragment;
 import com.example.nalone.ui.evenements.CreateEventFragment;
+import com.example.nalone.ui.message.ChatActivity;
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.firestore.model.Document;
 import com.google.firebase.storage.StorageReference;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import static com.example.nalone.HomeActivity.buttonBack;
 import static com.example.nalone.util.Constants.USER;
+import static com.example.nalone.util.Constants.USER_ID;
 import static com.example.nalone.util.Constants.mStore;
 import static com.example.nalone.util.Constants.mStoreBase;
 
@@ -94,10 +102,16 @@ public class ListAmisFragment extends Fragment {
                 if(type == "event"){
                     navController.navigate(R.id.action_navigation_list_amis_to_navigation_create_event);
                 }
+                if(type == "message"){
+                    navController.navigate(R.id.action_navigation_list_amis_to_navigation_messages);
+                }
             }
         });
 
 
+        if (type == "message"){
+            valider.setVisibility(View.GONE);
+        }
         ajoutMembres();
 
         valider.setOnClickListener(new View.OnClickListener() {
@@ -115,6 +129,7 @@ public class ListAmisFragment extends Fragment {
                     CreateEventFragment.adds = adds;
                     navController.navigate(R.id.action_navigation_list_amis_to_navigation_create_event);
                 }
+
             }
         });
         adapterUsers();
@@ -192,19 +207,32 @@ public class ListAmisFragment extends Fragment {
                                         }else{
                                             userViewHolder.button.setImageDrawable(getResources().getDrawable(add));
                                         }
-                                        userViewHolder.button.setOnClickListener(new View.OnClickListener() {
-                                            @Override
-                                            public void onClick(View v) {
 
-                                                if(!adds.contains(u.getUid()) || adds.isEmpty()){
-                                                    userViewHolder.button.setImageDrawable(getResources().getDrawable(remove));
-                                                    adds.add(u.getUid());
-                                                }else{
-                                                    userViewHolder.button.setImageDrawable(getResources().getDrawable(add));
-                                                    adds.remove(u.getUid());
+                                            userViewHolder.button.setOnClickListener(new View.OnClickListener() {
+                                                @Override
+                                                public void onClick(View v) {
+                                                    if (type == "message"){
+                                                        String id = UUID.randomUUID().toString();
+                                                        mStoreBase.collection("chat").document(id);
+                                                        DocumentReference ref = mStoreBase.collection("chat").document(id);
+                                                        ModelData md = new ModelData("add", ref);
+                                                        mStoreBase.collection("users").document(USER_ID).collection("chat_friends").document(u.getUid()).set(md);
+                                                        mStoreBase.collection("users").document(u.getUid()).collection("chat_friends").document(USER_ID).set(md);
+                                                        ChatActivity.USER_LOAD = u;
+                                                        startActivity(new Intent(getContext(),ChatActivity.class));
+                                                    }else{
+                                                        if (!adds.contains(u.getUid()) || adds.isEmpty()) {
+                                                            userViewHolder.button.setImageDrawable(getResources().getDrawable(remove));
+                                                            adds.add(u.getUid());
+                                                          } else {
+                                                            userViewHolder.button.setImageDrawable(getResources().getDrawable(add));
+                                                            adds.remove(u.getUid());
+                                                    }
                                                 }
-                                            }
-                                        });
+                                                }
+                                            });
+
+
 
 
                                         if (u.getImage_url() != null) {
