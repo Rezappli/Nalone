@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -64,7 +65,7 @@ public class CreationsEvenementsFragment extends Fragment {
 
     private ArrayList<Evenement> itemEvents = new ArrayList<>();
     private NavController navController;
-
+    private ProgressBar loading;
 
 
     @Override
@@ -82,6 +83,7 @@ public class CreationsEvenementsFragment extends Fragment {
         mRecyclerView = rootView.findViewById(R.id.recyclerViewMesEventList);
         addEvent = rootView.findViewById(R.id.create_event_button);
         navController = Navigation.findNavController(getActivity(),R.id.nav_host_fragment);
+        loading = rootView.findViewById(R.id.loading);
         SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yy");
         addEvent.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -237,6 +239,7 @@ public class CreationsEvenementsFragment extends Fragment {
                         navController.navigate(R.id.action_navigation_creations_evenements_to_navigation_create_event);
                     }
                 });
+                loading.setVisibility(View.GONE);
             }
         };
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));

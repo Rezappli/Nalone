@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -43,6 +44,8 @@ public class MesGroupeFragment extends Fragment {
     private RecyclerView mRecyclerView;
     private FirestoreRecyclerAdapter adapter;
     private ImageView addGroup;
+    private ProgressBar loading;
+    private LinearLayout linearSansMesGroupes;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -53,6 +56,8 @@ public class MesGroupeFragment extends Fragment {
         mRecyclerView = root.findViewById(R.id.recyclerViewGroupe);
         addGroup = root.findViewById(R.id.create_group_button);
         navController = Navigation.findNavController(getActivity(), R.id.nav_host_fragment);
+        loading = root.findViewById(R.id.loading);
+        linearSansMesGroupes = root.findViewById(R.id.linearSansMesGroupes);
 
         addGroup.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -62,6 +67,11 @@ public class MesGroupeFragment extends Fragment {
         });
 
         adapterGroups();
+
+        if(adapter == null || adapter.getItemCount() == 0){
+            loading.setVisibility(View.GONE);
+            linearSansMesGroupes.setVisibility(View.VISIBLE);
+        }
 
         return root;
     }
@@ -136,7 +146,7 @@ public class MesGroupeFragment extends Fragment {
                             }
                         }
                     }
-
+                    loading.setVisibility(View.GONE);
                 }
             };
             mRecyclerView.setHasFixedSize(true);

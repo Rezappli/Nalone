@@ -143,39 +143,38 @@
 
             </LinearLayout>
 
-            <TextView
-                android:id="@+id/descriptionEventList"
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:layout_marginBottom="10dp"
-                android:paddingStart="10dp"
-                android:paddingEnd="10dp"
-                android:text="@string/description"
-                android:textSize="12sp"
-                android:textStyle="italic" />
+                android:layout_height="match_parent"
+                android:layout_marginTop="5dp"
+                android:gravity="center"
+                android:orientation="horizontal">
 
-            <TextView
-                android:id="@+id/textViewNbMembers"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="5dp"
-                android:paddingStart="10dp"
-                android:paddingEnd="10dp"
-                android:text="@string/participants"
-                android:textSize="12sp" />
+                <TextView
+                    android:id="@+id/textViewNbMembers"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingStart="10dp"
+                    android:paddingEnd="10dp"
+                    android:text="@string/participants"
+                    android:textSize="12sp"
+                    android:textStyle="bold" />
 
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/recyclerViewMembresInscritsEventList"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:paddingBottom="20dp" />
+                <TextView
+                    android:id="@+id/textView42"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/participants"
+                    android:textSize="12sp" />
+
+            </LinearLayout>
 
             <View
                 android:id="@+id/divider6"
                 android:layout_width="match_parent"
-                android:layout_height="3dp"
-                android:background="?android:attr/listDivider" />
+                android:layout_height="2dp"
+                android:layout_marginTop="5dp"
+                android:background="@android:color/darker_gray" />
 
             <LinearLayout
                 android:layout_width="match_parent"

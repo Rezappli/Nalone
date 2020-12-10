@@ -150,4 +150,8 @@ public class Evenement implements Serializable {
     public int getNbMembers() {
         return nbMembers;
     }
+
+    public void setNbMembers(int nbMembers) {
+        this.nbMembers = nbMembers;
+    }
 }

@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -22,7 +23,6 @@ import com.bumptech.glide.Glide;
 import com.example.nalone.Cache;
 import com.example.nalone.Group;
 import com.example.nalone.R;
-import com.example.nalone.User;
 import com.example.nalone.ui.amis.display.PopUpGroupFragment;
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
@@ -53,6 +53,7 @@ public class RechercheGroupeFragment extends Fragment {
     private View root;
     private List<String> myGroups;
     private LinearLayout linearSansRechercheGroupe;
+    private ProgressBar loading;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -68,8 +69,9 @@ public class RechercheGroupeFragment extends Fragment {
         myGroups = new ArrayList<>();
 
         linearSansRechercheGroupe = root.findViewById(R.id.linearSansRechercheGroupe);
-        swipeContainer = (SwipeRefreshLayout) root.findViewById(R.id.swipeContainer);
+        swipeContainer = (SwipeRefreshLayout) root.findViewById(R.id.AmisSwipeRefreshLayout);
         swipeContainer.setColorSchemeResources(android.R.color.holo_blue_bright);
+        loading = root.findViewById(R.id.loading);
         this.configureSwipeRefreshLayout();
 
         mRecyclerView = root.findViewById(R.id.recyclerViewGroupe);
@@ -194,7 +196,7 @@ public class RechercheGroupeFragment extends Fragment {
                             }
                         }
                     }
-
+                loading.setVisibility(View.GONE);
                 }
             };
             mRecyclerView.setHasFixedSize(true);

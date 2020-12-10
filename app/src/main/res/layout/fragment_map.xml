@@ -12,6 +12,21 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
+        <androidx.cardview.widget.CardView
+            android:id="@+id/loading"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            app:cardCornerRadius="150dp">
+
+            <ProgressBar
+                android:id="@+id/progressBar2"
+                style="?android:attr/progressBarStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp" />
+        </androidx.cardview.widget.CardView>
+
         <View
             android:id="@+id/divider14"
             android:layout_width="match_parent"
@@ -29,6 +44,7 @@
             android:layout_marginEnd="40dp"
             android:layout_marginBottom="10dp"
             android:foregroundGravity="bottom|center_horizontal"
+            android:visibility="gone"
             app:cardBackgroundColor="#18ECC5"
             app:cardCornerRadius="50dp"
             app:cardElevation="10dp"

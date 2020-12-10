@@ -106,6 +106,7 @@
     <string name="aucunRechercheAmis"> Aucun utilisateur inscrit pour le moment.. </string>
     <string name="aucunRechercheGroupe"> Aucun groupe crée pour le moment.. </string>
     <string name="aucunMesGroupes"> Vous n\'avez pas rejoint de groupe </string>
+    <string name="aucunMesGroupesCreer"> Vous n\'avez pas crée de groupe </string>
     <string name="insiterCreer"> Les autres utilisateurs n\'attendent que toi </string>
     <string name="parametres"> Paramètres </string>
     <string name="Profil"> Profil </string>

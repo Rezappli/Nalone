@@ -73,7 +73,7 @@ public class InfosEvenementsActivity extends Fragment {
     private int participants;
     private ImageView buttonInscription;
     private TextView textViewInscription;
-    private ImageView buttonPartager;
+    private ImageView buttonPartager, buttonAnnuler;
     private TextView diffDate;
     private Handler handler = new Handler();
     private boolean inscrit;
@@ -81,6 +81,7 @@ public class InfosEvenementsActivity extends Fragment {
     private TextView textViewTitleDebut;
     private LinearLayout linearButton;
     private CardView cardViewTermine;
+    private LinearLayout linearAnnuler;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -107,6 +108,8 @@ public class InfosEvenementsActivity extends Fragment {
         textViewTitleDebut = rootView.findViewById(R.id.textViewTitleDebut);
         linearButton = rootView.findViewById(R.id.linearButton);
         cardViewTermine = rootView.findViewById(R.id.cardViewTermine);
+        linearAnnuler = rootView.findViewById(R.id.linearAnnuler);
+        buttonAnnuler = rootView.findViewById(R.id.buttonAnnuler);
 
         buttonInscription.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -117,7 +120,7 @@ public class InfosEvenementsActivity extends Fragment {
         diffDate = rootView.findViewById(R.id.differenceDate);
 
         buttonPartager = rootView.findViewById(R.id.buttonPartager);
-        buttonPartager.setOnClickListener(new View.OnClickListener() {
+        buttonAnnuler.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 suppression();
@@ -313,7 +316,6 @@ public class InfosEvenementsActivity extends Fragment {
         if(type.equalsIgnoreCase("creer")){
             textViewInscription.setText("Modifier");
             buttonInscription.setImageDrawable(getResources().getDrawable(R.drawable.ic_baseline_edit_50));
-            buttonPartager.setImageDrawable(getResources().getDrawable(R.drawable.ic_baseline_delete_50));
             buttonInscription.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -322,29 +324,7 @@ public class InfosEvenementsActivity extends Fragment {
                     navController.navigate(R.id.action_navigation_infos_events_to_navigation_create_event);
                 }
             });
-            buttonPartager.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    final AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-                    builder.setMessage("Vous êtes sur le point de supprimer un évènement ! Cette action est irréversible ! \n Voulez-vous continuez ?")
-                            .setPositiveButton("Oui", new DialogInterface.OnClickListener() {
-                                public void onClick(DialogInterface dialog, int id) {
-                                    mStoreBase.collection("events").document(EVENT_LOAD.getUid()).delete();
-                                    mStoreBase.collection("users").document(USER_ID).collection("events").document(EVENT_LOAD.getUid()).delete();
-                                    Toast.makeText(getContext(), "Vous avez supprimé(e) un évènement !", Toast.LENGTH_SHORT).show();
-                                    createFragment();
-                                }
-                            })
-                            .setNegativeButton("Non", new DialogInterface.OnClickListener() {
-                                public void onClick(DialogInterface dialog, int id) {
-                                    dialog.dismiss();
-                                }
-                            });
-                    builder.create();
-                    builder.show();
-                }
-            });
-            textViewPartager.setText("Annuler");
+            linearAnnuler.setVisibility(View.VISIBLE);
 
         }
     }

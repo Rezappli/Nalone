@@ -1,6 +1,5 @@
 package com.example.nalone.ui.evenements.display;
 
-import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
@@ -26,12 +25,9 @@ import com.example.nalone.Evenement;
 import com.example.nalone.R;
 import com.example.nalone.User;
 import com.example.nalone.Visibility;
-import com.example.nalone.ui.evenements.CreateEventFragment;
-import com.example.nalone.ui.evenements.EvenementsFragment;
-import com.example.nalone.util.Constants;
+import com.example.nalone.ui.evenements.InfosEvenementsActivity;
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
-import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentReference;
@@ -40,7 +36,6 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -81,7 +76,7 @@ public class MesEvenementsListFragment extends Fragment {
     }
 
     private void createFragment() {
-        swipeContainer = (SwipeRefreshLayout) rootView.findViewById(R.id.swipeContainer);
+        swipeContainer = (SwipeRefreshLayout) rootView.findViewById(R.id.AmisSwipeRefreshLayout);
         swipeContainer.setColorSchemeResources(android.R.color.holo_blue_bright);
         this.configureSwipeRefreshLayout();
         linearSansEvent = rootView.findViewById(R.id.linearSansEvent);
@@ -96,6 +91,20 @@ public class MesEvenementsListFragment extends Fragment {
             }
         });
 
+        adapterEvents();
+
+    }
+
+    private void configureSwipeRefreshLayout(){
+        swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                adapterEvents();
+            }
+        });
+    }
+
+    private void adapterEvents() {
         DocumentReference ref = mStoreBase.document("users/"+USER_ID);
         mStoreBase.collection("users").document(USER_ID).collection("events").whereNotEqualTo("user", ref)
                 .get()
@@ -109,105 +118,85 @@ public class MesEvenementsListFragment extends Fragment {
                                 iterator++;
                             }
                             Log.w("event", " Check list");
-                            adapterEvents();
-                        }
-                    }
-                });
+                            if(!events.isEmpty()) {
+                                Query query = mStoreBase.collection("events").whereIn("uid", events);
 
-        if(adapter != null){
-            Log.w("ItemCount", adapter.getItemCount()+"");
-            if(adapter.getItemCount() == 0){
-                linearSansEvent.setVisibility(View.VISIBLE);
-            }
-        }
-    }
+                                FirestoreRecyclerOptions<Evenement> options = new FirestoreRecyclerOptions.Builder<Evenement>().setQuery(query, Evenement.class).build();
 
-    private void configureSwipeRefreshLayout(){
-        swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                adapterEvents();
-            }
-        });
-    }
-
-    private void adapterEvents() {
-
-        if(!events.isEmpty()) {
-            Query query = mStoreBase.collection("events").whereIn("uid", events);
-
-            FirestoreRecyclerOptions<Evenement> options = new FirestoreRecyclerOptions.Builder<Evenement>().setQuery(query, Evenement.class).build();
-
-            adapter = new FirestoreRecyclerAdapter<Evenement, EventViewHolder>(options) {
-                @NonNull
-                @Override
-                public EventViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-                    View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_evenements_join, parent, false);
-                    return new EventViewHolder(view);
-                }
-
-                @Override
-                protected void onBindViewHolder(@NonNull final EventViewHolder holder, int i, @NonNull final Evenement e) {
-                    //holder.mImageView.setImageResource(e.getImage());
-                    holder.mTitle.setText((e.getName()));
-                    holder.mDate.setText((e.getDate().toDate().toString()));
-                    holder.mVille.setText((e.getCity()));
-                    holder.mDescription.setText((e.getDescription()));
-                    holder.mProprietaire.setText(e.getOwner());
-                    holder.textViewNbMembers.setText(e.getNbMembers() + " membres inscrits");
-
-                    mStoreBase.collection("users").whereEqualTo("uid", e.getOwnerDoc().getId())
-                            .get()
-                            .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                                @Override
-                                public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                                    if (task.isSuccessful()) {
-                                        for (QueryDocumentSnapshot document : task.getResult()) {
-                                            User u = document.toObject(User.class);
-                                            if (u.getCursus().equalsIgnoreCase("Informatique")) {
-                                                holder.mCarwViewOwner.setCardBackgroundColor(Color.RED);
-                                            }
-
-                                            if (u.getCursus().equalsIgnoreCase("TC")) {
-                                                holder.mCarwViewOwner.setCardBackgroundColor(Color.parseColor("#00E9FD"));
-                                            }
-
-                                            if (u.getCursus().equalsIgnoreCase("MMI")) {
-                                                holder.mCarwViewOwner.setCardBackgroundColor(Color.parseColor("#FF1EED"));
-                                            }
-
-                                            if (u.getCursus().equalsIgnoreCase("GB")) {
-                                                holder.mCarwViewOwner.setCardBackgroundColor(Color.parseColor("#41EC57"));
-                                            }
-
-                                            if (u.getCursus().equalsIgnoreCase("LP")) {
-                                                holder.mCarwViewOwner.setCardBackgroundColor((Color.parseColor("#EC9538")));
-                                            }
-
-                                        }
-
+                                adapter = new FirestoreRecyclerAdapter<Evenement, EventViewHolder>(options) {
+                                    @NonNull
+                                    @Override
+                                    public EventViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+                                        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_evenements_join, parent, false);
+                                        return new EventViewHolder(view);
                                     }
-                                }
-                            });
+
+                                    @Override
+                                    protected void onBindViewHolder(@NonNull final EventViewHolder holder, int i, @NonNull final Evenement e) {
+                                        //holder.mImageView.setImageResource(e.getImage());
+                                        holder.mTitle.setText((e.getName()));
+                                        holder.mDate.setText((e.getDate().toDate().toString()));
+                                        holder.mVille.setText((e.getCity()));
+                                        holder.mProprietaire.setText(e.getOwner());
+                                        holder.textViewNbMembers.setText(e.getNbMembers() + "");
+
+                                        mStoreBase.collection("users").whereEqualTo("uid", e.getOwnerDoc().getId())
+                                                .get()
+                                                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                                                    @Override
+                                                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                                        if (task.isSuccessful()) {
+                                                            for (QueryDocumentSnapshot document : task.getResult()) {
+                                                                User u = document.toObject(User.class);
+                                                                if (u.getCursus().equalsIgnoreCase("Informatique")) {
+                                                                    holder.mCarwViewOwner.setCardBackgroundColor(Color.RED);
+                                                                }
+
+                                                                if (u.getCursus().equalsIgnoreCase("TC")) {
+                                                                    holder.mCarwViewOwner.setCardBackgroundColor(Color.parseColor("#00E9FD"));
+                                                                }
+
+                                                                if (u.getCursus().equalsIgnoreCase("MMI")) {
+                                                                    holder.mCarwViewOwner.setCardBackgroundColor(Color.parseColor("#FF1EED"));
+                                                                }
+
+                                                                if (u.getCursus().equalsIgnoreCase("GB")) {
+                                                                    holder.mCarwViewOwner.setCardBackgroundColor(Color.parseColor("#41EC57"));
+                                                                }
+
+                                                                if (u.getCursus().equalsIgnoreCase("LP")) {
+                                                                    holder.mCarwViewOwner.setCardBackgroundColor((Color.parseColor("#EC9538")));
+                                                                }
+
+                                                            }
+
+                                                        }
+                                                    }
+                                                });
 
 
-                    holder.mAfficher.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            //Constants.targetZoom = new LatLng(event.getLocation().getLatitude(), event.getLocation().getLongitude());
-                            EvenementsFragment.viewPager.setCurrentItem(0);
-                        }
-                    });
+                                        holder.mAfficher.setOnClickListener(new View.OnClickListener() {
+                                            @Override
+                                            public void onClick(View v) {
+                                                //Constants.targetZoom = new LatLng(event.getLocation().getLatitude(), event.getLocation().getLongitude());
+                                                //EvenementsFragment.viewPager.setCurrentItem(0);
+                                                InfosEvenementsActivity.EVENT_LOAD = e;
+                                                InfosEvenementsActivity.type = "nouveau";
+                                                navController.navigate(R.id.action_navigation_evenements_to_navigation_infos_events);
+                                            }
+                                        });
 
-                    holder.mInscrire.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            mStoreBase.collection("events").document(e.getUid()).collection("members").document(USER.getUid()).delete();
-                            mStoreBase.collection("users").document(USER_ID).collection("events").document(e.getUid()).delete();
-                            Toast.makeText(getContext(), "Vous vous êtes désinscrit de l'évènement " + e.getName() + " !", Toast.LENGTH_SHORT).show();
-                            createFragment();
-                        }
-                    });
+                                        holder.mInscrire.setOnClickListener(new View.OnClickListener() {
+                                            @Override
+                                            public void onClick(View v) {
+                                                e.setNbMembers(e.getNbMembers()-1);
+                                                mStoreBase.collection("events").document(e.getUid()).set(e);
+                                                mStoreBase.collection("events").document(e.getUid()).collection("members").document(USER_ID).delete();
+                                                mStoreBase.collection("users").document(USER_ID).collection("events").document(e.getUid()).delete();
+                                                Toast.makeText(getContext(), "Vous vous êtes désinscrit de l'évènement " + e.getName() + " !", Toast.LENGTH_SHORT).show();
+                                                createFragment();
+                                            }
+                                        });
 
                /* if(e.getImage_url() != null) {
                     if(!Cache.fileExists(e.getUid())) {
@@ -254,18 +243,21 @@ public class MesEvenementsListFragment extends Fragment {
                     }
                 }
                 */
-                }
-            };
-            mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-            mRecyclerView.setAdapter(adapter);
-            adapter.startListening();
-            swipeContainer.setRefreshing(false);
+                                    }
+                                };
+                                mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+                                mRecyclerView.setAdapter(adapter);
+                                adapter.startListening();
+                                swipeContainer.setRefreshing(false);
 
-            Log.w("count", iterator + "");
-        }else{
-            Log.w("sans_event", "Liste vide");
-            linearSansEvent.setVisibility(View.VISIBLE);
-        }
+                                Log.w("count", iterator + "");
+                            }else{
+                                linearSansEvent.setVisibility(View.VISIBLE);
+                            }
+                        }
+                    }
+                });
+
 
     }
 
@@ -277,7 +269,6 @@ public class MesEvenementsListFragment extends Fragment {
         public TextView mDate;
         public TextView mTime;
         public TextView mVille;
-        public TextView mDescription;
         public TextView mProprietaire;
         public Button mInscrire, mAfficher;
         public CardView mCarwViewOwner;
@@ -290,7 +281,6 @@ public class MesEvenementsListFragment extends Fragment {
             mDate = itemView.findViewById(R.id.dateEventList);
             mTime = itemView.findViewById(R.id.timeEventList);
             mVille = itemView.findViewById(R.id.villeEventList);
-            mDescription = itemView.findViewById(R.id.descriptionEventList);
             mProprietaire = itemView.findViewById(R.id.ownerEventList);
             mAfficher = itemView.findViewById(R.id.buttonAfficherEventList);
             mInscrire = itemView.findViewById(R.id.buttonInscrirEventList);

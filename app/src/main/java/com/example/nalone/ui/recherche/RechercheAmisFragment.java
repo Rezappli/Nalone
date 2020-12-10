@@ -2,7 +2,6 @@ package com.example.nalone.ui.recherche;
 
 import android.content.Context;
 import android.graphics.Color;
-import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
@@ -26,8 +25,6 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
-import com.bumptech.glide.Glide;
-import com.example.nalone.Cache;
 import com.example.nalone.adapter.ItemFiltreAdapter;
 import com.example.nalone.items.ItemFiltre;
 import com.example.nalone.items.ItemPerson;
@@ -43,14 +40,12 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
-import com.google.firebase.storage.StorageReference;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import static com.example.nalone.HomeActivity.buttonBack;
 import static com.example.nalone.util.Constants.USER;
-import static com.example.nalone.util.Constants.mStore;
 import static com.example.nalone.util.Constants.mStoreBase;
 
 public class RechercheAmisFragment extends Fragment {
@@ -95,7 +90,7 @@ public class RechercheAmisFragment extends Fragment {
         loading = rootView.findViewById(R.id.search_loading);
         buttonBack.setVisibility(View.GONE);
         linearSansRechercheAmis = rootView.findViewById(R.id.linearSansRechercheGroupe);
-        swipeContainer = rootView.findViewById(R.id.swipeContainer);
+        swipeContainer = rootView.findViewById(R.id.AmisSwipeRefreshLayout);
 
         swipeContainer.setColorSchemeResources(android.R.color.holo_blue_bright);
 

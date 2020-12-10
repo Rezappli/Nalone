@@ -104,7 +104,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
 
     private List<String> nearby_events;
     private int iterator = 0;
-    private CardView cardViewButtonAdd;
+    private CardView cardViewButtonAdd, loading;
     private List<String> myEvents = new ArrayList<>();
     private List<String> event_prive, event_public, event_create, event_inscrit;
 
@@ -143,6 +143,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         imageViewLocationPublic = rootView.findViewById(R.id.imageViewLocationPublic);
         imageViewLocationCreate = rootView.findViewById(R.id.imageViewLocationCreate);
         imageViewLocationAll = rootView.findViewById(R.id.imageViewLocationAll);
+        loading = rootView.findViewById(R.id.loading);
 
         cardViewLocationPrive.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -251,7 +252,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                                     event_inscrit.add(document.getId());
                                 }
                                 DocumentReference ref = mStoreBase.document("users/"+USER_ID);
-                                Query query = mStoreBase.collection("events").whereIn("uid", list).whereNotEqualTo("ownerDoc",ref);
+                                Query query = mStoreBase.collection("events").whereIn("uid", list).whereNotEqualTo("ownerDoc",ref).limit(10);
                                 FirestoreRecyclerOptions<Evenement> options = new FirestoreRecyclerOptions.Builder<Evenement>().setQuery(query, Evenement.class).build();
 
                                 adapter = new FirestoreRecyclerAdapter<Evenement, EventViewHolder>(options) {
@@ -319,8 +320,8 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                                                 mMap.animateCamera(location);
                                             }
                                         });
-
-
+                                        loading.setVisibility(View.GONE);
+                                        cardViewButtonAdd.setVisibility(View.VISIBLE);
                                     }
                                 };
                                 mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
@@ -377,6 +378,8 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                     });
         }else{
             Toast.makeText(getContext(), "Aucun évènement !", Toast.LENGTH_SHORT).show();
+            loading.setVisibility(View.GONE);
+            cardViewButtonAdd.setVisibility(View.VISIBLE);
         }
 
 

@@ -67,6 +67,7 @@ public class AmisFragment extends Fragment {
     private CardView cardViewInvits;
     private TextView textViewNbInvit;
     private LinearLayout linearSansMesAmis;
+    private ProgressBar loading;
 
 
     @Override
@@ -90,6 +91,7 @@ public class AmisFragment extends Fragment {
         cardViewInvits = rootView.findViewById(R.id.cardViewInvits);
         textViewNbInvit = rootView.findViewById(R.id.nbInvits);
         mSwipeRefreshLayout = rootView.findViewById(R.id.AmisSwipeRefreshLayout);
+        loading = rootView.findViewById(R.id.loading);
 
         cardViewInvits.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -221,11 +223,13 @@ public class AmisFragment extends Fragment {
                                                 createFragment();
                                             }
                                         });
+                                        loading.setVisibility(View.GONE);
                                     }
                                 };
                                 mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
                                 mRecyclerView.setAdapter(adapter);
                                 adapter.startListening();
+
 
                             }else{
                                 linearSansMesAmis.setVisibility(View.VISIBLE);
