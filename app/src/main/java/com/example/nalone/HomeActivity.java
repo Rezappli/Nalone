@@ -12,9 +12,11 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.example.nalone.util.Constants;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.firebase.firestore.DocumentSnapshot;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
@@ -28,6 +30,7 @@ import splash.SplashActivity;
 
 import static com.example.nalone.util.Constants.USER;
 import static com.example.nalone.util.Constants.mMessaging;
+import static com.example.nalone.util.Constants.mStoreBase;
 
 
 public class HomeActivity extends AppCompatActivity{
@@ -40,6 +43,33 @@ public class HomeActivity extends AppCompatActivity{
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
+
+        if(Constants.FCM_API == null){
+            mStoreBase.collection("application").document("url").get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                @Override
+                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                    Constants.FCM_API = task.getResult().get("url").toString();
+                }
+            });
+        }
+
+        if(Constants.serverKey == null){
+            mStoreBase.collection("application").document("server").get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                @Override
+                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                    Constants.FCM_API = task.getResult().get("key").toString();
+                }
+            });
+        }
+
+        if(Constants.contentType == null){
+            mStoreBase.collection("application").document("notification").get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                @Override
+                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                    Constants.FCM_API = task.getResult().get("application").toString();
+                }
+            });
+        }
 
         BottomNavigationView navView = findViewById(R.id.nav_view);
 
@@ -64,18 +94,4 @@ public class HomeActivity extends AppCompatActivity{
         super.onBackPressed();
     }
 
-
-    public boolean isInternetConnected(Activity activity){
-        boolean connected = false;
-        ConnectivityManager connectivityManager = (ConnectivityManager)activity.getSystemService(Context.CONNECTIVITY_SERVICE);
-        if(connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_MOBILE).getState() == NetworkInfo.State.CONNECTED ||
-                connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI).getState() == NetworkInfo.State.CONNECTED) {
-            //we are connected to a network
-            connected = true;
-        } else {
-            connected = false;;
-        }
-
-        return connected;
-    }
 }

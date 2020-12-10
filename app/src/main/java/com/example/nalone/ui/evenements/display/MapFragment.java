@@ -160,7 +160,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                 hiddeText(textViewLocationAll);
                 imageViewLocationAll.setImageDrawable(getResources().getDrawable(R.drawable.location_all_30));
                 adapterEvents(nearby_events);
-
+                updateMap(nearby_events);
             }
         });
 
@@ -170,7 +170,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                 hiddeText(textViewLocationInscrit);
                 imageViewLocationInscrit.setImageDrawable(getResources().getDrawable(R.drawable.location_inscrit_30));
                 adapterEvents(event_inscrit);
-
+                updateMap(event_inscrit);
 
             }
         });
@@ -181,7 +181,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                 hiddeText(textViewLocationPublic);
                 imageViewLocationPublic.setImageDrawable(getResources().getDrawable(R.drawable.location_public_30));
                 adapterEvents(event_public);
-
+                updateMap(event_public);
 
             }
         });
@@ -192,7 +192,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                 hiddeText(textViewLocationCreate);
                 imageViewLocationCreate.setImageDrawable(getResources().getDrawable(R.drawable.location_create_30));
                 adapterEvents(event_create);
-
+                updateMap(event_create);
 
             }
         });
@@ -234,8 +234,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         imageViewLocationPublic.setImageDrawable(getResources().getDrawable(R.drawable.location_public_24));
         imageViewLocationCreate.setImageDrawable(getResources().getDrawable(R.drawable.location_create_24));
         imageViewLocationAll.setImageDrawable(getResources().getDrawable(R.drawable.location_all_24));
-
-
     }
 
     private void adapterEvents(final List<String> list) {
@@ -381,9 +379,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
             loading.setVisibility(View.GONE);
             cardViewButtonAdd.setVisibility(View.VISIBLE);
         }
-
-
-
     }
 
     private class EventViewHolder extends RecyclerView.ViewHolder {
@@ -454,7 +449,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
-        updateMap();
+        updateMap(nearby_events);
         if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION)
                 != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getActivity(),
                 Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
@@ -466,7 +461,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     }
 
     @RequiresApi(api = Build.VERSION_CODES.M)
-    public void updateMap() {
+    public void updateMap(List<String> events) {
         if (mMap != null) {
             mMap.clear();
 
@@ -487,12 +482,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
 
             itemEvents.clear();
 
-            Log.w("Events", "MinLat : " + minLat);
-            Log.w("Events", "MaxLat : " + maxLat);
-            Log.w("Events", "MinLong : " + minLong);
-            Log.w("Events", "MaxLong : " + maxLong);
-            Log.w("Events", "Coordinate : " + USER.getLocation());
-
             final float[] results = new float[3];
 
             mStoreBase.collection("events")
@@ -503,10 +492,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                 public void onComplete(@NonNull Task<QuerySnapshot> task) {
                     for (QueryDocumentSnapshot doc : task.getResult()) {
                         Evenement e = doc.toObject(Evenement.class);
-                        Log.w("Events", "Found " + e.getName());
-                        Log.w("Events", "E longitude " + e.getLongitude());
                         if (e.getLongitude() > minLong && e.getLongitude() < maxLong) {
-                            Log.w("Events", "Found and add" + e.getName());
                             Location.distanceBetween(USER.getLocation().getLatitude(), USER.getLocation().getLongitude(),
                                     e.getLatitude(), e.getLongitude(), results);
                             if (results[0] <= range * 1000) {

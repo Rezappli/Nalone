@@ -87,9 +87,9 @@ public class Constants {
     public static boolean ON_MESSAGE_ACTIVITY = false;
     public static boolean ON_FRIENDS_ACTIVITY = false;
 
-    private static String FCM_API = "https://fcm.googleapis.com/fcm/send";
-    private static String serverKey = "key=AAAA4ZRDAW0:APA91bErNdSatj13ahbk5w8kqEtjnJ4B4BI70KPYBvJNBnLjKjXn0y-FfB73j9p-A6Iw2sVDN93UfrjkhXxqqU3H_rVm1RuB5IwPfrcB85CgAZH2ZN-SopzO-Pp2r5p_V7R5Er_X7wl7";
-    private static String contentType = "application/json";
+    public static String FCM_API = null;
+    public static String serverKey = null;
+    public static String contentType = null;
 
     public static void sendNotification(JSONObject notification, final Context context) {
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(FCM_API, notification,
@@ -172,49 +172,54 @@ public class Constants {
     }
 
     public static void setGroupImage(final Group g, final Context context, final ImageView imageView){
-        if(g.getImage_url() != null) {
-            if(!Cache.fileExists(g.getUid())) {
-                StorageReference imgRef = mStore.getReference("groups/" + g.getUid());
-                if (imgRef != null) {
-                    imgRef.getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
-                        @Override
-                        public void onComplete(@NonNull Task<Uri> task) {
-                            if (task.isSuccessful()) {
-                                Uri img = task.getResult();
-                                if (img != null) {
-                                    Cache.saveUriFile(g.getUid(), img);
-                                    g.setImage_url(Cache.getImageDate(g.getUid()));
-                                    mStoreBase.collection("groups").document(g.getUid()).set(g);
-                                    Glide.with(context).load(img).fitCenter().centerCrop().into(imageView);
-                                }
-                            }
-                        }
-                    });
-                }
-            }else{
-                Uri imgCache = Cache.getUriFromUid(g.getUid());
-                if(Cache.getImageDate(g.getUid()).equalsIgnoreCase(g.getImage_url())) {
-                    Glide.with(context).load(imgCache).fitCenter().centerCrop().into(imageView);
-                }else{
-                    StorageReference imgRef = mStore.getReference("groups/" + g.getUid());
-                    if (imgRef != null) {
-                        imgRef.getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
-                            @Override
-                            public void onComplete(@NonNull Task<Uri> task) {
-                                if (task.isSuccessful()) {
-                                    Uri img = task.getResult();
-                                    if (img != null) {
-                                        Cache.saveUriFile(g.getUid(), img);
-                                        g.setImage_url(Cache.getImageDate(g.getUid()));
-                                        mStoreBase.collection("groups").document(g.getUid()).set(g);
-                                        Glide.with(context).load(img).fitCenter().centerCrop().into(imageView);
+        imageView.post(new Runnable() {
+            @Override
+            public void run() {
+                if(g.getImage_url() != null) {
+                    if(!Cache.fileExists(g.getUid())) {
+                        StorageReference imgRef = mStore.getReference("groups/" + g.getUid());
+                        if (imgRef != null) {
+                            imgRef.getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
+                                @Override
+                                public void onComplete(@NonNull Task<Uri> task) {
+                                    if (task.isSuccessful()) {
+                                        Uri img = task.getResult();
+                                        if (img != null) {
+                                            Cache.saveUriFile(g.getUid(), img);
+                                            g.setImage_url(Cache.getImageDate(g.getUid()));
+                                            mStoreBase.collection("groups").document(g.getUid()).set(g);
+                                            Glide.with(context).load(img).fitCenter().centerCrop().into(imageView);
+                                        }
                                     }
                                 }
+                            });
+                        }
+                    }else{
+                        Uri imgCache = Cache.getUriFromUid(g.getUid());
+                        if(Cache.getImageDate(g.getUid()).equalsIgnoreCase(g.getImage_url())) {
+                            Glide.with(context).load(imgCache).fitCenter().centerCrop().into(imageView);
+                        }else{
+                            StorageReference imgRef = mStore.getReference("groups/" + g.getUid());
+                            if (imgRef != null) {
+                                imgRef.getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<Uri> task) {
+                                        if (task.isSuccessful()) {
+                                            Uri img = task.getResult();
+                                            if (img != null) {
+                                                Cache.saveUriFile(g.getUid(), img);
+                                                g.setImage_url(Cache.getImageDate(g.getUid()));
+                                                mStoreBase.collection("groups").document(g.getUid()).set(g);
+                                                Glide.with(context).load(img).fitCenter().centerCrop().into(imageView);
+                                            }
+                                        }
+                                    }
+                                });
                             }
-                        });
+                        }
                     }
                 }
             }
-        }
+        });
     }
 }

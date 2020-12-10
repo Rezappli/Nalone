@@ -8,6 +8,8 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
+import android.location.Address;
+import android.location.Geocoder;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -25,8 +27,12 @@ import com.example.nalone.R;
 import com.example.nalone.User;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.firebase.firestore.GeoPoint;
 
+import java.io.IOException;
 import java.util.Calendar;
+import java.util.List;
 import java.util.UUID;
 
 public class SignUpInformationActivity extends AppCompatActivity {
@@ -190,6 +196,19 @@ public class SignUpInformationActivity extends AppCompatActivity {
                     confirmPass.setError("Le mot de passe ne correspond pas",customErrorDrawable);
                     return;
                 }
+
+                LatLng pos = null;
+
+                try{
+                    pos = getLocationFromAddress(villeEntre);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
+                if(pos == null){
+                    ville.setError("Impossible de trouver ce lieu", customErrorDrawable);
+                    return;
+                }
               String sexe = "";
 
               if(bHomme){
@@ -202,6 +221,7 @@ public class SignUpInformationActivity extends AppCompatActivity {
 
                 user = new User(UUID.randomUUID().toString(), nomEntre, prenomEntre, sexe, villeEntre, numeroEntre, mailEntre,
                         null, "", dateNaissance.getText().toString());
+                user.setLocation(new GeoPoint(pos.latitude, pos.longitude));
                 Intent signUpStudy = new Intent(getBaseContext(), SignUpStudiesActivity.class);
                 startActivityForResult(signUpStudy, 0);
 
@@ -253,6 +273,34 @@ public class SignUpInformationActivity extends AppCompatActivity {
 
         dialogCalendrier.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         dialogCalendrier.show();
+    }
+
+    private LatLng getLocationFromAddress(String strAddress) {
+
+        Geocoder coder = new Geocoder(SignUpInformationActivity.this);
+        List<Address> address;
+        LatLng p1 = null;
+
+        try {
+            // May throw an IOException
+            address = coder.getFromLocationName(strAddress, 10);
+            if (address == null) {
+                return null;
+            }
+
+            if(address.size() > 0) {
+                Address location = address.get(0);
+                p1 = new LatLng(location.getLatitude(), location.getLongitude());
+            }else{
+                return null;
+            }
+
+        } catch (IOException ex) {
+
+            ex.printStackTrace();
+        }
+
+        return p1;
     }
 
 

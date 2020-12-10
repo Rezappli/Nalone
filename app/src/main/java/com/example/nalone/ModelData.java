@@ -3,6 +3,7 @@ package com.example.nalone;
 import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.DocumentReference;
 
+import java.util.Calendar;
 import java.util.Date;
 
 public class ModelData {
@@ -14,7 +15,7 @@ public class ModelData {
     public ModelData(){}
 
     public ModelData(String status, DocumentReference user){
-        this(status, user, new Timestamp(new Date()));
+        this(status, user, new Timestamp(Calendar.getInstance().getTime()));
     }
 
     public ModelData(String status, DocumentReference user, Timestamp add_time){
