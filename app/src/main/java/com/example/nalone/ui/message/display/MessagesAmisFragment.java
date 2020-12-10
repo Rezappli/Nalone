@@ -144,11 +144,9 @@ public class MessagesAmisFragment extends Fragment {
                         if (task.isSuccessful()) {
 
                             for (QueryDocumentSnapshot document : task.getResult()) {
-                                User u = document.toObject(User.class);
 
-                                uid.add(u.getUid());
-
-                                uid.add(document.toObject(User.class).getUid());
+                                uid.add(document.getId());
+                                //uid.add(document.toObject(User.class).getUid());
                             }
                             if(!uid.isEmpty()){
                                 Log.w("liste uid", uid.toString());
