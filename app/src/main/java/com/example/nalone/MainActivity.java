@@ -122,11 +122,25 @@ public class MainActivity extends AppCompatActivity{
                 }
             }
         });
+
+        if(currentUser != null){
+            editTextAddress.setText(currentUser.getEmail());
+        }
     }
 
     private void signIn() {
-        Intent signInIntent = new Intent(this, HomeActivity.class);
-        startActivityForResult(signInIntent, 0);
+        mStoreBase.collection("users").whereEqualTo("mail", editTextAddress.getText().toString()).get().addOnCompleteListener(
+                new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if(task.isSuccessful()) {
+                            connectUser(editTextAddress.getText().toString(), editTextPass.getText().toString());
+                        }else{
+                            startActivity(new Intent(MainActivity.this, SignUpInformationActivity.class));
+                        }
+                    }
+                }
+        );
     }
 
     @Override

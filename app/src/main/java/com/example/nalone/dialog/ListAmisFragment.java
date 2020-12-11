@@ -289,37 +289,37 @@ public class ListAmisFragment extends Fragment {
                                             userViewHolder.button.setImageDrawable(getResources().getDrawable(add));
                                         }
 
-                                            userViewHolder.button.setOnClickListener(new View.OnClickListener() {
-                                                @Override
-                                                public void onClick(View v) {
-                                                    if (type == "message"){
-                                                        mStoreBase.collection("users").document(USER_ID).collection("chat_friends")
-                                                                .document(u.getUid()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                                                            @Override
-                                                            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                                                                if (task.isSuccessful()) {
-                                                                    DocumentSnapshot document = task.getResult();
-                                                                    if (document.exists()) {
-                                                                        ChatActivityFriend.nouveau = false;
-                                                                    } else {
-                                                                        ChatActivityFriend.nouveau = true;
-                                                                    }
+                                        userViewHolder.button.setOnClickListener(new View.OnClickListener() {
+                                            @Override
+                                            public void onClick(View v) {
+                                                if (type == "message"){
+                                                    mStoreBase.collection("users").document(USER_ID).collection("chat_friends")
+                                                            .document(u.getUid()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                                                        @Override
+                                                        public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                                                            if (task.isSuccessful()) {
+                                                                DocumentSnapshot document = task.getResult();
+                                                                if (document.exists()) {
+                                                                    ChatActivityFriend.nouveau = false;
+                                                                } else {
+                                                                    ChatActivityFriend.nouveau = true;
                                                                 }
-                                                                ChatActivityFriend.USER_LOAD =u;
-                                                                startActivity(new Intent(getContext(), ChatActivityFriend.class));
                                                             }
-                                                        });
-                                                    }else{
-                                                        if (!adds.contains(u.getUid()) || adds.isEmpty()) {
-                                                            userViewHolder.button.setImageDrawable(getResources().getDrawable(remove));
-                                                            adds.add(u.getUid());
-                                                          } else {
-                                                            userViewHolder.button.setImageDrawable(getResources().getDrawable(add));
-                                                            adds.remove(u.getUid());
+                                                            ChatActivityFriend.USER_LOAD =u;
+                                                            startActivity(new Intent(getContext(), ChatActivityFriend.class));
+                                                        }
+                                                    });
+                                                }else{
+                                                    if (!adds.contains(u.getUid()) || adds.isEmpty()) {
+                                                        userViewHolder.button.setImageDrawable(getResources().getDrawable(remove));
+                                                        adds.add(u.getUid());
+                                                    } else {
+                                                        userViewHolder.button.setImageDrawable(getResources().getDrawable(add));
+                                                        adds.remove(u.getUid());
                                                     }
                                                 }
-                                                }
-                                            });
+                                            }
+                                        });
 
 
 
