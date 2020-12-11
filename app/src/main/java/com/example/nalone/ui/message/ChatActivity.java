@@ -82,7 +82,7 @@ public class ChatActivity extends AppCompatActivity {
     private String TOPIC;
     private final String TAG = "NOTIFICATION TAG";
 
-    public static boolean nouveau;
+    public static boolean nouveau = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -175,7 +175,6 @@ public class ChatActivity extends AppCompatActivity {
             }
         }else{
             String id = UUID.randomUUID().toString();
-
             chatRef = mStoreBase.collection("chat").document(id);
             mStoreBase.collection("chat").document(id).set(new Chat(chatRef,USER_ID));
             DocumentReference ref = mStoreBase.collection("chat").document(id);
