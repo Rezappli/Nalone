@@ -6,7 +6,6 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.GeoPoint;
 
 import java.io.Serializable;
-import java.util.List;
 
 public class Evenement implements Serializable {
 

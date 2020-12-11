@@ -1,30 +1,16 @@
 package com.example.nalone;
 
-import android.content.Context;
 import android.net.Uri;
-import android.os.Build;
 import android.util.Log;
 
-import androidx.annotation.RequiresApi;
-
-import com.google.common.primitives.Bytes;
-import com.google.firebase.Timestamp;
-
 import static com.example.nalone.util.Constants.application;
-import static com.example.nalone.util.Constants.formatD;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.nio.ByteBuffer;
-import java.nio.file.Files;
-import java.nio.file.attribute.BasicFileAttributes;
-import java.nio.file.attribute.FileTime;
-import java.sql.Time;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.Scanner;
 
@@ -77,12 +63,6 @@ public class Cache {
         }
         return null;
 
-    }
-
-    public static String removeMillisTimestamp(Timestamp t){
-        SimpleDateFormat s = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
-
-        return s.format(t.toDate());
     }
 
     public static Uri getUriFromUid(String uid) {

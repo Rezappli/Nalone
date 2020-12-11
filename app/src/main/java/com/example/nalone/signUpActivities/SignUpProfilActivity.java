@@ -17,6 +17,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.example.nalone.MainActivity;
 import com.example.nalone.R;
 import com.example.nalone.util.Constants;
@@ -192,18 +193,10 @@ public class SignUpProfilActivity extends AppCompatActivity {
         super.onActivityResult(reqCode, resultCode, data);
 
         if (resultCode == RESULT_OK) {
-            try {
-                imageUri = data.getData();
-                assert imageUri != null;
-                final InputStream imageStream = getContentResolver().openInputStream(imageUri);
-                Bitmap img  = BitmapFactory.decodeStream(imageStream);
-                imageViewPhotoProfil.setImageBitmap(img);
-                hasSelectedImage = true;
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
-                Toast.makeText(getApplicationContext(), "Une erreur s'est produite",Toast.LENGTH_LONG).show();
-            }
-
+            imageUri = data.getData();
+            assert imageUri != null;
+            Glide.with(SignUpProfilActivity.this).load(imageUri).fitCenter().centerCrop().into(imageViewPhotoProfil);
+            hasSelectedImage = true;
         }else {
             Toast.makeText(getApplicationContext(),"Vous n'avez pas choisi d'image", Toast.LENGTH_LONG).show();
 

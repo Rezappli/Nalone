@@ -1,6 +1,5 @@
 package com.example.nalone;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.google.firebase.Timestamp;
