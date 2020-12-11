@@ -66,7 +66,6 @@ public class ListAmisFragment extends Fragment {
     private View rootView;
     private ProgressBar loading;
 
-    private FirebaseFirestore firebaseFirestore;
     private FirestoreRecyclerAdapter adapter;
     private RecyclerView mRecyclerView;
     private List<String> friends;

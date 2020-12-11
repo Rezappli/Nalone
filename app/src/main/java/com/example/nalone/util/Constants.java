@@ -46,8 +46,6 @@ public class Constants {
 
     public static FirebaseAuth mAuth = FirebaseAuth.getInstance();
     public static FirebaseFirestore mStoreBase = FirebaseFirestore.getInstance();
-    public static GeoFire geoFirestore = new GeoFire(mStoreBase.collection("events"));
-
 
     public static FirebaseStorage mStore = FirebaseStorage.getInstance();
     public static StorageReference USER_STORAGE_REF;

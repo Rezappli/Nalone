@@ -49,6 +49,7 @@ public class HomeActivity extends AppCompatActivity{
                 @Override
                 public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                     Constants.FCM_API = task.getResult().get("url").toString();
+                    Log.w("FCM", "FCM set FCM API");
                 }
             });
         }
@@ -57,7 +58,8 @@ public class HomeActivity extends AppCompatActivity{
             mStoreBase.collection("application").document("server").get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                 @Override
                 public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                    Constants.FCM_API = task.getResult().get("key").toString();
+                    Constants.serverKey = task.getResult().get("key").toString();
+                    Log.w("FCM", "FCM set FCM API");
                 }
             });
         }
@@ -66,7 +68,8 @@ public class HomeActivity extends AppCompatActivity{
             mStoreBase.collection("application").document("notification").get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                 @Override
                 public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                    Constants.FCM_API = task.getResult().get("application").toString();
+                    Constants.contentType = task.getResult().get("application").toString();
+                    Log.w("FCM", "FCM set FCM API");
                 }
             });
         }

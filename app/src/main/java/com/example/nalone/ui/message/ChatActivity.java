@@ -23,6 +23,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.example.nalone.Chat;
+import com.example.nalone.ChatModel;
 import com.example.nalone.Message;
 import com.example.nalone.ModelData;
 import com.example.nalone.R;
@@ -120,6 +121,7 @@ public class ChatActivity extends AppCompatActivity {
                     for(QueryDocumentSnapshot doc : task.getResult()) {
                         Chat c = doc.toObject(Chat.class);
                         chatRef = c.getChatRef();
+                        Log.w("Chat", "Chat Ref : " + chatRef);
                     }
 
                     if(chatRef != null) {
@@ -167,23 +169,25 @@ public class ChatActivity extends AppCompatActivity {
     }
 
     private void sendMessage(Message msg) {
-        if(!nouveau){
-            if(msg != null || msg.getSender() != null || msg.getMessage() != null || msg.getTime() != null) {
+        if(msg != null || msg.getSender() != null || msg.getMessage() != null || msg.getTime() != null) {
+            if (!nouveau) {
                 mStoreBase.collection("chat").document(chatRef.getId()).collection("messages").document(UUID.randomUUID().toString()).set(msg);
                 messageEditText.setText("");
                 sendMessageNotification(msg.getMessage());
+
+            } else {
+                String id = UUID.randomUUID().toString();
+                chatRef = mStoreBase.collection("chat").document(id);
+                mStoreBase.collection("chat").document(id).set(new Chat(chatRef, chatRef.getId()));
+                ChatModel cm_user = new ChatModel(USER_ID, chatRef);
+                ChatModel cm_userload = new ChatModel(USER_LOAD.getUid(), chatRef);
+                mStoreBase.collection("users").document(USER_ID).collection("chat_friends").document(USER_LOAD.getUid()).set(cm_userload);
+                mStoreBase.collection("users").document(USER_LOAD.getUid()).collection("chat_friends").document(USER_ID).set(cm_user);
+                mStoreBase.collection("chat").document(id).collection("messages").document(UUID.randomUUID().toString()).set(msg);
+                messageEditText.setText("");
+                sendMessageNotification(msg.getMessage());
+                nouveau = false;
             }
-        }else{
-            String id = UUID.randomUUID().toString();
-            chatRef = mStoreBase.collection("chat").document(id);
-            mStoreBase.collection("chat").document(id).set(new Chat(chatRef,USER_ID));
-            DocumentReference ref = mStoreBase.collection("chat").document(id);
-            ModelData md = new ModelData("add", ref);
-            mStoreBase.collection("users").document(USER_ID).collection("chat_friends").document(USER_LOAD.getUid()).set(md);
-            mStoreBase.collection("users").document(USER_LOAD.getUid()).collection("chat_friends").document(USER_ID).set(md);
-            mStoreBase.collection("chat").document(id).collection("messages").document(UUID.randomUUID().toString()).set(msg);
-            messageEditText.setText("");
-            sendMessageNotification(msg.getMessage());
         }
 
 
