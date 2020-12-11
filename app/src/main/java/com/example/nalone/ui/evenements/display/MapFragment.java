@@ -172,7 +172,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
             public void onClick(View v) {
                 hiddeText(textViewLocationInscrit);
                 imageViewLocationInscrit.setImageDrawable(getResources().getDrawable(R.drawable.location_inscrit_30));
-                Query query = mStoreBase.collection("events").whereEqualTo("ownerDoc", "PUBLIC");
+                Query query = mStoreBase.collection("events").whereIn("uid", event_inscrit);
                 adapterEvents(query);
                // updateMap(event_inscrit);
 
