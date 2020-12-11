@@ -107,6 +107,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     private CardView cardViewButtonAdd, loading;
     private List<String> myEvents = new ArrayList<>();
     private List<String> event_prive, event_public, event_create, event_inscrit;
+    private boolean zoom;
 
 
     public MapFragment() {
@@ -146,12 +147,14 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         loading = rootView.findViewById(R.id.loading);
 
         cardViewLocationPrive.setOnClickListener(new View.OnClickListener() {
+            @RequiresApi(api = Build.VERSION_CODES.M)
             @Override
             public void onClick(View v) {
+                Query query = mStoreBase.collection("events").whereEqualTo("visibility", "PRIVATE");
                 hiddeText(textViewLocationPrive);
                 imageViewLocationPrive.setImageDrawable(getResources().getDrawable(R.drawable.location_private_30));
-                Query query = mStoreBase.collection("events").whereEqualTo("visibility", "PRIVATE");
-                adapterEvents(query);
+                clickFiltre(query);
+
             }
         });
 
@@ -162,45 +165,45 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                 hiddeText(textViewLocationAll);
                 imageViewLocationAll.setImageDrawable(getResources().getDrawable(R.drawable.location_all_30));
                 Query query = mStoreBase.collection("events");
-                adapterEvents(query);
-                updateMap(nearby_events);
+                clickFiltre(query);
+
             }
         });
 
         cardViewLocationInscrit.setOnClickListener(new View.OnClickListener() {
+            @RequiresApi(api = Build.VERSION_CODES.M)
             @Override
             public void onClick(View v) {
                 hiddeText(textViewLocationInscrit);
                 imageViewLocationInscrit.setImageDrawable(getResources().getDrawable(R.drawable.location_inscrit_30));
                 Query query = mStoreBase.collection("events").whereIn("uid", event_inscrit);
-                adapterEvents(query);
-               // updateMap(event_inscrit);
+                clickFiltre(query);
+
 
             }
         });
 
         cardViewLocationPublic.setOnClickListener(new View.OnClickListener() {
+            @RequiresApi(api = Build.VERSION_CODES.M)
             @Override
             public void onClick(View v) {
                 hiddeText(textViewLocationPublic);
+                DocumentReference ref = mStoreBase.document("users/" + USER_ID);
                 imageViewLocationPublic.setImageDrawable(getResources().getDrawable(R.drawable.location_public_30));
                 Query query = mStoreBase.collection("events").whereEqualTo("visibility", "PUBLIC");
-                adapterEvents(query);
-                //updateMap(event_public);
-
+                clickFiltre(query);
             }
         });
 
         cardViewLocationCreate.setOnClickListener(new View.OnClickListener() {
+            @RequiresApi(api = Build.VERSION_CODES.M)
             @Override
             public void onClick(View v) {
                 hiddeText(textViewLocationCreate);
                 imageViewLocationCreate.setImageDrawable(getResources().getDrawable(R.drawable.location_create_30));
                 DocumentReference ref = mStoreBase.document("users/" + USER_ID);
                 Query query = mStoreBase.collection("events").whereEqualTo("ownerDoc", ref);
-
-                adapterEvents(query);
-                //updateMap(event_create);
+                clickFiltre(query);
 
             }
         });
@@ -228,6 +231,13 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         });
 
         return rootView;
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.M)
+    private void clickFiltre(Query query) {
+        zoom = true;
+        adapterEvents(query);
+        updateMap(query);
     }
 
     private void hiddeText(TextView tv) {
@@ -451,7 +461,8 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
-        updateMap(nearby_events);
+        Query query = mStoreBase.collection("events");
+        updateMap(query);
         if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION)
                 != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getActivity(),
                 Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
@@ -463,10 +474,9 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     }
 
     @RequiresApi(api = Build.VERSION_CODES.M)
-    public void updateMap(List<String> events) {
+    public void updateMap(final Query query) {
         if (mMap != null) {
             mMap.clear();
-
 
             mMap.addCircle(new CircleOptions()
                     .center(new LatLng(USER.getLocation().getLatitude(), USER.getLocation().getLongitude()))
@@ -474,20 +484,17 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                     .strokeWidth(3f)
                     .strokeColor(Color.BLUE));
 
-            if (targetZoom == null) {
-                mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(USER.getLocation().getLatitude(), USER.getLocation().getLongitude()), 13));
-            } else {
-                CameraUpdate location = CameraUpdateFactory.newLatLngZoom(
-                        targetZoom, 30);
-                mMap.animateCamera(location);
+            if (targetZoom == null && !zoom) {
+                mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(USER.getLocation().getLatitude(),
+                        USER.getLocation().getLongitude()), 10));
             }
 
             itemEvents.clear();
 
             final float[] results = new float[3];
 
-            mStoreBase.collection("events")
-                    .whereGreaterThan("latitude", minLat)
+
+            query.whereGreaterThan("latitude", minLat)
                     .whereLessThan("latitude", maxLat)
                     .get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                 @Override
@@ -509,7 +516,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                     }
 
                     if (nearby_events.size() > 0) {
-                        Query query = mStoreBase.collection("events");
                         adapterEvents(query);
                     }
                     Log.w("iterator", iterator+"");
