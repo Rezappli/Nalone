@@ -114,20 +114,22 @@ public class ChatActivity extends AppCompatActivity {
         otherLayoutMessages = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         otherLayoutMessages.setMargins(10, 1, 80, 1);
 
-        mStoreBase.collection("users").document(USER.getUid()).collection("chat_friends").whereEqualTo("uid", USER_LOAD.getUid()).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                for(QueryDocumentSnapshot doc : task.getResult()) {
-                    Chat c = doc.toObject(Chat.class);
-                    chatRef = c.getChatRef();
-                }
+            mStoreBase.collection("users").document(USER.getUid()).collection("chat_friends").whereEqualTo("uid", USER_LOAD.getUid()).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                @Override
+                public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                    for(QueryDocumentSnapshot doc : task.getResult()) {
+                        Chat c = doc.toObject(Chat.class);
+                        chatRef = c.getChatRef();
+                    }
 
-                if(chatRef != null) {
-                    adapterMessages();
-                    mRecyclerView.getLayoutManager().scrollToPosition(0);
+                    if(chatRef != null) {
+                        adapterMessages();
+                        mRecyclerView.getLayoutManager().scrollToPosition(0);
+                    }
                 }
-            }
-        });
+            });
+
+
 
 
 
@@ -173,8 +175,9 @@ public class ChatActivity extends AppCompatActivity {
             }
         }else{
             String id = UUID.randomUUID().toString();
-            mStoreBase.collection("chat").document(id);
+
             chatRef = mStoreBase.collection("chat").document(id);
+            mStoreBase.collection("chat").document(id).set(new Chat(chatRef,USER_ID));
             DocumentReference ref = mStoreBase.collection("chat").document(id);
             ModelData md = new ModelData("add", ref);
             mStoreBase.collection("users").document(USER_ID).collection("chat_friends").document(USER_LOAD.getUid()).set(md);
