@@ -24,6 +24,7 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.example.nalone.Chat;
 import com.example.nalone.Message;
+import com.example.nalone.ModelData;
 import com.example.nalone.R;
 import com.example.nalone.User;
 import com.example.nalone.util.Constants;
@@ -48,6 +49,7 @@ import java.util.UUID;
 
 import static com.example.nalone.util.Constants.ID_NOTIFICATION_MESSAGES;
 import static com.example.nalone.util.Constants.USER;
+import static com.example.nalone.util.Constants.USER_ID;
 import static com.example.nalone.util.Constants.USER_REFERENCE;
 import static com.example.nalone.util.Constants.allTimeFormat;
 import static com.example.nalone.util.Constants.mStoreBase;
@@ -79,6 +81,8 @@ public class ChatActivity extends AppCompatActivity {
     private String NOTIFICATION_MESSAGE;
     private String TOPIC;
     private final String TAG = "NOTIFICATION TAG";
+
+    public static boolean nouveau;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -161,11 +165,26 @@ public class ChatActivity extends AppCompatActivity {
     }
 
     private void sendMessage(Message msg) {
-        if(msg != null || msg.getSender() != null || msg.getMessage() != null || msg.getTime() != null) {
-            mStoreBase.collection("chat").document(chatRef.getId()).collection("messages").document(UUID.randomUUID().toString()).set(msg);
+        if(!nouveau){
+            if(msg != null || msg.getSender() != null || msg.getMessage() != null || msg.getTime() != null) {
+                mStoreBase.collection("chat").document(chatRef.getId()).collection("messages").document(UUID.randomUUID().toString()).set(msg);
+                messageEditText.setText("");
+                sendMessageNotification(msg.getMessage());
+            }
+        }else{
+            String id = UUID.randomUUID().toString();
+            mStoreBase.collection("chat").document(id);
+            chatRef = mStoreBase.collection("chat").document(id);
+            DocumentReference ref = mStoreBase.collection("chat").document(id);
+            ModelData md = new ModelData("add", ref);
+            mStoreBase.collection("users").document(USER_ID).collection("chat_friends").document(USER_LOAD.getUid()).set(md);
+            mStoreBase.collection("users").document(USER_LOAD.getUid()).collection("chat_friends").document(USER_ID).set(md);
+            mStoreBase.collection("chat").document(id).collection("messages").document(UUID.randomUUID().toString()).set(msg);
             messageEditText.setText("");
             sendMessageNotification(msg.getMessage());
         }
+
+
     }
 
     private void adapterMessages() {

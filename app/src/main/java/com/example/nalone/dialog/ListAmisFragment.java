@@ -37,6 +37,7 @@ import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
@@ -212,14 +213,22 @@ public class ListAmisFragment extends Fragment {
                                                 @Override
                                                 public void onClick(View v) {
                                                     if (type == "message"){
-                                                        String id = UUID.randomUUID().toString();
-                                                        mStoreBase.collection("chat").document(id);
-                                                        DocumentReference ref = mStoreBase.collection("chat").document(id);
-                                                        ModelData md = new ModelData("add", ref);
-                                                        mStoreBase.collection("users").document(USER_ID).collection("chat_friends").document(u.getUid()).set(md);
-                                                        mStoreBase.collection("users").document(u.getUid()).collection("chat_friends").document(USER_ID).set(md);
-                                                        ChatActivity.USER_LOAD = u;
-                                                        startActivity(new Intent(getContext(),ChatActivity.class));
+                                                        mStoreBase.collection("users").document(USER_ID).collection("chat_friends")
+                                                                .document(u.getUid()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                                                            @Override
+                                                            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                                                                if (task.isSuccessful()) {
+                                                                    DocumentSnapshot document = task.getResult();
+                                                                    if (document.exists()) {
+                                                                        ChatActivity.nouveau = false;
+                                                                    } else {
+                                                                        ChatActivity.nouveau = true;
+                                                                    }
+                                                                }
+                                                                ChatActivity.USER_LOAD =u;
+                                                                startActivity(new Intent(getContext(),ChatActivity.class));
+                                                            }
+                                                        });
                                                     }else{
                                                         if (!adds.contains(u.getUid()) || adds.isEmpty()) {
                                                             userViewHolder.button.setImageDrawable(getResources().getDrawable(remove));
