@@ -1,9 +1,7 @@
 package com.example.nalone.ui.message.display;
 
-import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
-import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
@@ -12,7 +10,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ProgressBar;
 import android.widget.SearchView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -20,7 +17,6 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.cardview.widget.CardView;
-import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
@@ -28,36 +24,24 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
-import com.bumptech.glide.Glide;
-import com.example.nalone.Cache;
 import com.example.nalone.R;
 import com.example.nalone.User;
 import com.example.nalone.dialog.ListAmisFragment;
-import com.example.nalone.items.ItemPerson;
-import com.example.nalone.ui.amis.display.PopupProfilFragment;
-import com.example.nalone.ui.message.ChatActivity;
+import com.example.nalone.ui.message.ChatActivityFriend;
 import com.example.nalone.util.Constants;
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
-import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
-import com.google.firebase.storage.StorageReference;
-
-import org.w3c.dom.Document;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import static com.example.nalone.HomeActivity.buttonBack;
 import static com.example.nalone.util.Constants.USER;
-import static com.example.nalone.util.Constants.USER_ID;
-import static com.example.nalone.util.Constants.mStore;
 import static com.example.nalone.util.Constants.mStoreBase;
 
 public class MessagesAmisFragment extends Fragment {
@@ -120,7 +104,7 @@ public class MessagesAmisFragment extends Fragment {
         addMessage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ListAmisFragment.type = "message";
+                ListAmisFragment.type = "message_ami";
                 navController.navigate(R.id.action_navigation_messages_to_navigation_list_amis);
             }
         });
@@ -254,8 +238,8 @@ public class MessagesAmisFragment extends Fragment {
 
 
     public void showPopUpProfil(final User u) {
-        ChatActivity.USER_LOAD = u;
-        startActivity(new Intent(getContext(), ChatActivity.class));
+        ChatActivityFriend.USER_LOAD = u;
+        startActivity(new Intent(getContext(), ChatActivityFriend.class));
     }
 
     @Override

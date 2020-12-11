@@ -18,6 +18,7 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.example.nalone.Group;
 import com.example.nalone.R;
+import com.example.nalone.dialog.ListAmisFragment;
 import com.example.nalone.ui.amis.display.PopUpMesGroupesFragment;
 import com.example.nalone.util.Constants;
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
@@ -57,7 +58,8 @@ public class MessagesGroupeFragment extends Fragment {
         addGroup.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                navController.navigate(R.id.action_navigation_mes_groupes_to_navigation_creat_group);
+                ListAmisFragment.type = "message_groupe";
+                navController.navigate(R.id.action_navigation_messages_to_navigation_list_amis);
             }
         });
 

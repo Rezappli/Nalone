@@ -24,36 +24,34 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.example.nalone.Cache;
-import com.example.nalone.Chat;
-import com.example.nalone.ModelData;
+import com.example.nalone.Group;
 import com.example.nalone.R;
 import com.example.nalone.User;
 import com.example.nalone.items.ItemPerson;
 import com.example.nalone.ui.amis.display.CreateGroupFragment;
 import com.example.nalone.ui.evenements.CreateEventFragment;
-import com.example.nalone.ui.message.ChatActivity;
+import com.example.nalone.ui.message.ChatActivityFriend;
+import com.example.nalone.ui.message.ChatActivityGroup;
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
-import com.google.firebase.firestore.model.Document;
 import com.google.firebase.storage.StorageReference;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 import static com.example.nalone.HomeActivity.buttonBack;
 import static com.example.nalone.util.Constants.USER;
 import static com.example.nalone.util.Constants.USER_ID;
 import static com.example.nalone.util.Constants.mStore;
 import static com.example.nalone.util.Constants.mStoreBase;
+import static com.example.nalone.util.Constants.setGroupImage;
 
 public class ListAmisFragment extends Fragment {
 
@@ -69,7 +67,9 @@ public class ListAmisFragment extends Fragment {
     private FirestoreRecyclerAdapter adapter;
     private RecyclerView mRecyclerView;
     private List<String> friends;
+    private List<String> groups;
     private List<String> adds;
+    private List<String> adds_group;
 
     private Button valider;
     private int remove, add;
@@ -96,20 +96,21 @@ public class ListAmisFragment extends Fragment {
         buttonBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(type == "group") {
+                if (type == "group") {
                     navController.navigate(R.id.action_navigation_list_amis_to_navigation_creat_group);
                 }
-                if(type == "event"){
+                if (type == "event") {
                     navController.navigate(R.id.action_navigation_list_amis_to_navigation_create_event);
                 }
-                if(type == "message"){
+                if (type == "message_ami" || type == "message_groupe") {
                     navController.navigate(R.id.action_navigation_list_amis_to_navigation_messages);
                 }
+
             }
         });
 
 
-        if (type == "message"){
+        if (type == "message_ami" || type == "message_groupe") {
             valider.setVisibility(View.GONE);
         }
         ajoutMembres();
@@ -118,21 +119,24 @@ public class ListAmisFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 Log.w("Type", type);
-                for (String a : adds){
+                for (String a : adds) {
                     Log.w("Adds", a);
                 }
-                if(type == "group") {
+                if (type == "group") {
                     CreateGroupFragment.adds = adds;
                     navController.navigate(R.id.action_navigation_list_amis_to_navigation_creat_group);
                 }
-                if(type == "event"){
+                if (type == "event") {
                     CreateEventFragment.adds = adds;
                     navController.navigate(R.id.action_navigation_list_amis_to_navigation_create_event);
                 }
 
             }
         });
-        adapterUsers();
+        if (type == "message_groupe") {
+            adapterGroups();
+        }if ( type == "message_ami")
+            adapterUsers();
         search_bar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -154,6 +158,83 @@ public class ListAmisFragment extends Fragment {
         });
 
         return rootView;
+    }
+
+    private void adapterGroups() {
+        groups = new ArrayList<>();
+        DocumentReference ref = mStoreBase.collection("users").document(USER_ID);
+
+
+        Query query = mStoreBase.collection("groups").whereEqualTo("ownerDoc", ref).limit(10);
+        FirestoreRecyclerOptions<Group> options = new FirestoreRecyclerOptions.Builder<Group>().setQuery(query, Group.class).build();
+
+        adapter = new FirestoreRecyclerAdapter<Group, UserViewHolder>(options) {
+            @NonNull
+            @Override
+            public UserViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+                View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_person, parent, false);
+                return new UserViewHolder(view);
+            }
+
+            @Override
+            protected void onBindViewHolder(@NonNull final UserViewHolder userViewHolder, int i, @NonNull final Group g) {
+                userViewHolder.nomInvit.setText(g.getName());
+                userViewHolder.villePers.setVisibility(View.GONE);
+                userViewHolder.button.setImageResource(R.drawable.ic_baseline_add_24);
+
+                                       /* if(adds_group.contains(g.getUid())){
+                                            userViewHolder.button.setImageDrawable(getResources().getDrawable(remove));
+                                        }else{
+                                            userViewHolder.button.setImageDrawable(getResources().getDrawable(add));
+                                        }*/
+
+                userViewHolder.button.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        if (type == "message_groupe") {
+                            mStoreBase.collection("users").document(USER_ID).collection("chat_groups")
+                                    .document(g.getUid()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                                @Override
+                                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                                    if (task.isSuccessful()) {
+                                        DocumentSnapshot document = task.getResult();
+                                        if (document.exists()) {
+                                            ChatActivityGroup.nouveau = false;
+                                        } else {
+                                            ChatActivityGroup.nouveau = true;
+                                        }
+                                    }
+                                    ChatActivityGroup.GROUP_LOAD =g;
+                                    startActivity(new Intent(getContext(), ChatActivityGroup.class));
+                                }
+                            });
+                        }/*else{
+                                                    if (!adds.contains(u.getUid()) || adds.isEmpty()) {
+                                                        userViewHolder.button.setImageDrawable(getResources().getDrawable(remove));
+                                                        adds.add(u.getUid());
+                                                    } else {
+                                                        userViewHolder.button.setImageDrawable(getResources().getDrawable(add));
+                                                        adds.remove(u.getUid());
+                                                    }
+                                                }*/
+                    }
+                });
+
+
+                setGroupImage(g, getContext(), userViewHolder.imagePerson);
+
+                loading.setVisibility(View.GONE);
+
+
+            }
+        };
+        mRecyclerView.setHasFixedSize(true);
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+
+        mRecyclerView.setAdapter(adapter);
+
+        adapter.startListening();
+
     }
 
     private void ajoutMembres() {
@@ -219,13 +300,13 @@ public class ListAmisFragment extends Fragment {
                                                                 if (task.isSuccessful()) {
                                                                     DocumentSnapshot document = task.getResult();
                                                                     if (document.exists()) {
-                                                                        ChatActivity.nouveau = false;
+                                                                        ChatActivityFriend.nouveau = false;
                                                                     } else {
-                                                                        ChatActivity.nouveau = true;
+                                                                        ChatActivityFriend.nouveau = true;
                                                                     }
                                                                 }
-                                                                ChatActivity.USER_LOAD =u;
-                                                                startActivity(new Intent(getContext(),ChatActivity.class));
+                                                                ChatActivityFriend.USER_LOAD =u;
+                                                                startActivity(new Intent(getContext(), ChatActivityFriend.class));
                                                             }
                                                         });
                                                     }else{

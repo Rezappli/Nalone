@@ -14,29 +14,24 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
-import androidx.core.widget.NestedScrollView;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.example.nalone.Chat;
 import com.example.nalone.ChatModel;
+import com.example.nalone.Group;
 import com.example.nalone.Message;
-import com.example.nalone.ModelData;
 import com.example.nalone.R;
 import com.example.nalone.User;
 import com.example.nalone.util.Constants;
-import com.firebase.ui.common.ChangeEventType;
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.textfield.TextInputEditText;
-import com.google.firebase.database.ChildEventListener;
-import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
@@ -45,25 +40,24 @@ import com.google.firebase.firestore.QuerySnapshot;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.MissingResourceException;
 import java.util.UUID;
 
 import static com.example.nalone.util.Constants.ID_NOTIFICATION_MESSAGES;
+import static com.example.nalone.util.Constants.ON_MESSAGE_ACTIVITY;
 import static com.example.nalone.util.Constants.USER;
 import static com.example.nalone.util.Constants.USER_ID;
 import static com.example.nalone.util.Constants.USER_REFERENCE;
 import static com.example.nalone.util.Constants.allTimeFormat;
 import static com.example.nalone.util.Constants.mStoreBase;
 import static com.example.nalone.util.Constants.sendNotification;
-import static com.example.nalone.util.Constants.ON_MESSAGE_ACTIVITY;
 
-public class ChatActivity extends AppCompatActivity {
+public class ChatActivityGroup extends AppCompatActivity {
 
     private ImageView buttonSend;
     private TextInputEditText messageEditText;
     private ImageView profile_view;
     private TextView username;
-    public static User USER_LOAD;
+    public static Group GROUP_LOAD;
     private TextView nameUser;
     private DocumentReference chatRef;
     private FirestoreRecyclerAdapter adapter;
@@ -96,7 +90,7 @@ public class ChatActivity extends AppCompatActivity {
         buttonSend = findViewById(R.id.buttonSend);
         messageEditText = findViewById(R.id.messageEditText);
         nameUser = findViewById(R.id.nameUser);
-        nameUser.setText(USER_LOAD.getFirst_name() + " " + USER_LOAD.getLast_name());
+        nameUser.setText(GROUP_LOAD.getName());
         mRecyclerView = findViewById(R.id.messagesRecyclerView);
         profile_view = findViewById(R.id.profile_view);
 
@@ -115,7 +109,7 @@ public class ChatActivity extends AppCompatActivity {
         otherLayoutMessages = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         otherLayoutMessages.setMargins(10, 1, 80, 1);
 
-            mStoreBase.collection("users").document(USER.getUid()).collection("chat_friends").whereEqualTo("uid", USER_LOAD.getUid()).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            mStoreBase.collection("users").document(USER.getUid()).collection("chat_friends").whereEqualTo("uid", GROUP_LOAD.getUid()).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                 @Override
                 public void onComplete(@NonNull Task<QuerySnapshot> task) {
                     for(QueryDocumentSnapshot doc : task.getResult()) {
@@ -165,7 +159,7 @@ public class ChatActivity extends AppCompatActivity {
             }
         });
 
-        Constants.setUserImage(USER_LOAD, ChatActivity.this, profile_view);
+        Constants.setGroupImage(GROUP_LOAD, ChatActivityGroup.this, profile_view);
     }
 
     private void sendMessage(Message msg) {
@@ -180,9 +174,9 @@ public class ChatActivity extends AppCompatActivity {
                 chatRef = mStoreBase.collection("chat").document(id);
                 mStoreBase.collection("chat").document(id).set(new Chat(chatRef, chatRef.getId()));
                 ChatModel cm_user = new ChatModel(USER_ID, chatRef);
-                ChatModel cm_userload = new ChatModel(USER_LOAD.getUid(), chatRef);
-                mStoreBase.collection("users").document(USER_ID).collection("chat_friends").document(USER_LOAD.getUid()).set(cm_userload);
-                mStoreBase.collection("users").document(USER_LOAD.getUid()).collection("chat_friends").document(USER_ID).set(cm_user);
+                ChatModel cm_userload = new ChatModel(GROUP_LOAD.getUid(), chatRef);
+                mStoreBase.collection("users").document(USER_ID).collection("chat_friends").document(GROUP_LOAD.getUid()).set(cm_userload);
+                mStoreBase.collection("users").document(GROUP_LOAD.getUid()).collection("chat_friends").document(USER_ID).set(cm_user);
                 mStoreBase.collection("chat").document(id).collection("messages").document(UUID.randomUUID().toString()).set(msg);
                 messageEditText.setText("");
                 sendMessageNotification(msg.getMessage());
@@ -197,12 +191,12 @@ public class ChatActivity extends AppCompatActivity {
         Query query = mStoreBase.collection("chat").document(chatRef.getId()).collection("messages").limit(limit).orderBy("time", Query.Direction.DESCENDING);
         FirestoreRecyclerOptions<Message> options = new FirestoreRecyclerOptions.Builder<Message>().setQuery(query, Message.class).build();
 
-        adapter = new FirestoreRecyclerAdapter<Message, ChatActivity.MessageViewHolder>(options) {
+        adapter = new FirestoreRecyclerAdapter<Message, ChatActivityGroup.MessageViewHolder>(options) {
             @NonNull
             @Override
-            public ChatActivity.MessageViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+            public ChatActivityGroup.MessageViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
                 View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_message, parent, false);
-                return new ChatActivity.MessageViewHolder(view);
+                return new ChatActivityGroup.MessageViewHolder(view);
             }
 
             @Override
@@ -229,7 +223,7 @@ public class ChatActivity extends AppCompatActivity {
                 });
             }
         };
-        mRecyclerView.setLayoutManager(new LinearLayoutManager(ChatActivity.this, RecyclerView.VERTICAL, true));
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(ChatActivityGroup.this, RecyclerView.VERTICAL, true));
         mRecyclerView.setAdapter(adapter);
         adapter.startListening();
 
@@ -313,7 +307,7 @@ public class ChatActivity extends AppCompatActivity {
     }
 
     public void sendMessageNotification(String msg){
-        TOPIC = "/topics/"+ USER_LOAD.getUid(); //topic must match with what the receiver subscribed to
+        TOPIC = "/topics/"+ GROUP_LOAD.getUid(); //topic must match with what the receiver subscribed to
         Log.w("TOPIC", "Topic : " + TOPIC);
         NOTIFICATION_TITLE = "Message de " + USER.getFirst_name() + " " + USER.getLast_name();
         NOTIFICATION_MESSAGE = msg;
@@ -331,7 +325,7 @@ public class ChatActivity extends AppCompatActivity {
         } catch (JSONException e) {
             Log.e(TAG, "onCreate: " + e.getMessage());
         }
-        sendNotification(notification, ChatActivity.this);
+        sendNotification(notification, ChatActivityGroup.this);
     }
 
     @Override
@@ -342,7 +336,7 @@ public class ChatActivity extends AppCompatActivity {
 
     private void clearNotifications(){
         NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-        notificationManager.cancel(USER_LOAD.getUid(), ID_NOTIFICATION_MESSAGES);
+        notificationManager.cancel(GROUP_LOAD.getUid(), ID_NOTIFICATION_MESSAGES);
     }
 
 }

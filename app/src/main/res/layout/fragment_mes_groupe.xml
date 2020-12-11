@@ -84,7 +84,7 @@
                 android:layout_gravity="bottom|center"
                 android:layout_margin="5dp"
                 android:clickable="false"
-                app:srcCompat="@drawable/ic_baseline_add_circle_24" />
+                app:srcCompat="@drawable/ic_baseline_add_white" />
         </androidx.cardview.widget.CardView>
 
         <SearchView

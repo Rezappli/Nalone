@@ -36,6 +36,7 @@ import static com.example.nalone.util.Constants.USER;
 import static com.example.nalone.util.Constants.USER_ID;
 import static com.example.nalone.util.Constants.mStore;
 import static com.example.nalone.util.Constants.mStoreBase;
+import static com.example.nalone.util.Constants.setGroupImage;
 
 public class MesGroupeFragment extends Fragment {
 
@@ -68,10 +69,10 @@ public class MesGroupeFragment extends Fragment {
 
         adapterGroups();
 
-        if(adapter == null || adapter.getItemCount() == 0){
+        /*if(adapter == null || adapter.getItemCount() == 0){
             loading.setVisibility(View.GONE);
             linearSansMesGroupes.setVisibility(View.VISIBLE);
-        }
+        }*/
 
         return root;
     }
@@ -102,51 +103,9 @@ public class MesGroupeFragment extends Fragment {
                         }
                     });
 
-                    if(g.getImage_url() != null) {
-                        if(!Cache.fileExists(g.getUid())) {
-                            StorageReference imgRef = mStore.getReference("groups/" + g.getUid());
-                            if (imgRef != null) {
-                                imgRef.getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
-                                    @Override
-                                    public void onComplete(@NonNull Task<Uri> task) {
-                                        if (task.isSuccessful()) {
-                                            Uri img = task.getResult();
-                                            if (img != null) {
-                                                Cache.saveUriFile(g.getUid(), img);
-                                                g.setImage_url(Cache.getImageDate(g.getUid()));
-                                                mStoreBase.collection("groups").document(g.getUid()).set(g);
-                                                Glide.with(getContext()).load(img).fitCenter().centerCrop().into(userViewHolder.imageGroup);
-                                            }
-                                        }
-                                    }
-                                });
-                            }
-                        }else{
-                            Uri imgCache = Cache.getUriFromUid(g.getUid());
-                            if(Cache.getImageDate(g.getUid()).equalsIgnoreCase(g.getImage_url())) {
-                                Glide.with(getContext()).load(imgCache).fitCenter().centerCrop().into(userViewHolder.imageGroup);
-                            }else{
-                                StorageReference imgRef = mStore.getReference("groups/" + g.getUid());
-                                if (imgRef != null) {
-                                    imgRef.getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
-                                        @Override
-                                        public void onComplete(@NonNull Task<Uri> task) {
-                                            if (task.isSuccessful()) {
-                                                Uri img = task.getResult();
-                                                if (img != null) {
-                                                    Cache.saveUriFile(g.getUid(), img);
-                                                    g.setImage_url(Cache.getImageDate(g.getUid()));
-                                                    mStoreBase.collection("groups").document(g.getUid()).set(g);
-                                                    Glide.with(getContext()).load(img).fitCenter().centerCrop().into(userViewHolder.imageGroup);
-                                                }
-                                            }
-                                        }
-                                    });
-                                }
-                            }
-                        }
-                    }
+                    setGroupImage(g, getContext(), userViewHolder.imageGroup);
                     loading.setVisibility(View.GONE);
+                    linearSansMesGroupes.setVisibility(View.GONE);
                 }
             };
             mRecyclerView.setHasFixedSize(true);

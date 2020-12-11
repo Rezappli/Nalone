@@ -5,7 +5,7 @@
     android:id="@+id/messageSwipeRefreshLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.message.ChatActivity">
+    tools:context=".ui.message.ChatActivityFriend">
 
     <RelativeLayout
         android:layout_width="match_parent"
