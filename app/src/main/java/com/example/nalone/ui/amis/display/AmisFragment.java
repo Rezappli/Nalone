@@ -1,5 +1,8 @@
 package com.example.nalone.ui.amis.display;
 
+import android.Manifest;
+import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Build;
@@ -8,6 +11,7 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.cardview.widget.CardView;
+import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
@@ -19,6 +23,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
@@ -27,6 +32,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.daimajia.swipe.SwipeLayout;
+import com.daimajia.swipe.util.Attributes;
 import com.example.nalone.Cache;
 import com.example.nalone.ModelData;
 import com.example.nalone.items.ItemPerson;
@@ -68,6 +75,7 @@ public class AmisFragment extends Fragment {
     private TextView textViewNbInvit;
     private LinearLayout linearSansMesAmis;
     private ProgressBar loading;
+    private boolean swipe;
 
 
     @Override
@@ -176,7 +184,7 @@ public class AmisFragment extends Fragment {
                                     @NonNull
                                     @Override
                                     public UserViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-                                        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_person, parent, false);
+                                        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.swipe_layout, parent, false);
                                         return new UserViewHolder(view);
                                     }
 
@@ -185,7 +193,84 @@ public class AmisFragment extends Fragment {
                                     protected void onBindViewHolder(@NonNull final UserViewHolder userViewHolder, int i, @NonNull final User u) {
                                         userViewHolder.villePers.setText(u.getCity());
                                         userViewHolder.nomInvit.setText(u.getFirst_name() + " " + u.getLast_name());
-                                        userViewHolder.button.setImageResource(R.drawable.ic_baseline_delete_24);
+                                        //userViewHolder.button.setImageResource(R.drawable.ic_baseline_delete_24);
+
+                                        userViewHolder.swipeLayout.addDrag(SwipeLayout.DragEdge.Left, userViewHolder.swipeLayout.findViewById(R.id.bottom_wrapper1));
+
+                                        userViewHolder.swipeLayout.addDrag(SwipeLayout.DragEdge.Right, userViewHolder.swipeLayout.findViewById(R.id.bottom_wraper));
+                                        userViewHolder.swipeLayout.addSwipeListener(new SwipeLayout.SwipeListener() {
+                                            @Override
+                                            public void onStartOpen(SwipeLayout layout) {
+
+                                            }
+
+                                            @Override
+                                            public void onOpen(SwipeLayout layout) {
+                                                swipe = true;
+                                            }
+
+                                            @Override
+                                            public void onStartClose(SwipeLayout layout) {
+
+                                            }
+
+                                            @Override
+                                            public void onClose(SwipeLayout layout) {
+
+                                            }
+
+                                            @Override
+                                            public void onUpdate(SwipeLayout layout, int leftOffset, int topOffset) {
+
+                                            }
+
+                                            @Override
+                                            public void onHandRelease(SwipeLayout layout, float xvel, float yvel) {
+
+                                            }
+                                        });
+
+                                        userViewHolder.swipeLayout.getSurfaceView().setOnClickListener(new View.OnClickListener() {
+                                            @Override
+                                            public void onClick(View v) {
+                                                Toast.makeText(getContext(), " Click : " , Toast.LENGTH_SHORT).show();
+                                            }
+                                        });
+
+                                        userViewHolder.btnLocation.setOnClickListener(new View.OnClickListener() {
+                                            @Override
+                                            public void onClick(View v) {
+                                                showPopUpProfil(u);
+                                            }
+                                        });
+
+                                        userViewHolder.Share.setOnClickListener(new View.OnClickListener() {
+                                            @Override
+                                            public void onClick(View view) {
+                                                Toast.makeText(view.getContext(), "Clicked on Share " , Toast.LENGTH_SHORT).show();
+                                            }
+                                        });
+
+                                        userViewHolder.Appel.setOnClickListener(new View.OnClickListener() {
+                                            @Override
+                                            public void onClick(View view) {
+                                                if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.CALL_PHONE)
+                                                        != PackageManager.PERMISSION_GRANTED) {
+                                                    getActivity().requestPermissions(new String[]{Manifest.permission.CALL_PHONE}, 0);
+                                                    return;
+                                                }
+                                                Intent callIntent = new Intent(Intent.ACTION_CALL);
+                                                callIntent.setData(Uri.parse("tel:"+u.getNumber()));
+                                                startActivity(callIntent);
+                                            }
+                                        });
+
+                                        userViewHolder.Delete.setOnClickListener(new View.OnClickListener() {
+                                            @Override
+                                            public void onClick(View v) {
+                                                removeFriend(u.getUid());
+                                            }
+                                        });
 
                                         if(u.getCursus().equalsIgnoreCase("Informatique")){
                                             userViewHolder.cardViewPhotoPerson.setCardBackgroundColor(Color.RED);
@@ -219,15 +304,37 @@ public class AmisFragment extends Fragment {
                                         userViewHolder.button.setOnClickListener(new View.OnClickListener() {
                                             @Override
                                             public void onClick(View v) {
-                                                removeFriend(u.getUid());
-                                                createFragment();
+                                                if(swipe == false) {
+                                                    userViewHolder.swipeLayout.open();
+                                                    swipe = true;
+                                                }
+                                                else{
+                                                    userViewHolder.swipeLayout.close();
+                                                    swipe = false;
+                                                }
+
+
+
                                             }
                                         });
                                         loading.setVisibility(View.GONE);
                                     }
                                 };
                                 mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+
                                 mRecyclerView.setAdapter(adapter);
+
+                                mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+                                    @Override
+                                    public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+                                        super.onScrollStateChanged(recyclerView, newState);
+                                        Log.e("RecyclerView", "onScrollStateChanged");
+                                    }
+                                    @Override
+                                    public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                                        super.onScrolled(recyclerView, dx, dy);
+                                    }
+                                });
                                 adapter.startListening();
 
 
@@ -250,6 +357,11 @@ public class AmisFragment extends Fragment {
         private ImageView imagePerson;
         private ImageView button;
         private CardView cardViewPhotoPerson;
+        public SwipeLayout swipeLayout;
+        public ImageView Delete;
+        public ImageView Appel;
+        public ImageView Share;
+        public ImageButton btnLocation;
 
         public UserViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -260,9 +372,16 @@ public class AmisFragment extends Fragment {
             imagePerson = itemView.findViewById(R.id.imagePerson);
             button = itemView.findViewById(R.id.buttonImage);
             cardViewPhotoPerson = itemView.findViewById(R.id.cardViewPhotoPerson);
+            //
+            swipeLayout = (SwipeLayout) itemView.findViewById(R.id.swipe);
+            Delete = (ImageView) itemView.findViewById(R.id.Delete);
+            Appel = (ImageView) itemView.findViewById(R.id.Appel);
+            Share = (ImageView) itemView.findViewById(R.id.Share);
+            btnLocation = (ImageButton) itemView.findViewById(R.id.btnLocation);
         }
 
     }
+
     private void removeFriend(final String uid) {
         mStoreBase.collection("users").document(USER.getUid()).
                 collection("friends").document(uid);

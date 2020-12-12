@@ -57,7 +57,7 @@ public class AideFragment extends Fragment {
                     return;
                 }
                 Intent callIntent = new Intent(Intent.ACTION_CALL);
-                callIntent.setData(Uri.parse("tel:0625285404"));
+                callIntent.setData(Uri.parse("tel:0781039494"));
                 startActivity(callIntent);
             }
         });

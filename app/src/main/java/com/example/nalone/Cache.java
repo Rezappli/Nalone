@@ -101,6 +101,4 @@ public class Cache {
         File file = new File(dir, uid);
         return file.exists();
     }
-
-
 }

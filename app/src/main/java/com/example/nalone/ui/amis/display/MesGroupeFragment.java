@@ -110,7 +110,6 @@ public class MesGroupeFragment extends Fragment {
             };
             mRecyclerView.setHasFixedSize(true);
             mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-
             mRecyclerView.setAdapter(adapter);
         }
 
