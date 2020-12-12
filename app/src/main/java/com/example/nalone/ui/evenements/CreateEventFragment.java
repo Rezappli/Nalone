@@ -79,9 +79,9 @@ public class CreateEventFragment extends Fragment {
     private TextInputEditText event_city;
     private TextInputEditText event_resume;
     private Visibility event_visibilite;
-    public TextView event_date;
+    public static TextView event_date;
 
-    public TextView event_horaire;
+    public static TextView event_horaire;
 
     private Dialog dialogAddPerson;
     private CardView cardViewPrivate;
