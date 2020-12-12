@@ -41,7 +41,9 @@ import java.util.List;
 
 import static com.example.nalone.util.Constants.USER;
 import static com.example.nalone.util.Constants.USER_ID;
+import static com.example.nalone.util.Constants.dateFormat;
 import static com.example.nalone.util.Constants.mStoreBase;
+import static com.example.nalone.util.Constants.timeFormat;
 
 
 public class MesEvenementsListFragment extends Fragment {
@@ -135,7 +137,8 @@ public class MesEvenementsListFragment extends Fragment {
                                     protected void onBindViewHolder(@NonNull final EventViewHolder holder, int i, @NonNull final Evenement e) {
                                         //holder.mImageView.setImageResource(e.getImage());
                                         holder.mTitle.setText((e.getName()));
-                                        holder.mDate.setText((e.getDate().toDate().toString()));
+                                        holder.mDate.setText((dateFormat.format(e.getDate().toDate())));
+                                        holder.mTime.setText((timeFormat.format(e.getDate().toDate())));
                                         holder.mVille.setText((e.getCity()));
                                         holder.mProprietaire.setText(e.getOwner());
                                         holder.textViewNbMembers.setText(e.getNbMembers() + "");

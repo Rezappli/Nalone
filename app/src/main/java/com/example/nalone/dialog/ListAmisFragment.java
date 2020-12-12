@@ -135,7 +135,7 @@ public class ListAmisFragment extends Fragment {
         });
         if (type == "message_groupe") {
             adapterGroups();
-        }if ( type == "message_ami")
+        }else
             adapterUsers();
         search_bar.setOnClickListener(new View.OnClickListener() {
             @Override

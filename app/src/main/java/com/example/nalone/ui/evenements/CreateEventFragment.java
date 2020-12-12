@@ -66,8 +66,10 @@ import static com.example.nalone.HomeActivity.buttonBack;
 import static com.example.nalone.util.Constants.USER;
 import static com.example.nalone.util.Constants.USER_ID;
 import static com.example.nalone.util.Constants.USER_REFERENCE;
+import static com.example.nalone.util.Constants.dateFormat;
 import static com.example.nalone.util.Constants.mStore;
 import static com.example.nalone.util.Constants.mStoreBase;
+import static com.example.nalone.util.Constants.timeFormat;
 
 public class CreateEventFragment extends Fragment {
     public static List<String> adds = new ArrayList<>();
@@ -77,9 +79,9 @@ public class CreateEventFragment extends Fragment {
     private TextInputEditText event_city;
     private TextInputEditText event_resume;
     private Visibility event_visibilite;
-    public static TextView event_date;
+    public TextView event_date;
 
-    public static TextView event_horaire;
+    public TextView event_horaire;
 
     private Dialog dialogAddPerson;
     private CardView cardViewPrivate;
@@ -170,7 +172,8 @@ public class CreateEventFragment extends Fragment {
             event_city.setText(EVENT_LOAD.getCity());
             event_name.setText(EVENT_LOAD.getName());
             event_resume.setText(EVENT_LOAD.getDescription());
-            event_horaire.setText(EVENT_LOAD.getDate().toDate().toString());
+            event_date.setText((dateFormat.format(EVENT_LOAD.getDate().toDate())));
+            event_horaire.setText((timeFormat.format(EVENT_LOAD.getDate().toDate())));
             event_adresse.setText(EVENT_LOAD.getAddress());
             //event_date.setText(MesEvenementsListFragment.dateEdit);
 
@@ -210,7 +213,7 @@ public class CreateEventFragment extends Fragment {
                             }
 
                         }
-                        if(haveFriends = true){
+                        if(haveFriends){
                             refreshData();
                             ListAmisFragment.type = "event";
                             navController.navigate(R.id.action_navigation_create_event_to_navigation_list_amis);
