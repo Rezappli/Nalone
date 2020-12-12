@@ -28,6 +28,7 @@ import com.example.nalone.User;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.firestore.GeoPoint;
 
 import java.io.IOException;
@@ -36,14 +37,14 @@ import java.util.List;
 import java.util.UUID;
 
 public class SignUpInformationActivity extends AppCompatActivity {
-    public EditText nom;
-    public EditText prenom;
-    public EditText ville;
-    public EditText numero;
-    public EditText adresseMail;
-    public EditText pass;
-    public EditText confirmPass;
-    public EditText dateNaissance;
+    public TextInputEditText nom;
+    public TextInputEditText prenom;
+    public TextInputEditText ville;
+    public TextInputEditText numero;
+    public TextInputEditText adresseMail;
+    public TextInputEditText pass;
+    public TextInputEditText confirmPass;
+    public TextInputEditText dateNaissance;
 
     private Dialog dialogCalendrier;
     private CalendarView calendarDate;
@@ -80,16 +81,16 @@ public class SignUpInformationActivity extends AppCompatActivity {
         user = null;
 
         buttonSignUpNext = (Button) findViewById(R.id.signUpNext);
-        nom =  (EditText) findViewById(R.id.signupNom);
-        prenom = (EditText)  findViewById(R.id.signupPrenom);
-        ville = (EditText)  findViewById(R.id.signupVille);
-        numero = (EditText)  findViewById(R.id.signupNumero);
-        adresseMail = (EditText) findViewById(R.id.signupMail);
-        dateNaissance = (EditText) findViewById(R.id.signupDate);
+        nom =  (TextInputEditText) findViewById(R.id.signupNom);
+        prenom = (TextInputEditText)  findViewById(R.id.signupPrenom);
+        ville = (TextInputEditText)  findViewById(R.id.signupVille);
+        numero = (TextInputEditText)  findViewById(R.id.signupNumero);
+        adresseMail = (TextInputEditText) findViewById(R.id.signupMail);
+        dateNaissance = (TextInputEditText) findViewById(R.id.signupDate);
 
 
-        pass =  (EditText) findViewById(R.id.signupPass);
-        confirmPass = (EditText)  findViewById(R.id.signupConfirmPass);
+        pass =  (TextInputEditText) findViewById(R.id.signupPass);
+        confirmPass = (TextInputEditText)  findViewById(R.id.signupConfirmPass);
         homme =  findViewById(R.id.signUpHomme);
         femme = findViewById(R.id.signUpFemme);
         imageF = findViewById(R.id.imageFemme);

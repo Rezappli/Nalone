@@ -41,7 +41,7 @@
                 app:srcCompat="@drawable/ic_baseline_add_a_photo_24" />
 
             <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/eventNom"
+                android:id="@+id/signupNom"
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

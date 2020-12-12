@@ -159,12 +159,6 @@ public class RechercheAmisFragment extends Fragment {
             }
         });
 
-        if(adapter != null){
-            if(adapter.getItemCount() == 0){
-                linearSansRechercheAmis.setVisibility(View.VISIBLE);
-                loading.setVisibility(View.GONE);
-            }
-        }
     }
 
     private void configureSwipeRefreshLayout(){
@@ -272,7 +266,6 @@ public class RechercheAmisFragment extends Fragment {
                 return new UserViewHolder(view);
             }
 
-            @RequiresApi(api = Build.VERSION_CODES.O)
             @Override
             protected void onBindViewHolder(@NonNull final UserViewHolder userViewHolder, int i, @NonNull final User u) {
                 userViewHolder.villePers.setText(u.getCity());
@@ -311,6 +304,7 @@ public class RechercheAmisFragment extends Fragment {
                     }
                 });
                 loading.setVisibility(View.GONE);
+                linearSansRechercheAmis.setVisibility(View.GONE);
             }
         };
         Log.w("Add", "Set Adapter Recherche");
@@ -320,6 +314,7 @@ public class RechercheAmisFragment extends Fragment {
         mRecyclerView.setAdapter(adapter);
         adapter.startListening();
         swipeContainer.setRefreshing(false);
+        loading.setVisibility(View.GONE);
 
     }
 

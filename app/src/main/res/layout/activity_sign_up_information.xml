@@ -10,6 +10,7 @@
         android:id="@+id/scrollView2"
         android:layout_width="match_parent"
         android:layout_height="0dp"
+        android:background="@color/white"
         android:orientation="vertical"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -31,8 +32,7 @@
                 android:layout_marginBottom="20dp"
                 android:background="@android:color/white"
                 android:contentDescription="@string/TODO"
-                android:paddingTop="20dp"
-                android:paddingBottom="20dp"
+                android:padding="40dp"
                 app:srcCompat="@drawable/logo" />
 
             <LinearLayout
@@ -276,141 +276,145 @@
                 </androidx.cardview.widget.CardView>
             </LinearLayout>
 
-            <EditText
-                android:id="@+id/signupNom"
+            <com.google.android.material.textfield.TextInputLayout
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
                 android:layout_width="match_parent"
-                android:layout_height="40dp"
+                android:layout_height="match_parent"
                 android:layout_marginStart="32dp"
                 android:layout_marginEnd="32dp"
-                android:layout_marginBottom="15dp"
-                android:layout_weight="1"
-                android:autofillHints=""
-                android:background="@drawable/custom_input"
-                android:drawablePadding="12dp"
-                android:ems="10"
-                android:hint="@string/nom"
-                android:inputType="text"
-                android:paddingStart="12dp"
-                android:paddingEnd="12dp" />
+                android:layout_marginBottom="15dp">
 
-            <EditText
-                android:id="@+id/signupPrenom"
-                android:layout_width="match_parent"
-                android:layout_height="40dp"
-                android:layout_marginStart="32dp"
-                android:layout_marginEnd="32dp"
-                android:layout_marginBottom="15dp"
-                android:layout_weight="1"
-                android:autofillHints=""
-                android:background="@drawable/custom_input"
-                android:drawablePadding="12dp"
-                android:ems="10"
-                android:hint="@string/prenom"
-                android:inputType="text"
-                android:paddingStart="12dp"
-                android:paddingEnd="12dp" />
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/signupNom"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/nom"
+                    android:singleLine="true"
+                    android:textSize="18sp" />
+            </com.google.android.material.textfield.TextInputLayout>
 
-            <EditText
-                android:id="@+id/signupVille"
+            <com.google.android.material.textfield.TextInputLayout
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
                 android:layout_width="match_parent"
-                android:layout_height="40dp"
+                android:layout_height="match_parent"
                 android:layout_marginStart="32dp"
                 android:layout_marginEnd="32dp"
-                android:layout_marginBottom="15dp"
-                android:layout_weight="1"
-                android:autofillHints=""
-                android:background="@drawable/custom_input"
-                android:drawablePadding="12dp"
-                android:ems="10"
-                android:hint="@string/ville"
-                android:inputType="text"
-                android:paddingStart="12dp"
-                android:paddingEnd="12dp" />
+                android:layout_marginBottom="15dp">
 
-            <EditText
-                android:id="@+id/signupNumero"
-                android:layout_width="match_parent"
-                android:layout_height="40dp"
-                android:layout_marginStart="32dp"
-                android:layout_marginEnd="32dp"
-                android:layout_marginBottom="15dp"
-                android:layout_weight="0.5"
-                android:autofillHints=""
-                android:background="@drawable/custom_input"
-                android:drawablePadding="12dp"
-                android:ems="10"
-                android:hint="@string/numeroTel"
-                android:inputType="text"
-                android:paddingStart="12dp"
-                android:paddingEnd="12dp" />
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/signupPrenom"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/prenom"
+                    android:singleLine="true"
+                    android:textSize="18sp" />
+            </com.google.android.material.textfield.TextInputLayout>
 
-            <EditText
-                android:id="@+id/signupDate"
+            <com.google.android.material.textfield.TextInputLayout
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
                 android:layout_width="match_parent"
-                android:layout_height="40dp"
+                android:layout_height="match_parent"
                 android:layout_marginStart="32dp"
                 android:layout_marginEnd="32dp"
-                android:layout_marginBottom="15dp"
-                android:layout_weight="0.5"
-                android:autofillHints=""
-                android:background="@drawable/custom_input"
-                android:drawablePadding="12dp"
-                android:ems="10"
-                android:hint="@string/dateNaissance"
-                android:paddingStart="12dp"
-                android:paddingEnd="12dp" />
+                android:layout_marginBottom="15dp">
 
-            <EditText
-                android:id="@+id/signupMail"
-                android:layout_width="match_parent"
-                android:layout_height="40dp"
-                android:layout_marginStart="32dp"
-                android:layout_marginTop="32dp"
-                android:layout_marginEnd="32dp"
-                android:layout_marginBottom="15dp"
-                android:layout_weight="1"
-                android:autofillHints=""
-                android:background="@drawable/custom_input"
-                android:drawablePadding="12dp"
-                android:ems="10"
-                android:hint="@string/hintLogin"
-                android:inputType="text"
-                android:paddingStart="12dp"
-                android:paddingEnd="12dp" />
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/signupVille"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/ville"
+                    android:singleLine="true"
+                    android:textSize="18sp" />
+            </com.google.android.material.textfield.TextInputLayout>
 
-            <EditText
-                android:id="@+id/signupPass"
+            <com.google.android.material.textfield.TextInputLayout
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
                 android:layout_width="match_parent"
-                android:layout_height="40dp"
+                android:layout_height="match_parent"
                 android:layout_marginStart="32dp"
                 android:layout_marginEnd="32dp"
-                android:layout_marginBottom="15dp"
-                android:layout_weight="1"
-                android:autofillHints=""
-                android:background="@drawable/custom_input"
-                android:drawablePadding="12dp"
-                android:ems="10"
-                android:hint="@string/hintPass"
-                android:inputType="textPassword"
-                android:paddingStart="12dp"
-                android:paddingEnd="12dp" />
+                android:layout_marginBottom="15dp">
 
-            <EditText
-                android:id="@+id/signupConfirmPass"
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/signupNumero"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/numeroTel"
+                    android:inputType="number"
+                    android:singleLine="true"
+                    android:textSize="18sp" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
                 android:layout_width="match_parent"
-                android:layout_height="40dp"
+                android:layout_height="match_parent"
                 android:layout_marginStart="32dp"
                 android:layout_marginEnd="32dp"
-                android:layout_marginBottom="10dp"
-                android:layout_weight="1"
-                android:autofillHints=""
-                android:background="@drawable/custom_input"
-                android:drawablePadding="12dp"
-                android:ems="10"
-                android:hint="@string/hintConfirmPass"
-                android:inputType="textPassword"
-                android:paddingStart="12dp"
-                android:paddingEnd="12dp" />
+                android:layout_marginBottom="30dp">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/signupDate"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/date"
+                    android:inputType="date"
+                    android:singleLine="true"
+                    android:textSize="18sp" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginStart="32dp"
+                android:layout_marginEnd="32dp"
+                android:layout_marginBottom="15dp">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/signupMail"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/hintLogin"
+                    android:inputType="textEmailAddress"
+                    android:singleLine="true"
+                    android:textSize="18sp" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginStart="32dp"
+                android:layout_marginEnd="32dp"
+                android:layout_marginBottom="15dp">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/signupPass"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/hintPass"
+                    android:inputType="textPassword"
+                    android:singleLine="true"
+                    android:textSize="18sp" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginStart="32dp"
+                android:layout_marginEnd="32dp">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/signupConfirmPass"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/hintConfirmPass"
+                    android:inputType="textPassword"
+                    android:singleLine="true"
+                    android:textSize="18sp" />
+            </com.google.android.material.textfield.TextInputLayout>
 
             <Button
                 android:id="@+id/signUpNext"

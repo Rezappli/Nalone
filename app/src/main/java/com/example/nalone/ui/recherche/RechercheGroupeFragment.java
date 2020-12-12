@@ -102,12 +102,6 @@ public class RechercheGroupeFragment extends Fragment {
                     }
                 });
 
-        if(adapter != null){
-            if(adapter.getItemCount() == 0){
-                linearSansRechercheGroupe.setVisibility(View.VISIBLE);
-            }
-        }
-
     }
 
     private void configureSwipeRefreshLayout(){
@@ -197,6 +191,7 @@ public class RechercheGroupeFragment extends Fragment {
                         }
                     }
                 loading.setVisibility(View.GONE);
+                    linearSansRechercheGroupe.setVisibility(View.GONE);
                 }
             };
             mRecyclerView.setHasFixedSize(true);
