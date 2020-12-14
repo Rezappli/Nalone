@@ -248,6 +248,11 @@ public class AmisFragment extends Fragment {
                                             @Override
                                             public void onClick(View view) {
                                                 Toast.makeText(view.getContext(), "Clicked on Share " , Toast.LENGTH_SHORT).show();
+                                                Intent sendIntent = new Intent();
+                                                sendIntent.setAction(Intent.ACTION_SEND);
+                                                sendIntent.putExtra(Intent.EXTRA_TEXT, "This is my text to send.");
+                                                sendIntent.setType("text/plain");
+                                                startActivity(sendIntent);
                                             }
                                         });
 
