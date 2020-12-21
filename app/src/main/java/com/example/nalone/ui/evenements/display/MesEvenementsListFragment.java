@@ -1,6 +1,7 @@
 package com.example.nalone.ui.evenements.display;
 
 import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -15,6 +16,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -25,10 +27,13 @@ import com.example.nalone.Evenement;
 import com.example.nalone.R;
 import com.example.nalone.User;
 import com.example.nalone.Visibility;
+import com.example.nalone.ui.evenements.EvenementsFragment;
 import com.example.nalone.ui.evenements.InfosEvenementsActivity;
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
+import com.google.android.gms.tasks.OnCanceledListener;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.Query;
@@ -37,11 +42,13 @@ import com.google.firebase.firestore.QuerySnapshot;
 
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import static com.example.nalone.util.Constants.USER;
 import static com.example.nalone.util.Constants.USER_ID;
 import static com.example.nalone.util.Constants.dateFormat;
+import static com.example.nalone.util.Constants.load;
 import static com.example.nalone.util.Constants.mStoreBase;
 import static com.example.nalone.util.Constants.timeFormat;
 
@@ -58,7 +65,7 @@ public class MesEvenementsListFragment extends Fragment {
     private FirestoreRecyclerAdapter adapter;
 
     private int iterator = 0;
-    private List<String> events = new ArrayList<>();
+
 
     private ArrayList<Evenement> itemEvents = new ArrayList<>();
 
@@ -66,6 +73,7 @@ public class MesEvenementsListFragment extends Fragment {
     private NavController navController;
     private SwipeRefreshLayout swipeContainer;
     private CardView addEvent;
+    private List<String> events;
 
 
     @Override
@@ -75,10 +83,20 @@ public class MesEvenementsListFragment extends Fragment {
 
         createFragment();
 
+
         return rootView;
     }
 
+    private void reload(){
+        FragmentTransaction ft = getFragmentManager().beginTransaction();
+        if (Build.VERSION.SDK_INT >= 26) {
+            ft.setReorderingAllowed(false);
+        }
+        ft.detach(this).attach(this).commit();
+    }
+
     private void createFragment() {
+
         swipeContainer = (SwipeRefreshLayout) rootView.findViewById(R.id.AmisSwipeRefreshLayout);
         swipeContainer.setColorSchemeResources(android.R.color.holo_blue_bright);
         this.configureSwipeRefreshLayout();
@@ -116,12 +134,24 @@ public class MesEvenementsListFragment extends Fragment {
 
     private void adapterEvents() {
         DocumentReference ref = mStoreBase.document("users/"+USER_ID);
+
+        mStoreBase.collection("users").document(USER_ID).collection("events").whereNotEqualTo("user", ref)
+                .get()
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        linearSansEvent.setVisibility(View.VISIBLE);
+                    }
+                });
+
         mStoreBase.collection("users").document(USER_ID).collection("events").whereNotEqualTo("user", ref)
                 .get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        events = new ArrayList<>();
                         if (task.isSuccessful()) {
+
                             for (QueryDocumentSnapshot document : task.getResult()) {
                                 events.add(document.getId());
                                 Log.w("event", " Ajout list");
@@ -206,8 +236,30 @@ public class MesEvenementsListFragment extends Fragment {
                                                 mStoreBase.collection("users").document(USER_ID).collection("events").document(e.getUid()).delete();
                                                 Toast.makeText(getContext(), "Vous vous êtes désinscrit de l'évènement " + e.getName() + " !", Toast.LENGTH_SHORT).show();
                                                 createFragment();
+                                                //EvenementsFragment.viewPager.setCurrentItem(2);
+
                                             }
                                         });
+
+
+                                        if(eventTermine(new Date(),e.getDate().toDate())){
+                                            //holder.linearTermine.setVisibility(View.VISIBLE);
+                                            holder.mInscrire.setText("Supprimer");
+                                            holder.cardViewTermine.setVisibility(View.VISIBLE);
+                                            holder.mInscrire.setOnClickListener(new View.OnClickListener() {
+                                                @Override
+                                                public void onClick(View v) {
+                                                    mStoreBase.collection("users")
+                                                            .document(USER_ID).collection("events")
+                                                            .document(e.getUid()).delete();
+                                                   // createFragment();
+                                                   // EvenementsFragment.viewPager.setCurrentItem(2);
+                                                   reload();
+                                                }
+                                            });
+
+                                            //createFragment();
+                                        }
 
                /* if(e.getImage_url() != null) {
                     if(!Cache.fileExists(e.getUid())) {
@@ -265,11 +317,33 @@ public class MesEvenementsListFragment extends Fragment {
                             }else{
                                 linearSansEvent.setVisibility(View.VISIBLE);
                             }
+                        }else{
+                            linearSansEvent.setVisibility(View.VISIBLE);
                         }
                     }
+
+
+
                 });
 
 
+
+
+    }
+
+    public boolean eventTermine(Date startDate, Date endDate) {
+        //milliseconds
+        long different = endDate.getTime() - startDate.getTime();
+
+        Log.w("date","startDate : " + startDate);
+        Log.w("date","endDate : "+ endDate);
+        Log.w("date","different : " + different);
+
+        if(different < 0){
+            return true;
+        }else{
+            return false;
+        }
     }
 
 
@@ -284,6 +358,9 @@ public class MesEvenementsListFragment extends Fragment {
         public Button mInscrire, mAfficher;
         public CardView mCarwViewOwner;
         private TextView textViewNbMembers;
+        private LinearLayout linearNonTermine;
+        private LinearLayout linearTermine;
+        private CardView cardViewTermine;
 
         public EventViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -297,7 +374,7 @@ public class MesEvenementsListFragment extends Fragment {
             mInscrire = itemView.findViewById(R.id.buttonInscrirEventList);
             mCarwViewOwner = itemView.findViewById(R.id.backGroundOwner);
             textViewNbMembers = itemView.findViewById(R.id.textViewNbMembers);
-
+            cardViewTermine = itemView.findViewById(R.id.cardViewEnd);
         }
     }
 

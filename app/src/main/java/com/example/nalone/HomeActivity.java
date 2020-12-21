@@ -44,6 +44,7 @@ public class HomeActivity extends AppCompatActivity{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
 
+
         if(Constants.FCM_API == null){
             mStoreBase.collection("application").document("url").get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                 @Override

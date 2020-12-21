@@ -259,7 +259,9 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
 
     private void adapterEvents(final Query query) {
 
-        mStoreBase.collection("users").document(USER.getUid()).collection("events").whereEqualTo("status", "add").whereNotEqualTo("user", USER_REFERENCE).limit(10)
+        mStoreBase.collection("users").
+                document(USER.getUid()).collection("events")
+                .whereEqualTo("status", "add").whereNotEqualTo("user", USER_REFERENCE).limit(10)
                 .get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
