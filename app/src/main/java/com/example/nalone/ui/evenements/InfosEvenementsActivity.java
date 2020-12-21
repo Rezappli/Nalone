@@ -30,6 +30,7 @@ import android.widget.Toast;
 
 import com.example.nalone.Evenement;
 import com.example.nalone.ModelData;
+import com.example.nalone.ModelDataEvent;
 import com.example.nalone.R;
 import com.example.nalone.User;
 import com.example.nalone.util.Constants;
@@ -162,7 +163,7 @@ public class InfosEvenementsActivity extends Fragment {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
                 for(QueryDocumentSnapshot doc : task.getResult()){
-                    members.add(doc.toObject(ModelData.class).getUser().getId());
+                    members.add(doc.toObject(ModelDataEvent.class).getUser().getId());
                     participants ++;
                 }
                 nbParticipants.setText(participants+"");
@@ -331,8 +332,8 @@ public class InfosEvenementsActivity extends Fragment {
 
     private void incription() {
         if(!inscrit){
-            ModelData owner = new ModelData("add", EVENT_LOAD.getOwnerDoc());
-            ModelData m = new ModelData("add", mStoreBase.collection("users").document(USER_ID));
+            ModelDataEvent owner = new ModelDataEvent(false,"add", EVENT_LOAD.getOwnerDoc());
+            ModelDataEvent m = new ModelDataEvent(false,"add", mStoreBase.collection("users").document(USER_ID));
             mStoreBase.collection("events").document(EVENT_LOAD.getUid()).collection("members").document(USER.getUid()).set(m);
             mStoreBase.collection("users").document(USER_ID).collection("events").document(EVENT_LOAD.getUid()).set(owner);
             Toast.makeText(getContext(), "Vous êtes inscrit à l'évènement " + EVENT_LOAD.getName() + " !", Toast.LENGTH_SHORT).show();

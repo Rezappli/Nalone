@@ -33,6 +33,7 @@ import com.bumptech.glide.Glide;
 import com.example.nalone.Cache;
 import com.example.nalone.Evenement;
 import com.example.nalone.ModelData;
+import com.example.nalone.ModelDataEvent;
 import com.example.nalone.dialog.ListAmisFragment;
 import com.example.nalone.R;
 import com.example.nalone.dialog.SelectDateFragment;
@@ -53,7 +54,9 @@ import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.StorageReference;
-import com.koalap.geofirestore.GeoLocation;
+//import com.koalap.geofirestore.GeoLocation;
+
+import org.w3c.dom.Document;
 
 import java.io.IOException;
 import java.text.ParseException;
@@ -96,7 +99,7 @@ public class CreateEventFragment extends Fragment {
 
     private boolean locationValid = false;
 
-    public static boolean edit;
+    public static boolean edit = false;
 
     private NavController navController;
     private FirestoreRecyclerAdapter adapter;
@@ -166,7 +169,7 @@ public class CreateEventFragment extends Fragment {
             initList();
         }
 
-        getData();
+
 
         if(edit){
             event_city.setText(EVENT_LOAD.getCity());
@@ -177,12 +180,111 @@ public class CreateEventFragment extends Fragment {
             event_adresse.setText(EVENT_LOAD.getAddress());
             //event_date.setText(MesEvenementsListFragment.dateEdit);
 
+            mStoreBase.collection("events").document(EVENT_LOAD.getUid()).collection("members").get().
+                    addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                        @Override
+                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                            if(task.isSuccessful()){
+                                for (QueryDocumentSnapshot document : task.getResult()){
+                                    adds.add(document.getId());
+                                }
+                            }
+                        }
+                    });
+            Query query = mStoreBase.collection("events").document(EVENT_LOAD.getUid()).collection("members");
+            FirestoreRecyclerOptions<User> options = new FirestoreRecyclerOptions.Builder<User>().setQuery(query, User.class).build();
+
+            adapter = new FirestoreRecyclerAdapter<User, PersonViewHolder>(options) {
+                @NonNull
+                @Override
+                public PersonViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+                    Log.w("Add", "ViewHolder");
+                    View view= LayoutInflater.from(parent.getContext()).inflate(R.layout.item_person,parent,false);
+                    return new PersonViewHolder(view);
+                }
+
+                @Override
+                protected void onBindViewHolder(@NonNull final PersonViewHolder personViewHolder, final int i, @NonNull final  User u) {
+
+                    Log.w("Add","BindViewHolder");
+                    personViewHolder.villePers.setText(u.getCity());
+                    personViewHolder.nomInvit.setText(u.getFirst_name() + " "+ u.getLast_name());
+                    personViewHolder.button.setImageDrawable(getResources().getDrawable(R.drawable.ic_baseline_remove_24));
+                    personViewHolder.button.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            mStoreBase.collection("events").document(EVENT_LOAD.getUid()).collection("members").document(u.getUid()).delete();
+                            createFragment();
+                        }
+                    });
+
+
+                    if(u.getImage_url() != null) {
+                        if(!Cache.fileExists(u.getUid())) {
+                            StorageReference imgRef = mStore.getReference("users/" + u.getUid());
+                            if (imgRef != null) {
+                                imgRef.getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<Uri> task) {
+                                        if (task.isSuccessful()) {
+                                            Uri img = task.getResult();
+                                            if (img != null) {
+                                                Cache.saveUriFile(u.getUid(), img);
+                                                u.setImage_url(Cache.getImageDate(u.getUid()));
+                                                mStoreBase.collection("users").document(u.getUid()).set(u);
+                                                Glide.with(getContext()).load(img).fitCenter().centerCrop().into(personViewHolder.imagePerson);
+                                            }
+                                        }
+                                    }
+                                });
+                            }
+                        }else{
+                            Uri imgCache = Cache.getUriFromUid(u.getUid());
+                            Log.w("Cache", "Image Cache : " + Cache.getImageDate(u.getUid()));
+                            Log.w("Cache", "Data Cache : " + u.getImage_url());
+                            if(Cache.getImageDate(u.getUid()).equalsIgnoreCase(u.getImage_url())) {
+                                Log.w("image", "get image from cache");
+                                Glide.with(getContext()).load(imgCache).fitCenter().centerCrop().into(personViewHolder.imagePerson);
+                            }else{
+                                StorageReference imgRef = mStore.getReference("users/" + u.getUid());
+                                if (imgRef != null) {
+                                    imgRef.getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
+                                        @Override
+                                        public void onComplete(@NonNull Task<Uri> task) {
+                                            if (task.isSuccessful()) {
+                                                Uri img = task.getResult();
+                                                if (img != null) {
+                                                    Cache.saveUriFile(u.getUid(), img);
+                                                    u.setImage_url(Cache.getImageDate(u.getUid()));
+                                                    mStoreBase.collection("users").document(u.getUid()).set(u);
+                                                    Glide.with(getContext()).load(img).fitCenter().centerCrop().into(personViewHolder.imagePerson);
+                                                }
+                                            }
+                                        }
+                                    });
+                                }
+                            }
+                        }
+                    }
+                }
+
+            };
+
+            mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+            mRecyclerView.setAdapter(adapter);
+            adapter.startListening();
+
+            Log.w("Add", "Set adapter");
+
+
             if(MesEvenementsListFragment.visibiliteEdit == Visibility.PUBLIC){
                 selectPublic();
             }else{
                 selectPrivate();
             }
-            edit = false;
+            //edit = false;
+        }else{
+            getData();
         }
 
         cardViewPrivate.setOnClickListener(new View.OnClickListener() {
@@ -217,6 +319,7 @@ public class CreateEventFragment extends Fragment {
                             refreshData();
                             ListAmisFragment.type = "event";
                             navController.navigate(R.id.action_navigation_create_event_to_navigation_list_amis);
+                            ListAmisFragment.EVENT_LOAD = EVENT_LOAD;
                         }else
                             Toast.makeText(getContext(), "Vous n'avez pas d'ami", Toast.LENGTH_SHORT).show();
 
@@ -277,23 +380,27 @@ public class CreateEventFragment extends Fragment {
         });
 
 
-        buttonValidEvent.setOnClickListener(new View.OnClickListener() {
-            @RequiresApi(api = Build.VERSION_CODES.M)
-            @Override
-            public void onClick(View v) {
-                if(getLocationFromAddress(event_adresse.getText().toString()+","+event_city.getText().toString()) != null){
-                    locationValid = true;
-                    try {
-                        saveEvent();
-                    } catch (ParseException e) {
-                        e.printStackTrace();
+            buttonValidEvent.setOnClickListener(new View.OnClickListener() {
+                @RequiresApi(api = Build.VERSION_CODES.M)
+                @Override
+                public void onClick(View v) {
+                    if(getLocationFromAddress(event_adresse.getText().toString()+","+event_city.getText().toString()) != null){
+                        locationValid = true;
+                        try {
+                            if(edit)
+                                setEvent();
+                            else
+                                saveEvent();
+                        } catch (ParseException e) {
+                            e.printStackTrace();
+                        }
+                    }else{
+                        event_adresse.setError("Adresse introuvable");
                     }
-                }else{
-                    event_adresse.setError("Adresse introuvable");
-                }
 
-            }
-        });
+                }
+            });
+
     }
 
     private void refreshData() {
@@ -471,6 +578,74 @@ public class CreateEventFragment extends Fragment {
         event_visibilite = Visibility.PRIVATE;
     }
 
+    private void setEvent() throws ParseException {
+        if(event_name.getText().toString().matches("")){
+            event_name.setError("Champs obligatoire");
+        }
+
+        if(event_adresse.getText().toString().matches("")){
+            event_adresse.setError("Champs obligatoire");
+        }
+
+        if(event_city.getText().toString().matches("")){
+            event_city.setError("Champs obligatoire");
+        }
+
+        if(event_date.getText().toString().equalsIgnoreCase("date")){
+            event_date.setError("Champs obligatoire");
+        }
+
+        if(event_horaire.getText().toString().equalsIgnoreCase("horaire")){
+            event_horaire.setError("Champs obligatoire");
+        }
+
+        if(!locationValid){
+            Toast.makeText(getContext(), "Localisation de l'évènement non validée !", Toast.LENGTH_SHORT).show();
+        }
+
+        if(!event_name.getText().toString().matches("") && !event_adresse.getText().toString().matches("") &&
+                !event_city.getText().toString().matches("") && !event_date.getText().toString().equalsIgnoreCase("date") &&
+                !event_horaire.getText().toString().equalsIgnoreCase("horaire") && locationValid){
+            refreshData();
+            final LatLng l = getLocationFromAddress(evenementAttente.getAddress() + "," + evenementAttente.getCity());
+            if(l != null) {
+
+                SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy hh:mm");
+
+                String new_event_time = event_horaire.getText().toString().replaceAll(" ", "");
+                String final_event_time = "";
+                for(char c : new_event_time.toCharArray()) {
+                    if (c != ' ') {
+                        final_event_time += c;
+                    }
+                }
+
+                final Evenement e = new Evenement(EVENT_LOAD.getUid(), USER.getFirst_name() + " " + USER.getLast_name(),
+                        R.drawable.ic_baseline_account_circle_24, EVENT_LOAD.getName(), EVENT_LOAD.getDescription(),
+                        event_adresse.getText().toString(), EVENT_LOAD.getCity(), EVENT_LOAD.getVisibility(),
+                        USER_REFERENCE, new Timestamp(sdf.parse(event_date.getText().toString()+" "+final_event_time))
+                        , new GeoPoint(l.latitude, l.longitude), adds.size());
+
+                mStoreBase.collection("events").document(e.getUid()).set(e);
+                ModelDataEvent m1 = new ModelDataEvent(true,"add", mStoreBase.collection("users").document(USER_ID));
+                mStoreBase.collection("users").document(USER_ID).collection("events").document(e.getUid()).set(m1);
+
+                for (String user : adds) {
+                    String status = "add";
+                    if(e.getVisibility().equals(Visibility.PRIVATE)){
+                        status = "wait";
+                    }
+                    ModelDataEvent m = new ModelDataEvent(false,status, mStoreBase.collection("users").document(user));
+                    mStoreBase.collection("events").document(e.getUid()).collection("members").document(user).set(m);
+                }
+                Toast.makeText(getContext(), "Vous avez créer votre évènement !", Toast.LENGTH_SHORT).show();
+                navController.navigate(R.id.action_navigation_create_event_to_navigation_evenements);
+            }else{
+                event_adresse.setError("Adresse non trouvée");
+                event_city.setError("Adresse non trouvée");
+            }
+        }
+    }
 
     private void saveEvent() throws ParseException {
 
@@ -522,14 +697,15 @@ public class CreateEventFragment extends Fragment {
                         , new GeoPoint(l.latitude, l.longitude), adds.size());
 
                 mStoreBase.collection("events").document(e.getUid()).set(e);
-                mStoreBase.collection("users").document(USER_ID).collection("events").document(e.getUid()).set(e);
+                ModelDataEvent m1 = new ModelDataEvent(true,"add", mStoreBase.collection("users").document(USER_ID));
+                mStoreBase.collection("users").document(USER_ID).collection("events").document(e.getUid()).set(m1);
 
                 for (String user : adds) {
                     String status = "add";
                     if(e.getVisibility().equals(Visibility.PRIVATE)){
                         status = "wait";
                     }
-                    ModelData m = new ModelData(status, mStoreBase.collection("users").document(user));
+                    ModelDataEvent m = new ModelDataEvent(false,status, mStoreBase.collection("users").document(user));
                     mStoreBase.collection("events").document(e.getUid()).collection("members").document(user).set(m);
                 }
                 Toast.makeText(getContext(), "Vous avez créer votre évènement !", Toast.LENGTH_SHORT).show();
@@ -575,6 +751,8 @@ public class CreateEventFragment extends Fragment {
         super.onStop();
         if(adapter != null)
             adapter.stopListening();
+        edit=false;
+        EVENT_LOAD = null;
     }
 
     @Override

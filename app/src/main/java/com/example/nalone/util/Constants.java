@@ -29,7 +29,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
-import com.koalap.geofirestore.GeoFire;
+//import com.koalap.geofirestore.GeoFire;
 
 import org.json.JSONObject;
 

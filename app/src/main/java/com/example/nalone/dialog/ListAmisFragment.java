@@ -24,6 +24,7 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.example.nalone.Cache;
+import com.example.nalone.Evenement;
 import com.example.nalone.Group;
 import com.example.nalone.R;
 import com.example.nalone.User;
@@ -75,6 +76,7 @@ public class ListAmisFragment extends Fragment {
     private int remove, add;
 
     public static String type;
+    public static Evenement EVENT_LOAD;
 
 
     @Override
@@ -101,11 +103,11 @@ public class ListAmisFragment extends Fragment {
                 }
                 if (type == "event") {
                     navController.navigate(R.id.action_navigation_list_amis_to_navigation_create_event);
+                    CreateEventFragment.EVENT_LOAD = EVENT_LOAD;
                 }
                 if (type == "message_ami" || type == "message_groupe") {
                     navController.navigate(R.id.action_navigation_list_amis_to_navigation_messages);
                 }
-
             }
         });
 

@@ -47,6 +47,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static com.example.nalone.util.Constants.USER_ID;
+import static com.example.nalone.util.Constants.USER_REFERENCE;
 import static com.example.nalone.util.Constants.dateFormat;
 import static com.example.nalone.util.Constants.mStoreBase;
 import static com.example.nalone.util.Constants.timeFormat;
@@ -90,6 +91,8 @@ public class CreationsEvenementsFragment extends Fragment {
         addEvent.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                CreateEventFragment.edit = false;
+                CreateEventFragment.EVENT_LOAD = null;
                 navController.navigate(R.id.action_navigation_infos_events_to_navigation_create_event);
             }
         });
@@ -99,51 +102,12 @@ public class CreationsEvenementsFragment extends Fragment {
     @Override
     public void onResume(){
 
-        DocumentReference ref = mStoreBase.document("users/"+USER_ID);
-        mStoreBase.collection("users").document(USER_ID).collection("events").whereEqualTo("ownerDoc", ref)
-                .get()
-                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        if (task.isSuccessful()) {
-                            for (QueryDocumentSnapshot document : task.getResult()) {
-                                events.add(document.getId());
-                                Log.w("event", " Ajout list");
-                            }
-                            DocumentReference ref = mStoreBase.document("users/"+USER_ID);
-                            mStoreBase.collection("events").whereNotEqualTo("ownerDoc", ref)
-                                    .get()
-                                    .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                                        @Override
-                                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                                            if (task.isSuccessful()) {
-                                                for (QueryDocumentSnapshot document : task.getResult()) {
-                                                    iterator++;
-                                                }
-                                                Log.w("event", " Check list");
-                                                adapterEvents();
-                                                if(iterator == 0){
-                                                    linearSansEvent.setVisibility(View.VISIBLE);
-                                                }else{
-                                                    linearSansEvent.setVisibility(View.GONE);
-                                                }
-                                            }
-                                        }
-                                    });
-                        }
-                    }
-                });
+        adapterEvents();
         super.onResume();
     }
 
     private void adapterEvents() {
-        DocumentReference ref = mStoreBase.document("users/"+USER_ID);
-        Query query;
-        if(!events.isEmpty()){
-            query = mStoreBase.collection("events").whereIn("uid", events);
-        }else{
-            query = mStoreBase.collection("events").whereEqualTo("ownerDoc", ref);
-        }
+        Query query = mStoreBase.collection("events").whereEqualTo("ownerDoc", USER_REFERENCE);
         FirestoreRecyclerOptions<Evenement> options = new FirestoreRecyclerOptions.Builder<Evenement>().setQuery(query, Evenement.class).build();
 
         adapter = new FirestoreRecyclerAdapter<Evenement, EventViewHolder>(options) {
@@ -166,6 +130,7 @@ public class CreationsEvenementsFragment extends Fragment {
                 holder.mDescription.setText((e.getDescription()));
                 holder.mProprietaire.setText(e.getOwner());
                 holder.textViewNbMembers.setText(e.getNbMembers() + " membres inscrits");
+
 
 
                 mStoreBase.collection("users").whereEqualTo("uid", e.getOwnerDoc().getId())
@@ -202,6 +167,7 @@ public class CreationsEvenementsFragment extends Fragment {
                             }});
 
 
+                holder.mImageViewDelete.setImageDrawable(getResources().getDrawable(R.drawable.ic_round_delete_24));
                 holder.mImageViewDelete.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {

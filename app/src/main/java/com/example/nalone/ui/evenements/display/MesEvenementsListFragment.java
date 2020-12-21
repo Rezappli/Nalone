@@ -65,6 +65,7 @@ public class MesEvenementsListFragment extends Fragment {
     private CardView mesEvents;
     private NavController navController;
     private SwipeRefreshLayout swipeContainer;
+    private CardView addEvent;
 
 
     @Override
@@ -84,6 +85,13 @@ public class MesEvenementsListFragment extends Fragment {
         linearSansEvent = rootView.findViewById(R.id.linearSansEvent);
         mRecyclerView = rootView.findViewById(R.id.recyclerViewMesEventList);
         mesEvents = rootView.findViewById(R.id.mesEvents);
+        addEvent = rootView.findViewById(R.id.addEvent);
+        addEvent.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                navController.navigate(R.id.action_navigation_evenements_to_navigation_create_event);
+            }
+        });
 
         navController = Navigation.findNavController(getActivity(), R.id.nav_host_fragment);
         mesEvents.setOnClickListener(new View.OnClickListener() {

@@ -24,6 +24,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.nalone.Evenement;
+import com.example.nalone.ModelDataEvent;
 import com.example.nalone.R;
 import com.example.nalone.User;
 import com.example.nalone.ModelData;
@@ -49,6 +50,7 @@ import java.util.List;
 
 import static com.example.nalone.util.Constants.USER;
 import static com.example.nalone.util.Constants.USER_ID;
+import static com.example.nalone.util.Constants.USER_REFERENCE;
 import static com.example.nalone.util.Constants.dateFormat;
 import static com.example.nalone.util.Constants.mStoreBase;
 import static com.example.nalone.util.Constants.timeFormat;
@@ -70,7 +72,7 @@ public class EvenementsListFragment extends Fragment {
     private NavController navController;
 
     private int iterator = 0;
-    private List<String> events = new ArrayList<>();
+    private List<String> events;
     private ProgressBar loading;
 
 
@@ -91,6 +93,7 @@ public class EvenementsListFragment extends Fragment {
     private void createFragment() {
         final List<ItemImagePerson> membres_inscrits = new ArrayList<>();
 
+        events = new ArrayList<>();
         loading = rootView.findViewById(R.id.loading);
         navController = Navigation.findNavController(getActivity(), R.id.nav_host_fragment);
         filtres.add(new ItemFiltre("Art"));
@@ -101,9 +104,6 @@ public class EvenementsListFragment extends Fragment {
         filtres.add(new ItemFiltre("Numérique"));
         filtres.add(new ItemFiltre("Informatique"));
         filtres.add(new ItemFiltre("Manifestation"));
-
-
-
 
         linearSansEvent = rootView.findViewById(R.id.linearSansEvent);
 
@@ -123,17 +123,11 @@ public class EvenementsListFragment extends Fragment {
 
         adapterEvents();
 
-        if(adapter != null){
-            if(adapter.getItemCount() == 0){
-                linearSansEvent.setVisibility(View.VISIBLE);
-            }else{
-                linearSansEvent.setVisibility(View.GONE);
-            }
-        }
 
     }
 
     private void adapterEvents() {
+
         mStoreBase.collection("users").document(USER_ID).collection("events")
                 .get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
@@ -144,9 +138,7 @@ public class EvenementsListFragment extends Fragment {
                                 events.add(document.getId());
                                 Log.w("event", " Ajout list");
                             }
-                            if(!events.isEmpty()) {
-                                Query query = mStoreBase.collection("events").whereNotIn("uid", events).limit(10);
-
+                                Query query = mStoreBase.collection("events").whereNotIn("uid",events);
                                 FirestoreRecyclerOptions<Evenement> options = new FirestoreRecyclerOptions.Builder<Evenement>().setQuery(query, Evenement.class).build();
 
                                 adapter = new FirestoreRecyclerAdapter<Evenement, EventViewHolder>(options) {
@@ -160,74 +152,74 @@ public class EvenementsListFragment extends Fragment {
                                     @Override
                                     protected void onBindViewHolder(@NonNull final EventViewHolder holder, int i, @NonNull final Evenement e) {
                                         //holder.mImageView.setImageResource(e.getImage());
-                                        holder.mTitle.setText((e.getName()));
-                                        holder.mDate.setText((dateFormat.format(e.getDate().toDate())));
-                                        holder.mTime.setText((timeFormat.format(e.getDate().toDate())));
-                                        holder.mVille.setText((e.getCity()));
-                                        //holder.mDescription.setText((e.getDescription()));
-                                        holder.mProprietaire.setText(e.getOwner());
-                                        holder.textViewNbMembers.setText(e.getNbMembers()+"");
+                                            holder.mTitle.setText((e.getName()));
+                                            holder.mDate.setText((dateFormat.format(e.getDate().toDate())));
+                                            holder.mTime.setText((timeFormat.format(e.getDate().toDate())));
+                                            holder.mVille.setText((e.getCity()));
+                                            //holder.mDescription.setText((e.getDescription()));
+                                            holder.mProprietaire.setText(e.getOwner());
+                                            holder.textViewNbMembers.setText(e.getNbMembers()+"");
 
 
-                                        mStoreBase.collection("users").whereEqualTo("uid", e.getOwnerDoc().getId())
-                                                .get()
-                                                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                                                    @Override
-                                                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                                                        if (task.isSuccessful()) {
-                                                            for (QueryDocumentSnapshot document : task.getResult()) {
-                                                                User u = document.toObject(User.class);
-                                                                if (u.getCursus().equalsIgnoreCase("Informatique")) {
-                                                                    holder.mCarwViewOwner.setCardBackgroundColor(Color.RED);
+                                            mStoreBase.collection("users").whereEqualTo("uid", e.getOwnerDoc().getId())
+                                                    .get()
+                                                    .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                                                        @Override
+                                                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                                            if (task.isSuccessful()) {
+                                                                for (QueryDocumentSnapshot document : task.getResult()) {
+                                                                    User u = document.toObject(User.class);
+                                                                    if (u.getCursus().equalsIgnoreCase("Informatique")) {
+                                                                        holder.mCarwViewOwner.setCardBackgroundColor(Color.RED);
+                                                                    }
+
+                                                                    if (u.getCursus().equalsIgnoreCase("TC")) {
+                                                                        holder.mCarwViewOwner.setCardBackgroundColor(Color.parseColor("#00E9FD"));
+                                                                    }
+
+                                                                    if (u.getCursus().equalsIgnoreCase("MMI")) {
+                                                                        holder.mCarwViewOwner.setCardBackgroundColor(Color.parseColor("#FF1EED"));
+                                                                    }
+
+                                                                    if (u.getCursus().equalsIgnoreCase("GB")) {
+                                                                        holder.mCarwViewOwner.setCardBackgroundColor(Color.parseColor("#41EC57"));
+                                                                    }
+
+                                                                    if (u.getCursus().equalsIgnoreCase("LP")) {
+                                                                        holder.mCarwViewOwner.setCardBackgroundColor((Color.parseColor("#EC9538")));
+                                                                    }
+
+                                                                    Constants.setUserImage(u, getContext(), holder.mImageView);
                                                                 }
 
-                                                                if (u.getCursus().equalsIgnoreCase("TC")) {
-                                                                    holder.mCarwViewOwner.setCardBackgroundColor(Color.parseColor("#00E9FD"));
-                                                                }
-
-                                                                if (u.getCursus().equalsIgnoreCase("MMI")) {
-                                                                    holder.mCarwViewOwner.setCardBackgroundColor(Color.parseColor("#FF1EED"));
-                                                                }
-
-                                                                if (u.getCursus().equalsIgnoreCase("GB")) {
-                                                                    holder.mCarwViewOwner.setCardBackgroundColor(Color.parseColor("#41EC57"));
-                                                                }
-
-                                                                if (u.getCursus().equalsIgnoreCase("LP")) {
-                                                                    holder.mCarwViewOwner.setCardBackgroundColor((Color.parseColor("#EC9538")));
-                                                                }
-
-                                                                Constants.setUserImage(u, getContext(), holder.mImageView);
                                                             }
-
                                                         }
-                                                    }
-                                                });
+                                                    });
 
-                                        holder.mAfficher.setOnClickListener(new View.OnClickListener() {
-                                            @Override
-                                            public void onClick(View v) {
-                                                InfosEvenementsActivity.EVENT_LOAD = e;
-                                                InfosEvenementsActivity.type = "nouveau";
-                                                navController.navigate(R.id.action_navigation_evenements_to_navigation_infos_events);
-                                            }
-                                        });
+                                            holder.mAfficher.setOnClickListener(new View.OnClickListener() {
+                                                @Override
+                                                public void onClick(View v) {
+                                                    InfosEvenementsActivity.EVENT_LOAD = e;
+                                                    InfosEvenementsActivity.type = "nouveau";
+                                                    navController.navigate(R.id.action_navigation_evenements_to_navigation_infos_events);
+                                                }
+                                            });
 
-                                        holder.mInscrire.setOnClickListener(new View.OnClickListener() {
-                                            @Override
-                                            public void onClick(View v) {
-                                                e.setNbMembers(e.getNbMembers()+1);
-                                                mStoreBase.collection("events").document(e.getUid()).set(e);
-                                                ModelData owner = new ModelData("add", e.getOwnerDoc());
-                                                ModelData m = new ModelData("add", mStoreBase.collection("users").document(USER_ID));
-                                                mStoreBase.collection("events").document(e.getUid()).collection("members").document(USER.getUid()).set(m);
-                                                mStoreBase.collection("users").document(USER_ID).collection("events").document(e.getUid()).set(owner);
-                                                Toast.makeText(getContext(), "Vous êtes inscrit à l'évènement " + e.getName() + " !", Toast.LENGTH_SHORT).show();
-                                                createFragment();
-                                            }
-                                        });
-                                        loading.setVisibility(View.GONE);
-                                    }
+                                            holder.mInscrire.setOnClickListener(new View.OnClickListener() {
+                                                @Override
+                                                public void onClick(View v) {
+                                                    e.setNbMembers(e.getNbMembers()+1);
+                                                    mStoreBase.collection("events").document(e.getUid()).set(e);
+                                                    ModelDataEvent owner = new ModelDataEvent(false,"add", e.getOwnerDoc());
+                                                    ModelDataEvent m = new ModelDataEvent(false,"add", mStoreBase.collection("users").document(USER_ID));
+                                                    mStoreBase.collection("events").document(e.getUid()).collection("members").document(USER.getUid()).set(m);
+                                                    mStoreBase.collection("users").document(USER_ID).collection("events").document(e.getUid()).set(owner);
+                                                    Toast.makeText(getContext(), "Vous êtes inscrit à l'évènement " + e.getName() + " !", Toast.LENGTH_SHORT).show();
+                                                    createFragment();
+                                                }
+                                            });
+                                            loading.setVisibility(View.GONE);
+                                        }
                                 };
                                 //mRecyclerView.setHasFixedSize(true);
                                 mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
@@ -236,10 +228,6 @@ public class EvenementsListFragment extends Fragment {
                                 adapter.startListening();
 
                                 Log.w("count", iterator + "");
-                            }else{
-                                linearSansEvent.setVisibility(View.VISIBLE);
-                                loading.setVisibility(View.GONE);
-                            }
 
                         }
                     }
