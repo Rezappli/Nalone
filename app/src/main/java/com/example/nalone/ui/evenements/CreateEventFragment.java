@@ -32,8 +32,10 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.example.nalone.Cache;
 import com.example.nalone.Evenement;
+import com.example.nalone.Horloge;
 import com.example.nalone.ModelData;
 import com.example.nalone.ModelDataEvent;
+import com.example.nalone.StatusEvent;
 import com.example.nalone.dialog.ListAmisFragment;
 import com.example.nalone.R;
 import com.example.nalone.dialog.SelectDateFragment;
@@ -62,6 +64,7 @@ import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
@@ -111,12 +114,13 @@ public class CreateEventFragment extends Fragment {
 
     private View rootView;
     private boolean haveFriends;
+    private StatusEvent se;
 
     public class EventAttente extends Evenement {
 
-        public EventAttente(String uid, String owner, int image, String name, String description, String address, String city,
+        public EventAttente(String uid,StatusEvent se, String owner, int image, String name, String description, String address, String city,
                             Visibility visibility, DocumentReference ownerDoc, Timestamp date){
-            super(uid,  owner,  image,  name,  description,  address,  city,
+            super(uid,se,  owner,  image,  name,  description,  address,  city,
                      visibility,  ownerDoc,  date, null, 0);
         }
     }
@@ -162,7 +166,7 @@ public class CreateEventFragment extends Fragment {
 
         if(evenementAttente== null){
             Log.w("group", "Creation groupe vide");
-            evenementAttente  = new EventAttente(UUID.randomUUID().toString(), USER.getFirst_name() + " " + USER.getLast_name(), 0, "", "", "","",null,USER_REFERENCE,null);
+            evenementAttente  = new EventAttente(UUID.randomUUID().toString(), StatusEvent.BIENTOT,USER.getFirst_name() + " " + USER.getLast_name(), 0, "", "", "","",null,USER_REFERENCE,null);
         }
 
         if(adds != null){
@@ -620,7 +624,7 @@ public class CreateEventFragment extends Fragment {
                     }
                 }
 
-                final Evenement e = new Evenement(EVENT_LOAD.getUid(), USER.getFirst_name() + " " + USER.getLast_name(),
+                final Evenement e = new Evenement(EVENT_LOAD.getUid(), EVENT_LOAD.getStatusEvent(), USER.getFirst_name() + " " + USER.getLast_name(),
                         R.drawable.ic_baseline_account_circle_24, EVENT_LOAD.getName(), EVENT_LOAD.getDescription(),
                         event_adresse.getText().toString(), EVENT_LOAD.getCity(), EVENT_LOAD.getVisibility(),
                         USER_REFERENCE, new Timestamp(sdf.parse(event_date.getText().toString()+" "+final_event_time))
@@ -690,26 +694,35 @@ public class CreateEventFragment extends Fragment {
                     }
                 }
 
-                final Evenement e = new Evenement(evenementAttente.getUid(), USER.getFirst_name() + " " + USER.getLast_name(),
-                        R.drawable.ic_baseline_account_circle_24, evenementAttente.getName(), evenementAttente.getDescription(),
-                        evenementAttente.getAddress(), evenementAttente.getCity(), evenementAttente.getVisibility(),
-                        USER_REFERENCE, new Timestamp(sdf.parse(event_date.getText().toString()+" "+final_event_time))
-                        , new GeoPoint(l.latitude, l.longitude), adds.size());
+                Horloge horloge = new Horloge();
 
-                mStoreBase.collection("events").document(e.getUid()).set(e);
-                ModelDataEvent m1 = new ModelDataEvent(true,"add", mStoreBase.collection("users").document(USER_ID));
-                mStoreBase.collection("users").document(USER_ID).collection("events").document(e.getUid()).set(m1);
+                Timestamp ts = new Timestamp(sdf.parse(event_date.getText().toString()+" "+final_event_time));
+                se = horloge.verifStatut(new Date(),ts.toDate());
+                if(se == StatusEvent.FINI){
+                    Toast.makeText(getContext(), "Veuillez créer un évènement dans le futur", Toast.LENGTH_SHORT).show();
+                }else{
+                    final Evenement e = new Evenement(evenementAttente.getUid(),se,USER.getFirst_name() + " " + USER.getLast_name(),
+                            R.drawable.ic_baseline_account_circle_24, evenementAttente.getName(), evenementAttente.getDescription(),
+                            evenementAttente.getAddress(), evenementAttente.getCity(), evenementAttente.getVisibility(),
+                            USER_REFERENCE, new Timestamp(sdf.parse(event_date.getText().toString()+" "+final_event_time))
+                            , new GeoPoint(l.latitude, l.longitude), adds.size());
 
-                for (String user : adds) {
-                    String status = "add";
-                    if(e.getVisibility().equals(Visibility.PRIVATE)){
-                        status = "wait";
+                    mStoreBase.collection("events").document(e.getUid()).set(e);
+                    ModelDataEvent m1 = new ModelDataEvent(true,"add", mStoreBase.collection("users").document(USER_ID));
+                    mStoreBase.collection("users").document(USER_ID).collection("events").document(e.getUid()).set(m1);
+
+                    for (String user : adds) {
+                        String status = "add";
+                        if(e.getVisibility().equals(Visibility.PRIVATE)){
+                            status = "wait";
+                        }
+                        ModelDataEvent m = new ModelDataEvent(false,status, mStoreBase.collection("users").document(user));
+                        mStoreBase.collection("events").document(e.getUid()).collection("members").document(user).set(m);
                     }
-                    ModelDataEvent m = new ModelDataEvent(false,status, mStoreBase.collection("users").document(user));
-                    mStoreBase.collection("events").document(e.getUid()).collection("members").document(user).set(m);
+                    Toast.makeText(getContext(), "Vous avez créer votre évènement !", Toast.LENGTH_SHORT).show();
+                    navController.navigate(R.id.action_navigation_create_event_to_navigation_evenements);
                 }
-                Toast.makeText(getContext(), "Vous avez créer votre évènement !", Toast.LENGTH_SHORT).show();
-                navController.navigate(R.id.action_navigation_create_event_to_navigation_evenements);
+
             }else{
                 event_adresse.setError("Adresse non trouvée");
                 event_city.setError("Adresse non trouvée");

@@ -26,8 +26,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.nalone.Evenement;
+import com.example.nalone.Horloge;
 import com.example.nalone.ModelDataEvent;
 import com.example.nalone.R;
+import com.example.nalone.StatusEvent;
 import com.example.nalone.User;
 import com.example.nalone.ModelData;
 import com.example.nalone.adapter.ItemFiltreAdapter;
@@ -72,7 +74,7 @@ public class EvenementsListFragment extends Fragment {
     private RecyclerView mRecyclerViewFiltre;
     private RecyclerView.LayoutManager mLayoutManagerFiltre;
 
-    private RecyclerView mRecyclerView;
+    private RecyclerView mRecyclerViewEnCours,mRecyclerViewBientot, mRecyclerViewFini;
     private FirestoreRecyclerAdapter adapter;
     private LinearLayout linearSansEvent;
     private ItemFiltreAdapter mAdapterFiltre;
@@ -81,6 +83,7 @@ public class EvenementsListFragment extends Fragment {
     private int iterator = 0;
     private List<String> events;
     private ProgressBar loading;
+    private Horloge horloge;
 
 
 
@@ -120,6 +123,7 @@ public class EvenementsListFragment extends Fragment {
         filtres.add(new ItemFiltre("Numérique"));
         filtres.add(new ItemFiltre("Informatique"));
         filtres.add(new ItemFiltre("Manifestation"));
+        horloge = new Horloge();
 
         linearSansEvent = rootView.findViewById(R.id.linearSansEvent);
 
@@ -135,36 +139,25 @@ public class EvenementsListFragment extends Fragment {
         mRecyclerViewFiltre.setLayoutManager(mLayoutManagerFiltre);
         mRecyclerViewFiltre.setAdapter(mAdapterFiltre);
 
-        mRecyclerView = rootView.findViewById(R.id.recyclerViewEventList);
+        mRecyclerViewEnCours = rootView.findViewById(R.id.recyclerViewEventListEnCours);
+        mRecyclerViewBientot = rootView.findViewById(R.id.recyclerViewEventListBientot);
+        mRecyclerViewFini = rootView.findViewById(R.id.recyclerViewEventListFini);
 
-        adapterEvents();
+        initAdapter();
 
 
     }
 
-    private void adapterEvents() {
+    private void initAdapter(){
+        adapterEvents(StatusEvent.EN_COURS, mRecyclerViewEnCours);
+        adapterEvents(StatusEvent.BIENTOT, mRecyclerViewBientot);
+        adapterEvents(StatusEvent.FINI, mRecyclerViewFini);
 
-        mStoreBase.collection("users").document(USER_ID).collection("events")
-                .get()
-                .addOnCanceledListener(new OnCanceledListener() {
-                    @Override
-                    public void onCanceled() {
-                        linearSansEvent.setVisibility(View.VISIBLE);
-                        loading.setVisibility(View.GONE);
-                    }
-                });
-        mStoreBase.collection("users").document(USER_ID).collection("events")
-                .get()
-                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        if (task.isSuccessful()) {
-                            for (QueryDocumentSnapshot document : task.getResult()) {
-                                events.add(document.getId());
-                                Log.w("event", " Ajout list");
-                            }
-                                Query query = mStoreBase.collection("events").whereNotIn("uid",events);
-                                FirestoreRecyclerOptions<Evenement> options = new FirestoreRecyclerOptions.Builder<Evenement>().setQuery(query, Evenement.class).build();
+    }
+    private void adapterEvents(final StatusEvent se, RecyclerView recyclerView) {
+
+        Query query = mStoreBase.collection("events").whereEqualTo("statutEvent", se).whereNotEqualTo("ownerDoc",USER_REFERENCE);
+        FirestoreRecyclerOptions<Evenement> options = new FirestoreRecyclerOptions.Builder<Evenement>().setQuery(query, Evenement.class).build();
 
                                 adapter = new FirestoreRecyclerAdapter<Evenement, EventViewHolder>(options) {
                                     @NonNull
@@ -177,7 +170,7 @@ public class EvenementsListFragment extends Fragment {
                                     @Override
                                     protected void onBindViewHolder(@NonNull final EventViewHolder holder, int i, @NonNull final Evenement e) {
                                         //holder.mImageView.setImageResource(e.getImage());
-                                        if(eventTermine(new Date(),e.getDate().toDate())){
+                                        if(horloge.eventTermine(new Date(),e.getDate().toDate())){
                                             //holder.linearTermine.setVisibility(View.VISIBLE);
                                             mStoreBase.collection("events").document(e.getUid())
                                                     .collection("members")
@@ -239,62 +232,34 @@ public class EvenementsListFragment extends Fragment {
                                                         }
                                                     });
 
-                                            holder.mAfficher.setOnClickListener(new View.OnClickListener() {
-                                                @Override
-                                                public void onClick(View v) {
-                                                    InfosEvenementsActivity.EVENT_LOAD = e;
-                                                    InfosEvenementsActivity.type = "nouveau";
-                                                    navController.navigate(R.id.action_navigation_evenements_to_navigation_infos_events);
-                                                }
-                                            });
+                                                holder.mAfficher.setOnClickListener(new View.OnClickListener() {
+                                                    @Override
+                                                    public void onClick(View v) {
+                                                        InfosEvenementsActivity.EVENT_LOAD = e;
+                                                        InfosEvenementsActivity.type = "nouveau";
+                                                        navController.navigate(R.id.action_navigation_evenements_to_navigation_infos_events);
+                                                    }
+                                                });
 
-                                            holder.mInscrire.setOnClickListener(new View.OnClickListener() {
-                                                @Override
-                                                public void onClick(View v) {
-                                                    e.setNbMembers(e.getNbMembers()+1);
-                                                    mStoreBase.collection("events").document(e.getUid()).set(e);
-                                                    ModelDataEvent owner = new ModelDataEvent(false,"add", e.getOwnerDoc());
-                                                    ModelDataEvent m = new ModelDataEvent(false,"add", mStoreBase.collection("users").document(USER_ID));
-                                                    mStoreBase.collection("events").document(e.getUid()).collection("members").document(USER.getUid()).set(m);
-                                                    mStoreBase.collection("users").document(USER_ID).collection("events").document(e.getUid()).set(owner);
-                                                    Toast.makeText(getContext(), "Vous êtes inscrit à l'évènement " + e.getName() + " !", Toast.LENGTH_SHORT).show();
-                                                    createFragment();
-                                                }
-                                            });
+
+
                                             loading.setVisibility(View.GONE);
                                         }
 
                                         }
                                 };
                                 //mRecyclerView.setHasFixedSize(true);
-                                mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+                                recyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
 
-                                mRecyclerView.setAdapter(adapter);
+                                recyclerView.setAdapter(adapter);
                                 adapter.startListening();
 
                                 Log.w("count", iterator + "");
 
                         }
-                    }
-                });
-
-        }
 
 
-    public boolean eventTermine(Date startDate, Date endDate) {
-        //milliseconds
-        long different = endDate.getTime() - startDate.getTime();
 
-        Log.w("date","startDate : " + startDate);
-        Log.w("date","endDate : "+ endDate);
-        Log.w("date","different : " + different);
-
-        if(different < -86400000){
-            return true;
-        }else{
-            return false;
-        }
-    }
     private class EventViewHolder extends RecyclerView.ViewHolder {
 
         public ImageView mImageView;
@@ -304,7 +269,7 @@ public class EvenementsListFragment extends Fragment {
         public TextView mVille;
         //public TextView mDescription;
         public TextView mProprietaire;
-        public Button mInscrire, mAfficher;
+        public CardView mAfficher;
         public CardView mCarwViewOwner;
         public  TextView textViewNbMembers;
 
@@ -317,8 +282,7 @@ public class EvenementsListFragment extends Fragment {
             mVille = itemView.findViewById(R.id.villeEventList);
             //mDescription = itemView.findViewById(R.id.descriptionEventList);
             mProprietaire = itemView.findViewById(R.id.ownerEventList);
-            mAfficher = itemView.findViewById(R.id.buttonAfficherEventList);
-            mInscrire = itemView.findViewById(R.id.buttonInscrirEventList);
+            mAfficher = itemView.findViewById(R.id.cardViewEventList);
             mCarwViewOwner = itemView.findViewById(R.id.backGroundOwner);
             textViewNbMembers = itemView.findViewById(R.id.textViewNbMembers);
 

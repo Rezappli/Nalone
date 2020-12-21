@@ -16,6 +16,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
+import com.example.nalone.Horloge;
 import com.example.nalone.ui.evenements.CreateEventFragment;
 import com.example.nalone.ui.evenements.InfosEvenementsActivity;
 import com.example.nalone.R;
@@ -62,6 +63,7 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 
@@ -109,6 +111,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     private List<String> myEvents = new ArrayList<>();
     private List<String> event_prive, event_public, event_create, event_inscrit;
     private boolean zoom;
+    private Horloge horloge = new Horloge();
 
 
     public MapFragment() {
@@ -282,7 +285,10 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     }
 
     private void startQuery(Query query) {
-        FirestoreRecyclerOptions<Evenement> options = new FirestoreRecyclerOptions.Builder<Evenement>().setQuery(query, Evenement.class).build();
+        Query queryF = query.whereGreaterThan("latitude", minLat)
+                .whereLessThan("latitude", maxLat);
+
+        FirestoreRecyclerOptions<Evenement> options = new FirestoreRecyclerOptions.Builder<Evenement>().setQuery(queryF, Evenement.class).build();
 
         adapter = new FirestoreRecyclerAdapter<Evenement, EventViewHolder>(options) {
             @NonNull
@@ -295,62 +301,88 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
             @Override
             protected void onBindViewHolder(@NonNull final EventViewHolder holder, int i, @NonNull final Evenement e) {
                 //holder.mImageView.setImageResource(e.getImage());
-                holder.mTitle.setText((e.getName()));
-                holder.mDate.setText((dateFormat.format(e.getDate().toDate())));
-                holder.mTime.setText((timeFormat.format(e.getDate().toDate())));
-                holder.mVille.setText((e.getCity()));
-                holder.mProprietaire.setText(e.getOwner());
-                if (event_inscrit.contains(e.getUid()))
-                    holder.mImageInscrit.setVisibility(View.VISIBLE);
+                if(horloge.eventTermine(new Date(),e.getDate().toDate())){
+                    //holder.linearTermine.setVisibility(View.VISIBLE);
+                    mStoreBase.collection("events").document(e.getUid())
+                            .collection("members")
+                            .get()
+                            .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                                @Override
+                                public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                    if(task.isSuccessful()){
+                                        DocumentReference ref = mStoreBase.collection("events").document(e.getUid());
+                                        DocumentReference userOwner = mStoreBase.collection("users").document(ref.getId());
 
-                iterator++;
-
-                mStoreBase.collection("users").whereEqualTo("uid", e.getOwnerDoc().getId())
-                        .get()
-                        .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                            @Override
-                            public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                                if (task.isSuccessful()) {
-                                    for (QueryDocumentSnapshot document : task.getResult()) {
-                                        final User u = document.toObject(User.class);
-                                        if (u.getCursus().equalsIgnoreCase("Informatique")) {
-                                            holder.mCarwViewOwner.setCardBackgroundColor(Color.RED);
+                                        for (QueryDocumentSnapshot document : task.getResult()){
+                                            User u = document.toObject(User.class);
+                                            u.setNumber_events_attend(u.getNumber_events_attend() + 1);
+                                            mStoreBase.collection("users").document(document.getId()).set(u);
+                                            mStoreBase.collection("users").document(document.getId()).collection("events").document(e.getUid()).delete();
                                         }
+                                        mStoreBase.collection("events").document(e.getUid()).delete();
+                                    }
+                                }
+                            });
+                    //createFragment();
+                }else {
+                    holder.mTitle.setText((e.getName()));
+                    holder.mDate.setText((dateFormat.format(e.getDate().toDate())));
+                    holder.mTime.setText((timeFormat.format(e.getDate().toDate())));
+                    holder.mVille.setText((e.getCity()));
+                    holder.mProprietaire.setText(e.getOwner());
+                    if (event_inscrit.contains(e.getUid()))
+                        holder.mImageInscrit.setVisibility(View.VISIBLE);
 
-                                        if (u.getCursus().equalsIgnoreCase("TC")) {
-                                            holder.mCarwViewOwner.setCardBackgroundColor(Color.parseColor("#00E9FD"));
+
+                    iterator++;
+
+                    mStoreBase.collection("users").whereEqualTo("uid", e.getOwnerDoc().getId())
+                            .get()
+                            .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                                @Override
+                                public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                    if (task.isSuccessful()) {
+                                        for (QueryDocumentSnapshot document : task.getResult()) {
+                                            final User u = document.toObject(User.class);
+                                            if (u.getCursus().equalsIgnoreCase("Informatique")) {
+                                                holder.mCarwViewOwner.setCardBackgroundColor(Color.RED);
+                                            }
+
+                                            if (u.getCursus().equalsIgnoreCase("TC")) {
+                                                holder.mCarwViewOwner.setCardBackgroundColor(Color.parseColor("#00E9FD"));
+                                            }
+
+                                            if (u.getCursus().equalsIgnoreCase("MMI")) {
+                                                holder.mCarwViewOwner.setCardBackgroundColor(Color.parseColor("#FF1EED"));
+                                            }
+
+                                            if (u.getCursus().equalsIgnoreCase("GB")) {
+                                                holder.mCarwViewOwner.setCardBackgroundColor(Color.parseColor("#41EC57"));
+                                            }
+
+                                            if (u.getCursus().equalsIgnoreCase("LP")) {
+                                                holder.mCarwViewOwner.setCardBackgroundColor((Color.parseColor("#EC9538")));
+                                            }
+
+                                            Constants.setUserImage(u, getContext(), holder.mImageView);
+
                                         }
-
-                                        if (u.getCursus().equalsIgnoreCase("MMI")) {
-                                            holder.mCarwViewOwner.setCardBackgroundColor(Color.parseColor("#FF1EED"));
-                                        }
-
-                                        if (u.getCursus().equalsIgnoreCase("GB")) {
-                                            holder.mCarwViewOwner.setCardBackgroundColor(Color.parseColor("#41EC57"));
-                                        }
-
-                                        if (u.getCursus().equalsIgnoreCase("LP")) {
-                                            holder.mCarwViewOwner.setCardBackgroundColor((Color.parseColor("#EC9538")));
-                                        }
-
-                                        Constants.setUserImage(u, getContext(), holder.mImageView);
 
                                     }
-
                                 }
-                            }
-                        });
+                            });
 
-                holder.mCardView.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        CameraUpdate location = CameraUpdateFactory.newLatLngZoom(
-                                new LatLng(e.getLatitude(), e.getLongitude()), 15);
-                        mMap.animateCamera(location);
-                    }
-                });
-                loading.setVisibility(View.GONE);
-                cardViewButtonAdd.setVisibility(View.VISIBLE);
+                    holder.mCardView.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            CameraUpdate location = CameraUpdateFactory.newLatLngZoom(
+                                    new LatLng(e.getLatitude(), e.getLongitude()), 15);
+                            mMap.animateCamera(location);
+                        }
+                    });
+                    loading.setVisibility(View.GONE);
+                    cardViewButtonAdd.setVisibility(View.VISIBLE);
+                }
             }
         };
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));

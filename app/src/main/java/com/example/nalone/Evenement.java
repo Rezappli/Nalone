@@ -21,11 +21,12 @@ public class Evenement implements Serializable {
     private Timestamp date;
     private String owner;
     private int nbMembers;
+    private StatusEvent statusEvent;
 
     public Evenement() {}
 
 
-    public Evenement(String uid, String owner, int image, String name, String description, String address, String city,
+    public Evenement(String uid, StatusEvent statusEvent,String owner, int image, String name, String description, String address, String city,
                      Visibility visibility, DocumentReference ownerDoc, Timestamp date, GeoPoint location, int nbMembers){
         this.uid = uid;
         this.name = name;
@@ -41,6 +42,7 @@ public class Evenement implements Serializable {
             this.longitude = location.getLongitude();
         }
         this.nbMembers = nbMembers;
+        this.statusEvent = statusEvent;
     }
 
     public void setOwner(String owner) {
@@ -152,5 +154,13 @@ public class Evenement implements Serializable {
 
     public void setNbMembers(int nbMembers) {
         this.nbMembers = nbMembers;
+    }
+
+    public StatusEvent getStatusEvent() {
+        return statusEvent;
+    }
+
+    public void setStatusEvent(StatusEvent statusEvent) {
+        this.statusEvent = statusEvent;
     }
 }

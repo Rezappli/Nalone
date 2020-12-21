@@ -78,7 +78,7 @@
     <string name="horaireEvent"> Horaire </string>
     <string name="proprio"> Propriétaire : </string>
     <string name="organisateur"> Organisateur : </string>
-    <string name="participants"> Participants</string>
+    <string name="participants"> participants</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="location_private"> Privé </string>
@@ -102,6 +102,10 @@
     <string name="aucunEvent"> Aucun évènement en approche ! </string>
     <string name="aucunMesEvent"> Aucun évènement planifié </string>
     <string name="aucunCreationsEvent"> Aucun évènement crée </string>
+    <string name="en_cours"> En cours </string>
+    <string name="bientot"> Bientôt </string>
+    <string name="plus_tard"> Plus tard </string>
+    <string name="finis"> Fini </string>
     <string name="aucunMesAmis"> Vous n\'avez pas ajouté d\'ami </string>
     <string name="aucunRechercheAmis"> Aucun utilisateur inscrit pour le moment.. </string>
     <string name="aucunRechercheGroupe"> Aucun groupe crée pour le moment.. </string>
