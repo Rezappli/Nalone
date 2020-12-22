@@ -31,11 +31,10 @@ public class Horloge {
         Log.w("date","different : " + different);
 
 
-        if(different < 0 && different > -7200000){
-            return StatusEvent.EN_COURS;
+        if(different <= 0 && different >= (-7200000)){
+            return StatusEvent.ENCOURS;
         }
-
-        if(different > 7200000){
+        if(different > 0){
             return StatusEvent.BIENTOT;
         }
         if(different < -7200000){

@@ -74,6 +74,9 @@ public class MesEvenementsListFragment extends Fragment {
     private SwipeRefreshLayout swipeContainer;
     private CardView addEvent;
     private List<String> events;
+    private int nbInvit;
+    private CardView cardViewInvits;
+    private TextView textViewNbInvit;
 
 
     @Override
@@ -104,12 +107,39 @@ public class MesEvenementsListFragment extends Fragment {
         mRecyclerView = rootView.findViewById(R.id.recyclerViewMesEventList);
         mesEvents = rootView.findViewById(R.id.mesEvents);
         addEvent = rootView.findViewById(R.id.addEvent);
+        cardViewInvits = rootView.findViewById(R.id.cardViewInvits);
+        textViewNbInvit = rootView.findViewById(R.id.nbInvits);
         addEvent.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 navController.navigate(R.id.action_navigation_evenements_to_navigation_create_event);
             }
         });
+
+        mStoreBase.collection("users").document(USER.getUid()).collection("events").whereEqualTo("status", "received")
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            for (QueryDocumentSnapshot document : task.getResult()) {
+                                Log.w("Invitations", document.getId());
+                                nbInvit++;
+                                Log.w("Invitations", nbInvit+"");
+                            }
+                        }
+                        Log.w("Invitations", nbInvit+"");
+                        if(nbInvit != 0){
+                            Log.w("Invitations", "Pop up");
+                            cardViewInvits.setVisibility(View.VISIBLE);
+                            textViewNbInvit.setText(nbInvit+"");
+                        }else{
+                            cardViewInvits.setVisibility(View.GONE);
+                        }
+                        //loading.setVisibility(View.GONE);
+                    }
+                });
+
 
         navController = Navigation.findNavController(getActivity(), R.id.nav_host_fragment);
         mesEvents.setOnClickListener(new View.OnClickListener() {

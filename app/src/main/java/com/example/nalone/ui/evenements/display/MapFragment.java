@@ -17,6 +17,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import com.example.nalone.Horloge;
+import com.example.nalone.StatusEvent;
 import com.example.nalone.ui.evenements.CreateEventFragment;
 import com.example.nalone.ui.evenements.InfosEvenementsActivity;
 import com.example.nalone.R;
@@ -301,7 +302,9 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
             @Override
             protected void onBindViewHolder(@NonNull final EventViewHolder holder, int i, @NonNull final Evenement e) {
                 //holder.mImageView.setImageResource(e.getImage());
-                if(horloge.eventTermine(new Date(),e.getDate().toDate())){
+                e.setStatusEvent(horloge.verifStatut(new Date(), e.getDate().toDate()));
+                mStoreBase.collection("events").document(e.getUid()).set(e);
+                if(e.getStatusEvent() == StatusEvent.FINI){
                     //holder.linearTermine.setVisibility(View.VISIBLE);
                     mStoreBase.collection("events").document(e.getUid())
                             .collection("members")
@@ -330,9 +333,9 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                     holder.mTime.setText((timeFormat.format(e.getDate().toDate())));
                     holder.mVille.setText((e.getCity()));
                     holder.mProprietaire.setText(e.getOwner());
+
                     if (event_inscrit.contains(e.getUid()))
                         holder.mImageInscrit.setVisibility(View.VISIBLE);
-
 
                     iterator++;
 

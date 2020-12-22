@@ -85,6 +85,8 @@ public class EvenementsListFragment extends Fragment {
     private ProgressBar loading;
     private Horloge horloge;
 
+    private LinearLayout sansEnCours, sansBientot, sansFini;
+
 
 
     public EvenementsListFragment() {
@@ -126,6 +128,9 @@ public class EvenementsListFragment extends Fragment {
         horloge = new Horloge();
 
         linearSansEvent = rootView.findViewById(R.id.linearSansEvent);
+        sansEnCours = rootView.findViewById(R.id.linearSansEnCours);
+        sansBientot = rootView.findViewById(R.id.linearSansBientot);
+        sansFini = rootView.findViewById(R.id.linearSansFini);
 
         linearSansEvent.setVisibility(View.GONE);
 
@@ -149,45 +154,38 @@ public class EvenementsListFragment extends Fragment {
     }
 
     private void initAdapter(){
-        adapterEvents(StatusEvent.EN_COURS, mRecyclerViewEnCours);
+        adapterEvents(StatusEvent.ENCOURS, mRecyclerViewEnCours);
         adapterEvents(StatusEvent.BIENTOT, mRecyclerViewBientot);
         adapterEvents(StatusEvent.FINI, mRecyclerViewFini);
 
     }
     private void adapterEvents(final StatusEvent se, RecyclerView recyclerView) {
 
-        Query query = mStoreBase.collection("events").whereEqualTo("statutEvent", se).whereNotEqualTo("ownerDoc",USER_REFERENCE);
+       /* mStoreBase.collection("events").whereEqualTo("statutEvent", se).whereNotEqualTo("ownerDoc",USER_REFERENCE)
+                .get()
+                .addOnCanceledListener(new OnCanceledListener() {
+                    @Override
+                    public void onCanceled() {
+                        if(se == StatusEvent.EN_COURS){
+                            sansEnCours.setVisibility(View.VISIBLE);
+                        }
+                    }
+                });*/
+        Query query = mStoreBase.collection("events").whereEqualTo("statusEvent", se);//.whereNotEqualTo("ownerDoc",USER_REFERENCE);
         FirestoreRecyclerOptions<Evenement> options = new FirestoreRecyclerOptions.Builder<Evenement>().setQuery(query, Evenement.class).build();
 
                                 adapter = new FirestoreRecyclerAdapter<Evenement, EventViewHolder>(options) {
                                     @NonNull
                                     @Override
                                     public EventViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-                                        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_evenements_list, parent, false);
+                                        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_evenements_list_, parent, false);
                                         return new EventViewHolder(view);
                                     }
 
                                     @Override
                                     protected void onBindViewHolder(@NonNull final EventViewHolder holder, int i, @NonNull final Evenement e) {
                                         //holder.mImageView.setImageResource(e.getImage());
-                                        if(horloge.eventTermine(new Date(),e.getDate().toDate())){
-                                            //holder.linearTermine.setVisibility(View.VISIBLE);
-                                            mStoreBase.collection("events").document(e.getUid())
-                                                    .collection("members")
-                                                    .get()
-                                                    .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                                                        @Override
-                                                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                                                            if(task.isSuccessful()){
-                                                                for (QueryDocumentSnapshot document : task.getResult()){
-                                                                    mStoreBase.collection("users").document(document.getId()).collection("events").document(e.getUid()).delete();
-                                                                }
-                                                                mStoreBase.collection("events").document(e.getUid()).delete();
-                                                            }
-                                                        }
-                                                    });
-                                            //createFragment();
-                                        }else{
+
                                             holder.mTitle.setText((e.getName()));
                                             holder.mDate.setText((dateFormat.format(e.getDate().toDate())));
                                             holder.mTime.setText((timeFormat.format(e.getDate().toDate())));
@@ -243,9 +241,21 @@ public class EvenementsListFragment extends Fragment {
 
 
 
-                                            loading.setVisibility(View.GONE);
-                                        }
 
+                                            if (se == StatusEvent.BIENTOT){
+                                                sansBientot.setVisibility(View.GONE);
+
+                                            }
+                                            if (se == StatusEvent.ENCOURS){
+                                                sansEnCours.setVisibility(View.GONE);
+
+                                            }
+                                            if (se == StatusEvent.FINI){
+                                                sansFini.setVisibility(View.GONE);
+
+                                            }
+
+//                                            loading.setVisibility(View.GONE);
                                         }
                                 };
                                 //mRecyclerView.setHasFixedSize(true);
