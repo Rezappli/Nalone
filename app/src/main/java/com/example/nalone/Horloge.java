@@ -37,11 +37,14 @@ public class Horloge {
         if(different > 0){
             return StatusEvent.BIENTOT;
         }
-        if(different < -7200000){
+        if(different < -7200000 && different > -86400000){
             return StatusEvent.FINI;
-        }else{
-            return null;
+        }if(different <= -86400000){
+            return StatusEvent.EXPIRE;
         }
+
+        return null;
     }
+
 
 }

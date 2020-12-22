@@ -304,7 +304,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                 //holder.mImageView.setImageResource(e.getImage());
                 e.setStatusEvent(horloge.verifStatut(new Date(), e.getDate().toDate()));
                 mStoreBase.collection("events").document(e.getUid()).set(e);
-                if(e.getStatusEvent() == StatusEvent.FINI){
+                if(e.getStatusEvent() == StatusEvent.EXPIRE){
                     //holder.linearTermine.setVisibility(View.VISIBLE);
                     mStoreBase.collection("events").document(e.getUid())
                             .collection("members")

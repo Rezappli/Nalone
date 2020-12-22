@@ -10,8 +10,7 @@
 
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginBottom="30dp">
+        android:layout_height="match_parent">
 
         <LinearLayout
             android:id="@+id/linearLayout"
@@ -153,7 +152,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:gravity="center"
-                    android:text="Aucun évènement en cours" />
+                    android:text="@string/aucun_encours" />
 
             </LinearLayout>
 
@@ -191,6 +190,7 @@
                 android:id="@+id/linearSansBientot"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:layout_marginBottom="30dp"
                 android:orientation="vertical"
                 android:visibility="visible">
 
@@ -203,7 +203,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:gravity="center"
-                    android:text="Aucun évènement bientôt" />
+                    android:text="@string/aucun_bientot" />
 
             </LinearLayout>
 
@@ -253,7 +253,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:gravity="center"
-                    android:text="Aucun évènement bientôt" />
+                    android:text="@string/aucun_fini" />
 
             </LinearLayout>
 
@@ -262,6 +262,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center|center_horizontal"
+                android:layout_marginBottom="30dp"
                 android:layout_weight="0.8"
                 android:background="@android:color/white"
                 android:scrollbars="vertical">

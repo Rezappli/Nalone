@@ -32,6 +32,7 @@ import com.example.nalone.Evenement;
 import com.example.nalone.ModelData;
 import com.example.nalone.ModelDataEvent;
 import com.example.nalone.R;
+import com.example.nalone.StatusEvent;
 import com.example.nalone.User;
 import com.example.nalone.util.Constants;
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
@@ -274,11 +275,18 @@ public class InfosEvenementsActivity extends Fragment {
 
 
 
-            textViewTitleDebut.setText("Terminé depuis : ");
-            textViewTitleDebut.setTextColor(Color.GRAY);
-            linearButton.setVisibility(View.GONE);
-            cardViewTermine.setVisibility(View.VISIBLE);
-            diffDate.setTextColor(Color.GRAY);
+            if(EVENT_LOAD.getStatusEvent() == StatusEvent.ENCOURS){
+                textViewTitleDebut.setText("Commencé depuis : ");
+            }
+            if(EVENT_LOAD.getStatusEvent() == StatusEvent.FINI){
+                textViewTitleDebut.setText("Terminé depuis : ");
+                textViewTitleDebut.setTextColor(Color.GRAY);
+                linearButton.setVisibility(View.GONE);
+                cardViewTermine.setVisibility(View.VISIBLE);
+                diffDate.setTextColor(Color.GRAY);
+            }
+
+
         }
         diffDate.setText(elapsedDays + "j " + elapsedHours + "h " + elapsedMinutes +"m "+ elapsedSeconds+"s ");
 

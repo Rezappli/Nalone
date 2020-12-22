@@ -89,6 +89,9 @@
     <string name="descriptionNF"> Description : </string>
     <string name="afficher"> Afficher </string>
     <string name="CI"> Centres d\'interêt </string>
+    <string name="aucun_encours"> Aucun évènement en cours </string>
+    <string name="aucun_bientot"> Aucun évènement bientôt </string>
+    <string name="aucun_fini"> Aucun évènement fini </string>
     <string name="partager"> Partager </string>
     <string name="scanQR"> Scannez le QR Code d\'un utilisateur </string>
     <string name="reset_text"> Entrez votre adresse mail </string>
