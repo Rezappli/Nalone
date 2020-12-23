@@ -176,7 +176,7 @@ public class CreationsEvenementsFragment extends Fragment {
                                 .setPositiveButton("Oui", new DialogInterface.OnClickListener() {
                                     public void onClick(DialogInterface dialog, int id) {
                                         mStoreBase.collection("events").document(event.getUid()).delete();
-                                        mStoreBase.collection("users").document(USER_ID).collection("events").document(event.getUid()).delete();
+                                        mStoreBase.collection("users").document(USER_ID).collection("events_create").document(event.getUid()).delete();
                                         Toast.makeText(getContext(), "Vous avez supprimé(e) un évènement !", Toast.LENGTH_SHORT).show();
                                         createFragment();
                                     }

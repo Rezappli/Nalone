@@ -234,7 +234,7 @@ public class EvenementsListFragment extends Fragment {
                                                     @Override
                                                     public void onClick(View v) {
                                                         InfosEvenementsActivity.EVENT_LOAD = e;
-                                                        InfosEvenementsActivity.type = "nouveau";
+                                                        //InfosEvenementsActivity.type = "nouveau";
                                                         navController.navigate(R.id.action_navigation_evenements_to_navigation_infos_events);
                                                     }
                                                 });

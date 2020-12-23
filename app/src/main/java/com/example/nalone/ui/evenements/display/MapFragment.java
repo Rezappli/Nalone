@@ -181,7 +181,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
             public void onClick(View v) {
                 hiddeText(textViewLocationInscrit);
                 imageViewLocationInscrit.setImageDrawable(getResources().getDrawable(R.drawable.location_inscrit_30));
-                Query query = mStoreBase.collection("events").whereIn("uid", event_inscrit);
+                Query query = mStoreBase.collection("users").document(USER_ID).collection("events_join");
                 clickFiltre(query);
 
 
@@ -418,16 +418,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                             @Override
                             public void onComplete(@NonNull Task<QuerySnapshot> task) {
                                 for (QueryDocumentSnapshot doc : task.getResult()) {
-
                                     InfosEvenementsActivity.EVENT_LOAD = doc.toObject(Evenement.class);
-                                    if (event_inscrit != null && event_inscrit.contains(InfosEvenementsActivity.EVENT_LOAD.getUid())) {
-                                        InfosEvenementsActivity.type = "inscrit";
-                                    } else if (InfosEvenementsActivity.EVENT_LOAD.getOwnerDoc().equals(USER_REFERENCE)) {
-                                        InfosEvenementsActivity.type = "creer";
-                                    } else {
-                                        InfosEvenementsActivity.type = "nouveau";
-                                    }
-
                                     navController.navigate(R.id.action_navigation_evenements_to_navigation_infos_events);
                                 }
                             }

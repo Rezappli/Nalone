@@ -632,13 +632,13 @@ public class CreateEventFragment extends Fragment {
 
                 mStoreBase.collection("events").document(e.getUid()).set(e);
                 ModelDataEvent m1 = new ModelDataEvent(true,"add", mStoreBase.collection("users").document(USER_ID));
-                mStoreBase.collection("users").document(USER_ID).collection("events").document(e.getUid()).set(m1);
+                mStoreBase.collection("users").document(USER_ID).collection("events_create").document(e.getUid()).set(e);
 
                 for (String user : adds) {
                     String status = "received";
                     ModelDataEvent m = new ModelDataEvent(false,status, mStoreBase.collection("users").document(user));
                     mStoreBase.collection("events").document(e.getUid()).collection("members").document(user).set(m);
-                    mStoreBase.collection("users").document(user).collection("events").document(e.getUid()).set(m);
+                    mStoreBase.collection("users").document(user).collection("events_create").document(e.getUid()).collection("members").document(user).set(m);
                 }
                 Toast.makeText(getContext(), "Vous avez créer votre évènement !", Toast.LENGTH_SHORT).show();
                 navController.navigate(R.id.action_navigation_create_event_to_navigation_evenements);
@@ -707,13 +707,13 @@ public class CreateEventFragment extends Fragment {
 
                     mStoreBase.collection("events").document(e.getUid()).set(e);
                     ModelDataEvent m1 = new ModelDataEvent(true,"add", mStoreBase.collection("users").document(USER_ID));
-                    mStoreBase.collection("users").document(USER_ID).collection("events").document(e.getUid()).set(m1);
+                    mStoreBase.collection("users").document(USER_ID).collection("events_create").document(e.getUid()).set(e);
 
                     for (String user : adds) {
                         String status = "received";
                         ModelDataEvent m = new ModelDataEvent(false,status, mStoreBase.collection("users").document(user));
                         mStoreBase.collection("events").document(e.getUid()).collection("members").document(user).set(m);
-                        mStoreBase.collection("users").document(user).collection("events").document(e.getUid()).set(m);
+                        mStoreBase.collection("users").document(user).collection("events_create").document(e.getUid()).collection("members").document(user).set(m);
                     }
 
                     Toast.makeText(getContext(), "Vous avez créer votre évènement !", Toast.LENGTH_SHORT).show();

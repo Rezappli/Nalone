@@ -160,6 +160,10 @@ public class MesEvenementsListFragment extends Fragment {
         mRecyclerViewBientot = rootView.findViewById(R.id.recyclerViewEventListBientot);
         mRecyclerViewFini = rootView.findViewById(R.id.recyclerViewEventListFini);
 
+        sansEnCours = rootView.findViewById(R.id.linearSansEnCours);
+        sansBientot = rootView.findViewById(R.id.linearSansBientot);
+        sansFini = rootView.findViewById(R.id.linearSansFini);
+
         initAdapter();
 
     }
@@ -182,7 +186,7 @@ public class MesEvenementsListFragment extends Fragment {
                         }
                     }
                 });*/
-        mStoreBase.collection("users").document(USER_ID).collection("events").whereNotEqualTo("user", USER_REFERENCE)
+        mStoreBase.collection("users").document(USER_ID).collection("events_join")
                 .get()
                 .addOnFailureListener(new OnFailureListener() {
                     @Override
@@ -191,27 +195,13 @@ public class MesEvenementsListFragment extends Fragment {
                     }
                 });
 
-        mStoreBase.collection("users").document(USER_ID).collection("events").whereNotEqualTo("user", USER_REFERENCE).whereEqualTo("status", "add")
-                .get()
-                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        events = new ArrayList<>();
-                        if (task.isSuccessful()) {
-
-                            for (QueryDocumentSnapshot document : task.getResult()) {
-                                events.add(document.getId());
-                                Log.w("event", " Ajout list");
-                                iterator++;
-                            }
                             Log.w("event", " Check list");
-                            if (!events.isEmpty()) {
-                                Query query = mStoreBase.collection("events").whereIn("uid", events).whereEqualTo("statusEvent", se);
+        Query query = mStoreBase.collection("users").document(USER_ID).collection("events_join").whereEqualTo("statusEvent", se);
 
-                                FirestoreRecyclerOptions<Evenement> options = new FirestoreRecyclerOptions.Builder<Evenement>().setQuery(query, Evenement.class).build();
+        FirestoreRecyclerOptions<Evenement> options = new FirestoreRecyclerOptions.Builder<Evenement>().setQuery(query, Evenement.class).build();
 
 
-                                adapter = new FirestoreRecyclerAdapter<Evenement, EventViewHolder>(options) {
+        adapter = new FirestoreRecyclerAdapter<Evenement, EventViewHolder>(options) {
                                     @NonNull
                                     @Override
                                     public EventViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -291,21 +281,14 @@ public class MesEvenementsListFragment extends Fragment {
                                     }
                                 };
                                 recyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
+
                                 recyclerView.setAdapter(adapter);
                                 adapter.startListening();
 
                                 Log.w("count", iterator + "");
 
-                            Log.w("count", iterator + "");
-                        }else{
-                            linearSansEvent.setVisibility(View.VISIBLE);
-                        }
-                    }
-                }
+                                Log.w("count", iterator + "");
 
-
-
-    });
 
 
     }

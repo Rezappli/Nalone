@@ -37,11 +37,15 @@ import com.example.nalone.User;
 import com.example.nalone.util.Constants;
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
+import com.google.android.gms.tasks.OnCanceledListener;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
+
+import org.w3c.dom.Document;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -94,6 +98,7 @@ public class InfosEvenementsActivity extends Fragment {
     }
 
     private void createFragment() {
+
         participants = 0;
         navController = Navigation.findNavController(getActivity(), R.id.nav_host_fragment);
         mTitle = rootView.findViewById(R.id.title);
@@ -222,7 +227,7 @@ public class InfosEvenementsActivity extends Fragment {
             }
         });
 
-        setData(type);
+        setData();
     }
 
 
@@ -315,35 +320,66 @@ public class InfosEvenementsActivity extends Fragment {
         builder.show();
     }
 
-    private void setData(String type) {
-        if(type.equalsIgnoreCase("inscrit")){
-            textViewInscription.setText("Se désinscrire");
-            textViewInscription.setTextColor(Color.RED);
-            buttonInscription.setImageDrawable(getResources().getDrawable(R.drawable.inscrit_oui_50));
-        }
+    private void setData() {
 
-        if(type.equalsIgnoreCase("creer")){
-            textViewInscription.setText("Modifier");
-            buttonInscription.setImageDrawable(getResources().getDrawable(R.drawable.ic_baseline_edit_50));
-            buttonInscription.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    CreateEventFragment.EVENT_LOAD = EVENT_LOAD;
-                    CreateEventFragment.edit = true;
-                    navController.navigate(R.id.action_navigation_infos_events_to_navigation_create_event);
+        mStoreBase.collection("users").document(USER_ID).collection("events_join")
+                .get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                if(task.isSuccessful()){
+                    for (QueryDocumentSnapshot doc : task.getResult()){
+                        if(doc.getId().equals(EVENT_LOAD.getUid())){
+                            inscrit = true;
+                            textViewInscription.setText("Se désinscrire");
+                            //textViewInscription.setTextColor(Color.RED);
+                            buttonInscription.setImageDrawable(getResources().getDrawable(R.drawable.inscrit_oui_50));
+                            linearButton.setVisibility(View.VISIBLE);
+                        }
+                    }
                 }
-            });
-            linearAnnuler.setVisibility(View.VISIBLE);
 
-        }
+            }
+        });
+
+        mStoreBase.collection("users").document(USER_ID).collection("events_create")
+                .get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                                                 @Override
+                                                 public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                                     if (task.isSuccessful()) {
+                                                         for (QueryDocumentSnapshot doc : task.getResult()) {
+                                                             if (doc.getId().equals(EVENT_LOAD.getUid())) {
+                                                                 textViewInscription.setText("Modifier");
+                                                                 buttonInscription.setImageDrawable(getResources().getDrawable(R.drawable.ic_baseline_edit_50));
+                                                                 buttonInscription.setOnClickListener(new View.OnClickListener() {
+                                                                     @Override
+                                                                     public void onClick(View v) {
+                                                                         CreateEventFragment.EVENT_LOAD = EVENT_LOAD;
+                                                                         CreateEventFragment.edit = true;
+                                                                         navController.navigate(R.id.action_navigation_infos_events_to_navigation_create_event);
+                                                                     }
+                                                                 });
+                                                                 linearButton.setVisibility(View.VISIBLE);
+                                                                 linearAnnuler.setVisibility(View.VISIBLE);
+                                                             }
+                                                         }
+                                                     }
+
+                                                 }
+                                             });
+
+
+
+
+
+        // if(type.equalsIgnoreCase("inscrit")){
     }
 
     private void incription() {
         if(!inscrit){
-            ModelDataEvent owner = new ModelDataEvent(false,"add", EVENT_LOAD.getOwnerDoc());
+            //ModelDataEvent owner = new ModelDataEvent(false,"add", EVENT_LOAD.getOwnerDoc());
             ModelDataEvent m = new ModelDataEvent(false,"add", mStoreBase.collection("users").document(USER_ID));
             mStoreBase.collection("events").document(EVENT_LOAD.getUid()).collection("members").document(USER.getUid()).set(m);
-            mStoreBase.collection("users").document(USER_ID).collection("events").document(EVENT_LOAD.getUid()).set(owner);
+            mStoreBase.collection("users").document(USER_ID).collection("events_join").document(EVENT_LOAD.getUid()).set(EVENT_LOAD);
             Toast.makeText(getContext(), "Vous êtes inscrit à l'évènement " + EVENT_LOAD.getName() + " !", Toast.LENGTH_SHORT).show();
             textViewInscription.setText("Se désinscrire");
             buttonInscription.setImageDrawable(getResources().getDrawable(R.drawable.inscrit_oui_50));
@@ -351,7 +387,7 @@ public class InfosEvenementsActivity extends Fragment {
             createFragment();
         }else{
             mStoreBase.collection("events").document(EVENT_LOAD.getUid()).collection("members").document(USER.getUid()).delete();
-            mStoreBase.collection("users").document(USER_ID).collection("events").document(EVENT_LOAD.getUid()).delete();
+            mStoreBase.collection("users").document(USER_ID).collection("events_join").document(EVENT_LOAD.getUid()).delete();
             Toast.makeText(getContext(), "Vous ne participez plus à l'évènement " + EVENT_LOAD.getName() + " !", Toast.LENGTH_SHORT).show();
             textViewInscription.setText("Participer");
             buttonInscription.setImageDrawable(getResources().getDrawable(R.drawable.inscrit_50));
