@@ -74,6 +74,7 @@ import static com.example.nalone.util.Constants.USER;
 import static com.example.nalone.util.Constants.USER_ID;
 import static com.example.nalone.util.Constants.USER_REFERENCE;
 import static com.example.nalone.util.Constants.dateFormat;
+import static com.example.nalone.util.Constants.formatD;
 import static com.example.nalone.util.Constants.mStoreBase;
 import static com.example.nalone.util.Constants.range;
 import static com.example.nalone.util.Constants.targetZoom;
@@ -171,7 +172,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                 imageViewLocationAll.setImageDrawable(getResources().getDrawable(R.drawable.location_all_30));
                 Query query = mStoreBase.collection("events");
                 clickFiltre(query);
-
             }
         });
 
@@ -233,6 +233,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
             public void onClick(View v) {
                 CreateEventFragment.edit = false;
                 CreateEventFragment.EVENT_LOAD = null;
+                CreateEventFragment.evenementAttente = null;
                 navController.navigate(R.id.action_navigation_evenements_to_navigation_create_event);
             }
         });
@@ -304,6 +305,9 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                 //holder.mImageView.setImageResource(e.getImage());
                 e.setStatusEvent(horloge.verifStatut(new Date(), e.getDate().toDate()));
                 mStoreBase.collection("events").document(e.getUid()).set(e);
+                if(e.getStatusEvent() == StatusEvent.FINI){
+                   ajoutCreationAndParticipation(e);
+                }
                 if(e.getStatusEvent() == StatusEvent.EXPIRE){
                     //holder.linearTermine.setVisibility(View.VISIBLE);
                     mStoreBase.collection("events").document(e.getUid())
@@ -428,6 +432,37 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                 }
             });
         }
+    }
+
+    private void ajoutCreationAndParticipation(Evenement e) {
+
+        mStoreBase.collection("users").whereEqualTo("uid",e.getOwnerDoc())
+                .get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                if(task.isSuccessful()){
+                    for(QueryDocumentSnapshot doc : task.getResult()){
+                        User u = doc.toObject(User.class);
+                        u.setNumber_events_create(u.getNumber_events_attend()+1);
+                        mStoreBase.collection("users").document(u.getUid()).set(u);
+                    }
+                }
+            }
+        });
+
+        mStoreBase.collection("events").document(e.getUid()).collection("members")
+                .get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                if(task.isSuccessful()){
+                    for(QueryDocumentSnapshot doc : task.getResult()){
+                        User u = doc.toObject(User.class);
+                        u.setNumber_events_attend(u.getNumber_events_attend()+1);
+                        mStoreBase.collection("users").document(u.getUid()).set(u);
+                    }
+                }
+            }
+        });
     }
 
     private class EventViewHolder extends RecyclerView.ViewHolder {

@@ -53,6 +53,7 @@ import static com.example.nalone.util.Constants.USER_ID;
 import static com.example.nalone.util.Constants.mStore;
 import static com.example.nalone.util.Constants.mStoreBase;
 import static com.example.nalone.util.Constants.setGroupImage;
+import static com.example.nalone.util.Constants.setUserImage;
 
 public class ListAmisFragment extends Fragment {
 
@@ -326,30 +327,7 @@ public class ListAmisFragment extends Fragment {
 
 
 
-                                        if (u.getImage_url() != null) {
-                                            if (!Cache.fileExists(u.getUid())) {
-                                                Log.w("Cache", "Loading : " + u.getFirst_name());
-                                                StorageReference imgRef = mStore.getReference("users/" + u.getUid());
-                                                if (imgRef != null) {
-                                                    imgRef.getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
-                                                        @Override
-                                                        public void onComplete(@NonNull Task<Uri> task) {
-                                                            if (task.isSuccessful()) {
-                                                                Uri img = task.getResult();
-                                                                if (img != null) {
-                                                                    Log.w("image", "save image from cache");
-                                                                    Cache.saveUriFile(u.getUid(), img);
-                                                                    Glide.with(getContext()).load(img).fitCenter().centerCrop().into(userViewHolder.imagePerson);
-                                                                }
-                                                            }
-                                                        }
-                                                    });
-                                                }
-                                            } else {
-                                                Log.w("image", "get image from cache");
-                                                Glide.with(getContext()).load(Cache.getUriFromUid(u.getUid())).fitCenter().centerCrop().into(userViewHolder.imagePerson);
-                                            }
-                                        }
+                                        setUserImage(u,getContext(),userViewHolder.imagePerson);
 
                                         loading.setVisibility(View.GONE);
 

@@ -107,7 +107,7 @@ public class MesEvenementsListFragment extends Fragment {
     }
 
     private void createFragment() {
-
+        nbInvit = 0;
         swipeContainer = (SwipeRefreshLayout) rootView.findViewById(R.id.AmisSwipeRefreshLayout);
         swipeContainer.setColorSchemeResources(android.R.color.holo_blue_bright);
         this.configureSwipeRefreshLayout();
@@ -124,7 +124,7 @@ public class MesEvenementsListFragment extends Fragment {
             }
         });
 
-        mStoreBase.collection("users").document(USER.getUid()).collection("events").whereEqualTo("status", "received")
+        mStoreBase.collection("users").document(USER.getUid()).collection("events_received")
                 .get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
@@ -149,6 +149,12 @@ public class MesEvenementsListFragment extends Fragment {
                 });
 
         navController = Navigation.findNavController(getActivity(), R.id.nav_host_fragment);
+        cardViewInvits.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                navController.navigate(R.id.action_navigation_evenements_to_navigation_invit_event);
+            }
+        });
         mesEvents.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

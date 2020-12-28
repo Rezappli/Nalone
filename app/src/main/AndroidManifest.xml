@@ -17,7 +17,7 @@
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE" />
-    <uses-permission android:name="android.permission.CALL_PHONE"/>
+    <uses-permission android:name="android.permission.CALL_PHONE" />
 
     <application
         android:name="splash.MyApp"
@@ -27,12 +27,15 @@
         android:roundIcon="@mipmap/ic_logo_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme.NoActionBar">
+        <activity android:name=".InvitEventActivity"></activity>
         <activity android:name=".ResetPassword" />
         <activity android:name=".ui.evenements.InfosEvenementsActivity" />
-        <activity android:name=".ui.message.ChatActivityGroup" android:theme="@style/AppTheme.NoActionBar"/>
-        <activity android:name=".ui.message.ChatActivityFriend" android:theme="@style/AppTheme.NoActionBar">
-
-        </activity>
+        <activity
+            android:name=".ui.message.ChatActivityGroup"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".ui.message.ChatActivityFriend"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
         <!--
              The API key for Google Maps-based APIs is defined as a string resource.
              (See the file "res/values/google_maps_api.xml").
@@ -57,7 +60,7 @@
         <activity
             android:name=".HomeActivity"
             android:label="@string/title_activity_home"
-            android:theme="@style/AppTheme"/>
+            android:theme="@style/AppTheme" />
         <activity android:name=".signUpActivities.SignUpProfilActivity" />
         <activity android:name=".signUpActivities.SignUpHobbiesActivity" />
         <activity android:name=".signUpActivities.SignUpInformationActivity" />
@@ -86,16 +89,18 @@
             </intent-filter>
         </activity>
 
-        <meta-data android:name="com.google.android.gms.vision.DEPENDENCIES" android:value="barcode"/>
+        <meta-data
+            android:name="com.google.android.gms.vision.DEPENDENCIES"
+            android:value="barcode" />
+
         <service
             android:name=".MyFirebaseInstance"
-            android:exported="false"
-            android:directBootAware="true">
+            android:directBootAware="true"
+            android:exported="false">
             <intent-filter>
-                <action android:name="com.google.firebase.MESSAGING_EVENT"/>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
         </service>
-
     </application>
 
 </manifest>

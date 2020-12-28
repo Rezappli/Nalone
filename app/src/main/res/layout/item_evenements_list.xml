@@ -20,6 +20,7 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <LinearLayout
+            android:id="@+id/layoutInvit"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical">
@@ -182,25 +183,19 @@
                 android:layout_margin="10dp"
                 android:orientation="horizontal">
 
-                <Button
-                    android:id="@+id/buttonInscrirEventList"
-                    android:layout_width="match_parent"
+                <ImageView
+                    android:id="@+id/acceptInvit"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="10dp"
-                    android:layout_marginEnd="10dp"
-                    android:layout_weight="0.5"
-                    android:background="@drawable/custom_button_simple"
-                    android:text="@string/inscrireButton" />
+                    android:layout_weight="1"
+                    app:srcCompat="@drawable/ic_baseline_check_24" />
 
-                <Button
-                    android:id="@+id/buttonAfficherEventList"
-                    android:layout_width="match_parent"
+                <ImageView
+                    android:id="@+id/declineInvit"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="10dp"
-                    android:layout_marginEnd="10dp"
-                    android:layout_weight="0.5"
-                    android:background="@drawable/custom_button_signup"
-                    android:text="@string/afficher" />
+                    android:layout_weight="1"
+                    app:srcCompat="@drawable/ic_baseline_close_24" />
             </LinearLayout>
 
         </LinearLayout>
