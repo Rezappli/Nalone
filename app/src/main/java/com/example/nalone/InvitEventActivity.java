@@ -175,8 +175,8 @@ public class InvitEventActivity extends Fragment {
                     }
                 }
             });
-            mStoreBase.collection("users").document(e.getOwnerDoc().getId()).collection("events_create").document(e.getUid()).collection("members").document(USER_ID).set(data2);
-            mStoreBase.collection("events").document(e.getUid()).collection("members").document(USER.getUid()).set(data1);
+            mStoreBase.collection("users").document(e.getOwnerDoc().getId()).collection("events_create").document(e.getUid()).collection("members").document(USER_ID).set(USER);
+            mStoreBase.collection("events").document(e.getUid()).collection("members").document(USER_ID).set(USER);
             mStoreBase.collection("users").document(USER_ID).collection("events_join").document(e.getUid()).set(e);
             mStoreBase.collection("users").document(USER_ID).collection("events_received").document(e.getUid()).delete();
             Toast.makeText(getContext(), "Vous avez rejoint l'évenement "+ e.getName(), Toast.LENGTH_SHORT).show();
