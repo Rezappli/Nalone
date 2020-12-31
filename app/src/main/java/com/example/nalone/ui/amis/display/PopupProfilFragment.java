@@ -24,7 +24,9 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.bumptech.glide.Glide;
 import com.example.nalone.Cache;
+import com.example.nalone.Notification;
 import com.example.nalone.R;
+import com.example.nalone.TypeNotification;
 import com.example.nalone.User;
 import com.example.nalone.ModelData;
 import com.example.nalone.fcm.MySingleton;
@@ -39,9 +41,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import static com.example.nalone.HomeActivity.buttonBack;
 import static com.example.nalone.util.Constants.USER;
+import static com.example.nalone.util.Constants.USER_REFERENCE;
 import static com.example.nalone.util.Constants.mStore;
 import static com.example.nalone.util.Constants.mStoreBase;
 import static com.example.nalone.util.Constants.sendNotification;
@@ -228,6 +232,8 @@ public class PopupProfilFragment extends Fragment {
         ModelData data2 = new ModelData("send", mStoreBase.collection("users").document(USER_LOAD.getUid()));
         mStoreBase.collection("users").document(USER.getUid()).collection("friends").document(USER_LOAD.getUid()).set(data2);
         mStoreBase.collection("users").document(USER_LOAD.getUid()).collection("friends").document(USER.getUid()).set(data1);
+
+        Notification.createDemandeAmi(USER_LOAD);
 
         TOPIC = "/topics/"+ USER_LOAD.getUid(); //topic must match with what the receiver subscribed to
         Log.w("TOPIC", "Topic : " + TOPIC);

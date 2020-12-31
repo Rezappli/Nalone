@@ -14,9 +14,11 @@ import android.widget.Toast;
 
 import com.example.nalone.util.Constants;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
@@ -29,6 +31,7 @@ import androidx.navigation.ui.NavigationUI;
 import splash.SplashActivity;
 
 import static com.example.nalone.util.Constants.USER;
+import static com.example.nalone.util.Constants.USER_ID;
 import static com.example.nalone.util.Constants.mMessaging;
 import static com.example.nalone.util.Constants.mStoreBase;
 
@@ -54,6 +57,18 @@ public class HomeActivity extends AppCompatActivity{
                 startActivity(new Intent(getBaseContext(),NotificationActivity.class));
             }
         });
+        mStoreBase.collection("users").document(USER_ID).collection("notifications").get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            if(task.getResult().size() > 0) {
+                                buttonNotif.setImageDrawable(getResources().getDrawable(R.drawable.notification));
+                            }
+                    }
+                    }
+                });
+
         buttonBack.setVisibility(View.GONE);
         AppBarConfiguration appBarConfiguration = new AppBarConfiguration.Builder(
                 R.id.navigation_recherche, R.id.navigation_amis, R.id.navigation_evenements, R.id.navigation_messages, R.id.navigation_profil)

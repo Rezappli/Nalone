@@ -80,7 +80,7 @@
             android:layout_height="match_parent"
             android:layout_below="@id/mesGroupes"
             android:orientation="vertical"
-            android:visibility="visible">
+            android:visibility="gone">
 
             <TextView
                 android:id="@+id/textViewSansEvent"

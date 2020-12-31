@@ -88,11 +88,16 @@ public class GroupeFragment extends Fragment {
                     @Override
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
                         if (task.isSuccessful()) {
-                            for (QueryDocumentSnapshot document : task.getResult()) {
-                                Log.d("TAG", document.getId() + " => " + document.getData());
-                                myGroups.add(document.getId());
+                            if(task.getResult().size() > 0){
+                                for (QueryDocumentSnapshot document : task.getResult()) {
+                                    Log.d("TAG", document.getId() + " => " + document.getData());
+                                    myGroups.add(document.getId());
+                                }
+                                adapterGroups();
+                            }else{
+                                linearSansMesGroupes.setVisibility(View.VISIBLE);
                             }
-                            adapterGroups();
+
                         } else {
                             Log.d("TAG", "Error getting documents: ", task.getException());
                         }
@@ -129,7 +134,7 @@ public class GroupeFragment extends Fragment {
                     });
 
                     setGroupImage(g,getContext(),userViewHolder.imageGroup);
-                    linearSansMesGroupes.setVisibility(View.GONE);
+                    //linearSansMesGroupes.setVisibility(View.GONE);
                 }
             };
             mRecyclerView.setHasFixedSize(true);

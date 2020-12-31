@@ -42,26 +42,41 @@ public class NotificationActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_notification);
         recyclerNotif = findViewById(R.id.recyclerNotif);
+        adapterNotif();
     }
 
-    private void adapterUsers() {
+    private void adapterNotif() {
 
-        Query query = mStoreBase.collection("users");
-        FirestoreRecyclerOptions<User> options = new FirestoreRecyclerOptions.Builder<User>().setQuery(query, User.class).build();
+        Query query = mStoreBase.collection("users").document(USER_ID).collection("notifications");
+        FirestoreRecyclerOptions<Notification> options = new FirestoreRecyclerOptions.Builder<Notification>().setQuery(query, Notification.class).build();
 
-        adapter = new FirestoreRecyclerAdapter<User, NotifViewHolder>(options) {
+        adapter = new FirestoreRecyclerAdapter<Notification, NotifViewHolder>(options) {
             @NonNull
             @Override
             public NotifViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-                View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_person, parent, false);
+                View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_notif, parent, false);
                 return new NotifViewHolder(view);
             }
 
             @Override
-            protected void onBindViewHolder(@NonNull final NotifViewHolder userViewHolder, int i, @NonNull final User u) {
-                userViewHolder.villePers.setText(u.getCity());
-                userViewHolder.nomInvit.setText(u.getFirst_name() + " " + u.getLast_name());
-                setUserImage(u, getApplicationContext(), userViewHolder.imagePerson);
+            protected void onBindViewHolder(@NonNull final NotifViewHolder userViewHolder, int i, @NonNull final Notification n) {
+               // Notification notification;
+                final User[] u = new User[1];
+                userViewHolder.nomOwner.setText(n.getmOwner());
+                userViewHolder.descNotif.setText(n.getmDesc());
+                mStoreBase.collection("users").whereEqualTo("uid", n.getmOwnerRef()).get()
+                        .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                            @Override
+                            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                if(task.isSuccessful()){
+                                    for (QueryDocumentSnapshot doc : task.getResult()){
+                                        u[0] = doc.toObject(User.class);
+                                    }
+                                }
+                                setUserImage(u[0], getApplicationContext(), userViewHolder.imagePerson);
+                            }
+                        });
+
 
                 //loading.setVisibility(View.GONE);
 
@@ -79,8 +94,8 @@ public class NotificationActivity extends AppCompatActivity {
 
     private class NotifViewHolder extends RecyclerView.ViewHolder {
 
-        private TextView nomInvit;
-        private TextView villePers;
+        private TextView nomOwner;
+        private TextView descNotif;
         private LinearLayout layoutProfil;
         private ImageView imagePerson;
         private ImageView button;
@@ -88,8 +103,8 @@ public class NotificationActivity extends AppCompatActivity {
         public NotifViewHolder(@NonNull View itemView) {
             super(itemView);
 
-            nomInvit = itemView.findViewById(R.id.nomInvit);
-            villePers = itemView.findViewById(R.id.villePers);
+            nomOwner = itemView.findViewById(R.id.nomOwner);
+            descNotif = itemView.findViewById(R.id.descNotif);
             layoutProfil = itemView.findViewById(R.id.layoutProfil);
             imagePerson = itemView.findViewById(R.id.imagePerson);
             button = itemView.findViewById(R.id.buttonImage);

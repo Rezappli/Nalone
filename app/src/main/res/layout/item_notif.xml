@@ -70,14 +70,6 @@
 
         </LinearLayout>
 
-        <ImageView
-            android:id="@+id/buttonImage"
-            android:layout_width="match_parent"
-            android:layout_height="30dp"
-            android:layout_gravity="center"
-            android:layout_weight="0.9"
-            app:srcCompat="@drawable/ic_baseline_add_24" />
-
     </LinearLayout>
 
 </androidx.cardview.widget.CardView>
