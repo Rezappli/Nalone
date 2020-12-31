@@ -284,18 +284,23 @@ public class ListAmisFragment extends Fragment {
                                     protected void onBindViewHolder(@NonNull final UserViewHolder userViewHolder, int i, @NonNull final User u) {
                                         userViewHolder.villePers.setText(u.getCity());
                                         userViewHolder.nomInvit.setText(u.getFirst_name() + " " + u.getLast_name());
-                                        userViewHolder.button.setImageResource(R.drawable.ic_baseline_add_24);
 
-                                        if(adds.contains(u.getUid())){
-                                            userViewHolder.button.setImageDrawable(getResources().getDrawable(remove));
+                                        if(type.equalsIgnoreCase("message_ami")){
+                                            userViewHolder.button.setImageResource(R.drawable.ic_baseline_keyboard_arrow_right_24);
                                         }else{
-                                            userViewHolder.button.setImageDrawable(getResources().getDrawable(add));
+                                            userViewHolder.button.setImageResource(R.drawable.ic_baseline_add_24);
+                                            if(adds.contains(u.getUid())){
+                                                userViewHolder.button.setImageDrawable(getResources().getDrawable(remove));
+                                            }else{
+                                                userViewHolder.button.setImageDrawable(getResources().getDrawable(add));
+                                            }
                                         }
 
-                                        userViewHolder.button.setOnClickListener(new View.OnClickListener() {
+
+                                        userViewHolder.layoutProfil.setOnClickListener(new View.OnClickListener() {
                                             @Override
                                             public void onClick(View v) {
-                                                if (type == "message"){
+                                                if (type == "message_ami"){
                                                     mStoreBase.collection("users").document(USER_ID).collection("chat_friends")
                                                             .document(u.getUid()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                                                         @Override
@@ -308,7 +313,30 @@ public class ListAmisFragment extends Fragment {
                                                                     ChatActivityFriend.nouveau = true;
                                                                 }
                                                             }
-                                                            ChatActivityFriend.USER_LOAD =u;
+                                                            ChatActivityFriend.USER_LOAD = u;
+                                                            startActivity(new Intent(getContext(), ChatActivityFriend.class));
+                                                        }
+                                                    });
+                                                }
+                                            }
+                                        });
+                                        userViewHolder.button.setOnClickListener(new View.OnClickListener() {
+                                            @Override
+                                            public void onClick(View v) {
+                                                if (type == "message_ami"){
+                                                    mStoreBase.collection("users").document(USER_ID).collection("chat_friends")
+                                                            .document(u.getUid()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                                                        @Override
+                                                        public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                                                            if (task.isSuccessful()) {
+                                                                DocumentSnapshot document = task.getResult();
+                                                                if (document.exists()) {
+                                                                    ChatActivityFriend.nouveau = false;
+                                                                } else {
+                                                                    ChatActivityFriend.nouveau = true;
+                                                                }
+                                                            }
+                                                            ChatActivityFriend.USER_LOAD = u;
                                                             startActivity(new Intent(getContext(), ChatActivityFriend.class));
                                                         }
                                                     });
