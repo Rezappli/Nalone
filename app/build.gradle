@@ -75,5 +75,6 @@ dependencies {
     implementation 'org.jsoup:jsoup:1.10.2'
     implementation fileTree (dir: 'libs', include: ['* .jar'])
     implementation "com.daimajia.swipelayout:library:1.2.0@aar"
+    compile 'com.github.instacart.truetime-android:library:1.5'
 }
 

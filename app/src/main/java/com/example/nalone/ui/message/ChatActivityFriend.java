@@ -55,7 +55,6 @@ public class ChatActivityFriend extends AppCompatActivity {
     private ImageView buttonSend;
     private TextInputEditText messageEditText;
     private ImageView profile_view;
-    private TextView username;
     public static User USER_LOAD;
     private TextView nameUser;
     private DocumentReference chatRef;

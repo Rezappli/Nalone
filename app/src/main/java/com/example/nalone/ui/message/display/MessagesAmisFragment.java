@@ -126,14 +126,13 @@ public class MessagesAmisFragment extends Fragment {
                     @Override
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
                         if (task.isSuccessful()) {
-
+                            Log.w("Message", "Task sucessful");
                             for (QueryDocumentSnapshot document : task.getResult()) {
-
                                 uid.add(document.getId());
                                 //uid.add(document.toObject(User.class).getUid());
                             }
                             if(!uid.isEmpty()){
-                                Log.w("liste uid", uid.toString());
+                                Log.w("Message", uid.toString());
                                 Query query = mStoreBase.collection("users").whereIn("uid", uid);
                                 FirestoreRecyclerOptions<User> options = new FirestoreRecyclerOptions.Builder<User>().setQuery(query, User.class).build();
 
@@ -217,25 +216,8 @@ public class MessagesAmisFragment extends Fragment {
             imagePerson = itemView.findViewById(R.id.imagePerson);
             button = itemView.findViewById(R.id.buttonImage);
             cardViewPhotoPerson = itemView.findViewById(R.id.cardViewPhotoPerson);
-
-
         }
-
     }
-    private void removeFriend(final String uid) {
-        if(mStoreBase.collection("users").document(USER.getUid()).
-                collection("friends").document(uid) != null){
-            mStoreBase.collection("users").document(USER.getUid()).
-                    collection("friends").document(uid).delete();
-
-            mStoreBase.collection("users").document(uid).
-                    collection("friends").document(USER.getUid()).delete();
-
-            Toast.makeText(getContext(), "Vous avez supprimé un amis !", Toast.LENGTH_SHORT).show();
-        }
-
-    }
-
 
     public void showPopUpProfil(final User u) {
         ChatActivityFriend.USER_LOAD = u;

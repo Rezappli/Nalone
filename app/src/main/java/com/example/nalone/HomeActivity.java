@@ -44,37 +44,6 @@ public class HomeActivity extends AppCompatActivity{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
 
-
-        if(Constants.FCM_API == null){
-            mStoreBase.collection("application").document("url").get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                @Override
-                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                    Constants.FCM_API = task.getResult().get("url").toString();
-                    Log.w("FCM", "FCM set FCM API");
-                }
-            });
-        }
-
-        if(Constants.serverKey == null){
-            mStoreBase.collection("application").document("server").get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                @Override
-                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                    Constants.serverKey = task.getResult().get("key").toString();
-                    Log.w("FCM", "FCM set FCM API");
-                }
-            });
-        }
-
-        if(Constants.contentType == null){
-            mStoreBase.collection("application").document("notification").get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                @Override
-                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                    Constants.contentType = task.getResult().get("application").toString();
-                    Log.w("FCM", "FCM set FCM API");
-                }
-            });
-        }
-
         BottomNavigationView navView = findViewById(R.id.nav_view);
 
         buttonBack = findViewById(R.id.buttonBack);

@@ -30,6 +30,7 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.instacart.library.truetime.extensionrx.TrueTimeRx;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -37,8 +38,12 @@ import org.jsoup.select.Elements;
 
 import java.io.IOException;
 import java.net.URL;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.TimeZone;
+
+import rx.schedulers.Schedulers;
 
 import static com.example.nalone.util.Constants.USER_ID;
 import static com.example.nalone.util.Constants.USER_REFERENCE;
@@ -86,57 +91,77 @@ public class SplashActivity extends AppCompatActivity {
                 mStoreBase.collection("application").document("maintenance").get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                     @Override
                     public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                       if(!task.getResult().getBoolean("isMaintenance")) {
-                           if (currentUser.isEmailVerified()) {
-                               mStoreBase.collection("users")
-                                       .whereEqualTo("mail", currentUser.getEmail())
-                                       .get()
-                                       .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                                           @RequiresApi(api = Build.VERSION_CODES.M)
-                                           @Override
-                                           public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                                               if (task.isSuccessful()) {
-                                                   if (task.getResult().size() > 0) {
-                                                       for (QueryDocumentSnapshot document : task.getResult()) {
-                                                           USER = document.toObject(User.class);
-                                                       }
-                                                       USER_ID = USER.getUid();
-                                                       MyFirebaseInstance.user_id = USER_ID;
-                                                       USER_STORAGE_REF = mStore.getReference("users").child(USER.getUid());
-                                                       Log.w("SPLASH", "City : " + USER.getCity());
+                        if (!task.getResult().getBoolean("isMaintenance")) {
+                            if (currentUser.isEmailVerified()) {
+                                mStoreBase.collection("users")
+                                        .whereEqualTo("mail", currentUser.getEmail())
+                                        .get()
+                                        .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                                            @RequiresApi(api = Build.VERSION_CODES.M)
+                                            @Override
+                                            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                                if (task.isSuccessful()) {
+                                                    if (task.getResult().size() > 0) {
+                                                        for (QueryDocumentSnapshot document : task.getResult()) {
+                                                            USER = document.toObject(User.class);
+                                                        }
+                                                        USER_ID = USER.getUid();
+                                                        MyFirebaseInstance.user_id = USER_ID;
+                                                        USER_STORAGE_REF = mStore.getReference("users").child(USER.getUid());
+                                                        Log.w("SPLASH", "City : " + USER.getCity());
 
-                                                       USER_REFERENCE = mStoreBase.collection("users").document(USER.getUid());
-                                                       load = true;
-                                                       if (!USER.isBan()) {
-                                                           startActivity(new Intent(SplashActivity.this, HomeActivity.class));
-                                                       } else {
-                                                           startActivity(new Intent(SplashActivity.this, MainActivity.class));
-                                                       }
-                                                   } else {
-                                                       load = true;
-                                                       startActivity(new Intent(SplashActivity.this, MainActivity.class));
-                                                   }
-                                               } else {
-                                                   Log.d("SPLASH", "Error getting documents: ", task.getException());
-                                                   load = true;
-                                                   startActivity(new Intent(SplashActivity.this, MainActivity.class));
-                                               }
-                                           }
-                                       }).addOnFailureListener(new OnFailureListener() {
-                                   @Override
-                                   public void onFailure(@NonNull Exception e) {
-                                       Log.w("SPLASH", "Erreur : " + e.getMessage());
-                                   }
-                               });
-                           } else {
-                               startActivity(new Intent(SplashActivity.this, MainActivity.class));
-                           }
-                       }else{
-                           startActivity(new Intent(SplashActivity.this, MainActivity.class));
-                       }
+                                                        USER_REFERENCE = mStoreBase.collection("users").document(USER.getUid());
+                                                        load = true;
+                                                        if (!USER.isBan()) {
+                                                            mStoreBase.collection("application").document("url").get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                                                                @Override
+                                                                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                                                                    Constants.FCM_API = task.getResult().get("url").toString();
+                                                                }
+                                                            });
+
+                                                            mStoreBase.collection("application").document("server").get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                                                                @Override
+                                                                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                                                                    Constants.serverKey = task.getResult().get("key").toString();
+                                                                }
+                                                            });
+
+                                                            mStoreBase.collection("application").document("notification").get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                                                                @Override
+                                                                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                                                                    Constants.contentType = task.getResult().get("application").toString();
+                                                                }
+                                                            });
+                                                            startActivity(new Intent(SplashActivity.this, HomeActivity.class));
+                                                        } else {
+                                                            startActivity(new Intent(SplashActivity.this, MainActivity.class));
+                                                        }
+                                                    } else {
+                                                        load = true;
+                                                        startActivity(new Intent(SplashActivity.this, MainActivity.class));
+                                                    }
+                                                } else {
+                                                    Log.d("SPLASH", "Error getting documents: ", task.getException());
+                                                    load = true;
+                                                    startActivity(new Intent(SplashActivity.this, MainActivity.class));
+                                                }
+                                            }
+                                        }).addOnFailureListener(new OnFailureListener() {
+                                    @Override
+                                    public void onFailure(@NonNull Exception e) {
+                                        Log.w("SPLASH", "Erreur : " + e.getMessage());
+                                    }
+                                });
+                            } else {
+                                startActivity(new Intent(SplashActivity.this, MainActivity.class));
+                            }
+                        } else {
+                            startActivity(new Intent(SplashActivity.this, MainActivity.class));
+                        }
                     }
                 });
-            }else{
+            } else {
                 startActivity(new Intent(SplashActivity.this, MainActivity.class));
             }
         } else {
@@ -144,6 +169,5 @@ public class SplashActivity extends AppCompatActivity {
             startActivity(new Intent(SplashActivity.this, MainActivity.class));
         }
     }
-
 }
 

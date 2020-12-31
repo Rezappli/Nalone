@@ -140,6 +140,7 @@ public class RechercheFragment extends Fragment {
                             for (QueryDocumentSnapshot document : task.getResult()) {
                                 Log.d("TAG", document.getId() + " => " + document.getData());
                                 friends.add(document.getId());
+                                Log.w("Friend", document.getId());
                             }
                             friends.add(USER.getUid());
                             //query
