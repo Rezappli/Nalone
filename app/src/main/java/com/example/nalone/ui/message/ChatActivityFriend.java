@@ -300,13 +300,11 @@ public class ChatActivityFriend extends AppCompatActivity {
     private boolean isLastVisible() {
         LinearLayoutManager layoutManager = ((LinearLayoutManager)mRecyclerView.getLayoutManager());
         int pos = layoutManager.findFirstCompletelyVisibleItemPosition();
-        int numItems = mRecyclerView.getAdapter().getItemCount();
         return (pos == 0);
     }
 
     public void sendMessageNotification(String msg){
         TOPIC = "/topics/"+ USER_LOAD.getUid(); //topic must match with what the receiver subscribed to
-        Log.w("TOPIC", "Topic : " + TOPIC);
         NOTIFICATION_TITLE = "Message de " + USER.getFirst_name() + " " + USER.getLast_name();
         NOTIFICATION_MESSAGE = msg;
 
