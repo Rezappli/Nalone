@@ -296,7 +296,6 @@ public class ListAmisFragment extends Fragment {
                                             }
                                         }
 
-
                                         userViewHolder.layoutProfil.setOnClickListener(new View.OnClickListener() {
                                             @Override
                                             public void onClick(View v) {

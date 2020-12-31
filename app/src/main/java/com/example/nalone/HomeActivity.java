@@ -36,7 +36,7 @@ import static com.example.nalone.util.Constants.mStoreBase;
 public class HomeActivity extends AppCompatActivity{
 
     private NavController navController;
-    public static ImageView buttonBack;
+    public static ImageView buttonBack, buttonNotif;
 
     @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
@@ -47,6 +47,13 @@ public class HomeActivity extends AppCompatActivity{
         BottomNavigationView navView = findViewById(R.id.nav_view);
 
         buttonBack = findViewById(R.id.buttonBack);
+        buttonNotif = findViewById(R.id.buttonNotif);
+        buttonNotif.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(getBaseContext(),NotificationActivity.class));
+            }
+        });
         buttonBack.setVisibility(View.GONE);
         AppBarConfiguration appBarConfiguration = new AppBarConfiguration.Builder(
                 R.id.navigation_recherche, R.id.navigation_amis, R.id.navigation_evenements, R.id.navigation_messages, R.id.navigation_profil)

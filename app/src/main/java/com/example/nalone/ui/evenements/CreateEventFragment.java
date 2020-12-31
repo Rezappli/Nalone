@@ -652,7 +652,7 @@ public class CreateEventFragment extends Fragment {
 
                 Timestamp ts = new Timestamp(sdf.parse(event_date.getText().toString()+" "+final_event_time));
                 se = horloge.verifStatut(new Date(),ts.toDate());
-                if(se == StatusEvent.FINI){
+                if(se == StatusEvent.FINI || se == StatusEvent.EXPIRE){
                     Toast.makeText(getContext(), "Veuillez créer un évènement dans le futur", Toast.LENGTH_SHORT).show();
                 }else{
                     final Evenement e = new Evenement(evenementAttente.getUid(),se,USER.getFirst_name() + " " + USER.getLast_name(),
@@ -721,7 +721,7 @@ public class CreateEventFragment extends Fragment {
         super.onStop();
         if(adapter != null)
             adapter.stopListening();
-        edit=false;
+        edit = false;
         EVENT_LOAD = null;
     }
 
