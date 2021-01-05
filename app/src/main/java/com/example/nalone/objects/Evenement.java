@@ -1,5 +1,7 @@
-package com.example.nalone;
+package com.example.nalone.objects;
 
+import com.example.nalone.enumeration.StatusEvent;
+import com.example.nalone.enumeration.Visibility;
 import com.example.nalone.util.Constants;
 import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.DocumentReference;

@@ -1,4 +1,4 @@
-package com.example.nalone;
+package com.example.nalone.objects;
 
 import androidx.annotation.Nullable;
 
@@ -7,7 +7,6 @@ import com.google.firebase.firestore.DocumentReference;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.TimeZone;
 

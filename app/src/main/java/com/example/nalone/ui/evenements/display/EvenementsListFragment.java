@@ -1,7 +1,6 @@
 package com.example.nalone.ui.evenements.display;
 
 import android.graphics.Color;
-import android.icu.text.IDNA;
 import android.os.Build;
 import android.os.Bundle;
 
@@ -18,48 +17,30 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.example.nalone.Evenement;
-import com.example.nalone.Horloge;
-import com.example.nalone.ModelDataEvent;
+import com.example.nalone.objects.Evenement;
 import com.example.nalone.R;
-import com.example.nalone.StatusEvent;
-import com.example.nalone.User;
-import com.example.nalone.ModelData;
+import com.example.nalone.enumeration.StatusEvent;
+import com.example.nalone.objects.User;
 import com.example.nalone.adapter.ItemFiltreAdapter;
 import com.example.nalone.items.ItemFiltre;
-import com.example.nalone.items.ItemImagePerson;
-import com.example.nalone.ui.evenements.EvenementsFragment;
 import com.example.nalone.ui.evenements.InfosEvenementsActivity;
 import com.example.nalone.util.Constants;
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
-import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.tasks.OnCanceledListener;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
-import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
-import org.w3c.dom.Document;
-
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
-import static com.example.nalone.util.Constants.USER;
-import static com.example.nalone.util.Constants.USER_ID;
-import static com.example.nalone.util.Constants.USER_REFERENCE;
 import static com.example.nalone.util.Constants.dateFormat;
 import static com.example.nalone.util.Constants.mStoreBase;
 import static com.example.nalone.util.Constants.timeFormat;
@@ -83,7 +64,6 @@ public class EvenementsListFragment extends Fragment {
     private int iterator = 0;
     private List<String> events;
     private ProgressBar loading;
-    private Horloge horloge;
 
     private LinearLayout sansEnCours, sansBientot, sansFini;
 
@@ -112,7 +92,6 @@ public class EvenementsListFragment extends Fragment {
     }
 
     private void createFragment() {
-        final List<ItemImagePerson> membres_inscrits = new ArrayList<>();
 
         events = new ArrayList<>();
         loading = rootView.findViewById(R.id.loading);
@@ -125,7 +104,6 @@ public class EvenementsListFragment extends Fragment {
         filtres.add(new ItemFiltre("Numérique"));
         filtres.add(new ItemFiltre("Informatique"));
         filtres.add(new ItemFiltre("Manifestation"));
-        horloge = new Horloge();
 
         linearSansEvent = rootView.findViewById(R.id.linearSansEvent);
         sansEnCours = rootView.findViewById(R.id.linearSansEnCours);
@@ -161,16 +139,6 @@ public class EvenementsListFragment extends Fragment {
     }
     private void adapterEvents(final StatusEvent se, RecyclerView recyclerView) {
 
-       /* mStoreBase.collection("events").whereEqualTo("statutEvent", se).whereNotEqualTo("ownerDoc",USER_REFERENCE)
-                .get()
-                .addOnCanceledListener(new OnCanceledListener() {
-                    @Override
-                    public void onCanceled() {
-                        if(se == StatusEvent.EN_COURS){
-                            sansEnCours.setVisibility(View.VISIBLE);
-                        }
-                    }
-                });*/
         Query query = mStoreBase.collection("events").whereEqualTo("statusEvent", se);//.whereNotEqualTo("ownerDoc",USER_REFERENCE);
         FirestoreRecyclerOptions<Evenement> options = new FirestoreRecyclerOptions.Builder<Evenement>().setQuery(query, Evenement.class).build();
 

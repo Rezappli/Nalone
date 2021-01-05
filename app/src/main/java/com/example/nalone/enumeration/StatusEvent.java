@@ -1,4 +1,4 @@
-package com.example.nalone;
+package com.example.nalone.enumeration;
 
 public enum StatusEvent {
     ENCOURS,FINI,BIENTOT,EXPIRE;

@@ -22,14 +22,13 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
-import com.example.nalone.Cache;
-import com.example.nalone.Group;
+import com.example.nalone.util.Cache;
+import com.example.nalone.objects.Group;
 import com.example.nalone.R;
-import com.example.nalone.ModelData;
-import com.example.nalone.Visibility;
+import com.example.nalone.objects.ModelData;
+import com.example.nalone.enumeration.Visibility;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
-import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.StorageReference;

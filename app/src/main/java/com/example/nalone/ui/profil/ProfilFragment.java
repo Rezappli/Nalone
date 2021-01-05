@@ -22,7 +22,7 @@ import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 
 import com.bumptech.glide.Glide;
-import com.example.nalone.Cache;
+import com.example.nalone.util.Cache;
 import com.example.nalone.dialog.LoadFragment;
 import com.example.nalone.qrcode.QRCodeFragment;
 import com.example.nalone.R;

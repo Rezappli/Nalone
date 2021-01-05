@@ -1,4 +1,4 @@
-package com.example.nalone;
+package com.example.nalone.objects;
 
 import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.DocumentReference;

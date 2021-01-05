@@ -1,4 +1,4 @@
-package com.example.nalone;
+package com.example.nalone.util;
 
 import android.net.Uri;
 import android.util.Log;

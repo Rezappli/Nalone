@@ -19,7 +19,7 @@ import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 
 import com.example.nalone.R;
-import com.example.nalone.User;
+import com.example.nalone.objects.User;
 import com.example.nalone.ui.amis.display.PopupProfilFragment;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;

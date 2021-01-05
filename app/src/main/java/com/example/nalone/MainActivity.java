@@ -16,6 +16,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.nalone.objects.User;
 import com.example.nalone.signUpActivities.SignUpInformationActivity;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
@@ -37,7 +38,6 @@ import static com.example.nalone.util.Constants.USER_ID;
 import static com.example.nalone.util.Constants.USER_REFERENCE;
 import static com.example.nalone.util.Constants.USER_STORAGE_REF;
 import static com.example.nalone.util.Constants.currentUser;
-import static com.example.nalone.util.Constants.load;
 import static com.example.nalone.util.Constants.mAuth;
 import static com.example.nalone.util.Constants.mStore;
 import static com.example.nalone.util.Constants.mStoreBase;
@@ -83,7 +83,7 @@ public class MainActivity extends AppCompatActivity{
         passwordForget.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivityForResult(new Intent(getBaseContext(), ResetPassword.class), 0);
+                startActivityForResult(new Intent(getBaseContext(), ResetPasswordActivity.class), 0);
             }
         });
 

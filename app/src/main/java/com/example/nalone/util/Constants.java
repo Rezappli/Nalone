@@ -1,6 +1,5 @@
 package com.example.nalone.util;
 
-import android.app.ActivityManager;
 import android.app.Application;
 import android.content.Context;
 import android.net.Uri;
@@ -15,9 +14,8 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.bumptech.glide.Glide;
-import com.example.nalone.Cache;
-import com.example.nalone.Group;
-import com.example.nalone.User;
+import com.example.nalone.objects.Group;
+import com.example.nalone.objects.User;
 import com.example.nalone.fcm.MySingleton;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -36,7 +34,6 @@ import org.json.JSONObject;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 

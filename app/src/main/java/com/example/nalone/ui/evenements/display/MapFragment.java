@@ -16,12 +16,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
-import com.example.nalone.Horloge;
-import com.example.nalone.StatusEvent;
+import com.example.nalone.util.Horloge;
+import com.example.nalone.enumeration.StatusEvent;
 import com.example.nalone.ui.evenements.CreateEventFragment;
 import com.example.nalone.ui.evenements.InfosEvenementsActivity;
 import com.example.nalone.R;
-import com.example.nalone.User;
+import com.example.nalone.objects.User;
 import com.example.nalone.util.Constants;
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
@@ -33,9 +33,7 @@ import com.google.android.gms.maps.MapView;
 import android.Manifest;
 import android.content.pm.PackageManager;
 import android.os.Build;
-import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
@@ -45,8 +43,8 @@ import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.nalone.Evenement;
-import com.example.nalone.Visibility;
+import com.example.nalone.objects.Evenement;
+import com.example.nalone.enumeration.Visibility;
 
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.BitmapDescriptor;
@@ -74,7 +72,6 @@ import static com.example.nalone.util.Constants.USER;
 import static com.example.nalone.util.Constants.USER_ID;
 import static com.example.nalone.util.Constants.USER_REFERENCE;
 import static com.example.nalone.util.Constants.dateFormat;
-import static com.example.nalone.util.Constants.formatD;
 import static com.example.nalone.util.Constants.mStoreBase;
 import static com.example.nalone.util.Constants.range;
 import static com.example.nalone.util.Constants.targetZoom;

@@ -1,4 +1,4 @@
-package com.example.nalone;
+package com.example.nalone.objects;
 
 import android.graphics.Bitmap;
 

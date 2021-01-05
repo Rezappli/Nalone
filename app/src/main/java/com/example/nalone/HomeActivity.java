@@ -1,23 +1,15 @@
 package com.example.nalone;
 
-import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.os.Build;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
-import android.widget.Toast;
 
-import com.example.nalone.util.Constants;
+import com.example.nalone.ui.NotificationActivity;
 import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
-import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import androidx.annotation.NonNull;
@@ -28,11 +20,7 @@ import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
-import splash.SplashActivity;
-
-import static com.example.nalone.util.Constants.USER;
 import static com.example.nalone.util.Constants.USER_ID;
-import static com.example.nalone.util.Constants.mMessaging;
 import static com.example.nalone.util.Constants.mStoreBase;
 
 
@@ -54,7 +42,7 @@ public class HomeActivity extends AppCompatActivity{
         buttonNotif.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(getBaseContext(),NotificationActivity.class));
+                startActivity(new Intent(getBaseContext(), NotificationActivity.class));
             }
         });
         mStoreBase.collection("users").document(USER_ID).collection("notifications").get()

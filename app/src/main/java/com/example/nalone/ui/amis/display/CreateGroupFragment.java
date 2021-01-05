@@ -25,12 +25,12 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
-import com.example.nalone.Group;
+import com.example.nalone.objects.Group;
 import com.example.nalone.dialog.ListAmisFragment;
 import com.example.nalone.R;
-import com.example.nalone.User;
-import com.example.nalone.ModelData;
-import com.example.nalone.Visibility;
+import com.example.nalone.objects.User;
+import com.example.nalone.objects.ModelData;
+import com.example.nalone.enumeration.Visibility;
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;

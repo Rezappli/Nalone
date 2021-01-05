@@ -1,12 +1,20 @@
-package com.example.nalone;
+package com.example.nalone.util;
 
 import android.util.Log;
 
+import com.example.nalone.enumeration.StatusEvent;
+import com.google.firebase.Timestamp;
+
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class Horloge {
 
-    public boolean eventTermine(Date startDate, Date endDate) {
+    private static SimpleDateFormat sdfToday = new SimpleDateFormat("HH:mm");
+    private static SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yy");
+    private static String currentDay = sdf.format(new Date(System.currentTimeMillis()));
+
+   /* public boolean eventTermine(Date startDate, Date endDate) {
         //milliseconds
         long different = endDate.getTime() - startDate.getTime();
 
@@ -20,9 +28,9 @@ public class Horloge {
         }else{
             return false;
         }
-    }
+    }*/
 
-    public StatusEvent verifStatut(Date startDate, Date endDate) {
+    public static StatusEvent verifStatut(Date startDate, Date endDate) {
         //milliseconds
         long different = endDate.getTime() - startDate.getTime();
 
@@ -46,5 +54,13 @@ public class Horloge {
         return null;
     }
 
+    public static String verifDay(Timestamp tp){
+        String date = sdf.format(tp.toDate());
+        if(date.equalsIgnoreCase(currentDay)){
+            return sdfToday.format(tp.toDate());
+        }else {
+            return date;
+        }
+    }
 
 }

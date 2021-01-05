@@ -11,9 +11,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
-import android.media.MediaPlayer;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -21,31 +20,25 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.nalone.Evenement;
-import com.example.nalone.ModelData;
-import com.example.nalone.ModelDataEvent;
+import com.example.nalone.objects.Evenement;
+import com.example.nalone.objects.ModelDataEvent;
 import com.example.nalone.R;
-import com.example.nalone.StatusEvent;
-import com.example.nalone.User;
+import com.example.nalone.enumeration.StatusEvent;
+import com.example.nalone.objects.User;
 import com.example.nalone.util.Constants;
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
-import com.google.android.gms.tasks.OnCanceledListener;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
-
-import org.w3c.dom.Document;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -55,6 +48,7 @@ import static com.example.nalone.util.Constants.USER;
 import static com.example.nalone.util.Constants.USER_ID;
 import static com.example.nalone.util.Constants.formatD;
 import static com.example.nalone.util.Constants.mStoreBase;
+import static com.example.nalone.util.Constants.setUserImage;
 import static com.example.nalone.util.Constants.timeFormat;
 
 public class InfosEvenementsActivity extends Fragment {
@@ -77,7 +71,7 @@ public class InfosEvenementsActivity extends Fragment {
     private TextView textViewNbMembers;
     private TextView nbParticipants;
     private int participants;
-    private ImageView buttonInscription;
+    private ImageView buttonInscription, ownerImage;
     private TextView textViewInscription;
     private ImageView buttonPartager, buttonAnnuler;
     private TextView diffDate;
@@ -117,6 +111,7 @@ public class InfosEvenementsActivity extends Fragment {
         cardViewTermine = rootView.findViewById(R.id.cardViewTermine);
         linearAnnuler = rootView.findViewById(R.id.linearAnnuler);
         buttonAnnuler = rootView.findViewById(R.id.buttonAnnuler);
+        ownerImage = rootView.findViewById(R.id.ownerImage);
 
         buttonInscription.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -127,6 +122,17 @@ public class InfosEvenementsActivity extends Fragment {
         diffDate = rootView.findViewById(R.id.differenceDate);
 
         buttonPartager = rootView.findViewById(R.id.buttonPartager);
+        buttonPartager.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(getContext(), "Clicked on Share " , Toast.LENGTH_SHORT).show();
+                Intent sendIntent = new Intent();
+                sendIntent.setAction(Intent.ACTION_SEND);
+                sendIntent.putExtra(Intent.EXTRA_TEXT, "This is my text to send.");
+                sendIntent.setType("text/plain");
+                startActivity(sendIntent);
+            }
+        });
         buttonAnnuler.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -139,6 +145,15 @@ public class InfosEvenementsActivity extends Fragment {
         mTitle.setText(EVENT_LOAD.getName());
         mTimer.setText(timeFormat.format(EVENT_LOAD.getDate().toDate()));
         mOwner.setText(EVENT_LOAD.getOwner());
+        mStoreBase.collection("users").document(EVENT_LOAD.getOwnerDoc().getId()).get()
+                .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                        if(task.isSuccessful()){
+                            setUserImage(task.getResult().toObject(User.class),getContext(),ownerImage);
+                        }
+                    }
+                });
         if(EVENT_LOAD.getDescription().matches("")){
             mDescription.setVisibility(View.GONE);
         }else{
@@ -169,7 +184,8 @@ public class InfosEvenementsActivity extends Fragment {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
                 for(QueryDocumentSnapshot doc : task.getResult()){
-                    members.add(doc.toObject(ModelDataEvent.class).getUser().getId());
+                    //members.add(doc.toObject(ModelDataEvent.class).getUser().getId());
+                    members.add(doc.getId());
                     participants ++;
                 }
                 nbParticipants.setText(participants+"");
@@ -178,7 +194,7 @@ public class InfosEvenementsActivity extends Fragment {
                     FirestoreRecyclerOptions<User> options = new FirestoreRecyclerOptions.Builder<User>().setQuery(query, User.class).build();
 
                     adapter = new FirestoreRecyclerAdapter<User, InfosEvenementsActivity.UserViewHolder>(options) {
-                        @NonNull
+
                         @Override
                         public InfosEvenementsActivity.UserViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
                             View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.image_user, parent, false);

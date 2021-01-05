@@ -23,9 +23,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
-import com.example.nalone.Cache;
-import com.example.nalone.ModelData;
-import com.example.nalone.User;
+import com.example.nalone.objects.Notification;
+import com.example.nalone.util.Cache;
+import com.example.nalone.objects.ModelData;
+import com.example.nalone.objects.User;
 import com.example.nalone.items.ItemPerson;
 import com.example.nalone.R;
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
@@ -44,6 +45,7 @@ import static com.example.nalone.HomeActivity.buttonBack;
 import static com.example.nalone.util.Constants.USER;
 import static com.example.nalone.util.Constants.mStore;
 import static com.example.nalone.util.Constants.mStoreBase;
+import static com.example.nalone.util.Constants.setUserImage;
 
 public class MesInvitationsFragment extends Fragment {
 
@@ -108,53 +110,7 @@ public class MesInvitationsFragment extends Fragment {
                                         userViewHolder.villePers.setText(u.getCity());
                                         userViewHolder.nomInvit.setText(u.getFirst_name() + " " + u.getLast_name());
 
-                                        if (u.getImage_url() != null) {
-                                            if (!Cache.fileExists(u.getUid())) {
-                                                StorageReference imgRef = mStore.getReference("users/" + u.getUid());
-                                                if (imgRef != null) {
-                                                    imgRef.getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
-                                                        @Override
-                                                        public void onComplete(@NonNull Task<Uri> task) {
-                                                            if (task.isSuccessful()) {
-                                                                Uri img = task.getResult();
-                                                                if (img != null) {
-                                                                    Cache.saveUriFile(u.getUid(), img);
-                                                                    u.setImage_url(Cache.getImageDate(u.getUid()));
-                                                                    mStoreBase.collection("users").document(u.getUid()).set(u);
-                                                                    Glide.with(getContext()).load(img).fitCenter().centerCrop().into(userViewHolder.imagePerson);
-                                                                }
-                                                            }
-                                                        }
-                                                    });
-                                                }
-                                            } else {
-                                                Uri imgCache = Cache.getUriFromUid(u.getUid());
-                                                Log.w("Cache", "Image Cache : " + Cache.getImageDate(u.getUid()));
-                                                Log.w("Cache", "Data Cache : " + u.getImage_url());
-                                                if (Cache.getImageDate(u.getUid()).equalsIgnoreCase(u.getImage_url())) {
-                                                    Log.w("image", "get image from cache");
-                                                    Glide.with(getContext()).load(imgCache).fitCenter().centerCrop().into(userViewHolder.imagePerson);
-                                                } else {
-                                                    StorageReference imgRef = mStore.getReference("users/" + u.getUid());
-                                                    if (imgRef != null) {
-                                                        imgRef.getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
-                                                            @Override
-                                                            public void onComplete(@NonNull Task<Uri> task) {
-                                                                if (task.isSuccessful()) {
-                                                                    Uri img = task.getResult();
-                                                                    if (img != null) {
-                                                                        Cache.saveUriFile(u.getUid(), img);
-                                                                        u.setImage_url(Cache.getImageDate(u.getUid()));
-                                                                        mStoreBase.collection("users").document(u.getUid()).set(u);
-                                                                        Glide.with(getContext()).load(img).fitCenter().centerCrop().into(userViewHolder.imagePerson);
-                                                                    }
-                                                                }
-                                                            }
-                                                        });
-                                                    }
-                                                }
-                                            }
-                                        }
+                                        setUserImage(u,getContext(),userViewHolder.imagePerson);
 
                                         userViewHolder.layoutProfil.setOnClickListener(new View.OnClickListener() {
                                             @Override
@@ -167,6 +123,7 @@ public class MesInvitationsFragment extends Fragment {
                                             @Override
                                             public void onClick(View v) {
                                                 acceptFriendRequest(u.getUid());
+                                                Notification.createNotif(u,Notification.joinAmi());
                                             }
                                         });
 

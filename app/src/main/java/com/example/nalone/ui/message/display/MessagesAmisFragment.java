@@ -12,7 +12,6 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.SearchView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
@@ -25,7 +24,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.example.nalone.R;
-import com.example.nalone.User;
+import com.example.nalone.objects.User;
 import com.example.nalone.dialog.ListAmisFragment;
 import com.example.nalone.ui.message.ChatActivityFriend;
 import com.example.nalone.util.Constants;

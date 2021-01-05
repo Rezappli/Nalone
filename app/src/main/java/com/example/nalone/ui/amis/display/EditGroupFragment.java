@@ -1,28 +1,23 @@
 package com.example.nalone.ui.amis.display;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 
-import com.example.nalone.Group;
+import com.example.nalone.objects.Group;
 import com.example.nalone.R;
-import com.example.nalone.ResetPassword;
-import com.example.nalone.Visibility;
+import com.example.nalone.enumeration.Visibility;
 import com.google.android.material.textfield.TextInputEditText;
 
 import static com.example.nalone.HomeActivity.buttonBack;
-import static com.example.nalone.util.Constants.USER;
 import static com.example.nalone.util.Constants.mStoreBase;
 
 

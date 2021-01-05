@@ -14,7 +14,7 @@ import com.google.android.gms.tasks.Task;
 
 import static com.example.nalone.util.Constants.mAuth;
 
-public class ResetPassword extends AppCompatActivity {
+public class ResetPasswordActivity extends AppCompatActivity {
 
     private Button resetPasswordButton;
     private EditText fieldMailResetPassword;
@@ -48,10 +48,10 @@ public class ResetPassword extends AppCompatActivity {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
                         if (task.isSuccessful()) {
-                            Toast.makeText(ResetPassword.this, "Le mail de récupération vient de partir ! Vérifiez vos spams", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(ResetPasswordActivity.this, "Le mail de récupération vient de partir ! Vérifiez vos spams", Toast.LENGTH_SHORT).show();
                             finish();
                         } else {
-                            Toast.makeText(ResetPassword.this, "Une erreur est survenue", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(ResetPasswordActivity.this, "Une erreur est survenue", Toast.LENGTH_SHORT).show();
                         }
                     }
                 });

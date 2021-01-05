@@ -27,8 +27,8 @@
         android:roundIcon="@mipmap/ic_logo_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme.NoActionBar">
-        <activity android:name=".NotificationActivity"></activity>
-        <activity android:name=".ResetPassword" />
+        <activity android:name=".ui.NotificationActivity"></activity>
+        <activity android:name=".ResetPasswordActivity" />
         <activity
             android:name=".ui.message.ChatActivityGroup"
             android:theme="@style/AppTheme.NoActionBar" />
@@ -50,10 +50,6 @@
             android:name="preloaded_fonts"
             android:resource="@array/preloaded_fonts" />
 
-        <activity
-            android:name=".MapsActivity"
-            android:label="@string/title_activity_maps"
-            android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".ErrorConnexionActivity" />
         <activity android:name=".signUpActivities.SignUpStudiesActivity" />
         <activity

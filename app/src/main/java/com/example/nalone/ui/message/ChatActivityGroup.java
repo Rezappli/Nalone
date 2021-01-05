@@ -20,12 +20,11 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
-import com.example.nalone.Chat;
-import com.example.nalone.ChatModel;
-import com.example.nalone.Group;
-import com.example.nalone.Message;
+import com.example.nalone.objects.Chat;
+import com.example.nalone.objects.ChatModel;
+import com.example.nalone.objects.Group;
+import com.example.nalone.objects.Message;
 import com.example.nalone.R;
-import com.example.nalone.User;
 import com.example.nalone.util.Constants;
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;

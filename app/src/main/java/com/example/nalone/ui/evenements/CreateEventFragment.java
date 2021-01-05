@@ -11,7 +11,6 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.app.Dialog;
-import android.graphics.Color;
 import android.location.Address;
 import android.location.Geocoder;
 import android.net.Uri;
@@ -30,18 +29,18 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
-import com.example.nalone.Cache;
-import com.example.nalone.Evenement;
-import com.example.nalone.Horloge;
-import com.example.nalone.ModelData;
-import com.example.nalone.ModelDataEvent;
-import com.example.nalone.StatusEvent;
+import com.example.nalone.objects.Notification;
+import com.example.nalone.util.Cache;
+import com.example.nalone.objects.Evenement;
+import com.example.nalone.util.Horloge;
+import com.example.nalone.objects.ModelDataEvent;
+import com.example.nalone.enumeration.StatusEvent;
 import com.example.nalone.dialog.ListAmisFragment;
 import com.example.nalone.R;
 import com.example.nalone.dialog.SelectDateFragment;
 import com.example.nalone.dialog.TimePickerFragment;
-import com.example.nalone.User;
-import com.example.nalone.Visibility;
+import com.example.nalone.objects.User;
+import com.example.nalone.enumeration.Visibility;
 import com.example.nalone.ui.evenements.display.MesEvenementsListFragment;
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
@@ -51,14 +50,13 @@ import com.google.android.gms.tasks.Task;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.GeoPoint;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.StorageReference;
 //import com.koalap.geofirestore.GeoLocation;
-
-import org.w3c.dom.Document;
 
 import java.io.IOException;
 import java.text.ParseException;
@@ -648,10 +646,9 @@ public class CreateEventFragment extends Fragment {
                     }
                 }
 
-                Horloge horloge = new Horloge();
 
                 Timestamp ts = new Timestamp(sdf.parse(event_date.getText().toString()+" "+final_event_time));
-                se = horloge.verifStatut(new Date(),ts.toDate());
+                se = Horloge.verifStatut(new Date(),ts.toDate());
                 if(se == StatusEvent.FINI || se == StatusEvent.EXPIRE){
                     Toast.makeText(getContext(), "Veuillez créer un évènement dans le futur", Toast.LENGTH_SHORT).show();
                 }else{
@@ -673,6 +670,15 @@ public class CreateEventFragment extends Fragment {
                         mStoreBase.collection("users").document(USER_ID).collection("events_create").document(e.getUid()).collection("members").document(user).set(m);
                         mStoreBase.collection("users").document(user).collection("events_received").document(e.getUid()).set(e);*/
                         mStoreBase.collection("users").document(user).collection("events_received").document(e.getUid()).set(e);
+                        mStoreBase.collection("users").document(user).get()
+                                .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                                        if(task.isSuccessful()){
+                                            Notification.createNotif(task.getResult().toObject(User.class),Notification.demandeEvent());
+                                        }
+                                    }
+                                });
 
                     }
 
