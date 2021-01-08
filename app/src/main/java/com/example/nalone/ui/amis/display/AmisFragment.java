@@ -35,6 +35,7 @@ import com.daimajia.swipe.SwipeLayout;
 import com.example.nalone.objects.ModelData;
 import com.example.nalone.R;
 import com.example.nalone.objects.User;
+import com.example.nalone.ui.message.ChatActivityFriend;
 import com.example.nalone.util.Constants;
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
@@ -240,12 +241,8 @@ public class AmisFragment extends Fragment {
                                         userViewHolder.Share.setOnClickListener(new View.OnClickListener() {
                                             @Override
                                             public void onClick(View view) {
-                                                Toast.makeText(view.getContext(), "Clicked on Share " , Toast.LENGTH_SHORT).show();
-                                                Intent sendIntent = new Intent();
-                                                sendIntent.setAction(Intent.ACTION_SEND);
-                                                sendIntent.putExtra(Intent.EXTRA_TEXT, "This is my text to send.");
-                                                sendIntent.setType("text/plain");
-                                                startActivity(sendIntent);
+                                                ChatActivityFriend.USER_LOAD = u;
+                                                startActivity(new Intent(getContext(), ChatActivityFriend.class));
                                             }
                                         });
 
