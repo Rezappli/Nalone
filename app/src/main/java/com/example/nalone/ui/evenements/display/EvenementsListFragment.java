@@ -96,14 +96,14 @@ public class EvenementsListFragment extends Fragment {
         events = new ArrayList<>();
         loading = rootView.findViewById(R.id.loading);
         navController = Navigation.findNavController(getActivity(), R.id.nav_host_fragment);
-        filtres.add(new ItemFiltre("Art"));
+        /*filtres.add(new ItemFiltre("Art"));
         filtres.add(new ItemFiltre("Sport"));
         filtres.add(new ItemFiltre("Musique"));
         filtres.add(new ItemFiltre("Fête"));
         filtres.add(new ItemFiltre("Danse"));
         filtres.add(new ItemFiltre("Numérique"));
         filtres.add(new ItemFiltre("Informatique"));
-        filtres.add(new ItemFiltre("Manifestation"));
+        filtres.add(new ItemFiltre("Manifestation"));*/
 
         linearSansEvent = rootView.findViewById(R.id.linearSansEvent);
         sansEnCours = rootView.findViewById(R.id.linearSansEnCours);
@@ -112,7 +112,7 @@ public class EvenementsListFragment extends Fragment {
 
         linearSansEvent.setVisibility(View.GONE);
 
-        mAdapterFiltre = new ItemFiltreAdapter(filtres);
+       /* mAdapterFiltre = new ItemFiltreAdapter(filtres);
 
         mRecyclerViewFiltre = rootView.findViewById(R.id.recyclerViewFiltre);
         mLayoutManagerFiltre = new LinearLayoutManager(
@@ -120,7 +120,7 @@ public class EvenementsListFragment extends Fragment {
                 LinearLayoutManager.HORIZONTAL,
                 false);
         mRecyclerViewFiltre.setLayoutManager(mLayoutManagerFiltre);
-        mRecyclerViewFiltre.setAdapter(mAdapterFiltre);
+        mRecyclerViewFiltre.setAdapter(mAdapterFiltre);*/
 
         mRecyclerViewEnCours = rootView.findViewById(R.id.recyclerViewEventListEnCours);
         mRecyclerViewBientot = rootView.findViewById(R.id.recyclerViewEventListBientot);
@@ -212,7 +212,6 @@ public class EvenementsListFragment extends Fragment {
 
                                             if (se == StatusEvent.BIENTOT){
                                                 sansBientot.setVisibility(View.GONE);
-
                                             }
                                             if (se == StatusEvent.ENCOURS){
                                                 sansEnCours.setVisibility(View.GONE);

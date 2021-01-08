@@ -200,6 +200,7 @@ public class AmisFragment extends Fragment {
 
                                             @Override
                                             public void onOpen(SwipeLayout layout) {
+                                                userViewHolder.button.setImageDrawable(getResources().getDrawable(R.drawable.arrow_back_white));
                                                 swipe = true;
                                             }
 
@@ -210,6 +211,7 @@ public class AmisFragment extends Fragment {
 
                                             @Override
                                             public void onClose(SwipeLayout layout) {
+                                                userViewHolder.button.setImageDrawable(getResources().getDrawable(R.drawable.ic_baseline_keyboard_arrow_right_24));
 
                                             }
 
@@ -309,9 +311,6 @@ public class AmisFragment extends Fragment {
                                                     userViewHolder.swipeLayout.close();
                                                     swipe = false;
                                                 }
-
-
-
                                             }
                                         });
                                         loading.setVisibility(View.GONE);

@@ -20,10 +20,12 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.bumptech.glide.Glide;
+import com.example.nalone.enumeration.Visibility;
 import com.example.nalone.util.Cache;
 import com.example.nalone.objects.Group;
 import com.example.nalone.R;
 import com.example.nalone.ui.amis.display.PopUpGroupFragment;
+import com.example.nalone.util.Constants;
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -115,109 +117,63 @@ public class RechercheGroupeFragment extends Fragment {
 
 
     private void adapterGroups() {
-
         Query query;
-        if(myGroups.isEmpty()){
-            DocumentReference ref = mStoreBase.document("users/"+USER_ID);
-            query = mStoreBase.collection("groups").whereNotEqualTo("ownerDoc",ref);
-        }else{
-            query = mStoreBase.collection("groups").whereNotIn("uid", myGroups);
-        }
+        if(!myGroups.isEmpty()) {
+            query = mStoreBase.collection("groups").whereNotIn("uid", myGroups).whereEqualTo("visibility", Visibility.PUBLIC).limit(10);
 
-        FirestoreRecyclerOptions<Group> options = new FirestoreRecyclerOptions.Builder<Group>().setQuery(query, Group.class).build();
+            FirestoreRecyclerOptions<Group> options = new FirestoreRecyclerOptions.Builder<Group>().setQuery(query, Group.class).build();
 
-        adapter = new FirestoreRecyclerAdapter<Group, UserViewHolder>(options) {
+            adapter = new FirestoreRecyclerAdapter<Group, GroupViewHolder>(options) {
                 @NonNull
                 @Override
-                public UserViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-                    View view= LayoutInflater.from(parent.getContext()).inflate(R.layout.item_groupe,parent,false);
-                    return new UserViewHolder(view);
+                public GroupViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+                    View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_groupe, parent, false);
+                    return new GroupViewHolder(view);
                 }
 
                 @Override
-                protected void onBindViewHolder(@NonNull final UserViewHolder userViewHolder, int i, @NonNull final Group g) {
+                protected void onBindViewHolder(@NonNull final GroupViewHolder userViewHolder, int i, @NonNull final Group g) {
                     final Group group = g;
                     userViewHolder.nomGroup.setText(g.getName());
 
                     userViewHolder.layoutGroup.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                           showPopUpGroup(group);
+                            showPopUpGroup(group);
                         }
                     });
 
-                    if(g.getImage_url() != null) {
-                        if(!Cache.fileExists(g.getUid())) {
-                            StorageReference imgRef = mStore.getReference("groups/" + g.getUid());
-                            if (imgRef != null) {
-                                imgRef.getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
-                                    @Override
-                                    public void onComplete(@NonNull Task<Uri> task) {
-                                        if (task.isSuccessful()) {
-                                            Uri img = task.getResult();
-                                            if (img != null) {
-                                                Cache.saveUriFile(g.getUid(), img);
-                                                g.setImage_url(Cache.getImageDate(g.getUid()));
-                                                mStoreBase.collection("groups").document(g.getUid()).set(g);
-                                                Glide.with(getContext()).load(img).fitCenter().centerCrop().into(userViewHolder.imageGroup);
-                                            }
-                                        }
-                                    }
-                                });
-                            }
-                        }else{
-                            Uri imgCache = Cache.getUriFromUid(g.getUid());
-                            if(Cache.getImageDate(g.getUid()).equalsIgnoreCase(g.getImage_url())) {
-                                Glide.with(getContext()).load(imgCache).fitCenter().centerCrop().into(userViewHolder.imageGroup);
-                            }else{
-                                StorageReference imgRef = mStore.getReference("groups/" + g.getUid());
-                                if (imgRef != null) {
-                                    imgRef.getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
-                                        @Override
-                                        public void onComplete(@NonNull Task<Uri> task) {
-                                            if (task.isSuccessful()) {
-                                                Uri img = task.getResult();
-                                                if (img != null) {
-                                                    Cache.saveUriFile(g.getUid(), img);
-                                                    g.setImage_url(Cache.getImageDate(g.getUid()));
-                                                    mStoreBase.collection("groups").document(g.getUid()).set(g);
-                                                    Glide.with(getContext()).load(img).fitCenter().centerCrop().into(userViewHolder.imageGroup);
-                                                }
-                                            }
-                                        }
-                                    });
-                                }
-                            }
+                    userViewHolder.imageGroup.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            Constants.setGroupImage(g, getContext(), userViewHolder.imageGroup);
                         }
-                    }
-                loading.setVisibility(View.GONE);
-                    linearSansRechercheGroupe.setVisibility(View.GONE);
+                    });
                 }
             };
-            mRecyclerView.setHasFixedSize(true);
             mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
             mRecyclerView.setAdapter(adapter);
             adapter.startListening();
-            swipeContainer.setRefreshing(false);
         }
+    }
 
-        private class UserViewHolder extends RecyclerView.ViewHolder {
+    private class GroupViewHolder extends RecyclerView.ViewHolder {
 
-            private TextView nomGroup;
-            private LinearLayout layoutGroup;
-            private ImageView imageGroup;
-            private ImageView button;
+        private TextView nomGroup;
+        private LinearLayout layoutGroup;
+        private ImageView imageGroup;
+        private ImageView button;
 
-            public UserViewHolder(@NonNull View itemView) {
-                super(itemView);
+        public GroupViewHolder(@NonNull View itemView) {
+            super(itemView);
 
-                nomGroup = itemView.findViewById(R.id.nomGroupe);
-                layoutGroup = itemView.findViewById(R.id.layoutGroupe);
-                imageGroup = itemView.findViewById(R.id.imageGroupe);
-
-            }
+            nomGroup = itemView.findViewById(R.id.nomGroupe);
+            layoutGroup = itemView.findViewById(R.id.layoutGroupe);
+            imageGroup = itemView.findViewById(R.id.imageGroupe);
 
         }
+    }
+
 
     public void showPopUpGroup(final Group g) {
         PopUpGroupFragment.GROUP_LOAD = g;

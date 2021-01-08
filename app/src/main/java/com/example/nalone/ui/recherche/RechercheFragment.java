@@ -22,6 +22,7 @@ import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.example.nalone.enumeration.Visibility;
 import com.example.nalone.objects.Group;
 import com.example.nalone.R;
 import com.example.nalone.objects.User;
@@ -171,7 +172,7 @@ public class RechercheFragment extends Fragment {
     private void adapterGroups() {
         Query query;
         if(!myGroups.isEmpty()) {
-            query = mStoreBase.collection("groups").whereNotIn("uid", myGroups).limit(3);
+            query = mStoreBase.collection("groups").whereNotIn("uid", myGroups).whereEqualTo("visibility", Visibility.PUBLIC).limit(3);
 
             FirestoreRecyclerOptions<Group> options = new FirestoreRecyclerOptions.Builder<Group>().setQuery(query, Group.class).build();
 

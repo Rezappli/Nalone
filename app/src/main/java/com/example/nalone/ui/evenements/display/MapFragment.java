@@ -55,6 +55,7 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.Query;
@@ -235,7 +236,27 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
             }
         });
 
+        checkExpiration("events_create");
+        checkExpiration("events_join");
         return rootView;
+    }
+
+    private void checkExpiration(final String collection) {
+        mStoreBase.collection("users").document(USER_ID).collection(collection)
+                .get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                if(task.isSuccessful()){
+                    for (QueryDocumentSnapshot doc : task.getResult()){
+                        Evenement e = doc.toObject(Evenement.class);
+                        e.setStatusEvent(horloge.verifStatut(new Date(), e.getDate().toDate()));
+                        if(e.getStatusEvent() == StatusEvent.EXPIRE){
+                            mStoreBase.collection("users").document(USER_ID).collection(collection).document(e.getUid()).delete();
+                        }
+                    }
+                }
+            }
+        });
     }
 
     @RequiresApi(api = Build.VERSION_CODES.M)
