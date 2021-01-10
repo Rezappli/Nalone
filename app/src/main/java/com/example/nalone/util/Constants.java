@@ -24,6 +24,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreSettings;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
@@ -42,7 +43,7 @@ public class Constants {
     public static final String MAPVIEW_BUNDLE_KEY = "MapViewBundleKey";
 
     public static FirebaseAuth mAuth = FirebaseAuth.getInstance();
-    public static FirebaseFirestore mStoreBase = FirebaseFirestore.getInstance();
+    public static FirebaseFirestore mStoreBase;
 
     public static FirebaseStorage mStore = FirebaseStorage.getInstance();
     public static StorageReference USER_STORAGE_REF;

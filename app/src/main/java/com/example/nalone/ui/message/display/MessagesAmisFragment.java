@@ -24,6 +24,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.example.nalone.R;
+import com.example.nalone.objects.ModelData;
 import com.example.nalone.objects.User;
 import com.example.nalone.dialog.ListAmisFragment;
 import com.example.nalone.ui.message.ChatActivityFriend;
@@ -32,6 +33,7 @@ import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
@@ -51,7 +53,7 @@ public class MessagesAmisFragment extends Fragment {
     private View rootView;
     private FirestoreRecyclerAdapter adapter;
     private RecyclerView mRecyclerView;
-    private String search = "";
+    private String search = null;
     private SwipeRefreshLayout mSwipeRefreshLayout;
     private ImageView addMessage;
     private List<String> uid;
@@ -93,9 +95,9 @@ public class MessagesAmisFragment extends Fragment {
 
             @Override
             public boolean onQueryTextChange(String newText) {
-                    search = newText;
-                    Log.w("Search", "Search : "+search);
-                    adapterUsers();
+                search = newText.toLowerCase();
+                Log.w("Search", "Search : " + search);
+                adapterUsers();
                 return false;
             }
         });
@@ -126,11 +128,30 @@ public class MessagesAmisFragment extends Fragment {
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
                         if (task.isSuccessful()) {
                             Log.w("Message", "Task sucessful");
-                            for (QueryDocumentSnapshot document : task.getResult()) {
-                                uid.add(document.getId());
-                                //uid.add(document.toObject(User.class).getUid());
+                            for (final QueryDocumentSnapshot document : task.getResult()) {
+                                if (search != null) {
+                                    if(search.length() > 0) {
+                                        mStoreBase.collection("users").document(document.getId()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                                            @Override
+                                            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                                                if (matchToUser(task.getResult().toObject(User.class))) {
+                                                    uid.add(document.getId());
+                                                }else{
+                                                    if(uid.contains(document.getId())){
+                                                        uid.remove(document.getId());
+                                                    }
+                                                }
+                                                Log.w("Recherche", "Liste : " + uid.toString());
+                                            }
+                                        });
+                                    }else{
+                                        uid.add(document.getId());
+                                    }
+                                } else {
+                                    uid.add(document.getId());
+                                }
                             }
-                            if(!uid.isEmpty()){
+                            if (!uid.isEmpty()) {
                                 Log.w("Message", uid.toString());
                                 Query query = mStoreBase.collection("users").whereIn("uid", uid);
                                 FirestoreRecyclerOptions<User> options = new FirestoreRecyclerOptions.Builder<User>().setQuery(query, User.class).build();
@@ -150,23 +171,23 @@ public class MessagesAmisFragment extends Fragment {
                                         userViewHolder.nomInvit.setText(u.getFirst_name() + " " + u.getLast_name());
                                         userViewHolder.button.setImageResource(R.drawable.ic_baseline_keyboard_arrow_right_24);
 
-                                        if(u.getCursus().equalsIgnoreCase("Informatique")){
+                                        if (u.getCursus().equalsIgnoreCase("Informatique")) {
                                             userViewHolder.cardViewPhotoPerson.setCardBackgroundColor(Color.RED);
                                         }
 
-                                        if(u.getCursus().equalsIgnoreCase("TC")){
+                                        if (u.getCursus().equalsIgnoreCase("TC")) {
                                             userViewHolder.cardViewPhotoPerson.setCardBackgroundColor(Color.parseColor("#00E9FD"));
                                         }
 
-                                        if(u.getCursus().equalsIgnoreCase("MMI")){
+                                        if (u.getCursus().equalsIgnoreCase("MMI")) {
                                             userViewHolder.cardViewPhotoPerson.setCardBackgroundColor(Color.parseColor("#FF1EED"));
                                         }
 
-                                        if(u.getCursus().equalsIgnoreCase("GB")){
+                                        if (u.getCursus().equalsIgnoreCase("GB")) {
                                             userViewHolder.cardViewPhotoPerson.setCardBackgroundColor(Color.parseColor("#41EC57"));
                                         }
 
-                                        if(u.getCursus().equalsIgnoreCase("LP")){
+                                        if (u.getCursus().equalsIgnoreCase("LP")) {
                                             userViewHolder.cardViewPhotoPerson.setCardBackgroundColor((Color.parseColor("#EC9538")));
                                         }
 
@@ -191,9 +212,32 @@ public class MessagesAmisFragment extends Fragment {
                                 mRecyclerView.setAdapter(adapter);
                                 adapter.startListening();
                                 mSwipeRefreshLayout.setRefreshing(false);
+                            }else{
+                                mRecyclerView.setAdapter(null);
                             }
 
-                        }}});
+                        }
+                    }
+                });
+    }
+
+    private boolean matchToUser(User u) {
+        Log.w("Recherche", "Utilisateur : " + u.getFirst_name());
+        int max_lenght = 0;
+        max_lenght = u.getFirst_name().length();
+        if (u.getFirst_name().length() < u.getLast_name().length()) {
+            max_lenght = u.getLast_name().length();
+        }
+        for (int i = 0; i < search.length(); i++) {
+
+            String u_first = u.getFirst_name().toLowerCase();
+            String u_last = u.getLast_name().toLowerCase();
+
+            Log.w("Recherche", "Valeur de recherche :" + (u_first.charAt(i) == search.charAt(i) || u_last.charAt(i) == search.charAt(i)));
+            return (u_first.charAt(i) == search.charAt(i) || u_last.charAt(i) == search.charAt(i));
+        }
+
+        return false;
     }
 
 
@@ -224,7 +268,7 @@ public class MessagesAmisFragment extends Fragment {
     }
 
     @Override
-    public void onResume(){
+    public void onResume() {
         super.onResume();
         createFragment();
     }
@@ -232,7 +276,7 @@ public class MessagesAmisFragment extends Fragment {
     @Override
     public void onStop() {
         super.onStop();
-        if(adapter != null) {
+        if (adapter != null) {
             adapter.stopListening();
         }
     }

@@ -638,19 +638,18 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
             if (e.getOwnerDoc().equals(USER_REFERENCE)) {
                 couleur[0] = (BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));
             }else {
-                mStoreBase.collection("users").document(USER_ID).collection("events_join")
+                mStoreBase.collection("users").document(USER_ID).collection("events_join").document(e.getUid())
                         .get()
-                        .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                        .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                             @Override
-                            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                                 if (task.isSuccessful()) {
-                                    for (DocumentSnapshot doc : task.getResult()) {
-                                        if (doc.getId().equals(e.getUid())) {
+                                        if (task.getResult().exists()) {
                                             couleur[0] = (BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE));
                                         } else {
                                             couleur[0] = null;
                                         }
-                                    }
+
                                 }else{
                                     couleur[0] = null;
                                 }
@@ -660,10 +659,10 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         } else if (e.getOwnerDoc().equals(USER_REFERENCE)) {
                 couleur[0] = (BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));
                 event_create.add(e.getUid());
-            } else {
+        } else {
                 couleur[0] = (BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));
                 event_public.add(e.getUid());
-            }
+        }
 
 
         return couleur[0];

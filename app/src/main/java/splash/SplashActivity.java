@@ -24,6 +24,8 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreSettings;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
@@ -62,10 +64,15 @@ public class SplashActivity extends AppCompatActivity {
         startService(new Intent(this, ConnectionService.class));
         init();
 
+
     }
 
     public void init() {
-
+        FirebaseFirestoreSettings settings = new FirebaseFirestoreSettings.Builder()
+                .setPersistenceEnabled(false)
+                .build();
+        FirebaseFirestore.getInstance().setFirestoreSettings(settings);
+        mStoreBase = FirebaseFirestore.getInstance();
         Constants.application = getApplication();
         currentUser = mAuth.getCurrentUser();
         if (currentUser != null) {
