@@ -1,4 +1,4 @@
-package com.example.nalone;
+package com.example.nalone.ui.evenements;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
@@ -19,6 +19,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.nalone.R;
 import com.example.nalone.items.ItemPerson;
 import com.example.nalone.objects.Evenement;
 import com.example.nalone.objects.ModelData;
@@ -41,6 +42,7 @@ import static com.example.nalone.util.Constants.USER;
 import static com.example.nalone.util.Constants.USER_ID;
 import static com.example.nalone.util.Constants.dateFormat;
 import static com.example.nalone.util.Constants.mStoreBase;
+import static com.example.nalone.util.Constants.setUserImage;
 import static com.example.nalone.util.Constants.timeFormat;
 
 public class InvitEventActivity extends Fragment {
@@ -117,6 +119,26 @@ public class InvitEventActivity extends Fragment {
                                         }
                                     }
                                 });
+                    }
+                });
+
+                mStoreBase.collection("users").document(e.getOwnerDoc().getId())
+                        .get()
+                        .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                            @Override
+                            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                                if(task.isSuccessful()){
+                                    User u = task.getResult().toObject(User.class);
+                                    setUserImage(u,getContext(),userViewHolder.imagePerson);
+                                }
+                            }
+                        });
+
+                userViewHolder.layoutProfil.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        InfosEvenementsActivity.EVENT_LOAD = e;
+                        navController.navigate(R.id.action_navigation_invit_event_to_navigation_infos_events);
                     }
                 });
 

@@ -73,14 +73,19 @@ public class ListAmisFragment extends Fragment {
 
     public static String type;
     public static Evenement EVENT_LOAD;
+    public static Group GROUP_LOAD;
 
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-
-        adds = new ArrayList<>();
         rootView = inflater.inflate(R.layout.fragment_list_amis, container, false);
+        createFragment();
+        return rootView;
+    }
+
+    private void createFragment(){
+        adds = new ArrayList<>();
         search_bar = rootView.findViewById(R.id.search_bar_amis);
         resultat = rootView.findViewById(R.id.resultatText_amis);
         resultat.setVisibility(View.GONE);
@@ -131,6 +136,7 @@ public class ListAmisFragment extends Fragment {
 
             }
         });
+
         if (type == "message_groupe") {
             adapterGroups();
         }else
@@ -155,7 +161,6 @@ public class ListAmisFragment extends Fragment {
             }
         });
 
-        return rootView;
     }
 
     private void adapterGroups() {
@@ -206,7 +211,8 @@ public class ListAmisFragment extends Fragment {
                                     startActivity(new Intent(getContext(), ChatActivityGroup.class));
                                 }
                             });
-                        }/*else{
+                        }else{
+                            /*else{
                                                     if (!adds.contains(u.getUid()) || adds.isEmpty()) {
                                                         userViewHolder.button.setImageDrawable(getResources().getDrawable(remove));
                                                         adds.add(u.getUid());
@@ -215,6 +221,7 @@ public class ListAmisFragment extends Fragment {
                                                         adds.remove(u.getUid());
                                                     }
                                                 }*/
+                        }
                     }
                 });
 
@@ -400,4 +407,9 @@ public class ListAmisFragment extends Fragment {
         }
     }
 
+    @Override
+    public void onResume() {
+        createFragment();
+        super.onResume();
+    }
 }

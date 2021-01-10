@@ -33,12 +33,15 @@
 
     <fragment
         android:id="@+id/navigation_invit_event"
-        android:name="com.example.nalone.InvitEventActivity"
+        android:name="com.example.nalone.ui.evenements.InvitEventActivity"
         android:label="@string/title_evenements"
         tools:layout="@layout/activity_invit_event">
         <action
             android:id="@+id/action_navigation_invit_event_to_navigation_evenements"
             app:destination="@id/navigation_evenements" />
+        <action
+            android:id="@+id/action_navigation_invit_event_to_navigation_infos_events"
+            app:destination="@id/navigation_infos_events" />
     </fragment>
 
     <fragment
@@ -52,6 +55,9 @@
         <action
             android:id="@+id/action_navigation_infos_events_to_navigation_create_event"
             app:destination="@id/navigation_create_event" />
+        <action
+            android:id="@+id/action_navigation_infos_events_to_navigation_invit_event"
+            app:destination="@id/navigation_invit_event" />
     </fragment>
 
 

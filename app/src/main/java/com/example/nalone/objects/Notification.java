@@ -35,27 +35,27 @@ public class Notification {
 
 
     public static String  joinGroupe() {
-        return "à rejoins un de vos groupe";
+        return "a rejoins un de vos groupe";
     }
 
     public static String  demandeAmi() {
-        return "vous à envoyé une demande d'ami";
+        return "vous a envoyé une demande d'ami";
     }
 
     public static String  demandeEvent() {
-        return "vous à envoyé une invitation à son évènement";
+        return "vous a envoyé une invitation pour participer à son évènement";
     }
 
     public static String  demandeGroupe() {
-        return "vous à envoyé une invitation pour rejoindre son groupe";
+        return "vous a envoyé une invitation pour rejoindre son groupe";
     }
 
     public static String  joinEvent() {
-        return "à rejoins un de vos évènement";
+        return "participe à un de vos évènement";
     }
 
     public static String joinAmi(){
-        return "à accepté votre demande d'ami";
+        return "a accepté votre demande d'ami";
     }
 
     public String getmOwner() {

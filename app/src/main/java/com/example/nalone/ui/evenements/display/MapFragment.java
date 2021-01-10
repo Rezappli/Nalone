@@ -262,7 +262,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     @RequiresApi(api = Build.VERSION_CODES.M)
     private void clickFiltre(Query query) {
         zoom = true;
-        adapterEvents(query);
+        startQuery(query);
         updateMap(query);
     }
 
@@ -305,7 +305,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     }
 
     private void startQuery(Query query) {
-        Query queryF = query.whereGreaterThan("latitude", minLat)
+        Query queryF = query.whereEqualTo("statusEvent", StatusEvent.BIENTOT).whereGreaterThan("latitude", minLat)
                 .whereLessThan("latitude", maxLat);
 
         FirestoreRecyclerOptions<Evenement> options = new FirestoreRecyclerOptions.Builder<Evenement>().setQuery(queryF, Evenement.class).build();
@@ -454,16 +454,14 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
 
     private void ajoutCreationAndParticipation(Evenement e) {
 
-        mStoreBase.collection("users").whereEqualTo("uid",e.getOwnerDoc())
-                .get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+        mStoreBase.collection("users").document(e.getOwnerDoc().getId())
+                .get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
-            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                 if(task.isSuccessful()){
-                    for(QueryDocumentSnapshot doc : task.getResult()){
-                        User u = doc.toObject(User.class);
-                        u.setNumber_events_create(u.getNumber_events_attend()+1);
+                        User u = task.getResult().toObject(User.class);
+                        u.setNumber_events_create(u.getNumber_events_create()+1);
                         mStoreBase.collection("users").document(u.getUid()).set(u);
-                    }
                 }
             }
         });
@@ -551,7 +549,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
-        Query query = mStoreBase.collection("events");
+        Query query = mStoreBase.collection("events").whereEqualTo("statusEvent", StatusEvent.BIENTOT);
         updateMap(query);
         if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION)
                 != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getActivity(),
@@ -610,7 +608,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                     }
 
                     if (nearby_events.size() > 0) {
-                        adapterEvents(query);
+                        startQuery(query);
                     }
                     Log.w("iterator", iterator+"");
                    /* if (nearby_events.size() <= 1){
@@ -648,7 +646,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                             DocumentSnapshot doc = task.getResult();
                             if (doc.exists()) {
                                 couleur[0] = (BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE));
-
                             } else {
                                 couleur[0] = null;
                             }
@@ -659,15 +656,14 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                     }
                 });
             }
-        } else {
-            if (e.getOwnerDoc().equals(USER_REFERENCE)) {
+        } else if (e.getOwnerDoc().equals(USER_REFERENCE)) {
                 couleur[0] = (BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));
                 event_create.add(e.getUid());
             } else {
                 couleur[0] = (BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));
                 event_public.add(e.getUid());
             }
-        }
+
 
         return couleur[0];
     }
