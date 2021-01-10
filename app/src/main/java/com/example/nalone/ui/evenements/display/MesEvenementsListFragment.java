@@ -163,7 +163,23 @@ public class MesEvenementsListFragment extends Fragment {
         sansBientot = rootView.findViewById(R.id.linearSansBientot);
         sansFini = rootView.findViewById(R.id.linearSansFini);
 
-        initAdapter();
+        mStoreBase.collection("users").document(USER_ID).collection("events_join")
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if(task.isSuccessful()){
+                            Log.w("Statut event_join"," statut");
+                            for (QueryDocumentSnapshot doc : task.getResult()){
+                                Evenement e = doc.toObject(Evenement.class);
+                                e.setStatusEvent(horloge.verifStatut(new Date(), e.getDate().toDate()));
+                                Log.w("Statut event_join",horloge.verifStatut(new Date(), e.getDate().toDate()) + " statut");
+                                mStoreBase.collection("users").document(USER_ID).collection("events_join").document(e.getUid()).set(e);
+                            }
+                            initAdapter();
+                        }
+                    }
+                });
 
     }
 

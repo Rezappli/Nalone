@@ -154,11 +154,10 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
             @RequiresApi(api = Build.VERSION_CODES.M)
             @Override
             public void onClick(View v) {
-                Query query = mStoreBase.collection("events").whereEqualTo("visibility", "PRIVATE");
+                Query query = mStoreBase.collection("users").document(USER_ID).collection("events_join").whereEqualTo("visibility",Visibility.PRIVATE);
                 hiddeText(textViewLocationPrive);
                 imageViewLocationPrive.setImageDrawable(getResources().getDrawable(R.drawable.location_private_30));
                 clickFiltre(query);
-
             }
         });
 
@@ -549,7 +548,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
-        Query query = mStoreBase.collection("events").whereEqualTo("statusEvent", StatusEvent.BIENTOT);
+        Query query = mStoreBase.collection("events");
         updateMap(query);
         if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION)
                 != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getActivity(),
@@ -586,7 +585,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
             final float[] results = new float[3];
 
 
-            query.whereGreaterThan("latitude", minLat)
+            query.whereEqualTo("statusEvent", StatusEvent.BIENTOT).whereGreaterThan("latitude", minLat)
                     .whereLessThan("latitude", maxLat)
                     .get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                 @Override
@@ -633,28 +632,30 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         super.onLowMemory();
     }
 
-    private BitmapDescriptor getEventColor(Evenement e) {
+    private BitmapDescriptor getEventColor(final Evenement e) {
         final BitmapDescriptor[] couleur = new BitmapDescriptor[1];
-        if (e.getVisibility().equals(Visibility.PRIVATE)) {
+        if (e.getVisibility()== Visibility.PRIVATE) {
             if (e.getOwnerDoc().equals(USER_REFERENCE)) {
                 couleur[0] = (BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));
-            } else {
-                mStoreBase.collection("events").document(e.getUid()).collection("members").document(USER.getUid()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                        if (task.isSuccessful()) {
-                            DocumentSnapshot doc = task.getResult();
-                            if (doc.exists()) {
-                                couleur[0] = (BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE));
-                            } else {
-                                couleur[0] = null;
+            }else {
+                mStoreBase.collection("users").document(USER_ID).collection("events_join")
+                        .get()
+                        .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                            @Override
+                            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                if (task.isSuccessful()) {
+                                    for (DocumentSnapshot doc : task.getResult()) {
+                                        if (doc.getId().equals(e.getUid())) {
+                                            couleur[0] = (BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE));
+                                        } else {
+                                            couleur[0] = null;
+                                        }
+                                    }
+                                }else{
+                                    couleur[0] = null;
+                                }
                             }
-                        } else {
-                            Log.w("Error", "Error : " + task.getException());
-                            couleur[0] = null;
-                        }
-                    }
-                });
+                        });
             }
         } else if (e.getOwnerDoc().equals(USER_REFERENCE)) {
                 couleur[0] = (BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));
