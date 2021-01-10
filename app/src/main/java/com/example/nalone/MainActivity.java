@@ -124,8 +124,18 @@ public class MainActivity extends AppCompatActivity{
     }
 
     private void signIn() {
-        Intent signInIntent = mGoogleSignInClient.getSignInIntent();
-        startActivityForResult(signInIntent, 0);
+        mStoreBase.collection("users").whereEqualTo("mail", editTextAddress.getText().toString()).get().addOnCompleteListener(
+                new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if(task.isSuccessful()) {
+                            connectUser(editTextAddress.getText().toString(), editTextPass.getText().toString());
+                        }else{
+                            startActivity(new Intent(MainActivity.this, SignUpInformationActivity.class));
+                        }
+                    }
+                }
+        );
     }
 
     @Override
@@ -141,19 +151,8 @@ public class MainActivity extends AppCompatActivity{
     private void handleSignInResult(Task<GoogleSignInAccount> completedTask) {
         try {
             final GoogleSignInAccount account = completedTask.getResult(ApiException.class);
-            Log.w("Login", "SIGN IN OK");
-            mStoreBase.collection("users").whereEqualTo("mail", account.getEmail()).get().addOnCompleteListener(
-                new OnCompleteListener<QuerySnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        if(task.isSuccessful()) {
-                            startActivity(new Intent(MainActivity.this, HomeActivity.class));
-                        }else{
-                            startActivity(new Intent(MainActivity.this, SignUpInformationActivity.class));
-                        }
-                    }
-                }
-            );
+            Intent intent = new Intent(MainActivity.this, HomeActivity.class);
+            startActivity(intent);
         } catch (ApiException e) {
             Log.w("GoogleError", "signInResult:failed code=" + e.getStatusCode());
         }
@@ -194,7 +193,7 @@ public class MainActivity extends AppCompatActivity{
                                 }
                             } else {
                                 progressBar.setVisibility(View.GONE);
-                                Toast.makeText(MainActivity.this, "Erreur : " + task.getException().getMessage(),
+                                Toast.makeText(MainActivity.this, "Erreur : " + task.getException(),
                                         Toast.LENGTH_SHORT).show();
                             }
                         }

@@ -76,5 +76,7 @@ dependencies {
     implementation fileTree (dir: 'libs', include: ['* .jar'])
     implementation "com.daimajia.swipelayout:library:1.2.0@aar"
     compile 'com.github.instacart.truetime-android:library:1.5'
+    implementation 'com.github.barteksc:android-pdf-viewer:2.8.2'
+
 }
 

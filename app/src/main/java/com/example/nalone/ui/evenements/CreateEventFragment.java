@@ -382,8 +382,10 @@ public class CreateEventFragment extends Fragment {
             event_adresse.setText(evenementAttente.getAddress());
         if(!evenementAttente.getCity().matches(""))
             event_city.setText(evenementAttente.getCity());
-        if(evenementAttente.getDate() != null)
-            event_date.setText(evenementAttente.getDate().toString());
+        if(evenementAttente.getDate() != null){
+            event_date.setText((dateFormat.format(EVENT_LOAD.getDate().toDate())));
+            event_horaire.setText((timeFormat.format(EVENT_LOAD.getDate().toDate())));
+        }
         if(evenementAttente.getVisibility() == Visibility.PUBLIC){
             selectPublic();
         }

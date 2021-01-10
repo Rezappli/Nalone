@@ -3,6 +3,7 @@ package com.example.nalone.ui.profil;
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -21,6 +22,7 @@ import androidx.fragment.app.Fragment;
 import com.example.nalone.MainActivity;
 import com.example.nalone.R;
 import com.example.nalone.fcm.MySingleton;
+import com.github.barteksc.pdfviewer.PDFView;
 import com.squareup.okhttp.ResponseBody;
 
 import org.json.JSONException;
@@ -45,23 +47,21 @@ public class AideFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View root = inflater.inflate(R.layout.fragment_aide, container, false);
+        PDFView pdfView = root.findViewById(R.id.pdfView);
 
-        button = root.findViewById(R.id.appel);
-        button.setOnClickListener(new View.OnClickListener() {
-            @RequiresApi(api = Build.VERSION_CODES.M)
-            @Override
-            public void onClick(View v) {
-                if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.CALL_PHONE)
-                        != PackageManager.PERMISSION_GRANTED) {
-                    getActivity().requestPermissions(new String[]{Manifest.permission.CALL_PHONE}, 0);
-                    return;
-                }
-                Intent callIntent = new Intent(Intent.ACTION_CALL);
-                callIntent.setData(Uri.parse("tel:0781039494"));
-                startActivity(callIntent);
-            }
-        });
-
+        pdfView.fromAsset("manuel.pdf")
+                .enableSwipe(true) // allows to block changing pages using swipe
+                .swipeHorizontal(false)
+                .enableDoubletap(true)
+                .defaultPage(0)
+                .enableAnnotationRendering(false) // render annotations (such as comments, colors or forms)
+                .password(null)
+                .scrollHandle(null)
+                .enableAntialiasing(true) // improve rendering a little bit on low-res screens
+                // spacing between pages in dp. To define spacing color, set view background
+                .spacing(0)
+                .invalidPageColor(Color.WHITE) // color of page that is invalid and cannot be loaded
+                .load();
         return root;
     }
 }

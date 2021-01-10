@@ -325,6 +325,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                 if(e.getStatusEvent() == StatusEvent.FINI){
                    ajoutCreationAndParticipation(e);
                 }
+
                 if(e.getStatusEvent() == StatusEvent.EXPIRE){
                     //holder.linearTermine.setVisibility(View.VISIBLE);
                     mStoreBase.collection("events").document(e.getUid())
@@ -550,6 +551,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         mMap = googleMap;
         Query query = mStoreBase.collection("events");
         updateMap(query);
+        startQuery(query);
         if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION)
                 != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getActivity(),
                 Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
@@ -596,19 +598,11 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                             Location.distanceBetween(USER.getLocation().getLatitude(), USER.getLocation().getLongitude(),
                                     e.getLatitude(), e.getLongitude(), results);
                             if (results[0] <= range * 1000) {
-                                MarkerOptions m = new MarkerOptions().title(e.getName())
-                                        .snippet("Cliquez pour plus d'informations")
-                                        .icon(getEventColor(e))
-                                        .position(new LatLng(e.getLatitude(), e.getLongitude()));
-                                mMap.addMarker(m).setTag(e.getUid());
-                                nearby_events.add(e.getUid());
+                                showMarkers(e);
                             }
                         }
                     }
 
-                    if (nearby_events.size() > 0) {
-                        startQuery(query);
-                    }
                     Log.w("iterator", iterator+"");
                    /* if (nearby_events.size() <= 1){
 
@@ -617,6 +611,75 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                 }
             });
         }
+    }
+
+    private void showMarkers(final Evenement e) {
+        final BitmapDescriptor[] couleur = new BitmapDescriptor[1];
+        if (e.getVisibility()== Visibility.PRIVATE) {
+            if (e.getOwnerDoc().equals(USER_REFERENCE)) {
+                couleur[0] = (BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));
+                MarkerOptions m = new MarkerOptions().title(e.getName())
+                        .snippet("Cliquez pour plus d'informations")
+                        .icon(couleur[0])
+                        .position(new LatLng(e.getLatitude(), e.getLongitude()));
+
+                Log.w("event icon", "apparaitre icon");
+                mMap.addMarker(m).setTag(e.getUid());
+                nearby_events.add(e.getUid());
+            }else {
+                mStoreBase.collection("users").document(USER_ID).collection("events_join").document(e.getUid())
+                        .get()
+                        .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                            @Override
+                            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                                if (task.isSuccessful()) {
+                                    if (task.getResult().exists()) {
+                                        Log.w("event private"," OK" + e.getName());
+
+                                        couleur[0] = (BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE));
+
+                                        MarkerOptions m = new MarkerOptions().title(e.getName())
+                                                .snippet("Cliquez pour plus d'informations")
+                                                .icon(couleur[0])
+                                                .position(new LatLng(e.getLatitude(), e.getLongitude()));
+
+                                        Log.w("event icon", "apparaitre icon");
+                                        mMap.addMarker(m).setTag(e.getUid());
+                                        nearby_events.add(e.getUid());
+                                    } else {
+                                        Log.w("event private","NOK");
+                                        couleur[0] = null;
+                                    }
+                                }
+                            }
+                        });
+            }
+        } else if (e.getOwnerDoc().equals(USER_REFERENCE)) {
+            couleur[0] = (BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));
+
+            MarkerOptions m = new MarkerOptions().title(e.getName())
+                    .snippet("Cliquez pour plus d'informations")
+                    .icon(couleur[0])
+                    .position(new LatLng(e.getLatitude(), e.getLongitude()));
+            Log.w("event icon", "apparaitre icon");
+            mMap.addMarker(m).setTag(e.getUid());
+            nearby_events.add(e.getUid());
+            event_create.add(e.getUid());
+        } else {
+            couleur[0] = (BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));
+
+            MarkerOptions m = new MarkerOptions().title(e.getName())
+                    .snippet("Cliquez pour plus d'informations")
+                    .icon(couleur[0])
+                    .position(new LatLng(e.getLatitude(), e.getLongitude()));
+            Log.w("event icon", "apparaitre icon");
+            mMap.addMarker(m).setTag(e.getUid());
+            nearby_events.add(e.getUid());
+            event_public.add(e.getUid());
+            Log.w("event public","OK" + e.getName());
+
+        }
+
     }
 
 
@@ -630,41 +693,5 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     public void onLowMemory() {
         mMapView.onLowMemory();
         super.onLowMemory();
-    }
-
-    private BitmapDescriptor getEventColor(final Evenement e) {
-        final BitmapDescriptor[] couleur = new BitmapDescriptor[1];
-        if (e.getVisibility()== Visibility.PRIVATE) {
-            if (e.getOwnerDoc().equals(USER_REFERENCE)) {
-                couleur[0] = (BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));
-            }else {
-                mStoreBase.collection("users").document(USER_ID).collection("events_join").document(e.getUid())
-                        .get()
-                        .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                            @Override
-                            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                                if (task.isSuccessful()) {
-                                        if (task.getResult().exists()) {
-                                            couleur[0] = (BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE));
-                                        } else {
-                                            couleur[0] = null;
-                                        }
-
-                                }else{
-                                    couleur[0] = null;
-                                }
-                            }
-                        });
-            }
-        } else if (e.getOwnerDoc().equals(USER_REFERENCE)) {
-                couleur[0] = (BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));
-                event_create.add(e.getUid());
-        } else {
-                couleur[0] = (BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));
-                event_public.add(e.getUid());
-        }
-
-
-        return couleur[0];
     }
 }
