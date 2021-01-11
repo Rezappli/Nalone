@@ -516,14 +516,11 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
             adapter.startListening();
             adapter1.startListening();
             ConcatAdapter concatAdapter = new ConcatAdapter(adapter, adapter1);
-            /*concatAdapter.addAdapter(adapter);
-            concatAdapter.addAdapter(adapter1);*/
             mRecyclerView.setAdapter(concatAdapter);
         }else{
             mRecyclerView.setAdapter(adapter);
             adapter.startListening();
         }
-
 
         if (mMap != null) {
             mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {

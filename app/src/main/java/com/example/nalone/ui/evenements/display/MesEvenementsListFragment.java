@@ -86,8 +86,6 @@ public class MesEvenementsListFragment extends Fragment {
         rootView = inflater.inflate(R.layout.fragment_mes_evenements_list, container, false);
 
         createFragment();
-
-
         return rootView;
     }
 
@@ -217,6 +215,7 @@ public class MesEvenementsListFragment extends Fragment {
 
 
         adapter = new FirestoreRecyclerAdapter<Evenement, EventViewHolder>(options) {
+
                                     @NonNull
                                     @Override
                                     public EventViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -227,6 +226,7 @@ public class MesEvenementsListFragment extends Fragment {
                                     @Override
                                     protected void onBindViewHolder(@NonNull final EventViewHolder holder, int i, @NonNull final Evenement e) {
                                         //holder.mImageView.setImageResource(e.getImage());
+                                        Log.w("creation fragment", "Adapter mes events");
 
                                         holder.mTitle.setText((e.getName()));
                                         holder.mDate.setText((dateFormat.format(e.getDate().toDate())));

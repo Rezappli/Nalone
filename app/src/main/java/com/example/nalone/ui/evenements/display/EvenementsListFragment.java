@@ -60,7 +60,7 @@ public class EvenementsListFragment extends Fragment {
     private RecyclerView.LayoutManager mLayoutManagerFiltre;
 
     private RecyclerView mRecyclerViewEnCours,mRecyclerViewBientot, mRecyclerViewFini;
-    private FirestoreRecyclerAdapter adapter, adapter1;
+    private FirestoreRecyclerAdapter mAdapter;
     private LinearLayout linearSansEvent;
     private ItemFiltreAdapter mAdapterFiltre;
     private NavController navController;
@@ -97,6 +97,7 @@ public class EvenementsListFragment extends Fragment {
 
     private void createFragment() {
 
+        Log.w("creation fragment", "Creation");
         events = new ArrayList<>();
         loading = rootView.findViewById(R.id.loading);
         navController = Navigation.findNavController(getActivity(), R.id.nav_host_fragment);
@@ -136,6 +137,7 @@ public class EvenementsListFragment extends Fragment {
     }
 
     private void initAdapter(){
+        Log.w("creation fragment", "Initialisation");
         adapterEvents(StatusEvent.ENCOURS, mRecyclerViewEnCours);
         adapterEvents(StatusEvent.BIENTOT, mRecyclerViewBientot);
         adapterEvents(StatusEvent.FINI, mRecyclerViewFini);
@@ -148,17 +150,18 @@ public class EvenementsListFragment extends Fragment {
                 .whereEqualTo("statusEvent", se);
         FirestoreRecyclerOptions<Evenement> options = new FirestoreRecyclerOptions.Builder<Evenement>().setQuery(query, Evenement.class).build();
 
-                                adapter = new FirestoreRecyclerAdapter<Evenement, EventViewHolder>(options) {
-                                    @NonNull
-                                    @Override
-                                    public EventViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-                                        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_evenements_list_, parent, false);
-                                        return new EventViewHolder(view);
-                                    }
+        mAdapter = new FirestoreRecyclerAdapter<Evenement, EventViewHolder>(options) {
+            @NonNull
+            @Override
+            public EventViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+                View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_evenements_list_, parent, false);
+                return new EventViewHolder(view);
+            }
 
                                     @Override
                                     protected void onBindViewHolder(@NonNull final EventViewHolder holder, int i, @NonNull final Evenement e) {
                                         //holder.mImageView.setImageResource(e.getImage());
+                                        Log.w("creation fragment", "Adapter");
 
                                             holder.mTitle.setText((e.getName()));
                                             holder.mDate.setText((dateFormat.format(e.getDate().toDate())));
@@ -231,13 +234,11 @@ public class EvenementsListFragment extends Fragment {
 //                                            loading.setVisibility(View.GONE);
                                         }
                                 };
-                                //mRecyclerView.setHasFixedSize(true);
+        //recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
-
-        recyclerView.setAdapter(adapter);
-        adapter.startListening();
+        recyclerView.setAdapter(mAdapter);
+        mAdapter.startListening();
     }
-
 
 
     private class EventViewHolder extends RecyclerView.ViewHolder {
@@ -266,6 +267,20 @@ public class EvenementsListFragment extends Fragment {
             mCarwViewOwner = itemView.findViewById(R.id.backGroundOwner);
             textViewNbMembers = itemView.findViewById(R.id.textViewNbMembers);
 
+        }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        if(mAdapter != null){
+            mAdapter.stopListening();
+            mAdapter = null;
         }
     }
 }
