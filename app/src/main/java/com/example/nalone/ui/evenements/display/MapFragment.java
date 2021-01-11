@@ -678,7 +678,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
 
     @RequiresApi(api = Build.VERSION_CODES.M)
     public void updateMap(final Query query, boolean all) {
-        List<Evenement> evenements = new ArrayList<>();
+        final List<Evenement> evenements = new ArrayList<>();
         mStoreBase.collection("users").document(USER_ID).collection("events_join")
                 .whereEqualTo("visibility",Visibility.PRIVATE)
                 .get()
@@ -686,7 +686,17 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                     @Override
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
                         if(task.isSuccessful()){
+                            for (DocumentSnapshot doc : task.getResult()){
+                                Evenement e = doc.toObject(Evenement.class);
+                                MarkerOptions m = new MarkerOptions().title(e.getName())
+                                        .snippet("Cliquez pour plus d'informations")
+                                        .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE))
+                                        .position(new LatLng(e.getLatitude(), e.getLongitude()));
 
+                                Log.w("event icon", "apparaitre icon");
+                                mMap.addMarker(m).setTag(e.getUid());
+                                nearby_events.add(e.getUid());
+                            }
                         }
                     }
                 });
