@@ -170,7 +170,6 @@ public class GroupeFragment extends Fragment {
     @Override
     public void onStart(){
         super.onStart();
-        //updateItems();
         if(adapter != null)
             adapter.startListening();
     }

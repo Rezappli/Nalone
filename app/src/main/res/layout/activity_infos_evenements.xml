@@ -17,7 +17,7 @@
             android:orientation="vertical">
 
             <ImageView
-                android:id="@+id/imageView28"
+                android:id="@+id/imageEvenement"
                 android:layout_width="match_parent"
                 android:layout_height="200dp"
                 app:srcCompat="@drawable/ic_baseline_mesevent" />

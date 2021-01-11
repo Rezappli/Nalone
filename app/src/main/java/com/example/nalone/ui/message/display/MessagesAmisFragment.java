@@ -8,6 +8,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Filter;
+import android.widget.Filterable;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.SearchView;
@@ -96,7 +98,6 @@ public class MessagesAmisFragment extends Fragment {
             @Override
             public boolean onQueryTextChange(String newText) {
                 search = newText.toLowerCase();
-                Log.w("Search", "Search : " + search);
                 adapterUsers();
                 return false;
             }
@@ -129,28 +130,9 @@ public class MessagesAmisFragment extends Fragment {
                         if (task.isSuccessful()) {
                             Log.w("Message", "Task sucessful");
                             for (final QueryDocumentSnapshot document : task.getResult()) {
-                                if (search != null) {
-                                    if(search.length() > 0) {
-                                        mStoreBase.collection("users").document(document.getId()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                                            @Override
-                                            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                                                if (matchToUser(task.getResult().toObject(User.class))) {
-                                                    uid.add(document.getId());
-                                                }else{
-                                                    if(uid.contains(document.getId())){
-                                                        uid.remove(document.getId());
-                                                    }
-                                                }
-                                                Log.w("Recherche", "Liste : " + uid.toString());
-                                            }
-                                        });
-                                    }else{
-                                        uid.add(document.getId());
-                                    }
-                                } else {
-                                    uid.add(document.getId());
-                                }
+                                uid.add(document.getId());
                             }
+
                             if (!uid.isEmpty()) {
                                 Log.w("Message", uid.toString());
                                 Query query = mStoreBase.collection("users").whereIn("uid", uid);
@@ -215,7 +197,6 @@ public class MessagesAmisFragment extends Fragment {
                             }else{
                                 mRecyclerView.setAdapter(null);
                             }
-
                         }
                     }
                 });
@@ -239,7 +220,6 @@ public class MessagesAmisFragment extends Fragment {
 
         return false;
     }
-
 
     private class UserViewHolder extends RecyclerView.ViewHolder {
 
@@ -280,5 +260,4 @@ public class MessagesAmisFragment extends Fragment {
             adapter.stopListening();
         }
     }
-
 }

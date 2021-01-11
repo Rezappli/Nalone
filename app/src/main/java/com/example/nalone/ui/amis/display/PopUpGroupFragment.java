@@ -27,6 +27,7 @@ import com.example.nalone.objects.Group;
 import com.example.nalone.R;
 import com.example.nalone.objects.ModelData;
 import com.example.nalone.enumeration.Visibility;
+import com.example.nalone.util.Constants;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
@@ -45,22 +46,21 @@ import static com.example.nalone.util.Constants.mStoreBase;
 public class PopUpGroupFragment extends Fragment {
 
     public static Group GROUP_LOAD;
-    NavController navController;
+    private NavController navController;
 
     public static String type;
-    TextView nameGroup, ownerGroup;
-    TextView descriptionGroup;
-    TextView nbCreateGroup;
-    TextView nbParticipateGroup;
+    private TextView nameGroup, ownerGroup;
+    private TextView descriptionGroup;
+    private TextView nbCreateGroup;
+    private TextView nbParticipateGroup;
 
-    ImageView imageGroup;
-    TextView visibilityGroup, textViewNbMembers;
-    Button buttonAdd;
-    CardView cardViewPhotoPerson;
-    Button buttonVoirMembres;
+    private ImageView imageGroup;
+    private TextView visibilityGroup, textViewNbMembers;
+    private Button buttonAdd;
+    private CardView cardViewPhotoPerson;
+    private Button buttonVoirMembres;
     private int nbMembers;
-    private List<String> friends;
-    RelativeLayout relativeLayout;
+    private RelativeLayout relativeLayout;
 
     FrameLayout fenetrePrincipal;
     View root;
@@ -128,27 +128,7 @@ public class PopUpGroupFragment extends Fragment {
         }
 
         if (GROUP_LOAD.getImage_url() != null) {
-            if(!Cache.fileExists(GROUP_LOAD.getUid())) {
-                StorageReference imgRef = mStore.getReference("users/" + GROUP_LOAD.getUid());
-                if (imgRef != null) {
-                    imgRef.getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
-                        @Override
-                        public void onComplete(@NonNull Task<Uri> task) {
-                            if (task.isSuccessful()) {
-                                Uri img = task.getResult();
-                                if (img != null) {
-                                    Log.w("image", "save image from cache");
-                                    Cache.saveUriFile(GROUP_LOAD.getUid(), img);
-                                    Glide.with(getContext()).load(img).fitCenter().centerCrop().into(imageGroup);
-                                }
-                            }
-                        }
-                    });
-                }
-            }else{
-                Log.w("image", "get image from cache");
-                Glide.with(getContext()).load(Cache.getUriFromUid(GROUP_LOAD.getUid())).fitCenter().centerCrop().into(imageGroup);
-            }
+            Constants.setGroupImage(GROUP_LOAD, getContext(), imageGroup);
         }
 
 

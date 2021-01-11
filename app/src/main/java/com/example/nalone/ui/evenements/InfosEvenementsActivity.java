@@ -82,6 +82,7 @@ public class InfosEvenementsActivity extends Fragment {
     private LinearLayout linearButton;
     private CardView cardViewTermine;
     private LinearLayout linearAnnuler;
+    private ImageView imageEvent;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -112,6 +113,7 @@ public class InfosEvenementsActivity extends Fragment {
         linearAnnuler = rootView.findViewById(R.id.linearAnnuler);
         buttonAnnuler = rootView.findViewById(R.id.buttonAnnuler);
         ownerImage = rootView.findViewById(R.id.ownerImage);
+        imageEvent = rootView.findViewById(R.id.imageEvenement);
 
         buttonInscription.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -159,9 +161,6 @@ public class InfosEvenementsActivity extends Fragment {
         }else{
             mDescription.setText(EVENT_LOAD.getDescription());
         }
-
-
-
 
         handler = new Handler();
         handler.postDelayed(runnable,0);
@@ -244,6 +243,10 @@ public class InfosEvenementsActivity extends Fragment {
         });
 
         setData();
+
+        //if(EVENT_LOAD.getImage_url() != null){
+            //Constants.setEventImage(EVENT_LOAD, getContext(), imageEvent);
+        //}
     }
 
 
@@ -258,12 +261,7 @@ public class InfosEvenementsActivity extends Fragment {
 
 
     public void differenceDate(Date startDate, Date endDate) {
-        //milliseconds
         long different = endDate.getTime() - startDate.getTime();
-
-        Log.w("date","startDate : " + startDate);
-        Log.w("date","endDate : "+ endDate);
-        Log.w("date","different : " + different);
 
         long secondsInMilli = 1000;
         long minutesInMilli = secondsInMilli * 60;

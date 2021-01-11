@@ -142,6 +142,7 @@ public class SignUpInformationActivity extends AppCompatActivity {
                 String villeEntre = ville.getText().toString();
                 String numeroEntre = numero.getText().toString();
                 String mailEntre = adresseMail.getText().toString();
+                mailEntre = mailEntre.replaceAll(" ", "");
                 String passEntre = pass.getText().toString();
                 String confirmPassEntre = confirmPass.getText().toString();
 
