@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.app.Dialog;
+import android.graphics.Color;
 import android.location.Address;
 import android.location.Geocoder;
 import android.net.Uri;
@@ -441,54 +442,29 @@ public class CreateEventFragment extends Fragment {
                     }
                 });
 
-
-                if(u.getImage_url() != null) {
-                    if(!Cache.fileExists(u.getUid())) {
-                        StorageReference imgRef = mStore.getReference("users/" + u.getUid());
-                        if (imgRef != null) {
-                            imgRef.getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
-                                @Override
-                                public void onComplete(@NonNull Task<Uri> task) {
-                                    if (task.isSuccessful()) {
-                                        Uri img = task.getResult();
-                                        if (img != null) {
-                                            Cache.saveUriFile(u.getUid(), img);
-                                            u.setImage_url(Cache.getImageDate(u.getUid()));
-                                            mStoreBase.collection("users").document(u.getUid()).set(u);
-                                            Glide.with(getContext()).load(img).fitCenter().centerCrop().into(personViewHolder.imagePerson);
-                                        }
-                                    }
-                                }
-                            });
-                        }
-                    }else{
-                        Uri imgCache = Cache.getUriFromUid(u.getUid());
-                        Log.w("Cache", "Image Cache : " + Cache.getImageDate(u.getUid()));
-                        Log.w("Cache", "Data Cache : " + u.getImage_url());
-                        if(Cache.getImageDate(u.getUid()).equalsIgnoreCase(u.getImage_url())) {
-                            Log.w("image", "get image from cache");
-                            Glide.with(getContext()).load(imgCache).fitCenter().centerCrop().into(personViewHolder.imagePerson);
-                        }else{
-                            StorageReference imgRef = mStore.getReference("users/" + u.getUid());
-                            if (imgRef != null) {
-                                imgRef.getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
-                                    @Override
-                                    public void onComplete(@NonNull Task<Uri> task) {
-                                        if (task.isSuccessful()) {
-                                            Uri img = task.getResult();
-                                            if (img != null) {
-                                                Cache.saveUriFile(u.getUid(), img);
-                                                u.setImage_url(Cache.getImageDate(u.getUid()));
-                                                mStoreBase.collection("users").document(u.getUid()).set(u);
-                                                Glide.with(getContext()).load(img).fitCenter().centerCrop().into(personViewHolder.imagePerson);
-                                            }
-                                        }
-                                    }
-                                });
-                            }
-                        }
-                    }
+                if(u.getCursus().equalsIgnoreCase("Informatique")){
+                    personViewHolder.cardView.setCardBackgroundColor(Color.RED);
                 }
+                if(u.getCursus().equalsIgnoreCase("TC")){
+                    personViewHolder.cardView.setCardBackgroundColor(Color.parseColor("#00E9FD"));
+                }
+
+                if(u.getCursus().equalsIgnoreCase("MMI")){
+                    personViewHolder.cardView.setCardBackgroundColor(Color.parseColor("#FF1EED"));
+                }
+
+                if(u.getCursus().equalsIgnoreCase("GB")){
+                    personViewHolder.cardView.setCardBackgroundColor(Color.parseColor("#41EC57"));
+                }
+
+                if(u.getCursus().equalsIgnoreCase("LP")){
+                    personViewHolder.cardView.setCardBackgroundColor((Color.parseColor("#EC9538")));
+                }
+
+
+
+                setUserImage(u,getContext(),personViewHolder.imagePerson);
+
             }
 
         };
@@ -509,6 +485,7 @@ public class CreateEventFragment extends Fragment {
         private TextView nomInvit;
         private TextView villePers;
         private ImageView button, imagePerson;
+        private CardView cardView;
 
         public PersonViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -517,6 +494,7 @@ public class CreateEventFragment extends Fragment {
             villePers = itemView.findViewById(R.id.villePers);
             button = itemView.findViewById(R.id.buttonImage);
             imagePerson = itemView.findViewById(R.id.imagePerson);
+            cardView = itemView.findViewById(R.id.cardViewProfil);
         }
     }
 

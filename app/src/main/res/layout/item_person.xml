@@ -27,6 +27,7 @@
                 android:orientation="vertical">
 
                 <androidx.cardview.widget.CardView
+                    android:id="@+id/cardViewProfil"
                     android:layout_width="50dp"
                     android:layout_height="50dp"
                     android:layout_gravity="center|clip_vertical"

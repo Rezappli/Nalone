@@ -28,7 +28,13 @@
                 android:id="@+id/imageView21"
                 android:layout_width="match_parent"
                 android:layout_height="100dp"
-                app:srcCompat="@drawable/exemple_baniere" />
+                app:srcCompat="@drawable/ic_baseline_mesevent" />
+
+            <View
+                android:id="@+id/divider20"
+                android:layout_width="match_parent"
+                android:layout_height="0.2dp"
+                android:background="@android:color/darker_gray" />
 
             <LinearLayout
                 android:layout_width="match_parent"

@@ -91,6 +91,25 @@ public class ChatActivityFriend extends AppCompatActivity {
         nameUser.setText(USER_LOAD.getFirst_name() + " " + USER_LOAD.getLast_name());
         mRecyclerView = findViewById(R.id.messagesRecyclerView);
         profile_view = findViewById(R.id.profile_view);
+        CardView card_view = findViewById(R.id.card_view);
+
+        if(USER_LOAD.getCursus().equalsIgnoreCase("Informatique")){
+            card_view.setCardBackgroundColor(Color.RED);
+        }
+
+        if(USER_LOAD.getCursus().equalsIgnoreCase("TC")){
+            card_view.setCardBackgroundColor(Color.parseColor("#00E9FD"));
+        }
+
+        if(USER_LOAD.getCursus().equalsIgnoreCase("MMI")){
+            card_view.setCardBackgroundColor(Color.parseColor("#FF1EED"));
+        }
+        if(USER_LOAD.getCursus().equalsIgnoreCase("GB")){
+            card_view.setCardBackgroundColor(Color.parseColor("#41EC57")); }
+
+        if(USER_LOAD.getCursus().equalsIgnoreCase("LP")){
+            card_view.setCardBackgroundColor((Color.parseColor("#EC9538")));
+        }
 
         buttonSend.setOnClickListener(new View.OnClickListener() {
             @Override

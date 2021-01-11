@@ -77,6 +77,9 @@ dependencies {
     implementation "com.daimajia.swipelayout:library:1.2.0@aar"
     compile 'com.github.instacart.truetime-android:library:1.5'
     implementation 'com.github.barteksc:android-pdf-viewer:2.8.2'
+    implementation 'me.mvdw.recyclerviewmergeadapter:recyclerviewmergeadapter:2.1.0'
+    implementation "androidx.recyclerview:recyclerview:1.2.0-alpha04"
+
 
 }
 

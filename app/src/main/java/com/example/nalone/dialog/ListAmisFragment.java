@@ -1,9 +1,11 @@
 package com.example.nalone.dialog;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
+import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
@@ -354,6 +356,23 @@ public class ListAmisFragment extends Fragment {
                                         });
 
 
+                                        if(u.getCursus().equalsIgnoreCase("Informatique")){
+                                            userViewHolder.cardViewPhotoPerson.setCardBackgroundColor(Color.RED);
+                                        }
+
+                                        if(u.getCursus().equalsIgnoreCase("TC")){
+                                            userViewHolder.cardViewPhotoPerson.setCardBackgroundColor(Color.parseColor("#00E9FD"));
+                                        }
+
+                                        if(u.getCursus().equalsIgnoreCase("MMI")){
+                                            userViewHolder.cardViewPhotoPerson.setCardBackgroundColor(Color.parseColor("#FF1EED"));
+                                        }
+                                        if(u.getCursus().equalsIgnoreCase("GB")){
+                                            userViewHolder.cardViewPhotoPerson.setCardBackgroundColor(Color.parseColor("#41EC57")); }
+
+                                        if(u.getCursus().equalsIgnoreCase("LP")){
+                                            userViewHolder.cardViewPhotoPerson.setCardBackgroundColor((Color.parseColor("#EC9538")));
+                                        }
 
 
                                         setUserImage(u,getContext(),userViewHolder.imagePerson);
@@ -384,6 +403,7 @@ public class ListAmisFragment extends Fragment {
         private LinearLayout layoutProfil;
         private ImageView imagePerson;
         private ImageView button;
+        private CardView cardViewPhotoPerson;
 
         public UserViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -393,6 +413,7 @@ public class ListAmisFragment extends Fragment {
             layoutProfil = itemView.findViewById(R.id.layoutProfil);
             imagePerson = itemView.findViewById(R.id.imagePerson);
             button = itemView.findViewById(R.id.buttonImage);
+            cardViewPhotoPerson = itemView.findViewById(R.id.cardViewPhotoPerson);
 
         }
 

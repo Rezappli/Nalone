@@ -32,6 +32,7 @@ import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
@@ -45,6 +46,7 @@ import static com.example.nalone.util.Constants.USER_ID;
 import static com.example.nalone.util.Constants.USER_REFERENCE;
 import static com.example.nalone.util.Constants.dateFormat;
 import static com.example.nalone.util.Constants.mStoreBase;
+import static com.example.nalone.util.Constants.setUserImage;
 import static com.example.nalone.util.Constants.timeFormat;
 
 
@@ -203,6 +205,18 @@ public class CreationsEvenementsFragment extends Fragment {
                         navController.navigate(R.id.action_navigation_creations_evenements_to_navigation_create_event);
                     }
                 });
+
+                mStoreBase.collection("users").document(e.getOwnerDoc().getId())
+                        .get()
+                        .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                            @Override
+                            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                                if(task.isSuccessful()){
+                                    User u = task.getResult().toObject(User.class);
+                                    setUserImage(u, getContext(), holder.mImageView);
+                                }
+                            }
+                        });
                 loading.setVisibility(View.GONE);
             }
         };
