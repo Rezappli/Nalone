@@ -10,6 +10,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
+import androidx.recyclerview.widget.ConcatAdapter;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -22,6 +23,7 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.example.nalone.enumeration.Visibility;
 import com.example.nalone.objects.Evenement;
 import com.example.nalone.R;
 import com.example.nalone.enumeration.StatusEvent;
@@ -41,6 +43,8 @@ import com.google.firebase.firestore.QuerySnapshot;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.example.nalone.util.Constants.USER_ID;
+import static com.example.nalone.util.Constants.USER_REFERENCE;
 import static com.example.nalone.util.Constants.dateFormat;
 import static com.example.nalone.util.Constants.mStoreBase;
 import static com.example.nalone.util.Constants.timeFormat;
@@ -56,7 +60,7 @@ public class EvenementsListFragment extends Fragment {
     private RecyclerView.LayoutManager mLayoutManagerFiltre;
 
     private RecyclerView mRecyclerViewEnCours,mRecyclerViewBientot, mRecyclerViewFini;
-    private FirestoreRecyclerAdapter adapter;
+    private FirestoreRecyclerAdapter adapter, adapter1;
     private LinearLayout linearSansEvent;
     private ItemFiltreAdapter mAdapterFiltre;
     private NavController navController;
@@ -139,7 +143,9 @@ public class EvenementsListFragment extends Fragment {
     }
     private void adapterEvents(final StatusEvent se, RecyclerView recyclerView) {
 
-        Query query = mStoreBase.collection("events").whereEqualTo("statusEvent", se);//.whereNotEqualTo("ownerDoc",USER_REFERENCE);
+        Query query = mStoreBase.collection("events").whereNotEqualTo("ownerDoc",USER_REFERENCE.getId())
+                .whereEqualTo("visibility",Visibility.PUBLIC)
+                .whereEqualTo("statusEvent", se);
         FirestoreRecyclerOptions<Evenement> options = new FirestoreRecyclerOptions.Builder<Evenement>().setQuery(query, Evenement.class).build();
 
                                 adapter = new FirestoreRecyclerAdapter<Evenement, EventViewHolder>(options) {
@@ -226,14 +232,11 @@ public class EvenementsListFragment extends Fragment {
                                         }
                                 };
                                 //mRecyclerView.setHasFixedSize(true);
-                                recyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
+        recyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
 
-                                recyclerView.setAdapter(adapter);
-                                adapter.startListening();
-
-                                Log.w("count", iterator + "");
-
-                        }
+        recyclerView.setAdapter(adapter);
+        adapter.startListening();
+    }
 
 
 

@@ -53,6 +53,7 @@ import static com.example.nalone.HomeActivity.buttonBack;
 import static com.example.nalone.util.Constants.ON_FRIENDS_ACTIVITY;
 import static com.example.nalone.util.Constants.USER;
 import static com.example.nalone.util.Constants.mStoreBase;
+import static com.example.nalone.util.Constants.setUserImage;
 
 public class AmisFragment extends Fragment {
 
@@ -70,6 +71,7 @@ public class AmisFragment extends Fragment {
     private LinearLayout linearSansMesAmis;
     private ProgressBar loading;
     private boolean swipe;
+    private ImageView imagePerson;
 
 
     @Override
@@ -94,6 +96,7 @@ public class AmisFragment extends Fragment {
         textViewNbInvit = rootView.findViewById(R.id.nbInvits);
         mSwipeRefreshLayout = rootView.findViewById(R.id.AmisSwipeRefreshLayout);
         loading = rootView.findViewById(R.id.loading);
+        imagePerson = rootView.findViewById(R.id.imagePerson);
 
         cardViewInvits.setOnClickListener(new View.OnClickListener() {
             @Override
