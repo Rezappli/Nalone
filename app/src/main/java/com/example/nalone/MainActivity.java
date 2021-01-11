@@ -27,7 +27,11 @@ import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
@@ -57,6 +61,7 @@ public class MainActivity extends AppCompatActivity{
         super.onCreate(savedInstanceState);
 
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestIdToken(getString(R.string.default_web_client_id))
                 .requestEmail()
                 .build();
 
@@ -124,18 +129,8 @@ public class MainActivity extends AppCompatActivity{
     }
 
     private void signIn() {
-        mStoreBase.collection("users").whereEqualTo("mail", editTextAddress.getText().toString()).get().addOnCompleteListener(
-                new OnCompleteListener<QuerySnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        if(task.isSuccessful()) {
-                            connectUser(editTextAddress.getText().toString(), editTextPass.getText().toString());
-                        }else{
-                            startActivity(new Intent(MainActivity.this, SignUpInformationActivity.class));
-                        }
-                    }
-                }
-        );
+        Intent signInIntent = mGoogleSignInClient.getSignInIntent();
+        startActivityForResult(signInIntent, 0);
     }
 
     @Override
@@ -144,7 +139,12 @@ public class MainActivity extends AppCompatActivity{
 
         if (requestCode == 0) {
             Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
-            handleSignInResult(task);
+            try {
+                GoogleSignInAccount account = task.getResult(ApiException.class);
+                connectUserFromGoogle(account.getIdToken());
+            } catch (ApiException e) {
+                Log.w("GoogleSignIn", "Google sign in failed", e);
+            }
         }
     }
 
@@ -200,6 +200,39 @@ public class MainActivity extends AppCompatActivity{
                     });
     }
 
+    public void connectUserFromGoogle(String token){
+        Log.w("Google", "Go here");
+        AuthCredential credential = GoogleAuthProvider.getCredential(token, null);
+        mAuth.signInWithCredential(credential)
+                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+                        if (task.isSuccessful()) {
+                            Log.w("Google", "Result");
+                            FirebaseUser user = mAuth.getCurrentUser();
+                            mStoreBase.collection("users").whereEqualTo("mail", user.getEmail()).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                                @Override
+                                public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                    if(task.isSuccessful()){
+                                        if(!task.getResult().isEmpty()) {
+                                            currentUser = mAuth.getCurrentUser();
+                                            loadUser();
+                                        }else{
+                                            startActivity(new Intent(MainActivity.this, SignUpInformationActivity.class));
+                                            Toast.makeText(MainActivity.this, "Vous n'êtes pas inscrit !", Toast.LENGTH_SHORT).show();
+                                        }
+                                    }else{
+                                        Toast.makeText(MainActivity.this, "Une erreur est survenue", Toast.LENGTH_SHORT).show();
+                                    }
+                                }
+                            });
+                        } else {
+                            Toast.makeText(MainActivity.this, "Erreur : " + task.getException().getMessage(), Toast.LENGTH_LONG).show();
+                        }
+                    }
+                });
+    }
+
     @Override
     public void onBackPressed(){
         //super.onBackPressed();
@@ -211,7 +244,6 @@ public class MainActivity extends AppCompatActivity{
     }
 
     private void sendVerificationEmail() {
-        Log.w("INSCRIPTION", "Envoye d'un mail!");
         mAuth.getCurrentUser().sendEmailVerification()
                 .addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
@@ -293,6 +325,12 @@ public class MainActivity extends AppCompatActivity{
             }
         });
 
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        FirebaseAuth.getInstance().signOut();
     }
 }
 
