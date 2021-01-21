@@ -142,10 +142,10 @@ public class InfosEvenementsActivity extends Fragment {
             }
         });
 
-        String date_text = formatD.format(EVENT_LOAD.getDate().toDate());
+        String date_text = formatD.format(EVENT_LOAD.getStartDate().toDate());
         String final_date_text = "";
         mTitle.setText(EVENT_LOAD.getName());
-        mTimer.setText(timeFormat.format(EVENT_LOAD.getDate().toDate()));
+        mTimer.setText(timeFormat.format(EVENT_LOAD.getStartDate().toDate()));
         mOwner.setText(EVENT_LOAD.getOwner());
         mStoreBase.collection("users").document(EVENT_LOAD.getOwnerDoc().getId()).get()
                 .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
@@ -253,7 +253,7 @@ public class InfosEvenementsActivity extends Fragment {
     private final Runnable runnable = new Runnable() {
         @Override
         public void run() {
-            differenceDate(new Date(),EVENT_LOAD.getDate().toDate());
+            differenceDate(new Date(),EVENT_LOAD.getStartDate().toDate());
             handler.postDelayed(this,0);
 
         }

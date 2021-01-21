@@ -121,8 +121,8 @@ public class CreationsEvenementsFragment extends Fragment {
 
                 //holder.mImageView.setImageResource(e.getImage());
                 holder.mTitle.setText((e.getName()));
-                holder.mDate.setText((dateFormat.format(e.getDate().toDate())));
-                holder.mTime.setText((timeFormat.format(e.getDate().toDate())));
+                holder.mDate.setText((dateFormat.format(e.getStartDate().toDate())));
+                holder.mTime.setText((timeFormat.format(e.getStartDate().toDate())));
                 holder.mVille.setText((e.getCity()));
                 holder.mDescription.setText((e.getDescription()));
                 holder.mProprietaire.setText(e.getOwner());

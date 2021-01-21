@@ -29,6 +29,8 @@ import com.google.firebase.firestore.FirebaseFirestoreSettings;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
+import java.util.UUID;
+
 import static com.example.nalone.util.Constants.USER_ID;
 import static com.example.nalone.util.Constants.USER_REFERENCE;
 import static com.example.nalone.util.Constants.USER_STORAGE_REF;
@@ -61,6 +63,7 @@ public class SplashActivity extends AppCompatActivity {
         widthScreen = getResources().getDisplayMetrics().widthPixels;
         heightScreen = getResources().getDisplayMetrics().heightPixels;
         Log.w("Service", "Start service");
+        Log.w("UUID", "Random UUID : " + UUID.randomUUID().toString());
         startService(new Intent(this, ConnectionService.class));
         init();
 

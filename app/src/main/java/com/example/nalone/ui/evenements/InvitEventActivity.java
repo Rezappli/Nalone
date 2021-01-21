@@ -89,8 +89,8 @@ public class InvitEventActivity extends Fragment {
             protected void onBindViewHolder(@NonNull final EventViewHolder userViewHolder, int i, @NonNull final Evenement e) {
                 userViewHolder.villePers.setText(e.getCity());
                 userViewHolder.nomInvit.setText(e.getName());
-                userViewHolder.dateInvit.setText((dateFormat.format(e.getDate().toDate())));
-                userViewHolder.timeInvit.setText((timeFormat.format(e.getDate().toDate())));
+                userViewHolder.dateInvit.setText((dateFormat.format(e.getStartDate().toDate())));
+                userViewHolder.timeInvit.setText((timeFormat.format(e.getStartDate().toDate())));
                 userViewHolder.ownerInvit.setText(e.getOwner());
                 userViewHolder.nbParticipant.setText(e.getNbMembers()+"");
 

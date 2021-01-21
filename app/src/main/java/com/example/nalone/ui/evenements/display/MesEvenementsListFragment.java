@@ -170,8 +170,8 @@ public class MesEvenementsListFragment extends Fragment {
                             Log.w("Statut event_join"," statut");
                             for (QueryDocumentSnapshot doc : task.getResult()){
                                 Evenement e = doc.toObject(Evenement.class);
-                                e.setStatusEvent(horloge.verifStatut(new Date(), e.getDate().toDate()));
-                                Log.w("Statut event_join",horloge.verifStatut(new Date(), e.getDate().toDate()) + " statut");
+                                e.setStatusEvent(horloge.verifStatut(new Date(), e.getStartDate().toDate()));
+                                Log.w("Statut event_join",horloge.verifStatut(new Date(), e.getStartDate().toDate()) + " statut");
                                 mStoreBase.collection("users").document(USER_ID).collection("events_join").document(e.getUid()).set(e);
                             }
                             initAdapter();
@@ -229,8 +229,8 @@ public class MesEvenementsListFragment extends Fragment {
                                         Log.w("creation fragment", "Adapter mes events");
 
                                         holder.mTitle.setText((e.getName()));
-                                        holder.mDate.setText((dateFormat.format(e.getDate().toDate())));
-                                        holder.mTime.setText((timeFormat.format(e.getDate().toDate())));
+                                        holder.mDate.setText((dateFormat.format(e.getStartDate().toDate())));
+                                        holder.mTime.setText((timeFormat.format(e.getStartDate().toDate())));
                                         holder.mVille.setText((e.getCity()));
                                         //holder.mDescription.setText((e.getDescription()));
                                         holder.mProprietaire.setText(e.getOwner());
