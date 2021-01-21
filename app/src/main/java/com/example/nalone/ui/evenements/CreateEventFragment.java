@@ -119,9 +119,9 @@ public class CreateEventFragment extends Fragment {
     public class EventAttente extends Evenement {
 
         public EventAttente(String uid,StatusEvent se, String owner, int image, String name, String description, String address, String city,
-                            Visibility visibility, DocumentReference ownerDoc, Timestamp date){
+                            Visibility visibility, DocumentReference ownerDoc, Timestamp startDate,Timestamp endDate){
             super(uid,se,  owner,  image,  name,  description,  address,  city,
-                    visibility,  ownerDoc,  date, null, 0);
+                    visibility,  ownerDoc,  startDate, endDate, null, 0);
         }
     }
 
@@ -166,7 +166,7 @@ public class CreateEventFragment extends Fragment {
 
         if(evenementAttente== null){
             Log.w("group", "Creation groupe vide");
-            evenementAttente  = new EventAttente(UUID.randomUUID().toString(), StatusEvent.BIENTOT,USER.getFirst_name() + " " + USER.getLast_name(), 0, "", "", "","",null,USER_REFERENCE,null);
+            evenementAttente  = new EventAttente(UUID.randomUUID().toString(), StatusEvent.BIENTOT,USER.getFirst_name() + " " + USER.getLast_name(), 0, "", "", "","",null,USER_REFERENCE,null, null);
         }
 
         if(adds != null){
@@ -179,8 +179,8 @@ public class CreateEventFragment extends Fragment {
             event_city.setText(EVENT_LOAD.getCity());
             event_name.setText(EVENT_LOAD.getName());
             event_resume.setText(EVENT_LOAD.getDescription());
-            event_date.setText((dateFormat.format(EVENT_LOAD.getDate().toDate())));
-            event_horaire.setText((timeFormat.format(EVENT_LOAD.getDate().toDate())));
+            event_date.setText((dateFormat.format(EVENT_LOAD.getStartDate().toDate())));
+            event_horaire.setText((timeFormat.format(EVENT_LOAD.getStartDate().toDate())));
             event_adresse.setText(EVENT_LOAD.getAddress());
             //event_date.setText(MesEvenementsListFragment.dateEdit);
 
@@ -383,9 +383,9 @@ public class CreateEventFragment extends Fragment {
             event_adresse.setText(evenementAttente.getAddress());
         if(!evenementAttente.getCity().matches(""))
             event_city.setText(evenementAttente.getCity());
-        if(evenementAttente.getDate() != null){
-            event_date.setText((dateFormat.format(EVENT_LOAD.getDate().toDate())));
-            event_horaire.setText((timeFormat.format(EVENT_LOAD.getDate().toDate())));
+        if(evenementAttente.getStartDate() != null){
+            event_date.setText((dateFormat.format(EVENT_LOAD.getStartDate().toDate())));
+            event_horaire.setText((timeFormat.format(EVENT_LOAD.getStartDate().toDate())));
         }
         if(evenementAttente.getVisibility() == Visibility.PUBLIC){
             selectPublic();
@@ -558,11 +558,12 @@ public class CreateEventFragment extends Fragment {
                     }
                 }
 
+
                 final Evenement e = new Evenement(EVENT_LOAD.getUid(), EVENT_LOAD.getStatusEvent(), USER.getFirst_name() + " " + USER.getLast_name(),
                         R.drawable.ic_baseline_account_circle_24, EVENT_LOAD.getName(), EVENT_LOAD.getDescription(),
                         event_adresse.getText().toString(), EVENT_LOAD.getCity(), EVENT_LOAD.getVisibility(),
                         USER_REFERENCE, new Timestamp(sdf.parse(event_date.getText().toString()+" "+final_event_time))
-                        , new GeoPoint(l.latitude, l.longitude), adds.size());
+                        , new Timestamp(sdf.parse(event_date.getText().toString()+" "+final_event_time)),new GeoPoint(l.latitude, l.longitude), adds.size());
 
                 mStoreBase.collection("events").document(e.getUid()).set(e);
                 ModelDataEvent m1 = new ModelDataEvent(true,"add", mStoreBase.collection("users").document(USER_ID));
@@ -636,7 +637,7 @@ public class CreateEventFragment extends Fragment {
                             R.drawable.ic_baseline_account_circle_24, evenementAttente.getName(), evenementAttente.getDescription(),
                             evenementAttente.getAddress(), evenementAttente.getCity(), evenementAttente.getVisibility(),
                             USER_REFERENCE, new Timestamp(sdf.parse(event_date.getText().toString()+" "+final_event_time))
-                            , new GeoPoint(l.latitude, l.longitude), adds.size());
+                            , new Timestamp(sdf.parse(event_date.getText().toString()+" "+final_event_time)), new GeoPoint(l.latitude, l.longitude), adds.size());
 
                     mStoreBase.collection("events").document(e.getUid()).set(e);
 

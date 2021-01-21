@@ -243,27 +243,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
             }
         });
 
-        checkExpiration("events_create");
-        checkExpiration("events_join");
         return rootView;
-    }
-
-    private void checkExpiration(final String collection) {
-        mStoreBase.collection("users").document(USER_ID).collection(collection)
-                .get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                if(task.isSuccessful()){
-                    for (QueryDocumentSnapshot doc : task.getResult()){
-                        Evenement e = doc.toObject(Evenement.class);
-                        e.setStatusEvent(horloge.verifStatut(new Date(), e.getDate().toDate()));
-                        if(e.getStatusEvent() == StatusEvent.EXPIRE){
-                            mStoreBase.collection("users").document(USER_ID).collection(collection).document(e.getUid()).delete();
-                        }
-                    }
-                }
-            }
-        });
     }
 
     @RequiresApi(api = Build.VERSION_CODES.M)
@@ -311,44 +291,22 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
             @Override
             protected void onBindViewHolder(@NonNull final EventViewHolder holder, int i, @NonNull final Evenement e) {
                 //holder.mImageView.setImageResource(e.getImage());
-                e.setStatusEvent(horloge.verifStatut(new Date(), e.getDate().toDate()));
-                mStoreBase.collection("events").document(e.getUid()).set(e);
-                if(e.getStatusEvent() == StatusEvent.FINI){
-                   ajoutCreationAndParticipation(e);
-                }
 
-                if(e.getStatusEvent() == StatusEvent.EXPIRE){
-                    //holder.linearTermine.setVisibility(View.VISIBLE);
-                    mStoreBase.collection("events").document(e.getUid())
-                            .collection("members")
-                            .get()
-                            .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                                @Override
-                                public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                                    if(task.isSuccessful()){
-                                        DocumentReference ref = mStoreBase.collection("events").document(e.getUid());
-                                        DocumentReference userOwner = mStoreBase.collection("users").document(ref.getId());
-
-                                        for (QueryDocumentSnapshot document : task.getResult()){
-                                            User u = document.toObject(User.class);
-                                            u.setNumber_events_attend(u.getNumber_events_attend() + 1);
-                                            mStoreBase.collection("users").document(document.getId()).set(u);
-                                            mStoreBase.collection("users").document(document.getId()).collection("events").document(e.getUid()).delete();
-                                        }
-                                        mStoreBase.collection("events").document(e.getUid()).delete();
-                                    }
-                                }
-                            });
-                    //createFragment();
-                }else {
                     holder.mTitle.setText((e.getName()));
                     holder.mDate.setText((dateFormat.format(e.getDate().toDate())));
                     holder.mTime.setText((timeFormat.format(e.getDate().toDate())));
                     holder.mVille.setText((e.getCity()));
                     holder.mProprietaire.setText(e.getOwner());
 
-                    if (event_inscrit.contains(e.getUid()))
-                        holder.mImageInscrit.setVisibility(View.VISIBLE);
+                    mStoreBase.collection("users").document(USER_ID).collection("events_join").document(e.getUid())
+                            .get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                        @Override
+                        public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                            DocumentSnapshot doc = task.getResult();
+                            if (doc.exists())
+                                holder.mImageInscrit.setVisibility(View.VISIBLE);
+                        }
+                        });
 
                     iterator++;
 
@@ -389,17 +347,16 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                             });
 
                     holder.mCardView.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            CameraUpdate location = CameraUpdateFactory.newLatLngZoom(
-                                    new LatLng(e.getLatitude(), e.getLongitude()), 15);
-                            mMap.animateCamera(location);
-                        }
-                    });
+                                                            @Override
+                                                            public void onClick(View v) {
+                                                                CameraUpdate location = CameraUpdateFactory.newLatLngZoom(
+                                                                        new LatLng(e.getLatitude(), e.getLongitude()), 15);
+                                                                mMap.animateCamera(location);
+                                                            }
+                                                        });
                     loading.setVisibility(View.GONE);
                     cardViewButtonAdd.setVisibility(View.VISIBLE);
                 }
-            }
         };
 
         if (all){
@@ -418,44 +375,22 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                 @Override
                 protected void onBindViewHolder(@NonNull final EventViewHolder holder, int i, @NonNull final Evenement e) {
                     //holder.mImageView.setImageResource(e.getImage());
-                    e.setStatusEvent(horloge.verifStatut(new Date(), e.getDate().toDate()));
-                    mStoreBase.collection("events").document(e.getUid()).set(e);
-                    if(e.getStatusEvent() == StatusEvent.FINI){
-                        ajoutCreationAndParticipation(e);
-                    }
 
-                    if(e.getStatusEvent() == StatusEvent.EXPIRE){
-                        //holder.linearTermine.setVisibility(View.VISIBLE);
-                        mStoreBase.collection("events").document(e.getUid())
-                                .collection("members")
-                                .get()
-                                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                                    @Override
-                                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                                        if(task.isSuccessful()){
-                                            DocumentReference ref = mStoreBase.collection("events").document(e.getUid());
-                                            DocumentReference userOwner = mStoreBase.collection("users").document(ref.getId());
-
-                                            for (QueryDocumentSnapshot document : task.getResult()){
-                                                User u = document.toObject(User.class);
-                                                u.setNumber_events_attend(u.getNumber_events_attend() + 1);
-                                                mStoreBase.collection("users").document(document.getId()).set(u);
-                                                mStoreBase.collection("users").document(document.getId()).collection("events").document(e.getUid()).delete();
-                                            }
-                                            mStoreBase.collection("events").document(e.getUid()).delete();
-                                        }
-                                    }
-                                });
-                        //createFragment();
-                    }else {
                         holder.mTitle.setText((e.getName()));
                         holder.mDate.setText((dateFormat.format(e.getDate().toDate())));
                         holder.mTime.setText((timeFormat.format(e.getDate().toDate())));
                         holder.mVille.setText((e.getCity()));
                         holder.mProprietaire.setText(e.getOwner());
 
-                        if (event_inscrit.contains(e.getUid()))
-                            holder.mImageInscrit.setVisibility(View.VISIBLE);
+                    mStoreBase.collection("users").document(USER_ID).collection("events_join").document(e.getUid())
+                            .get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                        @Override
+                        public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                            DocumentSnapshot doc = task.getResult();
+                            if (doc.exists())
+                                holder.mImageInscrit.setVisibility(View.VISIBLE);
+                        }
+                    });
 
                         iterator++;
 
@@ -506,7 +441,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                         loading.setVisibility(View.GONE);
                         cardViewButtonAdd.setVisibility(View.VISIBLE);
                     }
-                }
             };
 
         }
@@ -557,35 +491,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                 }
             });
         }
-    }
 
-    private void ajoutCreationAndParticipation(Evenement e) {
-
-        mStoreBase.collection("users").document(e.getOwnerDoc().getId())
-                .get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                if(task.isSuccessful()){
-                        User u = task.getResult().toObject(User.class);
-                        u.setNumber_events_create(u.getNumber_events_create()+1);
-                        mStoreBase.collection("users").document(u.getUid()).set(u);
-                }
-            }
-        });
-
-        mStoreBase.collection("events").document(e.getUid()).collection("members")
-                .get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                if(task.isSuccessful()){
-                    for(QueryDocumentSnapshot doc : task.getResult()){
-                        User u = doc.toObject(User.class);
-                        u.setNumber_events_attend(u.getNumber_events_attend()+1);
-                        mStoreBase.collection("users").document(u.getUid()).set(u);
-                    }
-                }
-            }
-        });
     }
 
     private class EventViewHolder extends RecyclerView.ViewHolder {
@@ -611,8 +517,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
             mProprietaire = itemView.findViewById(R.id.owner1);
             mCarwViewOwner = itemView.findViewById(R.id.backGroundOwner);
             mImageInscrit = itemView.findViewById(R.id.imageView29);
-
-
         }
     }
 

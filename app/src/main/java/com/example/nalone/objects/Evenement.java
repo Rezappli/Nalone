@@ -20,7 +20,8 @@ public class Evenement implements Serializable {
     private Double longitude;
     private Visibility visibility;
     private DocumentReference ownerDoc;
-    private Timestamp date;
+    private Timestamp startDate;
+    private Timestamp endDate;
     private String owner;
     private int nbMembers;
     private StatusEvent statusEvent;
@@ -29,7 +30,7 @@ public class Evenement implements Serializable {
 
 
     public Evenement(String uid, StatusEvent statusEvent,String owner, int image, String name, String description, String address, String city,
-                     Visibility visibility, DocumentReference ownerDoc, Timestamp date, GeoPoint location, int nbMembers){
+                     Visibility visibility, DocumentReference ownerDoc, Timestamp startDate, Timestamp endDate, GeoPoint location, int nbMembers){
         this.uid = uid;
         this.name = name;
         this.description = description;
@@ -37,7 +38,8 @@ public class Evenement implements Serializable {
         this.city = city;
         this.visibility = visibility;
         this.ownerDoc = ownerDoc;
-        this.date = date;
+        this.startDate = startDate;
+        this.endDate = endDate;
         this.owner = owner;
         if(location != null) {
             this.latitude = location.getLatitude();
@@ -103,12 +105,20 @@ public class Evenement implements Serializable {
         this.ownerDoc = ownerDoc;
     }
 
-    public Timestamp getDate() {
-        return date;
+    public Timestamp getStartDate() {
+        return startDate;
     }
 
-    public void setDate(Timestamp date) {
-        this.date = date;
+    public void setStartDate(Timestamp startDate) {
+        this.startDate = startDate;
+    }
+
+    public Timestamp getEndDate() {
+        return endDate;
+    }
+
+    public void setEndDate(Timestamp endDate) {
+        this.endDate = endDate;
     }
 
     public String getUid() {
@@ -137,7 +147,7 @@ public class Evenement implements Serializable {
 
     @Override
     public String toString(){
-        String date_text = Constants.formatD.format(this.date);
+        String date_text = Constants.formatD.format(this.startDate);
         String final_date_text = "";
         for(int i = 0; i < date_text.length(); i++){
             char character = date_text.charAt(i);
