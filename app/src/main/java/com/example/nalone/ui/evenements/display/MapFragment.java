@@ -2,6 +2,7 @@
 
 package com.example.nalone.ui.evenements.display;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.location.Location;
 import android.os.Bundle;
@@ -14,11 +15,14 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 
+import com.example.nalone.ui.evenements.BottomSheetFragment;
+import com.example.nalone.ui.evenements.creation.MainCreationEventActivity;
 import com.example.nalone.util.Horloge;
 import com.example.nalone.enumeration.StatusEvent;
-import com.example.nalone.ui.evenements.CreateEventFragment;
+import com.example.nalone.ui.evenements.creation.CreateEventFragment;
 import com.example.nalone.ui.evenements.InfosEvenementsActivity;
 import com.example.nalone.R;
 import com.example.nalone.objects.User;
@@ -33,6 +37,7 @@ import com.google.android.gms.maps.MapView;
 import android.Manifest;
 import android.content.pm.PackageManager;
 import android.os.Build;
+import android.widget.SearchView;
 import android.widget.TextView;
 
 import androidx.annotation.RequiresApi;
@@ -55,13 +60,12 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
-import com.google.android.gms.tasks.Tasks;
-import com.google.firebase.firestore.CollectionReference;
+import com.google.android.material.bottomsheet.BottomSheetBehavior;
+import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
+import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
@@ -70,8 +74,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-
-import me.mvdw.recyclerviewmergeadapter.adapter.RecyclerViewMergeAdapter;
 
 import static com.example.nalone.HomeActivity.buttonBack;
 import static com.example.nalone.util.Constants.MAPVIEW_BUNDLE_KEY;
@@ -119,6 +121,14 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     private boolean zoom;
     private Horloge horloge = new Horloge();
 
+    // Bottom sheet
+    private BottomSheetBehavior bottomSheetBehavior;
+    private SearchView searchView;
+    private RecyclerView recyclerViewSearchEvent;
+    private FirestoreRecyclerAdapter adapterSearchEvent;
+    private TextView dateSearchEvent;
+
+
 
     public MapFragment() {
         // Required empty public constructor
@@ -155,6 +165,155 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         imageViewLocationCreate = rootView.findViewById(R.id.imageViewLocationCreate);
         imageViewLocationAll = rootView.findViewById(R.id.imageViewLocationAll);
         loading = rootView.findViewById(R.id.loading);
+
+        //Bottom sheet
+        View bottomSheet = rootView.findViewById(R.id.sheet);
+        final LinearLayoutManager llm = new LinearLayoutManager(getContext());
+        searchView = rootView.findViewById(R.id.searchViewSheet);
+        recyclerViewSearchEvent = rootView.findViewById(R.id.recyclerViewSearchEvent);
+        dateSearchEvent = rootView.findViewById(R.id.dateSearchEvent);
+
+        Query query = mStoreBase.collection("events");
+        FirestoreRecyclerOptions<Evenement> options = new FirestoreRecyclerOptions.Builder<Evenement>().setQuery(query, Evenement.class).build();
+
+        adapterSearchEvent = new FirestoreRecyclerAdapter<Evenement, EventViewHolder>(options) {
+            @NonNull
+            @Override
+            public EventViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+                View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_evenement, parent, false);
+                return new EventViewHolder(view);
+            }
+
+            @Override
+            protected void onBindViewHolder(@NonNull final EventViewHolder holder, int i, @NonNull final Evenement e) {
+                //holder.mImageView.setImageResource(e.getImage());
+
+                holder.mTitle.setText((e.getName()));
+                holder.mDate.setText((dateFormat.format(e.getStartDate().toDate())));
+                holder.mTime.setText((timeFormat.format(e.getStartDate().toDate())));
+                holder.mVille.setText((e.getCity()));
+                holder.mProprietaire.setText(e.getOwner());
+
+                mStoreBase.collection("users").document(USER_ID).collection("events_join").document(e.getUid())
+                        .get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                        DocumentSnapshot doc = task.getResult();
+                        if (doc.exists())
+                            holder.mImageInscrit.setVisibility(View.VISIBLE);
+                    }
+                });
+
+                iterator++;
+
+                mStoreBase.collection("users").whereEqualTo("uid", e.getOwnerDoc().getId())
+                        .get()
+                        .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                            @Override
+                            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                if (task.isSuccessful()) {
+                                    for (QueryDocumentSnapshot document : task.getResult()) {
+                                        final User u = document.toObject(User.class);
+                                        if (u.getCursus().equalsIgnoreCase("Informatique")) {
+                                            holder.mCarwViewOwner.setCardBackgroundColor(Color.RED);
+                                        }
+
+                                        if (u.getCursus().equalsIgnoreCase("TC")) {
+                                            holder.mCarwViewOwner.setCardBackgroundColor(Color.parseColor("#00E9FD"));
+                                        }
+
+                                        if (u.getCursus().equalsIgnoreCase("MMI")) {
+                                            holder.mCarwViewOwner.setCardBackgroundColor(Color.parseColor("#FF1EED"));
+                                        }
+
+                                        if (u.getCursus().equalsIgnoreCase("GB")) {
+                                            holder.mCarwViewOwner.setCardBackgroundColor(Color.parseColor("#41EC57"));
+                                        }
+
+                                        if (u.getCursus().equalsIgnoreCase("LP")) {
+                                            holder.mCarwViewOwner.setCardBackgroundColor((Color.parseColor("#EC9538")));
+                                        }
+
+                                        Constants.setUserImage(u, getContext(), holder.mImageView);
+
+                                    }
+
+                                }
+                            }
+                        });
+
+                holder.mCardView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        CameraUpdate location = CameraUpdateFactory.newLatLngZoom(
+                                new LatLng(e.getLatitude(), e.getLongitude()), 15);
+                        mMap.animateCamera(location);
+                    }
+                });
+                loading.setVisibility(View.GONE);
+
+            }
+
+        };
+        recyclerViewSearchEvent.setLayoutManager(llm);
+        adapterSearchEvent.startListening();
+        recyclerViewSearchEvent.setAdapter(adapterSearchEvent);
+        recyclerViewSearchEvent.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
+            }
+
+            @Override
+            public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+                int visiblePosition = llm.findFirstCompletelyVisibleItemPosition();
+                if(visiblePosition > -1) {
+                    View v = llm.findViewByPosition(visiblePosition);
+                    //do something
+                    EventViewHolder firstViewHolder = (EventViewHolder) recyclerViewSearchEvent.findViewHolderForLayoutPosition(visiblePosition);
+                    if(firstViewHolder != null){
+                        dateSearchEvent.setText(firstViewHolder.mDate.getText());
+                    }
+                }
+            }
+        });
+
+        bottomSheetBehavior = BottomSheetBehavior.from(bottomSheet);
+        bottomSheetBehavior.setHideable(false);
+        bottomSheetBehavior.setBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
+            @Override
+            public void onStateChanged(@NonNull View view, int state) {
+                switch (state){
+                    case BottomSheetBehavior.STATE_COLLAPSED:
+                        searchView.setQuery ("", false);
+                        searchView.setIconified(true);
+                        searchView.clearFocus();
+                        break;
+                    case BottomSheetBehavior.STATE_DRAGGING:
+                        break;
+                    case BottomSheetBehavior.STATE_EXPANDED:
+
+                        break;
+                    case BottomSheetBehavior.STATE_HIDDEN:
+                        break;
+
+                }
+            }
+
+            @Override
+            public void onSlide(@NonNull View view, float v) {
+
+            }
+        });
+
+        searchView.setQueryHint("Recherche");
+        searchView.setOnSearchClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                bottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
+            }
+        });
 
         cardViewLocationPrive.setOnClickListener(new View.OnClickListener() {
             @RequiresApi(api = Build.VERSION_CODES.M)
@@ -239,12 +398,22 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                 CreateEventFragment.edit = false;
                 CreateEventFragment.EVENT_LOAD = null;
                 CreateEventFragment.evenementAttente = null;
-                navController.navigate(R.id.action_navigation_evenements_to_navigation_create_event);
+                //navController.navigate(R.id.action_navigation_evenements_to_navigation_create_event);
+                startActivity(new Intent(getContext(), MainCreationEventActivity.class));
             }
         });
 
+        /*CardView cardViewBottom = rootView.findViewById(R.id.cardViewBottomSheet);
+        cardViewBottom.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                BottomSheetFragment bottomSheetFragment = new BottomSheetFragment();
+                bottomSheetFragment.show(getActivity().getSupportFragmentManager(),bottomSheetFragment.getTag());
+            }
+        });*/
         return rootView;
     }
+
 
     @RequiresApi(api = Build.VERSION_CODES.M)
     private void clickFiltre(Query query) {
@@ -729,5 +898,12 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     public void onLowMemory() {
         mMapView.onLowMemory();
         super.onLowMemory();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        searchView.setQuery("", false);
+        rootView.requestFocus();
     }
 }

@@ -27,7 +27,8 @@
         android:roundIcon="@mipmap/ic_logo_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme.NoActionBar">
-        <activity android:name=".ui.NotificationActivity"></activity>
+        <activity android:name=".ui.evenements.creation.MainCreationEventActivity"></activity>
+        <activity android:name=".ui.NotificationActivity" />
         <activity android:name=".ResetPasswordActivity" />
         <activity
             android:name=".ui.message.ChatActivityGroup"

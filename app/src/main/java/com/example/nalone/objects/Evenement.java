@@ -25,12 +25,29 @@ public class Evenement implements Serializable {
     private String owner;
     private int nbMembers;
     private StatusEvent statusEvent;
+    private double distance;
 
-    public Evenement() {}
+    public Evenement() {
+        this.uid = null;
+        this.name = null;
+        this.description = null;
+        this.address = null;
+        this.city = null;
+        this.visibility = null;
+        this.ownerDoc = null;
+        this.startDate = null;
+        this.endDate = null;
+        this.owner = null;
+        this.latitude = null;
+        this.longitude = null;
+        this.nbMembers = 0;
+        this.statusEvent = null;
+        this.distance = 0;
+    }
 
 
     public Evenement(String uid, StatusEvent statusEvent,String owner, int image, String name, String description, String address, String city,
-                     Visibility visibility, DocumentReference ownerDoc, Timestamp startDate, Timestamp endDate, GeoPoint location, int nbMembers){
+                     Visibility visibility, DocumentReference ownerDoc, Timestamp startDate, Timestamp endDate, GeoPoint location, double distance, int nbMembers){
         this.uid = uid;
         this.name = name;
         this.description = description;
@@ -47,6 +64,7 @@ public class Evenement implements Serializable {
         }
         this.nbMembers = nbMembers;
         this.statusEvent = statusEvent;
+        this.distance = distance;
     }
 
     public void setOwner(String owner) {

@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/creation_event_navigation"
+    app:startDestination="@id/photoEventFragment">
+
+    <fragment
+        android:id="@+id/nameEventFragment"
+        android:name="com.example.nalone.ui.evenements.creation.NameEventFragment"
+        android:label="fragment_name_event"
+        tools:layout="@layout/fragment_name_event" >
+        <action
+            android:id="@+id/action_nameEventFragment_to_photoEventFragment"
+            app:destination="@id/photoEventFragment" />
+        <action
+            android:id="@+id/action_nameEventFragment_to_adressEventFragment"
+            app:destination="@id/adressEventFragment" />
+        <action
+            android:id="@+id/action_nameEventFragment_to_dateEventFragment"
+            app:destination="@id/dateEventFragment" />
+        <action
+            android:id="@+id/action_nameEventFragment_to_membersEventFragment"
+            app:destination="@id/membersEventFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/photoEventFragment"
+        android:name="com.example.nalone.ui.evenements.creation.PhotoEventFragment"
+        android:label="fragment_photo_event"
+        tools:layout="@layout/fragment_photo_event" >
+        <action
+            android:id="@+id/action_photoEventFragment_to_nameEventFragment"
+            app:destination="@id/nameEventFragment" />
+        <action
+            android:id="@+id/action_photoEventFragment_to_adressEventFragment"
+            app:destination="@id/adressEventFragment" />
+        <action
+            android:id="@+id/action_photoEventFragment_to_dateEventFragment"
+            app:destination="@id/dateEventFragment" />
+        <action
+            android:id="@+id/action_photoEventFragment_to_membersEventFragment"
+            app:destination="@id/membersEventFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/adressEventFragment"
+        android:name="com.example.nalone.ui.evenements.creation.AdressEventFragment"
+        android:label="fragment_adress_event"
+        tools:layout="@layout/fragment_adress_event" >
+        <action
+            android:id="@+id/action_adressEventFragment_to_nameEventFragment"
+            app:destination="@id/nameEventFragment" />
+        <action
+            android:id="@+id/action_adressEventFragment_to_photoEventFragment"
+            app:destination="@id/photoEventFragment" />
+        <action
+            android:id="@+id/action_adressEventFragment_to_dateEventFragment"
+            app:destination="@id/dateEventFragment" />
+        <action
+            android:id="@+id/action_adressEventFragment_to_membersEventFragment"
+            app:destination="@id/membersEventFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/dateEventFragment"
+        android:name="com.example.nalone.ui.evenements.creation.DateEventFragment"
+        android:label="fragment_date_event"
+        tools:layout="@layout/fragment_date_event" >
+        <action
+            android:id="@+id/action_dateEventFragment_to_adressEventFragment"
+            app:destination="@id/adressEventFragment" />
+        <action
+            android:id="@+id/action_dateEventFragment_to_nameEventFragment"
+            app:destination="@id/nameEventFragment" />
+        <action
+            android:id="@+id/action_dateEventFragment_to_photoEventFragment"
+            app:destination="@id/photoEventFragment" />
+        <action
+            android:id="@+id/action_dateEventFragment_to_membersEventFragment"
+            app:destination="@id/membersEventFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/membersEventFragment"
+        android:name="com.example.nalone.ui.evenements.creation.MembersEventFragment"
+        android:label="fragment_members_event"
+        tools:layout="@layout/fragment_members_event" >
+        <action
+            android:id="@+id/action_membersEventFragment_to_photoEventFragment"
+            app:destination="@id/photoEventFragment" />
+        <action
+            android:id="@+id/action_membersEventFragment_to_adressEventFragment"
+            app:destination="@id/adressEventFragment" />
+        <action
+            android:id="@+id/action_membersEventFragment_to_nameEventFragment"
+            app:destination="@id/nameEventFragment" />
+        <action
+            android:id="@+id/action_membersEventFragment_to_dateEventFragment"
+            app:destination="@id/dateEventFragment" />
+    </fragment>
+</navigation>

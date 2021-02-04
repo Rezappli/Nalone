@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/white"
-    tools:context=".ui.evenements.CreateEventFragment">
+    tools:context=".ui.evenements.creation.CreateEventFragment">
 
     <ScrollView
         android:layout_width="match_parent"

@@ -30,6 +30,7 @@ import com.example.nalone.objects.ModelDataEvent;
 import com.example.nalone.R;
 import com.example.nalone.enumeration.StatusEvent;
 import com.example.nalone.objects.User;
+import com.example.nalone.ui.evenements.creation.CreateEventFragment;
 import com.example.nalone.util.Constants;
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
@@ -369,7 +370,7 @@ public class InfosEvenementsActivity extends Fragment {
                                                                      public void onClick(View v) {
                                                                          CreateEventFragment.EVENT_LOAD = EVENT_LOAD;
                                                                          CreateEventFragment.edit = true;
-                                                                         navController.navigate(R.id.action_navigation_infos_events_to_navigation_create_event);
+                                                                         //navController.navigate(R.id.action_navigation_infos_events_to_navigation_create_event);
                                                                      }
                                                                  });
                                                                  linearButton.setVisibility(View.VISIBLE);

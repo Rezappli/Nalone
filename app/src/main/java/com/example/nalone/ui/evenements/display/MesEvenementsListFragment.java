@@ -111,7 +111,7 @@ public class MesEvenementsListFragment extends Fragment {
         addEvent.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                navController.navigate(R.id.action_navigation_evenements_to_navigation_create_event);
+                //navController.navigate(R.id.action_navigation_evenements_to_navigation_create_event);
             }
         });
 

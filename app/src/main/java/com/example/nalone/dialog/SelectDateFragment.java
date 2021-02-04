@@ -7,11 +7,13 @@ import android.widget.DatePicker;
 
 import androidx.fragment.app.DialogFragment;
 
-import com.example.nalone.ui.evenements.CreateEventFragment;
+import com.example.nalone.ui.evenements.creation.CreateEventFragment;
+import com.example.nalone.ui.evenements.creation.DateEventFragment;
 
 import java.util.Calendar;
 
 public class SelectDateFragment extends DialogFragment implements DatePickerDialog.OnDateSetListener{
+    public static boolean isStart;
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         final Calendar calendar = Calendar.getInstance();
@@ -28,6 +30,11 @@ public class SelectDateFragment extends DialogFragment implements DatePickerDial
         populateSetDate(yy, mm+1, dd);
     }
     public void populateSetDate(int year, int month, int day) {
-        CreateEventFragment.event_date.setText(day+"/"+month+"/"+year);
+        if(isStart){
+            DateEventFragment.eventStartDate.setText(day+"/"+month+"/"+year);
+        }else{
+            DateEventFragment.eventEndDate.setText(day+"/"+month+"/"+year);
+        }
+
     }
 }

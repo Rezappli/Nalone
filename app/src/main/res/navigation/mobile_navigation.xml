@@ -11,9 +11,6 @@
         android:label="@string/title_evenements"
         tools:layout="@layout/fragment_evenements" >
         <action
-            android:id="@+id/action_navigation_evenements_to_navigation_create_event"
-            app:destination="@id/navigation_create_event" />
-        <action
             android:id="@+id/action_navigation_evenements_to_navigation_creations_evenements"
             app:destination="@id/navigation_creations_evenements" />
         <action
@@ -22,13 +19,6 @@
         <action
             android:id="@+id/action_navigation_evenements_to_navigation_invit_event"
             app:destination="@id/navigation_invit_event" />
-    </fragment>
-
-    <fragment
-        android:id="@+id/navigation_mes_evenements"
-        android:name="com.example.nalone.ui.evenements.display.MesEvenementsListFragment"
-        android:label="@string/title_evenements"
-        tools:layout="@layout/fragment_mes_evenements_list">
     </fragment>
 
     <fragment
@@ -53,9 +43,6 @@
             android:id="@+id/action_navigation_infos_events_to_navigation_evenements"
             app:destination="@id/navigation_evenements" />
         <action
-            android:id="@+id/action_navigation_infos_events_to_navigation_create_event"
-            app:destination="@id/navigation_create_event" />
-        <action
             android:id="@+id/action_navigation_infos_events_to_navigation_invit_event"
             app:destination="@id/navigation_invit_event" />
     </fragment>
@@ -69,9 +56,6 @@
         <action
             android:id="@+id/action_navigation_creations_evenements_to_navigation_evenements"
             app:destination="@id/navigation_evenements" />
-        <action
-            android:id="@+id/action_navigation_creations_evenements_to_navigation_create_event"
-            app:destination="@id/navigation_create_event" />
     </fragment>
     <fragment
         android:id="@+id/navigation_recherche_amis"
@@ -289,9 +273,6 @@
             android:id="@+id/action_navigation_list_amis_to_navigation_creat_group"
             app:destination="@id/navigation_creat_group" />
         <action
-            android:id="@+id/action_navigation_list_amis_to_navigation_create_event"
-            app:destination="@id/navigation_create_event" />
-        <action
             android:id="@+id/action_navigation_list_amis_to_navigation_messages"
             app:destination="@id/navigation_messages" />
     </fragment>
@@ -382,26 +363,6 @@
             android:id="@+id/action_navigation_popup_profil_to_navigation_rcherche_groupe"
             app:destination="@id/navigation_recherche_groupe" />
     </fragment>
-
-    <fragment
-        android:id="@+id/navigation_create_event"
-        android:name="com.example.nalone.ui.evenements.CreateEventFragment"
-        android:label="@string/eventCreateProfil"
-        tools:layout="@layout/fragment_create_event" >
-        <action
-            android:id="@+id/action_navigation_create_event_to_navigation_evenements"
-            app:destination="@id/navigation_evenements" />
-        <action
-            android:id="@+id/action_navigation_create_event_to_navigation_list_amis"
-            app:destination="@id/navigation_list_amis" />
-        <action
-            android:id="@+id/action_navigation_create_event_to_navigation_creations_evenements"
-            app:destination="@id/navigation_creations_evenements" />
-        <action
-            android:id="@+id/action_navigation_create_event_to_navigation_infos_events"
-            app:destination="@id/navigation_infos_events" />
-    </fragment>
-
 
 
 </navigation>

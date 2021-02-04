@@ -1,4 +1,4 @@
-package com.example.nalone.ui.evenements;
+package com.example.nalone.ui.evenements.creation;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
@@ -116,14 +116,14 @@ public class CreateEventFragment extends Fragment {
     private boolean haveFriends;
     private StatusEvent se;
 
-    public class EventAttente extends Evenement {
+   /* public class EventAttente extends Evenement {
 
         public EventAttente(String uid,StatusEvent se, String owner, int image, String name, String description, String address, String city,
                             Visibility visibility, DocumentReference ownerDoc, Timestamp startDate,Timestamp endDate){
             super(uid,se,  owner,  image,  name,  description,  address,  city,
                     visibility,  ownerDoc,  startDate, endDate, null, 0);
         }
-    }
+    }*/
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -160,13 +160,13 @@ public class CreateEventFragment extends Fragment {
         buttonBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                navController.navigate(R.id.action_navigation_create_event_to_navigation_evenements);
+                //navController.navigate(R.id.action_navigation_create_event_to_navigation_evenements);
             }
         });
 
         if(evenementAttente== null){
             Log.w("group", "Creation groupe vide");
-            evenementAttente  = new EventAttente(UUID.randomUUID().toString(), StatusEvent.BIENTOT,USER.getFirst_name() + " " + USER.getLast_name(), 0, "", "", "","",null,USER_REFERENCE,null, null);
+           // evenementAttente  = new EventAttente(UUID.randomUUID().toString(), StatusEvent.BIENTOT,USER.getFirst_name() + " " + USER.getLast_name(), 0, "", "", "","",null,USER_REFERENCE,null, null);
         }
 
         if(adds != null){
@@ -277,7 +277,7 @@ public class CreateEventFragment extends Fragment {
                         if(haveFriends){
                             refreshData();
                             ListAmisFragment.type = "event";
-                            navController.navigate(R.id.action_navigation_create_event_to_navigation_list_amis);
+                            //navController.navigate(R.id.action_navigation_create_event_to_navigation_list_amis);
                             ListAmisFragment.EVENT_LOAD = EVENT_LOAD;
                         }else
                             Toast.makeText(getContext(), "Vous n'avez pas d'ami", Toast.LENGTH_SHORT).show();
@@ -559,7 +559,7 @@ public class CreateEventFragment extends Fragment {
                 }
 
 
-                final Evenement e = new Evenement(EVENT_LOAD.getUid(), EVENT_LOAD.getStatusEvent(), USER.getFirst_name() + " " + USER.getLast_name(),
+               /* final Evenement e = new Evenement(EVENT_LOAD.getUid(), EVENT_LOAD.getStatusEvent(), USER.getFirst_name() + " " + USER.getLast_name(),
                         R.drawable.ic_baseline_account_circle_24, EVENT_LOAD.getName(), EVENT_LOAD.getDescription(),
                         event_adresse.getText().toString(), EVENT_LOAD.getCity(), EVENT_LOAD.getVisibility(),
                         USER_REFERENCE, new Timestamp(sdf.parse(event_date.getText().toString()+" "+final_event_time))
@@ -568,15 +568,15 @@ public class CreateEventFragment extends Fragment {
                 mStoreBase.collection("events").document(e.getUid()).set(e);
                 ModelDataEvent m1 = new ModelDataEvent(true,"add", mStoreBase.collection("users").document(USER_ID));
                 mStoreBase.collection("users").document(USER_ID).collection("events_create").document(e.getUid()).set(e);
-
+*/
                 for (String user : adds) {
                     String status = "received";
                    // ModelDataEvent m = new ModelDataEvent(false,status, mStoreBase.collection("users").document(user));
                    // mStoreBase.collection("events").document(e.getUid()).collection("members").document(user).set(m);
-                    mStoreBase.collection("users").document(user).collection("events_received").document(e.getUid()).set(e);
+                  //  mStoreBase.collection("users").document(user).collection("events_received").document(e.getUid()).set(e);
                 }
                 Toast.makeText(getContext(), "Vous avez créer votre évènement !", Toast.LENGTH_SHORT).show();
-                navController.navigate(R.id.action_navigation_create_event_to_navigation_evenements);
+                //navController.navigate(R.id.action_navigation_create_event_to_navigation_evenements);
             }else{
                 event_adresse.setError("Adresse non trouvée");
                 event_city.setError("Adresse non trouvée");
@@ -633,16 +633,16 @@ public class CreateEventFragment extends Fragment {
                 if(se == StatusEvent.FINI || se == StatusEvent.EXPIRE){
                     Toast.makeText(getContext(), "Veuillez créer un évènement dans le futur", Toast.LENGTH_SHORT).show();
                 }else{
-                    final Evenement e = new Evenement(evenementAttente.getUid(),se,USER.getFirst_name() + " " + USER.getLast_name(),
+               /*     final Evenement e = new Evenement(evenementAttente.getUid(),se,USER.getFirst_name() + " " + USER.getLast_name(),
                             R.drawable.ic_baseline_account_circle_24, evenementAttente.getName(), evenementAttente.getDescription(),
                             evenementAttente.getAddress(), evenementAttente.getCity(), evenementAttente.getVisibility(),
                             USER_REFERENCE, new Timestamp(sdf.parse(event_date.getText().toString()+" "+final_event_time))
                             , new Timestamp(sdf.parse(event_date.getText().toString()+" "+final_event_time)), new GeoPoint(l.latitude, l.longitude), adds.size());
-
-                    mStoreBase.collection("events").document(e.getUid()).set(e);
+*/
+                  //  mStoreBase.collection("events").document(e.getUid()).set(e);
 
                     ModelDataEvent m1 = new ModelDataEvent(true,"add", mStoreBase.collection("users").document(USER_ID));
-                    mStoreBase.collection("users").document(USER_ID).collection("events_create").document(e.getUid()).set(e);
+                 //   mStoreBase.collection("users").document(USER_ID).collection("events_create").document(e.getUid()).set(e);
 
                     for (String user : adds) {
                         /*String status = "received";
@@ -650,7 +650,7 @@ public class CreateEventFragment extends Fragment {
                         mStoreBase.collection("events").document(e.getUid()).collection("members").document(user).set(m);
                         mStoreBase.collection("users").document(USER_ID).collection("events_create").document(e.getUid()).collection("members").document(user).set(m);
                         mStoreBase.collection("users").document(user).collection("events_received").document(e.getUid()).set(e);*/
-                        mStoreBase.collection("users").document(user).collection("events_received").document(e.getUid()).set(e);
+                  //      mStoreBase.collection("users").document(user).collection("events_received").document(e.getUid()).set(e);
                         mStoreBase.collection("users").document(user).get()
                                 .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                                     @Override
@@ -664,7 +664,7 @@ public class CreateEventFragment extends Fragment {
                     }
 
                     Toast.makeText(getContext(), "Vous avez créer votre évènement !", Toast.LENGTH_SHORT).show();
-                    navController.navigate(R.id.action_navigation_create_event_to_navigation_evenements);
+                    //navController.navigate(R.id.action_navigation_create_event_to_navigation_evenements);
                 }
 
             }else{
