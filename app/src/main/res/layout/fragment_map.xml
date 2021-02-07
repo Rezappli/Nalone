@@ -34,34 +34,6 @@
             android:layout_below="@id/linearFiltre"
             android:background="@android:color/darker_gray" />
 
-        <androidx.cardview.widget.CardView
-            android:id="@+id/addEvent"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentBottom="true"
-            android:layout_marginStart="32dp"
-            android:layout_marginEnd="40dp"
-            android:layout_marginBottom="100dp"
-            android:foregroundGravity="bottom|center_horizontal"
-            android:visibility="visible"
-            app:cardBackgroundColor="#18ECC5"
-            app:cardCornerRadius="50dp"
-            app:cardElevation="10dp"
-            app:layout_constraintBottom_toTopOf="@+id/linearLayout3">
-
-            <ImageView
-                android:id="@+id/create_event_button"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:layout_centerHorizontal="true"
-                android:layout_centerVertical="true"
-                android:layout_gravity="bottom|center"
-                android:layout_margin="5dp"
-                android:clickable="true"
-                app:srcCompat="@drawable/ic_baseline_add_circle_24" />
-        </androidx.cardview.widget.CardView>
-
         <com.google.android.gms.maps.MapView
             android:id="@+id/mapView"
             android:layout_width="match_parent"
@@ -244,11 +216,10 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@drawable/custom_header_bottom_sheet"
-        app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior"
-        app:behavior_hideable="true"
-        app:behavior_peekHeight="80dp"
         android:focusableInTouchMode="true"
-        >
+        app:behavior_hideable="true"
+        app:behavior_peekHeight="110dp"
+        app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -266,22 +237,15 @@
                 android:id="@+id/searchViewSheet"
                 style="@style/Widget.AppCompat.Light.SearchView"
                 android:layout_width="match_parent"
-                android:layout_height="40dp"
+                android:layout_height="35dp"
                 android:layout_marginStart="50dp"
                 android:layout_marginEnd="50dp"
                 android:background="@drawable/custom_search" />
 
-            <View
-                android:id="@+id/divider22"
-                android:layout_width="match_parent"
-                android:layout_height="0.2dp"
-                android:layout_marginTop="20dp"
-                android:background="@android:color/darker_gray" />
-
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_marginTop="20dp"
+                android:layout_marginTop="40dp"
                 android:orientation="horizontal">
 
                 <ImageView

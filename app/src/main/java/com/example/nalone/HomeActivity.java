@@ -4,12 +4,15 @@ import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 
 import com.example.nalone.ui.NotificationActivity;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import androidx.annotation.NonNull;
@@ -28,6 +31,9 @@ public class HomeActivity extends AppCompatActivity{
 
     private NavController navController;
     public static ImageView buttonBack, buttonNotif;
+    public static FloatingActionButton fab1,fab2,fab3;
+    private Animation fabOpen, fabClose, rotateForward, rotateBackward;
+    private boolean isOpen = false;
 
     @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
@@ -37,8 +43,23 @@ public class HomeActivity extends AppCompatActivity{
 
         BottomNavigationView navView = findViewById(R.id.nav_view);
 
+
         buttonBack = findViewById(R.id.buttonBack);
         buttonNotif = findViewById(R.id.buttonNotif);
+        fab1 = findViewById(R.id.fab1);
+        fab2 = findViewById(R.id.fab2);
+        fab3 = findViewById(R.id.fab3);
+        fab1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                animeFab();
+            }
+        });
+        fabOpen = AnimationUtils.loadAnimation(this,R.anim.fab_open);
+        fabClose = AnimationUtils.loadAnimation(this,R.anim.fab_close);
+        rotateBackward = AnimationUtils.loadAnimation(this,R.anim.rotate_backward);
+        rotateForward = AnimationUtils.loadAnimation(this,R.anim.rotate_forward);
+
         buttonNotif.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -64,6 +85,24 @@ public class HomeActivity extends AppCompatActivity{
         navController = Navigation.findNavController(this, R.id.nav_host_fragment);
         NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
         NavigationUI.setupWithNavController(navView, navController);
+    }
+
+    private void animeFab(){
+        if(isOpen){
+            fab1.startAnimation(rotateBackward);
+            fab2.startAnimation(fabClose);
+            fab3.startAnimation(fabClose);
+            fab2.setClickable(false);
+            fab2.setClickable(false);
+            isOpen = false;
+        }else{
+            fab1.startAnimation(rotateForward);
+            fab2.startAnimation(fabOpen);
+            fab3.startAnimation(fabOpen);
+            fab2.setClickable(true);
+            fab2.setClickable(true);
+            isOpen = true;
+        }
     }
 
     @Override

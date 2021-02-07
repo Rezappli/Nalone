@@ -364,5 +364,4 @@
             app:destination="@id/navigation_recherche_groupe" />
     </fragment>
 
-
 </navigation>

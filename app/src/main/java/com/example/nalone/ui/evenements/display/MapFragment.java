@@ -18,6 +18,7 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 
+import com.example.nalone.HomeActivity;
 import com.example.nalone.ui.evenements.BottomSheetFragment;
 import com.example.nalone.ui.evenements.creation.MainCreationEventActivity;
 import com.example.nalone.util.Horloge;
@@ -93,7 +94,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
 
     private MapView mMapView;
     private GoogleMap mMap;
-    private ImageView buttonAdd;
     private CardView cardViewLocationPrive,cardViewLocationAll, cardViewLocationPublic, cardViewLocationCreate, cardViewLocationInscrit;
     private TextView textViewLocationPrive,textViewLocationAll, textViewLocationPublic, textViewLocationCreate, textViewLocationInscrit;
     private ImageView imageViewLocationPrive,imageViewLocationAll, imageViewLocationPublic,imageViewLocationCreate,imageViewLocationInscrit;
@@ -115,7 +115,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
 
     private List<String> nearby_events;
     private int iterator = 0;
-    private CardView cardViewButtonAdd, loading;
+    private CardView  loading;
     private List<String> myEvents = new ArrayList<>();
     private List<String> event_prive, event_public, event_create, event_inscrit;
     private boolean zoom;
@@ -148,7 +148,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         mMapView = rootView.findViewById(R.id.mapView);
         navController = Navigation.findNavController(getActivity(), R.id.nav_host_fragment);
         mRecyclerView = rootView.findViewById(R.id.recyclerViewEventMap);
-        cardViewButtonAdd = rootView.findViewById(R.id.addEvent);
         cardViewLocationCreate = rootView.findViewById(R.id.cardViewLocationCreate);
         cardViewLocationPrive = rootView.findViewById(R.id.cardViewLocationPrivate);
         cardViewLocationPublic = rootView.findViewById(R.id.cardViewLocationPublic);
@@ -389,9 +388,8 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
 
         initGoogleMap(savedInstanceState);
 
-        buttonAdd = rootView.findViewById(R.id.create_event_button);
 
-        buttonAdd.setOnClickListener(new View.OnClickListener() {
+        /*HomeActivity.floatingActionButton.setOnClickListener(new View.OnClickListener() {
             @RequiresApi(api = Build.VERSION_CODES.M)
             @Override
             public void onClick(View v) {
@@ -401,7 +399,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                 //navController.navigate(R.id.action_navigation_evenements_to_navigation_create_event);
                 startActivity(new Intent(getContext(), MainCreationEventActivity.class));
             }
-        });
+        });*/
 
         /*CardView cardViewBottom = rootView.findViewById(R.id.cardViewBottomSheet);
         cardViewBottom.setOnClickListener(new View.OnClickListener() {
@@ -524,7 +522,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                                                             }
                                                         });
                     loading.setVisibility(View.GONE);
-                    cardViewButtonAdd.setVisibility(View.VISIBLE);
                 }
         };
 
@@ -608,7 +605,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                             }
                         });
                         loading.setVisibility(View.GONE);
-                        cardViewButtonAdd.setVisibility(View.VISIBLE);
                     }
             };
 
@@ -742,7 +738,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         mMap.setMyLocationEnabled(true);
         if(adapter == null || adapter.getItemCount() == 0){
             loading.setVisibility(View.GONE);
-            cardViewButtonAdd.setVisibility(View.VISIBLE);
         }
     }
 
