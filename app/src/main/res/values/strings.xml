@@ -82,8 +82,10 @@
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="location_private"> Privé </string>
+    <string name="location_private_maj"> PRIVE </string>
     <string name="location_all"> Tout </string>
     <string name="location_public"> Public </string>
+    <string name="location_public_maj"> PUBLIC </string>
     <string name="location_inscrit"> Inscrit </string>
     <string name="location_mesevent"> Créer </string>
     <string name="descriptionNF"> Description : </string>
@@ -152,12 +154,13 @@
     <string name="title_creation_event_date">Définis la date</string>
     <string name="title_creation_event_adress">Définis l\'endroit</string>
     <string name="title_creation_event_name">Définis le nom</string>
-    <string name="title_creation_event_members">Définis ta visiblité et ta liste d\'invité</string>
+    <string name="title_creation_event_members">Définis ta liste d\'invité (facultatif) </string>
     <string name="start_date">Début de l\'évènement</string>
     <string name="end_date">Fin de l\'évènement</string>
-    <string name="add_member">Ajouter un membre</string>
+    <string name="add_member">Ajouter des participants</string>
     <string name="info_visibility_private">Seuls les utilisateurs invités verront votre évènement</string>
     <string name="info_visibility_public">Tous les utilisteurs verront votre évènement</string>
+    <string name="creer_ton_event"> Créer ton évènement</string>
 
 
 </resources>

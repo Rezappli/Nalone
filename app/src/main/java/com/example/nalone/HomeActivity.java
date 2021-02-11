@@ -8,16 +8,22 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 
+import com.example.nalone.enumeration.Visibility;
+import com.example.nalone.objects.Evenement;
 import com.example.nalone.ui.NotificationActivity;
+import com.example.nalone.ui.evenements.creation.MainCreationEventActivity;
+import com.example.nalone.ui.evenements.display.CreationsEvenementsFragment;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.cardview.widget.CardView;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
@@ -31,9 +37,12 @@ public class HomeActivity extends AppCompatActivity{
 
     private NavController navController;
     public static ImageView buttonBack, buttonNotif;
-    public static FloatingActionButton fab1,fab2,fab3;
-    private Animation fabOpen, fabClose, rotateForward, rotateBackward;
+    public static FloatingActionButton fab1;
+    private CardView cardViewPrivate, cardViewPublic;
     private boolean isOpen = false;
+
+    private BottomSheetBehavior bottomSheetBehavior;
+
 
     @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
@@ -44,21 +53,28 @@ public class HomeActivity extends AppCompatActivity{
         BottomNavigationView navView = findViewById(R.id.nav_view);
 
 
+        final View bottomSheet = findViewById(R.id.sheetCreateEvent);
+
         buttonBack = findViewById(R.id.buttonBack);
         buttonNotif = findViewById(R.id.buttonNotif);
         fab1 = findViewById(R.id.fab1);
-        fab2 = findViewById(R.id.fab2);
-        fab3 = findViewById(R.id.fab3);
-        fab1.setOnClickListener(new View.OnClickListener() {
+        final View viewGrey = findViewById(R.id.viewGrey);
+        cardViewPrivate = findViewById(R.id.cardViewPrivate);
+        cardViewPublic = findViewById(R.id.cardViewPublic);
+
+        cardViewPrivate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                animeFab();
+                goCreateEvent(Visibility.PRIVATE);
             }
         });
-        fabOpen = AnimationUtils.loadAnimation(this,R.anim.fab_open);
-        fabClose = AnimationUtils.loadAnimation(this,R.anim.fab_close);
-        rotateBackward = AnimationUtils.loadAnimation(this,R.anim.rotate_backward);
-        rotateForward = AnimationUtils.loadAnimation(this,R.anim.rotate_forward);
+
+        cardViewPublic.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                goCreateEvent(Visibility.PUBLIC);
+            }
+        });
 
         buttonNotif.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -85,35 +101,68 @@ public class HomeActivity extends AppCompatActivity{
         navController = Navigation.findNavController(this, R.id.nav_host_fragment);
         NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
         NavigationUI.setupWithNavController(navView, navController);
+
+        bottomSheetBehavior = BottomSheetBehavior.from(bottomSheet);
+        bottomSheetBehavior.setHideable(false);
+        bottomSheetBehavior.setBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
+            @Override
+            public void onStateChanged(@NonNull View view, int state) {
+                switch (state){
+                    case BottomSheetBehavior.STATE_COLLAPSED:
+                        fab1.show();
+                        viewGrey.setVisibility(View.GONE);
+                        break;
+                    case BottomSheetBehavior.STATE_DRAGGING:
+                        break;
+                    case BottomSheetBehavior.STATE_EXPANDED:
+
+                        break;
+                    case BottomSheetBehavior.STATE_HIDDEN:
+                        fab1.show();
+                        viewGrey.setVisibility(View.GONE);
+                        break;
+
+                }
+            }
+
+            @Override
+            public void onSlide(@NonNull View view, float v) {
+
+            }
+        });
+
+
+        fab1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                fab1.hide();
+                bottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
+                viewGrey.setVisibility(View.VISIBLE);
+            }
+        });
+
+        viewGrey.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+                viewGrey.setVisibility(View.GONE);
+            }
+        });
+
     }
 
-    private void animeFab(){
-        if(isOpen){
-            fab1.startAnimation(rotateBackward);
-            fab2.startAnimation(fabClose);
-            fab3.startAnimation(fabClose);
-            fab2.setClickable(false);
-            fab2.setClickable(false);
-            isOpen = false;
-        }else{
-            fab1.startAnimation(rotateForward);
-            fab2.startAnimation(fabOpen);
-            fab3.startAnimation(fabOpen);
-            fab2.setClickable(true);
-            fab2.setClickable(true);
-            isOpen = true;
-        }
+    public void goCreateEvent(Visibility v){
+        MainCreationEventActivity.currentEvent = new Evenement();
+        MainCreationEventActivity.currentEvent.setVisibility(v);
+        startActivity(new Intent(getBaseContext(),MainCreationEventActivity.class));
+        bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
     }
+
 
     @Override
     protected void onResume() {
         super.onResume();
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.R)
-    @Override
-    public void onBackPressed(){
-        super.onBackPressed();
-    }
 
 }

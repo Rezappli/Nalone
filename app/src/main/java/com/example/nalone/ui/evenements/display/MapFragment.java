@@ -38,6 +38,7 @@ import com.google.android.gms.maps.MapView;
 import android.Manifest;
 import android.content.pm.PackageManager;
 import android.os.Build;
+import android.widget.LinearLayout;
 import android.widget.SearchView;
 import android.widget.TextView;
 
@@ -82,6 +83,7 @@ import static com.example.nalone.util.Constants.USER;
 import static com.example.nalone.util.Constants.USER_ID;
 import static com.example.nalone.util.Constants.USER_REFERENCE;
 import static com.example.nalone.util.Constants.dateFormat;
+import static com.example.nalone.util.Constants.formatD;
 import static com.example.nalone.util.Constants.mStoreBase;
 import static com.example.nalone.util.Constants.range;
 import static com.example.nalone.util.Constants.targetZoom;
@@ -128,6 +130,8 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     private FirestoreRecyclerAdapter adapterSearchEvent;
     private TextView dateSearchEvent;
 
+    private ImageView arrowLeft, arrowRight;
+
 
 
     public MapFragment() {
@@ -166,44 +170,60 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         loading = rootView.findViewById(R.id.loading);
 
         //Bottom sheet
-        View bottomSheet = rootView.findViewById(R.id.sheet);
+        final View bottomSheet = rootView.findViewById(R.id.sheet);
         final LinearLayoutManager llm = new LinearLayoutManager(getContext());
         searchView = rootView.findViewById(R.id.searchViewSheet);
         recyclerViewSearchEvent = rootView.findViewById(R.id.recyclerViewSearchEvent);
         dateSearchEvent = rootView.findViewById(R.id.dateSearchEvent);
+        arrowLeft = rootView.findViewById(R.id.arrowLeftDate);
+        arrowRight = rootView.findViewById(R.id.arrowRightDate);
+        arrowRight.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                recyclerViewSearchEvent.smoothScrollBy(recyclerViewSearchEvent.getScrollState(),recyclerViewSearchEvent.getScrollState()+200);
+            }
+        });
 
         Query query = mStoreBase.collection("events");
         FirestoreRecyclerOptions<Evenement> options = new FirestoreRecyclerOptions.Builder<Evenement>().setQuery(query, Evenement.class).build();
 
-        adapterSearchEvent = new FirestoreRecyclerAdapter<Evenement, EventViewHolder>(options) {
+        adapterSearchEvent =  new FirestoreRecyclerAdapter<Evenement, EventViewHolder>(options) {
             @NonNull
             @Override
             public EventViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-                View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_evenement, parent, false);
+                View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_evenements_list_, parent, false);
                 return new EventViewHolder(view);
             }
 
             @Override
             protected void onBindViewHolder(@NonNull final EventViewHolder holder, int i, @NonNull final Evenement e) {
                 //holder.mImageView.setImageResource(e.getImage());
+                Log.w("creation fragment", "Adapter");
 
                 holder.mTitle.setText((e.getName()));
-                holder.mDate.setText((dateFormat.format(e.getStartDate().toDate())));
+                if(e.getStartDate().equals(new Date())){
+                    holder.mDate.setText("Aujourd'hui");
+                }else{
+                    String date_text = formatD.format(e.getStartDate().toDate());
+                    String final_date_text = "";
+                    for (int j = 0; j < date_text.length() - 5; j++) {
+                        char character = date_text.charAt(j);
+                        if (j == 0) {
+                            character = Character.toUpperCase(character);
+                        }
+                        final_date_text += character;
+                    }
+
+                    holder.mDate.setText(final_date_text);
+                }
+
+                //holder.mDate.setText((dateFormat.format(e.getStartDate().toDate())));
                 holder.mTime.setText((timeFormat.format(e.getStartDate().toDate())));
                 holder.mVille.setText((e.getCity()));
+                //holder.mDescription.setText((e.getDescription()));
                 holder.mProprietaire.setText(e.getOwner());
+                holder.textViewNbMembers.setText(e.getNbMembers()+"");
 
-                mStoreBase.collection("users").document(USER_ID).collection("events_join").document(e.getUid())
-                        .get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                        DocumentSnapshot doc = task.getResult();
-                        if (doc.exists())
-                            holder.mImageInscrit.setVisibility(View.VISIBLE);
-                    }
-                });
-
-                iterator++;
 
                 mStoreBase.collection("users").whereEqualTo("uid", e.getOwnerDoc().getId())
                         .get()
@@ -212,7 +232,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                             public void onComplete(@NonNull Task<QuerySnapshot> task) {
                                 if (task.isSuccessful()) {
                                     for (QueryDocumentSnapshot document : task.getResult()) {
-                                        final User u = document.toObject(User.class);
+                                        User u = document.toObject(User.class);
                                         if (u.getCursus().equalsIgnoreCase("Informatique")) {
                                             holder.mCarwViewOwner.setCardBackgroundColor(Color.RED);
                                         }
@@ -234,25 +254,26 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                                         }
 
                                         Constants.setUserImage(u, getContext(), holder.mImageView);
-
                                     }
 
                                 }
                             }
                         });
 
-                holder.mCardView.setOnClickListener(new View.OnClickListener() {
+                holder.textViewAfficher.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        CameraUpdate location = CameraUpdateFactory.newLatLngZoom(
-                                new LatLng(e.getLatitude(), e.getLongitude()), 15);
-                        mMap.animateCamera(location);
+                        InfosEvenementsActivity.EVENT_LOAD = e;
+                        //InfosEvenementsActivity.type = "nouveau";
+                        navController.navigate(R.id.action_navigation_evenements_to_navigation_infos_events);
                     }
                 });
+
+
+
+
                 loading.setVisibility(View.GONE);
-
             }
-
         };
         recyclerViewSearchEvent.setLayoutManager(llm);
         adapterSearchEvent.startListening();
@@ -281,6 +302,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         bottomSheetBehavior = BottomSheetBehavior.from(bottomSheet);
         bottomSheetBehavior.setHideable(false);
         bottomSheetBehavior.setBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
+            @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
             @Override
             public void onStateChanged(@NonNull View view, int state) {
                 switch (state){
@@ -292,7 +314,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                     case BottomSheetBehavior.STATE_DRAGGING:
                         break;
                     case BottomSheetBehavior.STATE_EXPANDED:
-
+                        bottomSheet.setNestedScrollingEnabled(true);
                         break;
                     case BottomSheetBehavior.STATE_HIDDEN:
                         break;
@@ -436,252 +458,43 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
 
 
     private void startQuery(Query query,boolean all) {
-        Query queryF;
-        if(all){
-            queryF = query.whereEqualTo("statusEvent", StatusEvent.BIENTOT).whereEqualTo("visibility",Visibility.PUBLIC).whereGreaterThan("latitude", minLat)
-                    .whereLessThan("latitude", maxLat);
-        }else{
-            queryF = query.whereEqualTo("statusEvent", StatusEvent.BIENTOT).whereGreaterThan("latitude", minLat)
-                    .whereLessThan("latitude", maxLat);
-        }
-
-        FirestoreRecyclerOptions<Evenement> options = new FirestoreRecyclerOptions.Builder<Evenement>().setQuery(queryF, Evenement.class).build();
-
-        adapter = new FirestoreRecyclerAdapter<Evenement, EventViewHolder>(options) {
-            @NonNull
-            @Override
-            public EventViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-                View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_evenement, parent, false);
-                return new EventViewHolder(view);
-            }
-
-            @Override
-            protected void onBindViewHolder(@NonNull final EventViewHolder holder, int i, @NonNull final Evenement e) {
-                //holder.mImageView.setImageResource(e.getImage());
-
-                    holder.mTitle.setText((e.getName()));
-                    holder.mDate.setText((dateFormat.format(e.getStartDate().toDate())));
-                    holder.mTime.setText((timeFormat.format(e.getStartDate().toDate())));
-                    holder.mVille.setText((e.getCity()));
-                    holder.mProprietaire.setText(e.getOwner());
-
-                    mStoreBase.collection("users").document(USER_ID).collection("events_join").document(e.getUid())
-                            .get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                        @Override
-                        public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                            DocumentSnapshot doc = task.getResult();
-                            if (doc.exists())
-                                holder.mImageInscrit.setVisibility(View.VISIBLE);
-                        }
-                        });
-
-                    iterator++;
-
-                    mStoreBase.collection("users").whereEqualTo("uid", e.getOwnerDoc().getId())
-                            .get()
-                            .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                                @Override
-                                public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                                    if (task.isSuccessful()) {
-                                        for (QueryDocumentSnapshot document : task.getResult()) {
-                                            final User u = document.toObject(User.class);
-                                            if (u.getCursus().equalsIgnoreCase("Informatique")) {
-                                                holder.mCarwViewOwner.setCardBackgroundColor(Color.RED);
-                                            }
-
-                                            if (u.getCursus().equalsIgnoreCase("TC")) {
-                                                holder.mCarwViewOwner.setCardBackgroundColor(Color.parseColor("#00E9FD"));
-                                            }
-
-                                            if (u.getCursus().equalsIgnoreCase("MMI")) {
-                                                holder.mCarwViewOwner.setCardBackgroundColor(Color.parseColor("#FF1EED"));
-                                            }
-
-                                            if (u.getCursus().equalsIgnoreCase("GB")) {
-                                                holder.mCarwViewOwner.setCardBackgroundColor(Color.parseColor("#41EC57"));
-                                            }
-
-                                            if (u.getCursus().equalsIgnoreCase("LP")) {
-                                                holder.mCarwViewOwner.setCardBackgroundColor((Color.parseColor("#EC9538")));
-                                            }
-
-                                            Constants.setUserImage(u, getContext(), holder.mImageView);
-
-                                        }
-
-                                    }
-                                }
-                            });
-
-                    holder.mCardView.setOnClickListener(new View.OnClickListener() {
-                                                            @Override
-                                                            public void onClick(View v) {
-                                                                CameraUpdate location = CameraUpdateFactory.newLatLngZoom(
-                                                                        new LatLng(e.getLatitude(), e.getLongitude()), 15);
-                                                                mMap.animateCamera(location);
-                                                            }
-                                                        });
-                    loading.setVisibility(View.GONE);
-                }
-        };
-
-        if (all){
-            Query queryF1 = mStoreBase.collection("users").document(USER_ID).collection("events_join").whereEqualTo("visibility", Visibility.PRIVATE).whereEqualTo("statusEvent",StatusEvent.BIENTOT).orderBy("date", Query.Direction.DESCENDING);
-
-            FirestoreRecyclerOptions<Evenement> options1 = new FirestoreRecyclerOptions.Builder<Evenement>().setQuery(queryF1, Evenement.class).build();
-
-            adapter1 = new FirestoreRecyclerAdapter<Evenement, EventViewHolder>(options1) {
-                @NonNull
-                @Override
-                public EventViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-                    View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_evenement, parent, false);
-                    return new EventViewHolder(view);
-                }
-
-                @Override
-                protected void onBindViewHolder(@NonNull final EventViewHolder holder, int i, @NonNull final Evenement e) {
-                    //holder.mImageView.setImageResource(e.getImage());
-
-                        holder.mTitle.setText((e.getName()));
-                        holder.mDate.setText((dateFormat.format(e.getStartDate().toDate())));
-                        holder.mTime.setText((timeFormat.format(e.getStartDate().toDate())));
-                        holder.mVille.setText((e.getCity()));
-                        holder.mProprietaire.setText(e.getOwner());
-
-                    mStoreBase.collection("users").document(USER_ID).collection("events_join").document(e.getUid())
-                            .get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                        @Override
-                        public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                            DocumentSnapshot doc = task.getResult();
-                            if (doc.exists())
-                                holder.mImageInscrit.setVisibility(View.VISIBLE);
-                        }
-                    });
-
-                        iterator++;
-
-                        mStoreBase.collection("users").whereEqualTo("uid", e.getOwnerDoc().getId())
-                                .get()
-                                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                                    @Override
-                                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                                        if (task.isSuccessful()) {
-                                            for (QueryDocumentSnapshot document : task.getResult()) {
-                                                final User u = document.toObject(User.class);
-                                                if (u.getCursus().equalsIgnoreCase("Informatique")) {
-                                                    holder.mCarwViewOwner.setCardBackgroundColor(Color.RED);
-                                                }
-
-                                                if (u.getCursus().equalsIgnoreCase("TC")) {
-                                                    holder.mCarwViewOwner.setCardBackgroundColor(Color.parseColor("#00E9FD"));
-                                                }
-
-                                                if (u.getCursus().equalsIgnoreCase("MMI")) {
-                                                    holder.mCarwViewOwner.setCardBackgroundColor(Color.parseColor("#FF1EED"));
-                                                }
-
-                                                if (u.getCursus().equalsIgnoreCase("GB")) {
-                                                    holder.mCarwViewOwner.setCardBackgroundColor(Color.parseColor("#41EC57"));
-                                                }
-
-                                                if (u.getCursus().equalsIgnoreCase("LP")) {
-                                                    holder.mCarwViewOwner.setCardBackgroundColor((Color.parseColor("#EC9538")));
-                                                }
-
-                                                Constants.setUserImage(u, getContext(), holder.mImageView);
-
-                                            }
-
-                                        }
-                                    }
-                                });
-
-                        holder.mCardView.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                CameraUpdate location = CameraUpdateFactory.newLatLngZoom(
-                                        new LatLng(e.getLatitude(), e.getLongitude()), 15);
-                                mMap.animateCamera(location);
-                            }
-                        });
-                        loading.setVisibility(View.GONE);
-                    }
-            };
-
-        }
-        mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
-
-        if(all){
-            adapter.startListening();
-            adapter1.startListening();
-            ConcatAdapter concatAdapter = new ConcatAdapter(adapter, adapter1);
-            mRecyclerView.setAdapter(concatAdapter);
-        }else{
-            mRecyclerView.setAdapter(adapter);
-            adapter.startListening();
-        }
-
-        if (mMap != null) {
-            mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
-                @Override
-                public boolean onMarkerClick(Marker marker) {
-                    mRecyclerView.setPadding(0, 0, 0, 60);
-                    return false;
-                }
-            });
 
 
-            mMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
-                @Override
-                public void onMapClick(LatLng latLng) {
-                    mRecyclerView.setPadding(0, 0, 0, 0);
-                }
-            });
 
-            mMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
-                @Override
-                public void onInfoWindowClick(final Marker marker) {
-                    if (marker.getTag() != null) {
-                        mStoreBase.collection("events").whereEqualTo("uid", marker.getTag()).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                            @Override
-                            public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                                for (QueryDocumentSnapshot doc : task.getResult()) {
-                                    InfosEvenementsActivity.EVENT_LOAD = doc.toObject(Evenement.class);
-                                    navController.navigate(R.id.action_navigation_evenements_to_navigation_infos_events);
-                                }
-                            }
-                        });
-                    }
-
-                }
-            });
-        }
 
     }
 
+
+
     private class EventViewHolder extends RecyclerView.ViewHolder {
 
-        public CardView mCardView;
         public ImageView mImageView;
         public TextView mTitle;
         public TextView mDate;
         public TextView mTime;
         public TextView mVille;
+        //public TextView mDescription;
         public TextView mProprietaire;
+        public TextView textViewAfficher, textViewParticiper;
+        public CardView mAfficher;
         public CardView mCarwViewOwner;
-        public ImageView mImageInscrit;
+        public  TextView textViewNbMembers;
 
         public EventViewHolder(@NonNull View itemView) {
             super(itemView);
-            mCardView = itemView.findViewById(R.id.cardViewEvent);
-            mImageView = itemView.findViewById(R.id.imageUser1);
-            mTitle = itemView.findViewById(R.id.title1);
-            mDate = itemView.findViewById(R.id.date1);
-            mTime = itemView.findViewById(R.id.time1);
-            mVille = itemView.findViewById(R.id.ville1);
-            mProprietaire = itemView.findViewById(R.id.owner1);
+            mImageView = itemView.findViewById(R.id.imageOwnerEventList);
+            mTitle = itemView.findViewById(R.id.titleEventList);
+            mDate = itemView.findViewById(R.id.dateEventList);
+            mTime = itemView.findViewById(R.id.timeEventList);
+            mVille = itemView.findViewById(R.id.villeEventList);
+            //mDescription = itemView.findViewById(R.id.descriptionEventList);
+            mProprietaire = itemView.findViewById(R.id.ownerEventList);
+            mAfficher = itemView.findViewById(R.id.cardViewEventList);
+            textViewAfficher = itemView.findViewById(R.id.textViewAfficher);
+            textViewParticiper = itemView.findViewById(R.id.textViewParticiper);
             mCarwViewOwner = itemView.findViewById(R.id.backGroundOwner);
-            mImageInscrit = itemView.findViewById(R.id.imageView29);
+            textViewNbMembers = itemView.findViewById(R.id.textViewNbMembers);
+
         }
     }
 
@@ -822,6 +635,42 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                     }*/
                 }
             });
+
+            if (mMap != null) {
+                mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
+                    @Override
+                    public boolean onMarkerClick(Marker marker) {
+                        mRecyclerView.setPadding(0, 0, 0, 60);
+                        return false;
+                    }
+                });
+
+
+                mMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
+                    @Override
+                    public void onMapClick(LatLng latLng) {
+                        mRecyclerView.setPadding(0, 0, 0, 0);
+                    }
+                });
+
+                mMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
+                    @Override
+                    public void onInfoWindowClick(final Marker marker) {
+                        if (marker.getTag() != null) {
+                            mStoreBase.collection("events").whereEqualTo("uid", marker.getTag()).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                                @Override
+                                public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                    for (QueryDocumentSnapshot doc : task.getResult()) {
+                                        InfosEvenementsActivity.EVENT_LOAD = doc.toObject(Evenement.class);
+                                        navController.navigate(R.id.action_navigation_evenements_to_navigation_infos_events);
+                                    }
+                                }
+                            });
+                        }
+
+                    }
+                });
+            }
         }
     }
 
@@ -898,7 +747,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     @Override
     public void onResume() {
         super.onResume();
-        searchView.setQuery("", false);
-        rootView.requestFocus();
+        /*searchView.setQuery("", false);
+        rootView.requestFocus();*/
     }
 }

@@ -61,15 +61,13 @@ public class EvenementsFragment extends Fragment {
         setUpViewPager(viewPager);
         tabLayout.setupWithViewPager(viewPager);
         tabLayout.getTabAt(0).setIcon(R.drawable.ic_baseline_map_24);
-        tabLayout.getTabAt(1).setIcon(R.drawable.ic_round_search_event);
-        tabLayout.getTabAt(2).setIcon(R.drawable.ic_baseline_mesevent);
+        tabLayout.getTabAt(1).setIcon(R.drawable.ic_baseline_mesevent);
     }
 
     private void setUpViewPager(ViewPager viewPager) {
         SectionPageAdapter adapter = new SectionPageAdapter(getChildFragmentManager(), 0);
 
         adapter.addFragment(new MapFragment());
-        adapter.addFragment(new EvenementsListFragment());
         adapter.addFragment(new MesEvenementsListFragment());
 
         viewPager.setAdapter(adapter);

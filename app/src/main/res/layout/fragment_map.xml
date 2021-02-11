@@ -216,10 +216,13 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@drawable/custom_header_bottom_sheet"
+        android:fillViewport="false"
         android:focusableInTouchMode="true"
         app:behavior_hideable="true"
         app:behavior_peekHeight="110dp"
-        app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior">
+        android:clipToPadding="false"
+        app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior"
+        >
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -249,7 +252,7 @@
                 android:orientation="horizontal">
 
                 <ImageView
-                    android:id="@+id/imageView44"
+                    android:id="@+id/arrowLeftDate"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_gravity="center"
@@ -267,7 +270,7 @@
                     android:textStyle="bold" />
 
                 <ImageView
-                    android:id="@+id/imageView45"
+                    android:id="@+id/arrowRightDate"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_gravity="center"
@@ -285,7 +288,8 @@
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/recyclerViewSearchEvent"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent" />
+                android:layout_height="match_parent"
+                android:background="#ffffff" />
 
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>

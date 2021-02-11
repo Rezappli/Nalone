@@ -56,7 +56,6 @@ public class MainCreationEventActivity extends AppCompatActivity {
                     }
                 });
         buttonBack.setVisibility(View.GONE);
-        currentEvent = new Evenement();
         navController = Navigation.findNavController(this, R.id.nav_host_fragment2);
     }
 
@@ -72,5 +71,10 @@ public class MainCreationEventActivity extends AppCompatActivity {
     protected void onStop() {
         super.onStop();
         currentEvent = null;
+        photoValidate = false;
+        dateValidate= false;
+        nameValidate= false;
+        membersValidate= false;
+        adressValidate= false;
     }
 }

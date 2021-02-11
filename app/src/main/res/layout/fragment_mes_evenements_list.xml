@@ -8,32 +8,6 @@
     android:background="@android:color/white"
     tools:context=".ui.recherche.RechercheAmisFragment">
 
-    <androidx.cardview.widget.CardView
-        android:id="@+id/addEvent"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentBottom="true"
-        android:layout_marginStart="32dp"
-        android:layout_marginEnd="40dp"
-        android:layout_marginBottom="40dp"
-        android:foregroundGravity="bottom|center_horizontal"
-        app:cardBackgroundColor="#18ECC5"
-        app:cardCornerRadius="50dp"
-        app:cardElevation="10dp">
-
-        <ImageView
-            android:id="@+id/create_event_button"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:layout_centerHorizontal="true"
-            android:layout_centerVertical="true"
-            android:layout_gravity="bottom|center"
-            android:layout_margin="5dp"
-            android:clickable="false"
-            app:srcCompat="@drawable/ic_baseline_add_circle_24" />
-    </androidx.cardview.widget.CardView>
-
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent">
