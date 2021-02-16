@@ -27,7 +27,11 @@
         android:roundIcon="@mipmap/ic_logo_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme.NoActionBar">
-        <activity android:name=".ui.evenements.creation.MainCreationEventActivity"></activity>
+        <activity
+            android:name=".ui.profil.MainProfilActivity"
+            android:label="@string/title_activity_main_profil"
+            android:theme="@style/AppTheme.NoActionBar.NoActionBar"></activity>
+        <activity android:name=".ui.evenements.creation.MainCreationEventActivity" />
         <activity android:name=".ui.NotificationActivity" />
         <activity android:name=".ResetPasswordActivity" />
         <activity

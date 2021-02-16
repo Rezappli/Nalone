@@ -2,8 +2,10 @@
 
 package com.example.nalone.ui.evenements.display;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.graphics.Color;
+import android.graphics.drawable.Animatable;
 import android.location.Location;
 import android.os.Bundle;
 
@@ -15,6 +17,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 
@@ -99,7 +103,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     private CardView cardViewLocationPrive,cardViewLocationAll, cardViewLocationPublic, cardViewLocationCreate, cardViewLocationInscrit;
     private TextView textViewLocationPrive,textViewLocationAll, textViewLocationPublic, textViewLocationCreate, textViewLocationInscrit;
     private ImageView imageViewLocationPrive,imageViewLocationAll, imageViewLocationPublic,imageViewLocationCreate,imageViewLocationInscrit;
-
+    private Button buttonCreations,buttonPlanning;
     private static ArrayList<Evenement> itemEvents = new ArrayList<>();
 
     private NavController navController;
@@ -130,7 +134,8 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     private FirestoreRecyclerAdapter adapterSearchEvent;
     private TextView dateSearchEvent;
 
-    private ImageView arrowLeft, arrowRight;
+    private ImageView arrowLeft, arrowRight, imageViewFiltreSearch;
+    private Animation appear_filtre;
 
 
 
@@ -143,6 +148,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                              Bundle savedInstanceState) {
         rootView = inflater.inflate(R.layout.fragment_map, container, false);
 
+       // appear_filtre = ;
         ((AppCompatActivity) getActivity()).getSupportActionBar().hide();
         event_prive = new ArrayList<>();
         event_inscrit = new ArrayList<>();
@@ -168,6 +174,9 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         imageViewLocationCreate = rootView.findViewById(R.id.imageViewLocationCreate);
         imageViewLocationAll = rootView.findViewById(R.id.imageViewLocationAll);
         loading = rootView.findViewById(R.id.loading);
+        buttonCreations = rootView.findViewById(R.id.buttonCreations);
+        buttonPlanning = rootView.findViewById(R.id.buttonPlanning);
+        imageViewFiltreSearch = rootView.findViewById(R.id.filtreSearch);
 
         //Bottom sheet
         final View bottomSheet = rootView.findViewById(R.id.sheet);
@@ -301,6 +310,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
 
         bottomSheetBehavior = BottomSheetBehavior.from(bottomSheet);
         bottomSheetBehavior.setHideable(false);
+
         bottomSheetBehavior.setBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
             @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
             @Override
@@ -310,11 +320,13 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                         searchView.setQuery ("", false);
                         searchView.setIconified(true);
                         searchView.clearFocus();
+                        imageViewFiltreSearch.setVisibility(View.GONE);
                         break;
                     case BottomSheetBehavior.STATE_DRAGGING:
+                        imageViewFiltreSearch.setVisibility(View.VISIBLE);
                         break;
                     case BottomSheetBehavior.STATE_EXPANDED:
-                        bottomSheet.setNestedScrollingEnabled(true);
+                        imageViewFiltreSearch.setVisibility(View.VISIBLE);
                         break;
                     case BottomSheetBehavior.STATE_HIDDEN:
                         break;

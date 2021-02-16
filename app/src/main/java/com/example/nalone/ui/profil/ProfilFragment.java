@@ -37,7 +37,8 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import static android.app.Activity.RESULT_OK;
-import static com.example.nalone.HomeActivity.buttonBack;
+
+import static com.example.nalone.ui.profil.MainProfilActivity.buttonBack;
 import static com.example.nalone.util.Constants.USER;
 import static com.example.nalone.util.Constants.USER_STORAGE_REF;
 import static com.example.nalone.util.Constants.mStore;
@@ -66,7 +67,7 @@ public class ProfilFragment extends Fragment  {
 
         View root = inflater.inflate(R.layout.fragment_profil, container, false);
         buttonBack.setVisibility(View.GONE);
-        navController = Navigation.findNavController(getActivity(), R.id.nav_host_fragment);
+        navController = Navigation.findNavController(getActivity(), R.id.nav_host_fragment_profil);
         userConnectDesc = root.findViewById(R.id.userConnectDescription);
         userConnectText = root.findViewById(R.id.userConnectText);
         userConnectVille = root.findViewById(R.id.useConnectVille);
@@ -117,27 +118,27 @@ public class ProfilFragment extends Fragment  {
 
 
         cardViewPhotoEditDesc.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if(!editDescription){
-                        userConnectDesc.setClickable(true);
-                        userConnectDesc.setEnabled(true);
-                        imageViewEditDescription.setImageResource(R.drawable.ic_baseline_check_24);
-                        editDescription = true;
-                    }else{
-                        userConnectDesc.setClickable(false);
-                        userConnectDesc.setEnabled(false);
-                        imageViewEditDescription.setImageResource(R.drawable.ic_baseline_edit_24);
-                        editDescription = false;
-                        if(!userConnectDesc.getText().toString().equalsIgnoreCase(USER.getDescription())){
-                            USER.setDescription(userConnectDesc.getText().toString());
-                            mStoreBase.collection("users").document(USER.getUid()).set(USER);
-                            Toast.makeText(getContext(), "Vous avez mis à jour votre description", Toast.LENGTH_SHORT).show();
-                        }
+            @Override
+            public void onClick(View v) {
+                if(!editDescription){
+                    userConnectDesc.setClickable(true);
+                    userConnectDesc.setEnabled(true);
+                    imageViewEditDescription.setImageResource(R.drawable.ic_baseline_check_24);
+                    editDescription = true;
+                }else{
+                    userConnectDesc.setClickable(false);
+                    userConnectDesc.setEnabled(false);
+                    imageViewEditDescription.setImageResource(R.drawable.ic_baseline_edit_24);
+                    editDescription = false;
+                    if(!userConnectDesc.getText().toString().equalsIgnoreCase(USER.getDescription())){
+                        USER.setDescription(userConnectDesc.getText().toString());
+                        mStoreBase.collection("users").document(USER.getUid()).set(USER);
+                        Toast.makeText(getContext(), "Vous avez mis à jour votre description", Toast.LENGTH_SHORT).show();
                     }
-
                 }
-            });
+
+            }
+        });
 
 
 
@@ -146,21 +147,21 @@ public class ProfilFragment extends Fragment  {
         cardViewProfilParametres.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                navController.navigate(R.id.action_navigation_profil_to_navigation_parametres);
+                navController.navigate(R.id.action_profilFragment_to_parametresFragment);
             }
         });
 
         cardViewProfilEdit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                navController.navigate(R.id.action_navigation_profil_to_navigation_edit_profil);
+                navController.navigate(R.id.action_profilFragment_to_editFragment);
             }
         });
 
         cardViewProfilAide.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                navController.navigate(R.id.action_navigation_profil_to_navigation_aide);
+                navController.navigate(R.id.action_profilFragment_to_aideFragment);
             }
         });
 
@@ -262,10 +263,10 @@ public class ProfilFragment extends Fragment  {
 
 
         if (resultCode == RESULT_OK) {
-                imageUri = data.getData();
-                assert imageUri != null;
-                Glide.with(getContext()).load(imageUri).fitCenter().centerCrop().into(imageUser);
-                hasSelectedImage = true;
+            imageUri = data.getData();
+            assert imageUri != null;
+            Glide.with(getContext()).load(imageUri).fitCenter().centerCrop().into(imageUser);
+            hasSelectedImage = true;
         }else {
             Toast.makeText(getContext(),"Vous n'avez pas choisi d'image", Toast.LENGTH_LONG).show();
             imageViewEditPhoto.setImageResource(R.drawable.ic_baseline_edit_24);

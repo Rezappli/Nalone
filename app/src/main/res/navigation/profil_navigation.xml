@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/profilFragment">
+    <fragment
+        android:id="@+id/profilFragment"
+        android:name="com.example.nalone.ui.profil.ProfilFragment"
+        android:label="fragment_profil"
+        tools:layout="@layout/fragment_profil" >
+        <action
+            android:id="@+id/action_profilFragment_to_parametresFragment"
+            app:destination="@id/parametresFragment" />
+        <action
+            android:id="@+id/action_profilFragment_to_aideFragment"
+            app:destination="@id/aideFragment" />
+        <action
+            android:id="@+id/action_profilFragment_to_editFragment"
+            app:destination="@id/editFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/editFragment"
+        android:name="com.example.nalone.ui.profil.EditFragment"
+        android:label="fragment_profil"
+        tools:layout="@layout/fragment_edit" >
+        <action
+            android:id="@+id/action_editFragment_to_profilFragment"
+            app:destination="@id/profilFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/parametresFragment"
+        android:name="com.example.nalone.ui.profil.ParametresFragment"
+        android:label="fragment_parametres"
+        tools:layout="@layout/fragment_parametres" >
+        <action
+            android:id="@+id/action_parametresFragment_to_profilFragment"
+            app:destination="@id/profilFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/aideFragment"
+        android:name="com.example.nalone.ui.profil.AideFragment"
+        android:label="fragment_aide"
+        tools:layout="@layout/fragment_aide" >
+        <action
+            android:id="@+id/action_aideFragment_to_profilFragment"
+            app:destination="@id/profilFragment" />
+    </fragment>
+</navigation>

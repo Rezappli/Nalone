@@ -18,6 +18,8 @@ import android.widget.Toast;
 import androidx.annotation.RequiresApi;
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
 
 import com.example.nalone.MainActivity;
 import com.example.nalone.R;
@@ -36,11 +38,13 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import java.util.HashMap;
 import java.util.Map;
 
+import static com.example.nalone.ui.profil.MainProfilActivity.buttonBack;
 import static com.example.nalone.util.Constants.USER;
 
 public class AideFragment extends Fragment {
 
     private Button button;
+    private NavController navController;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -48,6 +52,14 @@ public class AideFragment extends Fragment {
         // Inflate the layout for this fragment
         View root = inflater.inflate(R.layout.fragment_aide, container, false);
         PDFView pdfView = root.findViewById(R.id.pdfView);
+        navController = Navigation.findNavController(getActivity(),R.id.nav_host_fragment_profil);
+        buttonBack.setVisibility(View.VISIBLE);
+        buttonBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                navController.navigate(R.id.action_aideFragment_to_profilFragment);
+            }
+        });
 
         pdfView.fromAsset("manuel.pdf")
                 .enableSwipe(true) // allows to block changing pages using swipe

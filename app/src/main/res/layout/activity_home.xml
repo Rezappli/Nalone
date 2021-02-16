@@ -24,14 +24,13 @@
         app:backgroundTint="@color/lightGrey"
         app:fabCradleMargin="0dp"
         app:fabCradleRoundedCornerRadius="20dp"
-        app:fabCradleVerticalOffset="10dp">
+        app:fabCradleVerticalOffset="0dp">
 
 
         <com.google.android.material.bottomnavigation.BottomNavigationView
             android:id="@+id/nav_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@android:color/transparent"
             app:menu="@menu/bottom_nav_menu" />
 
     </com.google.android.material.bottomappbar.BottomAppBar>
@@ -87,11 +86,20 @@
                 android:id="@+id/buttonNotif"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginEnd="15dp"
+                android:layout_toStartOf="@+id/item_profil"
+                app:srcCompat="@drawable/notification_none" />
+
+            <ImageView
+                android:id="@+id/item_profil"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:layout_alignParentEnd="true"
                 android:layout_centerHorizontal="false"
                 android:layout_centerVertical="true"
-                android:layout_marginEnd="30dp"
-                app:srcCompat="@drawable/notification_none" />
+                android:layout_marginEnd="15dp"
+                app:srcCompat="@drawable/ic_baseline_account_circle_24" />
         </RelativeLayout>
 
     </com.google.android.material.appbar.AppBarLayout>

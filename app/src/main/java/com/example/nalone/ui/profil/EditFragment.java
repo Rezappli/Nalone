@@ -17,7 +17,7 @@ import androidx.navigation.Navigation;
 import com.example.nalone.R;
 import com.example.nalone.ResetPasswordActivity;
 
-import static com.example.nalone.HomeActivity.buttonBack;
+import static com.example.nalone.ui.profil.MainProfilActivity.buttonBack;
 import static com.example.nalone.util.Constants.USER;
 import static com.example.nalone.util.Constants.mStoreBase;
 
@@ -35,12 +35,12 @@ public class EditFragment extends Fragment {
         // Inflate the layout for this fragment
         View root = inflater.inflate(R.layout.fragment_edit, container, false);
 
-        navController = Navigation.findNavController(getActivity(),R.id.nav_host_fragment);
+        navController = Navigation.findNavController(getActivity(),R.id.nav_host_fragment_profil);
         buttonBack.setVisibility(View.VISIBLE);
         buttonBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                navController.navigate(R.id.action_navigation_edit_profil_to_navigation_profil);
+                navController.navigate(R.id.action_editFragment_to_profilFragment);
             }
         });
         profilEditPassword = root.findViewById(R.id.profilEditPassword);

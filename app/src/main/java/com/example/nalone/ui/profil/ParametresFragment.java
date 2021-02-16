@@ -36,7 +36,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 
 import static android.content.Context.MODE_PRIVATE;
-import static com.example.nalone.HomeActivity.buttonBack;
+import static com.example.nalone.ui.profil.MainProfilActivity.buttonBack;
 import static com.example.nalone.util.Constants.USER;
 import static com.example.nalone.util.Constants.USER_ID;
 import static com.example.nalone.util.Constants.mAuth;
@@ -66,13 +66,13 @@ public class ParametresFragment extends Fragment {
                 .requestEmail()
                 .build();
 
-        navController = Navigation.findNavController(getActivity(), R.id.nav_host_fragment);
+        navController = Navigation.findNavController(getActivity(), R.id.nav_host_fragment_profil);
 
         buttonBack.setVisibility(View.VISIBLE);
         buttonBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                navController.navigate(R.id.action_navigation_parametres_to_navigation_profil);
+                navController.navigate(R.id.action_parametresFragment_to_profilFragment);
             }
         });
 

@@ -4,15 +4,14 @@ import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 
 import com.example.nalone.enumeration.Visibility;
 import com.example.nalone.objects.Evenement;
 import com.example.nalone.ui.NotificationActivity;
 import com.example.nalone.ui.evenements.creation.MainCreationEventActivity;
-import com.example.nalone.ui.evenements.display.CreationsEvenementsFragment;
+import com.example.nalone.ui.profil.MainProfilActivity;
+import com.example.nalone.ui.profil.ProfilFragment;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -40,6 +39,7 @@ public class HomeActivity extends AppCompatActivity{
     public static FloatingActionButton fab1;
     private CardView cardViewPrivate, cardViewPublic;
     private boolean isOpen = false;
+    private ImageView item_profil;
 
     private BottomSheetBehavior bottomSheetBehavior;
 
@@ -61,6 +61,13 @@ public class HomeActivity extends AppCompatActivity{
         final View viewGrey = findViewById(R.id.viewGrey);
         cardViewPrivate = findViewById(R.id.cardViewPrivate);
         cardViewPublic = findViewById(R.id.cardViewPublic);
+        item_profil = findViewById(R.id.item_profil);
+        item_profil.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(getBaseContext(), MainProfilActivity.class));
+            }
+        });
 
         cardViewPrivate.setOnClickListener(new View.OnClickListener() {
             @Override

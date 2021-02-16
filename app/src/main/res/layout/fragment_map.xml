@@ -45,9 +45,10 @@
             android:id="@+id/linearFiltre"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:layout_marginBottom="10dp"
-            android:orientation="horizontal">
+            android:background="@color/white"
+            android:orientation="horizontal"
+            android:paddingTop="10dp"
+            android:paddingBottom="10dp">
 
             <androidx.cardview.widget.CardView
                 android:id="@+id/cardViewLocationAll"
@@ -216,13 +217,12 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@drawable/custom_header_bottom_sheet"
+        android:clipToPadding="false"
         android:fillViewport="false"
         android:focusableInTouchMode="true"
         app:behavior_hideable="true"
         app:behavior_peekHeight="110dp"
-        android:clipToPadding="false"
-        app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior"
-        >
+        app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -241,14 +241,61 @@
                 style="@style/Widget.AppCompat.Light.SearchView"
                 android:layout_width="match_parent"
                 android:layout_height="35dp"
-                android:layout_marginStart="50dp"
-                android:layout_marginEnd="50dp"
+                android:layout_marginStart="30dp"
+                android:layout_marginEnd="30dp"
+                android:layout_marginBottom="8dp"
                 android:background="@drawable/custom_search" />
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_marginTop="40dp"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:id="@+id/filtreSearch"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="30dp"
+                    android:src="@drawable/filter_event"
+                    android:visibility="gone" />
+
+                <Button
+                    android:id="@+id/buttonPlanning"
+                    android:layout_width="match_parent"
+                    android:layout_height="30dp"
+                    android:layout_marginStart="30dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/custom_button_simple"
+                    android:drawableStart="@drawable/planning_start"
+                    android:drawablePadding="-15dp"
+                    android:paddingStart="10dp"
+                    android:text="@string/planning"
+                    android:textColor="@color/white" />
+
+                <View
+                    android:id="@+id/view18"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1.5" />
+
+                <Button
+                    android:id="@+id/buttonCreations"
+                    android:layout_width="match_parent"
+                    android:layout_height="30dp"
+                    android:layout_marginEnd="30dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/custom_button_simple"
+                    android:drawableStart="@drawable/creations_start"
+                    android:drawablePadding="-10dp"
+                    android:paddingStart="10dp"
+                    android:text="@string/creations"
+                    android:textColor="@color/white" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="25dp"
                 android:orientation="horizontal">
 
                 <ImageView

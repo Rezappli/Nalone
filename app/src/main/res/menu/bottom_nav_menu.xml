@@ -22,9 +22,5 @@
         android:title="@string/title_messages"
         android:icon = "@drawable/round_forum_24"/>
 
-    <item
-        android:id="@+id/navigation_profil"
-        android:title="@string/title_profil"
-        android:icon = "@drawable/ic_round_person_24_color"/>
 
 </menu>
