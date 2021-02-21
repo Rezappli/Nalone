@@ -3,6 +3,7 @@ package com.example.nalone.util;
 import android.app.Application;
 import android.content.Context;
 import android.net.Uri;
+import android.util.Base64;
 import android.util.Log;
 import android.widget.ImageView;
 import android.widget.Toast;
@@ -33,11 +34,25 @@ import com.google.firebase.storage.StorageReference;
 
 import org.json.JSONObject;
 
+import java.security.InvalidAlgorithmParameterException;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
+import java.security.spec.InvalidKeySpecException;
+import java.security.spec.KeySpec;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
+
+import javax.crypto.BadPaddingException;
+import javax.crypto.Cipher;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.NoSuchPaddingException;
+import javax.crypto.SecretKeyFactory;
+import javax.crypto.spec.IvParameterSpec;
+import javax.crypto.spec.PBEKeySpec;
+import javax.crypto.spec.SecretKeySpec;
 
 public class Constants {
 
@@ -56,9 +71,6 @@ public class Constants {
     public static String USER_ID;
     public static DocumentReference USER_REFERENCE;
     public static User USER;
-
-    public static int widthScreen;
-    public static int heightScreen;
 
     public static boolean load = false;
 
@@ -87,6 +99,13 @@ public class Constants {
     public static String FCM_API = null;
     public static String serverKey = null;
     public static String contentType = null;
+
+    public static String URL_ME = "http://api.nolonely.fr:53000/me.php";
+    public static String URL_SIGN_IN = "http://api.nolonely.fr:53000/sign_in.php";
+    public static final String URL_NEARBY_EVENTS = "http://api.nolonely.fr:53000/nearby_events.php";
+    public static final String URL_FRIENDS = "http://api.nolonely.fr:53000/get_friends.php";
+
+
 
     public static void sendNotification(JSONObject notification, final Context context) {
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(FCM_API, notification,
@@ -219,4 +238,7 @@ public class Constants {
             }
         });
     }
+
+    public static String key = "kXp2s5v8y/B?E(H+MbQeThWmZq3t6w9z"; // 128 bit key
+    public static String iv = "7w!z$C&F)J@NcRfU"; // 16 bytes IV
 }

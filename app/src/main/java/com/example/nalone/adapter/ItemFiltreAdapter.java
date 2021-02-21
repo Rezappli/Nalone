@@ -67,7 +67,7 @@ public class ItemFiltreAdapter extends RecyclerView.Adapter<ItemFiltreAdapter.It
         ItemFiltre currentItem = mItemFiltreList.get(position);
 
         holder.mText.setText((currentItem.getFiltre()));
-        holder.mText.setBackgroundResource(currentItem.getBackground());
+        holder.cardView.setBackgroundResource(currentItem.getBackground());
 
     }
 

@@ -28,21 +28,18 @@ public class User {
     private String city;
     private String number;
     private String mail;
-    private String cursus;
     private String description;
     private String number_events_create;
     private String number_events_attend;
     private String birthday_date;
     private String image_date;
-    private GeoPoint location;
-    private boolean ban;
-    private String banReason;
-    private Timestamp time_ban;
+    private double latitude;
+    private double longitude;
 
     public User(){}
 
     public User(String uid, String last_name, String first_name, String sex, String city,
-                String number, String mail, String cursus,
+                String number, String mail,
                 String description, String birthday_date){
         this.uid = uid;
         this.last_name = last_name;
@@ -51,7 +48,6 @@ public class User {
         this.city = city;
         this.number = number;
         this.mail = mail;
-        this.cursus = cursus;
 
         this.description = description;
         this.birthday_date = birthday_date;
@@ -59,8 +55,6 @@ public class User {
         this.number_events_create = "0";
         this.number_events_attend = "0";
         this.image_date = null;
-        ban = false;
-        time_ban = null;
     }
 
     public String getUid() {
@@ -119,14 +113,6 @@ public class User {
         this.mail = mail;
     }
 
-    public String getCursus() {
-        return cursus;
-    }
-
-    public void setCursus(String cursus) {
-        this.cursus = cursus;
-    }
-
     public String getDescription() {
         return description;
     }
@@ -167,31 +153,19 @@ public class User {
         this.image_date = image_date;
     }
 
-    public GeoPoint getLocation() {
-        return location;
+    public double getLatitude() {
+        return latitude;
     }
 
-    public void setLocation(GeoPoint location) {
-        this.location = location;
+    public void setLatitude(double latitude) {
+        this.latitude = latitude;
     }
 
-    public boolean isBan() {
-        return ban;
+    public double getLongitude() {
+        return longitude;
     }
 
-    public void setBan(boolean ban) {
-        this.ban = ban;
-    }
-
-    public Timestamp getTime_ban() {
-        return time_ban;
-    }
-
-    public void setTime_ban(Timestamp time_ban) {
-        this.time_ban = time_ban;
-    }
-
-    public String getBanReason() {
-        return banReason;
+    public void setLongitude(double longitude) {
+        this.longitude = longitude;
     }
 }

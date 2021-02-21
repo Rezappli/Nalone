@@ -44,17 +44,7 @@ public class MainCreationEventActivity extends AppCompatActivity {
                 startActivity(new Intent(getBaseContext(), NotificationActivity.class));
             }
         });
-        mStoreBase.collection("users").document(USER_ID).collection("notifications").get()
-                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        if (task.isSuccessful()) {
-                            if(task.getResult().size() > 0) {
-                                buttonNotif.setImageDrawable(getResources().getDrawable(R.drawable.notification));
-                            }
-                        }
-                    }
-                });
+
         buttonBack.setVisibility(View.GONE);
         navController = Navigation.findNavController(this, R.id.nav_host_fragment2);
     }

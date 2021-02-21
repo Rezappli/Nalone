@@ -162,26 +162,6 @@ public class MessagesFragment extends Fragment {
                                         userViewHolder.nomInvit.setText(u.getFirst_name() + " " + u.getLast_name());
                                         userViewHolder.button.setImageResource(R.drawable.ic_baseline_keyboard_arrow_right_24);
 
-                                        if(u.getCursus().equalsIgnoreCase("Informatique")){
-                                            userViewHolder.cardViewPhotoPerson.setCardBackgroundColor(Color.RED);
-                                        }
-
-                                        if(u.getCursus().equalsIgnoreCase("TC")){
-                                            userViewHolder.cardViewPhotoPerson.setCardBackgroundColor(Color.parseColor("#00E9FD"));
-                                        }
-
-                                        if(u.getCursus().equalsIgnoreCase("MMI")){
-                                            userViewHolder.cardViewPhotoPerson.setCardBackgroundColor(Color.parseColor("#FF1EED"));
-                                        }
-
-                                        if(u.getCursus().equalsIgnoreCase("GB")){
-                                            userViewHolder.cardViewPhotoPerson.setCardBackgroundColor(Color.parseColor("#41EC57"));
-                                        }
-
-                                        if(u.getCursus().equalsIgnoreCase("LP")){
-                                            userViewHolder.cardViewPhotoPerson.setCardBackgroundColor((Color.parseColor("#EC9538")));
-                                        }
-
                                         Constants.setUserImage(u, getContext(), userViewHolder.imagePerson);
 
                                         userViewHolder.layoutProfil.setOnClickListener(new View.OnClickListener() {

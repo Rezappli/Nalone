@@ -1,6 +1,5 @@
 package com.example.nalone.ui.evenements.display;
 
-import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
@@ -25,10 +24,8 @@ import com.example.nalone.objects.Evenement;
 import com.example.nalone.util.Horloge;
 import com.example.nalone.R;
 import com.example.nalone.enumeration.StatusEvent;
-import com.example.nalone.objects.User;
 import com.example.nalone.enumeration.Visibility;
 import com.example.nalone.ui.evenements.InfosEvenementsActivity;
-import com.example.nalone.util.Constants;
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -40,14 +37,11 @@ import com.google.firebase.firestore.QuerySnapshot;
 
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import static com.example.nalone.util.Constants.USER;
 import static com.example.nalone.util.Constants.USER_ID;
-import static com.example.nalone.util.Constants.dateFormat;
 import static com.example.nalone.util.Constants.mStoreBase;
-import static com.example.nalone.util.Constants.timeFormat;
 
 
 public class MesEvenementsListFragment extends Fragment {
@@ -162,8 +156,8 @@ public class MesEvenementsListFragment extends Fragment {
                             Log.w("Statut event_join"," statut");
                             for (QueryDocumentSnapshot doc : task.getResult()){
                                 Evenement e = doc.toObject(Evenement.class);
-                                e.setStatusEvent(horloge.verifStatut(new Date(), e.getStartDate().toDate()));
-                                Log.w("Statut event_join",horloge.verifStatut(new Date(), e.getStartDate().toDate()) + " statut");
+                                //e.setStatusEvent(horloge.verifStatut(new Date(), e.getStartDate().toDate()));
+                                //Log.w("Statut event_join",horloge.verifStatut(new Date(), e.getStartDate().toDate()) + " statut");
                                 mStoreBase.collection("users").document(USER_ID).collection("events_join").document(e.getUid()).set(e);
                             }
                             initAdapter();
@@ -221,48 +215,13 @@ public class MesEvenementsListFragment extends Fragment {
                                         Log.w("creation fragment", "Adapter mes events");
 
                                         holder.mTitle.setText((e.getName()));
-                                        holder.mDate.setText((dateFormat.format(e.getStartDate().toDate())));
-                                        holder.mTime.setText((timeFormat.format(e.getStartDate().toDate())));
+                                        //holder.mDate.setText((dateFormat.format(e.getStartDate().toDate())));
+                                        //holder.mTime.setText((timeFormat.format(e.getStartDate().toDate())));
                                         holder.mVille.setText((e.getCity()));
                                         //holder.mDescription.setText((e.getDescription()));
-                                        holder.mProprietaire.setText(e.getOwner());
+                                        holder.mProprietaire.setText(e.getOwner_uid());
                                         holder.textViewNbMembers.setText(e.getNbMembers() + "");
 
-
-                                        mStoreBase.collection("users").whereEqualTo("uid", e.getOwnerDoc().getId())
-                                                .get()
-                                                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                                                    @Override
-                                                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                                                        if (task.isSuccessful()) {
-                                                            for (QueryDocumentSnapshot document : task.getResult()) {
-                                                                User u = document.toObject(User.class);
-                                                                if (u.getCursus().equalsIgnoreCase("Informatique")) {
-                                                                    holder.mCarwViewOwner.setCardBackgroundColor(Color.RED);
-                                                                }
-
-                                                                if (u.getCursus().equalsIgnoreCase("TC")) {
-                                                                    holder.mCarwViewOwner.setCardBackgroundColor(Color.parseColor("#00E9FD"));
-                                                                }
-
-                                                                if (u.getCursus().equalsIgnoreCase("MMI")) {
-                                                                    holder.mCarwViewOwner.setCardBackgroundColor(Color.parseColor("#FF1EED"));
-                                                                }
-
-                                                                if (u.getCursus().equalsIgnoreCase("GB")) {
-                                                                    holder.mCarwViewOwner.setCardBackgroundColor(Color.parseColor("#41EC57"));
-                                                                }
-
-                                                                if (u.getCursus().equalsIgnoreCase("LP")) {
-                                                                    holder.mCarwViewOwner.setCardBackgroundColor((Color.parseColor("#EC9538")));
-                                                                }
-
-                                                                Constants.setUserImage(u, getContext(), holder.mImageView);
-                                                            }
-
-                                                        }
-                                                    }
-                                                });
 
                                         holder.mAfficher.setOnClickListener(new View.OnClickListener() {
                                             @Override

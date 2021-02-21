@@ -199,7 +199,6 @@ public class RechercheAmisFragment extends Fragment {
         mAdapterFiltre.setOnItemClickListener(new ItemFiltreAdapter.OnItemClickListener() {
             @Override
             public void onAddClick(int position) {
-                Log.w("filtre", "click : "+filtres.get(position).getFiltre());
                 for (int i = 0; i < filtres.size(); i++){
                     if(i != position)
                         filtres.get(i).setBackground(R.drawable.custom_input);
@@ -211,7 +210,6 @@ public class RechercheAmisFragment extends Fragment {
                 }
                 else{
                     filtres.get(position).setBackground(R.color.colorPrimary);
-                    Log.w("filtre", filtres.get(position).getFiltre()+"");
                     for (int i = 0; i < friends.size(); i++){
                         Log.w("filtres", "Friends : " + friends.get(i));
                     }
@@ -268,27 +266,6 @@ public class RechercheAmisFragment extends Fragment {
             protected void onBindViewHolder(@NonNull final UserViewHolder userViewHolder, int i, @NonNull final User u) {
                 userViewHolder.villePers.setText(u.getCity());
                 userViewHolder.nomInvit.setText(u.getFirst_name() + " "+ u.getLast_name());
-
-                if(u.getCursus().equalsIgnoreCase("Informatique")){
-                    userViewHolder.cardViewPhotoPerson.setCardBackgroundColor(Color.RED);
-                }
-
-                if(u.getCursus().equalsIgnoreCase("TC")){
-                    userViewHolder.cardViewPhotoPerson.setCardBackgroundColor(Color.parseColor("#00E9FD"));
-                }
-
-                if(u.getCursus().equalsIgnoreCase("MMI")){
-                    userViewHolder.cardViewPhotoPerson.setCardBackgroundColor(Color.parseColor("#FF1EED"));
-                }
-
-                if(u.getCursus().equalsIgnoreCase("GB")){
-                    userViewHolder.cardViewPhotoPerson.setCardBackgroundColor(Color.parseColor("#41EC57"));
-                }
-
-                if(u.getCursus().equalsIgnoreCase("LP")){
-                    userViewHolder.cardViewPhotoPerson.setCardBackgroundColor((Color.parseColor("#EC9538")));
-                }
-
 
                 userViewHolder.button.setImageResource(0);
                 Log.w("Add", "BienHolder Recherche");

@@ -26,7 +26,7 @@ public class EditFragment extends Fragment {
 
 
     TextView profilEditPassword, textProfilEditMail, profilEditMail;
-    EditText profilEditNumero,profilEditPrenom,profilEditNom,profilEditVille,profilEditDepartement,profilEditDate;
+    EditText profilEditNumero,profilEditPrenom,profilEditNom,profilEditVille,profilEditDate;
     Button profilEditValider;
     private NavController navController;
     @Override
@@ -45,7 +45,6 @@ public class EditFragment extends Fragment {
         });
         profilEditPassword = root.findViewById(R.id.profilEditPassword);
         profilEditDate = root.findViewById(R.id.profilEditNaissance);
-        profilEditDepartement = root.findViewById(R.id.profilEditDepartement);
         profilEditMail = root.findViewById(R.id.profilEditMail);
         textProfilEditMail = root.findViewById(R.id.textProfilEditMail);
         profilEditNom = root.findViewById(R.id.profilEditNom);
@@ -58,7 +57,6 @@ public class EditFragment extends Fragment {
         profilEditPrenom.setText(USER.getFirst_name());
         profilEditDate.setText(USER.getBirthday_date());
         textProfilEditMail.setText(USER.getMail());
-        profilEditDepartement.setText(USER.getCursus());
         profilEditNumero.setText(USER.getNumber());
         profilEditVille.setText(USER.getCity());
 
@@ -75,7 +73,6 @@ public class EditFragment extends Fragment {
                 String nom = profilEditNom.getText().toString();
                 String prenom = profilEditPrenom.getText().toString();
                 String ville = profilEditVille.getText().toString();
-                String dep = profilEditDepartement.getText().toString();
                 String date = profilEditDate.getText().toString();
                 String num = profilEditNumero.getText().toString();
                 boolean error = false;
@@ -106,8 +103,8 @@ public class EditFragment extends Fragment {
 
                 if(!error){
                     if(!USER.getLast_name().equalsIgnoreCase(nom) || !USER.getFirst_name().equalsIgnoreCase(prenom) ||
-                        !USER.getCity().equalsIgnoreCase(ville) || !USER.getCursus().equalsIgnoreCase(dep)
-                        || !USER.getNumber().equalsIgnoreCase(num) || !USER.getBirthday_date().equalsIgnoreCase(date)){
+                        !USER.getCity().equalsIgnoreCase(ville)  || !USER.getNumber().equalsIgnoreCase(num)
+                            || !USER.getBirthday_date().equalsIgnoreCase(date)){
 
                         if(!USER.getLast_name().equalsIgnoreCase(nom)){
                             USER.setLast_name(nom);
@@ -119,10 +116,6 @@ public class EditFragment extends Fragment {
 
                         if(!USER.getCity().equalsIgnoreCase(ville)){
                             USER.setCity(ville);
-                        }
-
-                        if(!USER.getCursus().equalsIgnoreCase(dep)){
-                            USER.setCursus(dep);
                         }
 
                         if(!USER.getNumber().equalsIgnoreCase(num)){
@@ -138,10 +131,7 @@ public class EditFragment extends Fragment {
                     }else{
                         //navController.navigate(R.id.action_navigation_edit_profil_to_navigation_profil);
                     }
-
                 }
-
-
             }
         });
 

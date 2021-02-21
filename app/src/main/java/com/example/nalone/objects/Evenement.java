@@ -3,9 +3,6 @@ package com.example.nalone.objects;
 import com.example.nalone.enumeration.StatusEvent;
 import com.example.nalone.enumeration.Visibility;
 import com.example.nalone.util.Constants;
-import com.google.firebase.Timestamp;
-import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.GeoPoint;
 
 import java.io.Serializable;
 
@@ -19,13 +16,11 @@ public class Evenement implements Serializable {
     private Double latitude;
     private Double longitude;
     private Visibility visibility;
-    private DocumentReference ownerDoc;
-    private Timestamp startDate;
-    private Timestamp endDate;
-    private String owner;
+    private String startDate;
+    private String endDate;
+    private String owner_uid;
     private int nbMembers;
     private StatusEvent statusEvent;
-    private double distance;
 
     public Evenement() {
         this.uid = null;
@@ -34,45 +29,40 @@ public class Evenement implements Serializable {
         this.address = null;
         this.city = null;
         this.visibility = null;
-        this.ownerDoc = null;
         this.startDate = null;
         this.endDate = null;
-        this.owner = null;
+        this.owner_uid = null;
         this.latitude = null;
         this.longitude = null;
         this.nbMembers = 0;
         this.statusEvent = null;
-        this.distance = 0;
     }
 
 
-    public Evenement(String uid, StatusEvent statusEvent,String owner, int image, String name, String description, String address, String city,
-                     Visibility visibility, DocumentReference ownerDoc, Timestamp startDate, Timestamp endDate, GeoPoint location, double distance, int nbMembers){
+    public Evenement(String uid, StatusEvent statusEvent,String owner, String name, String description,
+                     String address, String city, Visibility visibility, String startDate, String endDate,
+                     double latitude, double longitude, int nbMembers){
         this.uid = uid;
         this.name = name;
         this.description = description;
         this.address = address;
         this.city = city;
         this.visibility = visibility;
-        this.ownerDoc = ownerDoc;
         this.startDate = startDate;
         this.endDate = endDate;
-        this.owner = owner;
-        if(location != null) {
-            this.latitude = location.getLatitude();
-            this.longitude = location.getLongitude();
-        }
+        this.owner_uid = owner;
+        this.latitude = latitude;
+        this.longitude = longitude;
         this.nbMembers = nbMembers;
         this.statusEvent = statusEvent;
-        this.distance = distance;
     }
 
-    public void setOwner(String owner) {
-        this.owner = owner;
+    public void setOwner_uid(String owner_uid) {
+        this.owner_uid = owner_uid;
     }
 
-    public String getOwner() {
-        return owner;
+    public String getOwner_uid() {
+        return owner_uid;
     }
 
     public String getName() {
@@ -115,27 +105,19 @@ public class Evenement implements Serializable {
         this.visibility = visibility;
     }
 
-    public DocumentReference getOwnerDoc() {
-        return ownerDoc;
-    }
-
-    public void setOwnerDoc(DocumentReference ownerDoc) {
-        this.ownerDoc = ownerDoc;
-    }
-
-    public Timestamp getStartDate() {
+    public String getStartDate() {
         return startDate;
     }
 
-    public void setStartDate(Timestamp startDate) {
+    public void setStartDate(String startDate) {
         this.startDate = startDate;
     }
 
-    public Timestamp getEndDate() {
+    public String getEndDate() {
         return endDate;
     }
 
-    public void setEndDate(Timestamp endDate) {
+    public void setEndDate(String endDate) {
         this.endDate = endDate;
     }
 
@@ -163,21 +145,6 @@ public class Evenement implements Serializable {
         this.longitude = longitude;
     }
 
-    @Override
-    public String toString(){
-        String date_text = Constants.formatD.format(this.startDate);
-        String final_date_text = "";
-        for(int i = 0; i < date_text.length(); i++){
-            char character = date_text.charAt(i);
-            if(i == 0) {
-                character = Character.toUpperCase(character);
-            }
-            final_date_text += character;
-        }
-
-        return final_date_text;
-    }
-
     public int getNbMembers() {
         return nbMembers;
     }
@@ -192,5 +159,20 @@ public class Evenement implements Serializable {
 
     public void setStatusEvent(StatusEvent statusEvent) {
         this.statusEvent = statusEvent;
+    }
+
+    @Override
+    public String toString(){
+        String date_text = Constants.formatD.format(this.startDate);
+        String final_date_text = "";
+        for(int i = 0; i < date_text.length(); i++){
+            char character = date_text.charAt(i);
+            if(i == 0) {
+                character = Character.toUpperCase(character);
+            }
+            final_date_text += character;
+        }
+
+        return final_date_text;
     }
 }

@@ -62,7 +62,6 @@ public class AmisFragment extends Fragment {
     private NavController navController;
     private TextView resultat;
     private View rootView;
-    private FirestoreRecyclerAdapter adapter;
     private RecyclerView mRecyclerView;
     private List<String> friends;
     private int nbInvit;
@@ -131,223 +130,7 @@ public class AmisFragment extends Fragment {
                 createFragment();
             }
         });
-
-        mStoreBase.collection("users").document(USER.getUid()).collection("friends").whereEqualTo("status", "received")
-                .get()
-                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        if (task.isSuccessful()) {
-                            for (QueryDocumentSnapshot document : task.getResult()) {
-                                Log.w("Invitations", document.getId());
-                                nbInvit++;
-                                Log.w("Invitations", nbInvit+"");
-                            }
-                        }
-                        Log.w("Invitations", nbInvit+"");
-                        if(nbInvit != 0){
-                            Log.w("Invitations", "Pop up");
-                            cardViewInvits.setVisibility(View.VISIBLE);
-                            textViewNbInvit.setText(nbInvit+"");
-                        }else{
-                            cardViewInvits.setVisibility(View.GONE);
-                        }
-                        //loading.setVisibility(View.GONE);
-                    }
-                });
-
-        adapterUsers();
     }
-
-    private void adapterUsers() {
-        mSwipeRefreshLayout.setRefreshing(true);
-        friends = new ArrayList<>();
-        mStoreBase.collection("users").document(USER.getUid()).collection("friends").whereEqualTo("status", "add").limit(10)
-                .get()
-                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        if (task.isSuccessful()) {
-                            for (QueryDocumentSnapshot document : task.getResult()) {
-                                Log.d("TAG", document.getId() + " => " + document.getData());
-                                friends.add(document.getId());
-                            }
-
-                            if (!friends.isEmpty()) {
-                                Query query = mStoreBase.collection("users").whereIn("uid", friends);
-                                FirestoreRecyclerOptions<User> options = new FirestoreRecyclerOptions.Builder<User>().setQuery(query, User.class).build();
-
-                                adapter = new FirestoreRecyclerAdapter<User, UserViewHolder>(options) {
-                                    @NonNull
-                                    @Override
-                                    public UserViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-                                        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.swipe_layout, parent, false);
-                                        return new UserViewHolder(view);
-                                    }
-
-                                    @RequiresApi(api = Build.VERSION_CODES.O)
-                                    @Override
-                                    protected void onBindViewHolder(@NonNull final UserViewHolder userViewHolder, int i, @NonNull final User u) {
-                                        userViewHolder.villePers.setText(u.getCity());
-                                        userViewHolder.nomInvit.setText(u.getFirst_name() + " " + u.getLast_name());
-                                        //userViewHolder.button.setImageResource(R.drawable.ic_baseline_delete_24);
-
-                                        userViewHolder.swipeLayout.addDrag(SwipeLayout.DragEdge.Left, userViewHolder.swipeLayout.findViewById(R.id.bottom_wrapper1));
-
-                                        userViewHolder.swipeLayout.addDrag(SwipeLayout.DragEdge.Right, userViewHolder.swipeLayout.findViewById(R.id.bottom_wraper));
-                                        userViewHolder.swipeLayout.addSwipeListener(new SwipeLayout.SwipeListener() {
-                                            @Override
-                                            public void onStartOpen(SwipeLayout layout) {
-
-                                            }
-
-                                            @Override
-                                            public void onOpen(SwipeLayout layout) {
-                                                userViewHolder.button.setImageDrawable(getResources().getDrawable(R.drawable.arrow_back_white));
-                                                swipe = true;
-                                            }
-
-                                            @Override
-                                            public void onStartClose(SwipeLayout layout) {
-
-                                            }
-
-                                            @Override
-                                            public void onClose(SwipeLayout layout) {
-                                                userViewHolder.button.setImageDrawable(getResources().getDrawable(R.drawable.ic_baseline_keyboard_arrow_right_24));
-
-                                            }
-
-                                            @Override
-                                            public void onUpdate(SwipeLayout layout, int leftOffset, int topOffset) {
-
-                                            }
-
-                                            @Override
-                                            public void onHandRelease(SwipeLayout layout, float xvel, float yvel) {
-
-                                            }
-                                        });
-
-                                        userViewHolder.swipeLayout.getSurfaceView().setOnClickListener(new View.OnClickListener() {
-                                            @Override
-                                            public void onClick(View v) {
-                                                Toast.makeText(getContext(), " Click : " , Toast.LENGTH_SHORT).show();
-                                            }
-                                        });
-
-                                        userViewHolder.btnLocation.setOnClickListener(new View.OnClickListener() {
-                                            @Override
-                                            public void onClick(View v) {
-                                                showPopUpProfil(u);
-                                            }
-                                        });
-
-                                        userViewHolder.Share.setOnClickListener(new View.OnClickListener() {
-                                            @Override
-                                            public void onClick(View view) {
-                                                ChatActivityFriend.USER_LOAD = u;
-                                                startActivity(new Intent(getContext(), ChatActivityFriend.class));
-                                            }
-                                        });
-
-                                        userViewHolder.Appel.setOnClickListener(new View.OnClickListener() {
-                                            @Override
-                                            public void onClick(View view) {
-                                                if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.CALL_PHONE)
-                                                        != PackageManager.PERMISSION_GRANTED) {
-                                                    getActivity().requestPermissions(new String[]{Manifest.permission.CALL_PHONE}, 0);
-                                                    return;
-                                                }
-                                                Intent callIntent = new Intent(Intent.ACTION_CALL);
-                                                callIntent.setData(Uri.parse("tel:"+u.getNumber()));
-                                                startActivity(callIntent);
-
-                                            }
-                                        });
-
-                                        userViewHolder.Delete.setOnClickListener(new View.OnClickListener() {
-                                            @Override
-                                            public void onClick(View v) {
-                                                removeFriend(u.getUid());
-                                                createFragment();
-                                            }
-                                        });
-
-                                        if(u.getCursus().equalsIgnoreCase("Informatique")){
-                                            userViewHolder.cardViewPhotoPerson.setCardBackgroundColor(Color.RED);
-                                        }
-
-                                        if(u.getCursus().equalsIgnoreCase("TC")){
-                                            userViewHolder.cardViewPhotoPerson.setCardBackgroundColor(Color.parseColor("#00E9FD"));
-                                        }
-
-                                        if(u.getCursus().equalsIgnoreCase("MMI")){
-                                            userViewHolder.cardViewPhotoPerson.setCardBackgroundColor(Color.parseColor("#FF1EED"));
-                                        }
-
-                                        if(u.getCursus().equalsIgnoreCase("GB")){
-                                            userViewHolder.cardViewPhotoPerson.setCardBackgroundColor(Color.parseColor("#41EC57"));
-                                        }
-
-                                        if(u.getCursus().equalsIgnoreCase("LP")){
-                                            userViewHolder.cardViewPhotoPerson.setCardBackgroundColor((Color.parseColor("#EC9538")));
-                                        }
-
-                                        Constants.setUserImage(u, getContext(), userViewHolder.imagePerson);
-
-                                        userViewHolder.layoutProfil.setOnClickListener(new View.OnClickListener() {
-                                            @Override
-                                            public void onClick(View v) {
-                                                showPopUpProfil(u);
-                                            }
-                                        });
-
-                                        userViewHolder.button.setOnClickListener(new View.OnClickListener() {
-                                            @Override
-                                            public void onClick(View v) {
-                                                if(swipe == false) {
-                                                    userViewHolder.swipeLayout.open();
-                                                    swipe = true;
-                                                }
-                                                else{
-                                                    userViewHolder.swipeLayout.close();
-                                                    swipe = false;
-                                                }
-                                            }
-                                        });
-                                        loading.setVisibility(View.GONE);
-                                    }
-                                };
-                                mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-
-                                mRecyclerView.setAdapter(adapter);
-
-                                mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
-                                    @Override
-                                    public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
-                                        super.onScrollStateChanged(recyclerView, newState);
-                                        Log.e("RecyclerView", "onScrollStateChanged");
-                                    }
-                                    @Override
-                                    public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-                                        super.onScrolled(recyclerView, dx, dy);
-                                    }
-                                });
-                                adapter.startListening();
-
-
-                            }else{
-                                linearSansMesAmis.setVisibility(View.VISIBLE);
-                                loading.setVisibility(View.GONE);
-                            }
-                        }
-                    }
-                });
-        mSwipeRefreshLayout.setRefreshing(false);
-        Log.w("Refresh", "Set refresing false");
-    }
-
 
     private class UserViewHolder extends RecyclerView.ViewHolder {
         private TextView nomInvit;
@@ -382,33 +165,7 @@ public class AmisFragment extends Fragment {
     }
 
     private void removeFriend(final String uid) {
-        mStoreBase.collection("users").document(USER.getUid()).
-                collection("friends").document(uid);
-        mStoreBase.collection("users").document(USER.getUid()).
-                collection("friends").document(uid).delete();
 
-        mStoreBase.collection("users").document(uid).
-                collection("friends").document(USER.getUid()).delete();
-
-        Toast.makeText(getContext(), "Vous avez supprimé un amis !", Toast.LENGTH_SHORT).show();
-    }
-
-
-    public void showPopUpProfil(final User u) {
-        PopupProfilFragment.USER_LOAD = u;
-        mStoreBase.collection("users").document(USER.getUid()).collection("friends").document(u.getUid()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                ModelData data = task.getResult().toObject(ModelData.class);
-                    if(data.getStatus().equalsIgnoreCase("send")){
-                        PopupProfilFragment.button = R.drawable.ic_round_hourglass_top_24;
-                    }else if(data.getStatus().equalsIgnoreCase("received")){
-                        PopupProfilFragment.button = R.drawable.ic_round_mail_24;
-                    }
-                    PopupProfilFragment.type = "amis";
-                    navController.navigate(R.id.action_navigation_amis_to_navigation_popup_profil);
-            }
-        });
     }
 
     @Override
@@ -428,9 +185,6 @@ public class AmisFragment extends Fragment {
     @Override
     public void onStop() {
         super.onStop();
-        if(adapter != null) {
-            adapter.stopListening();
-        }
     }
 
 }

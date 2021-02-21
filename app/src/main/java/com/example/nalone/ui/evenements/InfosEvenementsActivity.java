@@ -36,7 +36,6 @@ import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
-import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
@@ -47,10 +46,7 @@ import java.util.List;
 
 import static com.example.nalone.util.Constants.USER;
 import static com.example.nalone.util.Constants.USER_ID;
-import static com.example.nalone.util.Constants.formatD;
 import static com.example.nalone.util.Constants.mStoreBase;
-import static com.example.nalone.util.Constants.setUserImage;
-import static com.example.nalone.util.Constants.timeFormat;
 
 public class InfosEvenementsActivity extends Fragment {
 
@@ -143,20 +139,12 @@ public class InfosEvenementsActivity extends Fragment {
             }
         });
 
-        String date_text = formatD.format(EVENT_LOAD.getStartDate().toDate());
+        //String date_text = formatD.format(EVENT_LOAD.getStartDate().toDate());
         String final_date_text = "";
         mTitle.setText(EVENT_LOAD.getName());
-        mTimer.setText(timeFormat.format(EVENT_LOAD.getStartDate().toDate()));
-        mOwner.setText(EVENT_LOAD.getOwner());
-        mStoreBase.collection("users").document(EVENT_LOAD.getOwnerDoc().getId()).get()
-                .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                        if(task.isSuccessful()){
-                            setUserImage(task.getResult().toObject(User.class),getContext(),ownerImage);
-                        }
-                    }
-                });
+        //mTimer.setText(timeFormat.format(EVENT_LOAD.getStartDate().toDate()));
+        mOwner.setText(EVENT_LOAD.getOwner_uid());
+
         if(EVENT_LOAD.getDescription().matches("")){
             mDescription.setVisibility(View.GONE);
         }else{
@@ -169,13 +157,13 @@ public class InfosEvenementsActivity extends Fragment {
 
 
 
-        for (int i = 0; i < date_text.length() - 5; i++) {
+        /*for (int i = 0; i < date_text.length() - 5; i++) {
             char character = date_text.charAt(i);
             if (i == 0) {
                 character = Character.toUpperCase(character);
             }
             final_date_text += character;
-        }
+        }*/
 
         mDate.setText(final_date_text);
 
@@ -205,25 +193,6 @@ public class InfosEvenementsActivity extends Fragment {
                         @Override
                         protected void onBindViewHolder(@NonNull final InfosEvenementsActivity.UserViewHolder userViewHolder, int i, @NonNull final User u) {
                             Constants.setUserImage(u, getContext(), userViewHolder.imagePerson);
-                            if(u.getCursus().equalsIgnoreCase("Informatique")){
-                                userViewHolder.cardViewUser.setCardBackgroundColor(Color.RED);
-                            }
-
-                            if(u.getCursus().equalsIgnoreCase("TC")){
-                                userViewHolder.cardViewUser.setCardBackgroundColor(Color.parseColor("#00E9FD"));
-                            }
-
-                            if(u.getCursus().equalsIgnoreCase("MMI")){
-                                userViewHolder.cardViewUser.setCardBackgroundColor(Color.parseColor("#FF1EED"));
-                            }
-
-                            if(u.getCursus().equalsIgnoreCase("GB")){
-                                userViewHolder.cardViewUser.setCardBackgroundColor(Color.parseColor("#41EC57"));
-                            }
-
-                            if(u.getCursus().equalsIgnoreCase("LP")){
-                                userViewHolder.cardViewUser.setCardBackgroundColor((Color.parseColor("#EC9538")));
-                            }
                         }
                     };
 
@@ -254,7 +223,7 @@ public class InfosEvenementsActivity extends Fragment {
     private final Runnable runnable = new Runnable() {
         @Override
         public void run() {
-            differenceDate(new Date(),EVENT_LOAD.getStartDate().toDate());
+            //differenceDate(new Date(),EVENT_LOAD.getStartDate().toDate());
             handler.postDelayed(this,0);
 
         }

@@ -137,10 +137,10 @@ public class DateEventFragment extends Fragment {
         }
         if (MainCreationEventActivity.dateValidate){
             imageProgessCreationDate.setImageDrawable(getResources().getDrawable(R.drawable.creation_event_date_focused));
-            eventStartDate.setText(MainCreationEventActivity.currentEvent.getStartDate().toDate().toString());
-            eventEndDate.setText(MainCreationEventActivity.currentEvent.getStartDate().toDate().toString());
-            eventStartHoraire.setText(MainCreationEventActivity.currentEvent.getStartDate().toDate().toString());
-            eventEndHoraire.setText(MainCreationEventActivity.currentEvent.getStartDate().toDate().toString());
+            //eventStartDate.setText(MainCreationEventActivity.currentEvent.getStartDate().toDate().toString());
+            //eventEndDate.setText(MainCreationEventActivity.currentEvent.getStartDate().toDate().toString());
+            //eventStartHoraire.setText(MainCreationEventActivity.currentEvent.getStartDate().toDate().toString());
+            //eventEndHoraire.setText(MainCreationEventActivity.currentEvent.getStartDate().toDate().toString());
         }
         if (MainCreationEventActivity.membersValidate){
             imageProgessCreationMembers.setImageDrawable(getResources().getDrawable(R.drawable.creation_event_members_focused));
@@ -189,8 +189,8 @@ public class DateEventFragment extends Fragment {
             eventEndHoraire.setError("Champs obligatoire");
         }else{
                 MainCreationEventActivity.dateValidate = true;
-                 MainCreationEventActivity.currentEvent.setStartDate(tsStart);
-                 MainCreationEventActivity.currentEvent.setEndDate(tsEnd);
+                 //MainCreationEventActivity.currentEvent.setStartDate(tsStart);
+                 //MainCreationEventActivity.currentEvent.setEndDate(tsEnd);
                 if(MainCreationEventActivity.isAllValidate()){
                     Toast.makeText(getContext(), "Evenement créer", Toast.LENGTH_SHORT).show();
                 }else if(!MainCreationEventActivity.adressValidate) {

@@ -2,7 +2,6 @@ package com.example.nalone.ui.evenements.display;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -23,19 +22,13 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.nalone.objects.Evenement;
 import com.example.nalone.R;
-import com.example.nalone.objects.User;
 import com.example.nalone.ui.evenements.creation.CreateEventFragment;
 import com.example.nalone.ui.evenements.EvenementsFragment;
 import com.example.nalone.util.Constants;
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.Query;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.firebase.firestore.QuerySnapshot;
 
 
 import java.text.SimpleDateFormat;
@@ -44,10 +37,7 @@ import java.util.List;
 
 import static com.example.nalone.util.Constants.USER_ID;
 import static com.example.nalone.util.Constants.USER_REFERENCE;
-import static com.example.nalone.util.Constants.dateFormat;
 import static com.example.nalone.util.Constants.mStoreBase;
-import static com.example.nalone.util.Constants.setUserImage;
-import static com.example.nalone.util.Constants.timeFormat;
 
 
 public class CreationsEvenementsFragment extends Fragment {
@@ -121,47 +111,12 @@ public class CreationsEvenementsFragment extends Fragment {
 
                 //holder.mImageView.setImageResource(e.getImage());
                 holder.mTitle.setText((e.getName()));
-                holder.mDate.setText((dateFormat.format(e.getStartDate().toDate())));
-                holder.mTime.setText((timeFormat.format(e.getStartDate().toDate())));
+                //holder.mDate.setText((dateFormat.format(e.getStartDate().toDate())));
+                //holder.mTime.setText((timeFormat.format(e.getStartDate().toDate())));
                 holder.mVille.setText((e.getCity()));
                 holder.mDescription.setText((e.getDescription()));
-                holder.mProprietaire.setText(e.getOwner());
+                holder.mProprietaire.setText(e.getOwner_uid());
                 holder.textViewNbMembers.setText(e.getNbMembers() + " membres inscrits");
-
-
-
-                mStoreBase.collection("users").whereEqualTo("uid", e.getOwnerDoc().getId())
-                        .get()
-                        .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                            @Override
-                            public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                                if (task.isSuccessful()) {
-                                    for (QueryDocumentSnapshot document : task.getResult()) {
-                                        User u = document.toObject(User.class);
-                                        if(u.getCursus().equalsIgnoreCase("Informatique")){
-                                            holder.mCarwViewOwner.setCardBackgroundColor(Color.RED);
-                                        }
-
-                                        if(u.getCursus().equalsIgnoreCase("TC")){
-                                            holder.mCarwViewOwner.setCardBackgroundColor(Color.parseColor("#00E9FD"));
-                                        }
-
-                                        if(u.getCursus().equalsIgnoreCase("MMI")){
-                                            holder.mCarwViewOwner.setCardBackgroundColor(Color.parseColor("#FF1EED"));
-                                        }
-
-                                        if(u.getCursus().equalsIgnoreCase("GB")){
-                                            holder.mCarwViewOwner.setCardBackgroundColor(Color.parseColor("#41EC57"));
-                                        }
-
-                                        if(u.getCursus().equalsIgnoreCase("LP")){
-                                            holder.mCarwViewOwner.setCardBackgroundColor((Color.parseColor("#EC9538")));
-                                        }
-
-                                    }
-
-                                }
-                            }});
 
 
                 holder.mImageViewDelete.setImageDrawable(getResources().getDrawable(R.drawable.ic_round_delete_24));
@@ -206,17 +161,6 @@ public class CreationsEvenementsFragment extends Fragment {
                     }
                 });
 
-                mStoreBase.collection("users").document(e.getOwnerDoc().getId())
-                        .get()
-                        .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                            @Override
-                            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                                if(task.isSuccessful()){
-                                    User u = task.getResult().toObject(User.class);
-                                    setUserImage(u, getContext(), holder.mImageView);
-                                }
-                            }
-                        });
                 loading.setVisibility(View.GONE);
             }
         };

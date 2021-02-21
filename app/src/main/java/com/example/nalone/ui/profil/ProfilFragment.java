@@ -1,10 +1,10 @@
 package com.example.nalone.ui.profil;
 
 import android.content.Intent;
-import android.graphics.Color;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -32,6 +32,9 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+
+import org.json.JSONArray;
+import org.json.JSONException;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -61,30 +64,13 @@ public class ProfilFragment extends Fragment  {
     private int RESULT_LOAD_IMG = 1;
 
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
 
 
         View root = inflater.inflate(R.layout.fragment_profil, container, false);
-        buttonBack.setVisibility(View.GONE);
-        navController = Navigation.findNavController(getActivity(), R.id.nav_host_fragment_profil);
-        userConnectDesc = root.findViewById(R.id.userConnectDescription);
-        userConnectText = root.findViewById(R.id.userConnectText);
-        userConnectVille = root.findViewById(R.id.useConnectVille);
-        userConnectNbC = root.findViewById(R.id.userConnectNbCreation);
-        userConnectNbP = root.findViewById(R.id.userConnectNbParticipation);
-        cardViewProfilParametres = root.findViewById(R.id.cardViewProfilParametres);
-        cardViewProfilAide = root.findViewById(R.id.cardViewProfilAide);
-        cardViewProfilEdit = root.findViewById(R.id.cardViewProfilEdit);
-        cardViewPhotoEdit = root.findViewById(R.id.cardViewPhotoEdit);
-        cardViewPhotoEditDesc = root.findViewById(R.id.cardViewPhotoEditDesc);
-        imageViewEditDescription = root.findViewById(R.id.imageViewEditDescription);
-        imageUser = root.findViewById(R.id.imageUser);
-        imageViewEditPhoto = root.findViewById(R.id.imageViewEditPhoto);
-        cardViewPhotoPerson = root.findViewById(R.id.cardViewUser);
-
-        cardViewQR = root.findViewById(R.id.cardViewQR);
-
+        initView(root);
         cardViewQR.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -99,23 +85,6 @@ public class ProfilFragment extends Fragment  {
         userConnectDesc.setText(USER.getDescription());
         userConnectDesc.setClickable(false);
         userConnectDesc.setEnabled(false);
-
-        if(USER.getCursus().equalsIgnoreCase("Informatique")){
-            cardViewPhotoPerson.setCardBackgroundColor(Color.RED);
-        }
-        if(USER.getCursus().equalsIgnoreCase("TC")){
-            cardViewPhotoPerson.setCardBackgroundColor(Color.parseColor("#00E9FD"));
-        }
-        if(USER.getCursus().equalsIgnoreCase("MMI")){
-            cardViewPhotoPerson.setCardBackgroundColor(Color.parseColor("#FF1EED"));
-        }
-        if(USER.getCursus().equalsIgnoreCase("GB")){
-            cardViewPhotoPerson.setCardBackgroundColor(Color.parseColor("#41EC57"));
-        }
-        if(USER.getCursus().equalsIgnoreCase("LP")){
-            cardViewPhotoPerson.setCardBackgroundColor(Color.parseColor("#EC9538"));
-        }
-
 
         cardViewPhotoEditDesc.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -139,10 +108,6 @@ public class ProfilFragment extends Fragment  {
 
             }
         });
-
-
-
-
 
         cardViewProfilParametres.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -302,6 +267,24 @@ public class ProfilFragment extends Fragment  {
         Glide.with(getContext()).load(imagUri).fitCenter().centerCrop().into(imageUser);
     }
 
+    private void initView(View root){
+        buttonBack.setVisibility(View.GONE);
+        navController = Navigation.findNavController(getActivity(), R.id.nav_host_fragment_profil);
+        userConnectDesc = root.findViewById(R.id.userConnectDescription);
+        userConnectText = root.findViewById(R.id.userConnectText);
+        userConnectVille = root.findViewById(R.id.useConnectVille);
+        userConnectNbC = root.findViewById(R.id.userConnectNbCreation);
+        userConnectNbP = root.findViewById(R.id.userConnectNbParticipation);
+        cardViewProfilParametres = root.findViewById(R.id.cardViewProfilParametres);
+        cardViewProfilAide = root.findViewById(R.id.cardViewProfilAide);
+        cardViewProfilEdit = root.findViewById(R.id.cardViewProfilEdit);
+        cardViewPhotoEdit = root.findViewById(R.id.cardViewPhotoEdit);
+        cardViewPhotoEditDesc = root.findViewById(R.id.cardViewPhotoEditDesc);
+        imageViewEditDescription = root.findViewById(R.id.imageViewEditDescription);
+        imageUser = root.findViewById(R.id.imageUser);
+        imageViewEditPhoto = root.findViewById(R.id.imageViewEditPhoto);
+        cardViewPhotoPerson = root.findViewById(R.id.cardViewUser);
 
-
+        cardViewQR = root.findViewById(R.id.cardViewQR);
+    }
 }

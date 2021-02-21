@@ -7,6 +7,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
@@ -16,8 +17,14 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.VolleyError;
+import com.example.nalone.json.JSONController;
+import com.example.nalone.json.JSONObjectCrypt;
+import com.example.nalone.json.JSONObjectListener;
 import com.example.nalone.objects.User;
 import com.example.nalone.signUpActivities.SignUpInformationActivity;
+import com.example.nalone.util.Constants;
+import com.example.nalone.util.CryptoUtils;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
@@ -36,6 +43,11 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import splash.SplashActivity;
 
 import static com.example.nalone.util.Constants.USER;
 import static com.example.nalone.util.Constants.USER_ID;
@@ -101,6 +113,7 @@ public class MainActivity extends AppCompatActivity{
         });
 
         textViewConnexion.setOnClickListener(new View.OnClickListener() {
+            @RequiresApi(api = Build.VERSION_CODES.O)
             @Override
             public void onClick(View view) {
                 final String textAddress = editTextAddress.getText().toString();
@@ -158,46 +171,64 @@ public class MainActivity extends AppCompatActivity{
         }
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    private void connectUser(final String mail, final String pass) {
+
+        final SharedPreferences loginPreferences = getSharedPreferences("login", MODE_PRIVATE);
+        final SharedPreferences.Editor editor = loginPreferences.edit();
+
+        JSONObjectCrypt object = new JSONObjectCrypt();
+        object.addParameter("mail", mail);
+        object.addParameter("password", pass);
+
+
+        JSONController.getJsonObjectFromUrl(Constants.URL_SIGN_IN, MainActivity.this, object, new JSONObjectListener() {
+            @Override
+            public void onJSONReceived(JSONObject jsonObject) {
+                Log.w("Response", jsonObject.toString());
+                if(jsonObject.length() == 1){
+                    try {
+                        editor.putString("mail", CryptoUtils.encrypt(mail));
+                        editor.putString("password", CryptoUtils.encrypt(pass));
+                        editor.apply();
+                        loadUserData(jsonObject);
+                    } catch (JSONException e) {
+                        Log.w("Response", "Erreur:"+e.getMessage());
+                        Toast.makeText(MainActivity.this, "Une erreur est survenue !", Toast.LENGTH_SHORT).show();
+                    }
+                }else{
+                    progressBar.setVisibility(View.GONE);
+                    Toast.makeText(MainActivity.this, "L'adresse mail ou le mot de passe est " +
+                            "incorrect", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onJSONReceivedError(VolleyError volleyError) {
+                progressBar.setVisibility(View.GONE);
+                Toast.makeText(MainActivity.this, "Une erreur est survenue !", Toast.LENGTH_SHORT).show();
+                Log.w("Response", "Erreur : "+volleyError.toString());
+            }
+        });
     }
 
-    private void connectUser(String mail, String pass) {
-            mAuth.signInWithEmailAndPassword(mail, pass)
-                    .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-                        @Override
-                        public void onComplete(@NonNull Task<AuthResult> task) {
-                            if (task.isSuccessful()) {
-                                currentUser = mAuth.getCurrentUser();
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    private void loadUserData(JSONObject json) throws JSONException {
+        JSONObjectCrypt params = new JSONObjectCrypt();
+        params.addParameter("uid", json.getString("uid"));
+        JSONController.getJsonObjectFromUrl(Constants.URL_ME, this, params, new JSONObjectListener() {
+            @Override
+            public void onJSONReceived(JSONObject jsonObject) {
+                USER = (User)JSONController.convertJSONToObject(jsonObject, User.class);
+                launchHomeActivity();
+            }
 
-                                if (currentUser.isEmailVerified()) {
-                                    loadUser();
-                                } else {
-                                    final AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
-                                    builder.setMessage("Votre adresse mail n'a pas été vérifiée")
-                                            .setPositiveButton("Renvoyer", new DialogInterface.OnClickListener() {
-                                                public void onClick(DialogInterface dialog, int id) {
-                                                    sendVerificationEmail();
-                                                    progressBar.setVisibility(View.GONE);
-                                                }
-                                            })
-                                            .setNegativeButton("OK", new DialogInterface.OnClickListener() {
-                                                public void onClick(DialogInterface dialog, int id) {
-                                                    dialog.dismiss();
-                                                    progressBar.setVisibility(View.GONE);
-                                                }
-                                            });
-                                    builder.create();
-                                    builder.show();
-                                }
-                            } else {
-                                progressBar.setVisibility(View.GONE);
-                                Toast.makeText(MainActivity.this, task.getException().getMessage(),
-                                        Toast.LENGTH_SHORT).show();
-                            }
-                        }
-                    });
+            @Override
+            public void onJSONReceivedError(VolleyError volleyError) {
+                Log.w("Response", "Erreur:"+volleyError.toString());
+                Toast.makeText(MainActivity.this, "Une erreur est survenue !", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     public void connectUserFromGoogle(String token){
@@ -208,7 +239,6 @@ public class MainActivity extends AppCompatActivity{
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
-                            Log.w("Google", "Result");
                             FirebaseUser user = mAuth.getCurrentUser();
                             mStoreBase.collection("users").whereEqualTo("mail", user.getEmail()).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                                 @Override
@@ -233,104 +263,32 @@ public class MainActivity extends AppCompatActivity{
                 });
     }
 
-    @Override
-    public void onBackPressed(){
-        //super.onBackPressed();
-    }
-
-    @Override
-    public void onStop(){
-        super.onStop();
-    }
-
-    private void sendVerificationEmail() {
-        mAuth.getCurrentUser().sendEmailVerification()
-                .addOnCompleteListener(new OnCompleteListener<Void>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Void> task) {
-                        if (task.isSuccessful()) {
-                            Toast.makeText(MainActivity.this, "Fiouuuu... Le mail vient de partir !",
-                                    Toast.LENGTH_SHORT).show();
-                        }else{
-                            Toast.makeText(MainActivity.this, "Une erreur est survenu : " + task.getException(),
-                                    Toast.LENGTH_SHORT).show();
-                        }
-
-                    }
-                });
-    }
-
     private void loadUser(){
-        mStoreBase.collection("application").document("maintenance").get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                if(!task.getResult().getBoolean("isMaintenance")){
-                    mStoreBase.collection("users")
-                            .whereEqualTo("mail", currentUser.getEmail())
-                            .get()
-                            .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                                @RequiresApi(api = Build.VERSION_CODES.M)
-                                @Override
-                                public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                                    if (task.isSuccessful()) {
-                                        if (task.getResult().size() > 0) {
-                                            for (QueryDocumentSnapshot document : task.getResult()) {
-                                                USER = document.toObject(User.class);
-                                            }
-                                            USER_ID = USER.getUid();
-                                            MyFirebaseInstance.user_id = USER_ID;
-                                            USER_STORAGE_REF = mStore.getReference("users").child(USER.getUid());
 
-                                            USER_REFERENCE = mStoreBase.collection("users").document(USER.getUid());
-                                            if(!USER.isBan()) {
-                                                startActivity(new Intent(MainActivity.this, HomeActivity.class));
-                                            }else{
-                                                final AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
-                                                builder.setMessage("Votre compte à été suspendu pour la raison : \n\n"+USER.getBanReason() + "\n\nJusqu'au : " + USER.getTime_ban().toDate().toString())
-                                                        .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                                                            public void onClick(DialogInterface dialog, int id) {
-                                                                dialog.dismiss();
-                                                                progressBar.setVisibility(View.GONE);
-                                                            }
-                                                        });
-                                                builder.setCancelable(false);
-                                                builder.create();
-                                                builder.show();
-                                            }
-                                        }
-                                    } else {
-                                        Log.d("SPLASH", "Error getting documents: ", task.getException());
-                                        Toast.makeText(MainActivity.this, "Une erreur est survenue !", Toast.LENGTH_SHORT).show();
-                                    }
-                                }
-                            }).addOnFailureListener(new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception e) {
-                            Log.w("SPLASH", "Erreur : " + e.getMessage());
-                        }
-                    });
-                }else{
-                    final AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
-                    builder.setMessage("Désolé une maintenance est en cours...")
-                            .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                                public void onClick(DialogInterface dialog, int id) {
-                                    dialog.dismiss();
-                                    progressBar.setVisibility(View.GONE);
-                                }
-                            });
-                    builder.setCancelable(false);
-                    builder.create();
-                    builder.show();
-                }
-            }
-        });
+    }
 
+    private void launchHomeActivity(){
+        Log.w("Launching", "Launching home activity");
+        startActivity(new Intent(MainActivity.this, HomeActivity.class));
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
         FirebaseAuth.getInstance().signOut();
+    }
+
+    @Override
+    public void onBackPressed(){}
+
+    @Override
+    public void onStop(){
+        super.onStop();
     }
 }
 

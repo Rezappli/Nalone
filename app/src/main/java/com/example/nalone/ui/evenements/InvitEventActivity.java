@@ -23,14 +23,10 @@ import com.example.nalone.R;
 import com.example.nalone.items.ItemPerson;
 import com.example.nalone.objects.Evenement;
 import com.example.nalone.objects.ModelData;
-import com.example.nalone.objects.Notification;
-import com.example.nalone.objects.User;
-import com.example.nalone.ui.evenements.InfosEvenementsActivity;
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
-import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
@@ -40,10 +36,7 @@ import java.util.ArrayList;
 import static com.example.nalone.HomeActivity.buttonBack;
 import static com.example.nalone.util.Constants.USER;
 import static com.example.nalone.util.Constants.USER_ID;
-import static com.example.nalone.util.Constants.dateFormat;
 import static com.example.nalone.util.Constants.mStoreBase;
-import static com.example.nalone.util.Constants.setUserImage;
-import static com.example.nalone.util.Constants.timeFormat;
 
 public class InvitEventActivity extends Fragment {
 
@@ -89,9 +82,9 @@ public class InvitEventActivity extends Fragment {
             protected void onBindViewHolder(@NonNull final EventViewHolder userViewHolder, int i, @NonNull final Evenement e) {
                 userViewHolder.villePers.setText(e.getCity());
                 userViewHolder.nomInvit.setText(e.getName());
-                userViewHolder.dateInvit.setText((dateFormat.format(e.getStartDate().toDate())));
-                userViewHolder.timeInvit.setText((timeFormat.format(e.getStartDate().toDate())));
-                userViewHolder.ownerInvit.setText(e.getOwner());
+                //userViewHolder.dateInvit.setText((dateFormat.format(e.getStartDate().toDate())));
+                //userViewHolder.timeInvit.setText((timeFormat.format(e.getStartDate().toDate())));
+                userViewHolder.ownerInvit.setText(e.getOwner_uid());
                 userViewHolder.nbParticipant.setText(e.getNbMembers()+"");
 
                 //setUserImage(e.getOwnerDoc(),getContext(),userViewHolder.imagePerson);
@@ -108,31 +101,9 @@ public class InvitEventActivity extends Fragment {
                     @Override
                     public void onClick(View v) {
                         acceptFriendRequest(e);
-                        mStoreBase.collection("users").document(e.getOwnerDoc().getId())
-                                .get()
-                                .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                                    @Override
-                                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                                        if(task.isSuccessful()){
-                                            Notification.createNotif(task.getResult().toObject(User.class),Notification.joinEvent());
-
-                                        }
-                                    }
-                                });
                     }
                 });
 
-                mStoreBase.collection("users").document(e.getOwnerDoc().getId())
-                        .get()
-                        .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                            @Override
-                            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                                if(task.isSuccessful()){
-                                    User u = task.getResult().toObject(User.class);
-                                    setUserImage(u,getContext(),userViewHolder.imagePerson);
-                                }
-                            }
-                        });
 
                 userViewHolder.layoutProfil.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -148,7 +119,6 @@ public class InvitEventActivity extends Fragment {
                         declineFriendRequest(e);
                     }
                 });
-//                loading.setVisibility(View.GONE);
 
             }
         };
@@ -202,7 +172,6 @@ public class InvitEventActivity extends Fragment {
                     }
                 }
             });
-            mStoreBase.collection("users").document(e.getOwnerDoc().getId()).collection("events_create").document(e.getUid()).collection("members").document(USER_ID).set(USER);
             mStoreBase.collection("events").document(e.getUid()).collection("members").document(USER_ID).set(USER);
             mStoreBase.collection("users").document(USER_ID).collection("events_join").document(e.getUid()).set(e);
             mStoreBase.collection("users").document(USER_ID).collection("events_received").document(e.getUid()).delete();

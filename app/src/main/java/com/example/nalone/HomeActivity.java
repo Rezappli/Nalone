@@ -89,7 +89,7 @@ public class HomeActivity extends AppCompatActivity{
                 startActivity(new Intent(getBaseContext(), NotificationActivity.class));
             }
         });
-        mStoreBase.collection("users").document(USER_ID).collection("notifications").get()
+/*        mStoreBase.collection("users").document(USER_ID).collection("notifications").get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
@@ -99,7 +99,7 @@ public class HomeActivity extends AppCompatActivity{
                             }
                     }
                     }
-                });
+                });*/
 
         buttonBack.setVisibility(View.GONE);
         AppBarConfiguration appBarConfiguration = new AppBarConfiguration.Builder(

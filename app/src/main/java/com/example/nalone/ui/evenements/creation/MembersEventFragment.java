@@ -204,27 +204,6 @@ public class MembersEventFragment extends Fragment {
                     }
                 });
 
-                if(u.getCursus().equalsIgnoreCase("Informatique")){
-                    personViewHolder.cardView.setCardBackgroundColor(Color.RED);
-                }
-                if(u.getCursus().equalsIgnoreCase("TC")){
-                    personViewHolder.cardView.setCardBackgroundColor(Color.parseColor("#00E9FD"));
-                }
-
-                if(u.getCursus().equalsIgnoreCase("MMI")){
-                    personViewHolder.cardView.setCardBackgroundColor(Color.parseColor("#FF1EED"));
-                }
-
-                if(u.getCursus().equalsIgnoreCase("GB")){
-                    personViewHolder.cardView.setCardBackgroundColor(Color.parseColor("#41EC57"));
-                }
-
-                if(u.getCursus().equalsIgnoreCase("LP")){
-                    personViewHolder.cardView.setCardBackgroundColor((Color.parseColor("#EC9538")));
-                }
-
-
-
                 setUserImage(u,getContext(),personViewHolder.imagePerson);
 
             }

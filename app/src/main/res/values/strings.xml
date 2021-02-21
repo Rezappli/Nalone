@@ -170,8 +170,13 @@
     <string name="planning">Planning</string>
     <string name="creations">Creations</string>
 
-    <string name="hello_first_fragment">Hello first fragment</string>
-    <string name="hello_second_fragment">Hello second fragment. Arg: %1$s</string>
+
+    <!-- Strings used for map -->
+    <string name="description_event">Cliquez pour plus d\'informations</string>
+
+    <string name="error">Une erreur est survenue :(</string>
+    <string name="error_event">Une erreur est lors du chargement des évnèments :(</string>
+
 
 
 </resources>

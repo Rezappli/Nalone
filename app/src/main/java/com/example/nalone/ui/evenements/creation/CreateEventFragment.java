@@ -179,8 +179,8 @@ public class CreateEventFragment extends Fragment {
             event_city.setText(EVENT_LOAD.getCity());
             event_name.setText(EVENT_LOAD.getName());
             event_resume.setText(EVENT_LOAD.getDescription());
-            event_date.setText((dateFormat.format(EVENT_LOAD.getStartDate().toDate())));
-            event_horaire.setText((timeFormat.format(EVENT_LOAD.getStartDate().toDate())));
+            //event_date.setText((dateFormat.format(EVENT_LOAD.getStartDate().toDate())));
+            //event_horaire.setText((timeFormat.format(EVENT_LOAD.getStartDate().toDate())));
             event_adresse.setText(EVENT_LOAD.getAddress());
             //event_date.setText(MesEvenementsListFragment.dateEdit);
 
@@ -384,8 +384,8 @@ public class CreateEventFragment extends Fragment {
         if(!evenementAttente.getCity().matches(""))
             event_city.setText(evenementAttente.getCity());
         if(evenementAttente.getStartDate() != null){
-            event_date.setText((dateFormat.format(EVENT_LOAD.getStartDate().toDate())));
-            event_horaire.setText((timeFormat.format(EVENT_LOAD.getStartDate().toDate())));
+            //event_date.setText((dateFormat.format(EVENT_LOAD.getStartDate().toDate())));
+            //event_horaire.setText((timeFormat.format(EVENT_LOAD.getStartDate().toDate())));
         }
         if(evenementAttente.getVisibility() == Visibility.PUBLIC){
             selectPublic();
@@ -441,27 +441,6 @@ public class CreateEventFragment extends Fragment {
                         createFragment();
                     }
                 });
-
-                if(u.getCursus().equalsIgnoreCase("Informatique")){
-                    personViewHolder.cardView.setCardBackgroundColor(Color.RED);
-                }
-                if(u.getCursus().equalsIgnoreCase("TC")){
-                    personViewHolder.cardView.setCardBackgroundColor(Color.parseColor("#00E9FD"));
-                }
-
-                if(u.getCursus().equalsIgnoreCase("MMI")){
-                    personViewHolder.cardView.setCardBackgroundColor(Color.parseColor("#FF1EED"));
-                }
-
-                if(u.getCursus().equalsIgnoreCase("GB")){
-                    personViewHolder.cardView.setCardBackgroundColor(Color.parseColor("#41EC57"));
-                }
-
-                if(u.getCursus().equalsIgnoreCase("LP")){
-                    personViewHolder.cardView.setCardBackgroundColor((Color.parseColor("#EC9538")));
-                }
-
-
 
                 setUserImage(u,getContext(),personViewHolder.imagePerson);
 

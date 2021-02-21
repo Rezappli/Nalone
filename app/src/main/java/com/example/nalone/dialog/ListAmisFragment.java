@@ -355,26 +355,6 @@ public class ListAmisFragment extends Fragment {
                                             }
                                         });
 
-
-                                        if(u.getCursus().equalsIgnoreCase("Informatique")){
-                                            userViewHolder.cardViewPhotoPerson.setCardBackgroundColor(Color.RED);
-                                        }
-
-                                        if(u.getCursus().equalsIgnoreCase("TC")){
-                                            userViewHolder.cardViewPhotoPerson.setCardBackgroundColor(Color.parseColor("#00E9FD"));
-                                        }
-
-                                        if(u.getCursus().equalsIgnoreCase("MMI")){
-                                            userViewHolder.cardViewPhotoPerson.setCardBackgroundColor(Color.parseColor("#FF1EED"));
-                                        }
-                                        if(u.getCursus().equalsIgnoreCase("GB")){
-                                            userViewHolder.cardViewPhotoPerson.setCardBackgroundColor(Color.parseColor("#41EC57")); }
-
-                                        if(u.getCursus().equalsIgnoreCase("LP")){
-                                            userViewHolder.cardViewPhotoPerson.setCardBackgroundColor((Color.parseColor("#EC9538")));
-                                        }
-
-
                                         setUserImage(u,getContext(),userViewHolder.imagePerson);
 
                                         loading.setVisibility(View.GONE);

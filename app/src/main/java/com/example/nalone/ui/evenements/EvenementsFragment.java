@@ -27,8 +27,6 @@ import com.google.android.material.tabs.TabLayout;
 
 public class EvenementsFragment extends Fragment {
 
-    private com.example.nalone.ui.evenements.EvenementsViewModel EvenementsViewModel;
-
     private View myFragment;
 
     public static ViewPager viewPager;
@@ -38,16 +36,10 @@ public class EvenementsFragment extends Fragment {
                              ViewGroup container, Bundle savedInstanceState) {
 
 
-
-        EvenementsViewModel =
-                ViewModelProviders.of(this).get(EvenementsViewModel.class);
         myFragment = inflater.inflate(R.layout.fragment_evenements, container, false);
 
         viewPager = myFragment.findViewById(R.id.viewPagerEvenement);
         tabLayout = myFragment.findViewById(R.id.tabLayoutEvenement);
-
-
-       // tabLayout.getTabAt(2).setIcon(tabIcons[2]);
 
         return myFragment;
     }

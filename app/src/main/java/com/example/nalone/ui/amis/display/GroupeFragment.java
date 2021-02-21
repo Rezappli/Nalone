@@ -75,71 +75,8 @@ public class GroupeFragment extends Fragment {
             }
         });
 
-        DocumentReference ref = mStoreBase.collection("users").document(USER_ID);
-        mStoreBase.collection("users").document(USER.getUid()).collection("groups").whereEqualTo("status","add")
-                .whereNotEqualTo("user", ref)
-                .get()
-                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        if (task.isSuccessful()) {
-                            if(task.getResult().size() > 0){
-                                for (QueryDocumentSnapshot document : task.getResult()) {
-                                    Log.d("TAG", document.getId() + " => " + document.getData());
-                                    myGroups.add(document.getId());
-                                }
-                                adapterGroups();
-                            }else{
-                                linearSansMesGroupes.setVisibility(View.VISIBLE);
-                            }
-
-                        } else {
-                            Log.d("TAG", "Error getting documents: ", task.getException());
-                        }
-                    }
-                });
-
         return root;
     }
-
-    private void adapterGroups() {
-
-        if(!myGroups.isEmpty()){
-            Query query = mStoreBase.collection("groups").whereIn("uid", myGroups);
-            FirestoreRecyclerOptions<Group> options = new FirestoreRecyclerOptions.Builder<Group>().setQuery(query, Group.class).build();
-
-            adapter = new FirestoreRecyclerAdapter<Group, UserViewHolder>(options) {
-                @NonNull
-                @Override
-                public UserViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-                    View view= LayoutInflater.from(parent.getContext()).inflate(R.layout.item_groupe,parent,false);
-                    return new UserViewHolder(view);
-                }
-
-                @Override
-                protected void onBindViewHolder(@NonNull final UserViewHolder userViewHolder, int i, @NonNull final Group g) {
-                    final Group group = g;
-                    userViewHolder.nomGroup.setText(g.getName());
-
-                    userViewHolder.layoutGroup.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            showPopUpGroup(group);
-                        }
-                    });
-
-                    setGroupImage(g,getContext(),userViewHolder.imageGroup);
-                    //linearSansMesGroupes.setVisibility(View.GONE);
-                }
-            };
-            mRecyclerView.setHasFixedSize(true);
-            mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-
-            mRecyclerView.setAdapter(adapter);
-            adapter.startListening();
-        }
-
-        }
 
         private class UserViewHolder extends RecyclerView.ViewHolder {
 
@@ -166,20 +103,13 @@ public class GroupeFragment extends Fragment {
 
     }
 
-
     @Override
     public void onStart(){
         super.onStart();
-        if(adapter != null)
-            adapter.startListening();
     }
 
     @Override
     public void onStop() {
         super.onStop();
-        if(adapter != null)
-            adapter.stopListening();
     }
-
-
 }

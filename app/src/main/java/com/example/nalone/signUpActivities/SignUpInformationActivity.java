@@ -217,9 +217,9 @@ public class SignUpInformationActivity extends AppCompatActivity {
                   sexe = "Femme";
               }
 
-                user = new User(UUID.randomUUID().toString(), nomEntre, prenomEntre, sexe, villeEntre, numeroEntre, mailEntre,
-                        null, "", dateNaissance.getText().toString());
-                user.setLocation(new GeoPoint(pos.latitude, pos.longitude));
+                user = new User(UUID.randomUUID().toString(), nomEntre, prenomEntre, sexe, villeEntre, numeroEntre, mailEntre, "", dateNaissance.getText().toString());
+                user.setLatitude(pos.latitude);
+                user.setLongitude(pos.longitude);
                 Intent signUpStudy = new Intent(getBaseContext(), SignUpStudiesActivity.class);
                 startActivityForResult(signUpStudy, 0);
 

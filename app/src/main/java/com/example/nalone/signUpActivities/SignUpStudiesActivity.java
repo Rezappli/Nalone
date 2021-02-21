@@ -90,7 +90,6 @@ public class SignUpStudiesActivity extends AppCompatActivity {
            public void onClick(View view) {
 
                if(click){
-                   SignUpInformationActivity.user.setCursus(departement);
                    Intent signUpTwo = new Intent(getBaseContext(), SignUpHobbiesActivity.class);
                    startActivityForResult(signUpTwo,0);
                }else{
