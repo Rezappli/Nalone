@@ -21,8 +21,8 @@ public class Evenement implements Serializable {
     private String owner_uid;
     private int nbMembers;
     private StatusEvent statusEvent;
-    private String owner_first_name;
-    private String owner_last_name;
+    private String ownerFirstName;
+    private String ownerLastName;
 
     public Evenement() {
         this.uid = null;
@@ -164,11 +164,11 @@ public class Evenement implements Serializable {
     }
 
     public String getOwner_first_name() {
-        return owner_first_name;
+        return ownerFirstName;
     }
 
     public String getOwner_last_name() {
-        return owner_last_name;
+        return ownerLastName;
     }
 
     @Override
