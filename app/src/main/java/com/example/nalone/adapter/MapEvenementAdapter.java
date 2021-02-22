@@ -83,6 +83,7 @@ public class MapEvenementAdapter extends RecyclerView.Adapter<MapEvenementAdapte
             textViewParticiper = itemView.findViewById(R.id.textViewParticiper);
             mCarwViewOwner = itemView.findViewById(R.id.backGroundOwner);
             textViewNbMembers = itemView.findViewById(R.id.textViewNbMembers);
+
             this.textViewAfficher.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
