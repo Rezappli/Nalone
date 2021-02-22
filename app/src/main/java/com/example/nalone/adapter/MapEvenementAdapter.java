@@ -29,6 +29,7 @@ public class MapEvenementAdapter extends RecyclerView.Adapter<MapEvenementAdapte
     private List<Evenement> evenementList;
 
     private OnItemClickListener mListener;
+    private boolean participate;
 
     public void setOnItemClickListener(OnItemClickListener listener){
         mListener= listener;
@@ -39,8 +40,9 @@ public class MapEvenementAdapter extends RecyclerView.Adapter<MapEvenementAdapte
         void onDisplayClick(int position);
     }
 
-    public MapEvenementAdapter(List<Evenement> nearby_events) {
+    public MapEvenementAdapter(List<Evenement> nearby_events, boolean participate) {
         this.evenementList = nearby_events;
+        this.participate = participate;
     }
 
     @NonNull
@@ -91,6 +93,14 @@ public class MapEvenementAdapter extends RecyclerView.Adapter<MapEvenementAdapte
             mAfficher = itemView.findViewById(R.id.cardViewEventList);
             textViewAfficher = itemView.findViewById(R.id.textViewAfficher);
             textViewParticiper = itemView.findViewById(R.id.textViewParticiper);
+            if(participate){
+                textViewParticiper.setText("Désinscrire");
+                textViewParticiper.setCompoundDrawablesWithIntrinsicBounds(
+                        R.drawable.desinscrire, //left
+                        0, //top
+                        0, //right
+                        0);//bottom
+            }
             mCarwViewOwner = itemView.findViewById(R.id.backGroundOwner);
             textViewNbMembers = itemView.findViewById(R.id.textViewNbMembers);
 

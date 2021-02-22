@@ -2,6 +2,7 @@
 
 package com.example.nalone.ui.evenements.display;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -140,6 +141,12 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         loading = rootView.findViewById(R.id.loading);
         buttonCreations = rootView.findViewById(R.id.buttonCreations);
         buttonPlanning = rootView.findViewById(R.id.buttonPlanning);
+        buttonPlanning.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(getContext(),EventPlanningActivity.class));
+            }
+        });
         imageViewFiltreSearch = rootView.findViewById(R.id.filtreSearch);
 
         //Bottom sheet
@@ -285,7 +292,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     }
 
     private void configureRecyclerView() {
-        this.mAdapter = new MapEvenementAdapter(this.nearby_events);
+        this.mAdapter = new MapEvenementAdapter(this.nearby_events, false);
         // 3.3 - Attach the adapter to the recyclerview to populate items
         this.recyclerViewSearchEvent.setAdapter(this.mAdapter);
         // 3.4 - Set layout manager to position the items

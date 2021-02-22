@@ -78,5 +78,6 @@ dependencies {
     implementation 'me.mvdw.recyclerviewmergeadapter:recyclerviewmergeadapter:2.1.0'
     implementation "androidx.recyclerview:recyclerview:1.2.0-alpha04"
     implementation 'com.theartofdev.edmodo:android-image-cropper:2.8.0'
+    implementation 'com.github.jhonnyx2012:horizontal-picker:1.0.6'
 }
 
