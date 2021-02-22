@@ -17,10 +17,12 @@ import android.widget.Button;
 import android.widget.ImageView;
 
 import com.android.volley.VolleyError;
+import com.example.nalone.adapter.MapEvenementAdapter;
 import com.example.nalone.enumeration.VisibilityMap;
 import com.example.nalone.json.JSONArrayListener;
 import com.example.nalone.json.JSONController;
 import com.example.nalone.json.JSONObjectCrypt;
+import com.example.nalone.ui.evenements.InfosEvenementsActivity;
 import com.example.nalone.util.Horloge;
 import com.example.nalone.R;
 import com.example.nalone.util.Constants;
@@ -77,6 +79,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     private NavController navController;
 
     private RecyclerView mRecyclerView;
+    private MapEvenementAdapter mAdapter;
 
     private double unit = 74.6554;
 
@@ -255,6 +258,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         mMapView.getMapAsync(this);
 
         initGoogleMap(savedInstanceState);
+        //this.configureRecyclerView();
 
 
         /*HomeActivity.floatingActionButton.setOnClickListener(new View.OnClickListener() {
@@ -280,6 +284,43 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         return rootView;
     }
 
+    private void configureRecyclerView() {
+        this.mAdapter = new MapEvenementAdapter(this.nearby_events);
+        // 3.3 - Attach the adapter to the recyclerview to populate items
+        this.recyclerViewSearchEvent.setAdapter(this.mAdapter);
+        // 3.4 - Set layout manager to position the items
+        final LinearLayoutManager llm = new LinearLayoutManager(getActivity());
+        this.recyclerViewSearchEvent.setLayoutManager(llm);
+        mAdapter.setOnItemClickListener(new MapEvenementAdapter.OnItemClickListener() {
+            @Override
+            public void onDisplayClick(int position) {
+                InfosEvenementsActivity.EVENT_LOAD = nearby_events.get(position);
+                //InfosEvenementsActivity.type = "nouveau";
+                navController.navigate(R.id.action_navigation_evenements_to_navigation_infos_events);
+            }
+        });
+        this.recyclerViewSearchEvent.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
+            }
+
+            @Override
+            public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+                int visiblePosition = llm.findFirstCompletelyVisibleItemPosition();
+                if(visiblePosition > -1) {
+                    View v = llm.findViewByPosition(visiblePosition);
+                    //do something
+                    MapEvenementAdapter.EventViewHolder firstViewHolder = (MapEvenementAdapter.EventViewHolder) recyclerViewSearchEvent.findViewHolderForLayoutPosition(visiblePosition);
+                    if(firstViewHolder != null){
+                        dateSearchEvent.setText(firstViewHolder.mDate.getText());
+                    }
+                }
+            }
+        });
+    }
+
     private void hiddeText(TextView tv) {
         textViewLocationInscrit.setVisibility(View.VISIBLE);
         textViewLocationPublic.setVisibility(View.VISIBLE);
@@ -294,38 +335,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         imageViewLocationAll.setImageDrawable(getResources().getDrawable(R.drawable.location_all_24));
     }
 
-
-    private class EventViewHolder extends RecyclerView.ViewHolder {
-
-        public ImageView mImageView;
-        public TextView mTitle;
-        public TextView mDate;
-        public TextView mTime;
-        public TextView mVille;
-        //public TextView mDescription;
-        public TextView mProprietaire;
-        public TextView textViewAfficher, textViewParticiper;
-        public CardView mAfficher;
-        public CardView mCarwViewOwner;
-        public  TextView textViewNbMembers;
-
-        public EventViewHolder(@NonNull View itemView) {
-            super(itemView);
-            mImageView = itemView.findViewById(R.id.imageOwnerEventList);
-            mTitle = itemView.findViewById(R.id.titleEventList);
-            mDate = itemView.findViewById(R.id.dateEventList);
-            mTime = itemView.findViewById(R.id.timeEventList);
-            mVille = itemView.findViewById(R.id.villeEventList);
-            //mDescription = itemView.findViewById(R.id.descriptionEventList);
-            mProprietaire = itemView.findViewById(R.id.ownerEventList);
-            mAfficher = itemView.findViewById(R.id.cardViewEventList);
-            textViewAfficher = itemView.findViewById(R.id.textViewAfficher);
-            textViewParticiper = itemView.findViewById(R.id.textViewParticiper);
-            mCarwViewOwner = itemView.findViewById(R.id.backGroundOwner);
-            textViewNbMembers = itemView.findViewById(R.id.textViewNbMembers);
-
-        }
-    }
 
 
     private void initGoogleMap(Bundle savedInstanceState) {
@@ -360,6 +369,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                         for(int i = 0; i < jsonArray.length(); i++) {
                             nearby_events.add((Evenement) JSONController.convertJSONToObject(jsonArray.getJSONObject(i), Evenement.class));
                         }
+                        configureRecyclerView();
                         updateMap(VisibilityMap.ALL);
                     } catch (JSONException e) {
                         Log.w("Response", "Erreur:"+e.getMessage());

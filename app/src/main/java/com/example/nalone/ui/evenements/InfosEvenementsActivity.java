@@ -167,7 +167,7 @@ public class InfosEvenementsActivity extends Fragment {
 
         mDate.setText(final_date_text);
 
-        mStoreBase.collection("events").document(EVENT_LOAD.getUid())
+        /*mStoreBase.collection("events").document(EVENT_LOAD.getUid())
                 .collection("members").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
@@ -210,7 +210,7 @@ public class InfosEvenementsActivity extends Fragment {
                 }
 
             }
-        });
+        });*/
 
         setData();
 

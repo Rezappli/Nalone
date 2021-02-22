@@ -9,7 +9,6 @@ import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
@@ -24,7 +23,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.VolleyError;
-import com.example.nalone.enumeration.Visibility;
+import com.example.nalone.adapter.RechercheAmisAdapter;
+import com.example.nalone.adapter.RechercheGroupeAdapter;
 import com.example.nalone.json.JSONArrayListener;
 import com.example.nalone.json.JSONController;
 import com.example.nalone.json.JSONObjectCrypt;
@@ -34,13 +34,6 @@ import com.example.nalone.objects.User;
 import com.example.nalone.ui.amis.display.PopUpGroupFragment;
 import com.example.nalone.ui.amis.display.PopupProfilFragment;
 import com.example.nalone.util.Constants;
-import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
-import com.firebase.ui.firestore.FirestoreRecyclerOptions;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.firestore.Query;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.firebase.firestore.QuerySnapshot;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -49,12 +42,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static com.example.nalone.util.Constants.USER;
-import static com.example.nalone.util.Constants.mStoreBase;
 
 public class RechercheFragment extends Fragment {
 
     private RecyclerView recyclerAmis;
-    private RecyclerView recyclerGroupes;
+    private RechercheAmisAdapter adapterAmis;
+    private RechercheGroupeAdapter adapterGroup;
+    private RecyclerView recyclerGroup;
     private CardView cardViewRechercheAmis;
     private CardView cardViewRechercheGroupes;
     private View rootView;
@@ -74,6 +68,7 @@ public class RechercheFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         rootView = inflater.inflate(R.layout.fragment_recherche, container, false);
+        createFragment();
         getFriends();
         return rootView;
 
@@ -84,7 +79,7 @@ public class RechercheFragment extends Fragment {
     public void createFragment() {
         myGroups = new ArrayList<>();
         recyclerAmis = rootView.findViewById(R.id.recyclerViewRechercheAmis);
-        recyclerGroupes = rootView.findViewById(R.id.recyclerViewRechercheGroupes);
+        recyclerGroup = rootView.findViewById(R.id.recyclerViewRechercheGroupes);
         cardViewRechercheAmis = rootView.findViewById(R.id.cardViewRechercheAmis);
         cardViewRechercheGroupes = rootView.findViewById(R.id.cardViewRechercheGroupes);
         textViewRechercheAmis = rootView.findViewById(R.id.textViewRechercheAmis);
@@ -94,7 +89,6 @@ public class RechercheFragment extends Fragment {
         cardViewRechercheGroupes.setVisibility(View.INVISIBLE);
         relativeAmis = rootView.findViewById(R.id.relativeSansAmis);
         relativeGroup = rootView.findViewById(R.id.relativeSansGroup);
-
 
         textViewRechercheAmis.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -120,9 +114,9 @@ public class RechercheFragment extends Fragment {
 
         JSONObjectCrypt params = new JSONObjectCrypt();
         params.addParameter("uid", USER.getUid());
-        params.addParameter("limit", 10); //fix a limit to 10 users
+        params.addParameter("limit", 3); //fix a limit to 10 users
 
-        JSONController.getJsonArrayFromUrl(Constants.URL_FRIENDS, getContext(), params, new JSONArrayListener() {
+        JSONController.getJsonArrayFromUrl(Constants.URL_USER_WHITHOUT_ME, getContext(), params, new JSONArrayListener() {
             @Override
             public void onJSONReceived(JSONArray jsonArray) {
 
@@ -135,6 +129,11 @@ public class RechercheFragment extends Fragment {
                     for (int i = 0; i < friends.size(); i++) {
                         Log.w("Recherche", friends.get(i).getFirst_name()+friends.get(i).getLast_name());
                     }
+
+                    configureRecyclerViewAmis();
+                    loading.setVisibility(View.GONE);
+                    cardViewRechercheAmis.setVisibility(View.VISIBLE);
+                    cardViewRechercheGroupes.setVisibility(View.VISIBLE);
                 } catch (JSONException e) {
                     Log.w("Response", "Erreur:"+e.getMessage());
                     Toast.makeText(getContext(), getResources().getString(R.string.error), Toast.LENGTH_SHORT).show();
@@ -150,50 +149,34 @@ public class RechercheFragment extends Fragment {
         });
     }
 
-    private class GroupViewHolder extends RecyclerView.ViewHolder {
+    private void configureRecyclerViewAmis() {
+        this.adapterAmis = new RechercheAmisAdapter(this.friends);
+        // 3.3 - Attach the adapter to the recyclerview to populate items
+        this.recyclerAmis.setAdapter(this.adapterAmis);
+        // 3.4 - Set layout manager to position the items
+        final LinearLayoutManager llm = new LinearLayoutManager(getActivity());
+        this.recyclerAmis.setLayoutManager(llm);
+        adapterAmis.setOnItemClickListener(new RechercheAmisAdapter.OnItemClickListener() {
+            @Override
+            public void onDisplayClick(int position) {
+                showPopUpProfil(friends.get(position));
+            }
+        });
+    }
 
-        private TextView nomGroup;
-        private LinearLayout layoutGroup;
-        private ImageView imageGroup;
-        private ImageView button;
-
-        public GroupViewHolder(@NonNull View itemView) {
-            super(itemView);
-
-            nomGroup = itemView.findViewById(R.id.nomGroupe);
-            layoutGroup = itemView.findViewById(R.id.layoutGroupe);
-            imageGroup = itemView.findViewById(R.id.imageGroupe);
-
-        }
+    private void configureRecyclerViewGroup() {
+        //this.adapterGroup = new RechercheGroupeAdapter(this.groups);
+        // 3.3 - Attach the adapter to the recyclerview to populate items
+        this.recyclerGroup.setAdapter(this.adapterGroup);
+        // 3.4 - Set layout manager to position the items
+        final LinearLayoutManager llm = new LinearLayoutManager(getActivity());
+        this.recyclerGroup.setLayoutManager(llm);
     }
 
 
     public void showPopUpGroup(final Group g) {
         PopUpGroupFragment.GROUP_LOAD = g;
         navController.navigate(R.id.action_navigation_recherche_to_navigation_popup_group);
-    }
-
-    private class UserViewHolder extends RecyclerView.ViewHolder {
-
-        private TextView nomInvit;
-        private TextView villePers;
-        private LinearLayout layoutProfil;
-        private ImageView imagePerson;
-        private ImageView button;
-        private CardView cardViewPhotoPerson;
-
-        public UserViewHolder(@NonNull View itemView) {
-            super(itemView);
-
-            nomInvit = itemView.findViewById(R.id.nomInvit);
-            villePers = itemView.findViewById(R.id.villePers);
-            layoutProfil = itemView.findViewById(R.id.layoutProfil);
-            imagePerson = itemView.findViewById(R.id.imagePerson);
-            button = itemView.findViewById(R.id.buttonImage);
-            cardViewPhotoPerson = itemView.findViewById(R.id.cardViewPhotoPerson);
-
-        }
-
     }
 
     public void showPopUpProfil(User u) {
