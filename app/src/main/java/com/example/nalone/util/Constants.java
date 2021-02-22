@@ -41,6 +41,7 @@ import java.security.spec.InvalidKeySpecException;
 import java.security.spec.KeySpec;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
@@ -239,6 +240,19 @@ public class Constants {
                 }
             }
         });
+    }
+
+    public static String getFullDate(Date d){
+        String s = Constants.formatD.format(d);
+        String temp = "";
+        for(int i=0; i < s.length(); i++){
+            if(i==0){
+                temp=Character.toUpperCase(s.charAt(i))+"";
+            }else{
+                temp += s.charAt(i);
+            }
+        }
+        return temp;
     }
 
     public static String key = "kXp2s5v8y/B?E(H+MbQeThWmZq3t6w9z"; // 128 bit key

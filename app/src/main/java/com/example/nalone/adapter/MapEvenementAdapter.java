@@ -1,5 +1,6 @@
 package com.example.nalone.adapter;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,11 +14,17 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.nalone.R;
 import com.example.nalone.objects.Evenement;
 import com.example.nalone.ui.evenements.InfosEvenementsActivity;
+import com.example.nalone.util.Constants;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 public class MapEvenementAdapter extends RecyclerView.Adapter<MapEvenementAdapter.EventViewHolder> {
+
+    private SimpleDateFormat sdfDate = new SimpleDateFormat("yyyy-MM-dd");
+    private SimpleDateFormat sdfTransform = new SimpleDateFormat("dd/MM/yyyy");
 
     private List<Evenement> evenementList;
 
@@ -46,7 +53,11 @@ public class MapEvenementAdapter extends RecyclerView.Adapter<MapEvenementAdapte
 
     @Override
     public void onBindViewHolder(@NonNull EventViewHolder holder, int position) {
-        holder.updateWhithEvent(this.evenementList.get(position));
+        try {
+            holder.updateWhithEvent(this.evenementList.get(position));
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -76,7 +87,6 @@ public class MapEvenementAdapter extends RecyclerView.Adapter<MapEvenementAdapte
             mDate = itemView.findViewById(R.id.dateEventList);
             mTime = itemView.findViewById(R.id.timeEventList);
             mVille = itemView.findViewById(R.id.villeEventList);
-            //mDescription = itemView.findViewById(R.id.descriptionEventList);
             mProprietaire = itemView.findViewById(R.id.ownerEventList);
             mAfficher = itemView.findViewById(R.id.cardViewEventList);
             textViewAfficher = itemView.findViewById(R.id.textViewAfficher);
@@ -97,25 +107,37 @@ public class MapEvenementAdapter extends RecyclerView.Adapter<MapEvenementAdapte
             });
         }
 
-        public void updateWhithEvent(final Evenement e){
-            /* ---------  -     -  -   -------
-                   -      -     -  -   -      -
-                   -      -------  -   -------
-                   -      -     -  -   -      -
-                   -      -     -  -   -------
-             */
-            /*SimpleDateFormat sdfDate = new SimpleDateFormat("dd/MM/yyyy");
-            SimpleDateFormat sdfTime = new SimpleDateFormat("hh : mm");*/
-            this.mVille.setText((e.getCity()));
-           /* this.mDate.setText(sdfDate.format(e.getStartDate()));
-            this.mTime.setText(sdfTime.format(e.getStartDate()));*/
-            //holder.mDescription.setText((e.getDescription()));
-            this.mProprietaire.setText(e.getOwner_uid());
+        public void updateWhithEvent(final Evenement e) throws ParseException {
+            Date d = sdfDate.parse(cutString(e.getStartDate(), 10, -1));
+            this.mTitle.setText(e.getName());
+            this.mVille.setText(e.getCity());
+            this.mDate.setText(Constants.getFullDate(d));
+            this.mTime.setText(cutString(e.getStartDate(), 5, 11));
+            this.mProprietaire.setText(e.getOwner_first_name()+" "+e.getOwner_last_name());
             this.textViewNbMembers.setText(e.getNbMembers()+"");
 
-
-
         }
+    }
+
+    private String cutString(String s, int length, int start){
+        if(length > s.length()){
+            return null;
+        }
+
+        String temp = "";
+
+        int i = 0;
+        if(start != -1){
+            for(i=start; i<length+start; i++){
+                temp += s.charAt(i);
+            }
+        }else{
+            for(i=0; i<length; i++){
+                temp += s.charAt(i);
+            }
+        }
+        return temp;
+
     }
 
 
