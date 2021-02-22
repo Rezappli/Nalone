@@ -75,7 +75,6 @@ public class RechercheAmisFragment extends Fragment {
     private RecyclerView mRecyclerViewFiltre;
     private ItemFiltreAdapter mAdapterFiltre;
     private RecyclerView.LayoutManager mLayoutManagerFiltre;
-    private FirestoreRecyclerAdapter adapter;
     private ImageView qr_code;
     private List<User> friends;
 
@@ -247,114 +246,19 @@ public class RechercheAmisFragment extends Fragment {
 
                 if(filtres.get(position).getBackground() == R.color.colorPrimary){
                     filtres.get(position).setBackground(R.drawable.custom_input);
-                    adapterFiltre("none", friends);
+                    //QUERY
                 }
                 else{
                     filtres.get(position).setBackground(R.color.colorPrimary);
                     for (int i = 0; i < friends.size(); i++){
                         Log.w("filtres", "Friends : " + friends.get(i));
                     }
-                    adapterFiltre(filtres.get(position).getFiltre(), friends);
+                    //QUERY
                 }
                 mAdapterFiltre.notifyDataSetChanged();
-                adapter.startListening();
             }
             // adapterUsers(new FirestoreRecyclerOptions.Builder<User>().setQuery(queryFiltreLP, User.class).build());
         });
-    }
-
-    public void adapterFiltre(String filtre, List friends){
-        Query query = null;
-        switch (filtre){
-            case "INFO" :
-                query = mStoreBase.collection("users").whereNotIn("uid", friends).whereEqualTo("cursus", "Informatique").limit(10);
-                break;
-            case "GB" :
-                query = mStoreBase.collection("users").whereNotIn("uid", friends).whereEqualTo("cursus", "GB").limit(10);
-                break;
-            case "MMI" :
-                query = mStoreBase.collection("users").whereNotIn("uid", friends).whereEqualTo("cursus", "MMI").limit(10);
-                break;
-            case "TC" :
-                query = mStoreBase.collection("users").whereNotIn("uid", friends).whereEqualTo("cursus", "TC").limit(10);
-                break;
-            case "LP" :
-                query = mStoreBase.collection("users").whereNotIn("uid", friends).whereEqualTo("cursus", "LP").limit(10);
-                break;
-            case "none" :
-                query = mStoreBase.collection("users").whereNotIn("uid", friends).limit(10);
-                break;
-            default:
-                break;
-        }
-
-        FirestoreRecyclerOptions<User> options = new FirestoreRecyclerOptions.Builder<User>().setQuery(query, User.class).build();
-        adapterUsers(options);
-    }
-
-    private void adapterUsers(FirestoreRecyclerOptions<User> options) {
-
-        adapter = new FirestoreRecyclerAdapter<User, UserViewHolder>(options) {
-            @NonNull
-            @Override
-            public UserViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-                Log.w("Add", "ViewHolder Recherche");
-                View view= LayoutInflater.from(parent.getContext()).inflate(R.layout.item_person,parent,false);
-                return new UserViewHolder(view);
-            }
-
-            @Override
-            protected void onBindViewHolder(@NonNull final UserViewHolder userViewHolder, int i, @NonNull final User u) {
-                userViewHolder.villePers.setText(u.getCity());
-                userViewHolder.nomInvit.setText(u.getFirst_name() + " "+ u.getLast_name());
-
-                userViewHolder.button.setImageResource(0);
-                Log.w("Add", "BienHolder Recherche");
-
-                Constants.setUserImage(u, getContext(), userViewHolder.imagePerson);
-
-                userViewHolder.layoutProfil.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        showPopUpProfil(u);
-                    }
-                });
-                loading.setVisibility(View.GONE);
-                linearSansRechercheAmis.setVisibility(View.GONE);
-            }
-        };
-        Log.w("Add", "Set Adapter Recherche");
-        mRecyclerView.setHasFixedSize(true);
-        mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-
-        mRecyclerView.setAdapter(adapter);
-        adapter.startListening();
-        swipeContainer.setRefreshing(false);
-        loading.setVisibility(View.GONE);
-
-    }
-
-    private class UserViewHolder extends RecyclerView.ViewHolder {
-
-        private TextView nomInvit;
-        private TextView villePers;
-        private LinearLayout layoutProfil;
-        private ImageView imagePerson;
-        private ImageView button;
-        private CardView cardViewPhotoPerson;
-
-        public UserViewHolder(@NonNull View itemView) {
-            super(itemView);
-
-            nomInvit = itemView.findViewById(R.id.nomInvit);
-            villePers = itemView.findViewById(R.id.villePers);
-            layoutProfil = itemView.findViewById(R.id.layoutProfil);
-            imagePerson = itemView.findViewById(R.id.imagePerson);
-            button = itemView.findViewById(R.id.buttonImage);
-            cardViewPhotoPerson = itemView.findViewById(R.id.cardViewPhotoPerson);
-
-        }
-
     }
 
 
@@ -370,19 +274,11 @@ public class RechercheAmisFragment extends Fragment {
     @Override
     public void onStop() {
         super.onStop();
-        if(adapter != null) {
-            adapter.stopListening();
-            adapter = null;
-        }
+
     }
 
     @Override
     public void onResume(){
-        if(adapter != null) {
-            adapter.startListening();
-        }else{
-            createFragment();
-        }
         super.onResume();
     }
 

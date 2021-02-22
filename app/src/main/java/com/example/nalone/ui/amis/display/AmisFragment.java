@@ -31,7 +31,13 @@ import android.widget.SearchView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.VolleyError;
 import com.daimajia.swipe.SwipeLayout;
+import com.example.nalone.adapter.MesAmisAdapter;
+import com.example.nalone.adapter.RechercheAmisAdapter;
+import com.example.nalone.json.JSONArrayListener;
+import com.example.nalone.json.JSONController;
+import com.example.nalone.json.JSONObjectCrypt;
 import com.example.nalone.objects.ModelData;
 import com.example.nalone.R;
 import com.example.nalone.objects.User;
@@ -45,6 +51,9 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
+
+import org.json.JSONArray;
+import org.json.JSONException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -63,7 +72,8 @@ public class AmisFragment extends Fragment {
     private TextView resultat;
     private View rootView;
     private RecyclerView mRecyclerView;
-    private List<String> friends;
+    private MesAmisAdapter mAdapter;
+    private List<User> friends;
     private int nbInvit;
     private CardView cardViewInvits;
     private TextView textViewNbInvit;
@@ -130,6 +140,87 @@ public class AmisFragment extends Fragment {
                 createFragment();
             }
         });
+
+        getUsers();
+    }
+
+    private void configureRecyclerViewAmis() {
+        this.mAdapter = new MesAmisAdapter(this.friends);
+        // 3.3 - Attach the adapter to the recyclerview to populate items
+        this.mRecyclerView.setAdapter(this.mAdapter);
+        // 3.4 - Set layout manager to position the items
+        final LinearLayoutManager llm = new LinearLayoutManager(getActivity());
+        this.mRecyclerView.setLayoutManager(llm);
+        mAdapter.setOnItemClickListener(new MesAmisAdapter.OnItemClickListener() {
+            @Override
+            public void onDisplayClick(int position) {
+                showPopUpProfil(friends.get(position));
+            }
+
+            @Override
+            public void onDeleteClick(int position) {
+                removeFriend(friends.get(position));
+                createFragment();
+            }
+
+            @RequiresApi(api = Build.VERSION_CODES.M)
+            @Override
+            public void onCallClick(int position) {
+                if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.CALL_PHONE)
+                        != PackageManager.PERMISSION_GRANTED) {
+                    getActivity().requestPermissions(new String[]{Manifest.permission.CALL_PHONE}, 0);
+                    return;
+                }
+                Intent callIntent = new Intent(Intent.ACTION_CALL);
+                callIntent.setData(Uri.parse("tel:"+friends.get(position).getNumber()));
+                startActivity(callIntent);
+            }
+
+            @Override
+            public void onMessageClick(int position) {
+                ChatActivityFriend.USER_LOAD = friends.get(position);
+                startActivity(new Intent(getContext(), ChatActivityFriend.class));
+            }
+        });
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    private void getUsers() {
+        friends = new ArrayList<>();
+
+        JSONObjectCrypt params = new JSONObjectCrypt();
+        params.addParameter("uid", USER.getUid());
+        params.addParameter("limit", 10); //fix a limit to 10 users
+
+        JSONController.getJsonArrayFromUrl(Constants.URL_USER_WHITHOUT_ME, getContext(), params, new JSONArrayListener() {
+            @Override
+            public void onJSONReceived(JSONArray jsonArray) {
+
+                try {
+                    Log.w("Response", jsonArray.toString());
+                    for (int i = 0; i < jsonArray.length(); i++) {
+                        friends.add((User) JSONController.convertJSONToObject(jsonArray.getJSONObject(i), User.class));
+                    }
+
+                    for (int i = 0; i < friends.size(); i++) {
+                        Log.w("Recherche", friends.get(i).getFirst_name()+friends.get(i).getLast_name());
+                    }
+
+                    configureRecyclerViewAmis();
+                    loading.setVisibility(View.GONE);
+                } catch (JSONException e) {
+                    Log.w("Response", "Erreur:"+e.getMessage());
+                    Toast.makeText(getContext(), getResources().getString(R.string.error), Toast.LENGTH_SHORT).show();
+                }
+
+            }
+
+            @Override
+            public void onJSONReceivedError(VolleyError volleyError) {
+                Log.w("Response", "Erreur:"+volleyError.toString());
+                Toast.makeText(getContext(), getResources().getString(R.string.error_event), Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     private class UserViewHolder extends RecyclerView.ViewHolder {
@@ -163,8 +254,16 @@ public class AmisFragment extends Fragment {
         }
 
     }
+    public void showPopUpProfil(User u) {
 
-    private void removeFriend(final String uid) {
+        PopupProfilFragment.USER_LOAD = u;
+        //PopupProfilFragment.button = getResources(0);
+
+        PopupProfilFragment.type = "amis";
+        navController.navigate(R.id.action_navigation_amis_to_navigation_popup_profil);
+    }
+
+    private void removeFriend(User user) {
 
     }
 

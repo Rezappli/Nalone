@@ -54,10 +54,9 @@ public class Horloge {
         return null;
     }
 
-    public static String verifDay(Timestamp tp){
-        String date = sdf.format(tp.toDate());
+    public static String verifDay(String date){
         if(date.equalsIgnoreCase(currentDay)){
-            return sdfToday.format(tp.toDate());
+            return sdfToday.format(date);
         }else {
             return date;
         }

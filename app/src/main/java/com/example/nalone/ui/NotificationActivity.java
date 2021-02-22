@@ -20,6 +20,8 @@ import android.widget.Toast;
 import com.android.volley.VolleyError;
 import com.example.nalone.HomeActivity;
 import com.example.nalone.R;
+import com.example.nalone.adapter.NotificationAdapter;
+import com.example.nalone.adapter.RechercheAmisAdapter;
 import com.example.nalone.json.JSONArrayListener;
 import com.example.nalone.json.JSONController;
 import com.example.nalone.json.JSONObjectCrypt;
@@ -49,7 +51,8 @@ import static com.example.nalone.util.Constants.setUserImage;
 
 public class NotificationActivity extends AppCompatActivity {
 
-    private RecyclerView recyclerNotif;
+    private RecyclerView mRecycler;
+    private NotificationAdapter mAdapter;
     private ImageView buttonBack;
     private List<Notification> notificationList;
 
@@ -58,7 +61,7 @@ public class NotificationActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_notification);
-        recyclerNotif = findViewById(R.id.recyclerNotif);
+        mRecycler = findViewById(R.id.recyclerNotif);
         buttonBack = findViewById(R.id.buttonBack);
         buttonBack.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -89,6 +92,7 @@ public class NotificationActivity extends AppCompatActivity {
                        Log.w("Response", "Erreur:"+e.getMessage());
                        Toast.makeText(NotificationActivity.this, getResources().getString(R.string.error), Toast.LENGTH_SHORT).show();
                    }
+                   configureRecyclerViewAmis();
             }
 
             @Override
@@ -99,30 +103,15 @@ public class NotificationActivity extends AppCompatActivity {
         });
     }
 
-
-
-
-    private class NotifViewHolder extends RecyclerView.ViewHolder {
-
-        private TextView nomOwner;
-        private TextView descNotif, dateNotif;
-        private LinearLayout layoutProfil;
-        private ImageView imagePerson;
-        private ImageView button;
-
-        public NotifViewHolder(@NonNull View itemView) {
-            super(itemView);
-
-            nomOwner = itemView.findViewById(R.id.nomOwner);
-            descNotif = itemView.findViewById(R.id.descNotif);
-            layoutProfil = itemView.findViewById(R.id.layoutProfil);
-            imagePerson = itemView.findViewById(R.id.imagePerson);
-            button = itemView.findViewById(R.id.buttonImage);
-            dateNotif = itemView.findViewById(R.id.dateNotif);
-
-        }
-
-
+    private void configureRecyclerViewAmis() {
+        this.mAdapter = new NotificationAdapter(this.notificationList);
+        // 3.3 - Attach the adapter to the recyclerview to populate items
+        this.mRecycler.setAdapter(this.mAdapter);
+        // 3.4 - Set layout manager to position the items
+        final LinearLayoutManager llm = new LinearLayoutManager(this);
+        this.mRecycler.setLayoutManager(llm);
     }
+
+
 
 }
