@@ -7,6 +7,7 @@ import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
@@ -30,6 +31,7 @@ public class MainCreationEventActivity extends AppCompatActivity {
     public static ImageView buttonBack, buttonNotif;
     public static Evenement currentEvent;
     public static boolean photoValidate, dateValidate, nameValidate, membersValidate, adressValidate;
+    public static Uri image = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

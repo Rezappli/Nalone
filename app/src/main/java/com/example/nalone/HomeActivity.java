@@ -160,6 +160,7 @@ public class HomeActivity extends AppCompatActivity{
 
     public void goCreateEvent(Visibility v){
         MainCreationEventActivity.currentEvent = new Evenement();
+        MainCreationEventActivity.image = null;
         MainCreationEventActivity.currentEvent.setVisibility(v);
         startActivity(new Intent(getBaseContext(),MainCreationEventActivity.class));
         bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);

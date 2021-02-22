@@ -138,10 +138,10 @@ public class DateEventFragment extends Fragment {
         }
         if (MainCreationEventActivity.dateValidate) {
             imageProgessCreationDate.setImageDrawable(getResources().getDrawable(R.drawable.creation_event_date_focused));
-            eventStartDate.setText(MainCreationEventActivity.currentEvent.getStartDate());
-            eventEndDate.setText(MainCreationEventActivity.currentEvent.getStartDate());
-            eventStartHoraire.setText(MainCreationEventActivity.currentEvent.getStartDate());
-            eventEndHoraire.setText(MainCreationEventActivity.currentEvent.getStartDate());
+            eventStartDate.setText(cutString(MainCreationEventActivity.currentEvent.getStartDate(), 10, -1));
+            eventEndDate.setText(cutString(MainCreationEventActivity.currentEvent.getStartDate(), 10, -1));
+            eventStartHoraire.setText(cutString(MainCreationEventActivity.currentEvent.getStartDate(), 5, 11));
+            eventEndHoraire.setText(cutString(MainCreationEventActivity.currentEvent.getStartDate(), 5, 11));
         }
         if (MainCreationEventActivity.membersValidate) {
             imageProgessCreationMembers.setImageDrawable(getResources().getDrawable(R.drawable.creation_event_members_focused));
@@ -226,5 +226,26 @@ public class DateEventFragment extends Fragment {
 
     private void goPhoto() {
         MainCreationEventActivity.navController.navigate(R.id.action_dateEventFragment_to_photoEventFragment);
+    }
+
+    private String cutString(String s, int length, int start){
+        if(length > s.length()){
+            return null;
+        }
+
+        String temp = "";
+
+        int i = 0;
+        if(start != -1){
+            for(i=start; i<length+start; i++){
+                temp += s.charAt(i);
+            }
+        }else{
+            for(i=0; i<length; i++){
+                temp += s.charAt(i);
+            }
+        }
+        return temp;
+
     }
 }

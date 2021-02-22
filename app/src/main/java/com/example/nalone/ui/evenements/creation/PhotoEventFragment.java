@@ -25,9 +25,7 @@ import static android.app.Activity.RESULT_OK;
 
 public class PhotoEventFragment extends Fragment {
 
-    private Evenement currentEvent;
     private ImageView imagePhoto;
-    private boolean hasSelectedImage = false;
     static final int RESULT_LOAD_IMG = 1;
 
     //private NavController navController = Navigation.findNavController(getActivity(),R.id.nav_host_fragment2);
@@ -59,7 +57,7 @@ public class PhotoEventFragment extends Fragment {
         buttonNext.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (!hasSelectedImage) {
+                if (MainCreationEventActivity.image == null) {
                     final AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
                     builder.setMessage("Vous n'avez pas séléctionné de photo de profil ! Voulez-vous continuer ?")
                             .setPositiveButton("Oui", new DialogInterface.OnClickListener() {
@@ -80,6 +78,10 @@ public class PhotoEventFragment extends Fragment {
 
             }
         });
+
+        if(MainCreationEventActivity.image != null){
+            Glide.with(this).load(MainCreationEventActivity.image).fitCenter().centerCrop().into(imagePhoto);
+        }
         // Inflate the layout for this fragment
         return root;
     }
@@ -120,9 +122,6 @@ goDate();            }
 
     private void validatePhoto(){
         MainCreationEventActivity.photoValidate = true;
-        /*
-        THIBAULT MET LA PHOTO DE L'EVENT
-         */
         if(MainCreationEventActivity.isAllValidate()){
             Toast.makeText(getContext(), "Evenement créer", Toast.LENGTH_SHORT).show();
         }else if(!MainCreationEventActivity.adressValidate) {
@@ -177,7 +176,7 @@ goDate();            }
             Uri imageUri = data.getData();
             assert imageUri != null;
             Glide.with(this).load(imageUri).fitCenter().centerCrop().into(imagePhoto);
-            hasSelectedImage = true;
+            MainCreationEventActivity.image = imageUri;
         }else {
             Toast.makeText(getContext(),"Vous n'avez pas choisi d'image", Toast.LENGTH_LONG).show();
 
