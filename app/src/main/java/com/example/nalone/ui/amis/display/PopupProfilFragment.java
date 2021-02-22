@@ -207,7 +207,7 @@ public class PopupProfilFragment extends Fragment {
         mStoreBase.collection("users").document(USER.getUid()).collection("friends").document(USER_LOAD.getUid()).set(data2);
         mStoreBase.collection("users").document(USER_LOAD.getUid()).collection("friends").document(USER.getUid()).set(data1);
 
-        Notification.createNotif(USER_LOAD,Notification.demandeAmi());
+        //Notification.createNotif(USER_LOAD,Notification.demandeAmi());
 
         TOPIC = "/topics/"+ USER_LOAD.getUid(); //topic must match with what the receiver subscribed to
         Log.w("TOPIC", "Topic : " + TOPIC);

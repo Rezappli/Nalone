@@ -1,22 +1,31 @@
 package com.example.nalone.ui;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.android.volley.VolleyError;
 import com.example.nalone.HomeActivity;
 import com.example.nalone.R;
+import com.example.nalone.json.JSONArrayListener;
+import com.example.nalone.json.JSONController;
+import com.example.nalone.json.JSONObjectCrypt;
 import com.example.nalone.objects.Notification;
 import com.example.nalone.objects.User;
+import com.example.nalone.util.Constants;
 import com.example.nalone.util.Horloge;
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
@@ -27,17 +36,24 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.firestore.core.OrderBy;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import static com.example.nalone.util.Constants.USER;
 import static com.example.nalone.util.Constants.USER_ID;
 import static com.example.nalone.util.Constants.mStoreBase;
 import static com.example.nalone.util.Constants.setUserImage;
 
 public class NotificationActivity extends AppCompatActivity {
-    RecyclerView recyclerNotif;
-    private FirestoreRecyclerAdapter adapter;
+
+    private RecyclerView recyclerNotif;
     private ImageView buttonBack;
+    private List<Notification> notificationList;
 
-
-
+    @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -54,49 +70,33 @@ public class NotificationActivity extends AppCompatActivity {
         adapterNotif();
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     private void adapterNotif() {
 
-        Query query = mStoreBase.collection("users").document(USER_ID).collection("notifications").orderBy("mDate", Query.Direction.DESCENDING);
-        FirestoreRecyclerOptions<Notification> options = new FirestoreRecyclerOptions.Builder<Notification>().setQuery(query, Notification.class).build();
+        notificationList = new ArrayList<>();
 
-        adapter = new FirestoreRecyclerAdapter<Notification, NotifViewHolder>(options) {
-            @NonNull
+        JSONObjectCrypt params = new JSONObjectCrypt();
+        params.addParameter("uid", USER.getUid());
+
+        JSONController.getJsonArrayFromUrl(Constants.URL_NOTIFICATIONS, NotificationActivity.this, params, new JSONArrayListener() {
             @Override
-            public NotifViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-                View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_notif, parent, false);
-                return new NotifViewHolder(view);
+            public void onJSONReceived(JSONArray jsonArray) {
+                   try {
+                       for(int i = 0; i < jsonArray.length(); i++) {
+                           notificationList.add((Notification) JSONController.convertJSONToObject(jsonArray.getJSONObject(i), Notification.class));
+                       }
+                   } catch (JSONException e){
+                       Log.w("Response", "Erreur:"+e.getMessage());
+                       Toast.makeText(NotificationActivity.this, getResources().getString(R.string.error), Toast.LENGTH_SHORT).show();
+                   }
             }
 
             @Override
-            protected void onBindViewHolder(@NonNull final NotifViewHolder userViewHolder, int i, @NonNull final Notification n) {
-               // Notification notification;
-
-                final User[] u = new User[1];
-                userViewHolder.nomOwner.setText(n.getmOwner());
-                userViewHolder.descNotif.setText(n.getmDesc());
-                mStoreBase.collection("users").whereEqualTo("uid", n.getmOwnerRef().getId()).get()
-                        .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                            @Override
-                            public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                                if(task.isSuccessful()){
-                                    for (QueryDocumentSnapshot doc : task.getResult()){
-                                        u[0] = doc.toObject(User.class);
-                                    }
-                                }
-                                setUserImage(u[0], getApplicationContext(), userViewHolder.imagePerson);
-                            }
-                        });
-
-                userViewHolder.dateNotif.setText(Horloge.verifDay(n.getmDate()));
-                //loading.setVisibility(View.GONE);
-
-
+            public void onJSONReceivedError(VolleyError volleyError) {
+                Log.w("Response", "Erreur:"+volleyError.toString());
+                Toast.makeText(NotificationActivity.this, getResources().getString(R.string.error), Toast.LENGTH_SHORT).show();
             }
-        };
-        recyclerNotif.setHasFixedSize(true);
-        recyclerNotif.setLayoutManager(new LinearLayoutManager(this));
-        recyclerNotif.setAdapter(adapter);
-        adapter.startListening();
+        });
     }
 
 

@@ -33,10 +33,21 @@ public class TimePickerFragment extends DialogFragment implements TimePickerDial
     }
 
     public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+        String Shour = hourOfDay+"";
+        String Sminute = minute+"";
+
+        if(Shour.length() == 1){
+            Shour = "0"+hourOfDay;
+        }
+
+        if(Sminute.length() == 1){
+            Sminute = "0"+minute;
+        }
+
         if (isStart){
-            DateEventFragment.eventStartHoraire.setText(hourOfDay + " : "+minute);
+            DateEventFragment.eventStartHoraire.setText(Shour + ":"+Sminute);
         }else{
-            DateEventFragment.eventEndHoraire.setText(hourOfDay + " : "+minute);
+            DateEventFragment.eventEndHoraire.setText(Shour + ":"+Sminute);
         }
     }
 

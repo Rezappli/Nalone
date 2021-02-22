@@ -15,7 +15,6 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.example.nalone.R;
-import com.example.nalone.objects.Evenement;
 import com.google.android.material.textfield.TextInputEditText;
 
 public class NameEventFragment extends Fragment {
@@ -39,7 +38,7 @@ public class NameEventFragment extends Fragment {
         checkValidation();
 
 
-        Button buttonNext = root.findViewById(R.id.button2);
+        Button buttonNext = root.findViewById(R.id.buttonNextFragmentDate);
 
         final NavController navController = Navigation.findNavController(getActivity(),R.id.nav_host_fragment2);
         buttonNext.setOnClickListener(new View.OnClickListener() {

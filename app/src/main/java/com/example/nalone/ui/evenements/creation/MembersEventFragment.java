@@ -2,9 +2,11 @@ package com.example.nalone.ui.evenements.creation;
 
 import android.annotation.SuppressLint;
 import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
@@ -21,9 +23,14 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.VolleyError;
 import com.example.nalone.R;
 import com.example.nalone.dialog.ListAmisFragment;
+import com.example.nalone.json.JSONArrayListener;
+import com.example.nalone.json.JSONController;
+import com.example.nalone.json.JSONObjectCrypt;
 import com.example.nalone.objects.User;
+import com.example.nalone.util.Constants;
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -33,9 +40,12 @@ import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
+import org.json.JSONArray;
+
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.example.nalone.util.Constants.USER;
 import static com.example.nalone.util.Constants.USER_ID;
 import static com.example.nalone.util.Constants.mStoreBase;
 import static com.example.nalone.util.Constants.setUserImage;
@@ -90,9 +100,32 @@ public class MembersEventFragment extends Fragment {
             }
         });
         buttonMoreInvit.setOnClickListener(new View.OnClickListener() {
+            @RequiresApi(api = Build.VERSION_CODES.O)
             @Override
-            public void onClick(View v) {
-                mStoreBase.collection("users").document(USER_ID).collection("friends").whereEqualTo("status", "add")
+            public void onClick(final View v) {
+
+                JSONObjectCrypt params = new JSONObjectCrypt();
+                params.addParameter("uid", USER.getUid());
+
+                JSONController.getJsonArrayFromUrl(Constants.URL_FRIENDS, getContext(), params, new JSONArrayListener() {
+                    @Override
+                    public void onJSONReceived(JSONArray jsonArray) {
+                        if(jsonArray.length() > 0){
+                            ListAmisFragment.type = "event";
+                            bottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
+                            ListAmisFragment.EVENT_LOAD = MainCreationEventActivity.currentEvent;
+                        }else{
+                            Toast.makeText(getContext(), getResources().getString(R.string.no_friends), Toast.LENGTH_SHORT).show();
+                        }
+                    }
+
+                    @Override
+                    public void onJSONReceivedError(VolleyError volleyError) {
+                        Log.w("Response", "Erreur:"+volleyError.toString());
+                        Toast.makeText(getContext(), getResources().getString(R.string.error), Toast.LENGTH_SHORT).show();
+                    }
+                });
+                /*mStoreBase.collection("users").document(USER_ID).collection("friends").whereEqualTo("status", "add")
                         .get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
@@ -111,7 +144,7 @@ public class MembersEventFragment extends Fragment {
                             Toast.makeText(getContext(), "Vous n'avez pas d'ami", Toast.LENGTH_SHORT).show();
 
                     }
-                });
+                });*/
             }
         });
 
@@ -158,65 +191,6 @@ public class MembersEventFragment extends Fragment {
 
     }
 
-    private void initList(){
-        Query query;
-        if(!adds.isEmpty()) {
-            query = mStoreBase.collection("users").whereIn("uid", adds);
-            query.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                @Override
-                public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                    for (QueryDocumentSnapshot doc : task.getResult()) {
-                        User u = doc.toObject(User.class);
-                        Log.w("Add", u.getFirst_name());
-                    }
-                }
-            });
-        }else{
-            query = mStoreBase.collection("usejkhdskjfhkjhrjdhfks");
-        }
-
-        //RecyclerOption
-        FirestoreRecyclerOptions<User> options = new FirestoreRecyclerOptions.Builder<User>().setQuery(query, User.class).build();
-
-        adapter = new FirestoreRecyclerAdapter<User, PersonViewHolder>(options) {
-            @NonNull
-            @Override
-            public PersonViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-                Log.w("Add", "ViewHolder");
-                View view= LayoutInflater.from(parent.getContext()).inflate(R.layout.item_person,parent,false);
-                return new PersonViewHolder(view);
-            }
-
-            @Override
-            protected void onBindViewHolder(@NonNull final PersonViewHolder personViewHolder, final int i, @NonNull final  User u) {
-
-                Log.w("Add","BindViewHolder");
-                personViewHolder.villePers.setText(u.getCity());
-                personViewHolder.nomInvit.setText(u.getFirst_name() + " "+ u.getLast_name());
-                personViewHolder.button.setImageDrawable(getResources().getDrawable(R.drawable.ic_baseline_remove_24));
-                personViewHolder.button.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        adds.remove(u.getUid());
-                        Log.w("Add", "List : " + adds.isEmpty());
-                        adapter.notifyDataSetChanged();
-                        //createFragment();
-                    }
-                });
-
-                setUserImage(u,getContext(),personViewHolder.imagePerson);
-
-            }
-
-        };
-
-        mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        mRecyclerView.setAdapter(adapter);
-        adapter.startListening();
-
-        Log.w("Add", "Set adapter");
-
-    }
 
     private class PersonViewHolder extends RecyclerView.ViewHolder {
 

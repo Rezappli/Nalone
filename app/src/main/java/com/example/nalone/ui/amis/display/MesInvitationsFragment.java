@@ -123,7 +123,7 @@ public class MesInvitationsFragment extends Fragment {
                                             @Override
                                             public void onClick(View v) {
                                                 acceptFriendRequest(u.getUid());
-                                                Notification.createNotif(u,Notification.joinAmi());
+                                                //Notification.createNotif(u,Notification.joinAmi());
                                             }
                                         });
 

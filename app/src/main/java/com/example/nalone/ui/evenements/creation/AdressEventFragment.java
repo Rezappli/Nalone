@@ -7,6 +7,7 @@ import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,7 +20,6 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.material.textfield.TextInputEditText;
 
 import java.io.IOException;
-import java.text.ParseException;
 import java.util.List;
 
 public class AdressEventFragment extends Fragment {
@@ -37,7 +37,7 @@ public class AdressEventFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View root = inflater.inflate(R.layout.fragment_adress_event, container, false);
-        Button next = root.findViewById(R.id.button2);
+        Button next = root.findViewById(R.id.buttonNextFragmentDate);
         event_adresse = root.findViewById(R.id.eventAdress);
         event_city = root.findViewById(R.id.eventCity);
         initialiserImageView(root);
@@ -110,28 +110,34 @@ public class AdressEventFragment extends Fragment {
     }
 
     private void validateAdress(){
-        if(getLocationFromAddress(event_adresse.getText().toString()+","+event_city.getText().toString()) == null){
-            event_adresse.setError("Adresse introuvable");
-        }else if(event_adresse.getText().toString().matches("")){
-            event_adresse.setError("Champs obligatoire");
-        }else if(event_city.getText().toString().matches("")){
-            event_city.setError("Champs obligatoire");
-        }else {
-            MainCreationEventActivity.adressValidate = true;
-            MainCreationEventActivity.currentEvent.setAddress(event_adresse.getText().toString());
-            MainCreationEventActivity.currentEvent.setCity(event_city.getText().toString());
-            if(MainCreationEventActivity.isAllValidate()){
-                Toast.makeText(getContext(), "Evenement créer", Toast.LENGTH_SHORT).show();
-            }else if(!MainCreationEventActivity.nameValidate) {
-                goName();
-            }else if(!MainCreationEventActivity.dateValidate){
-                goDate();
-            }else if(!MainCreationEventActivity.photoValidate){
-                goPhoto();
-            }else if(!MainCreationEventActivity.membersValidate){
-                goMembers();
+        try {
+            if(getLocationFromAddress(event_adresse.getText().toString() + "," + event_city.getText().toString()) == null){
+                event_adresse.setError("Adresse introuvable");
+            }else if(event_adresse.getText().toString().matches("")){
+                event_adresse.setError("Champs obligatoire");
+            }else if(event_city.getText().toString().matches("")){
+                event_city.setError("Champs obligatoire");
+            }else {
+                MainCreationEventActivity.adressValidate = true;
+                MainCreationEventActivity.currentEvent.setAddress(event_adresse.getText().toString());
+                MainCreationEventActivity.currentEvent.setCity(event_city.getText().toString());
+                if(MainCreationEventActivity.isAllValidate()){
+                    Toast.makeText(getContext(), "Evenement créer", Toast.LENGTH_SHORT).show();
+                }else if(!MainCreationEventActivity.nameValidate) {
+                    goName();
+                }else if(!MainCreationEventActivity.dateValidate){
+                    goDate();
+                }else if(!MainCreationEventActivity.photoValidate){
+                    goPhoto();
+                }else if(!MainCreationEventActivity.membersValidate){
+                    goMembers();
+                }
             }
+        }catch (Exception e){
+            Log.w("Response", e.getMessage());
+            Toast.makeText(getContext(), getResources().getString(R.string.error_address), Toast.LENGTH_SHORT).show();
         }
+
 
     }
 

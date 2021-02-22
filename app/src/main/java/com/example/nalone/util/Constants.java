@@ -102,8 +102,9 @@ public class Constants {
 
     public static String URL_ME = "http://api.nolonely.fr:53000/me.php";
     public static String URL_SIGN_IN = "http://api.nolonely.fr:53000/sign_in.php";
-    public static final String URL_NEARBY_EVENTS = "http://api.nolonely.fr:53000/nearby_events.php";
-    public static final String URL_FRIENDS = "http://api.nolonely.fr:53000/get_friends.php";
+    public static String URL_NEARBY_EVENTS = "http://api.nolonely.fr:53000/nearby_events.php";
+    public static String URL_FRIENDS = "http://api.nolonely.fr:53000/get_friends.php";
+    public static String URL_NOTIFICATIONS = "http://api.nolonely.fr:53000/get_my_notifications.php";
 
 
 

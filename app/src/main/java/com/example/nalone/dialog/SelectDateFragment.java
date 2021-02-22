@@ -30,11 +30,20 @@ public class SelectDateFragment extends DialogFragment implements DatePickerDial
         populateSetDate(yy, mm+1, dd);
     }
     public void populateSetDate(int year, int month, int day) {
-        if(isStart){
-            DateEventFragment.eventStartDate.setText(day+"/"+month+"/"+year);
-        }else{
-            DateEventFragment.eventEndDate.setText(day+"/"+month+"/"+year);
+        String Sday = day + "";
+        String Smonth = month + "";
+        if(Sday.length() == 1){
+            Sday = "0"+day;
         }
 
+        if(Smonth.length() == 1){
+            Smonth = "0"+month;
+        }
+
+        if(isStart){
+            DateEventFragment.eventStartDate.setText(Sday+"/"+Smonth+"/"+year);
+        }else{
+            DateEventFragment.eventEndDate.setText(Sday+"/"+Smonth+"/"+year);
+        }
     }
 }

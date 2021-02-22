@@ -173,9 +173,22 @@
 
     <!-- Strings used for map -->
     <string name="description_event">Cliquez pour plus d\'informations</string>
-
     <string name="error">Une erreur est survenue :(</string>
-    <string name="error_event">Une erreur est lors du chargement des évnèments :(</string>
+    <string name="error_event">Une erreur est lors du chargement des évènments :(</string>
+    <string name="error_address">Nous n\'avons pas réussie à trouver l\'adresse :(</string>
+    <string name="required_field">Champs obligatoire</string>
+    <string name="date_in_futur">Veuillez selectionner des dates dans le futur</string>
+    <string name="event_create">Vous avez créer votre évènement !</string>
+    <string name="no_friends">Vous n\'avez pas d\'ami !</string>
+
+    <!--Strings used for notifications -->
+    <string name="notification_join_group">a rejoins un de vos groupe</string>
+    <string name="notification_friend_request_received">"vous a envoyé une demande d'ami"</string>
+    <string name="notification_invit_event">vous a envoyé une invitation pour participer à son évènement</string>
+    <string name="notification_request_join_group">vous a envoyé une invitation pour rejoindre son groupe</string>
+    <string name="notification_participate_your_event">participe à un de vos évènement</string>
+    <string name="notification_accept_friend_request">a accepté votre demande d\'ami</string>
+
 
 
 

@@ -6,6 +6,7 @@ import android.os.Bundle;
 import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,16 +20,15 @@ import com.example.nalone.dialog.SelectDateFragment;
 import com.example.nalone.dialog.TimePickerFragment;
 import com.example.nalone.enumeration.StatusEvent;
 import com.example.nalone.util.Horloge;
-import com.google.android.material.textfield.TextInputEditText;
-import com.google.firebase.Timestamp;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class DateEventFragment extends Fragment {
-    public static TextView eventStartDate,eventStartHoraire,eventEndDate,eventEndHoraire;
+    public static TextView eventStartDate, eventStartHoraire, eventEndDate, eventEndHoraire;
     private Button next;
+
     public DateEventFragment() {
         // Required empty public constructor
     }
@@ -42,14 +42,15 @@ public class DateEventFragment extends Fragment {
         eventEndDate = root.findViewById(R.id.eventEndDate);
         eventStartHoraire = root.findViewById(R.id.eventHoraire);
         eventEndHoraire = root.findViewById(R.id.eventEndHoraire);
-        next = root.findViewById(R.id.button2);
+        next = root.findViewById(R.id.buttonNextFragmentDate);
         next.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 try {
                     validateDate();
                 } catch (ParseException e) {
-                    e.printStackTrace();
+                    Log.w("Response", "Erreur:" + e);
+                    Toast.makeText(getContext(), getResources().getString(R.string.error), Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -95,7 +96,7 @@ public class DateEventFragment extends Fragment {
         return root;
     }
 
-    private ImageView imageProgessCreationPhoto,imageProgessCreationDate,imageProgessCreationPosition,imageProgessCreationName,
+    private ImageView imageProgessCreationPhoto, imageProgessCreationDate, imageProgessCreationPosition, imageProgessCreationName,
             imageProgessCreationMembers;
 
     private void initialiserImageView(View root) {
@@ -131,24 +132,24 @@ public class DateEventFragment extends Fragment {
     }
 
     @SuppressLint("UseCompatLoadingForDrawables")
-    private void checkValidation(){
-        if (MainCreationEventActivity.adressValidate){
+    private void checkValidation() {
+        if (MainCreationEventActivity.adressValidate) {
             imageProgessCreationPosition.setImageDrawable(getResources().getDrawable(R.drawable.creation_event_adress_focused));
         }
-        if (MainCreationEventActivity.dateValidate){
+        if (MainCreationEventActivity.dateValidate) {
             imageProgessCreationDate.setImageDrawable(getResources().getDrawable(R.drawable.creation_event_date_focused));
-            //eventStartDate.setText(MainCreationEventActivity.currentEvent.getStartDate().toDate().toString());
-            //eventEndDate.setText(MainCreationEventActivity.currentEvent.getStartDate().toDate().toString());
-            //eventStartHoraire.setText(MainCreationEventActivity.currentEvent.getStartDate().toDate().toString());
-            //eventEndHoraire.setText(MainCreationEventActivity.currentEvent.getStartDate().toDate().toString());
+            eventStartDate.setText(MainCreationEventActivity.currentEvent.getStartDate());
+            eventEndDate.setText(MainCreationEventActivity.currentEvent.getStartDate());
+            eventStartHoraire.setText(MainCreationEventActivity.currentEvent.getStartDate());
+            eventEndHoraire.setText(MainCreationEventActivity.currentEvent.getStartDate());
         }
-        if (MainCreationEventActivity.membersValidate){
+        if (MainCreationEventActivity.membersValidate) {
             imageProgessCreationMembers.setImageDrawable(getResources().getDrawable(R.drawable.creation_event_members_focused));
         }
-        if (MainCreationEventActivity.nameValidate){
+        if (MainCreationEventActivity.nameValidate) {
             imageProgessCreationName.setImageDrawable(getResources().getDrawable(R.drawable.creation_event_name_focused));
         }
-        if (MainCreationEventActivity.photoValidate){
+        if (MainCreationEventActivity.photoValidate) {
             imageProgessCreationPhoto.setImageDrawable(getResources().getDrawable(R.drawable.creation_event_photo_focused));
         }
 
@@ -157,64 +158,73 @@ public class DateEventFragment extends Fragment {
     private void validateDate() throws ParseException {
         SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy hh:mm");
 
-        String new_event_time_start = eventStartDate.getText().toString().replaceAll(" ", "");
-        String new_event_time_end = eventEndDate.getText().toString().replaceAll(" ", "");
-        String final_event_time_start = "";
-        String final_event_time_end = "";
-        for(char c : new_event_time_start.toCharArray()) {
-            if (c != ' ') {
-                final_event_time_start += c;
+        if (eventStartDate.getText().toString().equalsIgnoreCase("date")) {
+            eventStartDate.setError(getResources().getString(R.string.required_field));
+            return;
+        } else {
+            eventStartDate.setError(null);
+        }
+
+        if (eventEndDate.getText().toString().equalsIgnoreCase("date")) {
+            eventEndDate.setError(getResources().getString(R.string.required_field));
+            return;
+        } else {
+            eventEndDate.setError(null);
+        }
+
+        if (eventStartHoraire.getText().toString().equalsIgnoreCase("horaire")) {
+            eventStartHoraire.setError(getResources().getString(R.string.required_field));
+            return;
+        } else {
+            eventStartHoraire.setError(null);
+        }
+
+        if (eventEndHoraire.getText().toString().equalsIgnoreCase("horaire")) {
+            eventEndHoraire.setError(getResources().getString(R.string.required_field));
+            return;
+        } else {
+            eventEndHoraire.setError(null);
+        }
+
+
+        String tsStart = eventStartDate.getText().toString() + " " + eventStartHoraire.getText().toString();
+        String tsEnd = eventEndDate.getText().toString() + " " + eventEndHoraire.getText().toString();
+        StatusEvent seStart = Horloge.verifStatut(new Date(), sdf.parse(tsStart));
+        StatusEvent seEnd = Horloge.verifStatut(new Date(), sdf.parse(tsEnd));
+        if (seStart == StatusEvent.FINI || seStart == StatusEvent.EXPIRE || seEnd == StatusEvent.FINI || seEnd == StatusEvent.EXPIRE) {
+            Toast.makeText(getContext(), getResources().getString(R.string.date_in_futur), Toast.LENGTH_SHORT).show();
+        } else {
+            MainCreationEventActivity.dateValidate = true;
+            MainCreationEventActivity.currentEvent.setStartDate(tsStart);
+            MainCreationEventActivity.currentEvent.setEndDate(tsEnd);
+            if (MainCreationEventActivity.isAllValidate()) {
+                Toast.makeText(getContext(), getResources().getString(R.string.event_create), Toast.LENGTH_SHORT).show();
+            } else if (!MainCreationEventActivity.adressValidate) {
+                goAdress();
+            } else if (!MainCreationEventActivity.nameValidate) {
+                goName();
+            } else if (!MainCreationEventActivity.photoValidate) {
+                goPhoto();
+            } else if (!MainCreationEventActivity.membersValidate) {
+                goMembers();
             }
         }
 
-        for(char c : new_event_time_end.toCharArray()) {
-            if (c != ' ') {
-                final_event_time_end += c;
-            }
-        }
+    }
 
-        Timestamp tsStart = new Timestamp(sdf.parse(eventStartDate.getText().toString()+" "+final_event_time_start));
-        Timestamp tsEnd = new Timestamp(sdf.parse(eventEndDate.getText().toString()+" "+final_event_time_end));
-        StatusEvent seStart = Horloge.verifStatut(new Date(),tsStart.toDate());
-        StatusEvent seEnd = Horloge.verifStatut(new Date(),tsEnd.toDate());
-        if(seStart == StatusEvent.FINI || seStart == StatusEvent.EXPIRE || seEnd == StatusEvent.FINI || seEnd == StatusEvent.EXPIRE ){
-            Toast.makeText(getContext(), "Veuillez selectionner des dates dans le futur", Toast.LENGTH_SHORT).show();
-        }else if(eventStartDate.getText().toString().equalsIgnoreCase("date")){
-            eventStartDate.setError("Champs obligatoire");
-        }else if(eventEndDate.getText().toString().equalsIgnoreCase("date")){
-            eventEndDate.setError("Champs obligatoire");
-        }else if(eventStartHoraire.getText().toString().equalsIgnoreCase("horaire")){
-            eventStartHoraire.setError("Champs obligatoire");
-        }else if(eventEndHoraire.getText().toString().equalsIgnoreCase("horaire")){
-            eventEndHoraire.setError("Champs obligatoire");
-        }else{
-                MainCreationEventActivity.dateValidate = true;
-                 //MainCreationEventActivity.currentEvent.setStartDate(tsStart);
-                 //MainCreationEventActivity.currentEvent.setEndDate(tsEnd);
-                if(MainCreationEventActivity.isAllValidate()){
-                    Toast.makeText(getContext(), "Evenement créer", Toast.LENGTH_SHORT).show();
-                }else if(!MainCreationEventActivity.adressValidate) {
-                    goAdress();
-                }else if(!MainCreationEventActivity.nameValidate){
-                    goName();
-                }else if(!MainCreationEventActivity.photoValidate){
-                    goPhoto();
-                }else if(!MainCreationEventActivity.membersValidate){
-                    goMembers();
-                }
-            }
-        }
-
-    private void goAdress(){
+    private void goAdress() {
         MainCreationEventActivity.navController.navigate(R.id.action_dateEventFragment_to_adressEventFragment);
     }
-    private void goMembers(){
+
+    private void goMembers() {
         MainCreationEventActivity.navController.navigate(R.id.action_dateEventFragment_to_membersEventFragment);
     }
-    private void goName(){
+
+    private void goName() {
         MainCreationEventActivity.navController.navigate(R.id.action_dateEventFragment_to_nameEventFragment);
     }
-    private void goPhoto(){
+
+    private void goPhoto() {
         MainCreationEventActivity.navController.navigate(R.id.action_dateEventFragment_to_photoEventFragment);
     }
 }

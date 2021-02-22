@@ -53,7 +53,7 @@ public class PhotoEventFragment extends Fragment {
                 startActivityForResult(photoPickerIntent, RESULT_LOAD_IMG);
             }
         });
-        Button buttonNext = root.findViewById(R.id.button2);
+        Button buttonNext = root.findViewById(R.id.buttonNextFragmentDate);
         initialiserImageView(root);
         checkValidation();
         buttonNext.setOnClickListener(new View.OnClickListener() {

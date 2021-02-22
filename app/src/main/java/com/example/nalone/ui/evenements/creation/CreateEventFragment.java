@@ -635,7 +635,7 @@ public class CreateEventFragment extends Fragment {
                                     @Override
                                     public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                                         if(task.isSuccessful()){
-                                            Notification.createNotif(task.getResult().toObject(User.class),Notification.demandeEvent());
+                                            //Notification.createNotif(task.getResult().toObject(User.class),Notification.demandeEvent());
                                         }
                                     }
                                 });
