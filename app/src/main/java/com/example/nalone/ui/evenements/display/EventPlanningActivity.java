@@ -27,6 +27,7 @@ import org.joda.time.DateTime;
 import org.json.JSONArray;
 import org.json.JSONException;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -62,10 +63,8 @@ public class EventPlanningActivity extends AppCompatActivity implements DatePick
         picker.setBackgroundColor(Color.WHITE);
         picker.setDate(new DateTime());
         mRecycler = findViewById(R.id.recyclerViewPlanning);
-        getEvent(new DateTime());
     }
 
-//
     private void configureRecyclerView() {
         this.mAdapter = new MapEvenementAdapter(this.evenementList, true);
         // 3.3 - Attach the adapter to the recyclerview to populate items
@@ -76,7 +75,7 @@ public class EventPlanningActivity extends AppCompatActivity implements DatePick
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
-    private void getEvent(DateTime date){
+    private void getEvent(String date){
         JSONObjectCrypt params = new JSONObjectCrypt();
 
         params.addParameter("uid", USER.getUid());
@@ -106,9 +105,12 @@ public class EventPlanningActivity extends AppCompatActivity implements DatePick
         });
     }
 
-
+    @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     public void onDateSelected(DateTime dateSelected) {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        String s = sdf.format(dateSelected.toDate());
         Log.w("DATETIME", dateSelected+"");
+        getEvent(s);
     }
 }
