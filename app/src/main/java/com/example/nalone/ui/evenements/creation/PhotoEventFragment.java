@@ -1,14 +1,20 @@
 package com.example.nalone.ui.evenements.creation;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
 
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
+import android.provider.MediaStore;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,8 +23,12 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.example.nalone.HomeActivity;
 import com.example.nalone.R;
 import com.example.nalone.objects.Evenement;
+import com.theartofdev.edmodo.cropper.CropImage;
+import com.theartofdev.edmodo.cropper.CropImageActivity;
+import com.theartofdev.edmodo.cropper.CropImageView;
 
 import static android.app.Activity.RESULT_OK;
 
@@ -27,9 +37,6 @@ public class PhotoEventFragment extends Fragment {
 
     private ImageView imagePhoto;
     static final int RESULT_LOAD_IMG = 1;
-
-    //private NavController navController = Navigation.findNavController(getActivity(),R.id.nav_host_fragment2);
-
 
     public PhotoEventFragment() {
         // Required empty public constructor
@@ -41,7 +48,7 @@ public class PhotoEventFragment extends Fragment {
                              Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.fragment_photo_event, container, false);
 
-        
+
         imagePhoto = root.findViewById(R.id.imagePhoto);
         imagePhoto.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -59,15 +66,15 @@ public class PhotoEventFragment extends Fragment {
             public void onClick(View v) {
                 if (MainCreationEventActivity.image == null) {
                     final AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-                    builder.setMessage("Vous n'avez pas séléctionné de photo de profil ! Voulez-vous continuer ?")
-                            .setPositiveButton("Oui", new DialogInterface.OnClickListener() {
+                    builder.setMessage(getResources().getString(R.string.no_image_select))
+                            .setPositiveButton(getResources().getString(R.string.button_yes), new DialogInterface.OnClickListener() {
                                 public void onClick(DialogInterface dialog, int id) {
                                     validatePhoto();
                                 }
                             })
-                            .setNegativeButton("Non", new DialogInterface.OnClickListener() {
+                            .setNegativeButton(getResources().getString(R.string.button_no), new DialogInterface.OnClickListener() {
                                 public void onClick(DialogInterface dialog, int id) {
-
+                                    dialog.dismiss();
                                 }
                             });
                     builder.create();
@@ -169,18 +176,30 @@ goDate();            }
     }
 
     @Override
-    public void onActivityResult(int reqCode, int resultCode, Intent data) {
-        super.onActivityResult(reqCode, resultCode, data);
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
 
-        if (resultCode == RESULT_OK) {
-            Uri imageUri = data.getData();
-            assert imageUri != null;
-            Glide.with(this).load(imageUri).fitCenter().centerCrop().into(imagePhoto);
-            MainCreationEventActivity.image = imageUri;
-        }else {
-            Toast.makeText(getContext(),"Vous n'avez pas choisi d'image", Toast.LENGTH_LONG).show();
+        if (resultCode == RESULT_OK && requestCode == RESULT_LOAD_IMG) {
 
+            CropImage.activity(data.getData())
+                    .setMultiTouchEnabled(true)
+                    .setAspectRatio(1,1)
+                    .setGuidelines(CropImageView.Guidelines.ON)
+                    .setAllowFlipping(false)
+                    .start(getContext(), this);
         }
-    }
 
+        if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
+            CropImage.ActivityResult result = CropImage.getActivityResult(data);
+            if (resultCode == RESULT_OK) {
+                Uri resultUri = result.getUri();
+                Glide.with(this).load(resultUri).fitCenter().centerCrop().into(imagePhoto);
+                MainCreationEventActivity.image = resultUri;
+            } else if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
+                Log.w("Response", result.getError());
+            }
+        }
+
+
+    }
 }

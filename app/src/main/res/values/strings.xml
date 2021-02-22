@@ -189,6 +189,14 @@
     <string name="notification_participate_your_event">participe à un de vos évènement</string>
     <string name="notification_accept_friend_request">a accepté votre demande d\'ami</string>
 
+    <!--String used for alert dialog-->
+    <string name="button_yes">Oui</string>
+    <string name="button_cancel">Annuler</string>
+    <string name="button_no">Non</string>
+
+    <!--Strings used for events creations -->
+    <string name="no_image_select">Vous n\'avez pas séléctionné de photo ! Voulez-vous continuer ?</string>
+
 
 
 

@@ -172,5 +172,10 @@ public class HomeActivity extends AppCompatActivity{
         super.onResume();
     }
 
+    @Override
+    public void onBackPressed(){
+        //super.onBackPressed();
+    }
+
 
 }
