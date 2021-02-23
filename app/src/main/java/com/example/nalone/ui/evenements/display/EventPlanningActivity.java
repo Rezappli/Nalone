@@ -110,7 +110,6 @@ public class EventPlanningActivity extends AppCompatActivity implements DatePick
     public void onDateSelected(DateTime dateSelected) {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         String s = sdf.format(dateSelected.toDate());
-        Log.w("DATETIME", dateSelected+"");
         getEvent(s);
     }
 }

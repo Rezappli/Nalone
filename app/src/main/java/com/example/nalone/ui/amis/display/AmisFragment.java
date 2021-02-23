@@ -192,7 +192,7 @@ public class AmisFragment extends Fragment {
         params.addParameter("uid", USER.getUid());
         params.addParameter("limit", 10); //fix a limit to 10 users
 
-        JSONController.getJsonArrayFromUrl(Constants.URL_USER_WHITHOUT_ME, getContext(), params, new JSONArrayListener() {
+        JSONController.getJsonArrayFromUrl(Constants.URL_MY_FRIENDS, getContext(), params, new JSONArrayListener() {
             @Override
             public void onJSONReceived(JSONArray jsonArray) {
 
