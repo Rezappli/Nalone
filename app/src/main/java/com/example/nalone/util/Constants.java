@@ -282,6 +282,7 @@ public class Constants {
 
             @Override
             public void onJSONReceived(JSONObject jsonObject) {
+                Log.w("Response", "Réponse :"+jsonObject.toString());
                 Toast.makeText(context, context.getResources().getString(R.string.image_save), Toast.LENGTH_SHORT).show();
             }
 
