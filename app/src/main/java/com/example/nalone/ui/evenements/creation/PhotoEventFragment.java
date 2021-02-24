@@ -3,12 +3,15 @@ package com.example.nalone.ui.evenements.creation;
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 
+import androidx.annotation.RequiresApi;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
@@ -25,12 +28,22 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.example.nalone.HomeActivity;
 import com.example.nalone.R;
+import com.example.nalone.enumeration.ImageProtocol;
+import com.example.nalone.enumeration.ImageType;
 import com.example.nalone.objects.Evenement;
+import com.example.nalone.util.Constants;
 import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageActivity;
 import com.theartofdev.edmodo.cropper.CropImageView;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
+import java.util.UUID;
+
 import static android.app.Activity.RESULT_OK;
+import static com.example.nalone.util.Constants.USER;
 
 
 public class PhotoEventFragment extends Fragment {
@@ -175,6 +188,7 @@ goDate();            }
 
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -195,11 +209,51 @@ goDate();            }
                 Uri resultUri = result.getUri();
                 Glide.with(this).load(resultUri).fitCenter().centerCrop().into(imagePhoto);
                 MainCreationEventActivity.image = resultUri;
+                try {
+                    String s = new String(getBytes(getContext(), resultUri), StandardCharsets.UTF_8);
+                    Constants.uploadImageOnServer(USER.getUid(), ImageType.EVENT, UUID.randomUUID().toString()
+                            ,s, ImageProtocol.SAVE, getContext());
+                } catch (IOException exception) {
+                    Log.w("Response", "Erreur: "+exception.toString());
+                    Toast.makeText(getContext(), getResources().getString(R.string.image_save_error), Toast.LENGTH_SHORT).show();
+                }
+
             } else if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
                 Log.w("Response", result.getError());
             }
         }
 
 
+    }
+
+    public static byte[] getBytes(Context context, Uri uri) throws IOException {
+        InputStream iStream = context.getContentResolver().openInputStream(uri);
+        try {
+            return getBytes(iStream);
+        } finally {
+            // close the stream
+            try {
+                iStream.close();
+            } catch (IOException ignored) { /* do nothing */ }
+        }
+    }
+
+    public static byte[] getBytes(InputStream inputStream) throws IOException {
+
+        byte[] bytesResult = null;
+        ByteArrayOutputStream byteBuffer = new ByteArrayOutputStream();
+        int bufferSize = 1024;
+        byte[] buffer = new byte[bufferSize];
+        try {
+            int len;
+            while ((len = inputStream.read(buffer)) != -1) {
+                byteBuffer.write(buffer, 0, len);
+            }
+            bytesResult = byteBuffer.toByteArray();
+        } finally {
+            // close the stream
+            try{ byteBuffer.close(); } catch (IOException ignored){ /* do nothing */ }
+        }
+        return bytesResult;
     }
 }

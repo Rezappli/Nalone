@@ -196,6 +196,8 @@
 
     <!--Strings used for events creations -->
     <string name="no_image_select">Vous n\'avez pas séléctionné de photo ! Voulez-vous continuer ?</string>
-
+    <string name="image_save_error">Impossible d\'enregister l\'image :(</string>
+    <string name="image_save">Image sauvegardée !</string>
+    <string name="image_get_error">Impossible d\'e récupérer l\'image :(</string>
 
 </resources>

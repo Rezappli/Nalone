@@ -79,5 +79,6 @@ dependencies {
     implementation "androidx.recyclerview:recyclerview:1.2.0-alpha04"
     implementation 'com.theartofdev.edmodo:android-image-cropper:2.8.0'
     implementation 'com.github.jhonnyx2012:horizontal-picker:1.0.6'
+    implementation "androidx.biometric:biometric:1.1.0"
 }
 

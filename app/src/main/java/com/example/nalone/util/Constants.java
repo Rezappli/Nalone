@@ -3,18 +3,27 @@ package com.example.nalone.util;
 import android.app.Application;
 import android.content.Context;
 import android.net.Uri;
+import android.os.Build;
 import android.util.Base64;
 import android.util.Log;
 import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.bumptech.glide.Glide;
+import com.example.nalone.R;
+import com.example.nalone.enumeration.ImageProtocol;
+import com.example.nalone.enumeration.ImageType;
+import com.example.nalone.json.JSONArrayListener;
+import com.example.nalone.json.JSONController;
+import com.example.nalone.json.JSONObjectCrypt;
+import com.example.nalone.json.JSONObjectListener;
 import com.example.nalone.objects.Evenement;
 import com.example.nalone.objects.Group;
 import com.example.nalone.objects.User;
@@ -32,6 +41,7 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 //import com.koalap.geofirestore.GeoFire;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.security.InvalidAlgorithmParameterException;
@@ -109,6 +119,7 @@ public class Constants {
     public static String URL_USER_WHITHOUT_ME = "http://api.nolonely.fr:53000/get_users.php";
     public static String URL_MY_FRIENDS = "http://api.nolonely.fr:53000/get_friends.php";
     public static String URL_EVENT_DATE = "http://api.nolonely.fr:53000/get_event_date.php";
+    public static String URL_IMAGE = "http://api.nolonely.fr:53000/image.php";
 
 
 
@@ -256,6 +267,35 @@ public class Constants {
         }
         return temp;
     }
+
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    public static void uploadImageOnServer(String uid, ImageType type, String name, String data,
+                                           ImageProtocol protocol, final Context context){
+        JSONObjectCrypt params = new JSONObjectCrypt();
+        params.addParameter("uid", uid);
+        params.addParameter("protocol", protocol);
+        params.addParameter("type", type);
+        params.addParameter("name", name);
+        params.addParameter("image", data);
+
+        JSONController.getJsonObjectFromUrl(Constants.URL_IMAGE, context, params, new JSONObjectListener() {
+
+            @Override
+            public void onJSONReceived(JSONObject jsonObject) {
+                Toast.makeText(context, context.getResources().getString(R.string.image_save), Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onJSONReceivedError(VolleyError volleyError) {
+                Log.w("Response", "Erreur: "+volleyError.toString());
+                Toast.makeText(context, context.getResources().getString(R.string.image_save_error), Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    /*public static Uri downloadImageOnServer(){
+
+    }*/
 
     public static String key = "kXp2s5v8y/B?E(H+MbQeThWmZq3t6w9z"; // 128 bit key
     public static String iv = "7w!z$C&F)J@NcRfU"; // 16 bytes IV

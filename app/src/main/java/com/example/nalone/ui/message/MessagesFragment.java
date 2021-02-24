@@ -13,11 +13,14 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.SearchView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
+import androidx.biometric.BiometricPrompt;
 import androidx.cardview.widget.CardView;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.navigation.NavController;
@@ -49,6 +52,7 @@ import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.Executor;
 
 import static com.example.nalone.HomeActivity.buttonBack;
 import static com.example.nalone.util.Constants.USER;
@@ -68,6 +72,11 @@ public class MessagesFragment extends Fragment {
     private ImageView addMessage;
     private List<String> uid;
 
+    //bio
+    private Executor executor;
+    private BiometricPrompt biometricPrompt;
+    private BiometricPrompt.PromptInfo promptInfo;
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -75,7 +84,9 @@ public class MessagesFragment extends Fragment {
 
         rootView = inflater.inflate(R.layout.fragment_messages_amis, container, false);
 
-        createFragment();
+        //createFragment();
+
+        init(rootView);
 
         return rootView;
     }
@@ -86,7 +97,7 @@ public class MessagesFragment extends Fragment {
         buttonBack.setVisibility(View.GONE);
         mRecyclerView = rootView.findViewById(R.id.recyclerViewMessagesAmis);
         mSwipeRefreshLayout = rootView.findViewById(R.id.messageFriendSwipeRefreshLayout);
-        addMessage = rootView.findViewById(R.id.create_event_button);
+        //addMessage = rootView.findViewById(R.id.create_event_button);
 
         adapterUsers();
 
@@ -112,13 +123,15 @@ public class MessagesFragment extends Fragment {
             }
         });
 
-        addMessage.setOnClickListener(new View.OnClickListener() {
+        /*addMessage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 ListAmisFragment.type = "message_ami";
                 navController.navigate(R.id.action_navigation_messages_to_navigation_list_amis);
             }
         });
+
+         */
 
         mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
@@ -130,7 +143,7 @@ public class MessagesFragment extends Fragment {
     }
 
     private void adapterUsers() {
-        uid = new ArrayList<>();
+        /*uid = new ArrayList<>();
         mStoreBase.collection("users").document(USER.getUid()).collection("chat_friends").limit(10)
                 .get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
@@ -186,6 +199,8 @@ public class MessagesFragment extends Fragment {
                             }
 
                         }}});
+
+         */
     }
 
 
@@ -227,6 +242,54 @@ public class MessagesFragment extends Fragment {
         if(adapter != null) {
             adapter.stopListening();
         }
+    }
+
+    private void init(View root){
+        executor = ContextCompat.getMainExecutor(getContext());
+        biometricPrompt = new BiometricPrompt(getActivity(),
+                executor, new BiometricPrompt.AuthenticationCallback() {
+            @Override
+            public void onAuthenticationError(int errorCode,
+                                              @NonNull CharSequence errString) {
+                super.onAuthenticationError(errorCode, errString);
+                Toast.makeText(getContext(),
+                        "Authentication error: " + errString, Toast.LENGTH_SHORT)
+                        .show();
+            }
+
+            @Override
+            public void onAuthenticationSucceeded(
+                    @NonNull BiometricPrompt.AuthenticationResult result) {
+                super.onAuthenticationSucceeded(result);
+                Toast.makeText(getContext(),
+                        "Authentication succeeded!", Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onAuthenticationFailed() {
+                super.onAuthenticationFailed();
+                Toast.makeText(getContext(), "Authentication failed",
+                        Toast.LENGTH_SHORT)
+                        .show();
+            }
+        });
+
+        promptInfo = new BiometricPrompt.PromptInfo.Builder()
+                .setTitle("Biometric login for my app")
+                .setSubtitle("Log in using your biometric credential")
+                .setNegativeButtonText("Use account password")
+                .build();
+
+        // Prompt appears when user clicks "Log in".
+        // Consider integrating with the keystore to unlock cryptographic operations,
+        // if needed by your app.
+        addMessage = root.findViewById(R.id.create_event_button);
+        addMessage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                biometricPrompt.authenticate(promptInfo);
+            }
+        });
     }
 
 }
