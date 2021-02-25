@@ -170,6 +170,22 @@
     <string name="planning">Planning</string>
     <string name="creations">Creations</string>
 
+    <string name="event_art">Art</string>
+    <string name="event_car">Motorisé</string>
+    <string name="event_conference">Conference</string>
+    <string name="event_sport">Sport</string>
+    <string name="event_party">Fête</string>
+    <string name="event_music">Musique</string>
+    <string name="event_show">Spectacle</string>
+    <string name="event_movie">Cinéma</string>
+    <string name="event_gather">Rassemblement</string>
+    <string name="event_game">Jeux vidéo</string>
+    <string name="event_contest">Concour</string>
+    <string name="event_science">Science</string>
+    <string name="event_shop">Vente</string>
+
+    <string name="bottom_suggestion"> Pour vous </string>
+    <string name="bottom_popular"> Populaire </string>
 
     <!-- Strings used for map -->
     <string name="description_event">Cliquez pour plus d\'informations</string>

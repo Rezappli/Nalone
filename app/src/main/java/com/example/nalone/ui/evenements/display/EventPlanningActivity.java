@@ -14,6 +14,7 @@ import android.widget.Toast;
 import com.android.volley.VolleyError;
 import com.example.nalone.R;
 import com.example.nalone.adapter.MapEvenementAdapter;
+import com.example.nalone.adapter.PlanningEvenementAdapter;
 import com.example.nalone.enumeration.VisibilityMap;
 import com.example.nalone.json.JSONArrayListener;
 import com.example.nalone.json.JSONController;
@@ -38,7 +39,7 @@ import static com.example.nalone.util.Constants.range;
 public class EventPlanningActivity extends AppCompatActivity implements DatePickerListener{
     private RecyclerView mRecycler;
     private List<Evenement> evenementList;
-    private MapEvenementAdapter mAdapter;
+    private PlanningEvenementAdapter mAdapter;
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
@@ -46,7 +47,6 @@ public class EventPlanningActivity extends AppCompatActivity implements DatePick
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_event_planning);
         HorizontalPicker picker = findViewById(R.id.horizontalPicker);
-        HorizontalPicker picker1 = findViewById(R.id.horizontalPicker);
         picker.setListener(this)
                 .setOffset(7)
                 .setDateSelectedColor(getResources().getColor(R.color.colorPrimary))
@@ -66,7 +66,7 @@ public class EventPlanningActivity extends AppCompatActivity implements DatePick
     }
 
     private void configureRecyclerView() {
-        this.mAdapter = new MapEvenementAdapter(this.evenementList, true);
+        this.mAdapter = new PlanningEvenementAdapter(this.evenementList, true);
         // 3.3 - Attach the adapter to the recyclerview to populate items
         this.mRecycler.setAdapter(this.mAdapter);
         // 3.4 - Set layout manager to position the items
@@ -112,4 +112,5 @@ public class EventPlanningActivity extends AppCompatActivity implements DatePick
         String s = sdf.format(dateSelected.toDate());
         getEvent(s);
     }
+
 }

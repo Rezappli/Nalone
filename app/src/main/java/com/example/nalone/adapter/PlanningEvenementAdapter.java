@@ -1,6 +1,5 @@
 package com.example.nalone.adapter;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,7 +12,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.nalone.R;
 import com.example.nalone.objects.Evenement;
-import com.example.nalone.ui.evenements.InfosEvenementsActivity;
 import com.example.nalone.util.Constants;
 
 import java.text.ParseException;
@@ -21,7 +19,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
-public class MapEvenementAdapter extends RecyclerView.Adapter<MapEvenementAdapter.EventViewHolder> {
+public class PlanningEvenementAdapter extends RecyclerView.Adapter<PlanningEvenementAdapter.EventViewHolder> {
 
     private SimpleDateFormat sdfDate = new SimpleDateFormat("yyyy-MM-dd");
     private SimpleDateFormat sdfTransform = new SimpleDateFormat("dd/MM/yyyy");
@@ -40,7 +38,7 @@ public class MapEvenementAdapter extends RecyclerView.Adapter<MapEvenementAdapte
         void onDisplayClick(int position);
     }
 
-    public MapEvenementAdapter(List<Evenement> nearby_events, boolean participate) {
+    public PlanningEvenementAdapter(List<Evenement> nearby_events, boolean participate) {
         this.evenementList = nearby_events;
         this.participate = participate;
     }
@@ -48,7 +46,7 @@ public class MapEvenementAdapter extends RecyclerView.Adapter<MapEvenementAdapte
     @NonNull
     @Override
     public EventViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_evenement, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_evenements_list_, parent, false);
         EventViewHolder evh = new EventViewHolder(view,mListener);
         return evh;
     }
@@ -76,18 +74,32 @@ public class MapEvenementAdapter extends RecyclerView.Adapter<MapEvenementAdapte
         public TextView mTime;
         public TextView mVille;
         //public TextView mDescription;
-        public CardView textViewAfficher;
+        public TextView mProprietaire;
+        public TextView textViewAfficher, textViewParticiper;
+        public CardView mAfficher;
+        public CardView mCarwViewOwner;
         public  TextView textViewNbMembers;
 
         public EventViewHolder(@NonNull View itemView, final OnItemClickListener listener) {
             super(itemView);
-            mImageView = itemView.findViewById(R.id.imageEvent);
-
-            mTitle = itemView.findViewById(R.id.titleEventList1);
-            mDate = itemView.findViewById(R.id.dateEventList1);
-            mTime = itemView.findViewById(R.id.timeEventList1);
+            mImageView = itemView.findViewById(R.id.imageOwnerEventList);
+            mTitle = itemView.findViewById(R.id.titleEventList);
+            mDate = itemView.findViewById(R.id.dateEventList);
+            mTime = itemView.findViewById(R.id.timeEventList);
             mVille = itemView.findViewById(R.id.villeEventList);
-            textViewAfficher = itemView.findViewById(R.id.cardViewEvent);
+            mProprietaire = itemView.findViewById(R.id.ownerEventList);
+            mAfficher = itemView.findViewById(R.id.cardViewEventList);
+            textViewAfficher = itemView.findViewById(R.id.textViewAfficher);
+            textViewParticiper = itemView.findViewById(R.id.textViewParticiper);
+            if(participate){
+                textViewParticiper.setText("Désinscrire");
+                textViewParticiper.setCompoundDrawablesWithIntrinsicBounds(
+                        R.drawable.desinscrire, //left
+                        0, //top
+                        0, //right
+                        0);//bottom
+            }
+            mCarwViewOwner = itemView.findViewById(R.id.backGroundOwner);
             textViewNbMembers = itemView.findViewById(R.id.textViewNbMembers);
 
             this.textViewAfficher.setOnClickListener(new View.OnClickListener() {
@@ -109,7 +121,9 @@ public class MapEvenementAdapter extends RecyclerView.Adapter<MapEvenementAdapte
             this.mVille.setText(e.getCity());
             this.mDate.setText(Constants.getFullDate(d));
             this.mTime.setText(cutString(e.getStartDate(), 5, 11));
+            this.mProprietaire.setText(e.getOwner_first_name()+" "+e.getOwner_last_name());
             this.textViewNbMembers.setText(e.getNbMembers()+"");
+
         }
     }
 

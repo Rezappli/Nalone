@@ -232,7 +232,7 @@
             android:orientation="vertical">
 
             <ImageView
-                android:id="@+id/imageView43"
+                android:id="@+id/imageExpanded"
                 android:layout_width="match_parent"
                 android:layout_height="30dp"
                 android:layout_gravity="center"
@@ -251,6 +251,7 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:layout_marginBottom="20dp"
                 android:orientation="horizontal">
 
                 <ImageView
@@ -294,51 +295,61 @@
                     android:textColor="@color/white" />
             </LinearLayout>
 
-            <LinearLayout
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recyclerTypeEvent"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_marginTop="25dp"
-                android:orientation="horizontal">
+                android:layout_marginBottom="10dp">
 
-                <ImageView
-                    android:id="@+id/arrowLeftDate"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_gravity="center"
-                    android:layout_weight="1"
-                    android:src="@drawable/arrow_back_white" />
+            </androidx.recyclerview.widget.RecyclerView>
 
-                <TextView
-                    android:id="@+id/dateSearchEvent"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:gravity="center"
-                    android:text="MAINTENANT"
-                    android:textSize="18sp"
-                    android:textStyle="bold" />
-
-                <ImageView
-                    android:id="@+id/arrowRightDate"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_gravity="center"
-                    android:layout_weight="1"
-                    android:src="@drawable/ic_baseline_keyboard_arrow_right_24" />
-            </LinearLayout>
-
-            <View
-                android:id="@+id/divider21"
+            <TextView
+                android:id="@+id/textView57"
                 android:layout_width="match_parent"
-                android:layout_height="0.2dp"
-                android:layout_marginTop="20dp"
-                android:background="@android:color/darker_gray" />
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:text="@string/bottom_suggestion"
+                android:textColor="#000000"
+                android:textSize="18sp"
+                android:textStyle="bold" />
 
             <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/recyclerViewSearchEvent"
+                android:id="@+id/recyclerViewSuggestion"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:background="#ffffff" />
+
+            <TextView
+                android:id="@+id/textView58"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:text="@string/bottom_popular"
+                android:textColor="#000000"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recyclerViewSearchPopulaire"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="#ffffff" >
+
+            </androidx.recyclerview.widget.RecyclerView>
+
+            <TextView
+                android:id="@+id/textView59"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:text="@string/en_cours"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recyclerViewNow"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
 
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>

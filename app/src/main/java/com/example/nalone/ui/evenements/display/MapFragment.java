@@ -3,6 +3,7 @@
 package com.example.nalone.ui.evenements.display;
 
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -19,6 +20,7 @@ import android.widget.ImageView;
 
 import com.android.volley.VolleyError;
 import com.example.nalone.adapter.MapEvenementAdapter;
+import com.example.nalone.adapter.TypeEventAdapter;
 import com.example.nalone.enumeration.VisibilityMap;
 import com.example.nalone.json.JSONArrayListener;
 import com.example.nalone.json.JSONController;
@@ -80,7 +82,8 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     private NavController navController;
 
     private RecyclerView mRecyclerView;
-    private MapEvenementAdapter mAdapter;
+    private MapEvenementAdapter adapteSuggestion, adapterPopulaire ;
+    private TypeEventAdapter typeAdapter;
 
     private double unit = 74.6554;
 
@@ -95,12 +98,16 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     // Bottom sheet
     private BottomSheetBehavior bottomSheetBehavior;
     private SearchView searchView;
-    private RecyclerView recyclerViewSearchEvent;
+    private RecyclerView recyclerViewSuggestion, recyclerViewPopular, recyclerTypeEvent;
     private FirestoreRecyclerAdapter adapterSearchEvent;
     private TextView dateSearchEvent;
 
-    private ImageView arrowLeft, arrowRight, imageViewFiltreSearch;
+    private ImageView arrowLeft, arrowRight, imageViewFiltreSearch, imageViewExpanded;
     private Animation appear_filtre;
+    private boolean isOpen;
+
+    private List<String> filtreTypeTitle;
+    private List<Drawable> filtreTypeImage;
 
 
 
@@ -113,7 +120,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                              Bundle savedInstanceState) {
         rootView = inflater.inflate(R.layout.fragment_map, container, false);
 
-       // appear_filtre = ;
+        // appear_filtre = ;
         ((AppCompatActivity) getActivity()).getSupportActionBar().hide();
         event_prive = new ArrayList<>();
         event_inscrit = new ArrayList<>();
@@ -139,6 +146,8 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         imageViewLocationCreate = rootView.findViewById(R.id.imageViewLocationCreate);
         imageViewLocationAll = rootView.findViewById(R.id.imageViewLocationAll);
         loading = rootView.findViewById(R.id.loading);
+
+
         buttonCreations = rootView.findViewById(R.id.buttonCreations);
         buttonPlanning = rootView.findViewById(R.id.buttonPlanning);
         buttonPlanning.setOnClickListener(new View.OnClickListener() {
@@ -153,16 +162,17 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         final View bottomSheet = rootView.findViewById(R.id.sheet);
         final LinearLayoutManager llm = new LinearLayoutManager(getContext());
         searchView = rootView.findViewById(R.id.searchViewSheet);
-        recyclerViewSearchEvent = rootView.findViewById(R.id.recyclerViewSearchEvent);
-        dateSearchEvent = rootView.findViewById(R.id.dateSearchEvent);
-        arrowLeft = rootView.findViewById(R.id.arrowLeftDate);
-        arrowRight = rootView.findViewById(R.id.arrowRightDate);
+        recyclerViewSuggestion = rootView.findViewById(R.id.recyclerViewSuggestion);
+        recyclerViewPopular = rootView.findViewById(R.id.recyclerViewSearchPopulaire);
+
+        /* INTERRESSANT
         arrowRight.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 recyclerViewSearchEvent.smoothScrollBy(recyclerViewSearchEvent.getScrollState(),recyclerViewSearchEvent.getScrollState()+200);
             }
-        });
+        });*/
+
 
         bottomSheetBehavior = BottomSheetBehavior.from(bottomSheet);
         bottomSheetBehavior.setHideable(false);
@@ -173,6 +183,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
             public void onStateChanged(@NonNull View view, int state) {
                 switch (state){
                     case BottomSheetBehavior.STATE_COLLAPSED:
+                        isOpen = false;
                         searchView.setQuery ("", false);
                         searchView.setIconified(true);
                         searchView.clearFocus();
@@ -182,6 +193,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                         imageViewFiltreSearch.setVisibility(View.VISIBLE);
                         break;
                     case BottomSheetBehavior.STATE_EXPANDED:
+                        isOpen = true;
                         imageViewFiltreSearch.setVisibility(View.VISIBLE);
                         break;
                     case BottomSheetBehavior.STATE_HIDDEN:
@@ -192,6 +204,17 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
 
             @Override
             public void onSlide(@NonNull View view, float v) {
+
+            }
+        });
+        imageViewExpanded = rootView.findViewById(R.id.imageExpanded);
+        imageViewExpanded.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (isOpen)
+                    bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+                else
+                    bottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
 
             }
         });
@@ -288,17 +311,21 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                 bottomSheetFragment.show(getActivity().getSupportFragmentManager(),bottomSheetFragment.getTag());
             }
         });*/
+
+        /* FILTRES TYPE EVENT */
+        recyclerTypeEvent = rootView.findViewById(R.id.recyclerTypeEvent);
+
         return rootView;
     }
 
     private void configureRecyclerView() {
-        this.mAdapter = new MapEvenementAdapter(this.nearby_events, false);
+        this.adapteSuggestion = new MapEvenementAdapter(this.nearby_events, false);
         // 3.3 - Attach the adapter to the recyclerview to populate items
-        this.recyclerViewSearchEvent.setAdapter(this.mAdapter);
+        this.recyclerViewSuggestion.setAdapter(this.adapteSuggestion);
         // 3.4 - Set layout manager to position the items
-        final LinearLayoutManager llm = new LinearLayoutManager(getActivity());
-        this.recyclerViewSearchEvent.setLayoutManager(llm);
-        mAdapter.setOnItemClickListener(new MapEvenementAdapter.OnItemClickListener() {
+        final LinearLayoutManager llm = new LinearLayoutManager(getActivity(), RecyclerView.HORIZONTAL, false);
+        this.recyclerViewSuggestion.setLayoutManager(llm);
+        adapteSuggestion.setOnItemClickListener(new MapEvenementAdapter.OnItemClickListener() {
             @Override
             public void onDisplayClick(int position) {
                 InfosEvenementsActivity.EVENT_LOAD = nearby_events.get(position);
@@ -306,7 +333,23 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                 navController.navigate(R.id.action_navigation_evenements_to_navigation_infos_events);
             }
         });
-        this.recyclerViewSearchEvent.addOnScrollListener(new RecyclerView.OnScrollListener() {
+
+        this.adapterPopulaire = new MapEvenementAdapter(this.nearby_events, false);
+        // 3.3 - Attach the adapter to the recyclerview to populate items
+        this.recyclerViewPopular.setAdapter(this.adapterPopulaire);
+        // 3.4 - Set layout manager to position the items
+        final LinearLayoutManager llm1 = new LinearLayoutManager(getActivity(), RecyclerView.HORIZONTAL, false);
+        this.recyclerViewPopular.setLayoutManager(llm1);
+        adapterPopulaire.setOnItemClickListener(new MapEvenementAdapter.OnItemClickListener() {
+            @Override
+            public void onDisplayClick(int position) {
+                InfosEvenementsActivity.EVENT_LOAD = nearby_events.get(position);
+                //InfosEvenementsActivity.type = "nouveau";
+                navController.navigate(R.id.action_navigation_evenements_to_navigation_infos_events);
+            }
+        });
+        /* INTERESSANT
+        this.recyclerViewSuggestion.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
                 super.onScrollStateChanged(recyclerView, newState);
@@ -321,11 +364,63 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                     //do something
                     MapEvenementAdapter.EventViewHolder firstViewHolder = (MapEvenementAdapter.EventViewHolder) recyclerViewSearchEvent.findViewHolderForLayoutPosition(visiblePosition);
                     if(firstViewHolder != null){
-                        dateSearchEvent.setText(firstViewHolder.mDate.getText());
+//                        dateSearchEvent.setText(firstViewHolder.mDate.getText());
                     }
                 }
             }
-        });
+        });*/
+
+        initFiltres();
+        this.typeAdapter = new TypeEventAdapter(this.filtreTypeImage, this.filtreTypeTitle);
+        // 3.3 - Attach the adapter to the recyclerview to populate items
+        this.recyclerTypeEvent.setAdapter(this.typeAdapter);
+        // 3.4 - Set layout manager to position the items
+        final LinearLayoutManager llm2 = new LinearLayoutManager(getActivity(), RecyclerView.HORIZONTAL, false);
+        this.recyclerTypeEvent.setLayoutManager(llm2);
+    }
+
+    private void initFiltres() {
+        filtreTypeTitle = new ArrayList<>();
+        filtreTypeImage = new ArrayList<>();
+
+        filtreTypeImage.add(getResources().getDrawable(R.drawable.event_art));
+        filtreTypeTitle.add(getResources().getString(R.string.event_art));
+
+        filtreTypeImage.add(getResources().getDrawable(R.drawable.event_sport));
+        filtreTypeTitle.add(getResources().getString(R.string.event_sport));
+
+        filtreTypeImage.add(getResources().getDrawable(R.drawable.event_party));
+        filtreTypeTitle.add(getResources().getString(R.string.event_party));
+
+        filtreTypeImage.add(getResources().getDrawable(R.drawable.event_music));
+        filtreTypeTitle.add(getResources().getString(R.string.event_music));
+
+        filtreTypeImage.add(getResources().getDrawable(R.drawable.event_movie));
+        filtreTypeTitle.add(getResources().getString(R.string.event_movie));
+
+        filtreTypeImage.add(getResources().getDrawable(R.drawable.event_game));
+        filtreTypeTitle.add(getResources().getString(R.string.event_game));
+
+        filtreTypeImage.add(getResources().getDrawable(R.drawable.event_car));
+        filtreTypeTitle.add(getResources().getString(R.string.event_car));
+
+        filtreTypeImage.add(getResources().getDrawable(R.drawable.event_gather));
+        filtreTypeTitle.add(getResources().getString(R.string.event_gather));
+
+        filtreTypeImage.add(getResources().getDrawable(R.drawable.event_conference));
+        filtreTypeTitle.add(getResources().getString(R.string.event_conference));
+
+        filtreTypeImage.add(getResources().getDrawable(R.drawable.event_shop));
+        filtreTypeTitle.add(getResources().getString(R.string.event_shop));
+
+        filtreTypeImage.add(getResources().getDrawable(R.drawable.event_contest));
+        filtreTypeTitle.add(getResources().getString(R.string.event_contest));
+
+        filtreTypeImage.add(getResources().getDrawable(R.drawable.event_science));
+        filtreTypeTitle.add(getResources().getString(R.string.event_science));
+
+        filtreTypeImage.add(getResources().getDrawable(R.drawable.event_show));
+        filtreTypeTitle.add(getResources().getString(R.string.event_show));
     }
 
     private void hiddeText(TextView tv) {
@@ -371,17 +466,17 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         JSONController.getJsonArrayFromUrl(Constants.URL_NEARBY_EVENTS, getContext(), params, new JSONArrayListener() {
             @Override
             public void onJSONReceived(JSONArray jsonArray) {
-                    try {
-                        nearby_events = new ArrayList<>();
-                        for(int i = 0; i < jsonArray.length(); i++) {
-                            nearby_events.add((Evenement) JSONController.convertJSONToObject(jsonArray.getJSONObject(i), Evenement.class));
-                        }
-                        configureRecyclerView();
-                        updateMap(VisibilityMap.ALL);
-                    } catch (JSONException e) {
-                        Log.w("Response", "Erreur:"+e.getMessage());
-                        Toast.makeText(getContext(), getResources().getString(R.string.error_event), Toast.LENGTH_SHORT).show();
+                try {
+                    nearby_events = new ArrayList<>();
+                    for(int i = 0; i < jsonArray.length(); i++) {
+                        nearby_events.add((Evenement) JSONController.convertJSONToObject(jsonArray.getJSONObject(i), Evenement.class));
                     }
+                    configureRecyclerView();
+                    updateMap(VisibilityMap.ALL);
+                } catch (JSONException e) {
+                    Log.w("Response", "Erreur:"+e.getMessage());
+                    Toast.makeText(getContext(), getResources().getString(R.string.error_event), Toast.LENGTH_SHORT).show();
+                }
 
             }
 
