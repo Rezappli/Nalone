@@ -3,8 +3,11 @@ package com.example.nalone.ui.evenements.creation;
 import android.annotation.SuppressLint;
 import android.location.Address;
 import android.location.Geocoder;
+import android.os.Build;
 import android.os.Bundle;
 
+import androidx.annotation.RequiresApi;
+import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
 
 import android.util.Log;
@@ -16,6 +19,7 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.example.nalone.R;
+import com.example.nalone.dialog.LoadFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.material.textfield.TextInputEditText;
 
@@ -25,7 +29,7 @@ import java.util.List;
 public class AdressEventFragment extends Fragment {
 
     private TextInputEditText event_adresse,event_city;
-
+    private DialogFragment load;
 
     public AdressEventFragment() {
         // Required empty public constructor
@@ -44,6 +48,7 @@ public class AdressEventFragment extends Fragment {
         checkValidation();
 
         next.setOnClickListener(new View.OnClickListener() {
+            @RequiresApi(api = Build.VERSION_CODES.O)
             @Override
             public void onClick(View v) {
                 validateAdress();
@@ -89,7 +94,7 @@ public class AdressEventFragment extends Fragment {
 
     @SuppressLint("UseCompatLoadingForDrawables")
     private void checkValidation(){
-        if (MainCreationEventActivity.adressValidate){
+        if (MainCreationEventActivity.addressValidate){
             imageProgessCreationPosition.setImageDrawable(getResources().getDrawable(R.drawable.creation_event_adress_focused));
             event_adresse.setText(MainCreationEventActivity.currentEvent.getAddress());
             event_city.setText(MainCreationEventActivity.currentEvent.getCity());
@@ -109,20 +114,24 @@ public class AdressEventFragment extends Fragment {
 
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     private void validateAdress(){
         try {
-            if(getLocationFromAddress(event_adresse.getText().toString() + "," + event_city.getText().toString()) == null){
+            LatLng pos = getLocationFromAddress(event_adresse.getText().toString() + " " + event_city.getText().toString());
+            if(pos == null){
                 event_adresse.setError("Adresse introuvable");
             }else if(event_adresse.getText().toString().matches("")){
                 event_adresse.setError("Champs obligatoire");
             }else if(event_city.getText().toString().matches("")){
                 event_city.setError("Champs obligatoire");
             }else {
-                MainCreationEventActivity.adressValidate = true;
+                MainCreationEventActivity.addressValidate = true;
                 MainCreationEventActivity.currentEvent.setAddress(event_adresse.getText().toString());
                 MainCreationEventActivity.currentEvent.setCity(event_city.getText().toString());
-                if(MainCreationEventActivity.isAllValidate()){
-                    Toast.makeText(getContext(), "Evenement créer", Toast.LENGTH_SHORT).show();
+                MainCreationEventActivity.currentEvent.setLatitude(pos.latitude);
+                MainCreationEventActivity.currentEvent.setLongitude(pos.longitude);
+                if(MainCreationEventActivity.isAllValidate(getContext())){
+                    MainCreationEventActivity.createEvent(getContext());
                 }else if(!MainCreationEventActivity.nameValidate) {
                     goName();
                 }else if(!MainCreationEventActivity.dateValidate){
@@ -133,6 +142,7 @@ public class AdressEventFragment extends Fragment {
                     goMembers();
                 }
             }
+
         }catch (Exception e){
             Log.w("Response", e.getMessage());
             Toast.makeText(getContext(), getResources().getString(R.string.error_address), Toast.LENGTH_SHORT).show();
@@ -152,8 +162,8 @@ public class AdressEventFragment extends Fragment {
         MainCreationEventActivity.navController.navigate(R.id.action_adressEventFragment_to_photoEventFragment);    }
 
     private LatLng getLocationFromAddress(String strAddress) {
-
-        Geocoder coder = new Geocoder(getActivity());
+        showLoadDialog();
+        Geocoder coder = new Geocoder(getContext());
         List<Address> address;
         LatLng p1 = null;
 
@@ -168,14 +178,28 @@ public class AdressEventFragment extends Fragment {
                 Address location = address.get(0);
                 p1 = new LatLng(location.getLatitude(), location.getLongitude());
             }else{
+                dismissLoadDialog();
                 return null;
             }
 
         } catch (IOException ex) {
-
+            dismissLoadDialog();
             ex.printStackTrace();
         }
 
+        dismissLoadDialog();
         return p1;
+    }
+
+    private void showLoadDialog(){
+        load = new LoadFragment();
+        load.show(getActivity().getSupportFragmentManager(), "LOAD");
+        load.setCancelable(false);
+        Log.w("Dialog", "Show");
+    }
+
+    private void dismissLoadDialog(){
+        load.dismiss();
+        Log.w("Dialog", "Dismiss");
     }
 }

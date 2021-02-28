@@ -1,7 +1,6 @@
 package com.example.nalone.ui.evenements.creation;
 
 import android.annotation.SuppressLint;
-import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 
@@ -11,7 +10,6 @@ import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
-import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.util.Log;
@@ -29,16 +27,9 @@ import com.example.nalone.dialog.ListAmisFragment;
 import com.example.nalone.json.JSONArrayListener;
 import com.example.nalone.json.JSONController;
 import com.example.nalone.json.JSONObjectCrypt;
-import com.example.nalone.objects.User;
 import com.example.nalone.util.Constants;
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
-import com.firebase.ui.firestore.FirestoreRecyclerOptions;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
-import com.google.firebase.firestore.Query;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.firebase.firestore.QuerySnapshot;
 
 import org.json.JSONArray;
 
@@ -46,9 +37,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static com.example.nalone.util.Constants.USER;
-import static com.example.nalone.util.Constants.USER_ID;
-import static com.example.nalone.util.Constants.mStoreBase;
-import static com.example.nalone.util.Constants.setUserImage;
 
 public class MembersEventFragment extends Fragment {
 
@@ -57,8 +45,11 @@ public class MembersEventFragment extends Fragment {
     private NavController navController;
     private FirestoreRecyclerAdapter adapter;
     private Button buttonMoreInvit;
+    private Button next;
     private boolean haveFriends;
     private BottomSheetBehavior bottomSheetBehavior;
+    private ImageView imageProgessCreationPhoto,imageProgessCreationDate,imageProgessCreationPosition,imageProgessCreationName,
+            imageProgessCreationMembers;
 
 
 
@@ -70,12 +61,18 @@ public class MembersEventFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View root =  inflater.inflate(R.layout.fragment_members_event, container, false);
-        // Inflate the layout for this fragment
         initialiserImageView(root);
         mRecyclerView= root.findViewById(R.id.recyclerView1);
+        next = root.findViewById(R.id.buttonNextFragmentMembers);
         buttonMoreInvit = root.findViewById(R.id.buttonMoreInvit);
         navController = Navigation.findNavController(getActivity(),R.id.nav_host_fragment2);
-        final View bottomSheet = root.findViewById(R.id.sheet);
+        initFragment(root);
+        checkValidation();
+        return root;
+    }
+
+    private void initFragment(View root){
+        View bottomSheet = root.findViewById(R.id.sheet);
         bottomSheetBehavior = BottomSheetBehavior.from(bottomSheet);
         bottomSheetBehavior.setHideable(false);
         bottomSheetBehavior.setBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
@@ -148,13 +145,14 @@ public class MembersEventFragment extends Fragment {
             }
         });
 
-
-        checkValidation();
-        return root;
+        next.setOnClickListener(new View.OnClickListener() {
+            @RequiresApi(api = Build.VERSION_CODES.O)
+            @Override
+            public void onClick(View v) {
+                validateMembers();
+            }
+        });
     }
-
-    private ImageView imageProgessCreationPhoto,imageProgessCreationDate,imageProgessCreationPosition,imageProgessCreationName,
-            imageProgessCreationMembers;
 
     private void initialiserImageView(View root) {
         imageProgessCreationDate = root.findViewById(R.id.imageProgessCreationDate);
@@ -212,7 +210,7 @@ public class MembersEventFragment extends Fragment {
 
     @SuppressLint("UseCompatLoadingForDrawables")
     private void checkValidation(){
-        if (MainCreationEventActivity.adressValidate){
+        if (MainCreationEventActivity.addressValidate){
             imageProgessCreationPosition.setImageDrawable(getResources().getDrawable(R.drawable.creation_event_adress_focused));
         }
         if (MainCreationEventActivity.dateValidate){
@@ -230,20 +228,19 @@ public class MembersEventFragment extends Fragment {
 
     }
 
-    private void validateName(){
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    private void validateMembers(){
         MainCreationEventActivity.membersValidate = true;
-        /*
-        THIBAULT MET LA PHOTO DE L'EVENT
-         */
-        if(MainCreationEventActivity.isAllValidate()){
-            Toast.makeText(getContext(), "Evenement créer", Toast.LENGTH_SHORT).show();
+        MainCreationEventActivity.currentEvent.setNbMembers(adds.size()+1);
+        if(MainCreationEventActivity.isAllValidate(getContext())){
+            MainCreationEventActivity.createEvent(getContext());
+        }else if(!MainCreationEventActivity.photoValidate){
+            goPhoto();
         }else if(!MainCreationEventActivity.nameValidate) {
             goName();
         }else if(!MainCreationEventActivity.dateValidate){
             goDate();
-        }else if(!MainCreationEventActivity.photoValidate){
-            goPhoto();
-        }else if(!MainCreationEventActivity.adressValidate){
+        }else if(!MainCreationEventActivity.addressValidate){
             goAdress();
         }
     }

@@ -1,8 +1,10 @@
 package com.example.nalone.ui.evenements.creation;
 
 import android.annotation.SuppressLint;
+import android.os.Build;
 import android.os.Bundle;
 
+import androidx.annotation.RequiresApi;
 import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
 
@@ -44,6 +46,7 @@ public class DateEventFragment extends Fragment {
         eventEndHoraire = root.findViewById(R.id.eventEndHoraire);
         next = root.findViewById(R.id.buttonNextFragmentDate);
         next.setOnClickListener(new View.OnClickListener() {
+            @RequiresApi(api = Build.VERSION_CODES.O)
             @Override
             public void onClick(View v) {
                 try {
@@ -133,7 +136,7 @@ public class DateEventFragment extends Fragment {
 
     @SuppressLint("UseCompatLoadingForDrawables")
     private void checkValidation() {
-        if (MainCreationEventActivity.adressValidate) {
+        if (MainCreationEventActivity.addressValidate) {
             imageProgessCreationPosition.setImageDrawable(getResources().getDrawable(R.drawable.creation_event_adress_focused));
         }
         if (MainCreationEventActivity.dateValidate) {
@@ -155,6 +158,7 @@ public class DateEventFragment extends Fragment {
 
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     private void validateDate() throws ParseException {
         SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy hh:mm");
 
@@ -194,18 +198,22 @@ public class DateEventFragment extends Fragment {
         if (seStart == StatusEvent.FINI || seStart == StatusEvent.EXPIRE || seEnd == StatusEvent.FINI || seEnd == StatusEvent.EXPIRE) {
             Toast.makeText(getContext(), getResources().getString(R.string.date_in_futur), Toast.LENGTH_SHORT).show();
         } else {
+
+            tsStart = tsStart.replaceAll("/", "-"); //convertion de date pour sql
+            tsEnd = tsEnd.replaceAll("/", "-");
+
             MainCreationEventActivity.dateValidate = true;
             MainCreationEventActivity.currentEvent.setStartDate(tsStart);
             MainCreationEventActivity.currentEvent.setEndDate(tsEnd);
-            if (MainCreationEventActivity.isAllValidate()) {
-                Toast.makeText(getContext(), getResources().getString(R.string.event_create), Toast.LENGTH_SHORT).show();
-            } else if (!MainCreationEventActivity.adressValidate) {
-                goAdress();
-            } else if (!MainCreationEventActivity.nameValidate) {
-                goName();
+            if (MainCreationEventActivity.isAllValidate(getContext())){
+                MainCreationEventActivity.createEvent(getContext());
             } else if (!MainCreationEventActivity.photoValidate) {
                 goPhoto();
-            } else if (!MainCreationEventActivity.membersValidate) {
+            }else if (!MainCreationEventActivity.nameValidate) {
+                goName();
+            } else if (!MainCreationEventActivity.addressValidate) {
+                goAdress();
+            }  else if (!MainCreationEventActivity.membersValidate) {
                 goMembers();
             }
         }

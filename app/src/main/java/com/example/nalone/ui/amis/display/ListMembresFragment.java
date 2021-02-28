@@ -117,7 +117,6 @@ public class ListMembresFragment extends Fragment {
 
     private void adapterUsers() {
 
-        // POUR TOI THIBAULT
         Query query = mStoreBase.collection("groups").document(GROUP_LOAD.getUid()).collection("members");
         FirestoreRecyclerOptions<User> options = new FirestoreRecyclerOptions.Builder<User>().setQuery(query, User.class).build();
 

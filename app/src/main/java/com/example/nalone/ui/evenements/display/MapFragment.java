@@ -84,6 +84,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     private RecyclerView mRecyclerView;
     private MapEvenementAdapter adapteSuggestion, adapterPopulaire ;
     private TypeEventAdapter typeAdapter;
+    private static VisibilityMap currentVisibilityMap;
 
     private double unit = 74.6554;
 
@@ -120,7 +121,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                              Bundle savedInstanceState) {
         rootView = inflater.inflate(R.layout.fragment_map, container, false);
 
-        // appear_filtre = ;
         ((AppCompatActivity) getActivity()).getSupportActionBar().hide();
         event_prive = new ArrayList<>();
         event_inscrit = new ArrayList<>();
@@ -234,6 +234,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                 hiddeText(textViewLocationAll);
                 imageViewLocationAll.setImageDrawable(getResources().getDrawable(R.drawable.location_all_30));
                 updateMap(VisibilityMap.ALL);
+                currentVisibilityMap = VisibilityMap.ALL;
             }
         });
 
@@ -244,6 +245,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                 hiddeText(textViewLocationPrive);
                 imageViewLocationPrive.setImageDrawable(getResources().getDrawable(R.drawable.location_private_30));
                 updateMap(VisibilityMap.PRIVATE);
+                currentVisibilityMap = VisibilityMap.PRIVATE;
             }
         });
 
@@ -254,6 +256,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                 hiddeText(textViewLocationInscrit);
                 imageViewLocationInscrit.setImageDrawable(getResources().getDrawable(R.drawable.location_inscrit_30));
                 updateMap(VisibilityMap.REGISTER);
+                currentVisibilityMap = VisibilityMap.REGISTER;
             }
         });
 
@@ -264,6 +267,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                 hiddeText(textViewLocationPublic);
                 imageViewLocationPublic.setImageDrawable(getResources().getDrawable(R.drawable.location_public_30));
                 updateMap(VisibilityMap.PUBLIC);
+                currentVisibilityMap = VisibilityMap.PUBLIC;
             }
         });
 
@@ -274,6 +278,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                 hiddeText(textViewLocationCreate);
                 imageViewLocationCreate.setImageDrawable(getResources().getDrawable(R.drawable.location_create_30));
                 updateMap(VisibilityMap.CREATE);
+                currentVisibilityMap = VisibilityMap.CREATE;
             }
         });
         nearby_events = new ArrayList<>();
@@ -554,9 +559,11 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         super.onLowMemory();
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
     public void onResume() {
         super.onResume();
+        updateMap(currentVisibilityMap);
     }
 
     @Override

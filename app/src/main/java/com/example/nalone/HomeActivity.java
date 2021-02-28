@@ -28,6 +28,8 @@ import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
+import java.util.UUID;
+
 import static com.example.nalone.util.Constants.USER_ID;
 import static com.example.nalone.util.Constants.mStoreBase;
 
@@ -160,6 +162,7 @@ public class HomeActivity extends AppCompatActivity{
 
     public void goCreateEvent(Visibility v){
         MainCreationEventActivity.currentEvent = new Evenement();
+        MainCreationEventActivity.currentEvent.setUid(UUID.randomUUID().toString());
         MainCreationEventActivity.image = null;
         MainCreationEventActivity.currentEvent.setVisibility(v);
         startActivity(new Intent(getBaseContext(),MainCreationEventActivity.class));

@@ -92,6 +92,7 @@ public class AmisFragment extends Fragment {
         return rootView;
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     private void createFragment() {
         nbInvit = 0;
         search_bar = rootView.findViewById(R.id.search_bar_amis);
@@ -142,13 +143,12 @@ public class AmisFragment extends Fragment {
         });
 
         getUsers();
+        mSwipeRefreshLayout.setRefreshing(false);
     }
 
     private void configureRecyclerViewAmis() {
         this.mAdapter = new MesAmisAdapter(this.friends);
-        // 3.3 - Attach the adapter to the recyclerview to populate items
         this.mRecyclerView.setAdapter(this.mAdapter);
-        // 3.4 - Set layout manager to position the items
         final LinearLayoutManager llm = new LinearLayoutManager(getActivity());
         this.mRecyclerView.setLayoutManager(llm);
         mAdapter.setOnItemClickListener(new MesAmisAdapter.OnItemClickListener() {
@@ -157,6 +157,7 @@ public class AmisFragment extends Fragment {
                 showPopUpProfil(friends.get(position));
             }
 
+            @RequiresApi(api = Build.VERSION_CODES.O)
             @Override
             public void onDeleteClick(int position) {
                 removeFriend(friends.get(position));
@@ -202,8 +203,12 @@ public class AmisFragment extends Fragment {
                         friends.add((User) JSONController.convertJSONToObject(jsonArray.getJSONObject(i), User.class));
                     }
 
-                    for (int i = 0; i < friends.size(); i++) {
-                        Log.w("Recherche", friends.get(i).getFirst_name()+friends.get(i).getLast_name());
+                    if(friends.size() == 0){
+                        mRecyclerView.setVisibility(View.GONE);
+                        linearSansMesAmis.setVisibility(View.VISIBLE);
+                    }else{
+                        mRecyclerView.setVisibility(View.VISIBLE);
+                        linearSansMesAmis.setVisibility(View.GONE);
                     }
 
                     configureRecyclerViewAmis();

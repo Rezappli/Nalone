@@ -1,18 +1,20 @@
 package com.example.nalone.ui.evenements.creation;
 
 import android.annotation.SuppressLint;
+import android.os.Build;
 import android.os.Bundle;
 
+import androidx.annotation.RequiresApi;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.Toast;
 
 import com.example.nalone.R;
 import com.google.android.material.textfield.TextInputEditText;
@@ -42,6 +44,7 @@ public class NameEventFragment extends Fragment {
 
         final NavController navController = Navigation.findNavController(getActivity(),R.id.nav_host_fragment2);
         buttonNext.setOnClickListener(new View.OnClickListener() {
+            @RequiresApi(api = Build.VERSION_CODES.O)
             @Override
             public void onClick(View v) {
                 validateName();
@@ -87,7 +90,7 @@ public class NameEventFragment extends Fragment {
 
     @SuppressLint("UseCompatLoadingForDrawables")
     private void checkValidation(){
-        if (MainCreationEventActivity.adressValidate){
+        if (MainCreationEventActivity.addressValidate){
             imageProgessCreationPosition.setImageDrawable(getResources().getDrawable(R.drawable.creation_event_adress_focused));
         }
         if (MainCreationEventActivity.dateValidate){
@@ -99,6 +102,7 @@ public class NameEventFragment extends Fragment {
         if (MainCreationEventActivity.nameValidate){
             imageProgessCreationName.setImageDrawable(getResources().getDrawable(R.drawable.creation_event_name_focused));
             event_name.setText(MainCreationEventActivity.currentEvent.getName());
+            event_resume.setText(MainCreationEventActivity.currentEvent.getDescription());
         }
         if (MainCreationEventActivity.photoValidate){
             imageProgessCreationPhoto.setImageDrawable(getResources().getDrawable(R.drawable.creation_event_photo_focused));
@@ -106,23 +110,26 @@ public class NameEventFragment extends Fragment {
 
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     private void validateName(){
         if(event_name.getText().toString().matches("")){
             event_name.setError("Champs obligatoire");
         }else{
+            Log.w("Response", "Value :"+event_name.getText().toString());
             MainCreationEventActivity.currentEvent.setName(event_name.getText().toString());
+            if(!event_resume.getText().toString().matches("")){
+                MainCreationEventActivity.currentEvent.setDescription(event_resume.getText().toString());
+            }
             MainCreationEventActivity.nameValidate = true;
-        /*
-        THIBAULT MET LA PHOTO DE L'EVENT
-         */
-            if(MainCreationEventActivity.isAllValidate()){
-                Toast.makeText(getContext(), "Evenement créer", Toast.LENGTH_SHORT).show();
-            }else if(!MainCreationEventActivity.adressValidate) {
-                goAdress();
-            }else if(!MainCreationEventActivity.dateValidate){
-                goDate();
+
+            if(MainCreationEventActivity.isAllValidate(getContext())){
+                MainCreationEventActivity.createEvent(getContext());
             }else if(!MainCreationEventActivity.photoValidate){
                 goPhoto();
+            }else if(!MainCreationEventActivity.dateValidate){
+                goDate();
+            }else if(!MainCreationEventActivity.addressValidate) {
+                goAdress();
             }else if(!MainCreationEventActivity.membersValidate){
                 goMembers();
             }

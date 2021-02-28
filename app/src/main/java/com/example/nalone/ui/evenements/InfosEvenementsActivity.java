@@ -306,7 +306,14 @@ public class InfosEvenementsActivity extends Fragment {
 
     private void setData() {
 
-        mStoreBase.collection("users").document(USER_ID).collection("events_join")
+        if(EVENT_LOAD.getOwner_uid().equalsIgnoreCase(USER.getUid())){
+            inscrit = true;
+            textViewInscription.setText("Se désinscrire");
+            buttonInscription.setImageDrawable(getResources().getDrawable(R.drawable.inscrit_oui_50));
+            linearButton.setVisibility(View.VISIBLE);
+        }
+
+        /*mStoreBase.collection("users").document(USER_ID).collection("events_join")
                 .get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
@@ -353,6 +360,8 @@ public class InfosEvenementsActivity extends Fragment {
 
 
 
+
+         */
 
 
         // if(type.equalsIgnoreCase("inscrit")){
@@ -404,7 +413,6 @@ public class InfosEvenementsActivity extends Fragment {
 
     @Override
     public void onResume() {
-
         handler.postDelayed(runnable,0);
         super.onResume();
     }
