@@ -16,14 +16,11 @@ import com.example.nalone.MainActivity;
 import com.example.nalone.R;
 import com.example.nalone.json.JSONController;
 import com.example.nalone.json.JSONObjectCrypt;
-import com.example.nalone.json.JSONObjectListener;
+import com.example.nalone.listeners.JSONObjectListener;
 import com.example.nalone.objects.User;
 import com.example.nalone.ui.profil.ParametresFragment;
 import com.example.nalone.util.Constants;
-import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
-import com.google.gson.Gson;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 

@@ -203,14 +203,12 @@ goDate();            }
                 Glide.with(this).load(resultUri).fitCenter().centerCrop().into(imagePhoto);
                 MainCreationEventActivity.image = resultUri;
                 try {
-                    String s = new String(getBytes(getContext(), resultUri), StandardCharsets.UTF_8);
-                    Constants.uploadImageOnServer(USER.getUid(), ImageType.EVENT, UUID.randomUUID().toString()
-                            ,s, ImageProtocol.SAVE, getContext());
-                } catch (IOException exception) {
-                    Log.w("Response", "Erreur: "+exception.toString());
-                    Toast.makeText(getContext(), getResources().getString(R.string.image_save_error), Toast.LENGTH_SHORT).show();
+                    String extension = resultUri.getPath().substring(resultUri.getPath().lastIndexOf("."));
+                    String imageData = new String(getBytes(getContext(), MainCreationEventActivity.image), StandardCharsets.UTF_8);
+                    Constants.uploadImageOnServer(ImageType.EVENT, MainCreationEventActivity.currentEvent.getUid()+extension, imageData, getContext()); //upload image on web server
+                } catch (IOException e) {
+                    Log.w("Response", "Erreur: "+e.getMessage());
                 }
-
             } else if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
                 Log.w("Response", result.getError());
             }

@@ -1,7 +1,6 @@
 package com.example.nalone.ui.recherche;
 
 import android.content.Context;
-import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
@@ -17,7 +16,6 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
-import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.navigation.NavController;
@@ -32,20 +30,13 @@ import com.example.nalone.adapter.RechercheAmisAdapter;
 import com.example.nalone.items.ItemFiltre;
 import com.example.nalone.items.ItemPerson;
 import com.example.nalone.R;
-import com.example.nalone.json.JSONArrayListener;
+import com.example.nalone.listeners.JSONArrayListener;
 import com.example.nalone.json.JSONController;
 import com.example.nalone.json.JSONObjectCrypt;
 import com.example.nalone.objects.User;
 import com.example.nalone.ui.amis.display.PopupProfilFragment;
 import com.example.nalone.util.Constants;
-import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
-import com.firebase.ui.firestore.FirestoreRecyclerOptions;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.Query;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.firebase.firestore.QuerySnapshot;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -55,7 +46,6 @@ import java.util.List;
 
 import static com.example.nalone.HomeActivity.buttonBack;
 import static com.example.nalone.util.Constants.USER;
-import static com.example.nalone.util.Constants.mStoreBase;
 
 public class RechercheAmisFragment extends Fragment {
 

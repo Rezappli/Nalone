@@ -13,9 +13,9 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.HttpHeaderParser;
 import com.android.volley.toolbox.JsonRequest;
 import com.android.volley.toolbox.Volley;
-import com.example.nalone.objects.User;
+import com.example.nalone.listeners.JSONArrayListener;
+import com.example.nalone.listeners.JSONObjectListener;
 import com.google.gson.Gson;
-import com.google.gson.JsonObject;
 
 import org.json.JSONArray;
 import org.json.JSONException;

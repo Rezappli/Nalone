@@ -4,8 +4,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Build;
@@ -20,7 +18,7 @@ import android.widget.Toast;
 import com.android.volley.VolleyError;
 import com.example.nalone.json.JSONController;
 import com.example.nalone.json.JSONObjectCrypt;
-import com.example.nalone.json.JSONObjectListener;
+import com.example.nalone.listeners.JSONObjectListener;
 import com.example.nalone.objects.User;
 import com.example.nalone.signUpActivities.SignUpInformationActivity;
 import com.example.nalone.util.Constants;
@@ -32,30 +30,21 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.SignInButton;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
-import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import splash.SplashActivity;
-
 import static com.example.nalone.util.Constants.USER;
-import static com.example.nalone.util.Constants.USER_ID;
-import static com.example.nalone.util.Constants.USER_REFERENCE;
-import static com.example.nalone.util.Constants.USER_STORAGE_REF;
 import static com.example.nalone.util.Constants.currentUser;
 import static com.example.nalone.util.Constants.mAuth;
-import static com.example.nalone.util.Constants.mStore;
 import static com.example.nalone.util.Constants.mStoreBase;
 
 public class MainActivity extends AppCompatActivity{

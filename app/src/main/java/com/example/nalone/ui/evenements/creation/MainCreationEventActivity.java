@@ -20,14 +20,20 @@ import android.widget.Toast;
 
 import com.android.volley.VolleyError;
 import com.example.nalone.R;
+import com.example.nalone.enumeration.ImageType;
 import com.example.nalone.json.JSONController;
 import com.example.nalone.json.JSONObjectCrypt;
-import com.example.nalone.json.JSONObjectListener;
+import com.example.nalone.listeners.JSONObjectListener;
 import com.example.nalone.objects.Evenement;
 import com.example.nalone.ui.NotificationActivity;
 import com.example.nalone.util.Constants;
 
 import org.json.JSONObject;
+
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 
 import static com.example.nalone.util.Constants.USER;
 
@@ -70,6 +76,7 @@ public class MainCreationEventActivity extends AppCompatActivity {
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     public static void createEvent(final Context context) {
+        String imageData;
         JSONObjectCrypt params = new JSONObjectCrypt();
         params.addParameter("uid", USER.getUid());
         params.addParameter("uid_event", currentEvent.getUid());
@@ -85,6 +92,13 @@ public class MainCreationEventActivity extends AppCompatActivity {
         params.addParameter("ownerFirstName", USER.getFirst_name());
         params.addParameter("ownerLastName", USER.getLast_name());
         params.addParameter("nbMembers", currentEvent.getNbMembers());
+
+        try {
+            imageData = new String(getBytes(activity, image), StandardCharsets.UTF_8);
+            Constants.uploadImageOnServer(ImageType.EVENT, currentEvent.getUid(), imageData, activity); //upload image on web server
+        } catch (IOException e) {
+            Log.w("Response", "Erreur: "+e.getMessage());
+        }
 
         JSONController.getJsonObjectFromUrl(Constants.URL_ADD_EVENT, context, params, new JSONObjectListener() {
             @Override
@@ -131,5 +145,36 @@ public class MainCreationEventActivity extends AppCompatActivity {
         nameValidate= false;
         membersValidate= false;
         addressValidate = false;
+    }
+
+    private static byte[] getBytes(Context context, Uri uri) throws IOException {
+        InputStream iStream = context.getContentResolver().openInputStream(uri);
+        try {
+            return getBytes(iStream);
+        } finally {
+            // close the stream
+            try {
+                iStream.close();
+            } catch (IOException ignored) { /* do nothing */ }
+        }
+    }
+
+    private static byte[] getBytes(InputStream inputStream) throws IOException {
+
+        byte[] bytesResult = null;
+        ByteArrayOutputStream byteBuffer = new ByteArrayOutputStream();
+        int bufferSize = 1024;
+        byte[] buffer = new byte[bufferSize];
+        try {
+            int len;
+            while ((len = inputStream.read(buffer)) != -1) {
+                byteBuffer.write(buffer, 0, len);
+            }
+            bytesResult = byteBuffer.toByteArray();
+        } finally {
+            // close the stream
+            try{ byteBuffer.close(); } catch (IOException ignored){ /* do nothing */ }
+        }
+        return bytesResult;
     }
 }

@@ -20,11 +20,10 @@ import com.bumptech.glide.Glide;
 import com.example.nalone.R;
 import com.example.nalone.enumeration.ImageProtocol;
 import com.example.nalone.enumeration.ImageType;
-import com.example.nalone.json.JSONArrayListener;
 import com.example.nalone.json.JSONController;
 import com.example.nalone.json.JSONObjectCrypt;
-import com.example.nalone.json.JSONObjectListener;
-import com.example.nalone.objects.Evenement;
+import com.example.nalone.listeners.GetImageListener;
+import com.example.nalone.listeners.JSONObjectListener;
 import com.example.nalone.objects.Group;
 import com.example.nalone.objects.User;
 import com.example.nalone.fcm.MySingleton;
@@ -35,35 +34,20 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.FirebaseFirestoreSettings;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 //import com.koalap.geofirestore.GeoFire;
 
-import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.security.InvalidAlgorithmParameterException;
-import java.security.InvalidKeyException;
-import java.security.NoSuchAlgorithmException;
-import java.security.spec.InvalidKeySpecException;
-import java.security.spec.KeySpec;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
-
-import javax.crypto.BadPaddingException;
-import javax.crypto.Cipher;
-import javax.crypto.IllegalBlockSizeException;
-import javax.crypto.NoSuchPaddingException;
-import javax.crypto.SecretKeyFactory;
-import javax.crypto.spec.IvParameterSpec;
-import javax.crypto.spec.PBEKeySpec;
-import javax.crypto.spec.SecretKeySpec;
 
 public class Constants {
 
@@ -270,20 +254,22 @@ public class Constants {
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
-    public static void uploadImageOnServer(String uid, ImageType type, String name, String data,
-                                           ImageProtocol protocol, final Context context){
+    public static void uploadImageOnServer(ImageType type, String name, String data,
+                                           final Context context){
         JSONObjectCrypt params = new JSONObjectCrypt();
-        params.addParameter("uid", uid);
-        params.addParameter("protocol", protocol);
+        params.addParameter("uid", USER.getUid());
+        params.addParameter("protocol", ImageProtocol.SAVE);
         params.addParameter("type", type);
         params.addParameter("name", name);
-        params.addParameter("image", data);
+        params.addParameter("image", Base64.encodeToString(data.getBytes(), 0));
+
+        Log.w("Response", "Params : "+params);
 
         JSONController.getJsonObjectFromUrl(Constants.URL_IMAGE, context, params, new JSONObjectListener() {
 
             @Override
             public void onJSONReceived(JSONObject jsonObject) {
-                Log.w("Response", "Réponse :"+jsonObject.toString());
+                Log.w("Response", "Response :"+jsonObject.toString());
                 Toast.makeText(context, context.getResources().getString(R.string.image_save), Toast.LENGTH_SHORT).show();
             }
 
@@ -295,9 +281,44 @@ public class Constants {
         });
     }
 
-    /*public static Uri downloadImageOnServer(){
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    public static void downloadImageOnServer(final GetImageListener imageListener, final ImageType type, String name, final Context context){
+        JSONObjectCrypt params = new JSONObjectCrypt();
+        params.addParameter("uid", USER.getUid());
+        params.addParameter("protocol", ImageProtocol.GET);
+        params.addParameter("type", type);
+        params.addParameter("name", name);
 
-    }*/
+        JSONController.getJsonObjectFromUrl(Constants.URL_IMAGE, context, params, new JSONObjectListener() {
+            @Override
+            public void onJSONReceived(JSONObject jsonObject) {
+                if(jsonObject.length() == 3){
+                    Log.w("Response", "Value: "+jsonObject.toString());
+                    try {
+                        if(imageListener != null){
+                            imageListener.onImageReceived(jsonObject.get("data").toString());
+                        }
+                    } catch (JSONException e) {
+                        Log.w("Response", "Erreur: "+e.getMessage());
+                    }
+                }else{
+                    try{
+                        if (jsonObject.get("message").toString().equalsIgnoreCase("IMAGE_NOT_FOUND")) {
+
+                        }
+                    }catch (JSONException e){
+                        Log.w("Response", "Erreur: "+e.getMessage());
+                    }
+                }
+            }
+
+            @Override
+            public void onJSONReceivedError(VolleyError volleyError) {
+                Toast.makeText(context, context.getResources().getString(R.string.image_get_error), Toast.LENGTH_SHORT).show();
+                Log.w("Response","Erreur: "+volleyError.toString());
+            }
+        });
+    }
 
     public static String key = "kXp2s5v8y/B?E(H+MbQeThWmZq3t6w9z"; // 128 bit key
     public static String iv = "7w!z$C&F)J@NcRfU"; // 16 bytes IV

@@ -1,6 +1,5 @@
 package com.example.nalone.ui;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -9,34 +8,19 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.VolleyError;
 import com.example.nalone.HomeActivity;
 import com.example.nalone.R;
 import com.example.nalone.adapter.NotificationAdapter;
-import com.example.nalone.adapter.RechercheAmisAdapter;
-import com.example.nalone.json.JSONArrayListener;
+import com.example.nalone.listeners.JSONArrayListener;
 import com.example.nalone.json.JSONController;
 import com.example.nalone.json.JSONObjectCrypt;
 import com.example.nalone.objects.Notification;
-import com.example.nalone.objects.User;
 import com.example.nalone.util.Constants;
-import com.example.nalone.util.Horloge;
-import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
-import com.firebase.ui.firestore.FirestoreRecyclerOptions;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.firestore.Query;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.firebase.firestore.QuerySnapshot;
-import com.google.firebase.firestore.core.OrderBy;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -45,9 +29,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static com.example.nalone.util.Constants.USER;
-import static com.example.nalone.util.Constants.USER_ID;
-import static com.example.nalone.util.Constants.mStoreBase;
-import static com.example.nalone.util.Constants.setUserImage;
 
 public class NotificationActivity extends AppCompatActivity {
 

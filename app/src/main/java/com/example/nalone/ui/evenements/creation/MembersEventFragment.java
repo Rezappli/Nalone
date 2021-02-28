@@ -24,7 +24,7 @@ import android.widget.Toast;
 import com.android.volley.VolleyError;
 import com.example.nalone.R;
 import com.example.nalone.dialog.ListAmisFragment;
-import com.example.nalone.json.JSONArrayListener;
+import com.example.nalone.listeners.JSONArrayListener;
 import com.example.nalone.json.JSONController;
 import com.example.nalone.json.JSONObjectCrypt;
 import com.example.nalone.util.Constants;

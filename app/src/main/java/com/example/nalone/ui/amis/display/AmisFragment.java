@@ -3,7 +3,6 @@ package com.example.nalone.ui.amis.display;
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.graphics.Color;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -34,23 +33,13 @@ import android.widget.Toast;
 import com.android.volley.VolleyError;
 import com.daimajia.swipe.SwipeLayout;
 import com.example.nalone.adapter.MesAmisAdapter;
-import com.example.nalone.adapter.RechercheAmisAdapter;
-import com.example.nalone.json.JSONArrayListener;
+import com.example.nalone.listeners.JSONArrayListener;
 import com.example.nalone.json.JSONController;
 import com.example.nalone.json.JSONObjectCrypt;
-import com.example.nalone.objects.ModelData;
 import com.example.nalone.R;
 import com.example.nalone.objects.User;
 import com.example.nalone.ui.message.ChatActivityFriend;
 import com.example.nalone.util.Constants;
-import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
-import com.firebase.ui.firestore.FirestoreRecyclerOptions;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.Query;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.firebase.firestore.QuerySnapshot;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -61,8 +50,6 @@ import java.util.List;
 import static com.example.nalone.HomeActivity.buttonBack;
 import static com.example.nalone.util.Constants.ON_FRIENDS_ACTIVITY;
 import static com.example.nalone.util.Constants.USER;
-import static com.example.nalone.util.Constants.mStoreBase;
-import static com.example.nalone.util.Constants.setUserImage;
 
 public class AmisFragment extends Fragment {
 

@@ -22,7 +22,7 @@ import com.android.volley.VolleyError;
 import com.example.nalone.adapter.MapEvenementAdapter;
 import com.example.nalone.adapter.TypeEventAdapter;
 import com.example.nalone.enumeration.VisibilityMap;
-import com.example.nalone.json.JSONArrayListener;
+import com.example.nalone.listeners.JSONArrayListener;
 import com.example.nalone.json.JSONController;
 import com.example.nalone.json.JSONObjectCrypt;
 import com.example.nalone.ui.evenements.InfosEvenementsActivity;
@@ -84,7 +84,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     private RecyclerView mRecyclerView;
     private MapEvenementAdapter adapteSuggestion, adapterPopulaire ;
     private TypeEventAdapter typeAdapter;
-    private static VisibilityMap currentVisibilityMap;
+    private static VisibilityMap currentVisibilityMap = VisibilityMap.ALL;
 
     private double unit = 74.6554;
 
@@ -325,9 +325,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
 
     private void configureRecyclerView() {
         this.adapteSuggestion = new MapEvenementAdapter(this.nearby_events, false);
-        // 3.3 - Attach the adapter to the recyclerview to populate items
         this.recyclerViewSuggestion.setAdapter(this.adapteSuggestion);
-        // 3.4 - Set layout manager to position the items
         final LinearLayoutManager llm = new LinearLayoutManager(getActivity(), RecyclerView.HORIZONTAL, false);
         this.recyclerViewSuggestion.setLayoutManager(llm);
         adapteSuggestion.setOnItemClickListener(new MapEvenementAdapter.OnItemClickListener() {
@@ -340,9 +338,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         });
 
         this.adapterPopulaire = new MapEvenementAdapter(this.nearby_events, false);
-        // 3.3 - Attach the adapter to the recyclerview to populate items
         this.recyclerViewPopular.setAdapter(this.adapterPopulaire);
-        // 3.4 - Set layout manager to position the items
         final LinearLayoutManager llm1 = new LinearLayoutManager(getActivity(), RecyclerView.HORIZONTAL, false);
         this.recyclerViewPopular.setLayoutManager(llm1);
         adapterPopulaire.setOnItemClickListener(new MapEvenementAdapter.OnItemClickListener() {
@@ -563,7 +559,9 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     @Override
     public void onResume() {
         super.onResume();
-        updateMap(currentVisibilityMap);
+        if(mMap != null) {
+            updateMap(currentVisibilityMap);
+        }
     }
 
     @Override
