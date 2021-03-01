@@ -22,6 +22,9 @@
         <action
             android:id="@+id/action_nameEventFragment_to_membersEventFragment"
             app:destination="@id/membersEventFragment" />
+        <action
+            android:id="@+id/action_nameEventFragment_to_costEventFragment"
+            app:destination="@id/costEventFragment" />
     </fragment>
     <fragment
         android:id="@+id/photoEventFragment"
@@ -40,6 +43,9 @@
         <action
             android:id="@+id/action_photoEventFragment_to_membersEventFragment"
             app:destination="@id/membersEventFragment" />
+        <action
+            android:id="@+id/action_photoEventFragment_to_costEventFragment"
+            app:destination="@id/costEventFragment" />
     </fragment>
     <fragment
         android:id="@+id/adressEventFragment"
@@ -58,6 +64,9 @@
         <action
             android:id="@+id/action_adressEventFragment_to_membersEventFragment"
             app:destination="@id/membersEventFragment" />
+        <action
+            android:id="@+id/action_adressEventFragment_to_costEventFragment"
+            app:destination="@id/costEventFragment" />
     </fragment>
     <fragment
         android:id="@+id/dateEventFragment"
@@ -76,6 +85,9 @@
         <action
             android:id="@+id/action_dateEventFragment_to_membersEventFragment"
             app:destination="@id/membersEventFragment" />
+        <action
+            android:id="@+id/action_dateEventFragment_to_costEventFragment"
+            app:destination="@id/costEventFragment" />
     </fragment>
     <fragment
         android:id="@+id/membersEventFragment"
@@ -94,5 +106,29 @@
         <action
             android:id="@+id/action_membersEventFragment_to_dateEventFragment"
             app:destination="@id/dateEventFragment" />
+        <action
+            android:id="@+id/action_membersEventFragment_to_costEventFragment"
+            app:destination="@id/costEventFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/costEventFragment"
+        android:name="com.example.nalone.ui.evenements.creation.CostEventFragment"
+        android:label="CostEventFragment"
+        tools:layout="@layout/fragment_cost_event">
+        <action
+            android:id="@+id/action_costEventFragment_to_dateEventFragment"
+            app:destination="@id/dateEventFragment" />
+        <action
+            android:id="@+id/action_costEventFragment_to_photoEventFragment"
+            app:destination="@id/photoEventFragment" />
+        <action
+            android:id="@+id/action_costEventFragment_to_nameEventFragment"
+            app:destination="@id/nameEventFragment" />
+        <action
+            android:id="@+id/action_costEventFragment_to_adressEventFragment"
+            app:destination="@id/adressEventFragment" />
+        <action
+            android:id="@+id/action_costEventFragment_to_membersEventFragment"
+            app:destination="@id/membersEventFragment" />
     </fragment>
 </navigation>

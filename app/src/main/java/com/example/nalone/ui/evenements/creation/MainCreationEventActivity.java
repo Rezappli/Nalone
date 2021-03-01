@@ -1,5 +1,6 @@
 package com.example.nalone.ui.evenements.creation;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.navigation.NavController;
@@ -16,6 +17,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.VolleyError;
@@ -27,6 +29,7 @@ import com.example.nalone.listeners.JSONObjectListener;
 import com.example.nalone.objects.Evenement;
 import com.example.nalone.ui.NotificationActivity;
 import com.example.nalone.util.Constants;
+import com.google.android.material.bottomsheet.BottomSheetBehavior;
 
 import org.json.JSONObject;
 
@@ -42,26 +45,66 @@ public class MainCreationEventActivity extends AppCompatActivity {
     public static NavController navController;
     public static ImageView buttonBack, buttonNotif;
     public static Evenement currentEvent;
-    public static boolean photoValidate, dateValidate, nameValidate, membersValidate, addressValidate;
+    public static boolean photoValidate, dateValidate, nameValidate, membersValidate, addressValidate, costValidate;
     public static Uri image = null;
 
     private static Activity activity;
+
+    private BottomSheetBehavior bottomSheetBehavior;
+    private TextView textViewVisibility;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_creation_event);
+        final View bottomSheet = findViewById(R.id.sheetCreateEvent);
+        final View viewGrey = findViewById(R.id.viewGrey2);
+        textViewVisibility = findViewById(R.id.textViewVisibility);
+
         activity = this;
         buttonBack = findViewById(R.id.buttonBack);
-        buttonNotif = findViewById(R.id.buttonNotif);
-        buttonNotif.setOnClickListener(new View.OnClickListener() {
+
+        buttonBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(getBaseContext(), NotificationActivity.class));
+                onBackPressed();
             }
         });
 
-        buttonBack.setVisibility(View.GONE);
+        bottomSheetBehavior = BottomSheetBehavior.from(bottomSheet);
+        bottomSheetBehavior.setHideable(false);
+        bottomSheetBehavior.setBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
+            @Override
+            public void onStateChanged(@NonNull View view, int state) {
+                switch (state){
+                    case BottomSheetBehavior.STATE_COLLAPSED:
+                        viewGrey.setVisibility(View.GONE);
+                        break;
+                    case BottomSheetBehavior.STATE_DRAGGING:
+                        break;
+                    case BottomSheetBehavior.STATE_EXPANDED:
+                        viewGrey.setVisibility(View.VISIBLE);
+                        break;
+                    case BottomSheetBehavior.STATE_HIDDEN:
+                        viewGrey.setVisibility(View.GONE);
+                        break;
+
+                }
+            }
+
+            @Override
+            public void onSlide(@NonNull View view, float v) {
+
+            }
+        });
+
+        bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+        textViewVisibility.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                bottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
+            }
+        });
         navController = Navigation.findNavController(this, R.id.nav_host_fragment2);
     }
 

@@ -86,6 +86,9 @@
     <string name="location_all"> Tout </string>
     <string name="location_public"> Public </string>
     <string name="location_public_maj"> PUBLIC </string>
+    <string name="free"> Gratuit </string>
+    <string name="pay"> Payant </string>
+    <string name="price"> Prix </string>
     <string name="location_inscrit"> Inscrit </string>
     <string name="location_mesevent"> Créer </string>
     <string name="descriptionNF"> Description : </string>
@@ -154,6 +157,7 @@
     <string name="title_creation_event_date">Définis la date</string>
     <string name="title_creation_event_adress">Définis l\'endroit</string>
     <string name="title_creation_event_name">Définis le nom</string>
+    <string name="title_creation_event_cost">Définis le coût</string>
     <string name="title_creation_event_members">Définis ta liste d\'invité (facultatif) </string>
     <string name="start_date">Début de l\'évènement</string>
     <string name="end_date">Fin de l\'évènement</string>
@@ -161,6 +165,7 @@
     <string name="info_visibility_private">Seuls les utilisateurs invités verront votre évènement</string>
     <string name="info_visibility_public">Tous les utilisteurs verront votre évènement</string>
     <string name="creer_ton_event"> Créer ton évènement</string>
+    <string name="modify_visibility"> Modifier la visibilité</string>
     <string name="title_activity_main_profil">MainProfilActivity</string>
     <!-- Strings used for fragments for navigation -->
     <string name="first_fragment_label">First Fragment</string>
@@ -193,6 +198,7 @@
     <string name="error_event">Une erreur est lors du chargement des évènments :(</string>
     <string name="error_address">Nous n\'avons pas réussie à trouver l\'adresse :(</string>
     <string name="required_field">Champs obligatoire</string>
+    <string name="int_over_zero">Veuillez entrer un prix supérieur à 0</string>
     <string name="date_in_futur">Veuillez selectionner des dates dans le futur</string>
     <string name="event_create">Vous avez créer votre évènement !</string>
     <string name="no_friends">Vous n\'avez pas d\'ami !</string>

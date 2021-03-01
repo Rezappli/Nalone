@@ -9,154 +9,8 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_above="@+id/iconsProgessLayout"
-            android:layout_marginBottom="0dp">
-
-            <LinearLayout
-                android:id="@+id/linearDate"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_centerInParent="true"
-                android:orientation="vertical">
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="20dp"
-                    android:text="@string/start_date" />
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:orientation="horizontal">
-
-                    <TextView
-                        android:id="@+id/eventDate"
-                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="20dp"
-                        android:layout_marginTop="10dp"
-                        android:layout_marginEnd="20dp"
-                        android:layout_marginBottom="20dp"
-                        android:layout_weight="0.5"
-                        android:background="@drawable/custom_input1"
-                        android:drawableStart="@drawable/ic_baseline_calendar_today_15"
-                        android:drawableEnd="@drawable/ic_round_arrow_drop_down_24"
-                        android:drawablePadding="10dp"
-                        android:gravity="center_vertical"
-                        android:padding="10dp"
-                        android:text="@string/dateEvent" />
-
-                    <TextView
-                        android:id="@+id/eventHoraire"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="20dp"
-                        android:layout_marginTop="10dp"
-                        android:layout_marginEnd="20dp"
-                        android:layout_marginBottom="20dp"
-                        android:layout_weight="0.5"
-                        android:background="@drawable/custom_input1"
-                        android:drawableStart="@drawable/ic_baseline_access_time_15"
-                        android:drawableEnd="@drawable/ic_round_arrow_drop_down_24"
-                        android:drawablePadding="10dp"
-                        android:gravity="center_vertical"
-                        android:padding="10dp"
-                        android:text="@string/horaireEvent" />
-
-                </LinearLayout>
-
-                <TextView
-                    android:id="@+id/textView56"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="20dp"
-                    android:text="@string/end_date" />
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:orientation="horizontal">
-
-                    <TextView
-                        android:id="@+id/eventEndDate"
-                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="20dp"
-                        android:layout_marginTop="10dp"
-                        android:layout_marginEnd="20dp"
-                        android:layout_marginBottom="20dp"
-                        android:layout_weight="0.5"
-                        android:background="@drawable/custom_input1"
-                        android:drawableStart="@drawable/ic_baseline_calendar_today_15"
-                        android:drawableEnd="@drawable/ic_round_arrow_drop_down_24"
-                        android:drawablePadding="10dp"
-                        android:gravity="center_vertical"
-                        android:padding="10dp"
-                        android:text="@string/dateEvent" />
-
-                    <TextView
-                        android:id="@+id/eventEndHoraire"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="20dp"
-                        android:layout_marginTop="10dp"
-                        android:layout_marginEnd="20dp"
-                        android:layout_marginBottom="20dp"
-                        android:layout_weight="0.5"
-                        android:background="@drawable/custom_input1"
-                        android:drawableStart="@drawable/ic_baseline_access_time_15"
-                        android:drawableEnd="@drawable/ic_round_arrow_drop_down_24"
-                        android:drawablePadding="10dp"
-                        android:gravity="center_vertical"
-                        android:padding="10dp"
-                        android:text="@string/horaireEvent" />
-
-                </LinearLayout>
-            </LinearLayout>
-
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_above="@id/linearDate"
-                android:layout_marginBottom="0dp">
-
-                <TextView
-                    android:id="@+id/textView55"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_centerInParent="true"
-                    android:gravity="center"
-                    android:text="@string/title_creation_event_date"
-                    android:textSize="30sp" />
-            </RelativeLayout>
-
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_below="@id/linearDate"
-                android:layout_marginTop="0dp">
-
-                <Button
-                    android:id="@+id/buttonNextFragmentDate"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_centerInParent="true"
-                    android:layout_marginStart="50dp"
-                    android:layout_marginEnd="50dp"
-                    android:background="@drawable/custom_button_simple"
-                    android:text="@string/valid"
-                    android:textColor="@color/white" />
-            </RelativeLayout>
-
-        </RelativeLayout>
+        android:layout_height="match_parent"
+        android:layout_marginBottom="0dp">
 
         <LinearLayout
             android:id="@+id/iconsProgessLayout"
@@ -201,6 +55,13 @@
                 android:layout_weight="1"
                 android:src="@drawable/creation_event_members" />
 
+            <ImageView
+                android:id="@+id/imageProgessCreationCost"
+                android:layout_width="match_parent"
+                android:layout_height="70dp"
+                android:layout_weight="1"
+                android:src="@drawable/cost_event" />
+
         </LinearLayout>
 
         <LinearLayout
@@ -215,32 +76,187 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
-                app:cardBackgroundColor="@android:color/darker_gray" />
+                app:cardBackgroundColor="@android:color/darker_gray"
+                app:cardCornerRadius="0dp" />
 
             <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
-                app:cardBackgroundColor="@android:color/darker_gray" />
+                app:cardBackgroundColor="@android:color/darker_gray"
+                app:cardCornerRadius="0dp" />
 
             <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
-                app:cardBackgroundColor="@color/colorPrimary" />
+                app:cardBackgroundColor="@color/colorPrimary"
+                app:cardCornerRadius="0dp" />
 
             <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
-                app:cardBackgroundColor="@android:color/darker_gray" />
+                app:cardBackgroundColor="@android:color/darker_gray"
+                app:cardCornerRadius="0dp" />
 
             <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
-                app:cardBackgroundColor="@android:color/darker_gray" />
+                app:cardBackgroundColor="@android:color/darker_gray"
+                app:cardCornerRadius="0dp">
+
+            </androidx.cardview.widget.CardView>
+
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                app:cardBackgroundColor="@android:color/darker_gray"
+                app:cardCornerRadius="0dp" />
 
         </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/linearDate"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="20dp"
+                android:text="@string/start_date" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/eventDate"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="20dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginEnd="20dp"
+                    android:layout_marginBottom="20dp"
+                    android:layout_weight="0.5"
+                    android:background="@drawable/custom_input1"
+                    android:drawableStart="@drawable/ic_baseline_calendar_today_15"
+                    android:drawableEnd="@drawable/ic_round_arrow_drop_down_24"
+                    android:drawablePadding="10dp"
+                    android:gravity="center_vertical"
+                    android:padding="10dp"
+                    android:text="@string/dateEvent" />
+
+                <TextView
+                    android:id="@+id/eventHoraire"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="20dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginEnd="20dp"
+                    android:layout_marginBottom="20dp"
+                    android:layout_weight="0.5"
+                    android:background="@drawable/custom_input1"
+                    android:drawableStart="@drawable/ic_baseline_access_time_15"
+                    android:drawableEnd="@drawable/ic_round_arrow_drop_down_24"
+                    android:drawablePadding="10dp"
+                    android:gravity="center_vertical"
+                    android:padding="10dp"
+                    android:text="@string/horaireEvent" />
+
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/textView56"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="20dp"
+                android:text="@string/end_date" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/eventEndDate"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="20dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginEnd="20dp"
+                    android:layout_marginBottom="20dp"
+                    android:layout_weight="0.5"
+                    android:background="@drawable/custom_input1"
+                    android:drawableStart="@drawable/ic_baseline_calendar_today_15"
+                    android:drawableEnd="@drawable/ic_round_arrow_drop_down_24"
+                    android:drawablePadding="10dp"
+                    android:gravity="center_vertical"
+                    android:padding="10dp"
+                    android:text="@string/dateEvent" />
+
+                <TextView
+                    android:id="@+id/eventEndHoraire"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="20dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginEnd="20dp"
+                    android:layout_marginBottom="20dp"
+                    android:layout_weight="0.5"
+                    android:background="@drawable/custom_input1"
+                    android:drawableStart="@drawable/ic_baseline_access_time_15"
+                    android:drawableEnd="@drawable/ic_round_arrow_drop_down_24"
+                    android:drawablePadding="10dp"
+                    android:gravity="center_vertical"
+                    android:padding="10dp"
+                    android:text="@string/horaireEvent" />
+
+            </LinearLayout>
+        </LinearLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_above="@id/linearDate"
+            android:layout_marginBottom="0dp">
+
+            <TextView
+                android:id="@+id/textView55"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:gravity="center"
+                android:text="@string/title_creation_event_date"
+                android:textSize="30sp" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@id/linearDate"
+            android:layout_marginTop="0dp">
+
+            <Button
+                android:id="@+id/buttonNextFragmentDate"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:layout_marginStart="50dp"
+                android:layout_marginEnd="50dp"
+                android:background="@drawable/custom_button_simple"
+                android:text="@string/valid"
+                android:textColor="@color/white" />
+        </RelativeLayout>
+
     </RelativeLayout>
+
 </FrameLayout>

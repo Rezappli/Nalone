@@ -1,8 +1,10 @@
 package com.example.nalone.objects;
 
 import com.example.nalone.enumeration.StatusEvent;
+import com.example.nalone.enumeration.TypeEvent;
 import com.example.nalone.enumeration.Visibility;
 import com.example.nalone.util.Constants;
+import com.google.firebase.database.core.view.Event;
 
 import java.io.Serializable;
 
@@ -23,6 +25,8 @@ public class Evenement implements Serializable {
     private StatusEvent statusEvent;
     private String ownerFirstName;
     private String ownerLastName;
+    private int price;
+    private TypeEvent eventType;
 
     public Evenement() {
         this.uid = null;
@@ -38,12 +42,14 @@ public class Evenement implements Serializable {
         this.longitude = null;
         this.nbMembers = 0;
         this.statusEvent = null;
+        this.price = 0;
+        this.eventType = null;
     }
 
 
     public Evenement(String uid, StatusEvent statusEvent,String owner, String name, String description,
                      String address, String city, Visibility visibility, String startDate, String endDate,
-                     double latitude, double longitude, int nbMembers){
+                     double latitude, double longitude, int nbMembers, TypeEvent type,int price){
         this.uid = uid;
         this.name = name;
         this.description = description;
@@ -57,6 +63,8 @@ public class Evenement implements Serializable {
         this.longitude = longitude;
         this.nbMembers = nbMembers;
         this.statusEvent = statusEvent;
+        this.eventType = type;
+        this.price = price;
     }
 
     public void setOwner_uid(String owner_uid) {
@@ -169,6 +177,22 @@ public class Evenement implements Serializable {
 
     public String getOwner_last_name() {
         return ownerLastName;
+    }
+
+    public int getPrice() {
+        return price;
+    }
+
+    public void setPrice(int price) {
+        this.price = price;
+    }
+
+    public TypeEvent getEventType() {
+        return eventType;
+    }
+
+    public void setEventType(TypeEvent eventType) {
+        this.eventType = eventType;
     }
 
     @Override

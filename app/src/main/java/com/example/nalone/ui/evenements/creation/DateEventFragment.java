@@ -99,8 +99,8 @@ public class DateEventFragment extends Fragment {
         return root;
     }
 
-    private ImageView imageProgessCreationPhoto, imageProgessCreationDate, imageProgessCreationPosition, imageProgessCreationName,
-            imageProgessCreationMembers;
+    private ImageView imageProgessCreationPhoto,imageProgessCreationDate,imageProgessCreationPosition,imageProgessCreationName,
+            imageProgessCreationMembers,imageProgressCreationCost;
 
     private void initialiserImageView(View root) {
         imageProgessCreationDate = root.findViewById(R.id.imageProgessCreationDate);
@@ -108,29 +108,33 @@ public class DateEventFragment extends Fragment {
         imageProgessCreationName = root.findViewById(R.id.imageProgessCreationName);
         imageProgessCreationPosition = root.findViewById(R.id.imageProgessCreationPosition);
         imageProgessCreationPhoto = root.findViewById(R.id.imageProgessCreationPhoto);
-        imageProgessCreationPhoto.setOnClickListener(new View.OnClickListener() {
+        imageProgressCreationCost = root.findViewById(R.id.imageProgessCreationCost);
+        imageProgressCreationCost.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                goPhoto();
+                MainCreationEventActivity.navController.navigate(R.id.action_dateEventFragment_to_costEventFragment);
             }
         });
+
         imageProgessCreationName.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                goName();
-            }
+                goName();            }
+        });
+        imageProgessCreationPhoto.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                goPhoto();            }
         });
         imageProgessCreationPosition.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                goAdress();
-            }
+                goAdress();            }
         });
         imageProgessCreationMembers.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                goMembers();
-            }
+                goMembers();            }
         });
     }
 
@@ -154,6 +158,9 @@ public class DateEventFragment extends Fragment {
         }
         if (MainCreationEventActivity.photoValidate) {
             imageProgessCreationPhoto.setImageDrawable(getResources().getDrawable(R.drawable.creation_event_photo_focused));
+        }
+        if (MainCreationEventActivity.costValidate){
+            imageProgressCreationCost.setImageDrawable(getResources().getDrawable(R.drawable.cost_event_focused));
         }
 
     }
@@ -215,6 +222,8 @@ public class DateEventFragment extends Fragment {
                 goAdress();
             }  else if (!MainCreationEventActivity.membersValidate) {
                 goMembers();
+            }else if(!MainCreationEventActivity.costValidate){
+                goCost();
             }
         }
 
@@ -235,6 +244,9 @@ public class DateEventFragment extends Fragment {
     private void goPhoto() {
         MainCreationEventActivity.navController.navigate(R.id.action_dateEventFragment_to_photoEventFragment);
     }
+    private void goCost(){
+        MainCreationEventActivity.navController.navigate(R.id.action_dateEventFragment_to_costEventFragment);    }
+
 
     private String cutString(String s, int length, int start){
         if(length > s.length()){

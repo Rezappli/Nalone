@@ -58,7 +58,7 @@ public class AdressEventFragment extends Fragment {
     }
 
     private ImageView imageProgessCreationPhoto,imageProgessCreationDate,imageProgessCreationPosition,imageProgessCreationName,
-            imageProgessCreationMembers;
+            imageProgessCreationMembers,imageProgressCreationCost;
 
     private void initialiserImageView(View root) {
         imageProgessCreationDate = root.findViewById(R.id.imageProgessCreationDate);
@@ -66,6 +66,13 @@ public class AdressEventFragment extends Fragment {
         imageProgessCreationName = root.findViewById(R.id.imageProgessCreationName);
         imageProgessCreationPosition = root.findViewById(R.id.imageProgessCreationPosition);
         imageProgessCreationPhoto = root.findViewById(R.id.imageProgessCreationPhoto);
+        imageProgressCreationCost = root.findViewById(R.id.imageProgessCreationCost);
+        imageProgressCreationCost.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                goCost();
+            }
+        });
         imageProgessCreationPhoto.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -111,6 +118,9 @@ public class AdressEventFragment extends Fragment {
         if (MainCreationEventActivity.photoValidate){
             imageProgessCreationPhoto.setImageDrawable(getResources().getDrawable(R.drawable.creation_event_photo_focused));
         }
+        if (MainCreationEventActivity.costValidate){
+            imageProgressCreationCost.setImageDrawable(getResources().getDrawable(R.drawable.cost_event_focused));
+        }
 
     }
 
@@ -140,6 +150,8 @@ public class AdressEventFragment extends Fragment {
                     goPhoto();
                 }else if(!MainCreationEventActivity.membersValidate){
                     goMembers();
+                }else if(!MainCreationEventActivity.costValidate){
+                    goCost();
                 }
             }
 
@@ -154,12 +166,15 @@ public class AdressEventFragment extends Fragment {
     private void goDate(){
         MainCreationEventActivity.navController.navigate(R.id.action_adressEventFragment_to_dateEventFragment);
     }
+
     private void goMembers(){
         MainCreationEventActivity.navController.navigate(R.id.action_adressEventFragment_to_membersEventFragment);    }
     private void goName(){
         MainCreationEventActivity.navController.navigate(R.id.action_adressEventFragment_to_nameEventFragment);    }
     private void goPhoto(){
         MainCreationEventActivity.navController.navigate(R.id.action_adressEventFragment_to_photoEventFragment);    }
+    private void goCost(){
+        MainCreationEventActivity.navController.navigate(R.id.action_adressEventFragment_to_costEventFragment);    }
 
     private LatLng getLocationFromAddress(String strAddress) {
         showLoadDialog();
