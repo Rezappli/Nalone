@@ -110,42 +110,42 @@
             <ImageView
                 android:id="@+id/imageProgessCreationPhoto"
                 android:layout_width="match_parent"
-                android:layout_height="70dp"
+                android:layout_height="50dp"
                 android:layout_weight="1"
                 android:src="@drawable/creation_event_photo" />
 
             <ImageView
                 android:id="@+id/imageProgessCreationName"
                 android:layout_width="match_parent"
-                android:layout_height="70dp"
+                android:layout_height="50dp"
                 android:layout_weight="1"
                 android:src="@drawable/creation_event_name" />
 
             <ImageView
                 android:id="@+id/imageProgessCreationDate"
                 android:layout_width="match_parent"
-                android:layout_height="70dp"
+                android:layout_height="50dp"
                 android:layout_weight="1"
                 android:src="@drawable/creation_event_date" />
 
             <ImageView
                 android:id="@+id/imageProgessCreationPosition"
                 android:layout_width="match_parent"
-                android:layout_height="70dp"
+                android:layout_height="50dp"
                 android:layout_weight="1"
                 android:src="@drawable/creation_event_adress" />
 
             <ImageView
                 android:id="@+id/imageProgessCreationMembers"
                 android:layout_width="match_parent"
-                android:layout_height="70dp"
+                android:layout_height="50dp"
                 android:layout_weight="1"
                 android:src="@drawable/creation_event_members" />
 
             <ImageView
                 android:id="@+id/imageProgessCreationCost"
                 android:layout_width="match_parent"
-                android:layout_height="70dp"
+                android:layout_height="50dp"
                 android:layout_weight="1"
                 android:src="@drawable/cost_event" />
 
@@ -154,7 +154,7 @@
         <LinearLayout
             android:id="@+id/progessLayout"
             android:layout_width="match_parent"
-            android:layout_height="10dp"
+            android:layout_height="5dp"
             android:layout_alignParentBottom="true"
             android:layout_marginBottom="0dp"
             android:orientation="horizontal">
@@ -163,7 +163,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
-                app:cardBackgroundColor="@android:color/darker_gray"
+                app:cardBackgroundColor="@color/lightGrey"
                 app:cardCornerRadius="0dp" />
 
             <androidx.cardview.widget.CardView
@@ -177,21 +177,21 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
-                app:cardBackgroundColor="@android:color/darker_gray"
+                app:cardBackgroundColor="@color/lightGrey"
                 app:cardCornerRadius="0dp" />
 
             <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
-                app:cardBackgroundColor="@android:color/darker_gray"
+                app:cardBackgroundColor="@color/lightGrey"
                 app:cardCornerRadius="0dp" />
 
             <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
-                app:cardBackgroundColor="@android:color/darker_gray"
+                app:cardBackgroundColor="@color/lightGrey"
                 app:cardCornerRadius="0dp">
 
             </androidx.cardview.widget.CardView>
@@ -200,7 +200,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
-                app:cardBackgroundColor="@android:color/darker_gray"
+                app:cardBackgroundColor="@color/lightGrey"
                 app:cardCornerRadius="0dp" />
 
         </LinearLayout>

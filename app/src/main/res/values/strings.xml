@@ -165,7 +165,9 @@
     <string name="info_visibility_private">Seuls les utilisateurs invités verront votre évènement</string>
     <string name="info_visibility_public">Tous les utilisteurs verront votre évènement</string>
     <string name="creer_ton_event"> Créer ton évènement</string>
+    <string name="creation_type"> Choisis le type</string>
     <string name="modify_visibility"> Modifier la visibilité</string>
+    <string name="modify_type"> Modifier le type</string>
     <string name="title_activity_main_profil">MainProfilActivity</string>
     <!-- Strings used for fragments for navigation -->
     <string name="first_fragment_label">First Fragment</string>

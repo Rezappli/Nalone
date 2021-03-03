@@ -5,6 +5,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -200,7 +201,7 @@ public class PhotoEventFragment extends Fragment {
 
             CropImage.activity(data.getData())
                     .setMultiTouchEnabled(true)
-                    .setAspectRatio(1,1)
+                    .setAspectRatio(2,1)
                     .setGuidelines(CropImageView.Guidelines.ON)
                     .setAllowFlipping(false)
                     .start(getContext(), this);

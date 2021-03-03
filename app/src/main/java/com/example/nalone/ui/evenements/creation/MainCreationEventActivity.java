@@ -3,6 +3,7 @@ package com.example.nalone.ui.evenements.creation;
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.cardview.widget.CardView;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 
@@ -23,6 +24,8 @@ import android.widget.Toast;
 import com.android.volley.VolleyError;
 import com.example.nalone.R;
 import com.example.nalone.enumeration.ImageType;
+import com.example.nalone.enumeration.TypeEvent;
+import com.example.nalone.enumeration.Visibility;
 import com.example.nalone.json.JSONController;
 import com.example.nalone.json.JSONObjectCrypt;
 import com.example.nalone.listeners.JSONObjectListener;
@@ -50,16 +53,34 @@ public class MainCreationEventActivity extends AppCompatActivity {
 
     private static Activity activity;
 
-    private BottomSheetBehavior bottomSheetBehavior;
-    private TextView textViewVisibility;
+    private BottomSheetBehavior bottomSheetBehavior, bottomSheetBehaviorType;
+    private View bottomSheetType,viewGrey,bottomSheet;
+    private TextView textViewVisibility, textViewType;
+
+    private CardView cardViewPublic, cardViewPrivate;
+
+    private CardView cardViewEventArt, cardTypeEventSport,cardTypeEventParty,cardTypeEventMusic,cardTypeEventMovie,cardTypeEventGame
+            ,cardTypeEventCar,cardTypeEventGather,cardTypeEventConference,cardTypeEventShop,cardTypeEventShow,cardTypeEventScience;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_creation_event);
-        final View bottomSheet = findViewById(R.id.sheetCreateEvent);
-        final View viewGrey = findViewById(R.id.viewGrey2);
-        textViewVisibility = findViewById(R.id.textViewVisibility);
+        bottomSheet = findViewById(R.id.sheetCreateEvent);
+        viewGrey = findViewById(R.id.viewGrey2);
+        viewGrey.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(bottomSheetBehavior.getState() == BottomSheetBehavior.STATE_EXPANDED)
+                    bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+                if(bottomSheetBehaviorType.getState() == BottomSheetBehavior.STATE_EXPANDED)
+                    bottomSheetBehaviorType.setState(BottomSheetBehavior.STATE_COLLAPSED);
+            }
+        });
+        initFirstFiltre();
+        initCardViewVisibility();
+        initCardViewType();
 
         activity = this;
         buttonBack = findViewById(R.id.buttonBack);
@@ -70,6 +91,33 @@ public class MainCreationEventActivity extends AppCompatActivity {
                 onBackPressed();
             }
         });
+
+        bottomSheetType = findViewById(R.id.sheetCreateEventType);
+        bottomSheetBehaviorType= BottomSheetBehavior.from(bottomSheetType);
+        bottomSheetBehaviorType.setHideable(false);
+        bottomSheetBehaviorType.setBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
+            @Override
+            public void onStateChanged(@NonNull View view, int state) {
+                switch (state){
+                    case BottomSheetBehavior.STATE_COLLAPSED:
+                        viewGrey.setVisibility(View.GONE);
+                        break;
+                    case BottomSheetBehavior.STATE_DRAGGING:
+                        break;
+                    case BottomSheetBehavior.STATE_EXPANDED:
+                        break;
+                    case BottomSheetBehavior.STATE_HIDDEN:
+                        break;
+
+                }
+            }
+
+            @Override
+            public void onSlide(@NonNull View view, float v) {
+
+            }
+        });
+
 
         bottomSheetBehavior = BottomSheetBehavior.from(bottomSheet);
         bottomSheetBehavior.setHideable(false);
@@ -83,7 +131,6 @@ public class MainCreationEventActivity extends AppCompatActivity {
                     case BottomSheetBehavior.STATE_DRAGGING:
                         break;
                     case BottomSheetBehavior.STATE_EXPANDED:
-                        viewGrey.setVisibility(View.VISIBLE);
                         break;
                     case BottomSheetBehavior.STATE_HIDDEN:
                         viewGrey.setVisibility(View.GONE);
@@ -103,9 +150,189 @@ public class MainCreationEventActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 bottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
+                viewGrey.setVisibility(View.VISIBLE);
             }
         });
         navController = Navigation.findNavController(this, R.id.nav_host_fragment2);
+    }
+
+    private void initCardViewType() {
+        cardViewEventArt = findViewById(R.id.cardTypeEventArt);
+        cardTypeEventSport = findViewById(R.id.cardTypeEventSport);
+        cardTypeEventParty = findViewById(R.id.cardTypeEventCar);
+        cardTypeEventMusic = findViewById(R.id.cardTypeEventMusic);
+        cardTypeEventMovie = findViewById(R.id.cardTypeEventMovie);
+        cardTypeEventGame = findViewById(R.id.cardTypeEventGame);
+        cardTypeEventCar = findViewById(R.id.cardTypeEventCar);
+        cardTypeEventGather = findViewById(R.id.cardTypeEventGather);
+        cardTypeEventConference = findViewById(R.id.cardTypeEventConference);
+        cardTypeEventShop = findViewById(R.id.cardTypeEventCar);
+        cardTypeEventShow = findViewById(R.id.cardTypeEventShow);
+        cardTypeEventScience = findViewById(R.id.cardTypeEventScience);
+        cardViewEventArt.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                changeType(TypeEvent.ART);             }
+        });
+        cardTypeEventSport.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                changeType(TypeEvent.SPORT);             }
+        });
+        cardTypeEventParty.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                changeType(TypeEvent.PARTY);             }
+        });
+        cardTypeEventMusic.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                changeType(TypeEvent.MUSIC);             }
+        });
+        cardTypeEventMovie.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                changeType(TypeEvent.MOVIE);             }
+        });
+        cardTypeEventGame.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                changeType(TypeEvent.GAME);             }
+        });
+        cardTypeEventCar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                changeType(TypeEvent.CAR);             }
+        });
+        cardTypeEventGather.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                changeType(TypeEvent.GATHER);             }
+        });
+        cardTypeEventConference.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                changeType(TypeEvent.CONFERENCE);             }
+        });
+        cardTypeEventShop.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                changeType(TypeEvent.SHOP);             }
+        });
+        cardTypeEventShow.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                changeType(TypeEvent.SHOW);             }
+        });
+        cardTypeEventScience.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                changeType(TypeEvent.SCIENCE);            }
+        });
+    }
+
+    private void initCardViewVisibility() {
+
+        cardViewPrivate = findViewById(R.id.cardViewPrivate);
+        cardViewPublic = findViewById(R.id.cardViewPublic);
+        cardViewPrivate.setOnClickListener(new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            changeVisibility(Visibility.PRIVATE);
+        }
+    });
+
+        cardViewPublic.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                changeVisibility(Visibility.PUBLIC);
+            }
+        });
+    }
+
+    private void changeVisibility(Visibility v) {
+        currentEvent.setVisibility(v);;
+        initFirstFiltre();
+        bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+    }
+
+    private void changeType(TypeEvent te) {
+        currentEvent.setEventType(te);;
+        initFirstFiltre();
+        bottomSheetBehaviorType.setState(BottomSheetBehavior.STATE_COLLAPSED);
+    }
+
+    private void initFirstFiltre() {
+        textViewVisibility = findViewById(R.id.textViewVisibility);
+        textViewType= findViewById(R.id.textViewType);
+        textViewType.setCompoundDrawablesWithIntrinsicBounds(getDrawableType(currentEvent.getEventType()), 0, 0, 0);
+        textViewType.setText(getTextType(currentEvent.getEventType()));
+        textViewType.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(bottomSheetBehavior.getState() == BottomSheetBehavior.STATE_EXPANDED){
+                    bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+                }
+                viewGrey.setVisibility(View.VISIBLE);
+                bottomSheetBehaviorType.setState(BottomSheetBehavior.STATE_EXPANDED);
+            }
+        });
+
+        textViewVisibility.setCompoundDrawablesWithIntrinsicBounds(getDrawableVisibility(currentEvent.getVisibility()), 0, 0, 0);
+        textViewVisibility.setText(getTextVisibility(currentEvent.getVisibility()));
+
+    }
+
+    private int getDrawableVisibility(Visibility v) {
+        switch (v){
+            case PUBLIC:return R.drawable.add_event_public;
+            case PRIVATE:return R.drawable.add_event_prive;
+            default:return 0;
+        }
+    }
+
+    private String getTextVisibility(Visibility v) {
+        switch (v){
+            case PUBLIC:return getResources().getString(R.string.location_public);
+            case PRIVATE:return getResources().getString(R.string.location_private);
+            default:return "Error";
+        }
+    }
+
+    private int getDrawableType(TypeEvent te) {
+        switch (te){
+            case ART:return R.drawable.event_art;
+            case CAR:return R.drawable.event_car;
+            case GAME:return R.drawable.event_game;
+            case SHOP:return R.drawable.event_shop;
+            case SHOW:return R.drawable.event_show;
+            case MOVIE:return R.drawable.event_movie;
+            case MUSIC:return R.drawable.event_music;
+            case PARTY:return R.drawable.event_party;
+            case SPORT:return R.drawable.event_sport;
+            case GATHER:return R.drawable.event_gather;
+            case SCIENCE:return R.drawable.event_science;
+            case CONFERENCE:return R.drawable.event_conference;
+            default:return 0;
+        }
+    }
+
+    private String getTextType(TypeEvent te) {
+        switch (te){
+            case ART:return getResources().getString(R.string.event_art);
+            case CAR:return getResources().getString(R.string.event_car);
+            case GAME:return getResources().getString(R.string.event_game);
+            case SHOP:return getResources().getString(R.string.event_shop);
+            case SHOW:return getResources().getString(R.string.event_show);
+            case MOVIE:return getResources().getString(R.string.event_movie);
+            case MUSIC:return getResources().getString(R.string.event_music);
+            case PARTY:return getResources().getString(R.string.event_party);
+            case SPORT:return getResources().getString(R.string.event_sport);
+            case GATHER:return getResources().getString(R.string.event_gather);
+            case SCIENCE:return getResources().getString(R.string.event_science);
+            case CONFERENCE:return getResources().getString(R.string.event_conference);
+            default:return "Error";
+        }
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
@@ -135,6 +362,8 @@ public class MainCreationEventActivity extends AppCompatActivity {
         params.addParameter("ownerFirstName", USER.getFirst_name());
         params.addParameter("ownerLastName", USER.getLast_name());
         params.addParameter("nbMembers", currentEvent.getNbMembers());
+        params.addParameter("type", currentEvent.getEventType());
+        params.addParameter("price", currentEvent.getPrice());
 
         try {
             imageData = new String(getBytes(activity, image), StandardCharsets.UTF_8);
