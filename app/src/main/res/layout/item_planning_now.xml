@@ -1,0 +1,213 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/linearEvent"
+    android:layout_width="310dp"
+    android:layout_height="210dp"
+    android:orientation="vertical">
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/cardViewEvent"
+        android:layout_width="300dp"
+        android:layout_height="200dp"
+        app:cardCornerRadius="10dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <androidx.cardview.widget.CardView
+                android:layout_width="100dp"
+                android:layout_height="20dp"
+                android:layout_alignParentEnd="true"
+                android:layout_marginTop="15dp"
+                android:layout_marginEnd="-20dp"
+                android:rotation="40"
+                app:cardBackgroundColor="@color/colorPrimary">
+
+                <TextView
+                    android:id="@+id/textView60"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:text="@string/wait" />
+            </androidx.cardview.widget.CardView>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_alignParentBottom="true"
+                android:layout_centerInParent="true"
+                android:layout_gravity="center"
+                android:background="@android:color/transparent"
+                android:orientation="vertical">
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1">
+
+                    <androidx.cardview.widget.CardView
+                        android:id="@+id/cardViewProfil"
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        android:layout_centerVertical="true"
+                        android:layout_gravity="center|clip_vertical"
+                        android:layout_marginStart="20dp"
+                        app:cardCornerRadius="150dp">
+
+                        <ImageView
+                            android:id="@+id/imagePerson"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_gravity="center"
+                            android:contentDescription="@string/TODO"
+                            app:srcCompat="@drawable/ic_round_person_edit_focused" />
+                    </androidx.cardview.widget.CardView>
+
+                    <ImageView
+                        android:id="@+id/imageEvent"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:adjustViewBounds="false"
+                        android:scaleType="centerCrop"
+                        app:srcCompat="@drawable/abc_vector_test" />
+                </RelativeLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginStart="5dp"
+                    android:layout_marginEnd="5dp"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:id="@+id/titleEventList1"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="5dp"
+                                android:text="klssssssssssssssssssllllllllllllllllllllllllllllllll"
+                                android:textColor="#000000"
+                                android:textSize="14sp"
+                                android:textStyle="bold" />
+
+                            <TextView
+                                android:id="@+id/villeEventList"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:drawableStart="@drawable/ic_baseline_location_on_24"
+                                android:drawablePadding="5dp"
+                                android:text="ville"
+                                android:textColor="#000000"
+                                android:textSize="12sp" />
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:orientation="horizontal">
+
+                                <TextView
+                                    android:id="@+id/dateEventList1"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:drawableStart="@drawable/ic_baseline_calendar_today_24"
+                                    android:drawablePadding="5dp"
+                                    android:text="date"
+                                    android:textColor="#000000"
+                                    android:textSize="12sp" />
+
+                                <TextView
+                                    android:id="@+id/textView66"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text=", " />
+
+                                <TextView
+                                    android:id="@+id/timeEventList1"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:text="time"
+                                    android:textColor="#000000"
+                                    android:textSize="12sp" />
+                            </LinearLayout>
+
+                        </LinearLayout>
+
+                        <ImageView
+                            android:id="@+id/imageView39"
+                            android:layout_width="wrap_content"
+                            android:layout_height="40dp"
+                            android:layout_gravity="center_vertical"
+                            android:layout_weight="1"
+                            app:srcCompat="@drawable/ic_baseline_keyboard_arrow_right_24" />
+
+                    </LinearLayout>
+
+                    <TextView
+                        android:id="@+id/textViewAfficher3"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_marginStart="70dp"
+                        android:layout_marginTop="5dp"
+                        android:layout_marginEnd="70dp"
+                        android:background="@drawable/custom_search"
+                        android:drawableStart="@drawable/ic_baseline_qr_code_2_24"
+                        android:drawablePadding="5dp"
+                        android:gravity="center"
+                        android:paddingEnd="10dp"
+                        android:text="@string/qr_code_event" />
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/cardTypeEvent"
+                android:layout_width="35dp"
+                android:layout_height="35dp"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentBottom="true"
+                android:layout_gravity="center"
+                android:layout_marginEnd="0dp"
+                app:cardBackgroundColor="#C3DFDC"
+                app:cardCornerRadius="5dp">
+
+                <ImageView
+                    android:id="@+id/imageTypeEvent"
+                    android:layout_width="35dp"
+                    android:layout_height="35dp"
+                    android:layout_gravity="center"
+                    app:srcCompat="@drawable/event_sport" />
+            </androidx.cardview.widget.CardView>
+
+        </RelativeLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:orientation="horizontal">
+
+        </LinearLayout>
+
+    </androidx.cardview.widget.CardView>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

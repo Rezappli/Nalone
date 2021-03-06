@@ -12,6 +12,7 @@ import com.example.nalone.enumeration.Visibility;
 import com.example.nalone.objects.Evenement;
 import com.example.nalone.ui.NotificationActivity;
 import com.example.nalone.ui.evenements.creation.MainCreationEventActivity;
+import com.example.nalone.ui.evenements.display.EventPlanningActivity;
 import com.example.nalone.ui.profil.MainProfilActivity;
 import com.example.nalone.ui.profil.ProfilFragment;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -39,7 +40,7 @@ import static com.example.nalone.util.Constants.mStoreBase;
 public class HomeActivity extends AppCompatActivity{
 
     private NavController navController;
-    public static ImageView buttonBack, buttonNotif;
+    public static ImageView buttonBack, buttonNotif, buttonPlanning;
     public static FloatingActionButton fab1;
     private CardView cardViewPrivate, cardViewPublic;
     private CardView cardViewEventArt, cardTypeEventSport,cardTypeEventParty,cardTypeEventMusic,cardTypeEventMovie,cardTypeEventGame
@@ -62,6 +63,13 @@ public class HomeActivity extends AppCompatActivity{
 
         buttonBack = findViewById(R.id.buttonBack);
         buttonNotif = findViewById(R.id.buttonNotif);
+        buttonPlanning = findViewById(R.id.buttonPlanning);
+        buttonPlanning.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(getBaseContext(), EventPlanningActivity.class));
+            }
+        });
         bottomSheetVisibility =  findViewById(R.id.sheetCreateEvent);
         fab1 = findViewById(R.id.fab1);
         final View viewGrey = findViewById(R.id.viewGrey);

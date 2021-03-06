@@ -66,20 +66,27 @@
             android:layout_height="match_parent">
 
             <ImageView
-                android:id="@+id/buttonBack"
+                android:id="@+id/imageView38"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
-                android:layout_marginStart="20dp"
-                android:layout_marginTop="5dp"
-                android:layout_marginBottom="5dp"
-                app:srcCompat="@drawable/ic_baseline_arrow_back_24" />
+                android:layout_marginStart="15dp"
+                android:layout_toEndOf="@+id/buttonPlanning"
+                app:srcCompat="@drawable/myevent_menu" />
+
+            <ImageView
+                android:id="@+id/buttonPlanning"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginStart="15dp"
+                app:srcCompat="@drawable/round_local_activity_24" />
 
             <ImageView
                 android:id="@+id/imageView22"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="5dp"
+                android:layout_height="25dp"
+                android:layout_centerVertical="true"
                 app:srcCompat="@drawable/logo" />
 
             <ImageView
