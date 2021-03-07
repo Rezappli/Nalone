@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import com.example.nalone.enumeration.TypeEvent;
@@ -12,15 +11,11 @@ import com.example.nalone.enumeration.Visibility;
 import com.example.nalone.objects.Evenement;
 import com.example.nalone.ui.NotificationActivity;
 import com.example.nalone.ui.evenements.creation.MainCreationEventActivity;
-import com.example.nalone.ui.evenements.display.EventPlanningActivity;
+import com.example.nalone.ui.evenements.display.PlanningActivity;
 import com.example.nalone.ui.profil.MainProfilActivity;
-import com.example.nalone.ui.profil.ProfilFragment;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.firebase.firestore.QuerySnapshot;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
@@ -32,9 +27,6 @@ import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
 import java.util.UUID;
-
-import static com.example.nalone.util.Constants.USER_ID;
-import static com.example.nalone.util.Constants.mStoreBase;
 
 
 public class HomeActivity extends AppCompatActivity{
@@ -67,7 +59,7 @@ public class HomeActivity extends AppCompatActivity{
         buttonPlanning.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(getBaseContext(), EventPlanningActivity.class));
+                startActivity(new Intent(getBaseContext(), PlanningActivity.class));
             }
         });
         bottomSheetVisibility =  findViewById(R.id.sheetCreateEvent);

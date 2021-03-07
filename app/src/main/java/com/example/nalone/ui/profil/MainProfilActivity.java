@@ -24,6 +24,13 @@ public class MainProfilActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_profil);
         buttonBack = findViewById(R.id.buttonBack);
+        buttonBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onBackPressed();
+            }
+        });
         navController = Navigation.findNavController(this, R.id.nav_host_fragment_profil);
     }
+
 }

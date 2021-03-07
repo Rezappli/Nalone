@@ -153,7 +153,9 @@
     <string name="desc"> Description </string>
     <string name="aucun_group"> Aucun groupe </string>
     <string name="aucun_user"> Aucun utilisateur </string>
+
     <string name="calendar"> Calendrier </string>
+    <string name="prochain"> Prochain</string>
 
     <string name="title_creation_event_photo">Ajoute une photo</string>
     <string name="title_creation_event_date">Définis la date</string>

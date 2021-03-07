@@ -66,12 +66,19 @@
             android:layout_height="match_parent">
 
             <ImageView
+                android:id="@+id/buttonBack"
+                android:layout_width="wrap_content"
+                android:layout_height="25dp"
+                android:layout_centerVertical="true"
+                app:srcCompat="@drawable/ic_baseline_arrow_back_24" />
+
+            <ImageView
                 android:id="@+id/imageView38"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
-                android:layout_marginStart="15dp"
-                android:layout_toEndOf="@+id/buttonPlanning"
+                android:layout_marginEnd="20dp"
+                android:layout_toStartOf="@+id/buttonNotif"
                 app:srcCompat="@drawable/myevent_menu" />
 
             <ImageView
@@ -79,22 +86,24 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
-                android:layout_marginStart="15dp"
+                android:layout_marginEnd="20dp"
+                android:layout_toStartOf="@+id/imageView38"
                 app:srcCompat="@drawable/round_local_activity_24" />
 
             <ImageView
                 android:id="@+id/imageView22"
-                android:layout_width="match_parent"
-                android:layout_height="25dp"
+                android:layout_width="wrap_content"
+                android:layout_height="30dp"
                 android:layout_centerVertical="true"
-                app:srcCompat="@drawable/logo" />
+                android:layout_marginStart="40dp"
+                app:srcCompat="@drawable/logo_with_name" />
 
             <ImageView
                 android:id="@+id/buttonNotif"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
-                android:layout_marginEnd="15dp"
+                android:layout_marginEnd="20dp"
                 android:layout_toStartOf="@+id/item_profil"
                 app:srcCompat="@drawable/notification_none" />
 
@@ -105,7 +114,7 @@
                 android:layout_alignParentEnd="true"
                 android:layout_centerHorizontal="false"
                 android:layout_centerVertical="true"
-                android:layout_marginEnd="15dp"
+                android:layout_marginEnd="20dp"
                 app:srcCompat="@drawable/ic_baseline_account_circle_24" />
         </RelativeLayout>
 
@@ -363,15 +372,14 @@
                     </androidx.cardview.widget.CardView>
 
                     <androidx.cardview.widget.CardView
+                        android:id="@+id/cardTypeEventParty"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:layout_weight="1"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent"
-                        android:id="@+id/cardTypeEventParty"
-                        >
+                        app:layout_constraintTop_toTopOf="parent">
 
                         <LinearLayout
                             android:layout_width="match_parent"
@@ -492,15 +500,14 @@
                     </androidx.cardview.widget.CardView>
 
                     <androidx.cardview.widget.CardView
+                        android:id="@+id/cardTypeEventGame"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:layout_weight="1"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent"
-                        android:id="@+id/cardTypeEventGame"
-                        >
+                        app:layout_constraintTop_toTopOf="parent">
 
                         <LinearLayout
                             android:layout_width="match_parent"
@@ -543,11 +550,10 @@
                     android:layout_weight="1">
 
                     <androidx.cardview.widget.CardView
+                        android:id="@+id/cardTypeEventCar"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:layout_weight="1"
-                        android:id="@+id/cardTypeEventCar"
-                        >
+                        android:layout_weight="1">
 
                         <LinearLayout
                             android:layout_width="match_parent"
@@ -583,11 +589,10 @@
                     </androidx.cardview.widget.CardView>
 
                     <androidx.cardview.widget.CardView
+                        android:id="@+id/cardTypeEventGather"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:layout_weight="1"
-                        android:id="@+id/cardTypeEventGather"
-                        >
+                        android:layout_weight="1">
 
                         <LinearLayout
                             android:layout_width="match_parent"
@@ -623,15 +628,14 @@
                     </androidx.cardview.widget.CardView>
 
                     <androidx.cardview.widget.CardView
+                        android:id="@+id/cardTypeEventConference"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:layout_weight="1"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent"
-                        android:id="@+id/cardTypeEventConference"
-                        >
+                        app:layout_constraintTop_toTopOf="parent">
 
                         <LinearLayout
                             android:layout_width="match_parent"
@@ -668,12 +672,11 @@
                 </LinearLayout>
 
                 <LinearLayout
+                    android:id="@+id/cardTypeEventShop"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_marginBottom="40dp"
-                    android:layout_weight="1"
-                    android:id="@+id/cardTypeEventShop"
-                    >
+                    android:layout_weight="1">
 
                     <androidx.cardview.widget.CardView
                         android:layout_width="match_parent"
@@ -714,11 +717,10 @@
                     </androidx.cardview.widget.CardView>
 
                     <androidx.cardview.widget.CardView
+                        android:id="@+id/cardTypeEventShow"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:layout_weight="1"
-                        android:id="@+id/cardTypeEventShow"
-                        >
+                        android:layout_weight="1">
 
                         <LinearLayout
                             android:layout_width="match_parent"
@@ -765,8 +767,7 @@
                         <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:orientation="vertical"
-                            >
+                            android:orientation="vertical">
 
                             <androidx.cardview.widget.CardView
                                 android:id="@+id/cardTypeEventScience"
@@ -774,8 +775,7 @@
                                 android:layout_height="80dp"
                                 android:layout_gravity="center"
                                 app:cardBackgroundColor="#C3DFDC"
-                                app:cardCornerRadius="5dp"
-                                >
+                                app:cardCornerRadius="5dp">
 
                                 <ImageView
                                     android:id="@+id/imageTypeEvent"

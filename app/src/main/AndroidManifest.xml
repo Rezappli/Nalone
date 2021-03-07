@@ -28,7 +28,8 @@
         android:roundIcon="@mipmap/ic_logo_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme.NoActionBar">
-        <activity android:name=".ui.evenements.display.EventPlanningActivity"></activity>
+        <activity android:name=".ui.evenements.display.PlanningActivity"></activity>
+        <activity android:name=".ui.evenements.display.EventPlanningActivity" />
         <activity
             android:name="com.theartofdev.edmodo.cropper.CropImageActivity"
             android:theme="@style/Base.Theme.AppCompat" />

@@ -78,6 +78,13 @@ public class ProfilFragment extends Fragment  {
             }
         });
 
+        buttonBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
+
         userConnectText.setText(USER.getFirst_name() + " " + USER.getLast_name());
         userConnectVille.setText(USER.getCity());
         userConnectNbC.setText(USER.getNumber_events_create());
@@ -268,7 +275,6 @@ public class ProfilFragment extends Fragment  {
     }
 
     private void initView(View root){
-        buttonBack.setVisibility(View.GONE);
         navController = Navigation.findNavController(getActivity(), R.id.nav_host_fragment_profil);
         userConnectDesc = root.findViewById(R.id.userConnectDescription);
         userConnectText = root.findViewById(R.id.userConnectText);
