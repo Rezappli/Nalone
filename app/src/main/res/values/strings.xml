@@ -94,6 +94,7 @@
     <string name="descriptionNF"> Description : </string>
     <string name="afficher"> Afficher </string>
     <string name="CI"> Centres d\'interêt </string>
+    <string name="pertinence">Pertinence</string>
     <string name="aucun_encours"> Aucun évènement en cours </string>
     <string name="aucun_bientot"> Aucun évènement bientôt </string>
     <string name="aucun_fini"> Aucun évènement fini </string>
@@ -170,6 +171,7 @@
     <string name="info_visibility_public">Tous les utilisteurs verront votre évènement</string>
     <string name="creer_ton_event"> Créer ton évènement</string>
     <string name="creation_type"> Choisis le type</string>
+    <string name="creation_event_title">Création d\'évènement</string>
     <string name="modify_visibility"> Modifier la visibilité</string>
     <string name="modify_type"> Modifier le type</string>
     <string name="title_activity_main_profil">MainProfilActivity</string>
@@ -180,6 +182,8 @@
     <string name="previous">Previous</string>
     <string name="planning">Planning</string>
     <string name="creations">Creations</string>
+
+    <string name="filter"> Filtres </string>
 
     <string name="event_art">Art</string>
     <string name="event_car">Motorisé</string>

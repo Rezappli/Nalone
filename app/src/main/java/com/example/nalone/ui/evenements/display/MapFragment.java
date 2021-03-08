@@ -77,7 +77,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     private CardView cardViewLocationPrive,cardViewLocationAll, cardViewLocationPublic, cardViewLocationCreate, cardViewLocationInscrit;
     private TextView textViewLocationPrive,textViewLocationAll, textViewLocationPublic, textViewLocationCreate, textViewLocationInscrit;
     private ImageView imageViewLocationPrive,imageViewLocationAll, imageViewLocationPublic,imageViewLocationCreate,imageViewLocationInscrit;
-    private Button buttonCreations,buttonPlanning;
 
     private NavController navController;
 
@@ -147,15 +146,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         imageViewLocationAll = rootView.findViewById(R.id.imageViewLocationAll);
         loading = rootView.findViewById(R.id.loading);
 
-
-        buttonCreations = rootView.findViewById(R.id.buttonCreations);
-        buttonPlanning = rootView.findViewById(R.id.buttonPlanning);
-        buttonPlanning.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(getContext(),EventPlanningActivity.class));
-            }
-        });
         imageViewFiltreSearch = rootView.findViewById(R.id.filtreSearch);
 
         //Bottom sheet

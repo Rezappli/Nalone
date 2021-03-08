@@ -223,7 +223,7 @@
         android:fillViewport="false"
         android:focusableInTouchMode="true"
         app:behavior_hideable="true"
-        app:behavior_peekHeight="110dp"
+        app:behavior_peekHeight="100dp"
         app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior">
 
         <LinearLayout
@@ -238,62 +238,32 @@
                 android:layout_gravity="center"
                 app:srcCompat="@drawable/bottom_sheet_line" />
 
-            <SearchView
-                android:id="@+id/searchViewSheet"
-                style="@style/Widget.AppCompat.Light.SearchView"
-                android:layout_width="match_parent"
-                android:layout_height="35dp"
+            <RelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:layout_marginStart="30dp"
                 android:layout_marginEnd="30dp"
-                android:layout_marginBottom="8dp"
-                android:background="@drawable/custom_search" />
+                android:layout_marginBottom="35dp">
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginBottom="20dp"
-                android:orientation="horizontal">
+                <SearchView
+                    android:id="@+id/searchViewSheet"
+                    style="@style/Widget.AppCompat.Light.SearchView"
+                    android:layout_width="match_parent"
+                    android:layout_height="35dp"
+                    android:background="@drawable/custom_search" />
 
                 <ImageView
                     android:id="@+id/filtreSearch"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:layout_centerVertical="true"
                     android:layout_marginStart="30dp"
-                    android:src="@drawable/filter_event"
-                    android:visibility="gone" />
+                    android:layout_marginEnd="10dp"
+                    android:visibility="gone"
+                    app:srcCompat="@drawable/filter_event" />
 
-                <Button
-                    android:id="@+id/buttonPlanning"
-                    android:layout_width="match_parent"
-                    android:layout_height="30dp"
-                    android:layout_marginStart="30dp"
-                    android:layout_weight="1"
-                    android:background="@drawable/custom_button_simple"
-                    android:drawableStart="@drawable/planning_start"
-                    android:drawablePadding="-15dp"
-                    android:paddingStart="10dp"
-                    android:text="@string/planning"
-                    android:textColor="@color/white" />
-
-                <View
-                    android:id="@+id/view18"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1.5" />
-
-                <Button
-                    android:id="@+id/buttonCreations"
-                    android:layout_width="match_parent"
-                    android:layout_height="30dp"
-                    android:layout_marginEnd="30dp"
-                    android:layout_weight="1"
-                    android:background="@drawable/custom_button_simple"
-                    android:drawableStart="@drawable/creations_start"
-                    android:drawablePadding="-10dp"
-                    android:paddingStart="10dp"
-                    android:text="@string/creations"
-                    android:textColor="@color/white" />
-            </LinearLayout>
+            </RelativeLayout>
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/recyclerTypeEvent"
