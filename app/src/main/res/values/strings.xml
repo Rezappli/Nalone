@@ -70,6 +70,7 @@
     <string name="par_qui"> Par qui ? </string>
     <string name="ou"> Ou ? </string>
     <string name="search_title"> Rechercher un ami </string>
+    <string name="search_event_title"> Rechercher un évènement </string>
     <string name="aucun_resultat"> Aucun résultat trouvé </string>
     <string name="eventCreateProfil"> Création </string>
     <string name="eventParticipateProfil"> Participation </string>
@@ -94,7 +95,6 @@
     <string name="descriptionNF"> Description : </string>
     <string name="afficher"> Afficher </string>
     <string name="CI"> Centres d\'interêt </string>
-    <string name="pertinence">Pertinence</string>
     <string name="aucun_encours"> Aucun évènement en cours </string>
     <string name="aucun_bientot"> Aucun évènement bientôt </string>
     <string name="aucun_fini"> Aucun évènement fini </string>
@@ -174,6 +174,7 @@
     <string name="creation_event_title">Création d\'évènement</string>
     <string name="modify_visibility"> Modifier la visibilité</string>
     <string name="modify_type"> Modifier le type</string>
+    <string name="type"> Catégorie</string>
     <string name="title_activity_main_profil">MainProfilActivity</string>
     <!-- Strings used for fragments for navigation -->
     <string name="first_fragment_label">First Fragment</string>
@@ -237,6 +238,19 @@
     <string name="wait"> Attente </string>
     <string name="canceled"> Annulé </string>
     <string name="retired"> Retiré </string>
+
+    <string name="filter_sort_pertinence">Pertinence</string>
+    <string name="filter_sort">Trier par</string>
+    <string name="filter_sort_date">Par date</string>
+    <string name="filter_sort_location">Par distance</string>
+    <string name="filter_sort_price_asc">Prix croissant </string>
+    <string name="filter_sort_price_desc">Prix decroissant </string>
+    <string name="filter_date_today"> Aujourd\'hui </string>
+    <string name="filter_date_tomorrow"> Demain </string>
+    <string name="filter_date_week"> Cette semaine </string>
+    <string name="filter_date_month"> Ce mois </string>
+    <string name="filter_date_choose"> Choisir une date </string>
+
 
 
 </resources>

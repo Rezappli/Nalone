@@ -21,10 +21,12 @@ import android.widget.ImageView;
 import com.android.volley.VolleyError;
 import com.example.nalone.adapter.MapEvenementAdapter;
 import com.example.nalone.adapter.TypeEventAdapter;
+import com.example.nalone.enumeration.TypeEvent;
 import com.example.nalone.enumeration.VisibilityMap;
 import com.example.nalone.listeners.JSONArrayListener;
 import com.example.nalone.json.JSONController;
 import com.example.nalone.json.JSONObjectCrypt;
+import com.example.nalone.objects.TypeEventObject;
 import com.example.nalone.ui.evenements.InfosEvenementsActivity;
 import com.example.nalone.util.Horloge;
 import com.example.nalone.R;
@@ -90,24 +92,18 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     private List<Evenement> nearby_events;
     private int iterator = 0;
     private CardView  loading;
-    private List<String> myEvents = new ArrayList<>();
-    private List<String> event_prive, event_public, event_create, event_inscrit;
-    private boolean zoom;
-    private Horloge horloge = new Horloge();
+
 
     // Bottom sheet
     private BottomSheetBehavior bottomSheetBehavior;
     private SearchView searchView;
     private RecyclerView recyclerViewSuggestion, recyclerViewPopular, recyclerTypeEvent;
-    private FirestoreRecyclerAdapter adapterSearchEvent;
-    private TextView dateSearchEvent;
 
-    private ImageView arrowLeft, arrowRight, imageViewFiltreSearch, imageViewExpanded;
-    private Animation appear_filtre;
+
+    private ImageView imageViewFiltreSearch, imageViewExpanded;
     private boolean isOpen;
 
-    private List<String> filtreTypeTitle;
-    private List<Drawable> filtreTypeImage;
+    private List<TypeEventObject> filtreTypeList;
 
 
 
@@ -121,10 +117,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         rootView = inflater.inflate(R.layout.fragment_map, container, false);
 
         ((AppCompatActivity) getActivity()).getSupportActionBar().hide();
-        event_prive = new ArrayList<>();
-        event_inscrit = new ArrayList<>();
-        event_public = new ArrayList<>();
-        event_create = new ArrayList<>();
         buttonBack.setVisibility(View.GONE);
         mMapView = rootView.findViewById(R.id.mapView);
         navController = Navigation.findNavController(getActivity(), R.id.nav_host_fragment);
@@ -362,7 +354,14 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         });*/
 
         initFiltres();
-        this.typeAdapter = new TypeEventAdapter(this.filtreTypeImage, this.filtreTypeTitle);
+        this.typeAdapter = new TypeEventAdapter(this.filtreTypeList);
+        typeAdapter.setOnItemClickListener(new TypeEventAdapter.OnItemClickListener() {
+            @Override
+            public void onAddClick(int position) {
+                SearchEventActivity.currentType = filtreTypeList.get(position).getmType();
+                startActivity(new Intent(getContext(),SearchEventActivity.class));
+            }
+        });
         // 3.3 - Attach the adapter to the recyclerview to populate items
         this.recyclerTypeEvent.setAdapter(this.typeAdapter);
         // 3.4 - Set layout manager to position the items
@@ -371,47 +370,21 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     }
 
     private void initFiltres() {
-        filtreTypeTitle = new ArrayList<>();
-        filtreTypeImage = new ArrayList<>();
+        filtreTypeList = new ArrayList<>();
 
-        filtreTypeImage.add(getResources().getDrawable(R.drawable.event_art));
-        filtreTypeTitle.add(getResources().getString(R.string.event_art));
+        filtreTypeList.add(new TypeEventObject(getResources().getDrawable(R.drawable.event_art),getResources().getString(R.string.event_art),TypeEvent.ART));
+        filtreTypeList.add(new TypeEventObject(getResources().getDrawable(R.drawable.event_sport),getResources().getString(R.string.event_sport),TypeEvent.SPORT));
+        filtreTypeList.add(new TypeEventObject(getResources().getDrawable(R.drawable.event_car),getResources().getString(R.string.event_car),TypeEvent.CAR));
+        filtreTypeList.add(new TypeEventObject(getResources().getDrawable(R.drawable.event_conference),getResources().getString(R.string.event_conference),TypeEvent.CONFERENCE));
+        filtreTypeList.add(new TypeEventObject(getResources().getDrawable(R.drawable.event_shop),getResources().getString(R.string.event_shop),TypeEvent.SHOP));
+        filtreTypeList.add(new TypeEventObject(getResources().getDrawable(R.drawable.event_show),getResources().getString(R.string.event_show),TypeEvent.SHOW));
+        filtreTypeList.add(new TypeEventObject(getResources().getDrawable(R.drawable.event_game),getResources().getString(R.string.event_game),TypeEvent.GAME));
+        filtreTypeList.add(new TypeEventObject(getResources().getDrawable(R.drawable.event_gather),getResources().getString(R.string.event_gather),TypeEvent.GATHER));
+        filtreTypeList.add(new TypeEventObject(getResources().getDrawable(R.drawable.event_movie),getResources().getString(R.string.event_movie),TypeEvent.MOVIE));
+        filtreTypeList.add(new TypeEventObject(getResources().getDrawable(R.drawable.event_music),getResources().getString(R.string.event_music),TypeEvent.MUSIC));
+        filtreTypeList.add(new TypeEventObject(getResources().getDrawable(R.drawable.event_party),getResources().getString(R.string.event_party),TypeEvent.PARTY));
+        filtreTypeList.add(new TypeEventObject(getResources().getDrawable(R.drawable.event_science),getResources().getString(R.string.event_science),TypeEvent.SCIENCE));
 
-        filtreTypeImage.add(getResources().getDrawable(R.drawable.event_sport));
-        filtreTypeTitle.add(getResources().getString(R.string.event_sport));
-
-        filtreTypeImage.add(getResources().getDrawable(R.drawable.event_party));
-        filtreTypeTitle.add(getResources().getString(R.string.event_party));
-
-        filtreTypeImage.add(getResources().getDrawable(R.drawable.event_music));
-        filtreTypeTitle.add(getResources().getString(R.string.event_music));
-
-        filtreTypeImage.add(getResources().getDrawable(R.drawable.event_movie));
-        filtreTypeTitle.add(getResources().getString(R.string.event_movie));
-
-        filtreTypeImage.add(getResources().getDrawable(R.drawable.event_game));
-        filtreTypeTitle.add(getResources().getString(R.string.event_game));
-
-        filtreTypeImage.add(getResources().getDrawable(R.drawable.event_car));
-        filtreTypeTitle.add(getResources().getString(R.string.event_car));
-
-        filtreTypeImage.add(getResources().getDrawable(R.drawable.event_gather));
-        filtreTypeTitle.add(getResources().getString(R.string.event_gather));
-
-        filtreTypeImage.add(getResources().getDrawable(R.drawable.event_conference));
-        filtreTypeTitle.add(getResources().getString(R.string.event_conference));
-
-        filtreTypeImage.add(getResources().getDrawable(R.drawable.event_shop));
-        filtreTypeTitle.add(getResources().getString(R.string.event_shop));
-
-        filtreTypeImage.add(getResources().getDrawable(R.drawable.event_contest));
-        filtreTypeTitle.add(getResources().getString(R.string.event_contest));
-
-        filtreTypeImage.add(getResources().getDrawable(R.drawable.event_science));
-        filtreTypeTitle.add(getResources().getString(R.string.event_science));
-
-        filtreTypeImage.add(getResources().getDrawable(R.drawable.event_show));
-        filtreTypeTitle.add(getResources().getString(R.string.event_show));
     }
 
     private void hiddeText(TextView tv) {

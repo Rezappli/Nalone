@@ -13,12 +13,12 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.nalone.R;
 import com.example.nalone.items.ItemFiltre;
+import com.example.nalone.objects.TypeEventObject;
 
 import java.util.List;
 
 public class TypeEventAdapter extends RecyclerView.Adapter<TypeEventAdapter.TypeEventViewHolder> {
-    private List<Drawable> imageList;
-    private List<String> titleList;
+    private List<TypeEventObject> typeEventObjectsList;
     private OnItemClickListener mListener;
 
     public interface OnItemClickListener {
@@ -65,20 +65,19 @@ public class TypeEventAdapter extends RecyclerView.Adapter<TypeEventAdapter.Type
         return tevh;
     }
 
-    public TypeEventAdapter(List<Drawable> imageList, List<String> titleList){
-        this.imageList = imageList;
-        this.titleList = titleList;
+    public TypeEventAdapter(List<TypeEventObject> objectList){
+        this.typeEventObjectsList = objectList;
     }
 
     @Override
     public void onBindViewHolder(@NonNull TypeEventViewHolder holder, int position) {
-        holder.mText.setText(titleList.get(position));
-        holder.mImage.setImageDrawable(imageList.get(position));
+        holder.mText.setText(typeEventObjectsList.get(position).getmName());
+        holder.mImage.setImageDrawable(typeEventObjectsList.get(position).getmDrawable());
     }
 
     @Override
     public int getItemCount() {
-        return titleList.size();
+        return typeEventObjectsList.size();
     }
 
 }

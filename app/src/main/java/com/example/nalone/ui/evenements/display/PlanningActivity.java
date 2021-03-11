@@ -15,6 +15,7 @@ public class PlanningActivity extends AppCompatActivity {
 
     private ImageView buttonCalendar;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -26,5 +27,6 @@ public class PlanningActivity extends AppCompatActivity {
                 startActivity(new Intent(getBaseContext(),EventPlanningActivity.class));
             }
         });
+
     }
 }
