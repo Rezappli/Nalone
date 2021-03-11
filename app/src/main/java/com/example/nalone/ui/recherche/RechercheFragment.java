@@ -114,6 +114,8 @@ public class RechercheFragment extends Fragment {
         params.addParameter("uid", USER.getUid());
         params.addParameter("limit", 3); //fix a limit to 10 users
 
+        Log.w("Response", "Value:"+params);
+
         JSONController.getJsonArrayFromUrl(Constants.URL_USER_WHITHOUT_ME, getContext(), params, new JSONArrayListener() {
             @Override
             public void onJSONReceived(JSONArray jsonArray) {

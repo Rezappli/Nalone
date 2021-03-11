@@ -1,10 +1,16 @@
 package com.example.nalone.util;
 
 import android.os.Build;
+import android.util.Log;
 
 import androidx.annotation.RequiresApi;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.Base64;
+import java.util.Iterator;
 
 import javax.crypto.Cipher;
 import javax.crypto.spec.IvParameterSpec;
@@ -20,7 +26,6 @@ public class CryptoUtils {
     /**
      * Encrypt data using AES Cipher (CBC) with 128 bit key
      *
-     *
      * @param data - data to encrypt
      * @return encryptedData data in base64 encoding with iv attached at end after a :
      */
@@ -30,7 +35,7 @@ public class CryptoUtils {
             if (Constants.key.length() < CIPHER_KEY_LEN) {
                 int numPad = CIPHER_KEY_LEN - Constants.key.length();
 
-                for(int i = 0; i < numPad; i++){
+                for (int i = 0; i < numPad; i++) {
                     Constants.key += "0"; //0 pad to len 16 bytes
                 }
 
@@ -88,5 +93,43 @@ public class CryptoUtils {
         }
 
         return null;
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    public static JSONArray decryptArray(JSONArray arr) {
+        JSONArray array = new JSONArray();
+        try {
+            for (int i = 0; i < arr.length(); i++) {
+                JSONObject temp = new JSONObject();
+                JSONObject obj = arr.getJSONObject(i);
+                for (Iterator<String> it = obj.keys(); it.hasNext(); ) {
+                    String key = it.next();
+                    temp.put(key, decrypt((String)obj.get(key)));
+                }
+                array.put(temp);
+            }
+            return array;
+        } catch (JSONException e) {
+            Log.w("Response", "Erreur:"+e.getMessage());
+        }
+        return array;
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    public static JSONObject decryptObject(JSONObject obj) {
+        Log.w("Response", "Decrypt:"+obj.toString());
+        JSONObject temp = new JSONObject();
+        try {
+            for (Iterator<String> it = obj.keys(); it.hasNext(); ) {
+                String key = it.next();
+                temp.put(key, decrypt((String) obj.get(key)));
+            }
+        } catch (JSONException e) {
+            Log.w("Response", "Error:"+e.getMessage());
+        }
+
+        obj = temp;
+        temp = null;
+        return obj;
     }
 }

@@ -226,6 +226,8 @@
     <string name="button_yes">Oui</string>
     <string name="button_cancel">Annuler</string>
     <string name="button_no">Non</string>
+    <string name="alert_dialog_delete_event"> Vous êtes sur le point de supprimer un évènement ! Cette action est irréversible ! \nVoulez-vous continuez ? </string>
+
 
     <!--Strings used for events creations -->
     <string name="no_image_select">Vous n\'avez pas séléctionné de photo ! Voulez-vous continuer ?</string>
@@ -260,10 +262,6 @@
     <string name="unregister_messge"> Vous ne participez plus à cet évènement </string>
     <string name="register"> Participer </string>
     <string name="register_message"> Vous vous êtes inscrit à l\'évènement </string>
-
-
-    <!--Strings for alert dialog -->
-    <string name="alert_dialog_delete_event"> Vous êtes sur le point de supprimer un évènement ! Cette action est irréversible ! \nVoulez-vous continuez ? </string>
 
 
 

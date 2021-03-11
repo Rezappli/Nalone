@@ -1,8 +1,11 @@
 package com.example.nalone.json;
 
 import android.content.Context;
+import android.os.Build;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.NetworkResponse;
@@ -15,6 +18,7 @@ import com.android.volley.toolbox.JsonRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.nalone.listeners.JSONArrayListener;
 import com.example.nalone.listeners.JSONObjectListener;
+import com.example.nalone.util.CryptoUtils;
 import com.google.gson.Gson;
 
 import org.json.JSONArray;
@@ -36,10 +40,11 @@ public class JSONController {
                              url,
                              parameters.toString(),
                              new Response.Listener<JSONArray>() {
+                                 @RequiresApi(api = Build.VERSION_CODES.O)
                                  @Override
                                  public void onResponse(JSONArray jsonArray) {
                                      if (listener != null) {
-                                         listener.onJSONReceived(jsonArray);
+                                         listener.onJSONReceived(CryptoUtils.decryptArray(jsonArray));
                                      }
                                  }
                              }, new Response.ErrorListener() {
@@ -53,7 +58,6 @@ public class JSONController {
                          @Override
                          protected Map<String, String> getParams() throws AuthFailureError {
                              Map<String, String> params = new HashMap<String, String>();
-                             params.put("uid", "09cbc003-078b-4950-b0d8-c311e069cacf");
 
                              return super.getParams();
                          }
@@ -84,10 +88,11 @@ public class JSONController {
                              url,
                              parameters.toString(),
                              new Response.Listener<JSONObject>() {
+                                 @RequiresApi(api = Build.VERSION_CODES.O)
                                  @Override
                                  public void onResponse(JSONObject jsonObject) {
                                      if (listener != null) {
-                                         listener.onJSONReceived(jsonObject);
+                                         listener.onJSONReceived(CryptoUtils.decryptObject(jsonObject));
                                      }
                                  }
                              }, new Response.ErrorListener() {
@@ -101,7 +106,6 @@ public class JSONController {
                          @Override
                          protected Map<String, String> getParams() throws AuthFailureError {
                              Map<String, String> params = new HashMap<String, String>();
-                             params.put("uid", "09cbc003-078b-4950-b0d8-c311e069cacf");
 
                              return super.getParams();
                          }

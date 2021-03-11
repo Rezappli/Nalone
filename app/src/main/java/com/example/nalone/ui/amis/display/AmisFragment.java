@@ -183,9 +183,7 @@ public class AmisFragment extends Fragment {
         JSONController.getJsonArrayFromUrl(Constants.URL_MY_FRIENDS, getContext(), params, new JSONArrayListener() {
             @Override
             public void onJSONReceived(JSONArray jsonArray) {
-
                 try {
-                    Log.w("Response", jsonArray.toString());
                     for (int i = 0; i < jsonArray.length(); i++) {
                         friends.add((User) JSONController.convertJSONToObject(jsonArray.getJSONObject(i), User.class));
                     }
@@ -204,7 +202,6 @@ public class AmisFragment extends Fragment {
                     Log.w("Response", "Erreur:"+e.getMessage());
                     Toast.makeText(getContext(), getResources().getString(R.string.error), Toast.LENGTH_SHORT).show();
                 }
-
             }
 
             @Override
@@ -259,6 +256,7 @@ public class AmisFragment extends Fragment {
 
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     public void onResume(){
         nbInvit = 0;
