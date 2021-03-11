@@ -99,20 +99,6 @@
                     android:text="- 200km" />
 
                 <TextView
-                    android:id="@+id/textViewPrice"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:layout_marginStart="10dp"
-                    android:layout_weight="1"
-                    android:background="@drawable/custom_search"
-                    android:drawableStart="@drawable/ic_baseline_attach_money_24"
-                    android:drawablePadding="5dp"
-                    android:gravity="center"
-                    android:paddingEnd="10dp"
-                    android:text="@string/price" />
-
-                <TextView
                     android:id="@+id/textViewDate"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -125,6 +111,20 @@
                     android:gravity="center"
                     android:paddingEnd="10dp"
                     android:text="@string/dateEvent" />
+
+                <TextView
+                    android:id="@+id/textViewPrice"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginStart="10dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/custom_search"
+                    android:drawableStart="@drawable/ic_baseline_attach_money_24"
+                    android:drawablePadding="5dp"
+                    android:gravity="center"
+                    android:paddingEnd="10dp"
+                    android:text="@string/price" />
 
             </LinearLayout>
         </HorizontalScrollView>

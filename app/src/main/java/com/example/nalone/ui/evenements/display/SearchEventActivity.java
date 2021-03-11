@@ -48,6 +48,7 @@ public class SearchEventActivity extends AppCompatActivity {
         });
         initTextView();
         initBottomSheet();
+        selectedGenType();
 
     }
 
@@ -58,6 +59,48 @@ public class SearchEventActivity extends AppCompatActivity {
 
         // TextView of sort filter
         initTextViewSort();
+
+        // TextView of date filter
+        initTextViewDate();
+    }
+
+    private void initTextViewDate() {
+        textViewDateToday = findViewById(R.id.textViewDateToday);
+        textViewDateToday.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                changeActualDate(FiltreDate.TODAY);
+            }
+        });
+        textViewDateTomorrow = findViewById(R.id.textViewDateTomorrow);
+        textViewDateTomorrow.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                changeActualDate(FiltreDate.TOMORROW);
+            }
+        });
+        textViewDateWeek = findViewById(R.id.textViewDateWeek);
+        textViewDateWeek.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                changeActualDate(FiltreDate.WEEK);
+            }
+        });
+        textViewDateMonth = findViewById(R.id.textViewDateMonth);
+        textViewDateMonth.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                changeActualDate(FiltreDate.MONTH);
+            }
+        });
+        textViewDateOther = findViewById(R.id.textViewDateOther);
+        textViewDateOther.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                changeActualDate(FiltreDate.OTHER);
+            }
+        });
+
     }
 
     private void initTextViewSort(){
@@ -150,74 +193,86 @@ public class SearchEventActivity extends AppCompatActivity {
     private void initTextViewType() {
         textViewEventArt = findViewById(R.id.textViewTypeArt);
         textViewEventSport = findViewById(R.id.textViewTypeSport);
-        textViewEventParty = findViewById(R.id.textViewTypeCar);
+        textViewEventParty = findViewById(R.id.textViewTypeParty);
         textViewEventMusic = findViewById(R.id.textViewTypeMusic);
         textViewEventMovie = findViewById(R.id.textViewTypeMovie);
         textViewEventGame = findViewById(R.id.textViewTypeGame);
         textViewEventCar = findViewById(R.id.textViewTypeCar);
         textViewEventGather = findViewById(R.id.textViewTypeGather);
         textViewEventConference = findViewById(R.id.textViewTypeConference);
-        textViewEventShop = findViewById(R.id.textViewTypeCar);
+        textViewEventShop = findViewById(R.id.textViewTypeShop);
         textViewEventShow = findViewById(R.id.textViewTypeShow);
         textViewEventScience = findViewById(R.id.textViewTypeScience);
         textViewEventArt.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                           }
+                changeActualType(TypeEvent.ART);
+            }
         });
         textViewEventSport.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                          }
+                changeActualType(TypeEvent.SPORT);
+            }
         });
         textViewEventParty.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                          }
+                changeActualType(TypeEvent.PARTY);
+            }
         });
         textViewEventMusic.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                changeActualType(TypeEvent.MUSIC);
                             }
         });
         textViewEventMovie.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                changeActualType(TypeEvent.MOVIE);
                             }
         });
         textViewEventGame.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                changeActualType(TypeEvent.GAME);
                              }
         });
         textViewEventCar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                changeActualType(TypeEvent.CAR);
                             }
         });
         textViewEventGather.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                changeActualType(TypeEvent.GATHER);
                            }
         });
         textViewEventConference.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                changeActualType(TypeEvent.CONFERENCE);
                              }
         });
         textViewEventShop.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                changeActualType(TypeEvent.SHOP);
                        }
         });
         textViewEventShow.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                changeActualType(TypeEvent.SHOW);
                        }
         });
         textViewEventScience.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                changeActualType(TypeEvent.SCIENCE);
                          }
         });
     }
@@ -255,6 +310,76 @@ public class SearchEventActivity extends AppCompatActivity {
         textViewEventShow .setTextColor(Color.DKGRAY);
         textViewEventScience.setTextColor(Color.DKGRAY);
 
+        textViewEventArt.setCompoundDrawablesWithIntrinsicBounds(R.drawable.event_art_grey, 0, 0, 0);
+        textViewEventSport.setCompoundDrawablesWithIntrinsicBounds(R.drawable.event_sport_grey, 0, 0, 0);
+        textViewEventParty.setCompoundDrawablesWithIntrinsicBounds(R.drawable.event_party_grey,0, 0, 0);
+        textViewEventMusic.setCompoundDrawablesWithIntrinsicBounds(R.drawable.event_music_grey,0, 0, 0);
+        textViewEventMovie.setCompoundDrawablesWithIntrinsicBounds(R.drawable.event_movie_grey, 0, 0, 0);
+        textViewEventGame.setCompoundDrawablesWithIntrinsicBounds(R.drawable.event_game_grey,0, 0, 0);
+        textViewEventCar.setCompoundDrawablesWithIntrinsicBounds(R.drawable.event_car_grey,0, 0, 0);
+        textViewEventGather.setCompoundDrawablesWithIntrinsicBounds(R.drawable.event_gather_grey, 0, 0, 0);
+        textViewEventConference.setCompoundDrawablesWithIntrinsicBounds(R.drawable.event_conference_grey, 0, 0, 0);
+        textViewEventShop.setCompoundDrawablesWithIntrinsicBounds(R.drawable.event_shop_grey, 0, 0, 0);
+        textViewEventShow.setCompoundDrawablesWithIntrinsicBounds(R.drawable.event_show_grey, 0, 0, 0);
+        textViewEventScience.setCompoundDrawablesWithIntrinsicBounds(R.drawable.event_science_grey, 0, 0, 0);
+
+        switch (typeEvent){
+            case ART:selectedType(textViewEventArt);
+            break;
+            case CAR:selectedType(textViewEventCar);
+                break;
+            case GAME:selectedType(textViewEventGame);
+                break;
+            case SHOP:selectedType(textViewEventShop);
+                break;
+            case SHOW:selectedType(textViewEventShow);
+                break;
+            case MOVIE:selectedType(textViewEventMovie);
+                break;
+            case MUSIC:selectedType(textViewEventMusic);
+                break;
+            case PARTY:selectedType(textViewEventParty);
+                break;
+            case SPORT:selectedType(textViewEventSport);
+                break;
+            case SCIENCE:selectedType(textViewEventScience);
+                break;
+            case CONFERENCE:selectedType(textViewEventConference);
+                break;
+            case GATHER:selectedType(textViewEventGather);
+                break;
+        }
+
+    }
+
+    private void changeActualDate(FiltreDate filtreDate){
+        currentDate = filtreDate;
+        textViewDateToday.setTextColor(Color.DKGRAY);
+        textViewDateTomorrow.setTextColor(Color.DKGRAY);
+        textViewDateWeek.setTextColor(Color.DKGRAY);
+        textViewDateMonth.setTextColor(Color.DKGRAY);
+        textViewDateOther.setTextColor(Color.DKGRAY);
+
+        textViewDateToday.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_baseline_event_24, 0, 0, 0);
+        textViewDateTomorrow.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_baseline_event_24, 0, 0, 0);
+        textViewDateWeek.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_baseline_event_24, 0, 0, 0);
+        textViewDateMonth.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_baseline_event_24, 0, 0, 0);
+        textViewDateOther.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_baseline_event_24, 0, 0, 0);
+
+
+        switch (filtreDate){
+            case WEEK:selectedDate(textViewDateWeek,getResources().getString(R.string.filter_date_week));
+                break;
+            case MONTH:selectedDate(textViewDateMonth,getResources().getString(R.string.filter_date_month));
+                break;
+            case OTHER:selectedDate(textViewDateOther,getResources().getString(R.string.filter_date_choose));
+                break;
+            case TODAY:selectedDate(textViewDateToday,getResources().getString(R.string.filter_date_today));
+                break;
+            case TOMORROW:selectedDate(textViewDateTomorrow,getResources().getString(R.string.filter_date_tomorrow));
+                break;
+        }
+
     }
 
     private void changeActualSort(FiltreSort filtreSort){
@@ -284,6 +409,24 @@ public class SearchEventActivity extends AppCompatActivity {
             break;
         }
 
+    }
+
+    private void selectedDate(TextView textView, String text){
+        textView.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_baseline_event_24_primary, 0, 0, 0);
+        textView.setTextColor(getResources().getColor(R.color.colorPrimary));
+        textViewDate.setText(text);
+        textViewDate.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_baseline_event_24_primary, 0, 0, 0);
+    }
+
+    private void selectedType(TextView textView){
+        textView.setCompoundDrawablesWithIntrinsicBounds(getDrawableType(currentType), 0, 0, 0);
+        textView.setTextColor(getResources().getColor(R.color.colorPrimary));
+        selectedGenType();
+    }
+
+    private void selectedGenType(){
+        textViewType.setCompoundDrawablesWithIntrinsicBounds(getDrawableType(currentType), 0, 0, 0);
+        textViewType.setText(getTextType(currentType));
     }
 
     private void selectedSort(TextView textView, String text){
