@@ -13,6 +13,7 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -25,6 +26,11 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.VolleyError;
+import com.example.nalone.enumeration.Visibility;
+import com.example.nalone.json.JSONController;
+import com.example.nalone.json.JSONObjectCrypt;
+import com.example.nalone.listeners.JSONObjectListener;
 import com.example.nalone.objects.Evenement;
 import com.example.nalone.objects.ModelDataEvent;
 import com.example.nalone.R;
@@ -40,6 +46,10 @@ import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
+import org.json.JSONObject;
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -50,6 +60,7 @@ import static com.example.nalone.util.Constants.mStoreBase;
 
 public class InfosEvenementsActivity extends Fragment {
 
+    private SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd hh:mm");
     private RecyclerView mRecyclerView;
     private RecyclerView.LayoutManager mLayoutManager;
     private TextView mTitle;
@@ -86,11 +97,11 @@ public class InfosEvenementsActivity extends Fragment {
                              Bundle savedInstanceState) {
         rootView = inflater.inflate(R.layout.activity_infos_evenements, container, false);
         createFragment();
+        setData();
         return rootView;
     }
 
     private void createFragment() {
-
         participants = 0;
         navController = Navigation.findNavController(getActivity(), R.id.nav_host_fragment);
         mTitle = rootView.findViewById(R.id.title);
@@ -113,6 +124,7 @@ public class InfosEvenementsActivity extends Fragment {
         imageEvent = rootView.findViewById(R.id.imageEvenement);
 
         buttonInscription.setOnClickListener(new View.OnClickListener() {
+            @RequiresApi(api = Build.VERSION_CODES.O)
             @Override
             public void onClick(View v) {
                 incription();
@@ -139,11 +151,10 @@ public class InfosEvenementsActivity extends Fragment {
             }
         });
 
-        //String date_text = formatD.format(EVENT_LOAD.getStartDate().toDate());
         String final_date_text = "";
         mTitle.setText(EVENT_LOAD.getName());
-        //mTimer.setText(timeFormat.format(EVENT_LOAD.getStartDate().toDate()));
-        mOwner.setText(EVENT_LOAD.getOwner_uid());
+        mOwner.setText(EVENT_LOAD.getOwner_first_name()+" "+EVENT_LOAD.getOwner_last_name());
+        nbParticipants.setText(EVENT_LOAD.getNbMembers()+"");
 
         if(EVENT_LOAD.getDescription().matches("")){
             mDescription.setVisibility(View.GONE);
@@ -154,18 +165,24 @@ public class InfosEvenementsActivity extends Fragment {
         handler = new Handler();
         handler.postDelayed(runnable,0);
 
-
-
-
-        /*for (int i = 0; i < date_text.length() - 5; i++) {
-            char character = date_text.charAt(i);
-            if (i == 0) {
-                character = Character.toUpperCase(character);
+        try {
+            Date date = sdf.parse(EVENT_LOAD.getStartDate());
+            String date_text = Constants.formatD.format(date);
+            for (int i = 0; i < date_text.length() - 5; i++) {
+                char character = date_text.charAt(i);
+                if (i == 0) {
+                    character = Character.toUpperCase(character);
+                }
+                final_date_text += character;
             }
-            final_date_text += character;
-        }*/
 
-        mDate.setText(final_date_text);
+            mDate.setText(final_date_text);
+        } catch (ParseException e) {
+            Log.w("Response", "Erreur:"+e.getMessage());
+            Toast.makeText(getContext(), getResources().getString(R.string.error), Toast.LENGTH_SHORT).show();
+        }
+
+        mTimer.setText(cutString(EVENT_LOAD.getStartDate(), 5, 11));
 
         /*mStoreBase.collection("events").document(EVENT_LOAD.getUid())
                 .collection("members").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
@@ -212,8 +229,6 @@ public class InfosEvenementsActivity extends Fragment {
             }
         });*/
 
-        setData();
-
         //if(EVENT_LOAD.getImage_url() != null){
             //Constants.setEventImage(EVENT_LOAD, getContext(), imageEvent);
         //}
@@ -223,9 +238,13 @@ public class InfosEvenementsActivity extends Fragment {
     private final Runnable runnable = new Runnable() {
         @Override
         public void run() {
-            //differenceDate(new Date(),EVENT_LOAD.getStartDate().toDate());
-            handler.postDelayed(this,0);
-
+            try {
+                differenceDate(new Date(),sdf.parse(EVENT_LOAD.getStartDate()));
+                handler.postDelayed(this,0);
+            } catch (ParseException e) {
+                Log.w("Response", "Erreur:"+e.getMessage());
+                Toast.makeText(getContext(), getResources().getString(R.string.error), Toast.LENGTH_SHORT).show();
+            }
         }
     };
 
@@ -262,40 +281,50 @@ public class InfosEvenementsActivity extends Fragment {
             if(elapsedSeconds < 0)
                 elapsedSeconds = elapsedSeconds*-1;
 
-
-
             if(EVENT_LOAD.getStatusEvent() == StatusEvent.ENCOURS){
-                textViewTitleDebut.setText("Commencé depuis : ");
+                textViewTitleDebut.setText(getResources().getString(R.string.event_start_from));
             }
             if(EVENT_LOAD.getStatusEvent() == StatusEvent.FINI){
-                textViewTitleDebut.setText("Terminé depuis : ");
+                textViewTitleDebut.setText(getResources().getString(R.string.event_end_from));
                 textViewTitleDebut.setTextColor(Color.GRAY);
                 linearButton.setVisibility(View.GONE);
                 cardViewTermine.setVisibility(View.VISIBLE);
                 diffDate.setTextColor(Color.GRAY);
             }
-
-
         }
         diffDate.setText(elapsedDays + "j " + elapsedHours + "h " + elapsedMinutes +"m "+ elapsedSeconds+"s ");
-
-
-
-
     }
 
     private void suppression() {
         final AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-        builder.setMessage("Vous êtes sur le point de supprimer un évènement ! Cette action est irréversible ! \n Voulez-vous continuez ?")
-                .setPositiveButton("Oui", new DialogInterface.OnClickListener() {
+        builder.setMessage(getResources().getString(R.string.alert_dialog_delete_event))
+                .setPositiveButton(getResources().getText(R.string.button_yes), new DialogInterface.OnClickListener() {
+                    @RequiresApi(api = Build.VERSION_CODES.O)
                     public void onClick(DialogInterface dialog, int id) {
-                        mStoreBase.collection("events").document(EVENT_LOAD.getUid()).delete();
-                        mStoreBase.collection("users").document(USER_ID).collection("events").document(EVENT_LOAD.getUid()).delete();
-                        Toast.makeText(getContext(), "Vous avez supprimé(e) un évènement !", Toast.LENGTH_SHORT).show();
-                        navController.navigate(R.id.action_navigation_infos_events_to_navigation_evenements);
+                        JSONObjectCrypt params = new JSONObjectCrypt();
+                        params.addParameter("uid", USER.getUid());
+                        params.addParameter("uid_event", EVENT_LOAD.getUid());
+
+                        JSONController.getJsonObjectFromUrl(Constants.URL_EVENT_DELETE, getContext(), params, new JSONObjectListener() {
+                            @Override
+                            public void onJSONReceived(JSONObject jsonObject) {
+                                if(jsonObject.length() == 3) {
+                                    Toast.makeText(getContext(), getResources().getString(R.string.event_delete), Toast.LENGTH_SHORT).show();
+                                    navController.navigate(R.id.action_navigation_infos_events_to_navigation_evenements);
+                                }else{
+                                    Toast.makeText(getContext(), getResources().getString(R.string.error), Toast.LENGTH_SHORT).show();
+                                }
+                            }
+
+                            @Override
+                            public void onJSONReceivedError(VolleyError volleyError) {
+                                Toast.makeText(getContext(), getResources().getString(R.string.error), Toast.LENGTH_SHORT).show();
+                                Log.w("Response", "Erreur:"+volleyError.toString());
+                            }
+                        });
                     }
                 })
-                .setNegativeButton("Non", new DialogInterface.OnClickListener() {
+                .setNegativeButton(getResources().getText(R.string.button_no), new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         dialog.dismiss();
                     }
@@ -305,104 +334,80 @@ public class InfosEvenementsActivity extends Fragment {
     }
 
     private void setData() {
-
         if(EVENT_LOAD.getOwner_uid().equalsIgnoreCase(USER.getUid())){
             inscrit = true;
-            textViewInscription.setText("Se désinscrire");
+            textViewInscription.setText(getResources().getString(R.string.unregister));
             buttonInscription.setImageDrawable(getResources().getDrawable(R.drawable.inscrit_oui_50));
+            linearAnnuler.setVisibility(View.VISIBLE);
             linearButton.setVisibility(View.VISIBLE);
         }
+    }
 
-        /*mStoreBase.collection("users").document(USER_ID).collection("events_join")
-                .get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    private void incription() {
+        Drawable resources = null;
+        String inscriptionText = "";
+        if(!inscrit){
+            Toast.makeText(getContext(), getResources().getString(R.string.register_message)+" "+ EVENT_LOAD.getName(), Toast.LENGTH_SHORT).show();
+            inscriptionText = getResources().getString(R.string.unregister);
+            resources = getResources().getDrawable(R.drawable.inscrit_oui_50);
+            inscrit = true;
+            onRegisterUser();
+        }else{
+            Toast.makeText(getContext(), getResources().getString(R.string.unregister_messge)+" "+ EVENT_LOAD.getName(), Toast.LENGTH_SHORT).show();
+            inscriptionText = getResources().getString(R.string.register);
+            resources = getResources().getDrawable(R.drawable.inscrit_50);
+            inscrit = false;
+            onUnregisterUser();
+        }
+        textViewInscription.setText(inscriptionText);
+        buttonInscription.setImageDrawable(resources);
+        createFragment();
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    private void onRegisterUser(){
+        JSONObjectCrypt params = new JSONObjectCrypt();
+        params.addParameter("uid", USER.getUid());
+        params.addParameter("uid_event", EVENT_LOAD.getUid());
+        if(EVENT_LOAD.getVisibility().equals(Visibility.PRIVATE)){
+            params.addParameter("status", "waiting");
+        }else{
+            params.addParameter("status", "add");
+        }
+
+        JSONController.getJsonObjectFromUrl(Constants.URL_ADD_USER_TO_EVENT, getContext(), params, new JSONObjectListener() {
             @Override
-            public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                if(task.isSuccessful()){
-                    for (QueryDocumentSnapshot doc : task.getResult()){
-                        if(doc.getId().equals(EVENT_LOAD.getUid())){
-                            inscrit = true;
-                            textViewInscription.setText("Se désinscrire");
-                            //textViewInscription.setTextColor(Color.RED);
-                            buttonInscription.setImageDrawable(getResources().getDrawable(R.drawable.inscrit_oui_50));
-                            linearButton.setVisibility(View.VISIBLE);
-                        }
-                    }
-                }
+            public void onJSONReceived(JSONObject jsonObject) {
+                Log.w("Response", "Value:"+jsonObject.toString());
+            }
 
+            @Override
+            public void onJSONReceivedError(VolleyError volleyError) {
+                Toast.makeText(getContext(), getResources().getString(R.string.error), Toast.LENGTH_SHORT).show();
+                Log.w("Response", "Erreur:"+volleyError.toString());
             }
         });
-
-        mStoreBase.collection("users").document(USER_ID).collection("events_create")
-                .get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                                                 @Override
-                                                 public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                                                     if (task.isSuccessful()) {
-                                                         for (QueryDocumentSnapshot doc : task.getResult()) {
-                                                             if (doc.getId().equals(EVENT_LOAD.getUid())) {
-                                                                 textViewInscription.setText("Modifier");
-                                                                 buttonInscription.setImageDrawable(getResources().getDrawable(R.drawable.ic_baseline_edit_50));
-                                                                 buttonInscription.setOnClickListener(new View.OnClickListener() {
-                                                                     @Override
-                                                                     public void onClick(View v) {
-                                                                         CreateEventFragment.EVENT_LOAD = EVENT_LOAD;
-                                                                         CreateEventFragment.edit = true;
-                                                                         //navController.navigate(R.id.action_navigation_infos_events_to_navigation_create_event);
-                                                                     }
-                                                                 });
-                                                                 linearButton.setVisibility(View.VISIBLE);
-                                                                 linearAnnuler.setVisibility(View.VISIBLE);
-                                                             }
-                                                         }
-                                                     }
-
-                                                 }
-                                             });
-
-
-
-
-         */
-
-
-        // if(type.equalsIgnoreCase("inscrit")){
     }
 
-    private void incription() {
-        if(!inscrit){
-            //ModelDataEvent owner = new ModelDataEvent(false,"add", EVENT_LOAD.getOwnerDoc());
-            ModelDataEvent m = new ModelDataEvent(false,"add", mStoreBase.collection("users").document(USER_ID));
-            mStoreBase.collection("events").document(EVENT_LOAD.getUid()).collection("members").document(USER.getUid()).set(m);
-            mStoreBase.collection("users").document(USER_ID).collection("events_join").document(EVENT_LOAD.getUid()).set(EVENT_LOAD);
-            Toast.makeText(getContext(), "Vous êtes inscrit à l'évènement " + EVENT_LOAD.getName() + " !", Toast.LENGTH_SHORT).show();
-            textViewInscription.setText("Se désinscrire");
-            buttonInscription.setImageDrawable(getResources().getDrawable(R.drawable.inscrit_oui_50));
-            inscrit = true;
-            createFragment();
-        }else{
-            mStoreBase.collection("events").document(EVENT_LOAD.getUid()).collection("members").document(USER.getUid()).delete();
-            mStoreBase.collection("users").document(USER_ID).collection("events_join").document(EVENT_LOAD.getUid()).delete();
-            Toast.makeText(getContext(), "Vous ne participez plus à l'évènement " + EVENT_LOAD.getName() + " !", Toast.LENGTH_SHORT).show();
-            textViewInscription.setText("Participer");
-            buttonInscription.setImageDrawable(getResources().getDrawable(R.drawable.inscrit_50));
-            inscrit = false;
-            createFragment();
-        }
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    private void onUnregisterUser(){
+        JSONObjectCrypt params = new JSONObjectCrypt();
+        params.addParameter("uid", USER.getUid());
+        params.addParameter("uid_event", EVENT_LOAD.getUid());
 
-    }
+        JSONController.getJsonObjectFromUrl(Constants.URL_DELETE_USER_TO_EVENT, getContext(), params, new JSONObjectListener() {
+            @Override
+            public void onJSONReceived(JSONObject jsonObject) {
+                Log.w("Response", "Value:"+jsonObject.toString());
+            }
 
-    private class UserViewHolder extends RecyclerView.ViewHolder {
-        private ImageView imagePerson;
-        private CardView cardViewUser;
-
-        public UserViewHolder(@NonNull View itemView) {
-            super(itemView);
-
-            imagePerson = itemView.findViewById(R.id.imageUser);
-            cardViewUser = itemView.findViewById(R.id.cardViewUser);
-
-
-        }
-
+            @Override
+            public void onJSONReceivedError(VolleyError volleyError) {
+                Toast.makeText(getContext(), getResources().getString(R.string.error), Toast.LENGTH_SHORT).show();
+                Log.w("Response", "Erreur:"+volleyError.toString());
+            }
+        });
     }
 
     @Override
@@ -415,5 +420,25 @@ public class InfosEvenementsActivity extends Fragment {
     public void onResume() {
         handler.postDelayed(runnable,0);
         super.onResume();
+    }
+
+    private String cutString(String s, int length, int start){
+        if(length > s.length()){
+            return null;
+        }
+
+        String temp = "";
+
+        int i = 0;
+        if(start != -1){
+            for(i=start; i<length+start; i++){
+                temp += s.charAt(i);
+            }
+        }else{
+            for(i=0; i<length; i++){
+                temp += s.charAt(i);
+            }
+        }
+        return temp;
     }
 }

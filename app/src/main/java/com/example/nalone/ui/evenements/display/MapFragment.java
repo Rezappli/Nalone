@@ -54,6 +54,7 @@ import com.example.nalone.enumeration.Visibility;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 
@@ -362,9 +363,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                 startActivity(new Intent(getContext(),SearchEventActivity.class));
             }
         });
-        // 3.3 - Attach the adapter to the recyclerview to populate items
         this.recyclerTypeEvent.setAdapter(this.typeAdapter);
-        // 3.4 - Set layout manager to position the items
         final LinearLayoutManager llm2 = new LinearLayoutManager(getActivity(), RecyclerView.HORIZONTAL, false);
         this.recyclerTypeEvent.setLayoutManager(llm2);
     }
@@ -503,7 +502,14 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                 mk.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE));
             }
         }
-        mMap.addMarker(mk).setTag(e.getUid());
+        mMap.addMarker(mk).setTag(e);
+        mMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
+            @Override
+            public void onInfoWindowClick(Marker marker) {
+                InfosEvenementsActivity.EVENT_LOAD = (Evenement) marker.getTag();
+                navController.navigate(R.id.action_navigation_evenements_to_navigation_infos_events);
+            }
+        });
     }
 
     @Override

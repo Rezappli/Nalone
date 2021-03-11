@@ -105,7 +105,10 @@ public class Constants {
     public static String URL_EVENT_DATE = "http://api.nolonely.fr:53000/get_event_date.php";
     public static String URL_ADD_EVENT = "http://api.nolonely.fr:53000/add_event.php";
     public static String URL_IMAGE = "http://api.nolonely.fr:53000/image.php";
-
+    public static String URL_EVENT_DELETE = "http://api.nolonely.fr:53000/delete_event.php";
+    public static String URL_ADD_USER_TO_EVENT = "http://api.nolonely.fr:53000/add_user_event.php";
+    public static String URL_DELETE_USER_TO_EVENT = "http://api.nolonely.fr:53000/delete_user_event.php";
+    public static String URL_TEST = "http://api.nolonely.fr:53000/test.php";
 
 
     public static void sendNotification(JSONObject notification, final Context context) {
@@ -321,5 +324,5 @@ public class Constants {
     }
 
     public static String key = "kXp2s5v8y/B?E(H+MbQeThWmZq3t6w9z"; // 128 bit key
-    public static String iv = "7w!z$C&F)J@NcRfU"; // 16 bytes IV
+    public static String iv = "7w!z!C&F)J@NcRfU"; // 16 bytes IV
 }

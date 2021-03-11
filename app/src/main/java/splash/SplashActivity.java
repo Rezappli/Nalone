@@ -20,6 +20,7 @@ import com.example.nalone.listeners.JSONObjectListener;
 import com.example.nalone.objects.User;
 import com.example.nalone.ui.profil.ParametresFragment;
 import com.example.nalone.util.Constants;
+import com.example.nalone.util.CryptoUtils;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -29,6 +30,7 @@ import static com.example.nalone.util.Constants.range;
 
 public class SplashActivity extends AppCompatActivity {
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -36,6 +38,8 @@ public class SplashActivity extends AppCompatActivity {
 
         SharedPreferences settings = this.getSharedPreferences(ParametresFragment.SHARED_PREFS, MODE_PRIVATE);
         range = settings.getInt(ParametresFragment.sharedRange, 50);
+
+        test();
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
@@ -120,6 +124,31 @@ public class SplashActivity extends AppCompatActivity {
 
     private void launchHomeActivity(){
         startActivity(new Intent(SplashActivity.this, HomeActivity.class));
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    private void test(){
+
+        JSONObjectCrypt params = new JSONObjectCrypt();
+        params.addParameter("put", "put");
+
+        JSONController.getJsonObjectFromUrl(Constants.URL_TEST, SplashActivity.this, params, new JSONObjectListener() {
+            @Override
+            public void onJSONReceived(JSONObject jsonObject) {
+                Log.w("Response", jsonObject.toString());
+                try {
+                    String decrypt = CryptoUtils.decrypt(jsonObject.getString("test"));
+                    Log.w("Response", "Decrypt : "+decrypt);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onJSONReceivedError(VolleyError volleyError) {
+                Log.w("Response", volleyError.toString());
+            }
+        });
     }
 }
 

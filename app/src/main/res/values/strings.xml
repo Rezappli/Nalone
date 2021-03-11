@@ -251,6 +251,21 @@
     <string name="filter_date_month"> Ce mois </string>
     <string name="filter_date_choose"> Choisir une date </string>
 
+    <!--Strings for InfosEventsActivity -->
+    <string name="event_start_in"> Commencé dans : </string>
+    <string name="event_start_from"> Commencé depuis : </string>
+    <string name="event_end_from"> Terminé depuis : </string>
+    <string name="unregister"> Se désinscrire </string>
+    <string name="event_delete"> Vous venez de supprimer cet évènement ! </string>
+    <string name="unregister_messge"> Vous ne participez plus à cet évènement </string>
+    <string name="register"> Participer </string>
+    <string name="register_message"> Vous vous êtes inscrit à l\'évènement </string>
+
+
+    <!--Strings for alert dialog -->
+    <string name="alert_dialog_delete_event"> Vous êtes sur le point de supprimer un évènement ! Cette action est irréversible ! \nVoulez-vous continuez ? </string>
+
+
 
 
 </resources>
