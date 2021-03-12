@@ -1,28 +1,53 @@
 package com.example.nalone.ui.evenements.display;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.android.volley.VolleyError;
 import com.example.nalone.R;
+import com.example.nalone.adapter.SearchEvenementAdapter;
 import com.example.nalone.enumeration.FiltreDate;
 import com.example.nalone.enumeration.FiltreEvent;
 import com.example.nalone.enumeration.FiltreSort;
 import com.example.nalone.enumeration.TypeEvent;
+import com.example.nalone.enumeration.VisibilityMap;
+import com.example.nalone.json.JSONController;
+import com.example.nalone.json.JSONObjectCrypt;
+import com.example.nalone.listeners.JSONArrayListener;
+import com.example.nalone.objects.Evenement;
+import com.example.nalone.ui.evenements.InfosEvenementsActivity;
 import com.example.nalone.util.Constants;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import static com.example.nalone.util.Constants.USER;
+import static com.example.nalone.util.Constants.range;
 
 public class SearchEventActivity extends AppCompatActivity {
 
     private TextView textViewType, textViewSort, textViewDate, textViewLocation, textViewPrice;
     private BottomSheetBehavior bottomSheetBehaviorDate, bottomSheetBehaviorType,bottomSheetBehaviorSort
-            ,bottomSheetBehaviorPrice,bottomSheetBehaviorLocation;
-    private View viewGrey, bottomSheetType,bottomSheetDate,bottomSheetSort,bottomSheetPrice,bottomSheetLocation;
+            ,bottomSheetBehaviorPrice,bottomSheetBehaviorLocation,bottomSheetBehaviorParticipation;
+    private View viewGrey, bottomSheetType,bottomSheetDate,bottomSheetSort,bottomSheetPrice,bottomSheetLocation, bottomSheetParticipation;
     public static TypeEvent currentType;
     private FiltreSort currentSort;
     private FiltreDate currentDate;
@@ -31,6 +56,11 @@ public class SearchEventActivity extends AppCompatActivity {
     private TextView textViewDateToday,textViewDateTomorrow,textViewDateWeek,textViewDateMonth,textViewDateOther;
     private TextView textViewEventArt, textViewEventSport,textViewEventParty,textViewEventMusic,textViewEventMovie,textViewEventGame
             ,textViewEventCar,textViewEventGather,textViewEventConference,textViewEventShop,textViewEventShow,textViewEventScience;
+    private SearchEvenementAdapter mAdapter;
+    private RecyclerView mRecycler;
+    private List<Evenement> evenementList;
+
+    @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -49,7 +79,60 @@ public class SearchEventActivity extends AppCompatActivity {
         initTextView();
         initBottomSheet();
         selectedGenType();
+        callJson();
+    }
 
+    private void initRecyclerView() {
+        mRecycler = findViewById(R.id.recyclerViewSearch);
+        mAdapter = new SearchEvenementAdapter(evenementList);
+        mAdapter.setOnItemClickListener(new SearchEvenementAdapter.OnItemClickListener() {
+            @Override
+            public void onDisplayClick(int position) {
+                InfosEvenementsActivity.EVENT_LOAD = evenementList.get(position);
+                //InfosEvenementsActivity.type = "nouveau";
+            }
+
+            @Override
+            public void onParticipateClick(int position) {
+                bottomSheetBehaviorParticipation.setState(BottomSheetBehavior.STATE_EXPANDED);
+                viewGrey.setVisibility(View.VISIBLE);
+            }
+        });
+        mRecycler.setAdapter(mAdapter);
+        mRecycler.setLayoutManager(new LinearLayoutManager(getBaseContext()));
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    private void callJson(){
+        JSONObjectCrypt params = new JSONObjectCrypt();
+
+        params.addParameter("uid", USER.getUid());
+        params.addParameter("latitude", USER.getLatitude());
+        params.addParameter("longitude", USER.getLongitude());
+        params.addParameter("range", range);
+
+        JSONController.getJsonArrayFromUrl(Constants.URL_NEARBY_EVENTS, getBaseContext(), params, new JSONArrayListener() {
+            @Override
+            public void onJSONReceived(JSONArray jsonArray) {
+                try {
+                    evenementList = new ArrayList<>();
+                    for(int i = 0; i < jsonArray.length(); i++) {
+                        evenementList.add((Evenement) JSONController.convertJSONToObject(jsonArray.getJSONObject(i), Evenement.class));
+                    }
+                    initRecyclerView();
+                } catch (JSONException e) {
+                    Log.w("Response", "Erreur:"+e.getMessage());
+                    Toast.makeText(getBaseContext(), getResources().getString(R.string.error_event), Toast.LENGTH_SHORT).show();
+                }
+
+            }
+
+            @Override
+            public void onJSONReceivedError(VolleyError volleyError) {
+                Log.w("Response", "Erreur:"+volleyError.toString());
+                Toast.makeText(getBaseContext(), getResources().getString(R.string.error_event), Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     private void initTextView() {
@@ -293,6 +376,8 @@ public class SearchEventActivity extends AppCompatActivity {
         bottomSheetPrice = findViewById(R.id.sheetPrice);
         bottomSheetBehaviorPrice= BottomSheetBehavior.from(bottomSheetPrice);
 
+        bottomSheetParticipation = findViewById(R.id.sheetParticipate);
+        bottomSheetBehaviorParticipation = BottomSheetBehavior.from(bottomSheetParticipation);
     }
 
     private void changeActualType(TypeEvent typeEvent){
@@ -480,6 +565,10 @@ public class SearchEventActivity extends AppCompatActivity {
 
         if(bottomSheetBehaviorType.getState() == BottomSheetBehavior.STATE_EXPANDED){
             bottomSheetBehaviorType.setState(BottomSheetBehavior.STATE_COLLAPSED);
+        }
+
+        if(bottomSheetBehaviorParticipation.getState() == BottomSheetBehavior.STATE_EXPANDED){
+            bottomSheetBehaviorParticipation.setState(BottomSheetBehavior.STATE_COLLAPSED);
         }
         viewGrey.setVisibility(View.GONE);
     }

@@ -252,6 +252,12 @@
     <string name="filter_date_week"> Cette semaine </string>
     <string name="filter_date_month"> Ce mois </string>
     <string name="filter_date_choose"> Choisir une date </string>
+    
+    <!--Strings for BottomParticipate -->
+    <string name="amount">Quantité</string>
+    <string name="CGU_participation"> En validant votre participation, vous accceptez les
+        Conditions Générales d\'Utillisation de NoLonely</string>
+    <string name="comission">Comission</string>
 
     <!--Strings for InfosEventsActivity -->
     <string name="event_start_in"> Commencé dans : </string>
