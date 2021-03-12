@@ -137,7 +137,6 @@ public class HomeActivity extends AppCompatActivity{
                         break;
                     case BottomSheetBehavior.STATE_HIDDEN:
                         break;
-
                 }
             }
 

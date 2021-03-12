@@ -42,6 +42,7 @@ import com.google.firebase.storage.StorageReference;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.nio.charset.StandardCharsets;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -104,10 +105,13 @@ public class Constants {
     public static String URL_MY_FRIENDS = "http://api.nolonely.fr:53000/get_friends.php";
     public static String URL_EVENT_DATE = "http://api.nolonely.fr:53000/get_event_date.php";
     public static String URL_ADD_EVENT = "http://api.nolonely.fr:53000/add_event.php";
-    public static String URL_IMAGE = "http://api.nolonely.fr:53000/image.php";
+    public static String URL_IMAGE = "http://api.nolonely.fr:53000/test_image.php";
     public static String URL_EVENT_DELETE = "http://api.nolonely.fr:53000/delete_event.php";
     public static String URL_ADD_USER_TO_EVENT = "http://api.nolonely.fr:53000/add_user_event.php";
     public static String URL_DELETE_USER_TO_EVENT = "http://api.nolonely.fr:53000/delete_user_event.php";
+    public static String URL_DELETE_FRIEND = "http://api.nolonely.fr:53000/delete_friend.php";
+    public static String URL_ADD_FRIEND = "http://api.nolonely.fr:53000/add_friend.php";
+    public static String URL_UPDATE_ME= "http://api.nolonely.fr:53000/update_me.php";
     public static String URL_TEST = "http://api.nolonely.fr:53000/test.php";
 
 
@@ -264,12 +268,17 @@ public class Constants {
         params.addParameter("protocol", ImageProtocol.SAVE);
         params.addParameter("type", type);
         params.addParameter("name", name);
-        params.addParameter("image", Base64.encodeToString(data.getBytes(), 0));
+        params.addParameter("image", data);
 
-        Log.w("Response", "Params : "+params);
+        //Base64.encodeToString(data.getBytes(), 0)
+
+        try {
+            Log.w("Image", "Params : "+params.getString("image"));
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
 
         JSONController.getJsonObjectFromUrl(Constants.URL_IMAGE, context, params, new JSONObjectListener() {
-
             @Override
             public void onJSONReceived(JSONObject jsonObject) {
                 Log.w("Response", "Response :"+jsonObject.toString());
@@ -285,42 +294,8 @@ public class Constants {
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
-    public static void downloadImageOnServer(final GetImageListener imageListener, final ImageType type, String name, final Context context){
-        JSONObjectCrypt params = new JSONObjectCrypt();
-        params.addParameter("uid", USER.getUid());
-        params.addParameter("protocol", ImageProtocol.GET);
-        params.addParameter("type", type);
-        params.addParameter("name", name);
+    public static void downloadImageOnServer(final ImageType type, String name, final Context context, final GetImageListener imageListener){
 
-        JSONController.getJsonObjectFromUrl(Constants.URL_IMAGE, context, params, new JSONObjectListener() {
-            @Override
-            public void onJSONReceived(JSONObject jsonObject) {
-                if(jsonObject.length() == 3){
-                    Log.w("Response", "Value: "+jsonObject.toString());
-                    try {
-                        if(imageListener != null){
-                            imageListener.onImageReceived(jsonObject.get("data").toString());
-                        }
-                    } catch (JSONException e) {
-                        Log.w("Response", "Erreur: "+e.getMessage());
-                    }
-                }else{
-                    try{
-                        if (jsonObject.get("message").toString().equalsIgnoreCase("IMAGE_NOT_FOUND")) {
-
-                        }
-                    }catch (JSONException e){
-                        Log.w("Response", "Erreur: "+e.getMessage());
-                    }
-                }
-            }
-
-            @Override
-            public void onJSONReceivedError(VolleyError volleyError) {
-                Toast.makeText(context, context.getResources().getString(R.string.image_get_error), Toast.LENGTH_SHORT).show();
-                Log.w("Response","Erreur: "+volleyError.toString());
-            }
-        });
     }
 
     public static String key = "kXp2s5v8y/B?E(H+MbQeThWmZq3t6w9z"; // 128 bit key

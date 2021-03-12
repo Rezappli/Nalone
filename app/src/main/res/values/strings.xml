@@ -263,6 +263,9 @@
     <string name="register"> Participer </string>
     <string name="register_message"> Vous vous êtes inscrit à l\'évènement </string>
 
+    <!--Strings for ProfilFragment -->
+    <string name="update_description"> Vous avez mis à jour votre description </string>
+    <string name="update_informations"> Vous avez mis à jour vos informations </string>
 
 
 

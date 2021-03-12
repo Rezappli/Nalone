@@ -105,8 +105,6 @@ public class JSONController {
                      }) {
                          @Override
                          protected Map<String, String> getParams() throws AuthFailureError {
-                             Map<String, String> params = new HashMap<String, String>();
-
                              return super.getParams();
                          }
 

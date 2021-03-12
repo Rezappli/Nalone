@@ -37,12 +37,14 @@ import com.example.nalone.listeners.JSONArrayListener;
 import com.example.nalone.json.JSONController;
 import com.example.nalone.json.JSONObjectCrypt;
 import com.example.nalone.R;
+import com.example.nalone.listeners.JSONObjectListener;
 import com.example.nalone.objects.User;
 import com.example.nalone.ui.message.ChatActivityFriend;
 import com.example.nalone.util.Constants;
 
 import org.json.JSONArray;
 import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -148,7 +150,6 @@ public class AmisFragment extends Fragment {
             @Override
             public void onDeleteClick(int position) {
                 removeFriend(friends.get(position));
-                createFragment();
             }
 
             @RequiresApi(api = Build.VERSION_CODES.M)
@@ -252,8 +253,25 @@ public class AmisFragment extends Fragment {
         navController.navigate(R.id.action_navigation_amis_to_navigation_popup_profil);
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     private void removeFriend(User user) {
+        JSONObjectCrypt params = new JSONObjectCrypt();
+        params.addParameter("uid", USER.getUid());
+        params.addParameter("uid_friend", user.getUid());
 
+        JSONController.getJsonObjectFromUrl(Constants.URL_DELETE_FRIEND, getContext(), params, new JSONObjectListener() {
+            @Override
+            public void onJSONReceived(JSONObject jsonObject) {
+                Log.w("Response", "Value:"+jsonObject);
+                createFragment();
+            }
+
+            @Override
+            public void onJSONReceivedError(VolleyError volleyError) {
+                Toast.makeText(getContext(), getResources().getString(R.string.error), Toast.LENGTH_SHORT).show();
+                Log.w("Response", "Erreur:"+volleyError.toString());
+            }
+        });
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)

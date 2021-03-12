@@ -80,7 +80,6 @@ public class ParametresFragment extends Fragment {
         notification = settings.getBoolean(sharedNotif, false);
         position = settings.getBoolean(sharedPosition, false);
         range = settings.getInt(sharedRange, 0);
-        Log.w("Range", "Load preferences : " + range);
 
 
         textViewRayon = root.findViewById(R.id.textViewRayon);
@@ -228,7 +227,6 @@ public class ParametresFragment extends Fragment {
     private void setData(){
         SharedPreferences settings = this.getActivity().getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
         SharedPreferences.Editor editor = settings.edit();
-        Log.w("Range", "Save : " +range);
         editor.putInt(sharedRange, range);
         editor.putBoolean(sharedNotif, notification);
         editor.putBoolean(sharedPosition, maPosition);

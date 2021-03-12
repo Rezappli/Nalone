@@ -1,7 +1,9 @@
 package com.example.nalone.ui.profil;
 
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,12 +12,20 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.RequiresApi;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 
+import com.android.volley.VolleyError;
 import com.example.nalone.R;
 import com.example.nalone.ResetPasswordActivity;
+import com.example.nalone.json.JSONController;
+import com.example.nalone.json.JSONObjectCrypt;
+import com.example.nalone.listeners.JSONObjectListener;
+import com.example.nalone.util.Constants;
+
+import org.json.JSONObject;
 
 import static com.example.nalone.ui.profil.MainProfilActivity.buttonBack;
 import static com.example.nalone.util.Constants.USER;
@@ -59,6 +69,8 @@ public class EditFragment extends Fragment {
         textProfilEditMail.setText(USER.getMail());
         profilEditNumero.setText(USER.getNumber());
         profilEditVille.setText(USER.getCity());
+        textProfilEditMail.setText(USER.getMail());
+        Log.w("Data", "Mail:"+USER.getMail());
 
         profilEditPassword.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -68,6 +80,7 @@ public class EditFragment extends Fragment {
         });
 
         profilEditValider.setOnClickListener(new View.OnClickListener() {
+            @RequiresApi(api = Build.VERSION_CODES.O)
             @Override
             public void onClick(View v) {
                 String nom = profilEditNom.getText().toString();
@@ -86,12 +99,12 @@ public class EditFragment extends Fragment {
                     error = true;
                 }
 
-                if(date.length() != 10 || date.charAt(2) != '/' || date.charAt(5) != '/'){
+                if(date.length() != 10 || date.charAt(4) != '-' || date.charAt(7) != '-'){
                     profilEditDate.setError("Entrez votre date de naissance");
                     error = true;
                 }
 
-                if(num.length() != 10){
+                if(num.length() != 13){
                     profilEditNumero.setError("Entrez votre numéro");
                     error = true;
                 }
@@ -126,10 +139,9 @@ public class EditFragment extends Fragment {
                             USER.setBirthday_date(date);
                         }
 
-                        mStoreBase.collection("users").document(USER.getUid()).set(USER);
-                        Toast.makeText(getContext(), "Vous avez mis à jour vos informations", Toast.LENGTH_SHORT).show();
+                        updateDescription();
                     }else{
-                        //navController.navigate(R.id.action_navigation_edit_profil_to_navigation_profil);
+                        navController.navigate(R.id.action_editFragment_to_profilFragment);
                     }
                 }
             }
@@ -137,5 +149,32 @@ public class EditFragment extends Fragment {
 
 
         return root;
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    private void updateDescription() {
+        JSONObjectCrypt params = new JSONObjectCrypt();
+        params.addParameter("uid", USER.getUid());
+        params.addParameter("first_name", USER.getFirst_name());
+        params.addParameter("last_name", USER.getLast_name());
+        params.addParameter("birthday_date", USER.getBirthday_date());
+        params.addParameter("city", USER.getCity());
+        params.addParameter("description", USER.getDescription());
+        params.addParameter("latitude", USER.getLatitude());
+        params.addParameter("longitude", USER.getLongitude());
+
+        JSONController.getJsonObjectFromUrl(Constants.URL_UPDATE_ME, getContext(), params, new JSONObjectListener() {
+            @Override
+            public void onJSONReceived(JSONObject jsonObject) {
+                Toast.makeText(getContext(), getResources().getString(R.string.update_description), Toast.LENGTH_SHORT).show();
+                navController.navigate(R.id.action_editFragment_to_profilFragment);
+            }
+
+            @Override
+            public void onJSONReceivedError(VolleyError volleyError) {
+                Toast.makeText(getContext(), getResources().getString(R.string.error), Toast.LENGTH_SHORT).show();
+                Log.w("Response","Erreur:"+volleyError.toString());
+            }
+        });
     }
 }

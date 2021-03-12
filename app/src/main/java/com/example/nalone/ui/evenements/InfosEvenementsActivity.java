@@ -281,10 +281,9 @@ public class InfosEvenementsActivity extends Fragment {
             if(elapsedSeconds < 0)
                 elapsedSeconds = elapsedSeconds*-1;
 
-            if(EVENT_LOAD.getStatusEvent() == StatusEvent.ENCOURS){
+            if(EVENT_LOAD.getStatusEvent() == StatusEvent.ENCOURS) {
                 textViewTitleDebut.setText(getResources().getString(R.string.event_start_from));
-            }
-            if(EVENT_LOAD.getStatusEvent() == StatusEvent.FINI){
+            }else if(EVENT_LOAD.getStatusEvent() == StatusEvent.FINI){
                 textViewTitleDebut.setText(getResources().getString(R.string.event_end_from));
                 textViewTitleDebut.setTextColor(Color.GRAY);
                 linearButton.setVisibility(View.GONE);

@@ -1,5 +1,6 @@
 package com.example.nalone.ui.profil;
 
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
@@ -21,21 +22,36 @@ import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 
+import com.android.volley.VolleyError;
 import com.bumptech.glide.Glide;
+import com.example.nalone.enumeration.ImageType;
+import com.example.nalone.json.JSONController;
+import com.example.nalone.json.JSONObjectCrypt;
+import com.example.nalone.listeners.GetImageListener;
+import com.example.nalone.listeners.JSONObjectListener;
+import com.example.nalone.ui.evenements.creation.MainCreationEventActivity;
 import com.example.nalone.util.Cache;
 import com.example.nalone.dialog.LoadFragment;
 import com.example.nalone.qrcode.QRCodeFragment;
 import com.example.nalone.R;
+import com.example.nalone.util.Constants;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+import com.theartofdev.edmodo.cropper.CropImage;
+import com.theartofdev.edmodo.cropper.CropImageView;
 
 import org.json.JSONArray;
 import org.json.JSONException;
+import org.json.JSONObject;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -108,8 +124,7 @@ public class ProfilFragment extends Fragment  {
                     editDescription = false;
                     if(!userConnectDesc.getText().toString().equalsIgnoreCase(USER.getDescription())){
                         USER.setDescription(userConnectDesc.getText().toString());
-                        mStoreBase.collection("users").document(USER.getUid()).set(USER);
-                        Toast.makeText(getContext(), "Vous avez mis à jour votre description", Toast.LENGTH_SHORT).show();
+                        updateDescription();
                     }
                 }
 
@@ -164,7 +179,7 @@ public class ProfilFragment extends Fragment  {
                     editPhoto = false;
 
                     if(hasSelectedImage){
-                        uploadFile(imageUri);
+                        //uploadFile(imageUri);
                     }
                 }
             }
@@ -174,54 +189,38 @@ public class ProfilFragment extends Fragment  {
             @RequiresApi(api = Build.VERSION_CODES.O)
             @Override
             public void run() {
-                if(USER.getImage_url() != null) {
-                    if(!Cache.fileExists(USER.getUid())) {
-                        StorageReference imgRef = mStore.getReference("users/" + USER.getUid());
-                        if (imgRef != null) {
-                            imgRef.getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
-                                @Override
-                                public void onComplete(@NonNull Task<Uri> task) {
-                                    if (task.isSuccessful()) {
-                                        Uri img = task.getResult();
-                                        if (img != null) {
-                                            Cache.saveUriFile(USER.getUid(), img);
-                                            USER.setImage_url(Cache.getImageDate(USER.getUid()));
-                                            mStoreBase.collection("users").document(USER.getUid()).set(USER);
-                                            Glide.with(getContext()).load(img).fitCenter().centerCrop().into(imageUser);
-                                        }
-                                    }
-                                }
-                            });
-                        }
-                    }else{
-                        Uri imgCache = Cache.getUriFromUid(USER.getUid());
-                        if(Cache.getImageDate(USER.getUid()).equalsIgnoreCase(USER.getImage_url())) {
-                            Glide.with(getContext()).load(imgCache).fitCenter().centerCrop().into(imageUser);
-                        }else{
-                            StorageReference imgRef = mStore.getReference("users/" + USER.getUid());
-                            if (imgRef != null) {
-                                imgRef.getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
-                                    @Override
-                                    public void onComplete(@NonNull Task<Uri> task) {
-                                        if (task.isSuccessful()) {
-                                            Uri img = task.getResult();
-                                            if (img != null) {
-                                                Cache.saveUriFile(USER.getUid(), img);
-                                                USER.setImage_url(Cache.getImageDate(USER.getUid()));
-                                                mStoreBase.collection("users").document(USER.getUid()).set(USER);
-                                                Glide.with(getContext()).load(img).fitCenter().centerCrop().into(imageUser);
-                                            }
-                                        }
-                                    }
-                                });
-                            }
-                        }
-                    }
-                }
+                Uri uri =  Uri.parse("http://api.nolonely.fr:53000/images/EVENT/test.jpeg");
+                Glide.with(getContext()).load(uri).fitCenter().centerCrop().into(imageUser);
             }
         });
 
         return root;
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    private void updateDescription() {
+        JSONObjectCrypt params = new JSONObjectCrypt();
+        params.addParameter("uid", USER.getUid());
+        params.addParameter("first_name", USER.getFirst_name());
+        params.addParameter("last_name", USER.getLast_name());
+        params.addParameter("birthday_date", USER.getBirthday_date());
+        params.addParameter("city", USER.getCity());
+        params.addParameter("description", USER.getDescription());
+        params.addParameter("latitude", USER.getLatitude());
+        params.addParameter("longitude", USER.getLongitude());
+
+        JSONController.getJsonObjectFromUrl(Constants.URL_UPDATE_ME, getContext(), params, new JSONObjectListener() {
+            @Override
+            public void onJSONReceived(JSONObject jsonObject) {
+                Toast.makeText(getContext(), getResources().getString(R.string.update_description), Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onJSONReceivedError(VolleyError volleyError) {
+                Toast.makeText(getContext(), getResources().getString(R.string.error), Toast.LENGTH_SHORT).show();
+                Log.w("Response","Erreur:"+volleyError.toString());
+            }
+        });
     }
 
     public void showQRCode() {
@@ -229,50 +228,75 @@ public class ProfilFragment extends Fragment  {
         qrcode.show(getActivity().getSupportFragmentManager(), "QR_CODE");
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
-    public void onActivityResult(int reqCode, int resultCode, Intent data) {
-        super.onActivityResult(reqCode, resultCode, data);
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (resultCode == RESULT_OK && requestCode == RESULT_LOAD_IMG) {
+
+            CropImage.activity(data.getData())
+                    .setMultiTouchEnabled(true)
+                    .setAspectRatio(1,1)
+                    .setGuidelines(CropImageView.Guidelines.ON)
+                    .setAllowFlipping(false)
+                    .setCropShape(CropImageView.CropShape.OVAL)
+                    .setMinCropWindowSize(imageUser.getWidth(), imageUser.getHeight())
+                    .start(getContext(), this);
+        }
+
+        if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
+            CropImage.ActivityResult result = CropImage.getActivityResult(data);
+            if (resultCode == RESULT_OK) {
+                Uri resultUri = result.getUri();
+                Glide.with(this).load(resultUri).fitCenter().centerCrop().into(imageUser);
+                MainCreationEventActivity.image = resultUri;
+                try {
+                    String extension = resultUri.getPath().substring(resultUri.getPath().lastIndexOf("."));
+                    String imageData = new String(getBytes(getContext(), MainCreationEventActivity.image), StandardCharsets.UTF_8);
+                    Constants.uploadImageOnServer(ImageType.USER, USER.getUid()+extension, imageData, getContext()); //upload image on web server
+                } catch (IOException e) {
+                    Log.w("Response", "Erreur: "+e.getMessage());
+                }
+            } else if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
+                Log.w("Response", result.getError());
+            }
+        }
 
 
-        if (resultCode == RESULT_OK) {
-            imageUri = data.getData();
-            assert imageUri != null;
-            Glide.with(getContext()).load(imageUri).fitCenter().centerCrop().into(imageUser);
-            hasSelectedImage = true;
-        }else {
-            Toast.makeText(getContext(),"Vous n'avez pas choisi d'image", Toast.LENGTH_LONG).show();
-            imageViewEditPhoto.setImageResource(R.drawable.ic_baseline_edit_24);
-            editPhoto = false;
+    }
+
+    public static byte[] getBytes(Context context, Uri uri) throws IOException {
+        InputStream iStream = context.getContentResolver().openInputStream(uri);
+        try {
+            return getBytes(iStream);
+        } finally {
+            // close the stream
+            try {
+                iStream.close();
+            } catch (IOException ignored) { /* do nothing */ }
         }
     }
 
+    public static byte[] getBytes(InputStream inputStream) throws IOException {
 
-    public void uploadFile(final Uri imagUri) {
-        load = new LoadFragment();
-        load.show(getActivity().getSupportFragmentManager(), "LOAD");
-        load.setCancelable(false);
-        if (imagUri != null) {
-
-            USER_STORAGE_REF.putFile(imagUri)
-                    .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                        @Override
-                        public void onSuccess(UploadTask.TaskSnapshot snapshot) {
-                            Toast.makeText(getActivity().getBaseContext(), "Vous avez changé votre photo de profil !", Toast.LENGTH_SHORT).show();
-                            load.dismiss();
-                            USER.setImage_url(new SimpleDateFormat("dd-MM-yy hh:mm:ss").format(new Date(System.currentTimeMillis())));
-                            mStoreBase.collection("users").document(USER.getUid()).set(USER);
-                        }
-                    })
-                    .addOnFailureListener(new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception exception) {
-                            Toast.makeText(getActivity().getBaseContext(), "Une erreur est survenue !", Toast.LENGTH_SHORT).show();
-                        }
-                    });
-
+        byte[] bytesResult = null;
+        ByteArrayOutputStream byteBuffer = new ByteArrayOutputStream();
+        int bufferSize = 1024;
+        byte[] buffer = new byte[bufferSize];
+        try {
+            int len;
+            while ((len = inputStream.read(buffer)) != -1) {
+                byteBuffer.write(buffer, 0, len);
+            }
+            bytesResult = byteBuffer.toByteArray();
+        } finally {
+            // close the stream
+            try{ byteBuffer.close(); } catch (IOException ignored){ /* do nothing */ }
         }
-        Glide.with(getContext()).load(imagUri).fitCenter().centerCrop().into(imageUser);
+        return bytesResult;
     }
+
 
     private void initView(View root){
         navController = Navigation.findNavController(getActivity(), R.id.nav_host_fragment_profil);
