@@ -104,13 +104,14 @@ public class SearchEventActivity extends AppCompatActivity {
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     private void callJson(){
+        Log.w("Filtre_JSON", currentType.toString());
         JSONObjectCrypt params = new JSONObjectCrypt();
 
         params.addParameter("uid", USER.getUid());
-        params.addParameter("category", currentType);
-        params.addParameter("sort", currentSort);
+        params.addParameter("type", currentType.toString());
+        params.addParameter("sort", currentSort.toString());
         if(currentDate != FiltreDate.NONE)
-            params.addParameter("date", currentDate);
+            params.addParameter("date", currentDate.toString());
 
         JSONController.getJsonArrayFromUrl(Constants.URL_EVENT_FILTRE, getBaseContext(), params, new JSONArrayListener() {
             @Override
@@ -446,6 +447,7 @@ public class SearchEventActivity extends AppCompatActivity {
                 break;
         }
 
+        callJson();
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
