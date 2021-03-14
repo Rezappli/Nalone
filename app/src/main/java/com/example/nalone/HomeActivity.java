@@ -281,7 +281,7 @@ goCreateEvent(TypeEvent.SCIENCE);            }
         MainCreationEventActivity.currentEvent.setUid(UUID.randomUUID().toString());
         MainCreationEventActivity.image = null;
         MainCreationEventActivity.currentEvent.setVisibility(currentVisibility);
-        MainCreationEventActivity.currentEvent.setEventType(tp);
+        MainCreationEventActivity.currentEvent.setCategory(tp);
         bottomSheetBehaviorType.setState(BottomSheetBehavior.STATE_COLLAPSED);
         startActivity(new Intent(getBaseContext(),MainCreationEventActivity.class));
     }

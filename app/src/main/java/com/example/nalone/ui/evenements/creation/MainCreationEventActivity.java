@@ -257,7 +257,7 @@ public class MainCreationEventActivity extends AppCompatActivity {
     }
 
     private void changeType(TypeEvent te) {
-        currentEvent.setEventType(te);;
+        currentEvent.setCategory(te);;
         initFirstFiltre();
         bottomSheetBehaviorType.setState(BottomSheetBehavior.STATE_COLLAPSED);
     }
@@ -265,8 +265,8 @@ public class MainCreationEventActivity extends AppCompatActivity {
     private void initFirstFiltre() {
         textViewVisibility = findViewById(R.id.textViewVisibility);
         textViewType= findViewById(R.id.textViewType);
-        textViewType.setCompoundDrawablesWithIntrinsicBounds(getDrawableType(currentEvent.getEventType()), 0, 0, 0);
-        textViewType.setText(getTextType(currentEvent.getEventType()));
+        textViewType.setCompoundDrawablesWithIntrinsicBounds(getDrawableType(currentEvent.getCategory()), 0, 0, 0);
+        textViewType.setText(getTextType(currentEvent.getCategory()));
         textViewType.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -362,7 +362,7 @@ public class MainCreationEventActivity extends AppCompatActivity {
         params.addParameter("ownerFirstName", USER.getFirst_name());
         params.addParameter("ownerLastName", USER.getLast_name());
         params.addParameter("nbMembers", currentEvent.getNbMembers());
-        params.addParameter("type", currentEvent.getEventType());
+        params.addParameter("category", currentEvent.getCategory());
         params.addParameter("price", currentEvent.getPrice());
 
         try {

@@ -91,6 +91,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     private double unit = 74.6554;
 
     private List<Evenement> nearby_events;
+    private List<Evenement> eventsPopular;
     private int iterator = 0;
     private CardView  loading;
 
@@ -264,7 +265,9 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                 currentVisibilityMap = VisibilityMap.CREATE;
             }
         });
-        nearby_events = new ArrayList<>();
+
+        initFiltres();
+
 
         Bundle mapViewBundle = null;
         if (savedInstanceState != null) {
@@ -301,37 +304,18 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         });*/
 
         /* FILTRES TYPE EVENT */
-        recyclerTypeEvent = rootView.findViewById(R.id.recyclerTypeEvent);
 
         return rootView;
     }
 
     private void configureRecyclerView() {
-        this.adapteSuggestion = new MapEvenementAdapter(this.nearby_events, false);
-        this.recyclerViewSuggestion.setAdapter(this.adapteSuggestion);
-        final LinearLayoutManager llm = new LinearLayoutManager(getActivity(), RecyclerView.HORIZONTAL, false);
-        this.recyclerViewSuggestion.setLayoutManager(llm);
-        adapteSuggestion.setOnItemClickListener(new MapEvenementAdapter.OnItemClickListener() {
-            @Override
-            public void onDisplayClick(int position) {
-                InfosEvenementsActivity.EVENT_LOAD = nearby_events.get(position);
-                //InfosEvenementsActivity.type = "nouveau";
-                navController.navigate(R.id.action_navigation_evenements_to_navigation_infos_events);
-            }
-        });
 
-        this.adapterPopulaire = new MapEvenementAdapter(this.nearby_events, false);
-        this.recyclerViewPopular.setAdapter(this.adapterPopulaire);
-        final LinearLayoutManager llm1 = new LinearLayoutManager(getActivity(), RecyclerView.HORIZONTAL, false);
-        this.recyclerViewPopular.setLayoutManager(llm1);
-        adapterPopulaire.setOnItemClickListener(new MapEvenementAdapter.OnItemClickListener() {
-            @Override
-            public void onDisplayClick(int position) {
-                InfosEvenementsActivity.EVENT_LOAD = nearby_events.get(position);
-                //InfosEvenementsActivity.type = "nouveau";
-                navController.navigate(R.id.action_navigation_evenements_to_navigation_infos_events);
-            }
-        });
+        configureSuggestion();
+        configurePopular();
+        initFiltres();
+
+
+
         /* INTERESSANT
         this.recyclerViewSuggestion.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
@@ -354,18 +338,37 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
             }
         });*/
 
-        initFiltres();
-        this.typeAdapter = new TypeEventAdapter(this.filtreTypeList);
-        typeAdapter.setOnItemClickListener(new TypeEventAdapter.OnItemClickListener() {
+
+    }
+
+    private void configureSuggestion() {
+        this.adapteSuggestion = new MapEvenementAdapter(this.nearby_events, false);
+        this.recyclerViewSuggestion.setAdapter(this.adapteSuggestion);
+        final LinearLayoutManager llm = new LinearLayoutManager(getActivity(), RecyclerView.HORIZONTAL, false);
+        this.recyclerViewSuggestion.setLayoutManager(llm);
+        adapteSuggestion.setOnItemClickListener(new MapEvenementAdapter.OnItemClickListener() {
             @Override
-            public void onAddClick(int position) {
-                SearchEventActivity.currentType = filtreTypeList.get(position).getmType();
-                startActivity(new Intent(getContext(),SearchEventActivity.class));
+            public void onDisplayClick(int position) {
+                InfosEvenementsActivity.EVENT_LOAD = nearby_events.get(position);
+                //InfosEvenementsActivity.type = "nouveau";
+                navController.navigate(R.id.action_navigation_evenements_to_navigation_infos_events);
             }
         });
-        this.recyclerTypeEvent.setAdapter(this.typeAdapter);
-        final LinearLayoutManager llm2 = new LinearLayoutManager(getActivity(), RecyclerView.HORIZONTAL, false);
-        this.recyclerTypeEvent.setLayoutManager(llm2);
+    }
+
+    private void configurePopular(){
+        this.adapterPopulaire = new MapEvenementAdapter(this.eventsPopular, false);
+        this.recyclerViewPopular.setAdapter(this.adapterPopulaire);
+        final LinearLayoutManager llm1 = new LinearLayoutManager(getActivity(), RecyclerView.HORIZONTAL, false);
+        this.recyclerViewPopular.setLayoutManager(llm1);
+        adapterPopulaire.setOnItemClickListener(new MapEvenementAdapter.OnItemClickListener() {
+            @Override
+            public void onDisplayClick(int position) {
+                InfosEvenementsActivity.EVENT_LOAD = eventsPopular.get(position);
+                //InfosEvenementsActivity.type = "nouveau";
+                navController.navigate(R.id.action_navigation_evenements_to_navigation_infos_events);
+            }
+        });
     }
 
     private void initFiltres() {
@@ -384,6 +387,18 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         filtreTypeList.add(new TypeEventObject(getResources().getDrawable(R.drawable.event_party),getResources().getString(R.string.event_party),TypeEvent.PARTY));
         filtreTypeList.add(new TypeEventObject(getResources().getDrawable(R.drawable.event_science),getResources().getString(R.string.event_science),TypeEvent.SCIENCE));
 
+        recyclerTypeEvent = rootView.findViewById(R.id.recyclerTypeEvent);
+        this.typeAdapter = new TypeEventAdapter(this.filtreTypeList);
+        typeAdapter.setOnItemClickListener(new TypeEventAdapter.OnItemClickListener() {
+            @Override
+            public void onAddClick(int position) {
+                SearchEventActivity.currentType = filtreTypeList.get(position).getmType();
+                startActivity(new Intent(getContext(),SearchEventActivity.class));
+            }
+        });
+        this.recyclerTypeEvent.setAdapter(this.typeAdapter);
+        final LinearLayoutManager llm2 = new LinearLayoutManager(getActivity(), RecyclerView.HORIZONTAL, false);
+        this.recyclerTypeEvent.setLayoutManager(llm2);
     }
 
     private void hiddeText(TextView tv) {
@@ -434,8 +449,31 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                     for(int i = 0; i < jsonArray.length(); i++) {
                         nearby_events.add((Evenement) JSONController.convertJSONToObject(jsonArray.getJSONObject(i), Evenement.class));
                     }
-                    configureRecyclerView();
+                    configureSuggestion();
                     updateMap(VisibilityMap.ALL);
+                } catch (JSONException e) {
+                    Log.w("Response", "Erreur:"+e.getMessage());
+                    Toast.makeText(getContext(), getResources().getString(R.string.error_event), Toast.LENGTH_SHORT).show();
+                }
+
+            }
+
+            @Override
+            public void onJSONReceivedError(VolleyError volleyError) {
+                Log.w("Response", "Erreur:"+volleyError.toString());
+                Toast.makeText(getContext(), getResources().getString(R.string.error_event), Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        JSONController.getJsonArrayFromUrl(Constants.URL_EVENT_POPULAR, getContext(), params, new JSONArrayListener() {
+            @Override
+            public void onJSONReceived(JSONArray jsonArray) {
+                try {
+                    eventsPopular = new ArrayList<>();
+                    for(int i = 0; i < jsonArray.length(); i++) {
+                        eventsPopular.add((Evenement) JSONController.convertJSONToObject(jsonArray.getJSONObject(i), Evenement.class));
+                    }
+                    configurePopular();
                 } catch (JSONException e) {
                     Log.w("Response", "Erreur:"+e.getMessage());
                     Toast.makeText(getContext(), getResources().getString(R.string.error_event), Toast.LENGTH_SHORT).show();

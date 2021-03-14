@@ -26,7 +26,7 @@ public class Evenement implements Serializable {
     private String ownerFirstName;
     private String ownerLastName;
     private int price;
-    private TypeEvent eventType;
+    private TypeEvent category;
 
     public Evenement() {
         this.uid = null;
@@ -43,13 +43,13 @@ public class Evenement implements Serializable {
         this.nbMembers = 0;
         this.statusEvent = null;
         this.price = 0;
-        this.eventType = null;
+        this.category = null;
     }
 
 
     public Evenement(String uid, StatusEvent statusEvent,String owner, String name, String description,
                      String address, String city, Visibility visibility, String startDate, String endDate,
-                     double latitude, double longitude, int nbMembers, TypeEvent type,int price){
+                     double latitude, double longitude, int nbMembers, TypeEvent category,int price){
         this.uid = uid;
         this.name = name;
         this.description = description;
@@ -63,7 +63,7 @@ public class Evenement implements Serializable {
         this.longitude = longitude;
         this.nbMembers = nbMembers;
         this.statusEvent = statusEvent;
-        this.eventType = type;
+        this.category = category;
         this.price = price;
     }
 
@@ -187,12 +187,12 @@ public class Evenement implements Serializable {
         this.price = price;
     }
 
-    public TypeEvent getEventType() {
-        return eventType;
+    public TypeEvent getCategory() {
+        return category;
     }
 
-    public void setEventType(TypeEvent eventType) {
-        this.eventType = eventType;
+    public void setCategory(TypeEvent eventType) {
+        this.category = eventType;
     }
 
     @Override

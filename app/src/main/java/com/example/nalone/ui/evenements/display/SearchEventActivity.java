@@ -107,11 +107,12 @@ public class SearchEventActivity extends AppCompatActivity {
         JSONObjectCrypt params = new JSONObjectCrypt();
 
         params.addParameter("uid", USER.getUid());
-        params.addParameter("latitude", USER.getLatitude());
-        params.addParameter("longitude", USER.getLongitude());
-        params.addParameter("range", range);
+        params.addParameter("category", currentType);
+        params.addParameter("sort", currentSort);
+        if(currentDate != FiltreDate.NONE)
+            params.addParameter("date", currentDate);
 
-        JSONController.getJsonArrayFromUrl(Constants.URL_NEARBY_EVENTS, getBaseContext(), params, new JSONArrayListener() {
+        JSONController.getJsonArrayFromUrl(Constants.URL_EVENT_FILTRE, getBaseContext(), params, new JSONArrayListener() {
             @Override
             public void onJSONReceived(JSONArray jsonArray) {
                 try {
@@ -150,6 +151,7 @@ public class SearchEventActivity extends AppCompatActivity {
     private void initTextViewDate() {
         textViewDateToday = findViewById(R.id.textViewDateToday);
         textViewDateToday.setOnClickListener(new View.OnClickListener() {
+            @RequiresApi(api = Build.VERSION_CODES.O)
             @Override
             public void onClick(View v) {
                 changeActualDate(FiltreDate.TODAY);
@@ -157,6 +159,7 @@ public class SearchEventActivity extends AppCompatActivity {
         });
         textViewDateTomorrow = findViewById(R.id.textViewDateTomorrow);
         textViewDateTomorrow.setOnClickListener(new View.OnClickListener() {
+            @RequiresApi(api = Build.VERSION_CODES.O)
             @Override
             public void onClick(View v) {
                 changeActualDate(FiltreDate.TOMORROW);
@@ -164,6 +167,7 @@ public class SearchEventActivity extends AppCompatActivity {
         });
         textViewDateWeek = findViewById(R.id.textViewDateWeek);
         textViewDateWeek.setOnClickListener(new View.OnClickListener() {
+            @RequiresApi(api = Build.VERSION_CODES.O)
             @Override
             public void onClick(View v) {
                 changeActualDate(FiltreDate.WEEK);
@@ -171,6 +175,7 @@ public class SearchEventActivity extends AppCompatActivity {
         });
         textViewDateMonth = findViewById(R.id.textViewDateMonth);
         textViewDateMonth.setOnClickListener(new View.OnClickListener() {
+            @RequiresApi(api = Build.VERSION_CODES.O)
             @Override
             public void onClick(View v) {
                 changeActualDate(FiltreDate.MONTH);
@@ -178,6 +183,7 @@ public class SearchEventActivity extends AppCompatActivity {
         });
         textViewDateOther = findViewById(R.id.textViewDateOther);
         textViewDateOther.setOnClickListener(new View.OnClickListener() {
+            @RequiresApi(api = Build.VERSION_CODES.O)
             @Override
             public void onClick(View v) {
                 changeActualDate(FiltreDate.OTHER);
@@ -192,6 +198,7 @@ public class SearchEventActivity extends AppCompatActivity {
         textViewSort = findViewById(R.id.textViewSort);
         textViewSortDate = findViewById(R.id.textViewSortDate);
         textViewSortDate.setOnClickListener(new View.OnClickListener() {
+            @RequiresApi(api = Build.VERSION_CODES.O)
             @Override
             public void onClick(View v) {
                 changeActualSort(FiltreSort.DATE);
@@ -199,6 +206,7 @@ public class SearchEventActivity extends AppCompatActivity {
         });
         textViewSortLocation = findViewById(R.id.textViewSortLocation);
         textViewSortLocation.setOnClickListener(new View.OnClickListener() {
+            @RequiresApi(api = Build.VERSION_CODES.O)
             @Override
             public void onClick(View v) {
                 changeActualSort(FiltreSort.LOCATION);
@@ -206,6 +214,7 @@ public class SearchEventActivity extends AppCompatActivity {
         });
         textViewSortPertinence = findViewById(R.id.textViewSortPertinence);
         textViewSortPertinence.setOnClickListener(new View.OnClickListener() {
+            @RequiresApi(api = Build.VERSION_CODES.O)
             @Override
             public void onClick(View v) {
                 changeActualSort(FiltreSort.PERTINENCE);
@@ -213,6 +222,7 @@ public class SearchEventActivity extends AppCompatActivity {
         });
         textViewSortPriceASC = findViewById(R.id.textViewSortPriceASC);
         textViewSortPriceASC.setOnClickListener(new View.OnClickListener() {
+            @RequiresApi(api = Build.VERSION_CODES.O)
             @Override
             public void onClick(View v) {
                 changeActualSort(FiltreSort.PRICEASC);
@@ -221,6 +231,7 @@ public class SearchEventActivity extends AppCompatActivity {
 
         textViewSortPriceDESC = findViewById(R.id.textViewSortPriceDESC);
         textViewSortPriceDESC.setOnClickListener(new View.OnClickListener() {
+            @RequiresApi(api = Build.VERSION_CODES.O)
             @Override
             public void onClick(View v) {
                 changeActualSort(FiltreSort.PRICEDESC);
@@ -437,6 +448,7 @@ public class SearchEventActivity extends AppCompatActivity {
 
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     private void changeActualDate(FiltreDate filtreDate){
         currentDate = filtreDate;
         textViewDateToday.setTextColor(Color.DKGRAY);
@@ -464,9 +476,11 @@ public class SearchEventActivity extends AppCompatActivity {
             case TOMORROW:selectedDate(textViewDateTomorrow,getResources().getString(R.string.filter_date_tomorrow));
                 break;
         }
+        callJson();
 
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     private void changeActualSort(FiltreSort filtreSort){
         currentSort = filtreSort;
         textViewSortPertinence.setTextColor(Color.DKGRAY);
@@ -493,7 +507,7 @@ public class SearchEventActivity extends AppCompatActivity {
             case LOCATION:selectedSort(textViewSortLocation,getResources().getString(R.string.filter_sort_location));
             break;
         }
-
+        callJson();
     }
 
     private void selectedDate(TextView textView, String text){

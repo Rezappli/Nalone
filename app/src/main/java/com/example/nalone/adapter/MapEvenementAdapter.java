@@ -1,5 +1,6 @@
 package com.example.nalone.adapter;
 
+import android.graphics.Color;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -76,8 +77,9 @@ public class MapEvenementAdapter extends RecyclerView.Adapter<MapEvenementAdapte
         public TextView mTime;
         public TextView mVille;
         //public TextView mDescription;
-        public CardView textViewAfficher;
-        public  TextView textViewNbMembers;
+        public CardView textViewAfficher,  cardViewPrice;
+        public  TextView textViewNbMembers,textViewPrice;
+        public ImageView imageViewCategory;
 
         public EventViewHolder(@NonNull View itemView, final OnItemClickListener listener) {
             super(itemView);
@@ -89,6 +91,10 @@ public class MapEvenementAdapter extends RecyclerView.Adapter<MapEvenementAdapte
             mVille = itemView.findViewById(R.id.villeEventList);
             textViewAfficher = itemView.findViewById(R.id.cardViewEvent);
             textViewNbMembers = itemView.findViewById(R.id.textViewNbMembers);
+            imageViewCategory = itemView.findViewById(R.id.imageTypeEvent);
+            textViewPrice = itemView.findViewById(R.id.textViewPrice);
+            cardViewPrice = itemView.findViewById(R.id.cardViewPrice);
+
 
             this.textViewAfficher.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -110,8 +116,41 @@ public class MapEvenementAdapter extends RecyclerView.Adapter<MapEvenementAdapte
             this.mDate.setText(Constants.getFullDate(d));
             this.mTime.setText(cutString(e.getStartDate(), 5, 11));
             this.textViewNbMembers.setText(e.getNbMembers()+"");
+            if(e.getPrice() != 0){
+                this.textViewPrice.setText(e.getPrice()+" €");
+                this.cardViewPrice.setBackgroundColor(Color.parseColor("#335CDD"));
+            }
+
+            switch (e.getCategory()){
+                case ART:this.imageViewCategory.setImageResource(R.drawable.event_art);
+                    break;
+                case CAR:this.imageViewCategory.setImageResource(R.drawable.event_car);
+                    break;
+                case GAME:this.imageViewCategory.setImageResource(R.drawable.event_game);
+                    break;
+                case SHOP:this.imageViewCategory.setImageResource(R.drawable.event_shop);
+                    break;
+                case SHOW:this.imageViewCategory.setImageResource(R.drawable.event_show);
+                    break;
+                case MOVIE:this.imageViewCategory.setImageResource(R.drawable.event_movie);
+                    break;
+                case MUSIC:this.imageViewCategory.setImageResource(R.drawable.event_music);
+                    break;
+                case PARTY:this.imageViewCategory.setImageResource(R.drawable.event_party);
+                    break;
+                case SPORT:this.imageViewCategory.setImageResource(R.drawable.event_sport);
+                    break;
+                case CONTEST:this.imageViewCategory.setImageResource(R.drawable.event_contest);
+                    break;
+                case SCIENCE:this.imageViewCategory.setImageResource(R.drawable.event_science);
+                    break;
+                case CONFERENCE:this.imageViewCategory.setImageResource(R.drawable.event_conference);
+                    break;
+                case GATHER:this.imageViewCategory.setImageResource(R.drawable.event_gather);
+            }
         }
     }
+
 
     private String cutString(String s, int length, int start){
         if(length > s.length()){
