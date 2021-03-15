@@ -2,6 +2,7 @@ package com.example.nalone.util;
 
 import android.app.Application;
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Build;
 import android.util.Base64;
@@ -42,6 +43,16 @@ import com.google.firebase.storage.StorageReference;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.ByteArrayOutputStream;
+import java.io.DataOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.ProtocolException;
+import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -266,6 +277,25 @@ public class Constants {
     public static void uploadImageOnServer(ImageType type, String name, String data,
                                            final Context context){
         JSONObjectCrypt params = new JSONObjectCrypt();
+        try {
+            params.put("image", data);
+            params.put("name", name);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        JSONController.getJsonObjectFromUrl("http://api.nolonely.fr:53000/test_image.php", context, params, new JSONObjectListener() {
+            @Override
+            public void onJSONReceived(JSONObject jsonObject) {
+                Log.w("Response", "Value:"+jsonObject.toString());
+            }
+
+            @Override
+            public void onJSONReceivedError(VolleyError volleyError) {
+                Log.w("Response", "Erreur:"+volleyError);
+            }
+        });
+        /*JSONObjectCrypt params = new JSONObjectCrypt();
         params.addParameter("uid", USER.getUid());
         params.addParameter("protocol", ImageProtocol.SAVE);
         params.addParameter("type", type);
@@ -292,7 +322,11 @@ public class Constants {
                 Log.w("Response", "Erreur: "+volleyError.toString());
                 Toast.makeText(context, context.getResources().getString(R.string.image_save_error), Toast.LENGTH_SHORT).show();
             }
-        });
+        });*/
+    }
+
+    public static void uploadFile(final String selectedFilePath, final Context context) {
+
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)

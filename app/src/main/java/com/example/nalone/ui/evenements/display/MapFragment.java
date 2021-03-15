@@ -3,6 +3,7 @@
 package com.example.nalone.ui.evenements.display;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 
@@ -53,6 +54,7 @@ import com.example.nalone.enumeration.Visibility;
 
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -524,6 +526,12 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                 break;
 
         }
+
+        mMap.addCircle(new CircleOptions()
+                .center(new LatLng(USER.getLatitude(), USER.getLongitude()))
+                .radius(range * 1000)
+                .strokeWidth(3f)
+                .strokeColor(Color.BLUE));
     }
 
     private void addMarkerOnMap(Evenement e) {

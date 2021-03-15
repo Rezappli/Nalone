@@ -5,6 +5,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Build;
@@ -13,6 +14,8 @@ import android.os.Bundle;
 import androidx.annotation.RequiresApi;
 import androidx.fragment.app.Fragment;
 
+import android.provider.MediaStore;
+import android.util.Base64;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -214,9 +217,10 @@ public class PhotoEventFragment extends Fragment {
                 Glide.with(this).load(resultUri).fitCenter().centerCrop().into(imagePhoto);
                 MainCreationEventActivity.image = resultUri;
                 try {
+                    Constants.uploadFile(resultUri.getPath(), getContext());
                     String extension = resultUri.getPath().substring(resultUri.getPath().lastIndexOf("."));
-                    String imageData = new String(getBytes(getContext(), MainCreationEventActivity.image), StandardCharsets.UTF_8);
-                    Constants.uploadImageOnServer(ImageType.EVENT, MainCreationEventActivity.currentEvent.getUid()+extension, imageData, getContext()); //upload image on web server
+                    String imageData = BitMapToString(MediaStore.Images.Media.getBitmap(getContext().getContentResolver(), resultUri));
+                    //Constants.uploadImageOnServer(ImageType.EVENT, MainCreationEventActivity.currentEvent.getUid(), imageData, getContext()); //upload image on web server
                 } catch (IOException e) {
                     Log.w("Response", "Erreur: "+e.getMessage());
                 }
@@ -224,38 +228,13 @@ public class PhotoEventFragment extends Fragment {
                 Log.w("Response", result.getError());
             }
         }
-
-
     }
 
-    public static byte[] getBytes(Context context, Uri uri) throws IOException {
-        InputStream iStream = context.getContentResolver().openInputStream(uri);
-        try {
-            return getBytes(iStream);
-        } finally {
-            // close the stream
-            try {
-                iStream.close();
-            } catch (IOException ignored) { /* do nothing */ }
-        }
-    }
-
-    public static byte[] getBytes(InputStream inputStream) throws IOException {
-
-        byte[] bytesResult = null;
-        ByteArrayOutputStream byteBuffer = new ByteArrayOutputStream();
-        int bufferSize = 1024;
-        byte[] buffer = new byte[bufferSize];
-        try {
-            int len;
-            while ((len = inputStream.read(buffer)) != -1) {
-                byteBuffer.write(buffer, 0, len);
-            }
-            bytesResult = byteBuffer.toByteArray();
-        } finally {
-            // close the stream
-            try{ byteBuffer.close(); } catch (IOException ignored){ /* do nothing */ }
-        }
-        return bytesResult;
+    private String BitMapToString(Bitmap bitmap){
+        ByteArrayOutputStream baos=new  ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.PNG,100, baos);
+        byte [] b=baos.toByteArray();
+        String temp= Base64.encodeToString(b, Base64.DEFAULT);
+        return temp;
     }
 }
