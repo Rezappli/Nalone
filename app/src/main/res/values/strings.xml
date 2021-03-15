@@ -259,6 +259,9 @@
         Conditions Générales d\'Utillisation de NoLonely</string>
     <string name="comission">Comission</string>
 
+    <!--Strings for SearchActivity -->
+    <string name="no_result"> Aucun résultat</string>
+
     <!--Strings for InfosEventsActivity -->
     <string name="event_start_in"> Commencé dans : </string>
     <string name="event_start_from"> Commencé depuis : </string>
