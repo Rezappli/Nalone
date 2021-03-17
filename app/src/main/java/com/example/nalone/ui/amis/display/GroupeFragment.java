@@ -47,19 +47,23 @@ public class GroupeFragment extends Fragment {
     private CardView mesGroupes;
     private List<String> myGroups;
     private LinearLayout linearSansMesGroupes;
+    private View rootView;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View root =  inflater.inflate(R.layout.fragment_groupe, container, false);
+        rootView =  inflater.inflate(R.layout.fragment_groupe, container, false);
+        return rootView;
+    }
 
+    private void createFragment(){
         myGroups = new ArrayList<>();
-        mRecyclerView = root.findViewById(R.id.recyclerViewGroupe);
-        linearSansMesGroupes = root.findViewById(R.id.linearSansMesGroupes);
-        addGroup = root.findViewById(R.id.create_group_button);
+        mRecyclerView = rootView.findViewById(R.id.recyclerViewGroupe);
+        linearSansMesGroupes = rootView.findViewById(R.id.linearSansMesGroupes);
+        addGroup = rootView.findViewById(R.id.create_group_button);
         navController = Navigation.findNavController(getActivity(), R.id.nav_host_fragment);
-        mesGroupes = root.findViewById(R.id.mesGroupes);
+        mesGroupes = rootView.findViewById(R.id.mesGroupes);
 
         mesGroupes.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -74,27 +78,8 @@ public class GroupeFragment extends Fragment {
                 navController.navigate(R.id.action_navigation_amis_to_navigation_creat_group);
             }
         });
-
-        return root;
     }
 
-        private class UserViewHolder extends RecyclerView.ViewHolder {
-
-            private TextView nomGroup;
-            private LinearLayout layoutGroup;
-            private ImageView imageGroup;
-            private ImageView button;
-
-            public UserViewHolder(@NonNull View itemView) {
-                super(itemView);
-
-                nomGroup = itemView.findViewById(R.id.nomGroupe);
-                layoutGroup = itemView.findViewById(R.id.layoutGroupe);
-                imageGroup = itemView.findViewById(R.id.imageGroupe);
-
-            }
-
-        }
 
     public void showPopUpGroup(final Group g) {
         PopUpGroupFragment.GROUP_LOAD = g;
@@ -104,12 +89,8 @@ public class GroupeFragment extends Fragment {
     }
 
     @Override
-    public void onStart(){
-        super.onStart();
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
+    public void onResume(){
+        super.onResume();
+        createFragment();
     }
 }

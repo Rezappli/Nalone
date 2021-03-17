@@ -119,12 +119,18 @@ public class Constants {
     public static String URL_EVENT_FILTRE = "http://api.nolonely.fr:53000/get_event_filtre.php";
     public static String URL_ADD_EVENT = "http://api.nolonely.fr:53000/add_event.php";
     public static String URL_IMAGE = "http://api.nolonely.fr:53000/test_image.php";
-    public static String URL_EVENT_DELETE = "http://api.nolonely.fr:53000/delete_event.php";
-    public static String URL_ADD_USER_TO_EVENT = "http://api.nolonely.fr:53000/add_user_event.php";
+
+    public static String URL_GET_GROUPS = "http://api.nolonely.fr:53000/get_groups.php";
+
     public static String URL_DELETE_USER_TO_EVENT = "http://api.nolonely.fr:53000/delete_user_event.php";
     public static String URL_DELETE_FRIEND = "http://api.nolonely.fr:53000/delete_friend.php";
+    public static String URL_EVENT_DELETE = "http://api.nolonely.fr:53000/delete_event.php";
+
+
+    public static String URL_ADD_USER_TO_EVENT = "http://api.nolonely.fr:53000/add_user_event.php";
     public static String URL_ADD_FRIEND = "http://api.nolonely.fr:53000/add_friend.php";
     public static String URL_ADD_GROUP = "http://api.nolonely.fr:53000/add_group.php";
+
     public static String URL_UPDATE_ME= "http://api.nolonely.fr:53000/update_me.php";
     public static String URL_TEST = "http://api.nolonely.fr:53000/test.php";
 
