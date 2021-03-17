@@ -12,7 +12,7 @@ import com.example.nalone.objects.Evenement;
 import com.example.nalone.ui.NotificationActivity;
 import com.example.nalone.ui.evenements.creation.MainCreationEventActivity;
 import com.example.nalone.ui.evenements.display.PlanningActivity;
-import com.example.nalone.ui.profil.MainProfilActivity;
+import com.example.nalone.ui.profil.ProfilActivity;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -71,7 +71,7 @@ public class HomeActivity extends AppCompatActivity{
         item_profil.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(getBaseContext(), MainProfilActivity.class));
+                startActivity(new Intent(getBaseContext(), ProfilActivity.class));
             }
         });
 

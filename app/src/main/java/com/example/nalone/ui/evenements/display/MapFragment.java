@@ -349,7 +349,8 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
             public void onDisplayClick(int position) {
                 InfosEvenementsActivity.EVENT_LOAD = nearby_events.get(position);
                 //InfosEvenementsActivity.type = "nouveau";
-                navController.navigate(R.id.action_navigation_evenements_to_navigation_infos_events);
+                               startActivity(new Intent(getContext(),InfosEvenementsActivity.class));
+
             }
         });
     }
@@ -364,7 +365,8 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
             public void onDisplayClick(int position) {
                 InfosEvenementsActivity.EVENT_LOAD = eventsPopular.get(position);
                 //InfosEvenementsActivity.type = "nouveau";
-                navController.navigate(R.id.action_navigation_evenements_to_navigation_infos_events);
+                               startActivity(new Intent(getContext(),InfosEvenementsActivity.class));
+
             }
         });
     }
@@ -564,7 +566,8 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
             @Override
             public void onInfoWindowClick(Marker marker) {
                 InfosEvenementsActivity.EVENT_LOAD = (Evenement) marker.getTag();
-                navController.navigate(R.id.action_navigation_evenements_to_navigation_infos_events);
+                startActivity(new Intent(getContext(),InfosEvenementsActivity.class));
+
             }
         });
     }

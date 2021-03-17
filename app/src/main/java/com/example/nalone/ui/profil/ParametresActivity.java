@@ -2,27 +2,22 @@ package com.example.nalone.ui.profil;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
-import androidx.appcompat.content.res.AppCompatResources;
-import androidx.cardview.widget.CardView;
-import androidx.core.graphics.drawable.DrawableCompat;
-import androidx.fragment.app.Fragment;
+import androidx.appcompat.app.AppCompatActivity;
+
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 
-import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CompoundButton;
-import android.widget.ProgressBar;
+import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.Switch;
 import android.widget.TextView;
@@ -35,15 +30,12 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 
-import static android.content.Context.MODE_PRIVATE;
-import static com.example.nalone.ui.profil.MainProfilActivity.buttonBack;
 import static com.example.nalone.util.Constants.USER;
-import static com.example.nalone.util.Constants.USER_ID;
 import static com.example.nalone.util.Constants.mAuth;
 import static com.example.nalone.util.Constants.maPosition;
 import static com.example.nalone.util.Constants.range;
 
-public class ParametresFragment extends Fragment {
+public class ParametresActivity extends AppCompatActivity {
 
     private Button sign_out;
     private GoogleSignInClient mGoogleSignInClient;
@@ -52,56 +44,52 @@ public class ParametresFragment extends Fragment {
     public static final String SHARED_PREFS = "sharedPrefs", sharedRange = "sharedRange",sharedNotif = "sharedNotif",sharedPosition = "sharedPosition";
     private int rangeActual;
     private boolean  notification = true, position;
-    private NavController navController;
-
+    private ImageView buttonBack;
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        View root = inflater.inflate(R.layout.fragment_parametres, container, false);
-
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.fragment_parametres);
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestEmail()
                 .build();
 
-        navController = Navigation.findNavController(getActivity(), R.id.nav_host_fragment_profil);
-
+        buttonBack = findViewById(R.id.buttonBack);
         buttonBack.setVisibility(View.VISIBLE);
         buttonBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                navController.navigate(R.id.action_parametresFragment_to_profilFragment);
+                onBackPressed();
             }
         });
 
-        SharedPreferences settings = this.getActivity().getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
+        SharedPreferences settings = this.getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
         notification = settings.getBoolean(sharedNotif, false);
         position = settings.getBoolean(sharedPosition, false);
         range = settings.getInt(sharedRange, 0);
 
 
-        textViewRayon = root.findViewById(R.id.textViewRayon);
-        textViewLocationActuel = root.findViewById(R.id.textViewLocationActuel);
-        textViewMaPosition = root.findViewById(R.id.textViewMaPosition);
+        textViewRayon = findViewById(R.id.textViewRayon);
+        textViewLocationActuel = findViewById(R.id.textViewLocationActuel);
+        textViewMaPosition = findViewById(R.id.textViewMaPosition);
 
         textViewLocationActuel.setText(USER.getCity());
 
         if(position) {
-            Drawable img = getContext().getResources().getDrawable(R.drawable.ic_baseline_my_location_focused);
+            Drawable img = getBaseContext().getResources().getDrawable(R.drawable.ic_baseline_my_location_focused);
             img.setBounds(0, 0, 100, 100);
             textViewMaPosition.setCompoundDrawables(img, null, null, null);
 
-            Drawable img2 = getContext().getResources().getDrawable(R.drawable.ic_baseline_location_edit);
+            Drawable img2 = getBaseContext().getResources().getDrawable(R.drawable.ic_baseline_location_edit);
             img2.setBounds(0, 0, 100, 100);
             textViewLocationActuel.setCompoundDrawables(img2, null, null, null);
         }else{
-            Drawable img = getContext().getResources().getDrawable(R.drawable.ic_baseline_my_location_24);
+            Drawable img = getBaseContext().getResources().getDrawable(R.drawable.ic_baseline_my_location_24);
             img.setBounds(0, 0, 100, 100);
             textViewMaPosition.setCompoundDrawables(img, null, null, null);
 
-            Drawable img2 = getContext().getResources().getDrawable(R.drawable.ic_baseline_location_edit_focused);
+            Drawable img2 = getBaseContext().getResources().getDrawable(R.drawable.ic_baseline_location_edit_focused);
             img2.setBounds(0, 0, 100, 100);
             textViewLocationActuel.setCompoundDrawables(img2, null, null, null);
 
@@ -111,11 +99,11 @@ public class ParametresFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 maPosition = true;
-                Drawable img = getContext().getResources().getDrawable(R.drawable.ic_baseline_my_location_focused);
+                Drawable img = getBaseContext().getResources().getDrawable(R.drawable.ic_baseline_my_location_focused);
                 img.setBounds(0, 0, 100, 100);
                 textViewMaPosition.setCompoundDrawables(img, null, null, null);
 
-                Drawable img2 = getContext().getResources().getDrawable(R.drawable.ic_baseline_location_edit);
+                Drawable img2 = getBaseContext().getResources().getDrawable(R.drawable.ic_baseline_location_edit);
                 img2.setBounds(0, 0, 100, 100);
                 textViewLocationActuel.setCompoundDrawables(img2, null, null, null);
             }
@@ -124,11 +112,11 @@ public class ParametresFragment extends Fragment {
         textViewLocationActuel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Drawable img = getContext().getResources().getDrawable(R.drawable.ic_baseline_my_location_24);
+                Drawable img = getBaseContext().getResources().getDrawable(R.drawable.ic_baseline_my_location_24);
                 img.setBounds(0, 0, 100, 100);
                 textViewMaPosition.setCompoundDrawables(img, null, null, null);
 
-                Drawable img2 = getContext().getResources().getDrawable(R.drawable.ic_baseline_location_edit_focused);
+                Drawable img2 = getBaseContext().getResources().getDrawable(R.drawable.ic_baseline_location_edit_focused);
                 img2.setBounds(0, 0, 100, 100);
                 textViewLocationActuel.setCompoundDrawables(img2, null, null, null);
             }
@@ -136,7 +124,7 @@ public class ParametresFragment extends Fragment {
 
         textViewRayon.setText(range+" km");
 
-        final SeekBar seekBar =  root.findViewById(R.id.seekBarRayon);
+        final SeekBar seekBar =  findViewById(R.id.seekBarRayon);
 
         seekBar.setMax(200);
         seekBar.setMin(50);
@@ -173,7 +161,7 @@ public class ParametresFragment extends Fragment {
 
         }
 
-        Switch swNotif = root.findViewById(R.id.switchNotif);
+        Switch swNotif = findViewById(R.id.switchNotif);
 
         swNotif.setChecked(notification);
 
@@ -190,9 +178,9 @@ public class ParametresFragment extends Fragment {
         });
 
 
-        mGoogleSignInClient = GoogleSignIn.getClient(getContext(), gso);
+        mGoogleSignInClient = GoogleSignIn.getClient(getBaseContext(), gso);
 
-        sign_out = root.findViewById(R.id.sign_out_button);
+        sign_out = findViewById(R.id.sign_out_button);
 
         sign_out.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -203,16 +191,15 @@ public class ParametresFragment extends Fragment {
             }
         });
 
-        return root;
     }
 
     private void signOut() {
         mAuth.signOut();
         mGoogleSignInClient.signOut()
-                .addOnCompleteListener(getActivity(), new OnCompleteListener<Void>() {
+                .addOnCompleteListener(this, new OnCompleteListener<Void>() {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
-                        Intent intent = new Intent(getContext(), MainActivity.class);
+                        Intent intent = new Intent(getBaseContext(), MainActivity.class);
                         startActivity(intent);
                     }
                 });
@@ -225,7 +212,7 @@ public class ParametresFragment extends Fragment {
     }
 
     private void setData(){
-        SharedPreferences settings = this.getActivity().getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
+        SharedPreferences settings = this.getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
         SharedPreferences.Editor editor = settings.edit();
         editor.putInt(sharedRange, range);
         editor.putBoolean(sharedNotif, notification);

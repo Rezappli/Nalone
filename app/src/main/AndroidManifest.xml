@@ -31,13 +31,14 @@
         <activity android:name=".ui.evenements.display.SearchEventActivity"></activity>
         <activity android:name=".ui.evenements.display.PlanningActivity" />
         <activity android:name=".ui.evenements.display.EventPlanningActivity" />
+        <activity android:name=".ui.profil.ProfilActivity" />
+        <activity android:name=".ui.profil.EditActivity" />
+        <activity android:name=".ui.profil.ParametresActivity" />
+        <activity android:name=".ui.profil.AideActivity" />
+        <activity android:name=".ui.evenements.InfosEvenementsActivity" />
         <activity
             android:name="com.theartofdev.edmodo.cropper.CropImageActivity"
             android:theme="@style/Base.Theme.AppCompat" />
-        <activity
-            android:name=".ui.profil.MainProfilActivity"
-            android:label="@string/title_activity_main_profil"
-            android:theme="@style/AppTheme.NoActionBar.NoActionBar" />
         <activity android:name=".ui.evenements.creation.MainCreationEventActivity" />
         <activity android:name=".ui.NotificationActivity" />
         <activity android:name=".ResetPasswordActivity" />

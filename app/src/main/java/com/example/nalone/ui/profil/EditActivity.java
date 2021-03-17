@@ -4,18 +4,17 @@ import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
-import androidx.fragment.app.Fragment;
-import androidx.navigation.NavController;
-import androidx.navigation.Navigation;
+import androidx.appcompat.app.AppCompatActivity;
+
 
 import com.android.volley.VolleyError;
 import com.example.nalone.R;
@@ -27,41 +26,40 @@ import com.example.nalone.util.Constants;
 
 import org.json.JSONObject;
 
-import static com.example.nalone.ui.profil.MainProfilActivity.buttonBack;
 import static com.example.nalone.util.Constants.USER;
-import static com.example.nalone.util.Constants.mStoreBase;
 
 
-public class EditFragment extends Fragment {
+public class EditActivity extends AppCompatActivity {
 
 
     TextView profilEditPassword, textProfilEditMail, profilEditMail;
     EditText profilEditNumero,profilEditPrenom,profilEditNom,profilEditVille,profilEditDate;
     Button profilEditValider;
-    private NavController navController;
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        View root = inflater.inflate(R.layout.fragment_edit, container, false);
+    ImageView buttonBack;
 
-        navController = Navigation.findNavController(getActivity(),R.id.nav_host_fragment_profil);
+
+    @Override
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.fragment_edit);
+        buttonBack = findViewById(R.id.buttonBack);
+
         buttonBack.setVisibility(View.VISIBLE);
         buttonBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                navController.navigate(R.id.action_editFragment_to_profilFragment);
+                onBackPressed();
             }
         });
-        profilEditPassword = root.findViewById(R.id.profilEditPassword);
-        profilEditDate = root.findViewById(R.id.profilEditNaissance);
-        profilEditMail = root.findViewById(R.id.profilEditMail);
-        textProfilEditMail = root.findViewById(R.id.textProfilEditMail);
-        profilEditNom = root.findViewById(R.id.profilEditNom);
-        profilEditPrenom = root.findViewById(R.id.profilEditPrenom);
-        profilEditNumero = root.findViewById(R.id.profilEditNumero);
-        profilEditVille = root.findViewById(R.id.profilEditVille);
-        profilEditValider = root.findViewById(R.id.profilEditValider);
+        profilEditPassword = findViewById(R.id.profilEditPassword);
+        profilEditDate = findViewById(R.id.profilEditNaissance);
+        profilEditMail = findViewById(R.id.profilEditMail);
+        textProfilEditMail = findViewById(R.id.textProfilEditMail);
+        profilEditNom = findViewById(R.id.profilEditNom);
+        profilEditPrenom = findViewById(R.id.profilEditPrenom);
+        profilEditNumero = findViewById(R.id.profilEditNumero);
+        profilEditVille = findViewById(R.id.profilEditVille);
+        profilEditValider = findViewById(R.id.profilEditValider);
 
         profilEditNom.setText(USER.getLast_name());
         profilEditPrenom.setText(USER.getFirst_name());
@@ -75,7 +73,7 @@ public class EditFragment extends Fragment {
         profilEditPassword.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(getContext(), ResetPasswordActivity.class));
+                startActivity(new Intent(getBaseContext(), ResetPasswordActivity.class));
             }
         });
 
@@ -116,7 +114,7 @@ public class EditFragment extends Fragment {
 
                 if(!error){
                     if(!USER.getLast_name().equalsIgnoreCase(nom) || !USER.getFirst_name().equalsIgnoreCase(prenom) ||
-                        !USER.getCity().equalsIgnoreCase(ville)  || !USER.getNumber().equalsIgnoreCase(num)
+                            !USER.getCity().equalsIgnoreCase(ville)  || !USER.getNumber().equalsIgnoreCase(num)
                             || !USER.getBirthday_date().equalsIgnoreCase(date)){
 
                         if(!USER.getLast_name().equalsIgnoreCase(nom)){
@@ -141,14 +139,13 @@ public class EditFragment extends Fragment {
 
                         updateDescription();
                     }else{
-                        navController.navigate(R.id.action_editFragment_to_profilFragment);
+                        startActivity(new Intent(getBaseContext(),ProfilActivity.class));
                     }
                 }
             }
         });
 
 
-        return root;
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
@@ -163,16 +160,16 @@ public class EditFragment extends Fragment {
         params.addParameter("latitude", USER.getLatitude());
         params.addParameter("longitude", USER.getLongitude());
 
-        JSONController.getJsonObjectFromUrl(Constants.URL_UPDATE_ME, getContext(), params, new JSONObjectListener() {
+        JSONController.getJsonObjectFromUrl(Constants.URL_UPDATE_ME, getBaseContext(), params, new JSONObjectListener() {
             @Override
             public void onJSONReceived(JSONObject jsonObject) {
-                Toast.makeText(getContext(), getResources().getString(R.string.update_description), Toast.LENGTH_SHORT).show();
-                navController.navigate(R.id.action_editFragment_to_profilFragment);
+                Toast.makeText(getBaseContext(), getResources().getString(R.string.update_description), Toast.LENGTH_SHORT).show();
+                startActivity(new Intent(getBaseContext(),ProfilActivity.class));
             }
 
             @Override
             public void onJSONReceivedError(VolleyError volleyError) {
-                Toast.makeText(getContext(), getResources().getString(R.string.error), Toast.LENGTH_SHORT).show();
+                Toast.makeText(getBaseContext(), getResources().getString(R.string.error), Toast.LENGTH_SHORT).show();
                 Log.w("Response","Erreur:"+volleyError.toString());
             }
         });

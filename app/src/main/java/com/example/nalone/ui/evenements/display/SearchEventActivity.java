@@ -9,6 +9,7 @@ import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
@@ -101,6 +102,7 @@ public class SearchEventActivity extends AppCompatActivity {
             @Override
             public void onDisplayClick(int position) {
                 InfosEvenementsActivity.EVENT_LOAD = evenementList.get(position);
+                startActivity(new Intent(getBaseContext(),InfosEvenementsActivity.class));
                 //InfosEvenementsActivity.type = "nouveau";
             }
 

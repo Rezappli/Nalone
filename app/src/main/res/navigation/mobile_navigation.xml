@@ -300,7 +300,7 @@
 
     <fragment
         android:id="@+id/navigation_profil"
-        android:name="com.example.nalone.ui.profil.ProfilFragment"
+        android:name="com.example.nalone.ui.profil.ProfilActivity"
         android:label="@string/title_profil"
         tools:layout="@layout/fragment_profil" >
         <action
@@ -317,7 +317,7 @@
 
     <fragment
         android:id="@+id/navigation_parametres"
-        android:name="com.example.nalone.ui.profil.ParametresFragment"
+        android:name="com.example.nalone.ui.profil.ParametresActivity"
         android:label="@string/title_profil"
         tools:layout="@layout/fragment_parametres" >
         <action
@@ -327,7 +327,7 @@
 
     <fragment
         android:id="@+id/navigation_edit_profil"
-        android:name="com.example.nalone.ui.profil.EditFragment"
+        android:name="com.example.nalone.ui.profil.EditActivity"
         android:label="@string/title_profil"
         tools:layout="@layout/fragment_edit" >
         <action
@@ -337,7 +337,7 @@
 
     <fragment
         android:id="@+id/navigation_aide"
-        android:name="com.example.nalone.ui.profil.AideFragment"
+        android:name="com.example.nalone.ui.profil.AideActivity"
         android:label="@string/title_profil"
         tools:layout="@layout/fragment_aide" >
         <action

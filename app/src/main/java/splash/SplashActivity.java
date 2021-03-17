@@ -5,7 +5,6 @@ import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
-import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
@@ -17,14 +16,11 @@ import com.example.nalone.MainActivity;
 import com.example.nalone.R;
 import com.example.nalone.json.JSONController;
 import com.example.nalone.json.JSONObjectCrypt;
-import com.example.nalone.listeners.JSONArrayListener;
 import com.example.nalone.listeners.JSONObjectListener;
 import com.example.nalone.objects.User;
-import com.example.nalone.ui.profil.ParametresFragment;
+import com.example.nalone.ui.profil.ParametresActivity;
 import com.example.nalone.util.Constants;
-import com.example.nalone.util.CryptoUtils;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -38,8 +34,8 @@ public class SplashActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
 
-        SharedPreferences settings = this.getSharedPreferences(ParametresFragment.SHARED_PREFS, MODE_PRIVATE);
-        range = settings.getInt(ParametresFragment.sharedRange, 50);
+        SharedPreferences settings = this.getSharedPreferences(ParametresActivity.SHARED_PREFS, MODE_PRIVATE);
+        range = settings.getInt(ParametresActivity.sharedRange, 50);
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)

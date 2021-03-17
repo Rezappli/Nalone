@@ -6,66 +6,43 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
 import androidx.fragment.app.DialogFragment;
-import androidx.fragment.app.Fragment;
-import androidx.navigation.NavController;
-import androidx.navigation.Navigation;
 
 import com.android.volley.VolleyError;
 import com.bumptech.glide.Glide;
 import com.example.nalone.enumeration.ImageType;
 import com.example.nalone.json.JSONController;
 import com.example.nalone.json.JSONObjectCrypt;
-import com.example.nalone.listeners.GetImageListener;
 import com.example.nalone.listeners.JSONObjectListener;
 import com.example.nalone.ui.evenements.creation.MainCreationEventActivity;
-import com.example.nalone.util.Cache;
-import com.example.nalone.dialog.LoadFragment;
 import com.example.nalone.qrcode.QRCodeFragment;
 import com.example.nalone.R;
 import com.example.nalone.util.Constants;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.storage.StorageReference;
-import com.google.firebase.storage.UploadTask;
 import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
 
-import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 
-import static android.app.Activity.RESULT_OK;
-
-import static com.example.nalone.ui.profil.MainProfilActivity.buttonBack;
 import static com.example.nalone.util.Constants.USER;
-import static com.example.nalone.util.Constants.USER_STORAGE_REF;
-import static com.example.nalone.util.Constants.mStore;
-import static com.example.nalone.util.Constants.mStoreBase;
 
-public class ProfilFragment extends Fragment  {
+public class ProfilActivity extends AppCompatActivity {
 
-    private NavController navController;
     private TextView userConnectText;
     private EditText userConnectDesc;
     private TextView userConnectVille, userConnectNbC, userConnectNbP;
@@ -78,28 +55,26 @@ public class ProfilFragment extends Fragment  {
     private DialogFragment load;
 
     private int RESULT_LOAD_IMG = 1;
+    private ImageView buttonBack;
 
 
-    @RequiresApi(api = Build.VERSION_CODES.O)
-    public View onCreateView(@NonNull LayoutInflater inflater,
-                             ViewGroup container, Bundle savedInstanceState) {
-
-
-        View root = inflater.inflate(R.layout.fragment_profil, container, false);
-        initView(root);
+    @Override
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.fragment_profil);
+        initView();
         cardViewQR.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 showQRCode();
             }
         });
-
-        buttonBack.setOnClickListener(new View.OnClickListener() {
+       /* buttonBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
             }
-        });
+        });*/
 
         userConnectText.setText(USER.getFirst_name() + " " + USER.getLast_name());
         userConnectVille.setText(USER.getCity());
@@ -110,6 +85,7 @@ public class ProfilFragment extends Fragment  {
         userConnectDesc.setEnabled(false);
 
         cardViewPhotoEditDesc.setOnClickListener(new View.OnClickListener() {
+            @RequiresApi(api = Build.VERSION_CODES.O)
             @Override
             public void onClick(View v) {
                 if(!editDescription){
@@ -134,21 +110,23 @@ public class ProfilFragment extends Fragment  {
         cardViewProfilParametres.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                navController.navigate(R.id.action_profilFragment_to_parametresFragment);
+                startActivity(new Intent(getBaseContext(), ParametresActivity.class));
             }
         });
 
         cardViewProfilEdit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                navController.navigate(R.id.action_profilFragment_to_editFragment);
+                startActivity(new Intent(getBaseContext(), EditActivity.class));
+
             }
         });
 
         cardViewProfilAide.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                navController.navigate(R.id.action_profilFragment_to_aideFragment);
+                startActivity(new Intent(getBaseContext(), AideActivity.class));
+
             }
         });
 
@@ -190,11 +168,9 @@ public class ProfilFragment extends Fragment  {
             @Override
             public void run() {
                 Uri uri =  Uri.parse("http://api.nolonely.fr:53000/images/EVENT/test.jpeg");
-                Glide.with(getContext()).load(uri).fitCenter().centerCrop().into(imageUser);
+                Glide.with(getBaseContext()).load(uri).fitCenter().centerCrop().into(imageUser);
             }
         });
-
-        return root;
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
@@ -209,15 +185,15 @@ public class ProfilFragment extends Fragment  {
         params.addParameter("latitude", USER.getLatitude());
         params.addParameter("longitude", USER.getLongitude());
 
-        JSONController.getJsonObjectFromUrl(Constants.URL_UPDATE_ME, getContext(), params, new JSONObjectListener() {
+        JSONController.getJsonObjectFromUrl(Constants.URL_UPDATE_ME, getBaseContext(), params, new JSONObjectListener() {
             @Override
             public void onJSONReceived(JSONObject jsonObject) {
-                Toast.makeText(getContext(), getResources().getString(R.string.update_description), Toast.LENGTH_SHORT).show();
+                Toast.makeText(getBaseContext(), getResources().getString(R.string.update_description), Toast.LENGTH_SHORT).show();
             }
 
             @Override
             public void onJSONReceivedError(VolleyError volleyError) {
-                Toast.makeText(getContext(), getResources().getString(R.string.error), Toast.LENGTH_SHORT).show();
+                Toast.makeText(getBaseContext(), getResources().getString(R.string.error), Toast.LENGTH_SHORT).show();
                 Log.w("Response","Erreur:"+volleyError.toString());
             }
         });
@@ -225,7 +201,7 @@ public class ProfilFragment extends Fragment  {
 
     public void showQRCode() {
         DialogFragment qrcode = new QRCodeFragment();
-        qrcode.show(getActivity().getSupportFragmentManager(), "QR_CODE");
+        qrcode.show(this.getSupportFragmentManager(), "QR_CODE");
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
@@ -242,7 +218,7 @@ public class ProfilFragment extends Fragment  {
                     .setAllowFlipping(false)
                     .setCropShape(CropImageView.CropShape.OVAL)
                     .setMinCropWindowSize(imageUser.getWidth(), imageUser.getHeight())
-                    .start(getContext(), this);
+                    .start(this);
         }
 
         if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
@@ -253,8 +229,8 @@ public class ProfilFragment extends Fragment  {
                 MainCreationEventActivity.image = resultUri;
                 try {
                     String extension = resultUri.getPath().substring(resultUri.getPath().lastIndexOf("."));
-                    String imageData = new String(getBytes(getContext(), MainCreationEventActivity.image), StandardCharsets.UTF_8);
-                    Constants.uploadImageOnServer(ImageType.USER, USER.getUid()+extension, imageData, getContext()); //upload image on web server
+                    String imageData = new String(getBytes(getBaseContext(), MainCreationEventActivity.image), StandardCharsets.UTF_8);
+                    Constants.uploadImageOnServer(ImageType.USER, USER.getUid()+extension, imageData, getBaseContext()); //upload image on web server
                 } catch (IOException e) {
                     Log.w("Response", "Erreur: "+e.getMessage());
                 }
@@ -298,23 +274,28 @@ public class ProfilFragment extends Fragment  {
     }
 
 
-    private void initView(View root){
-        navController = Navigation.findNavController(getActivity(), R.id.nav_host_fragment_profil);
-        userConnectDesc = root.findViewById(R.id.userConnectDescription);
-        userConnectText = root.findViewById(R.id.userConnectText);
-        userConnectVille = root.findViewById(R.id.useConnectVille);
-        userConnectNbC = root.findViewById(R.id.userConnectNbCreation);
-        userConnectNbP = root.findViewById(R.id.userConnectNbParticipation);
-        cardViewProfilParametres = root.findViewById(R.id.cardViewProfilParametres);
-        cardViewProfilAide = root.findViewById(R.id.cardViewProfilAide);
-        cardViewProfilEdit = root.findViewById(R.id.cardViewProfilEdit);
-        cardViewPhotoEdit = root.findViewById(R.id.cardViewPhotoEdit);
-        cardViewPhotoEditDesc = root.findViewById(R.id.cardViewPhotoEditDesc);
-        imageViewEditDescription = root.findViewById(R.id.imageViewEditDescription);
-        imageUser = root.findViewById(R.id.imageUser);
-        imageViewEditPhoto = root.findViewById(R.id.imageViewEditPhoto);
-        cardViewPhotoPerson = root.findViewById(R.id.cardViewUser);
-
-        cardViewQR = root.findViewById(R.id.cardViewQR);
+    private void initView(){
+        userConnectDesc = findViewById(R.id.userConnectDescription);
+        userConnectText = findViewById(R.id.userConnectText);
+        userConnectVille = findViewById(R.id.useConnectVille);
+        userConnectNbC = findViewById(R.id.userConnectNbCreation);
+        userConnectNbP = findViewById(R.id.userConnectNbParticipation);
+        cardViewProfilParametres = findViewById(R.id.cardViewProfilParametres);
+        cardViewProfilAide = findViewById(R.id.cardViewProfilAide);
+        cardViewProfilEdit = findViewById(R.id.cardViewProfilEdit);
+        cardViewPhotoEdit = findViewById(R.id.cardViewPhotoEdit);
+        cardViewPhotoEditDesc = findViewById(R.id.cardViewPhotoEditDesc);
+        imageViewEditDescription = findViewById(R.id.imageViewEditDescription);
+        imageUser = findViewById(R.id.imageUser);
+        imageViewEditPhoto = findViewById(R.id.imageViewEditPhoto);
+        cardViewPhotoPerson = findViewById(R.id.cardViewUser);
+        buttonBack = findViewById(R.id.buttonBack);
+        buttonBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onBackPressed();
+            }
+        });
+        cardViewQR = findViewById(R.id.cardViewQR);
     }
 }
