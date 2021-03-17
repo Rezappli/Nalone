@@ -10,18 +10,16 @@ public class Group {
     private String description;
     private String image_url;
     private Visibility visibility;
-    private DocumentReference ownerDoc;
 
     public Group(){}
 
     public Group(String uid,String owner,String name,
-                 String description, Visibility visibility, DocumentReference ownerDoc){
+                 String description, Visibility visibility){
         this.uid = uid;
         this.owner = owner;
         this.name = name;
         this.description = description;
         this.image_url = null;
-        this.ownerDoc = ownerDoc;
         this.visibility = visibility;
     }
 
@@ -71,13 +69,5 @@ public class Group {
 
     public void setVisibility(Visibility visibility) {
         this.visibility = visibility;
-    }
-
-    public DocumentReference getOwnerDoc() {
-        return ownerDoc;
-    }
-
-    public void setOwnerDoc(DocumentReference ownerDoc) {
-        this.ownerDoc = ownerDoc;
     }
 }

@@ -49,22 +49,16 @@ import static com.example.nalone.util.Constants.USER;
 
 public class RechercheAmisFragment extends Fragment {
 
-    private RechercheViewModel rechercheViewModel;
     private SearchView search_bar;
     private NavController navController;
     private RecyclerView mRecyclerView;
     private RechercheAmisAdapter mAdapter;
 
     private TextView resultat;
-    private Context context;
 
     private List<ItemPerson> items = new ArrayList<>();
     private View rootView;
     private ProgressBar loading;
-    private FirebaseFirestore firebaseFirestore;
-    private RecyclerView mRecyclerViewFiltre;
-    private ItemFiltreAdapter mAdapterFiltre;
-    private RecyclerView.LayoutManager mLayoutManagerFiltre;
     private ImageView qr_code;
     private List<User> friends;
 
@@ -76,22 +70,14 @@ public class RechercheAmisFragment extends Fragment {
     @RequiresApi(api = Build.VERSION_CODES.O)
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        rechercheViewModel =
-                ViewModelProviders.of(this).get(RechercheViewModel.class);
         rootView = inflater.inflate(R.layout.fragment_recherche_amis, container, false);
-
-        createFragment();
-        getUsers();
-
         return rootView;
 
     }
 
     private void configureRecyclerViewAmis() {
         this.mAdapter = new RechercheAmisAdapter(this.friends);
-        // 3.3 - Attach the adapter to the recyclerview to populate items
         this.mRecyclerView.setAdapter(this.mAdapter);
-        // 3.4 - Set layout manager to position the items
         final LinearLayoutManager llm = new LinearLayoutManager(getActivity());
         this.mRecyclerView.setLayoutManager(llm);
         mAdapter.setOnItemClickListener(new RechercheAmisAdapter.OnItemClickListener() {
@@ -141,6 +127,7 @@ public class RechercheAmisFragment extends Fragment {
         });
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     public void createFragment(){
         loading = rootView.findViewById(R.id.search_loading);
         buttonBack.setVisibility(View.GONE);
@@ -187,67 +174,17 @@ public class RechercheAmisFragment extends Fragment {
             }
         });
 
+        getUsers();
+
     }
 
     private void configureSwipeRefreshLayout(){
         swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @RequiresApi(api = Build.VERSION_CODES.O)
             @Override
             public void onRefresh() {
                 createFragment();
             }
-        });
-    }
-
-
-    /*private void updateUI(){
-        // 3 - Stop refreshing and clear actual list of users
-
-        adapter.notifyDataSetChanged();
-        createFragment();
-    }*/
-
-    private void addFilters() {
-
-        final List<ItemFiltre> filtres = new ArrayList<>();
-
-        filtres.add(new ItemFiltre("TC"));
-        filtres.add(new ItemFiltre("MMI"));
-        filtres.add(new ItemFiltre("INFO"));
-        filtres.add(new ItemFiltre("GB"));
-        filtres.add(new ItemFiltre("LP"));
-
-        mAdapterFiltre = new ItemFiltreAdapter(filtres);
-
-        mRecyclerViewFiltre = rootView.findViewById(R.id.recyclerViewFiltre);
-        mLayoutManagerFiltre = new LinearLayoutManager(
-                rootView.getContext(),
-                LinearLayoutManager.HORIZONTAL,
-                false);
-        mRecyclerViewFiltre.setLayoutManager(mLayoutManagerFiltre);
-        mRecyclerViewFiltre.setAdapter(mAdapterFiltre);
-
-        mAdapterFiltre.setOnItemClickListener(new ItemFiltreAdapter.OnItemClickListener() {
-            @Override
-            public void onAddClick(int position) {
-                for (int i = 0; i < filtres.size(); i++){
-                    if(i != position)
-                        filtres.get(i).setBackground(R.drawable.custom_input);
-                }
-
-                if(filtres.get(position).getBackground() == R.color.colorPrimary){
-                    filtres.get(position).setBackground(R.drawable.custom_input);
-                    //QUERY
-                }
-                else{
-                    filtres.get(position).setBackground(R.color.colorPrimary);
-                    for (int i = 0; i < friends.size(); i++){
-                        Log.w("filtres", "Friends : " + friends.get(i));
-                    }
-                    //QUERY
-                }
-                mAdapterFiltre.notifyDataSetChanged();
-            }
-            // adapterUsers(new FirestoreRecyclerOptions.Builder<User>().setQuery(queryFiltreLP, User.class).build());
         });
     }
 
@@ -267,9 +204,11 @@ public class RechercheAmisFragment extends Fragment {
 
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     public void onResume(){
         super.onResume();
+        createFragment();
     }
 
 

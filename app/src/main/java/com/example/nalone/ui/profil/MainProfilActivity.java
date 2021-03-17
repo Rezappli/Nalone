@@ -10,6 +10,7 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 
@@ -27,7 +28,7 @@ public class MainProfilActivity extends AppCompatActivity {
         buttonBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                onBackPressed();
+                finish();
             }
         });
         navController = Navigation.findNavController(this, R.id.nav_host_fragment_profil);

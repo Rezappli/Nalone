@@ -1,6 +1,7 @@
 package com.example.nalone.ui.recherche;
 
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -12,6 +13,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
@@ -21,6 +23,7 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.bumptech.glide.Glide;
 import com.example.nalone.enumeration.Visibility;
+import com.example.nalone.json.JSONObjectCrypt;
 import com.example.nalone.util.Cache;
 import com.example.nalone.objects.Group;
 import com.example.nalone.R;
@@ -38,6 +41,7 @@ import com.google.firebase.storage.StorageReference;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import static com.example.nalone.util.Constants.USER;
 import static com.example.nalone.util.Constants.USER_ID;
@@ -49,7 +53,6 @@ public class RechercheGroupeFragment extends Fragment {
 
     private NavController navController;
     private RecyclerView mRecyclerView;
-    private FirestoreRecyclerAdapter adapter;
     private ImageView addGroup;
     private SwipeRefreshLayout swipeContainer;
     private View root;
@@ -60,18 +63,16 @@ public class RechercheGroupeFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
         root =  inflater.inflate(R.layout.fragment_recherche_groupe, container, false);
-
-        createFragment();
         return root;
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     private void createFragment(){
         myGroups = new ArrayList<>();
 
         linearSansRechercheGroupe = root.findViewById(R.id.linearSansRechercheGroupe);
-        swipeContainer = (SwipeRefreshLayout) root.findViewById(R.id.AmisSwipeRefreshLayout);
+        swipeContainer = root.findViewById(R.id.AmisSwipeRefreshLayout);
         swipeContainer.setColorSchemeResources(android.R.color.holo_blue_bright);
         loading = root.findViewById(R.id.loading);
         this.configureSwipeRefreshLayout();
@@ -87,27 +88,22 @@ public class RechercheGroupeFragment extends Fragment {
             }
         });
 
-        mStoreBase.collection("users").document(USER.getUid()).collection("groups").whereEqualTo("status","add")
-                .get()
-                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        if (task.isSuccessful()) {
-                            for (QueryDocumentSnapshot document : task.getResult()) {
-                                Log.d("TAG", document.getId() + " => " + document.getData());
-                                myGroups.add(document.getId());
-                            }
-                            adapterGroups();
-                        } else {
-                            Log.d("TAG", "Error getting documents: ", task.getException());
-                        }
-                    }
-                });
+        getGroups();
 
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    private void getGroups(){
+        JSONObjectCrypt params = new JSONObjectCrypt();
+        params.addParameter("uid", USER.getUid());
+
+        linearSansRechercheGroupe.setVisibility(View.VISIBLE);
+        loading.setVisibility(View.GONE);
     }
 
     private void configureSwipeRefreshLayout(){
         swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @RequiresApi(api = Build.VERSION_CODES.O)
             @Override
             public void onRefresh() {
                 createFragment();
@@ -116,86 +112,17 @@ public class RechercheGroupeFragment extends Fragment {
     }
 
 
-    private void adapterGroups() {
-        Query query;
-        if(!myGroups.isEmpty()) {
-            query = mStoreBase.collection("groups").whereNotIn("uid", myGroups).whereEqualTo("visibility", Visibility.PUBLIC).limit(10);
-
-            FirestoreRecyclerOptions<Group> options = new FirestoreRecyclerOptions.Builder<Group>().setQuery(query, Group.class).build();
-
-            adapter = new FirestoreRecyclerAdapter<Group, GroupViewHolder>(options) {
-                @NonNull
-                @Override
-                public GroupViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-                    View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_groupe, parent, false);
-                    return new GroupViewHolder(view);
-                }
-
-                @Override
-                protected void onBindViewHolder(@NonNull final GroupViewHolder userViewHolder, int i, @NonNull final Group g) {
-                    final Group group = g;
-                    userViewHolder.nomGroup.setText(g.getName());
-
-                    userViewHolder.layoutGroup.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            showPopUpGroup(group);
-                        }
-                    });
-
-                    userViewHolder.imageGroup.post(new Runnable() {
-                        @Override
-                        public void run() {
-                            Constants.setGroupImage(g, getContext(), userViewHolder.imageGroup);
-                        }
-                    });
-                }
-            };
-            mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-            mRecyclerView.setAdapter(adapter);
-            adapter.startListening();
-        }
-    }
-
-    private class GroupViewHolder extends RecyclerView.ViewHolder {
-
-        private TextView nomGroup;
-        private LinearLayout layoutGroup;
-        private ImageView imageGroup;
-        private ImageView button;
-
-        public GroupViewHolder(@NonNull View itemView) {
-            super(itemView);
-
-            nomGroup = itemView.findViewById(R.id.nomGroupe);
-            layoutGroup = itemView.findViewById(R.id.layoutGroupe);
-            imageGroup = itemView.findViewById(R.id.imageGroupe);
-
-        }
-    }
-
-
     public void showPopUpGroup(final Group g) {
         PopUpGroupFragment.GROUP_LOAD = g;
         navController.navigate(R.id.action_navigation_recherche_groupe_to_navigation_popup_group);
     }
 
-
-    @Override
-    public void onStart(){
-        super.onStart();
-        //updateItems();
-        //adapter.startListening();
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    public void onResume(){
+        super.onResume();
+        createFragment();
     }
 
-    @Override
-    public void onStop() {
-        super.onStop();
-        if(adapter != null){
-            adapter.stopListening();
-        }
-
-    }
 
 
 }

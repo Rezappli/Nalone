@@ -195,9 +195,9 @@ public class PopUpGroupFragment extends Fragment {
 
     public void joinPublic() {
         ModelData data1 = new ModelData("add", mStoreBase.collection("users").document(USER.getUid()));
-        ModelData data2 = new ModelData("add", GROUP_LOAD.getOwnerDoc());
+        //ModelData data2 = new ModelData("add", GROUP_LOAD.getOwnerDoc());
         mStoreBase.collection("groups").document(GROUP_LOAD.getUid()).collection("members").document(USER.getUid()).set(data1);
-        mStoreBase.collection("users").document(USER_ID).collection("groups").document(GROUP_LOAD.getUid()).set(data2);
+        //mStoreBase.collection("users").document(USER_ID).collection("groups").document(GROUP_LOAD.getUid()).set(data2);
         Toast.makeText(getContext(), "Vous avez rejoint le groupe " + GROUP_LOAD.getName() + " !", Toast.LENGTH_SHORT).show();
     }
 

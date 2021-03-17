@@ -166,16 +166,16 @@ public class MainActivity extends AppCompatActivity{
         final SharedPreferences loginPreferences = getSharedPreferences("login", MODE_PRIVATE);
         final SharedPreferences.Editor editor = loginPreferences.edit();
 
-        JSONObjectCrypt object = new JSONObjectCrypt();
-        object.addParameter("mail", mail);
-        object.addParameter("password", pass);
+        JSONObjectCrypt params = new JSONObjectCrypt();
+        params.addParameter("mail", mail);
+        params.addParameter("password", pass);
 
+        Log.w("Response", "Params: "+ params.toString());
 
-        JSONController.getJsonObjectFromUrl(Constants.URL_SIGN_IN, MainActivity.this, object, new JSONObjectListener() {
+        JSONController.getJsonObjectFromUrl(Constants.URL_SIGN_IN, MainActivity.this, params, new JSONObjectListener() {
             @Override
             public void onJSONReceived(JSONObject jsonObject) {
-                Log.w("Response", jsonObject.toString());
-                if(jsonObject.length() == 1){
+                if(jsonObject.length() == 3){
                     try {
                         editor.putString("mail", CryptoUtils.encrypt(mail));
                         editor.putString("password", CryptoUtils.encrypt(pass));
@@ -183,11 +183,11 @@ public class MainActivity extends AppCompatActivity{
                         loadUserData(jsonObject);
                     } catch (JSONException e) {
                         Log.w("Response", "Erreur:"+e.getMessage());
-                        Toast.makeText(MainActivity.this, "Une erreur est survenue !", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(MainActivity.this, getResources().getString(R.string.error), Toast.LENGTH_SHORT).show();
                     }
                 }else{
                     progressBar.setVisibility(View.GONE);
-                    Toast.makeText(MainActivity.this, "L'adresse mail ou le mot de passe est " +
+                    Toast.makeText(MainActivity.this, "L'adresse mail et/ou le mot de passe est " +
                             "incorrect", Toast.LENGTH_SHORT).show();
                 }
             }
@@ -205,6 +205,7 @@ public class MainActivity extends AppCompatActivity{
     private void loadUserData(JSONObject json) throws JSONException {
         JSONObjectCrypt params = new JSONObjectCrypt();
         params.addParameter("uid", json.getString("uid"));
+
         JSONController.getJsonObjectFromUrl(Constants.URL_ME, this, params, new JSONObjectListener() {
             @Override
             public void onJSONReceived(JSONObject jsonObject) {

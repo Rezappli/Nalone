@@ -24,13 +24,18 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.VolleyError;
 import com.bumptech.glide.Glide;
+import com.example.nalone.json.JSONController;
+import com.example.nalone.json.JSONObjectCrypt;
+import com.example.nalone.listeners.JSONObjectListener;
 import com.example.nalone.objects.Group;
 import com.example.nalone.dialog.ListAmisFragment;
 import com.example.nalone.R;
 import com.example.nalone.objects.User;
 import com.example.nalone.objects.ModelData;
 import com.example.nalone.enumeration.Visibility;
+import com.example.nalone.util.Constants;
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -44,6 +49,8 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+
+import org.json.JSONObject;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -63,7 +70,6 @@ public class CreateGroupFragment extends Fragment {
 
     private TextInputEditText event_name;
     private TextInputEditText event_resume;
-    private Visibility event_visibilite;
 
     private CardView cardViewPrivate;
     private ImageView imageViewPrivate;
@@ -78,9 +84,8 @@ public class CreateGroupFragment extends Fragment {
     public static boolean edit;
 
     private NavController navController;
-    ImageView buttonMoreGroup;
+    private ImageView buttonMoreGroup;
 
-    private FirestoreRecyclerAdapter adapter;
     private RecyclerView mRecyclerView;
     private View rootView;
 
@@ -88,25 +93,11 @@ public class CreateGroupFragment extends Fragment {
 
     private ImageView imageGroup;
 
-    public static GroupAttente groupAttente;
+    public static Group groupAttente;
 
     private int RESULT_LOAD_IMG = 1;
 
-    private static Uri imageUri = null;
     private boolean hasSelectedImage = false;
-
-    private Group g;
-
-
-    public class GroupAttente extends Group {
-
-        public GroupAttente(String uid,String owner,String name,
-                            String description, Visibility visibility, DocumentReference ownerDoc){
-            super(uid, owner, name, description, visibility, ownerDoc);
-        }
-    }
-
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -142,12 +133,7 @@ public class CreateGroupFragment extends Fragment {
         });
 
         if(groupAttente == null){
-            Log.w("group", "Creation groupe vide");
-            groupAttente  = new GroupAttente(UUID.randomUUID().toString(), USER.getFirst_name() + " " + USER.getLast_name(), "", "", null, USER_REFERENCE);
-        }
-
-        if(adds != null && !adds.isEmpty()){
-            initList();
+            groupAttente  = new Group(UUID.randomUUID().toString(), USER.getFirst_name() + " " + USER.getLast_name(), "", "", Visibility.PUBLIC);
         }
 
         cardViewPrivate = rootView.findViewById(R.id.cardViewPrivate);
@@ -159,25 +145,6 @@ public class CreateGroupFragment extends Fragment {
         event_name = rootView.findViewById(R.id.groupName);
         event_resume = rootView.findViewById(R.id.groupResume);
         buttonValidEvent = rootView.findViewById(R.id.buttonCreateGroup);
-
-        if(imageUri != null){
-            hasSelectedImage = true;
-            Glide.with(getContext()).load(imageUri).fitCenter().centerCrop().into(imageGroup);
-        }
-
-        getData();
-
-       /* if(edit){
-            event_name.setText(MesEvenementsListFragment.nameEvent);
-            event_resume.setText(MesEvenementsListFragment.descEdit);
-
-            if(MesEvenementsListFragment.visibiliteEdit == Visibility.PUBLIC){
-                selectPublic();
-            }else{
-                selectPrivate();
-            }
-            edit = false;
-        }*/
 
         cardViewPrivate.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -196,9 +163,7 @@ public class CreateGroupFragment extends Fragment {
         imageButtonAddInvit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.w("group"," Nom :" + event_name.getText().toString());
-
-                refreshData();
+                updateFields();
                 ListAmisFragment.type = "group";
                 navController.navigate(R.id.action_navigation_creat_group_to_navigation_list_amis);
             }
@@ -207,7 +172,7 @@ public class CreateGroupFragment extends Fragment {
 
 
         buttonValidEvent.setOnClickListener(new View.OnClickListener() {
-            @RequiresApi(api = Build.VERSION_CODES.M)
+            @RequiresApi(api = Build.VERSION_CODES.O)
             @Override
             public void onClick(View v) {
                 saveGroup();
@@ -216,21 +181,16 @@ public class CreateGroupFragment extends Fragment {
     }
 
 
-    private void refreshData() {
+    private void updateFields() {
         groupAttente.setName(event_name.getText().toString());
         groupAttente.setDescription(event_resume.getText().toString());
-        groupAttente.setVisibility(event_visibilite);
-    }
 
-    private void getData() {
-        Log.w("Group après création", " Nom : "+ groupAttente.getName());
         if(!groupAttente.getName().matches(""))
             event_name.setText(groupAttente.getName());
         if(!groupAttente.getDescription().matches(""))
             event_resume.setText(groupAttente.getDescription());
         if(groupAttente.getVisibility() != null){
-            event_visibilite = groupAttente.getVisibility();
-            if(event_visibilite == Visibility.PUBLIC){
+            if(groupAttente.getVisibility().equals(Visibility.PUBLIC)){
                 selectPublic();
             }else{
                 selectPrivate();
@@ -238,182 +198,47 @@ public class CreateGroupFragment extends Fragment {
         }
     }
 
-
-    public void initList(){
-            //adds.add("a");
-        Query query;
-        if(!adds.isEmpty()) {
-            query = mStoreBase.collection("users").whereIn("uid", adds);
-            query.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                @Override
-                public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                    for (QueryDocumentSnapshot doc : task.getResult()) {
-                        User u = doc.toObject(User.class);
-                        Log.w("Add", u.getFirst_name());
-                    }
-                }
-            });
-        }else{
-            query = mStoreBase.collection("usejkhdskjfhkjhrjdhfks");
-        }
-
-            //RecyclerOption
-            FirestoreRecyclerOptions<User> options = new FirestoreRecyclerOptions.Builder<User>().setQuery(query, User.class).build();
-
-            adapter = new FirestoreRecyclerAdapter<User, PersonViewHolder>(options) {
-                @NonNull
-                @Override
-                public PersonViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-                    Log.w("Add", "ViewHolder");
-                    View view= LayoutInflater.from(parent.getContext()).inflate(R.layout.item_person,parent,false);
-                    return new PersonViewHolder(view);
-                }
-
-                @Override
-                protected void onBindViewHolder(@NonNull final PersonViewHolder personViewHolder,final int i, @NonNull final  User u) {
-
-                    Log.w("Add","BindViewHolder");
-                    personViewHolder.villePers.setText(u.getCity());
-                    personViewHolder.nomInvit.setText(u.getFirst_name() + " "+ u.getLast_name());
-                    personViewHolder.button.setImageDrawable(getResources().getDrawable(R.drawable.ic_baseline_remove_24));
-                    personViewHolder.button.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            adds.remove(u.getUid());
-                            Log.w("Add", "List : " + adds.isEmpty());
-                            createFragment();
-                        }
-                    });
-                }
-
-            };
-
-            //mRecyclerView.setHasFixedSize(true);
-            mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-            mRecyclerView.setAdapter(adapter);
-            adapter.startListening();
-
-            Log.w("Add", "Set adapter");
-
-
-    }
-
-    private class PersonViewHolder extends RecyclerView.ViewHolder {
-
-        private TextView nomInvit;
-        private TextView villePers;
-        private ImageView button, imagePerson;
-
-        public PersonViewHolder(@NonNull View itemView) {
-            super(itemView);
-
-            nomInvit = itemView.findViewById(R.id.nomInvit);
-            villePers = itemView.findViewById(R.id.villePers);
-            button = itemView.findViewById(R.id.buttonImage);
-            imagePerson = itemView.findViewById(R.id.imagePerson);
-        }
-    }
-
-
-
     private void selectPublic() {
         imageViewPublic.setImageResource(R.drawable.ic_baseline_public_focused);
         imageViewPrivate.setImageResource(R.drawable.ic_baseline_lock_24);
-        event_visibilite = Visibility.PUBLIC;
+        groupAttente.setVisibility(Visibility.PUBLIC);
     }
 
     private void selectPrivate() {
         imageButtonAddInvit.setVisibility(View.VISIBLE);
         imageViewPrivate.setImageResource(R.drawable.ic_baseline_lock_focused);
         imageViewPublic.setImageResource(R.drawable.ic_baseline_public_24);
-        event_visibilite = Visibility.PRIVATE;
+        groupAttente.setVisibility(Visibility.PRIVATE);
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.M)
+    @RequiresApi(api = Build.VERSION_CODES.O)
     public void saveGroup(){
-
         if(event_name.getText().toString().matches("")){
-            event_name.setError("Champs obligatoire");
+            event_name.setError(getResources().getString(R.string.edittext_field_required));
         }
 
         if(!event_name.getText().toString().matches("")){
-            refreshData();
-            g = new Group(groupAttente.getUid(), groupAttente.getOwner(), groupAttente.getName(), groupAttente.getDescription(), groupAttente.getVisibility(), groupAttente.getOwnerDoc());
-            mStoreBase.collection("groups").document(g.getUid()).set(g);
-            DocumentReference ref = mStoreBase.collection("users").document(USER_ID);
-            ModelData md = new ModelData("add",ref);
-            mStoreBase.collection("users").document(USER_ID).collection("groups").document(g.getUid()).set(md);
+            JSONObjectCrypt params = new JSONObjectCrypt();
+            params.addParameter("uid", USER.getUid());
+            params.addParameter("uid_group", groupAttente.getUid());
+            params.addParameter("name", event_name.getText());
+            params.addParameter("description", event_resume.getText());
+            params.addParameter("visibility", groupAttente.getVisibility());
 
-            for (String user : adds){
-                Log.d("Ajout", "Ajout de membre dans groupe");
-                ModelData ufd = new ModelData("waiting",mStoreBase.collection("users").document(user));
-                mStoreBase.collection("groups").document(g.getUid()).collection("members").document(user).set(ufd);
-            }
+            Log.w("Response", "Params send :"+params.toString());
 
-            if(hasSelectedImage){
-                uploadImage(imageUri);
-            }else{
-                imageUri = null;
-                Toast.makeText(getContext(), "Vous avez créer votre groupe !", Toast.LENGTH_SHORT).show();
-                navController.navigate(R.id.action_navigation_creat_group_to_navigation_amis);
-            }
-        }
-    }
+            JSONController.getJsonObjectFromUrl(Constants.URL_ADD_GROUP, getContext(), params, new JSONObjectListener() {
+                @Override
+                public void onJSONReceived(JSONObject jsonObject) {
+                    Log.w("Response", "Value: "+jsonObject.toString());
+                }
 
-    private void uploadImage(final Uri imagUri) {
-        if (imagUri != null) {
-
-            StorageReference groupRef = mStore.getReference("groups/"+g.getUid());
-            groupRef.putFile(imagUri)
-                    .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                        @Override
-                        public void onSuccess(UploadTask.TaskSnapshot snapshot) {
-                            Toast.makeText(getActivity().getBaseContext(), "Vous avez mis une image à ce groupe !", Toast.LENGTH_SHORT).show();
-                            g.setImage_url(new SimpleDateFormat("dd-MM-yy hh:mm:ss").format(new Date(System.currentTimeMillis())));
-                            mStoreBase.collection("groups").document(g.getUid()).set(g);
-
-                            Toast.makeText(getContext(), "Vous avez créer votre groupe !", Toast.LENGTH_SHORT).show();
-                            imageUri = null;
-                            navController.navigate(R.id.action_navigation_creat_group_to_navigation_amis);
-
-                        }
-                    })
-                    .addOnFailureListener(new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception exception) {
-                            Toast.makeText(getActivity().getBaseContext(), "Une erreur est survenue !", Toast.LENGTH_SHORT).show();
-                        }
-                    });
-
-        }
-        Glide.with(getContext()).load(imagUri).fitCenter().centerCrop().into(imageGroup);
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
-        if(adapter != null) {
-            adapter.stopListening();
-        }
-    }
-
-    @Override
-    public void onStart(){
-        super.onStart();
-    }
-
-    @Override
-    public void onActivityResult(int reqCode, int resultCode, Intent data) {
-        super.onActivityResult(reqCode, resultCode, data);
-
-        if (resultCode == RESULT_OK) {
-            imageUri = data.getData();
-            assert imageUri != null;
-            Glide.with(getContext()).load(imageUri).fitCenter().centerCrop().into(imageGroup);
-            hasSelectedImage = true;
-            Log.w("Image", "Select image");
-        }else {
-            Toast.makeText(getContext(),"Vous n'avez pas choisi d'image", Toast.LENGTH_LONG).show();
+                @Override
+                public void onJSONReceivedError(VolleyError volleyError) {
+                    Toast.makeText(getContext(), getResources().getString(R.string.error), Toast.LENGTH_SHORT).show();
+                    Log.w("Response", "Erreur: "+volleyError.toString());
+                }
+            });
         }
     }
 }

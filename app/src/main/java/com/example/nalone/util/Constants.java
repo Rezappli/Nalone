@@ -124,6 +124,7 @@ public class Constants {
     public static String URL_DELETE_USER_TO_EVENT = "http://api.nolonely.fr:53000/delete_user_event.php";
     public static String URL_DELETE_FRIEND = "http://api.nolonely.fr:53000/delete_friend.php";
     public static String URL_ADD_FRIEND = "http://api.nolonely.fr:53000/add_friend.php";
+    public static String URL_ADD_GROUP = "http://api.nolonely.fr:53000/add_group.php";
     public static String URL_UPDATE_ME= "http://api.nolonely.fr:53000/update_me.php";
     public static String URL_TEST = "http://api.nolonely.fr:53000/test.php";
 

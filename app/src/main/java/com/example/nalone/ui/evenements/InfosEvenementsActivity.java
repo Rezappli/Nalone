@@ -68,7 +68,6 @@ public class InfosEvenementsActivity extends Fragment {
     private TextView mTimer;
     private TextView mOwner;
     private TextView mDescription;
-    private FirestoreRecyclerAdapter adapter;
     private List<String> members = new ArrayList<>();
 
     public static Evenement EVENT_LOAD;
@@ -378,7 +377,7 @@ public class InfosEvenementsActivity extends Fragment {
         JSONController.getJsonObjectFromUrl(Constants.URL_ADD_USER_TO_EVENT, getContext(), params, new JSONObjectListener() {
             @Override
             public void onJSONReceived(JSONObject jsonObject) {
-                Log.w("Response", "Value:"+jsonObject.toString());
+                Toast.makeText(getContext(), getResources().getString(R.string.register_message), Toast.LENGTH_SHORT).show();
             }
 
             @Override
@@ -398,7 +397,7 @@ public class InfosEvenementsActivity extends Fragment {
         JSONController.getJsonObjectFromUrl(Constants.URL_DELETE_USER_TO_EVENT, getContext(), params, new JSONObjectListener() {
             @Override
             public void onJSONReceived(JSONObject jsonObject) {
-                Log.w("Response", "Value:"+jsonObject.toString());
+                Toast.makeText(getContext(), getResources().getString(R.string.register_message), Toast.LENGTH_SHORT).show();
             }
 
             @Override

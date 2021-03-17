@@ -276,6 +276,9 @@
     <string name="update_description"> Vous avez mis à jour votre description </string>
     <string name="update_informations"> Vous avez mis à jour vos informations </string>
 
+    <!--Strings for fields -->
+    <string name="edittext_field_required"> Champs obligatoire </string>
+
 
 
 </resources>

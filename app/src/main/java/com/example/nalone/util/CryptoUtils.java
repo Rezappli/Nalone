@@ -117,7 +117,6 @@ public class CryptoUtils {
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     public static JSONObject decryptObject(JSONObject obj) {
-        Log.w("Response", "Decrypt:"+obj.toString());
         JSONObject temp = new JSONObject();
         try {
             for (Iterator<String> it = obj.keys(); it.hasNext(); ) {
