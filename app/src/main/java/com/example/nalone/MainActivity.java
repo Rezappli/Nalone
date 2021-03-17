@@ -33,7 +33,6 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
-import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.firestore.QuerySnapshot;
@@ -109,12 +108,12 @@ public class MainActivity extends AppCompatActivity{
                 final String textPass = editTextPass.getText().toString();
 
                 if (textAddress.equalsIgnoreCase("")) {
-                    editTextAddress.setError("Entrez votre adresse");
+                    editTextAddress.setError(getResources().getString(R.string.enter_address_error));
                     return;
                 }
 
                 if (textPass.equalsIgnoreCase("")) {
-                    editTextPass.setError("Entrez votre mot de passe");
+                    editTextPass.setError(getResources().getString(R.string.enter_password_error));
                     return;
                 }
 
@@ -170,32 +169,34 @@ public class MainActivity extends AppCompatActivity{
         params.addParameter("mail", mail);
         params.addParameter("password", pass);
 
-        Log.w("Response", "Params: "+ params.toString());
-
         JSONController.getJsonObjectFromUrl(Constants.URL_SIGN_IN, MainActivity.this, params, new JSONObjectListener() {
             @Override
             public void onJSONReceived(JSONObject jsonObject) {
                 if(jsonObject.length() == 3){
                     try {
+                        String key = pass;
+                        for(int i = pass.length(); i < 31; i++){
+                            key += 0;
+                        }
+
                         editor.putString("mail", CryptoUtils.encrypt(mail));
-                        editor.putString("password", CryptoUtils.encrypt(pass));
+                        editor.putString("password", CryptoUtils.encryptWithKey(pass, key));
                         editor.apply();
                         loadUserData(jsonObject);
                     } catch (JSONException e) {
-                        Log.w("Response", "Erreur:"+e.getMessage());
                         Toast.makeText(MainActivity.this, getResources().getString(R.string.error), Toast.LENGTH_SHORT).show();
+                        Log.w("Response", "Erreur:"+e.getMessage());
                     }
                 }else{
                     progressBar.setVisibility(View.GONE);
-                    Toast.makeText(MainActivity.this, "L'adresse mail et/ou le mot de passe est " +
-                            "incorrect", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(MainActivity.this, getResources().getString(R.string.mail_or_password_incorrect), Toast.LENGTH_SHORT).show();
                 }
             }
 
             @Override
             public void onJSONReceivedError(VolleyError volleyError) {
                 progressBar.setVisibility(View.GONE);
-                Toast.makeText(MainActivity.this, "Une erreur est survenue !", Toast.LENGTH_SHORT).show();
+                Toast.makeText(MainActivity.this, getResources().getString(R.string.error), Toast.LENGTH_SHORT).show();
                 Log.w("Response", "Erreur : "+volleyError.toString());
             }
         });
@@ -215,14 +216,13 @@ public class MainActivity extends AppCompatActivity{
 
             @Override
             public void onJSONReceivedError(VolleyError volleyError) {
+                Toast.makeText(MainActivity.this, getResources().getString(R.string.error), Toast.LENGTH_SHORT).show();
                 Log.w("Response", "Erreur:"+volleyError.toString());
-                Toast.makeText(MainActivity.this, "Une erreur est survenue !", Toast.LENGTH_SHORT).show();
             }
         });
     }
 
     public void connectUserFromGoogle(String token){
-        Log.w("Google", "Go here");
         AuthCredential credential = GoogleAuthProvider.getCredential(token, null);
         mAuth.signInWithCredential(credential)
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
@@ -236,25 +236,20 @@ public class MainActivity extends AppCompatActivity{
                                     if(task.isSuccessful()){
                                         if(!task.getResult().isEmpty()) {
                                             currentUser = mAuth.getCurrentUser();
-                                            loadUser();
                                         }else{
                                             startActivity(new Intent(MainActivity.this, SignUpInformationActivity.class));
-                                            Toast.makeText(MainActivity.this, "Vous n'êtes pas inscrit !", Toast.LENGTH_SHORT).show();
+                                            Toast.makeText(MainActivity.this, getResources().getString(R.string.not_register), Toast.LENGTH_SHORT).show();
                                         }
                                     }else{
-                                        Toast.makeText(MainActivity.this, "Une erreur est survenue", Toast.LENGTH_SHORT).show();
+                                        Toast.makeText(MainActivity.this, getResources().getString(R.string.error), Toast.LENGTH_SHORT).show();
                                     }
                                 }
                             });
                         } else {
-                            Toast.makeText(MainActivity.this, "Erreur : " + task.getException().getMessage(), Toast.LENGTH_LONG).show();
+                            Toast.makeText(MainActivity.this, getResources().getString(R.string.error), Toast.LENGTH_LONG).show();
                         }
                     }
                 });
-    }
-
-    private void loadUser(){
-
     }
 
     private void launchHomeActivity(){
@@ -263,23 +258,7 @@ public class MainActivity extends AppCompatActivity{
     }
 
     @Override
-    protected void onResume() {
-        super.onResume();
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        FirebaseAuth.getInstance().signOut();
-    }
-
-    @Override
     public void onBackPressed(){}
-
-    @Override
-    public void onStop(){
-        super.onStop();
-    }
 }
 
 

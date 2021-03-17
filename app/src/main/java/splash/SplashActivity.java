@@ -68,15 +68,14 @@ public class SplashActivity extends AppCompatActivity {
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     private void verifyUserData(SharedPreferences loginPreferences) throws JSONException {
-        JSONObjectCrypt object = new JSONObjectCrypt();
-        object.put("mail", loginPreferences.getString("mail", null)); //just put and not crypt because already mail and password crypt
-        object.put("password", loginPreferences.getString("password", null));
+        JSONObjectCrypt params = new JSONObjectCrypt();
+        params.put("mail", loginPreferences.getString("mail", null)); //just put and not crypt because already mail and password crypt
+        params.put("password", loginPreferences.getString("password", null));
 
-
-        JSONController.getJsonObjectFromUrl(Constants.URL_SIGN_IN, SplashActivity.this, object, new JSONObjectListener() {
+        JSONController.getJsonObjectFromUrl(Constants.URL_SIGN_IN, SplashActivity.this, params, new JSONObjectListener() {
             @Override
             public void onJSONReceived(JSONObject jsonObject) {
-                if(jsonObject.length() == 1){
+                if(jsonObject.length() == 3){
                     try {
                         loadUserData(jsonObject);
                     } catch (JSONException e) {

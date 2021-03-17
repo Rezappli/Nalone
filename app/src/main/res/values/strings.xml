@@ -278,6 +278,10 @@
 
     <!--Strings for fields -->
     <string name="edittext_field_required"> Champs obligatoire </string>
+    <string name="enter_address_error"> Entrer votre adresse </string>
+    <string name="enter_password_error"> Entrer votre mot de passe </string>
+    <string name="not_register"> Vous n\'êtes pas encore inscrit ! </string>
+    <string name="mail_or_password_incorrect"> Vous n\'êtes pas encore inscrit ! </string>
 
 
 
