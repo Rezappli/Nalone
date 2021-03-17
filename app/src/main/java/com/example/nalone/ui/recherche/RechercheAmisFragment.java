@@ -130,7 +130,13 @@ public class RechercheAmisFragment extends Fragment {
     @RequiresApi(api = Build.VERSION_CODES.O)
     public void createFragment(){
         loading = rootView.findViewById(R.id.search_loading);
-        buttonBack.setVisibility(View.GONE);
+        buttonBack.setVisibility(View.VISIBLE);
+        buttonBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
         linearSansRechercheAmis = rootView.findViewById(R.id.linearSansRechercheGroupe);
         swipeContainer = rootView.findViewById(R.id.AmisSwipeRefreshLayout);
 

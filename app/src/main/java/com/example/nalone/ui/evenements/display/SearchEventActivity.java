@@ -15,6 +15,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -64,12 +65,20 @@ public class SearchEventActivity extends AppCompatActivity {
     private LinearLayout linearLayoutNoResult;
     private boolean hasChange;
     private CardView cardViewLoading;
+    private ImageView buttonBack;
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search_event);
+        buttonBack = findViewById(R.id.buttonBack);
+        buttonBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onBackPressed();
+            }
+        });
         currentSort = FiltreSort.PERTINENCE;
         currentDate = FiltreDate.NONE;
         currentLocation = Constants.range;

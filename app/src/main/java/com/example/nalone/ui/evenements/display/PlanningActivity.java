@@ -13,7 +13,7 @@ import com.example.nalone.R;
 
 public class PlanningActivity extends AppCompatActivity {
 
-    private ImageView buttonCalendar;
+    private ImageView buttonCalendar, buttonBack;
 
 
     @Override
@@ -21,6 +21,13 @@ public class PlanningActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_planning);
         buttonCalendar = findViewById(R.id.buttonCalendar);
+        buttonBack = findViewById(R.id.buttonBack);
+        buttonBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onBackPressed();
+            }
+        });
         buttonCalendar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

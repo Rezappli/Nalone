@@ -44,6 +44,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import static com.example.nalone.HomeActivity.buttonBack;
 import static com.example.nalone.util.Constants.USER;
 import static com.example.nalone.util.Constants.USER_ID;
 import static com.example.nalone.util.Constants.mStore;
@@ -73,6 +74,13 @@ public class RechercheGroupeFragment extends Fragment {
     private void createFragment(){
         groupList = new ArrayList<>();
 
+        buttonBack.setVisibility(View.VISIBLE);
+        buttonBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
         linearSansRechercheGroupe = root.findViewById(R.id.linearSansRechercheGroupe);
         swipeContainer = root.findViewById(R.id.AmisSwipeRefreshLayout);
         swipeContainer.setColorSchemeResources(android.R.color.holo_blue_bright);

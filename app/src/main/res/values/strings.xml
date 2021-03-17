@@ -71,6 +71,7 @@
     <string name="ou"> Ou ? </string>
     <string name="search_title"> Rechercher un ami </string>
     <string name="search_event_title"> Rechercher un évènement </string>
+    <string name="evebt_info"> Infos évènement </string>
     <string name="aucun_resultat"> Aucun résultat trouvé </string>
     <string name="eventCreateProfil"> Création </string>
     <string name="eventParticipateProfil"> Participation </string>

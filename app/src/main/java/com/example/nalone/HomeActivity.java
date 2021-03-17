@@ -54,6 +54,7 @@ public class HomeActivity extends AppCompatActivity{
         BottomNavigationView navView = findViewById(R.id.nav_view);
 
         buttonBack = findViewById(R.id.buttonBack);
+        buttonBack.setVisibility(View.GONE);
         buttonNotif = findViewById(R.id.buttonNotif);
         buttonPlanning = findViewById(R.id.buttonPlanning);
         buttonPlanning.setOnClickListener(new View.OnClickListener() {

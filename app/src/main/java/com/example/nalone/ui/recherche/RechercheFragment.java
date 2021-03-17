@@ -39,6 +39,7 @@ import org.json.JSONException;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.example.nalone.HomeActivity.buttonBack;
 import static com.example.nalone.util.Constants.USER;
 
 public class RechercheFragment extends Fragment {
@@ -66,6 +67,7 @@ public class RechercheFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         rootView = inflater.inflate(R.layout.fragment_recherche, container, false);
+
         return rootView;
 
 
@@ -73,6 +75,7 @@ public class RechercheFragment extends Fragment {
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     public void createFragment() {
+        buttonBack.setVisibility(View.GONE);
         myGroups = new ArrayList<>();
         recyclerAmis = rootView.findViewById(R.id.recyclerViewRechercheAmis);
         recyclerGroup = rootView.findViewById(R.id.recyclerViewRechercheGroupes);
