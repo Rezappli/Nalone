@@ -33,6 +33,7 @@ import com.example.nalone.util.Horloge;
 import com.example.nalone.R;
 import com.example.nalone.util.Constants;
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
+import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
@@ -54,6 +55,7 @@ import com.example.nalone.enumeration.Visibility;
 
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
@@ -97,6 +99,8 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     private int iterator = 0;
     private CardView  loading;
 
+    private static CameraPosition posCam = null;
+
 
     // Bottom sheet
     private BottomSheetBehavior bottomSheetBehavior;
@@ -110,19 +114,23 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     private List<TypeEventObject> filtreTypeList;
 
 
-
-    public MapFragment() {
-        // Required empty public constructor
-    }
+    public MapFragment() {}
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         rootView = inflater.inflate(R.layout.fragment_map, container, false);
 
-        ((AppCompatActivity) getActivity()).getSupportActionBar().hide();
-        buttonBack.setVisibility(View.GONE);
         mMapView = rootView.findViewById(R.id.mapView);
+
+        initGoogleMap(savedInstanceState);
+        ((AppCompatActivity) getActivity()).getSupportActionBar().hide();
+
+        return rootView;
+    }
+
+    private void createFragment(){
+        buttonBack.setVisibility(View.GONE);
         navController = Navigation.findNavController(getActivity(), R.id.nav_host_fragment);
         mRecyclerView = rootView.findViewById(R.id.recyclerViewEventMap);
         cardViewLocationCreate = rootView.findViewById(R.id.cardViewLocationCreate);
@@ -270,17 +278,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
 
         initFiltres();
 
-
-        Bundle mapViewBundle = null;
-        if (savedInstanceState != null) {
-            mapViewBundle = savedInstanceState.getBundle(MAPVIEW_BUNDLE_KEY);
-        }
-
-        mMapView.onCreate(mapViewBundle);
-
-        mMapView.getMapAsync(this);
-
-        initGoogleMap(savedInstanceState);
         //this.configureRecyclerView();
 
 
@@ -307,7 +304,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
 
         /* FILTRES TYPE EVENT */
 
-        return rootView;
     }
 
     private void configureRecyclerView() {
@@ -428,14 +424,25 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         mMapView.onCreate(mapViewBundle);
 
         mMapView.getMapAsync(this);
-
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(USER.getLatitude(), USER.getLongitude()), 10));
+
+        mMap.setOnCameraMoveListener(new GoogleMap.OnCameraMoveListener() {
+            @Override
+            public void onCameraMove() {
+                posCam = mMap.getCameraPosition();
+            }
+        });
+
+        if(posCam == null) {
+            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(USER.getLatitude(), USER.getLongitude()), 10));
+        }else{
+            mMap.moveCamera(CameraUpdateFactory.newCameraPosition(posCam));
+        }
         JSONObjectCrypt params = new JSONObjectCrypt();
 
         params.addParameter("uid", USER.getUid());
@@ -443,9 +450,13 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         params.addParameter("longitude", USER.getLongitude());
         params.addParameter("range", range);
 
+        Log.w("Response", "Params:"+params.toString());
+
+
         JSONController.getJsonArrayFromUrl(Constants.URL_NEARBY_EVENTS, getContext(), params, new JSONArrayListener() {
             @Override
             public void onJSONReceived(JSONArray jsonArray) {
+                Log.w("Response", "Value:"+jsonArray.toString());
                 try {
                     nearby_events = new ArrayList<>();
                     for(int i = 0; i < jsonArray.length(); i++) {
@@ -574,9 +585,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     @Override
     public void onResume() {
         super.onResume();
-        if(mMap != null) {
-            updateMap(currentVisibilityMap);
-        }
+        createFragment();
     }
 
     @Override

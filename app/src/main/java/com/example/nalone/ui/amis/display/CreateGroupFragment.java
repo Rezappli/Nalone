@@ -230,7 +230,13 @@ public class CreateGroupFragment extends Fragment {
             JSONController.getJsonObjectFromUrl(Constants.URL_ADD_GROUP, getContext(), params, new JSONObjectListener() {
                 @Override
                 public void onJSONReceived(JSONObject jsonObject) {
-                    Log.w("Response", "Value: "+jsonObject.toString());
+                    if(jsonObject.length() == 3){
+                        Toast.makeText(getContext(), getResources().getString(R.string.group_create), Toast.LENGTH_SHORT).show();
+                        navController.navigate(R.id.action_navigation_creat_group_to_navigation_amis);
+                        groupAttente = null;
+                    }else{
+                        Toast.makeText(getContext(), getResources().getString(R.string.error), Toast.LENGTH_SHORT).show();
+                    }
                 }
 
                 @Override

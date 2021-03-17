@@ -16,6 +16,7 @@ import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.nalone.json.JSONObjectCrypt;
 import com.example.nalone.objects.Group;
 import com.example.nalone.R;
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
@@ -36,18 +37,22 @@ public class MesGroupeFragment extends Fragment {
     private ImageView addGroup;
     private ProgressBar loading;
     private LinearLayout linearSansMesGroupes;
+    private View rootView;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        View root =  inflater.inflate(R.layout.fragment_mes_groupe, container, false);
+        rootView =  inflater.inflate(R.layout.fragment_mes_groupe, container, false);
 
-        mRecyclerView = root.findViewById(R.id.recyclerViewGroupe);
-        addGroup = root.findViewById(R.id.create_group_button);
+        return rootView;
+    }
+
+    private void createFragment(){
+        mRecyclerView = rootView.findViewById(R.id.recyclerViewGroupe);
+        addGroup = rootView.findViewById(R.id.create_group_button);
         navController = Navigation.findNavController(getActivity(), R.id.nav_host_fragment);
-        loading = root.findViewById(R.id.loading);
-        linearSansMesGroupes = root.findViewById(R.id.linearSansMesGroupes);
+        loading = rootView.findViewById(R.id.loading);
+        linearSansMesGroupes = rootView.findViewById(R.id.linearSansMesGroupes);
 
         addGroup.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -55,91 +60,20 @@ public class MesGroupeFragment extends Fragment {
                 navController.navigate(R.id.action_navigation_mes_groupes_to_navigation_creat_group);
             }
         });
-
-        adapterGroups();
-
-        /*if(adapter == null || adapter.getItemCount() == 0){
-            loading.setVisibility(View.GONE);
-            linearSansMesGroupes.setVisibility(View.VISIBLE);
-        }*/
-
-        return root;
     }
 
-    private void adapterGroups() {
-        DocumentReference ref = mStoreBase.document("users/"+USER_ID);
-
-        Query query = mStoreBase.collection("groups").whereEqualTo("ownerDoc", ref);
-        FirestoreRecyclerOptions<Group> options = new FirestoreRecyclerOptions.Builder<Group>().setQuery(query, Group.class).build();
-
-        adapter = new FirestoreRecyclerAdapter<Group, UserViewHolder>(options) {
-                @NonNull
-                @Override
-                public UserViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-                    View view= LayoutInflater.from(parent.getContext()).inflate(R.layout.item_groupe,parent,false);
-                    return new UserViewHolder(view);
-                }
-
-                @Override
-                protected void onBindViewHolder(@NonNull final UserViewHolder userViewHolder, int i, @NonNull final Group g) {
-                    final Group group = g;
-                    userViewHolder.nomGroup.setText(g.getName());
-
-                    userViewHolder.layoutGroup.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                           showPopUpGroup(group);
-                        }
-                    });
-
-                    setGroupImage(g, getContext(), userViewHolder.imageGroup);
-                    loading.setVisibility(View.GONE);
-                    linearSansMesGroupes.setVisibility(View.GONE);
-                }
-            };
-            mRecyclerView.setHasFixedSize(true);
-            mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-            mRecyclerView.setAdapter(adapter);
-        }
-
-        private class UserViewHolder extends RecyclerView.ViewHolder {
-
-            private TextView nomGroup;
-            private LinearLayout layoutGroup;
-            private ImageView imageGroup;
-            private ImageView button;
-
-            public UserViewHolder(@NonNull View itemView) {
-                super(itemView);
-
-                nomGroup = itemView.findViewById(R.id.nomGroupe);
-                layoutGroup = itemView.findViewById(R.id.layoutGroupe);
-                imageGroup = itemView.findViewById(R.id.imageGroupe);
-
-            }
-
-        }
+    private void getMyGroups(){
+        JSONObjectCrypt params = new JSONObjectCrypt();
+    }
 
     public void showPopUpGroup(final Group g) {
         PopUpMesGroupesFragment.GROUP_LOAD = g;
         navController.navigate(R.id.action_navigation_mes_groupes_to_navigation_popup_mes_groupes);
-
-
     }
 
-
-    @Override
-    public void onStart(){
-        super.onStart();
-        //updateItems();
-        adapter.startListening();
+    public void onResume(){
+        super.onResume();
+        createFragment();
     }
-
-    @Override
-    public void onStop() {
-        super.onStop();
-        adapter.stopListening();
-    }
-
 
 }
