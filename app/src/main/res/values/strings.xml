@@ -264,7 +264,7 @@
     <string name="no_result"> Aucun résultat</string>
 
     <!--Strings for InfosEventsActivity -->
-    <string name="event_start_in"> Commencé dans : </string>
+    <string name="event_start_in"> Débute dans : </string>
     <string name="event_start_from"> Commencé depuis : </string>
     <string name="event_end_from"> Terminé depuis : </string>
     <string name="unregister"> Se désinscrire </string>

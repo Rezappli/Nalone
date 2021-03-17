@@ -46,6 +46,16 @@
                 android:text="TextView"
                 android:textStyle="bold" />
 
+            <TextView
+                android:id="@+id/visibiliteGroup"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:drawableStart="@drawable/ic_baseline_public_15"
+                android:gravity="center_vertical"
+                android:text="@string/location_public"
+                android:textSize="10sp" />
+
         </LinearLayout>
 
     </LinearLayout>

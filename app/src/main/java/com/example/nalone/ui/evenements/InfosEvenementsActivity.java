@@ -182,7 +182,18 @@ public class InfosEvenementsActivity extends Fragment {
         }
 
         mTimer.setText(cutString(EVENT_LOAD.getStartDate(), 5, 11));
-
+        Log.w("STATUS", EVENT_LOAD.getStatusEvent()+"");
+        if(EVENT_LOAD.getStatusEvent() == StatusEvent.ENCOURS) {
+            textViewTitleDebut.setText(getResources().getString(R.string.event_start_from));
+        }else if(EVENT_LOAD.getStatusEvent() == StatusEvent.FINI){
+            textViewTitleDebut.setText(getResources().getString(R.string.event_end_from));
+            textViewTitleDebut.setTextColor(Color.GRAY);
+            linearButton.setVisibility(View.GONE);
+            cardViewTermine.setVisibility(View.VISIBLE);
+            diffDate.setTextColor(Color.GRAY);
+        }else if(EVENT_LOAD.getStatusEvent() == StatusEvent.BIENTOT){
+            textViewTitleDebut.setText(getResources().getString(R.string.event_start_in));
+        }
         /*mStoreBase.collection("events").document(EVENT_LOAD.getUid())
                 .collection("members").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
@@ -280,15 +291,7 @@ public class InfosEvenementsActivity extends Fragment {
             if(elapsedSeconds < 0)
                 elapsedSeconds = elapsedSeconds*-1;
 
-            if(EVENT_LOAD.getStatusEvent() == StatusEvent.ENCOURS) {
-                textViewTitleDebut.setText(getResources().getString(R.string.event_start_from));
-            }else if(EVENT_LOAD.getStatusEvent() == StatusEvent.FINI){
-                textViewTitleDebut.setText(getResources().getString(R.string.event_end_from));
-                textViewTitleDebut.setTextColor(Color.GRAY);
-                linearButton.setVisibility(View.GONE);
-                cardViewTermine.setVisibility(View.VISIBLE);
-                diffDate.setTextColor(Color.GRAY);
-            }
+
         }
         diffDate.setText(elapsedDays + "j " + elapsedHours + "h " + elapsedMinutes +"m "+ elapsedSeconds+"s ");
     }

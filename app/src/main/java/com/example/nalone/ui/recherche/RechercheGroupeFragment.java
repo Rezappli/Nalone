@@ -22,6 +22,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.bumptech.glide.Glide;
+import com.example.nalone.adapter.RechercheGroupeAdapter;
 import com.example.nalone.enumeration.Visibility;
 import com.example.nalone.json.JSONObjectCrypt;
 import com.example.nalone.util.Cache;
@@ -53,10 +54,11 @@ public class RechercheGroupeFragment extends Fragment {
 
     private NavController navController;
     private RecyclerView mRecyclerView;
+    private RechercheGroupeAdapter mAdapter;
     private ImageView addGroup;
     private SwipeRefreshLayout swipeContainer;
     private View root;
-    private List<String> myGroups;
+    private List<Group> groupList;
     private LinearLayout linearSansRechercheGroupe;
     private ProgressBar loading;
 
@@ -69,7 +71,7 @@ public class RechercheGroupeFragment extends Fragment {
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     private void createFragment(){
-        myGroups = new ArrayList<>();
+        groupList = new ArrayList<>();
 
         linearSansRechercheGroupe = root.findViewById(R.id.linearSansRechercheGroupe);
         swipeContainer = root.findViewById(R.id.AmisSwipeRefreshLayout);
@@ -77,7 +79,7 @@ public class RechercheGroupeFragment extends Fragment {
         loading = root.findViewById(R.id.loading);
         this.configureSwipeRefreshLayout();
 
-        mRecyclerView = root.findViewById(R.id.recyclerViewGroupe);
+        initRecycler();
         addGroup = root.findViewById(R.id.create_group_button);
         navController = Navigation.findNavController(getActivity(), R.id.nav_host_fragment);
 
@@ -90,6 +92,13 @@ public class RechercheGroupeFragment extends Fragment {
 
         getGroups();
 
+    }
+
+    private void initRecycler() {
+        mRecyclerView = root.findViewById(R.id.recyclerViewGroupe);
+        mAdapter = new RechercheGroupeAdapter(groupList, getContext());
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        mRecyclerView.setAdapter(mAdapter);
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
