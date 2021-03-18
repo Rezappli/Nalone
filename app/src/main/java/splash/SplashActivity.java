@@ -68,6 +68,8 @@ public class SplashActivity extends AppCompatActivity {
         params.put("mail", loginPreferences.getString("mail", null)); //just put and not crypt because already mail and password crypt
         params.put("password", loginPreferences.getString("password", null));
 
+        Log.w("Splash", "Params: "+params.toString());
+
         JSONController.getJsonObjectFromUrl(Constants.URL_SIGN_IN, SplashActivity.this, params, new JSONObjectListener() {
             @Override
             public void onJSONReceived(JSONObject jsonObject) {

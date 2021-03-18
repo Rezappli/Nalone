@@ -44,6 +44,8 @@ public class Evenement implements Serializable {
         this.status = null;
         this.price = 0;
         this.category = null;
+        this.ownerFirstName = null;
+        this.ownerLastName = null;
     }
 
 
@@ -65,6 +67,8 @@ public class Evenement implements Serializable {
         this.status = status;
         this.category = category;
         this.price = price;
+        this.ownerFirstName = Constants.USER.getFirst_name();
+        this.ownerLastName = Constants.USER.getLast_name();
     }
 
     public void setOwner_uid(String owner_uid) {
