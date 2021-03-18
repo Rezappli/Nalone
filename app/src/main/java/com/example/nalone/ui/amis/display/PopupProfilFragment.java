@@ -14,6 +14,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -28,6 +29,8 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.storage.StorageReference;
 
+import org.eazegraph.lib.charts.PieChart;
+import org.eazegraph.lib.models.PieModel;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -54,6 +57,8 @@ public class PopupProfilFragment extends Fragment {
     String NOTIFICATION_MESSAGE;
     String TOPIC;
 
+    int nbEventFirt, nbEventSecond, nbEventThird, nbEventFourth;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -78,6 +83,40 @@ public class PopupProfilFragment extends Fragment {
                 }
             });
         }
+
+        TextView tvR = root.findViewById(R.id.tvR);
+        TextView tvPython = root.findViewById(R.id.tvPython);
+        TextView tvCPP = root.findViewById(R.id.tvCPP);
+        TextView tvJava = root.findViewById(R.id.tvJava);
+        PieChart pieChart = root.findViewById(R.id.piechart);
+
+        nbEventFirt = 30;
+        nbEventSecond = 10;
+        nbEventThird = 5;
+        nbEventFourth = 2;
+
+        pieChart.addPieSlice(
+                new PieModel(
+                        "R",
+                        nbEventFirt,
+                        Color.parseColor("#FFA726")));
+        pieChart.addPieSlice(
+                new PieModel(
+                        "Python",
+                        nbEventSecond,
+                        Color.parseColor("#66BB6A")));
+        pieChart.addPieSlice(
+                new PieModel(
+                        "C++",
+                        nbEventThird,
+                        Color.parseColor("#EF5350")));
+        pieChart.addPieSlice(
+                new PieModel(
+                        "Java",
+                        nbEventFourth,
+                        Color.parseColor("#29B6F6")));
+
+        pieChart.startAnimation();
         TextView nameProfil;
         TextView descriptionProfil;
         TextView nbCreateProfil;
@@ -85,7 +124,7 @@ public class PopupProfilFragment extends Fragment {
         TextView villeProfil;
 
         final ImageView imagePerson;
-        final ImageView buttonAdd;
+        final Button buttonAdd;
         CardView cardViewPhotoPerson;
 
         nameProfil = root.findViewById(R.id.profilName);
@@ -172,7 +211,7 @@ public class PopupProfilFragment extends Fragment {
         descriptionProfil.setText(USER_LOAD.getDescription());
         nbCreateProfil.setText(USER_LOAD.getNumber_events_create());
         nbParticipateProfil.setText(USER_LOAD.getNumber_events_attend());
-        buttonAdd.setImageResource(button);
+        //buttonAdd.setImageResource(button);
 
         if (USER_LOAD.getDescription().matches("")) {
             descriptionProfil.setVisibility(View.GONE);
@@ -190,7 +229,8 @@ public class PopupProfilFragment extends Fragment {
 
                         Toast.makeText(getContext(), "Vous avez envoyé une demande d'amis !", Toast.LENGTH_SHORT).show();
                         addFriend();
-                        buttonAdd.setImageResource(R.drawable.ic_round_hourglass_top_24);
+                        buttonAdd.setText("En attente");
+                        buttonAdd.setBackground(getResources().getDrawable(R.drawable.custom_input));
 
                 }
             }

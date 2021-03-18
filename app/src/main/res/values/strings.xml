@@ -157,6 +157,9 @@
     <string name="aucun_user"> Aucun utilisateur </string>
     <string name="group_create"> Vous avez crée un groupe ! </string>
 
+    <string name="follow">Inviter</string>
+    <string name="message">Message</string>
+
     <string name="calendar"> Calendrier </string>
     <string name="prochain"> Prochain</string>
 

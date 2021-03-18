@@ -298,52 +298,6 @@
             app:destination="@id/navigation_mes_groupes" />
     </fragment>
 
-    <fragment
-        android:id="@+id/navigation_profil"
-        android:name="com.example.nalone.ui.profil.ProfilActivity"
-        android:label="@string/title_profil"
-        tools:layout="@layout/fragment_profil" >
-        <action
-            android:id="@+id/action_navigation_profil_to_navigation_parametres"
-            app:destination="@id/navigation_parametres" />
-        <action
-            android:id="@+id/action_navigation_profil_to_navigation_edit_profil"
-            app:destination="@id/navigation_edit_profil" />
-        <action
-            android:id="@+id/action_navigation_profil_to_navigation_aide"
-            app:destination="@id/navigation_aide" />
-    </fragment>
-
-
-    <fragment
-        android:id="@+id/navigation_parametres"
-        android:name="com.example.nalone.ui.profil.ParametresActivity"
-        android:label="@string/title_profil"
-        tools:layout="@layout/fragment_parametres" >
-        <action
-            android:id="@+id/action_navigation_parametres_to_navigation_profil"
-            app:destination="@id/navigation_profil" />
-    </fragment>
-
-    <fragment
-        android:id="@+id/navigation_edit_profil"
-        android:name="com.example.nalone.ui.profil.EditActivity"
-        android:label="@string/title_profil"
-        tools:layout="@layout/fragment_edit" >
-        <action
-            android:id="@+id/action_navigation_edit_profil_to_navigation_profil"
-            app:destination="@id/navigation_profil" />
-    </fragment>
-
-    <fragment
-        android:id="@+id/navigation_aide"
-        android:name="com.example.nalone.ui.profil.AideActivity"
-        android:label="@string/title_profil"
-        tools:layout="@layout/fragment_aide" >
-        <action
-            android:id="@+id/action_navigation_aide_to_navigation_profil"
-            app:destination="@id/navigation_profil" />
-    </fragment>
 
     <fragment
         android:id="@+id/navigation_popup_profil"

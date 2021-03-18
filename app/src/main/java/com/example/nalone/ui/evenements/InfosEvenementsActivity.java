@@ -190,6 +190,7 @@ public class InfosEvenementsActivity extends AppCompatActivity {
         }
 
         mTimer.setText(cutString(EVENT_LOAD.getStartDate(), 5, 11));
+
         Log.w("STATUS", EVENT_LOAD.getStatusEvent()+"");
         if(EVENT_LOAD.getStatusEvent() == StatusEvent.ENCOURS) {
             textViewTitleDebut.setText(getResources().getString(R.string.event_start_from));
