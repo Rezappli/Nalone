@@ -1,5 +1,8 @@
 package com.example.nalone.objects;
 
+import android.graphics.drawable.Drawable;
+
+import com.example.nalone.R;
 import com.example.nalone.enumeration.StatusEvent;
 import com.example.nalone.enumeration.TypeEvent;
 import com.example.nalone.enumeration.Visibility;
@@ -193,6 +196,25 @@ public class Evenement implements Serializable {
 
     public TypeEvent getCategory() {
         return category;
+    }
+
+    public int getImageCategory(){
+        switch (this.getCategory()){
+            case ART: return R.drawable.event_art;
+            case CAR: return R.drawable.event_car;
+            case GAME: return R.drawable.event_game;
+            case SHOP: return R.drawable.event_shop;
+            case SHOW: return R.drawable.event_show;
+            case MOVIE: return R.drawable.event_movie;
+            case MUSIC: return R.drawable.event_music;
+            case PARTY: return R.drawable.event_party;
+            case SPORT: return R.drawable.event_sport;
+            case CONTEST: return R.drawable.event_contest;
+            case SCIENCE: return R.drawable.event_science;
+            case CONFERENCE: return R.drawable.event_conference;
+            case GATHER: return R.drawable.event_gather;
+        }
+        return 0;
     }
 
     public void setCategory(TypeEvent eventType) {

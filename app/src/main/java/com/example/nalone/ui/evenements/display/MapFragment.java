@@ -71,6 +71,7 @@ import java.util.List;
 
 import static com.example.nalone.HomeActivity.buttonBack;
 import static com.example.nalone.HomeActivity.fab1;
+import static com.example.nalone.enumeration.TypeEvent.*;
 import static com.example.nalone.util.Constants.MAPVIEW_BUNDLE_KEY;
 import static com.example.nalone.util.Constants.USER;
 import static com.example.nalone.util.Constants.range;
@@ -110,11 +111,12 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
 
 
     private ImageView imageViewFiltreSearch, imageViewExpanded;
-    private boolean isOpen;
+    private boolean isOpen, detailsIsOpen;
 
     private List<TypeEventObject> filtreTypeList;
 
     private TextView textViewDetailName,textViewDetailCity,textViewDetailDate,textViewDetailTime,textViewDetailNbMembers;
+    private ImageView imageViewDetailCategory;
 
 
     public MapFragment() {}
@@ -152,6 +154,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         imageViewLocationAll = rootView.findViewById(R.id.imageViewLocationAll);
         loading = rootView.findViewById(R.id.loading);
         viewGrey = rootView.findViewById(R.id.viewGreyMap);
+        imageViewDetailCategory = rootView.findViewById(R.id.imageViewDetailCategory);
 
         imageViewFiltreSearch = rootView.findViewById(R.id.filtreSearch);
 
@@ -220,10 +223,12 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                     case BottomSheetBehavior.STATE_COLLAPSED:
                         viewGrey.setVisibility(View.GONE);
                         fab1.show();
+                        detailsIsOpen = false;
                         break;
                     case BottomSheetBehavior.STATE_EXPANDED:
                         viewGrey.setVisibility(View.VISIBLE);
-                        fab1.hide();
+                        //fab1.hide();
+                        detailsIsOpen = true;
                         break;
                     case BottomSheetBehavior.STATE_HIDDEN:
                         viewGrey.setVisibility(View.GONE);
@@ -413,7 +418,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     private void initFiltres() {
         filtreTypeList = new ArrayList<>();
 
-        filtreTypeList.add(new TypeEventObject(getResources().getDrawable(R.drawable.event_art),getResources().getString(R.string.event_art),TypeEvent.ART));
+        filtreTypeList.add(new TypeEventObject(getResources().getDrawable(R.drawable.event_art),getResources().getString(R.string.event_art), ART));
         filtreTypeList.add(new TypeEventObject(getResources().getDrawable(R.drawable.event_sport),getResources().getString(R.string.event_sport),TypeEvent.SPORT));
         filtreTypeList.add(new TypeEventObject(getResources().getDrawable(R.drawable.event_car),getResources().getString(R.string.event_car),TypeEvent.CAR));
         filtreTypeList.add(new TypeEventObject(getResources().getDrawable(R.drawable.event_conference),getResources().getString(R.string.event_conference),TypeEvent.CONFERENCE));
@@ -613,14 +618,17 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
             @Override
             public boolean onMarkerClick(Marker marker) {
+                fab1.hide();
                 Evenement e = (Evenement) marker.getTag();
 
                 if (e != null){
-//                    textViewDetailNbMembers.setText(e.getNbMembers());
+                    textViewDetailNbMembers.setText(e.getNbMembers()+"");
                     textViewDetailCity.setText(e.getCity());
                     textViewDetailDate.setText(e.getStartDate());
                     textViewDetailName.setText(e.getName());
                     textViewDetailTime.setText(e.getStartDate());
+                    imageViewDetailCategory.setImageResource(e.getImageCategory());
+
                 }
 
                 // Check if a click count was set, then display the click count.

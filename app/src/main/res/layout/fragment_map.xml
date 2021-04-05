@@ -517,7 +517,7 @@
                     app:cardCornerRadius="5dp">
 
                     <ImageView
-                        android:id="@+id/imageTypeEvent"
+                        android:id="@+id/imageViewDetailCategory"
                         android:layout_width="35dp"
                         android:layout_height="35dp"
                         android:layout_gravity="center"

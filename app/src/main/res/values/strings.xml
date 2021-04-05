@@ -211,7 +211,7 @@
     <!-- Strings used for map -->
     <string name="description_event">Cliquez pour plus d\'informations</string>
     <string name="error">Une erreur est survenue :(</string>
-    <string name="error_event">Une erreur est lors du chargement des évènments :(</string>
+    <string name="error_event">Une erreur est survenue lors du chargement des évènements :(</string>
     <string name="error_address">Nous n\'avons pas réussie à trouver l\'adresse :(</string>
     <string name="required_field">Champs obligatoire</string>
     <string name="int_over_zero">Veuillez entrer un prix supérieur à 0</string>
@@ -266,6 +266,7 @@
 
     <!--Strings for SearchActivity -->
     <string name="no_result"> Aucun résultat</string>
+    <string name="no_result_planning"> Aucun évènement planifié </string>
 
     <!--Strings for InfosEventsActivity -->
     <string name="event_start_in"> Débute dans : </string>
