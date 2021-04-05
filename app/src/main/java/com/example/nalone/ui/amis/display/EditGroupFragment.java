@@ -1,5 +1,7 @@
 package com.example.nalone.ui.amis.display;
 
+
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -103,12 +105,14 @@ public class EditGroupFragment extends Fragment {
         return root;
     }
 
+    @SuppressLint("UseCompatLoadingForDrawables")
     private void modePrive() {
         imageViewPrive.setImageDrawable(getResources().getDrawable(R.drawable.ic_baseline_lock_focused));
         imageViewPublic.setImageDrawable(getResources().getDrawable(R.drawable.ic_baseline_public_24));
         visibility = Visibility.PRIVATE;
     }
 
+    @SuppressLint("UseCompatLoadingForDrawables")
     private void modePublic() {
         imageViewPublic.setImageDrawable(getResources().getDrawable(R.drawable.ic_baseline_public_focused));
         imageViewPrive.setImageDrawable(getResources().getDrawable(R.drawable.ic_baseline_lock_24));

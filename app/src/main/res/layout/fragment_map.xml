@@ -41,6 +41,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_below="@id/divider14"
+            android:layout_marginBottom="80dp"
             android:visibility="visible" />
 
         <LinearLayout
@@ -205,12 +206,12 @@
             </androidx.cardview.widget.CardView>
         </LinearLayout>
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recyclerViewEventMap"
-            android:layout_width="match_parent"
+        <View
+            android:id="@+id/viewGreyMap"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:layout_marginBottom="40dp" />
+            android:background="#39292929"
+            android:visibility="gone" />
 
     </RelativeLayout>
 
@@ -314,12 +315,216 @@
                 android:layout_margin="10dp"
                 android:text="@string/en_cours"
                 android:textSize="18sp"
-                android:textStyle="bold" />
+                android:textStyle="bold"
+                android:visibility="gone" />
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/recyclerViewNow"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent" />
+                android:layout_height="match_parent"
+                android:visibility="gone" />
+
+        </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
+
+    <androidx.core.widget.NestedScrollView
+        android:id="@+id/sheetEvent"
+        android:layout_width="match_parent"
+        android:layout_height="230dp"
+        android:background="@drawable/custom_header_bottom_sheet"
+        android:clipToPadding="false"
+        android:fillViewport="false"
+        android:focusableInTouchMode="true"
+        app:behavior_hideable="true"
+        app:behavior_peekHeight="0dp"
+        app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <ImageView
+                android:id="@+id/imageExpanded1"
+                android:layout_width="match_parent"
+                android:layout_height="30dp"
+                android:layout_gravity="center"
+                app:srcCompat="@drawable/bottom_sheet_line" />
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="200dp">
+
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/cardViewPrice"
+                    android:layout_width="50dp"
+                    android:layout_height="20dp"
+                    android:layout_alignParentTop="true"
+                    android:layout_alignParentEnd="true"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginEnd="-3dp"
+                    app:cardBackgroundColor="@color/colorPrimary"
+                    app:cardCornerRadius="5dp">
+
+                    <TextView
+                        android:id="@+id/textViewPrice"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:text="Free"
+                        android:textColor="#FFFFFF" />
+                </androidx.cardview.widget.CardView>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_alignParentBottom="true"
+                    android:layout_centerInParent="true"
+                    android:layout_gravity="center"
+                    android:background="@android:color/transparent"
+                    android:orientation="vertical">
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1">
+
+                        <androidx.cardview.widget.CardView
+                            android:id="@+id/cardViewProfil"
+                            android:layout_width="50dp"
+                            android:layout_height="50dp"
+                            android:layout_centerVertical="true"
+                            android:layout_gravity="center|clip_vertical"
+                            android:layout_marginStart="20dp"
+                            app:cardCornerRadius="150dp">
+
+                            <ImageView
+                                android:id="@+id/imagePerson"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:layout_gravity="center"
+                                android:contentDescription="@string/TODO"
+                                app:srcCompat="@drawable/ic_round_person_edit_focused" />
+                        </androidx.cardview.widget.CardView>
+
+                        <ImageView
+                            android:id="@+id/imageEvent"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
+                            android:adjustViewBounds="false"
+                            android:scaleType="centerCrop"
+                            app:srcCompat="@drawable/logo" />
+                    </RelativeLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_marginStart="5dp"
+                        android:layout_marginEnd="5dp"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:id="@+id/textViewDetailName"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="5dp"
+                            android:text="klssssssssssssssssssllllllllllllllllllllllllllllllll"
+                            android:textColor="#000000"
+                            android:textSize="14sp"
+                            android:textStyle="bold" />
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal">
+
+                            <TextView
+                                android:id="@+id/textViewDetailDate"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:drawableStart="@drawable/ic_baseline_calendar_today_24"
+                                android:drawablePadding="5dp"
+                                android:text="date"
+                                android:textColor="#000000"
+                                android:textSize="12sp" />
+
+                            <TextView
+                                android:id="@+id/textView66"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text=", " />
+
+                            <TextView
+                                android:id="@+id/textViewDetailTime"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:text="time"
+                                android:textColor="#000000"
+                                android:textSize="12sp" />
+                        </LinearLayout>
+
+                        <TextView
+                            android:id="@+id/textViewDetailCity"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:drawableStart="@drawable/ic_baseline_location_on_24"
+                            android:drawablePadding="5dp"
+                            android:text="ville"
+                            android:textColor="#000000"
+                            android:textSize="12sp" />
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="5dp"
+                            android:gravity="center"
+                            android:orientation="horizontal">
+
+                            <TextView
+                                android:id="@+id/textViewDetailNbMembers"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:paddingEnd="5dp"
+                                android:text="@string/participants"
+                                android:textSize="12sp"
+                                android:textStyle="bold" />
+
+                            <TextView
+                                android:id="@+id/textView42"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/participants"
+                                android:textColor="#000000"
+                                android:textSize="12sp" />
+
+                        </LinearLayout>
+
+                    </LinearLayout>
+
+                </LinearLayout>
+
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/cardTypeEvent"
+                    android:layout_width="35dp"
+                    android:layout_height="35dp"
+                    android:layout_alignParentEnd="true"
+                    android:layout_alignParentBottom="true"
+                    android:layout_gravity="center"
+                    android:layout_marginEnd="0dp"
+                    app:cardBackgroundColor="#C3DFDC"
+                    app:cardCornerRadius="5dp">
+
+                    <ImageView
+                        android:id="@+id/imageTypeEvent"
+                        android:layout_width="35dp"
+                        android:layout_height="35dp"
+                        android:layout_gravity="center"
+                        app:srcCompat="@drawable/event_sport" />
+                </androidx.cardview.widget.CardView>
+
+            </RelativeLayout>
 
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>

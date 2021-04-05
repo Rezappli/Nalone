@@ -70,6 +70,7 @@ import java.util.List;
 
 
 import static com.example.nalone.HomeActivity.buttonBack;
+import static com.example.nalone.HomeActivity.fab1;
 import static com.example.nalone.util.Constants.MAPVIEW_BUNDLE_KEY;
 import static com.example.nalone.util.Constants.USER;
 import static com.example.nalone.util.Constants.range;
@@ -87,7 +88,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
 
     private NavController navController;
 
-    private RecyclerView mRecyclerView;
     private MapEvenementAdapter adapteSuggestion, adapterPopulaire ;
     private TypeEventAdapter typeAdapter;
     private static VisibilityMap currentVisibilityMap = VisibilityMap.ALL;
@@ -100,10 +100,11 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     private CardView  loading;
 
     private static CameraPosition posCam = null;
+    private View viewGrey;
 
 
     // Bottom sheet
-    private BottomSheetBehavior bottomSheetBehavior;
+    private BottomSheetBehavior bottomSheetBehavior, bottomSheetBehaviorDetails;
     private SearchView searchView;
     private RecyclerView recyclerViewSuggestion, recyclerViewPopular, recyclerTypeEvent;
 
@@ -112,6 +113,8 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     private boolean isOpen;
 
     private List<TypeEventObject> filtreTypeList;
+
+    private TextView textViewDetailName,textViewDetailCity,textViewDetailDate,textViewDetailTime,textViewDetailNbMembers;
 
 
     public MapFragment() {}
@@ -132,7 +135,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     private void createFragment(){
         buttonBack.setVisibility(View.GONE);
         navController = Navigation.findNavController(getActivity(), R.id.nav_host_fragment);
-        mRecyclerView = rootView.findViewById(R.id.recyclerViewEventMap);
         cardViewLocationCreate = rootView.findViewById(R.id.cardViewLocationCreate);
         cardViewLocationPrive = rootView.findViewById(R.id.cardViewLocationPrivate);
         cardViewLocationPublic = rootView.findViewById(R.id.cardViewLocationPublic);
@@ -149,11 +151,13 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         imageViewLocationCreate = rootView.findViewById(R.id.imageViewLocationCreate);
         imageViewLocationAll = rootView.findViewById(R.id.imageViewLocationAll);
         loading = rootView.findViewById(R.id.loading);
+        viewGrey = rootView.findViewById(R.id.viewGreyMap);
 
         imageViewFiltreSearch = rootView.findViewById(R.id.filtreSearch);
 
         //Bottom sheet
         final View bottomSheet = rootView.findViewById(R.id.sheet);
+        final View bottomSheetDetails = rootView.findViewById(R.id.sheetEvent);
         final LinearLayoutManager llm = new LinearLayoutManager(getContext());
         searchView = rootView.findViewById(R.id.searchViewSheet);
         recyclerViewSuggestion = rootView.findViewById(R.id.recyclerViewSuggestion);
@@ -167,8 +171,14 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
             }
         });*/
 
+        textViewDetailName = rootView.findViewById(R.id.textViewDetailName);
+        textViewDetailCity = rootView.findViewById(R.id.textViewDetailCity);
+        textViewDetailDate = rootView.findViewById(R.id.textViewDetailDate);
+        textViewDetailTime = rootView.findViewById(R.id.textViewDetailTime);
+        textViewDetailNbMembers = rootView.findViewById(R.id.textViewDetailNbMembers);
 
         bottomSheetBehavior = BottomSheetBehavior.from(bottomSheet);
+        bottomSheetBehaviorDetails = BottomSheetBehavior.from(bottomSheetDetails);
         bottomSheetBehavior.setHideable(false);
 
         bottomSheetBehavior.setBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
@@ -199,6 +209,37 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
             @Override
             public void onSlide(@NonNull View view, float v) {
 
+            }
+        });
+
+        bottomSheetBehaviorDetails.setBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
+            @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+            @Override
+            public void onStateChanged(@NonNull View view, int state) {
+                switch (state){
+                    case BottomSheetBehavior.STATE_COLLAPSED:
+                        viewGrey.setVisibility(View.GONE);
+                        fab1.show();
+                        break;
+                    case BottomSheetBehavior.STATE_EXPANDED:
+                        viewGrey.setVisibility(View.VISIBLE);
+                        fab1.hide();
+                        break;
+                    case BottomSheetBehavior.STATE_HIDDEN:
+                        viewGrey.setVisibility(View.GONE);
+                        break;
+                }
+            }
+
+            @Override
+            public void onSlide(@NonNull View view, float v) {
+
+            }
+        });
+        viewGrey.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                bottomSheetBehaviorDetails.setState(BottomSheetBehavior.STATE_COLLAPSED);
             }
         });
         imageViewExpanded = rootView.findViewById(R.id.imageExpanded);
@@ -311,8 +352,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         configureSuggestion();
         configurePopular();
         initFiltres();
-
-
 
         /* INTERESSANT
         this.recyclerViewSuggestion.addOnScrollListener(new RecyclerView.OnScrollListener() {
@@ -549,9 +588,10 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
 
     private void addMarkerOnMap(Evenement e) {
         MarkerOptions mk = new MarkerOptions();
-        mk.title(e.getName());
+
+        //mk.title(e.getName());
         mk.position(new LatLng(e.getLatitude(), e.getLongitude()));
-        mk.snippet(getResources().getString(R.string.description_event));
+
         if(e.getVisibility().equals(Visibility.PUBLIC)){
             mk.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));
         }else{
@@ -567,9 +607,30 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
             public void onInfoWindowClick(Marker marker) {
                 InfosEvenementsActivity.EVENT_LOAD = (Evenement) marker.getTag();
                 startActivity(new Intent(getContext(),InfosEvenementsActivity.class));
-
             }
         });
+
+        mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
+            @Override
+            public boolean onMarkerClick(Marker marker) {
+                Evenement e = (Evenement) marker.getTag();
+
+                if (e != null){
+//                    textViewDetailNbMembers.setText(e.getNbMembers());
+                    textViewDetailCity.setText(e.getCity());
+                    textViewDetailDate.setText(e.getStartDate());
+                    textViewDetailName.setText(e.getName());
+                    textViewDetailTime.setText(e.getStartDate());
+                }
+
+                // Check if a click count was set, then display the click count.
+                bottomSheetBehaviorDetails.setState(BottomSheetBehavior.STATE_EXPANDED);
+
+                return false;
+            }
+        });
+
+
     }
 
     @Override
@@ -612,6 +673,5 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         mMapView.onStop();
         super.onStop();
     }
-
 }
 

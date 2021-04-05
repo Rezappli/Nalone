@@ -46,8 +46,7 @@ public class MesAmisAdapter extends RecyclerView.Adapter<MesAmisAdapter.UserView
     @Override
     public UserViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.swipe_layout, parent, false);
-        UserViewHolder uvh = new UserViewHolder(view, mListener);
-        return uvh;
+        return new UserViewHolder(view, mListener);
     }
 
     @Override
@@ -63,7 +62,7 @@ public class MesAmisAdapter extends RecyclerView.Adapter<MesAmisAdapter.UserView
 
 
     public class UserViewHolder extends RecyclerView.ViewHolder {
-        private TextView nomInvit;
+        private final TextView nomInvit;
         private TextView villePers;
         private LinearLayout layoutProfil;
         private ImageView imagePerson;

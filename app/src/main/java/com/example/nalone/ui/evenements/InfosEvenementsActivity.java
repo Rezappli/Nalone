@@ -1,14 +1,9 @@
 package com.example.nalone.ui.evenements;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
-import androidx.fragment.app.Fragment;
-import androidx.navigation.NavController;
-import androidx.navigation.Navigation;
-import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.app.AlertDialog;
@@ -20,34 +15,21 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.VolleyError;
-import com.example.nalone.HomeActivity;
 import com.example.nalone.enumeration.Visibility;
 import com.example.nalone.json.JSONController;
 import com.example.nalone.json.JSONObjectCrypt;
 import com.example.nalone.listeners.JSONObjectListener;
 import com.example.nalone.objects.Evenement;
-import com.example.nalone.objects.ModelDataEvent;
 import com.example.nalone.R;
 import com.example.nalone.enumeration.StatusEvent;
-import com.example.nalone.objects.User;
-import com.example.nalone.ui.evenements.creation.CreateEventFragment;
 import com.example.nalone.util.Constants;
-import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
-import com.firebase.ui.firestore.FirestoreRecyclerOptions;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.firestore.Query;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.firebase.firestore.QuerySnapshot;
 
 import org.json.JSONObject;
 
@@ -58,8 +40,6 @@ import java.util.Date;
 import java.util.List;
 
 import static com.example.nalone.util.Constants.USER;
-import static com.example.nalone.util.Constants.USER_ID;
-import static com.example.nalone.util.Constants.mStoreBase;
 
 public class InfosEvenementsActivity extends AppCompatActivity {
 

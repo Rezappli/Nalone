@@ -39,6 +39,7 @@ import com.example.nalone.json.JSONObjectCrypt;
 import com.example.nalone.R;
 import com.example.nalone.listeners.JSONObjectListener;
 import com.example.nalone.objects.User;
+import com.example.nalone.objects.UserInvitation;
 import com.example.nalone.ui.message.ChatActivityFriend;
 import com.example.nalone.util.Constants;
 
@@ -56,20 +57,15 @@ import static com.example.nalone.util.Constants.USER;
 public class AmisFragment extends Fragment {
 
     private SearchView search_bar;
-    private SwipeRefreshLayout mSwipeRefreshLayout;
     private NavController navController;
-    private TextView resultat;
     private View rootView;
     private RecyclerView mRecyclerView;
-    private MesAmisAdapter mAdapter;
     private List<User> friends;
-    private int nbInvit;
-    private CardView cardViewInvits;
-    private TextView textViewNbInvit;
+    private List<UserInvitation> invitations;
     private LinearLayout linearSansMesAmis;
     private ProgressBar loading;
-    private boolean swipe;
-    private ImageView imagePerson;
+    private CardView cardViewInvits;
+    private TextView textViewNbInvit;
 
 
     @Override
@@ -83,9 +79,8 @@ public class AmisFragment extends Fragment {
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     private void createFragment() {
-        nbInvit = 0;
         search_bar = rootView.findViewById(R.id.search_bar_amis);
-        resultat = rootView.findViewById(R.id.resultatText_amis);
+        TextView resultat = rootView.findViewById(R.id.resultatText_amis);
         resultat.setVisibility(View.GONE);
         linearSansMesAmis = rootView.findViewById(R.id.linearSansMesAmis);
         navController = Navigation.findNavController(getActivity(), R.id.nav_host_fragment);
@@ -93,9 +88,9 @@ public class AmisFragment extends Fragment {
         mRecyclerView = rootView.findViewById(R.id.recyclerViewMesAmis);
         cardViewInvits = rootView.findViewById(R.id.cardViewInvits);
         textViewNbInvit = rootView.findViewById(R.id.nbInvits);
-        mSwipeRefreshLayout = rootView.findViewById(R.id.AmisSwipeRefreshLayout);
+        SwipeRefreshLayout mSwipeRefreshLayout = rootView.findViewById(R.id.AmisSwipeRefreshLayout);
         loading = rootView.findViewById(R.id.loading);
-        imagePerson = rootView.findViewById(R.id.imagePerson);
+        ImageView imagePerson = rootView.findViewById(R.id.imagePerson);
 
         cardViewInvits.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -132,12 +127,13 @@ public class AmisFragment extends Fragment {
         });
 
         getUsers();
+        getInvitations();
         mSwipeRefreshLayout.setRefreshing(false);
     }
 
     private void configureRecyclerViewAmis() {
-        this.mAdapter = new MesAmisAdapter(this.friends);
-        this.mRecyclerView.setAdapter(this.mAdapter);
+        MesAmisAdapter mAdapter = new MesAmisAdapter(this.friends);
+        this.mRecyclerView.setAdapter(mAdapter);
         final LinearLayoutManager llm = new LinearLayoutManager(getActivity());
         this.mRecyclerView.setLayoutManager(llm);
         mAdapter.setOnItemClickListener(new MesAmisAdapter.OnItemClickListener() {
@@ -169,6 +165,44 @@ public class AmisFragment extends Fragment {
             public void onMessageClick(int position) {
                 ChatActivityFriend.USER_LOAD = friends.get(position);
                 startActivity(new Intent(getContext(), ChatActivityFriend.class));
+            }
+        });
+    }
+
+
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    private void getInvitations() {
+        invitations = new ArrayList<>();
+
+        JSONObjectCrypt params = new JSONObjectCrypt();
+        params.addParameter("uid", USER.getUid());
+        params.addParameter("limit", 1); //fix a limit to 10 users
+
+        JSONController.getJsonArrayFromUrl(Constants.URL_FRIENDS_INVITATIONS, getContext(), params, new JSONArrayListener() {
+            @Override
+            public void onJSONReceived(JSONArray jsonArray) {
+                try {
+                    for (int i = 0; i < jsonArray.length(); i++) {
+                        invitations.add((UserInvitation) JSONController.convertJSONToObject(jsonArray.getJSONObject(i), UserInvitation.class));
+                    }
+
+                    if(invitations.size() != 0){
+                        cardViewInvits.setVisibility(View.VISIBLE);
+                    }else{
+                        cardViewInvits.setVisibility(View.GONE);
+                    }
+                    textViewNbInvit.setText(invitations.size());
+                    loading.setVisibility(View.GONE);
+                } catch (JSONException e) {
+                    Log.w("Response", "Erreur:"+e.getMessage());
+                    Toast.makeText(getContext(), getResources().getString(R.string.error), Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onJSONReceivedError(VolleyError volleyError) {
+                Log.w("Response", "Erreur:"+volleyError.toString());
+                Toast.makeText(getContext(), getResources().getString(R.string.error_event), Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -277,7 +311,6 @@ public class AmisFragment extends Fragment {
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     public void onResume(){
-        nbInvit = 0;
         ON_FRIENDS_ACTIVITY = true;
         createFragment();
         super.onResume();

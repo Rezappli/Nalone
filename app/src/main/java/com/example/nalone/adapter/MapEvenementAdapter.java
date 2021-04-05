@@ -1,5 +1,6 @@
 package com.example.nalone.adapter;
 
+import android.annotation.SuppressLint;
 import android.graphics.Color;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -24,10 +25,10 @@ import java.util.List;
 
 public class MapEvenementAdapter extends RecyclerView.Adapter<MapEvenementAdapter.EventViewHolder> {
 
-    private SimpleDateFormat sdfDate = new SimpleDateFormat("yyyy-MM-dd");
-    private SimpleDateFormat sdfTransform = new SimpleDateFormat("dd/MM/yyyy");
+    private final SimpleDateFormat sdfDate = new SimpleDateFormat("yyyy-MM-dd");
+    private final SimpleDateFormat sdfTransform = new SimpleDateFormat("dd/MM/yyyy");
 
-    private List<Evenement> evenementList;
+    private final List<Evenement> evenementList;
 
     private OnItemClickListener mListener;
     private boolean participate;
@@ -50,8 +51,7 @@ public class MapEvenementAdapter extends RecyclerView.Adapter<MapEvenementAdapte
     @Override
     public EventViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_evenement, parent, false);
-        EventViewHolder evh = new EventViewHolder(view,mListener);
-        return evh;
+        return new EventViewHolder(view,mListener);
     }
 
     @Override
@@ -109,6 +109,7 @@ public class MapEvenementAdapter extends RecyclerView.Adapter<MapEvenementAdapte
             });
         }
 
+        @SuppressLint("SetTextI18n")
         public void updateWhithEvent(final Evenement e) throws ParseException {
             Date d = sdfDate.parse(cutString(e.getStartDate(), 10, -1));
             this.mTitle.setText(e.getName());

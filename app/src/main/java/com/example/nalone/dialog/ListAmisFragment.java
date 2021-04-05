@@ -1,7 +1,6 @@
 package com.example.nalone.dialog;
 
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -29,7 +28,6 @@ import com.example.nalone.R;
 import com.example.nalone.objects.User;
 import com.example.nalone.items.ItemPerson;
 import com.example.nalone.ui.amis.display.CreateGroupFragment;
-import com.example.nalone.ui.evenements.creation.CreateEventFragment;
 import com.example.nalone.ui.message.ChatActivityFriend;
 import com.example.nalone.ui.message.ChatActivityGroup;
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
@@ -106,7 +104,7 @@ public class ListAmisFragment extends Fragment {
                 }
                 if (type == "event") {
                     //navController.navigate(R.id.action_navigation_list_amis_to_navigation_create_event);
-                    CreateEventFragment.EVENT_LOAD = EVENT_LOAD;
+                    //CreateEventFragment.EVENT_LOAD = EVENT_LOAD;
                 }
                 if (type == "message_ami" || type == "message_groupe") {
                     navController.navigate(R.id.action_navigation_list_amis_to_navigation_messages);
@@ -132,7 +130,7 @@ public class ListAmisFragment extends Fragment {
                     navController.navigate(R.id.action_navigation_list_amis_to_navigation_creat_group);
                 }
                 if (type == "event") {
-                    CreateEventFragment.adds = adds;
+                    //CreateEventFragment.adds = adds;
                     //navController.navigate(R.id.action_navigation_list_amis_to_navigation_create_event);
                 }
 
@@ -251,9 +249,9 @@ public class ListAmisFragment extends Fragment {
             }
         }
         if(type == "event"){
-            for(String s : CreateEventFragment.adds){
+           /* for(String s : CreateEventFragment.adds){
                 adds.add(s);
-            }
+            }*/
         }
 
     }

@@ -7,7 +7,6 @@ import android.widget.DatePicker;
 
 import androidx.fragment.app.DialogFragment;
 
-import com.example.nalone.ui.evenements.creation.CreateEventFragment;
 import com.example.nalone.ui.evenements.creation.DateEventFragment;
 
 import java.util.Calendar;

@@ -71,14 +71,10 @@ public class CreateGroupFragment extends Fragment {
     private TextInputEditText event_name;
     private TextInputEditText event_resume;
 
-    private CardView cardViewPrivate;
     private ImageView imageViewPrivate;
     private ImageButton imageButtonAddInvit;
 
-    private CardView cardViewPublic;
     private ImageView imageViewPublic;
-
-    private Button buttonValidEvent;
 
     public static List<String> adds = new ArrayList<>();
     public static boolean edit;
@@ -86,18 +82,15 @@ public class CreateGroupFragment extends Fragment {
     private NavController navController;
     private ImageView buttonMoreGroup;
 
-    private RecyclerView mRecyclerView;
     private View rootView;
 
     public static boolean save;
 
-    private ImageView imageGroup;
-
     public static Group groupAttente;
 
-    private int RESULT_LOAD_IMG = 1;
+    private final int RESULT_LOAD_IMG = 1;
 
-    private boolean hasSelectedImage = false;
+    private final boolean hasSelectedImage = false;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -111,10 +104,9 @@ public class CreateGroupFragment extends Fragment {
 
     private void createFragment(){
         navController = Navigation.findNavController(getActivity(),R.id.nav_host_fragment);
-        mRecyclerView = rootView.findViewById(R.id.recyclerViewCreateGroup);
         navController = Navigation.findNavController(getActivity(), R.id.nav_host_fragment);
 
-        imageGroup = rootView.findViewById(R.id.imageGroupCreation);
+        ImageView imageGroup = rootView.findViewById(R.id.imageGroupCreation);
         imageGroup.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -136,15 +128,15 @@ public class CreateGroupFragment extends Fragment {
             groupAttente  = new Group(UUID.randomUUID().toString(), USER.getFirst_name() + " " + USER.getLast_name(), "", "", Visibility.PUBLIC);
         }
 
-        cardViewPrivate = rootView.findViewById(R.id.cardViewPrivate);
-        cardViewPublic = rootView.findViewById(R.id.cardViewPublic);
+        CardView cardViewPrivate = rootView.findViewById(R.id.cardViewPrivate);
+        CardView cardViewPublic = rootView.findViewById(R.id.cardViewPublic);
         imageButtonAddInvit = rootView.findViewById(R.id.buttonMoreGroup);
         imageViewPublic = rootView.findViewById(R.id.imageViewPublic);
         imageViewPrivate = rootView.findViewById(R.id.imageViewPrivate);
 
         event_name = rootView.findViewById(R.id.groupName);
         event_resume = rootView.findViewById(R.id.groupResume);
-        buttonValidEvent = rootView.findViewById(R.id.buttonCreateGroup);
+        Button buttonValidEvent = rootView.findViewById(R.id.buttonCreateGroup);
 
         cardViewPrivate.setOnClickListener(new View.OnClickListener() {
             @Override
