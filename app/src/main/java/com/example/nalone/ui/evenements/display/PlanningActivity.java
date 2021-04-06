@@ -2,9 +2,12 @@ package com.example.nalone.ui.evenements.display;
 
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
@@ -17,7 +20,10 @@ import android.widget.Toast;
 
 import com.android.volley.VolleyError;
 import com.example.nalone.R;
+import com.example.nalone.SmartActivity;
+import com.example.nalone.adapter.EvenementAdapter;
 import com.example.nalone.enumeration.FiltreDate;
+import com.example.nalone.enumeration.StatusEvent;
 import com.example.nalone.enumeration.VisibilityMap;
 import com.example.nalone.json.JSONController;
 import com.example.nalone.json.JSONObjectCrypt;
@@ -26,6 +32,7 @@ import com.example.nalone.listeners.JSONObjectListener;
 import com.example.nalone.objects.Evenement;
 import com.example.nalone.ui.evenements.InfosEvenementsActivity;
 import com.example.nalone.util.Constants;
+import com.example.nalone.util.TimeUtil;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -40,14 +47,16 @@ import java.util.List;
 import static com.example.nalone.enumeration.TypeEvent.*;
 import static com.example.nalone.util.Constants.USER;
 
-public class PlanningActivity extends AppCompatActivity {
+public class PlanningActivity extends SmartActivity {
 
-    private ImageView buttonCalendar, buttonBack,imageTypeEvent,showMoreButton;
-    private TextView nextEventName,nextEventCity,nextEventDate,nextEventTime, nextEventNbMembers, nextEventStatus;
+    private ImageView buttonCalendar;
+    private ImageView imageTypeEvent;
+    private ImageView showMoreButton;
+    private TextView nextEventName,nextEventCity,nextEventDate,nextEventTime, nextEventNbMembers, nextEventStatus,textViewTitleDebut,differenceDate;
     private List<Evenement> eventsSoon, eventsEnd;
     private Evenement nextEvent;
     private LinearLayout linearPlanning,linearNoResult, linearSoon, linearEnd;
-
+    private RecyclerView mRecyclerSoon, mRecyclerEnd;
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
@@ -55,7 +64,9 @@ public class PlanningActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_planning);
         buttonCalendar = findViewById(R.id.buttonCalendar);
-        buttonBack = findViewById(R.id.buttonBack);
+        ImageView buttonBack = findViewById(R.id.buttonBack);
+        textViewTitleDebut = findViewById(R.id.textViewTitleDebut);
+        differenceDate = findViewById(R.id.differenceDate);
         nextEventName = findViewById(R.id.nextEventName);
         nextEventCity = findViewById(R.id.nextEventCity);
         nextEventDate = findViewById(R.id.nextEventDate);
@@ -68,6 +79,10 @@ public class PlanningActivity extends AppCompatActivity {
         linearNoResult = findViewById(R.id.linearNoResult);
         linearEnd = findViewById(R.id.linearEnd);
         linearSoon = findViewById(R.id.linearSoon);
+
+        mRecyclerEnd = findViewById(R.id.recyclerViewEnd);
+        mRecyclerSoon = findViewById(R.id.recyclerViewSoon);
+
         showMoreButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -88,8 +103,11 @@ public class PlanningActivity extends AppCompatActivity {
             }
         });
 
+
+
         callJson();
     }
+
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     private void callJson(){
@@ -143,9 +161,9 @@ public class PlanningActivity extends AppCompatActivity {
                         eventsEnd.add((Evenement) JSONController.convertJSONToObject(jsonArray.getJSONObject(i), Evenement.class));
                     }
                     if(eventsEnd.isEmpty()){
-                       // initRecyclerEnd();
                         linearEnd.setVisibility(View.GONE);
                     }else{
+                        initRecyclerEnd();
                         linearEnd.setVisibility(View.VISIBLE);
                     }
 
@@ -178,12 +196,11 @@ public class PlanningActivity extends AppCompatActivity {
                         eventsSoon.add((Evenement) JSONController.convertJSONToObject(jsonArray.getJSONObject(i), Evenement.class));
                     }
                     if(eventsSoon.isEmpty()){
-                        // initRecyclerEnd();
                         linearSoon.setVisibility(View.GONE);
                     }else{
+                        initRecyclerSoon();
                         linearSoon.setVisibility(View.VISIBLE);
                     }
-
 
                 } catch (JSONException e) {
                     Log.w("Response", "Erreur:"+e.getMessage());
@@ -202,45 +219,29 @@ public class PlanningActivity extends AppCompatActivity {
     }
 
     private void initNextEvent() throws ParseException {
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd hh:mm");
-        String final_date_text = "";
-        nextEventName.setText(nextEvent.getName());
-        nextEventCity.setText(nextEvent.getCity());
-        nextEventNbMembers.setText(nextEvent.getNbMembers()+"");
-        Date date = sdf.parse(nextEvent.getStartDate());
-        String date_text = Constants.formatD.format(date);
-        for (int i = 0; i < date_text.length() - 5; i++) {
-            char character = date_text.charAt(i);
-            if (i == 0) {
-                character = Character.toUpperCase(character);
-            }
-            final_date_text += character;
+        nextEvent.replaceFields(nextEventName,nextEventCity,nextEventNbMembers,nextEventDate,nextEventTime,imageTypeEvent);
+        if(nextEvent.getStatusEvent() == StatusEvent.ENCOURS) {
+            textViewTitleDebut.setText(getResources().getString(R.string.event_start_from));
+        } else if(nextEvent.getStatusEvent() == StatusEvent.BIENTOT){
+            textViewTitleDebut.setText(getResources().getString(R.string.event_start_in));
         }
-        nextEventDate.setText(final_date_text);
-        nextEventTime.setText(cutString(nextEvent.getStartDate(), 5, 11));
-        nextEventName.setText(nextEvent.getName());
-        imageTypeEvent.setImageResource(nextEvent.getImageCategory());
-
+        TimeUtil.differenceDate(new Date(),new SimpleDateFormat("yyyy-MM-dd hh:mm").parse(nextEvent.getStartDate()),differenceDate);
     }
 
-    private String cutString(String s, int length, int start){
-        if(length > s.length()){
-            return null;
-        }
-
-        String temp = "";
-
-        int i = 0;
-        if(start != -1){
-            for(i=start; i<length+start; i++){
-                temp += s.charAt(i);
-            }
-        }else{
-            for(i=0; i<length; i++){
-                temp += s.charAt(i);
-            }
-        }
-        return temp;
+    private void initRecyclerEnd() {
+        EvenementAdapter mAdapterEnd = new EvenementAdapter(this.eventsEnd, R.layout.item_evenement_bis, false);
+        this.mRecyclerEnd.setAdapter(mAdapterEnd);
+        final LinearLayoutManager llm = new LinearLayoutManager(this, RecyclerView.VERTICAL, false);
+        this.mRecyclerEnd.setLayoutManager(llm);
     }
+
+    private void initRecyclerSoon() {
+        EvenementAdapter mAdapterSoon = new EvenementAdapter(this.eventsSoon, R.layout.item_evenement_bis, false);
+        this.mRecyclerSoon.setAdapter(mAdapterSoon);
+        final LinearLayoutManager llm = new LinearLayoutManager(this, RecyclerView.VERTICAL, false);
+        this.mRecyclerSoon.setLayoutManager(llm);
+    }
+
+
 
 }

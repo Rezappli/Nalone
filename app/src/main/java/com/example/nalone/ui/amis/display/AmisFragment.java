@@ -61,11 +61,9 @@ public class AmisFragment extends Fragment {
     private View rootView;
     private RecyclerView mRecyclerView;
     private List<User> friends;
-    private List<UserInvitation> invitations;
+
     private LinearLayout linearSansMesAmis;
     private ProgressBar loading;
-    private CardView cardViewInvits;
-    private TextView textViewNbInvit;
 
 
     @Override
@@ -86,18 +84,11 @@ public class AmisFragment extends Fragment {
         navController = Navigation.findNavController(getActivity(), R.id.nav_host_fragment);
         buttonBack.setVisibility(View.GONE);
         mRecyclerView = rootView.findViewById(R.id.recyclerViewMesAmis);
-        cardViewInvits = rootView.findViewById(R.id.cardViewInvits);
-        textViewNbInvit = rootView.findViewById(R.id.nbInvits);
         SwipeRefreshLayout mSwipeRefreshLayout = rootView.findViewById(R.id.AmisSwipeRefreshLayout);
         loading = rootView.findViewById(R.id.loading);
         ImageView imagePerson = rootView.findViewById(R.id.imagePerson);
 
-        cardViewInvits.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                navController.navigate(R.id.action_navigation_amis_to_navigation_invitations);
-            }
-        });
+
 
         search_bar.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -127,7 +118,6 @@ public class AmisFragment extends Fragment {
         });
 
         getUsers();
-        getInvitations();
         mSwipeRefreshLayout.setRefreshing(false);
     }
 
@@ -170,42 +160,6 @@ public class AmisFragment extends Fragment {
     }
 
 
-    @RequiresApi(api = Build.VERSION_CODES.O)
-    private void getInvitations() {
-        invitations = new ArrayList<>();
-
-        JSONObjectCrypt params = new JSONObjectCrypt();
-        params.addParameter("uid", USER.getUid());
-        params.addParameter("limit", 1); //fix a limit to 10 users
-
-        JSONController.getJsonArrayFromUrl(Constants.URL_FRIENDS_INVITATIONS, getContext(), params, new JSONArrayListener() {
-            @Override
-            public void onJSONReceived(JSONArray jsonArray) {
-                try {
-                    for (int i = 0; i < jsonArray.length(); i++) {
-                        invitations.add((UserInvitation) JSONController.convertJSONToObject(jsonArray.getJSONObject(i), UserInvitation.class));
-                    }
-
-                    if(invitations.size() != 0){
-                        cardViewInvits.setVisibility(View.VISIBLE);
-                    }else{
-                        cardViewInvits.setVisibility(View.GONE);
-                    }
-                    textViewNbInvit.setText(invitations.size());
-                    loading.setVisibility(View.GONE);
-                } catch (JSONException e) {
-                    Log.w("Response", "Erreur:"+e.getMessage());
-                    Toast.makeText(getContext(), getResources().getString(R.string.error), Toast.LENGTH_SHORT).show();
-                }
-            }
-
-            @Override
-            public void onJSONReceivedError(VolleyError volleyError) {
-                Log.w("Response", "Erreur:"+volleyError.toString());
-                Toast.makeText(getContext(), getResources().getString(R.string.error_event), Toast.LENGTH_SHORT).show();
-            }
-        });
-    }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     private void getUsers() {
@@ -247,37 +201,6 @@ public class AmisFragment extends Fragment {
         });
     }
 
-    private class UserViewHolder extends RecyclerView.ViewHolder {
-        private TextView nomInvit;
-        private TextView villePers;
-        private LinearLayout layoutProfil;
-        private ImageView imagePerson;
-        private ImageView button;
-        private CardView cardViewPhotoPerson;
-        public SwipeLayout swipeLayout;
-        public ImageView Delete;
-        public ImageView Appel;
-        public ImageView Share;
-        public ImageButton btnLocation;
-
-        public UserViewHolder(@NonNull View itemView) {
-            super(itemView);
-
-            nomInvit = itemView.findViewById(R.id.nomInvit);
-            villePers = itemView.findViewById(R.id.villePers);
-            layoutProfil = itemView.findViewById(R.id.layoutProfil);
-            imagePerson = itemView.findViewById(R.id.imagePerson);
-            button = itemView.findViewById(R.id.buttonImage);
-            cardViewPhotoPerson = itemView.findViewById(R.id.cardViewPhotoPerson);
-            //
-            swipeLayout = (SwipeLayout) itemView.findViewById(R.id.swipe);
-            Delete = (ImageView) itemView.findViewById(R.id.Delete);
-            Appel = (ImageView) itemView.findViewById(R.id.Appel);
-            Share = (ImageView) itemView.findViewById(R.id.Share);
-            btnLocation = (ImageButton) itemView.findViewById(R.id.btnLocation);
-        }
-
-    }
     public void showPopUpProfil(User u) {
 
         PopupProfilFragment.USER_LOAD = u;

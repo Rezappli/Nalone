@@ -21,7 +21,7 @@ import com.example.nalone.R;
 import com.example.nalone.dialog.SelectDateFragment;
 import com.example.nalone.dialog.TimePickerFragment;
 import com.example.nalone.enumeration.StatusEvent;
-import com.example.nalone.util.Horloge;
+import com.example.nalone.util.TimeUtil;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -200,8 +200,8 @@ public class DateEventFragment extends Fragment {
 
         String tsStart = eventStartDate.getText().toString() + " " + eventStartHoraire.getText().toString();
         String tsEnd = eventEndDate.getText().toString() + " " + eventEndHoraire.getText().toString();
-        StatusEvent seStart = Horloge.verifStatut(new Date(), sdf.parse(tsStart));
-        StatusEvent seEnd = Horloge.verifStatut(new Date(), sdf.parse(tsEnd));
+        StatusEvent seStart = TimeUtil.verifStatut(new Date(), sdf.parse(tsStart));
+        StatusEvent seEnd = TimeUtil.verifStatut(new Date(), sdf.parse(tsEnd));
         if (seStart == StatusEvent.FINI || seStart == StatusEvent.EXPIRE || seEnd == StatusEvent.FINI || seEnd == StatusEvent.EXPIRE) {
             Toast.makeText(getContext(), getResources().getString(R.string.date_in_futur), Toast.LENGTH_SHORT).show();
         } else {

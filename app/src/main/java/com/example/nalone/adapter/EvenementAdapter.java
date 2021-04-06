@@ -2,7 +2,6 @@ package com.example.nalone.adapter;
 
 import android.annotation.SuppressLint;
 import android.graphics.Color;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,20 +14,22 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.nalone.R;
 import com.example.nalone.objects.Evenement;
-import com.example.nalone.ui.evenements.InfosEvenementsActivity;
 import com.example.nalone.util.Constants;
+
+import org.xmlpull.v1.XmlPullParser;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
-public class MapEvenementAdapter extends RecyclerView.Adapter<MapEvenementAdapter.EventViewHolder> {
+public class EvenementAdapter extends RecyclerView.Adapter<EvenementAdapter.EventViewHolder> {
 
     private final SimpleDateFormat sdfDate = new SimpleDateFormat("yyyy-MM-dd");
     private final SimpleDateFormat sdfTransform = new SimpleDateFormat("dd/MM/yyyy");
 
     private final List<Evenement> evenementList;
+    private int item;
 
     private OnItemClickListener mListener;
     private boolean participate;
@@ -42,15 +43,16 @@ public class MapEvenementAdapter extends RecyclerView.Adapter<MapEvenementAdapte
         void onDisplayClick(int position);
     }
 
-    public MapEvenementAdapter(List<Evenement> nearby_events, boolean participate) {
+    public EvenementAdapter(List<Evenement> nearby_events,int view, boolean participate) {
         this.evenementList = nearby_events;
         this.participate = participate;
+        this.item = view;
     }
 
     @NonNull
     @Override
     public EventViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_evenement, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(item, parent, false);
         return new EventViewHolder(view,mListener);
     }
 
@@ -116,10 +118,12 @@ public class MapEvenementAdapter extends RecyclerView.Adapter<MapEvenementAdapte
             this.mVille.setText(e.getCity());
             this.mDate.setText(Constants.getFullDate(d));
             this.mTime.setText(cutString(e.getStartDate(), 5, 11));
-            this.textViewNbMembers.setText(e.getNbMembers() + "");
-            if (e.getPrice() != 0) {
-                this.textViewPrice.setText(e.getPrice() + " €");
-                this.cardViewPrice.setBackgroundColor(Color.parseColor("#335CDD"));
+            if(item != R.layout.item_evenement_bis){
+                this.textViewNbMembers.setText(e.getNbMembers() + "");
+                if (e.getPrice() != 0) {
+                    this.textViewPrice.setText(e.getPrice() + " €");
+                    this.cardViewPrice.setBackgroundColor(Color.parseColor("#335CDD"));
+                }
             }
             imageViewCategory.setImageResource(e.getImageCategory());
         }

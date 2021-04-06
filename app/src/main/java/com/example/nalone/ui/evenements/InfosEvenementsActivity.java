@@ -30,6 +30,7 @@ import com.example.nalone.objects.Evenement;
 import com.example.nalone.R;
 import com.example.nalone.enumeration.StatusEvent;
 import com.example.nalone.util.Constants;
+import com.example.nalone.util.TimeUtil;
 
 import org.json.JSONObject;
 
@@ -238,7 +239,7 @@ public class InfosEvenementsActivity extends AppCompatActivity {
         @Override
         public void run() {
             try {
-                differenceDate(new Date(),sdf.parse(EVENT_LOAD.getStartDate()));
+                TimeUtil.differenceDate(new Date(),sdf.parse(EVENT_LOAD.getStartDate()),diffDate);
                 handler.postDelayed(this,0);
             } catch (ParseException e) {
                 Log.w("Response", "Erreur:"+e.getMessage());
@@ -247,43 +248,6 @@ public class InfosEvenementsActivity extends AppCompatActivity {
         }
     };
 
-
-    public void differenceDate(Date startDate, Date endDate) {
-        long different = endDate.getTime() - startDate.getTime();
-
-        long secondsInMilli = 1000;
-        long minutesInMilli = secondsInMilli * 60;
-        long hoursInMilli = minutesInMilli * 60;
-        long daysInMilli = hoursInMilli * 24;
-
-        long elapsedDays = different / daysInMilli;
-        different = different % daysInMilli;
-
-        long elapsedHours = different / hoursInMilli;
-        different = different % hoursInMilli;
-
-        long elapsedMinutes = different / minutesInMilli;
-        different = different % minutesInMilli;
-
-        long elapsedSeconds = different / secondsInMilli;
-
-        Log.w("date",
-                elapsedDays + "d " + elapsedHours + "h " + elapsedMinutes +"m "+ elapsedSeconds+"secondes ");
-
-        if(elapsedDays < 0 || elapsedHours < 0 || elapsedMinutes < 0 || elapsedSeconds < 0){
-            if(elapsedDays < 0)
-                elapsedDays = elapsedDays*-1;
-            if(elapsedHours < 0 )
-                elapsedHours = elapsedHours*-1;
-            if(elapsedMinutes < 0)
-                elapsedMinutes = elapsedMinutes*-1;
-            if(elapsedSeconds < 0)
-                elapsedSeconds = elapsedSeconds*-1;
-
-
-        }
-        diffDate.setText(elapsedDays + "j " + elapsedHours + "h " + elapsedMinutes +"m "+ elapsedSeconds+"s ");
-    }
 
     private void suppression() {
         final AlertDialog.Builder builder = new AlertDialog.Builder(getBaseContext());

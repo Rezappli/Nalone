@@ -35,60 +35,6 @@
             android:text="@string/aucun_resultat"
             android:visibility="gone" />
 
-        <androidx.cardview.widget.CardView
-            android:id="@+id/cardViewInvits"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="10dp"
-            android:visibility="visible"
-            app:cardElevation="2dp">
-
-            <LinearLayout
-                android:id="@+id/layoutProfil"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginTop="15dp"
-                android:layout_marginBottom="15dp"
-                android:orientation="horizontal"
-                android:padding="5dp">
-
-                <TextView
-                    android:id="@+id/nomInvit"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:layout_marginStart="8dp"
-                    android:layout_weight="0.2"
-                    android:gravity="center_vertical"
-                    android:text="@string/invits"
-                    android:textStyle="bold" />
-
-                <RelativeLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_weight="0.9">
-
-                    <ImageView
-                        android:id="@+id/imageView23"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_centerInParent="true"
-                        app:srcCompat="@drawable/ic_baseline_brightness_invits" />
-
-                    <TextView
-                        android:id="@+id/nbInvits"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_centerInParent="true"
-                        android:text="0"
-                        android:textColor="#FFFFFF" />
-
-                </RelativeLayout>
-
-            </LinearLayout>
-
-        </androidx.cardview.widget.CardView>
-
         <LinearLayout
             android:id="@+id/linearSansMesAmis"
             android:layout_width="match_parent"

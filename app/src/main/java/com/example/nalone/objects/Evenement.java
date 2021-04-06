@@ -1,15 +1,21 @@
 package com.example.nalone.objects;
 
 import android.graphics.drawable.Drawable;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.example.nalone.R;
 import com.example.nalone.enumeration.StatusEvent;
 import com.example.nalone.enumeration.TypeEvent;
 import com.example.nalone.enumeration.Visibility;
 import com.example.nalone.util.Constants;
+import com.example.nalone.util.TimeUtil;
 import com.google.firebase.database.core.view.Event;
 
 import java.io.Serializable;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 public class Evenement implements Serializable {
 
@@ -215,6 +221,27 @@ public class Evenement implements Serializable {
             case GATHER: return R.drawable.event_gather;
         }
         return 0;
+    }
+
+    public void replaceFields(TextView tvName,TextView tvCity,TextView tvNbMembers,TextView tvDate,TextView tvTime, ImageView iv) throws ParseException {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd hh:mm");
+        String final_date_text = "";
+        tvName.setText(this.getName());
+        tvCity.setText(this.getCity());
+        tvNbMembers.setText(this.getNbMembers()+"");
+        Date date = sdf.parse(this.getStartDate());
+        String date_text = Constants.formatD.format(date);
+        for (int i = 0; i < date_text.length() - 5; i++) {
+            char character = date_text.charAt(i);
+            if (i == 0) {
+                character = Character.toUpperCase(character);
+            }
+            final_date_text += character;
+        }
+        tvDate.setText(final_date_text);
+        tvTime.setText(TimeUtil.cutString(this.getStartDate(), 5, 11));
+        tvName.setText(this.getName());
+        iv.setImageResource(this.getImageCategory());
     }
 
     public void setCategory(TypeEvent eventType) {

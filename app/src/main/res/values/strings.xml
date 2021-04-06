@@ -135,7 +135,8 @@
     <string name="couleurCursusParametre"> Couleurs des cursus </string>
     <string name="new_groupe"> Nouveau groupe </string>
     <string name="new_event"> Nouvel évènement </string>
-    <string name="invits"> Invitations </string>
+    <string name="invitFriend"> Demandes d\'ami </string>
+    <string name="invitEvent"> Invitations d\'évènements </string>
     <string name="rejoindre"> Rejoindre </string>
     <string name="voir_plus"> Voir plus</string>
     <string name="voir_membres"> Voir les membres</string>

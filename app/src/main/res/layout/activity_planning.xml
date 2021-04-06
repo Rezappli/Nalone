@@ -6,7 +6,6 @@
 
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white"
     android:orientation="vertical">
 
     <com.google.android.material.appbar.AppBarLayout
@@ -70,6 +69,19 @@
                 android:layout_gravity="center"
                 android:gravity="center"
                 android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/textView32"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="5dp"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginBottom="5dp"
+                    android:gravity="center"
+                    android:text="@string/next"
+                    android:textColor="#000000"
+                    android:textSize="18sp"
+                    android:textStyle="bold|italic" />
 
                 <androidx.cardview.widget.CardView
                     android:id="@+id/cardViewEvent"
@@ -355,6 +367,7 @@
                     android:layout_marginTop="5dp"
                     android:layout_marginBottom="5dp"
                     android:text="@string/bientot"
+                    android:textColor="#000000"
                     android:textSize="18sp"
                     android:textStyle="bold|italic" />
 
@@ -380,6 +393,7 @@
                     android:layout_marginTop="5dp"
                     android:layout_marginBottom="5dp"
                     android:text="@string/terminer"
+                    android:textColor="#000000"
                     android:textSize="18sp"
                     android:textStyle="bold|italic" />
 

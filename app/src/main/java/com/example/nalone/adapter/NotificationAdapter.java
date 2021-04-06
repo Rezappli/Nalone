@@ -8,13 +8,11 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.nalone.R;
-import com.example.nalone.objects.Evenement;
 import com.example.nalone.objects.Notification;
-import com.example.nalone.util.Horloge;
+import com.example.nalone.util.TimeUtil;
 
 import java.util.List;
 
@@ -78,7 +76,7 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
 
         public void update(final Notification n){
             descNotif.setText(n.getMessage());
-            dateNotif.setText(Horloge.verifDay(n.getDate()));
+            dateNotif.setText(TimeUtil.verifDay(n.getDate()));
 
         }
     }

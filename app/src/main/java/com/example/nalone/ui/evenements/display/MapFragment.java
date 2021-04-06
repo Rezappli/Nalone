@@ -4,7 +4,6 @@ package com.example.nalone.ui.evenements.display;
 
 import android.content.Intent;
 import android.graphics.Color;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -15,12 +14,10 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.Animation;
-import android.widget.Button;
 import android.widget.ImageView;
 
 import com.android.volley.VolleyError;
-import com.example.nalone.adapter.MapEvenementAdapter;
+import com.example.nalone.adapter.EvenementAdapter;
 import com.example.nalone.adapter.TypeEventAdapter;
 import com.example.nalone.enumeration.TypeEvent;
 import com.example.nalone.enumeration.VisibilityMap;
@@ -29,11 +26,8 @@ import com.example.nalone.json.JSONController;
 import com.example.nalone.json.JSONObjectCrypt;
 import com.example.nalone.objects.TypeEventObject;
 import com.example.nalone.ui.evenements.InfosEvenementsActivity;
-import com.example.nalone.util.Horloge;
 import com.example.nalone.R;
 import com.example.nalone.util.Constants;
-import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
-import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
@@ -89,7 +83,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
 
     private NavController navController;
 
-    private MapEvenementAdapter adapteSuggestion, adapterPopulaire ;
+    private EvenementAdapter adapteSuggestion, adapterPopulaire ;
     private TypeEventAdapter typeAdapter;
     private static VisibilityMap currentVisibilityMap = VisibilityMap.ALL;
 
@@ -384,11 +378,11 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     }
 
     private void configureSuggestion() {
-        this.adapteSuggestion = new MapEvenementAdapter(this.nearby_events, false);
+        this.adapteSuggestion = new EvenementAdapter(this.nearby_events,R.layout.item_evenement, false);
         this.recyclerViewSuggestion.setAdapter(this.adapteSuggestion);
         final LinearLayoutManager llm = new LinearLayoutManager(getActivity(), RecyclerView.HORIZONTAL, false);
         this.recyclerViewSuggestion.setLayoutManager(llm);
-        adapteSuggestion.setOnItemClickListener(new MapEvenementAdapter.OnItemClickListener() {
+        adapteSuggestion.setOnItemClickListener(new EvenementAdapter.OnItemClickListener() {
             @Override
             public void onDisplayClick(int position) {
                 InfosEvenementsActivity.EVENT_LOAD = nearby_events.get(position);
@@ -400,11 +394,11 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     }
 
     private void configurePopular(){
-        this.adapterPopulaire = new MapEvenementAdapter(this.eventsPopular, false);
+        this.adapterPopulaire = new EvenementAdapter(this.eventsPopular, R.layout.item_evenement,false);
         this.recyclerViewPopular.setAdapter(this.adapterPopulaire);
         final LinearLayoutManager llm1 = new LinearLayoutManager(getActivity(), RecyclerView.HORIZONTAL, false);
         this.recyclerViewPopular.setLayoutManager(llm1);
-        adapterPopulaire.setOnItemClickListener(new MapEvenementAdapter.OnItemClickListener() {
+        adapterPopulaire.setOnItemClickListener(new EvenementAdapter.OnItemClickListener() {
             @Override
             public void onDisplayClick(int position) {
                 InfosEvenementsActivity.EVENT_LOAD = eventsPopular.get(position);

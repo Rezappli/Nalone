@@ -9,10 +9,7 @@
         android:id="@+id/navigation_evenements"
         android:name="com.example.nalone.ui.evenements.display.MapFragment"
         android:label="@string/title_evenements"
-        tools:layout="@layout/fragment_evenements" >
-        <action
-            android:id="@+id/action_navigation_evenements_to_navigation_creations_evenements"
-            app:destination="@id/navigation_creations_evenements" />
+        tools:layout="@layout/fragment_map" >
         <action
             android:id="@+id/action_navigation_evenements_to_navigation_infos_events"
             app:destination="@id/navigation_infos_events" />
@@ -48,15 +45,6 @@
     </fragment>
 
 
-    <fragment
-        android:id="@+id/navigation_creations_evenements"
-        android:name="com.example.nalone.ui.evenements.display.CreationsEvenementsFragment"
-        android:label="@string/title_evenements"
-        tools:layout="@layout/fragment_creations_evenements">
-        <action
-            android:id="@+id/action_navigation_creations_evenements_to_navigation_evenements"
-            app:destination="@id/navigation_evenements" />
-    </fragment>
     <fragment
         android:id="@+id/navigation_recherche_amis"
         android:name="com.example.nalone.ui.recherche.RechercheAmisFragment"
@@ -253,7 +241,7 @@
     <fragment
         android:id="@+id/navigation_invitations"
         android:name="com.example.nalone.ui.amis.display.MesInvitationsFragment"
-        android:label="@string/invits"
+        android:label="@string/invitFriend"
         tools:layout="@layout/fragment_mes_invitations" >
         <action
             android:id="@+id/action_navigation_invitations_to_navigation_amis"
