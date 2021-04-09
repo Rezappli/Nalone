@@ -1,11 +1,6 @@
 package com.example.nalone.ui.evenements;
 
-import androidx.annotation.Nullable;
-import androidx.annotation.RequiresApi;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.cardview.widget.CardView;
-import androidx.recyclerview.widget.RecyclerView;
-
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -21,14 +16,19 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.cardview.widget.CardView;
+
 import com.android.volley.VolleyError;
+import com.example.nalone.R;
+import com.example.nalone.enumeration.StatusEvent;
 import com.example.nalone.enumeration.Visibility;
 import com.example.nalone.json.JSONController;
 import com.example.nalone.json.JSONObjectCrypt;
 import com.example.nalone.listeners.JSONObjectListener;
 import com.example.nalone.objects.Evenement;
-import com.example.nalone.R;
-import com.example.nalone.enumeration.StatusEvent;
 import com.example.nalone.util.Constants;
 import com.example.nalone.util.TimeUtil;
 
@@ -36,23 +36,14 @@ import org.json.JSONObject;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 
 import static com.example.nalone.util.Constants.USER;
 
 public class InfosEvenementsActivity extends AppCompatActivity {
 
-    private SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd hh:mm");
-    private RecyclerView mRecyclerView;
-    private RecyclerView.LayoutManager mLayoutManager;
-    private TextView mTitle;
-    private TextView mDate;
-    private TextView mTimer;
-    private TextView mOwner;
-    private TextView mDescription;
-    private List<String> members = new ArrayList<>();
+    @SuppressLint("SimpleDateFormat")
+    private final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd hh:mm");
 
     public static Evenement EVENT_LOAD;
 
@@ -69,28 +60,27 @@ public class InfosEvenementsActivity extends AppCompatActivity {
     private boolean inscrit;
     private TextView textViewPartager;
     private TextView textViewTitleDebut;
-    private LinearLayout linearButton;
+    private LinearLayout linearButton,linearParticipate;
     private CardView cardViewTermine;
     private LinearLayout linearAnnuler;
     private ImageView buttonBack;
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_infos_evenements);
         createFragment();
         setData();
-
     }
 
     private void createFragment() {
         participants = 0;
-        mTitle = findViewById(R.id.title);
-        mDate = findViewById(R.id.date);
-        mTimer = findViewById(R.id.time);
-        mOwner = findViewById(R.id.owner);
-        mDescription = findViewById(R.id.description);
-        mRecyclerView = findViewById(R.id.recyclerViewMembresInscrits);
+        TextView mTitle = findViewById(R.id.title);
+        TextView mDate = findViewById(R.id.date);
+        TextView mTimer = findViewById(R.id.time);
+        TextView mOwner = findViewById(R.id.owner);
+        TextView mDescription = findViewById(R.id.description);
         textViewNbMembers = findViewById(R.id.textViewNbMembers);
         nbParticipants = findViewById(R.id.nbParticipants);
         buttonInscription = findViewById(R.id.buttonInscription);
@@ -98,6 +88,7 @@ public class InfosEvenementsActivity extends AppCompatActivity {
         textViewPartager = findViewById(R.id.textViewPartager);
         textViewTitleDebut = findViewById(R.id.textViewTitleDebut);
         linearButton = findViewById(R.id.linearButton);
+        linearParticipate = findViewById(R.id.linearParticipate);
         cardViewTermine = findViewById(R.id.cardViewTermine);
         linearAnnuler = findViewById(R.id.linearAnnuler);
         buttonAnnuler = findViewById(R.id.buttonAnnuler);
@@ -170,7 +161,7 @@ public class InfosEvenementsActivity extends AppCompatActivity {
             Toast.makeText(getBaseContext(), getResources().getString(R.string.error), Toast.LENGTH_SHORT).show();
         }
 
-        mTimer.setText(cutString(EVENT_LOAD.getStartDate(), 5, 11));
+        mTimer.setText(cutString(EVENT_LOAD.getStartDate()));
 
         Log.w("STATUS", EVENT_LOAD.getStatusEvent()+"");
         if(EVENT_LOAD.getStatusEvent() == StatusEvent.ENCOURS) {
@@ -287,14 +278,36 @@ public class InfosEvenementsActivity extends AppCompatActivity {
         builder.show();
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     private void setData() {
         if(EVENT_LOAD.getOwner_uid().equalsIgnoreCase(USER.getUid())){
             inscrit = true;
-            textViewInscription.setText(getResources().getString(R.string.unregister));
-            buttonInscription.setImageDrawable(getResources().getDrawable(R.drawable.inscrit_oui_50));
+            linearParticipate.setVisibility(View.GONE);
             linearAnnuler.setVisibility(View.VISIBLE);
             linearButton.setVisibility(View.VISIBLE);
         }
+
+        JSONObjectCrypt params = new JSONObjectCrypt();
+        params.addParameter("uid", USER.getUid());
+        params.addParameter("uid_event", EVENT_LOAD.getUid());
+
+        JSONController.getJsonObjectFromUrl(Constants.URL_EVENT_ISREGISTERED, getBaseContext(), params, new JSONObjectListener() {
+            @SuppressLint("UseCompatLoadingForDrawables")
+            @Override
+            public void onJSONReceived(JSONObject jsonObject) {
+                inscrit = true;
+                textViewInscription.setText(getResources().getString(R.string.unregister));
+                buttonInscription.setImageDrawable(getResources().getDrawable(R.drawable.inscrit_oui_50));
+            }
+
+            @SuppressLint("UseCompatLoadingForDrawables")
+            @Override
+            public void onJSONReceivedError(VolleyError volleyError) {
+                inscrit = false;
+                textViewInscription.setText(getResources().getString(R.string.register));
+                buttonInscription.setImageDrawable(getResources().getDrawable(R.drawable.inscrit_50));
+            }
+        });
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
@@ -376,23 +389,23 @@ public class InfosEvenementsActivity extends AppCompatActivity {
         super.onResume();
     }
 
-    private String cutString(String s, int length, int start){
-        if(length > s.length()){
+    private String cutString(String s){
+        if(5 > s.length()){
             return null;
         }
 
-        String temp = "";
+        StringBuilder temp = new StringBuilder();
 
         int i = 0;
-        if(start != -1){
-            for(i=start; i<length+start; i++){
-                temp += s.charAt(i);
+        if(11 != -1){
+            for(i= 11; i< 5 + 11; i++){
+                temp.append(s.charAt(i));
             }
         }else{
-            for(i=0; i<length; i++){
-                temp += s.charAt(i);
+            for(i=0; i< 5; i++){
+                temp.append(s.charAt(i));
             }
         }
-        return temp;
+        return temp.toString();
     }
 }

@@ -117,6 +117,7 @@ public class Constants {
     public static String URL_USER_WHITHOUT_ME = "http://api.nolonely.fr:53000/get_users.php";
     public static String URL_MY_FRIENDS = "http://api.nolonely.fr:53000/get_friends.php";
     public static String URL_EVENT_DATE = "http://api.nolonely.fr:53000/get_event_date.php";
+    public static String URL_EVENT_ISREGISTERED = "http://api.nolonely.fr:53000/isRegistered.php";
     public static String URL_EVENT_NEXT = "http://api.nolonely.fr:53000/get_next_event.php";
     public static String URL_EVENT_POPULAR = "http://api.nolonely.fr:53000/get_event_popular.php";
     public static String URL_EVENT_FILTRE = "http://api.nolonely.fr:53000/get_event_filtre.php";
