@@ -9,14 +9,17 @@
     <string name="participer"> Participer</string>
     <string name="desinscriptionButton">Se désinscrire </string>
     <string name="buttonConnexion"> Se connecter </string>
-    <string name="titleSignUpOne"> Qui êtes-vous ? </string>
-    <string name="titleSignUpTwo"> Inscription (2/3) </string>
+    <string name="titleSignUpOne"> Coordonnées </string>
+    <string name="titleSignUpTwo"> Localisation </string>
+    <string name="titleSignUpContact"> Contact </string>
+    <string name="titleSignUpLogin"> Moyen de connexion </string>
     <string name="titleSignUpThree"> Profil </string>
     <string name="homme"> Homme </string>
     <string name="femme"> Femme </string>
     <string name="nom"> Nom </string>
     <string name="prenom"> Prenom </string>
     <string name="ville"> Ville </string>
+    <string name="pays"> Pays </string>
     <string name="adresse"> Adresse </string>
     <string name="date"> Date de naissance (JJ/MM/YYYY) </string>
     <string name="departement"> Département </string>
@@ -258,7 +261,7 @@
     <string name="filter_date_week"> Cette semaine </string>
     <string name="filter_date_month"> Ce mois </string>
     <string name="filter_date_choose"> Choisir une date </string>
-    
+
     <!--Strings for BottomParticipate -->
     <string name="amount">Quantité</string>
     <string name="CGU_participation"> En validant votre participation, vous accceptez les
@@ -289,7 +292,6 @@
     <string name="enter_password_error"> Entrer votre mot de passe </string>
     <string name="not_register"> Vous n\'êtes pas encore inscrit ! </string>
     <string name="mail_or_password_incorrect"> Vous n\'êtes pas encore inscrit ! </string>
-
 
 
 </resources>

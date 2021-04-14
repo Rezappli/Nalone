@@ -21,6 +21,7 @@ import com.example.nalone.json.JSONObjectCrypt;
 import com.example.nalone.listeners.JSONObjectListener;
 import com.example.nalone.objects.User;
 import com.example.nalone.signUpActivities.SignUpInformationActivity;
+import com.example.nalone.signUpActivities.SignUpMainActivity;
 import com.example.nalone.util.Constants;
 import com.example.nalone.util.CryptoUtils;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
@@ -96,7 +97,7 @@ public class MainActivity extends AppCompatActivity{
         textViewSinscrire.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivityForResult(new Intent(getBaseContext(), SignUpInformationActivity.class), 0);
+                startActivityForResult(new Intent(getBaseContext(), SignUpMainActivity.class), 0);
             }
         });
 
@@ -237,7 +238,7 @@ public class MainActivity extends AppCompatActivity{
                                         if(!task.getResult().isEmpty()) {
                                             currentUser = mAuth.getCurrentUser();
                                         }else{
-                                            startActivity(new Intent(MainActivity.this, SignUpInformationActivity.class));
+                                            startActivity(new Intent(MainActivity.this, SignUpMainActivity.class));
                                             Toast.makeText(MainActivity.this, getResources().getString(R.string.not_register), Toast.LENGTH_SHORT).show();
                                         }
                                     }else{

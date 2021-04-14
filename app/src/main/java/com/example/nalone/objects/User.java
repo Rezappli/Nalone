@@ -38,6 +38,12 @@ public class User {
 
     public User(){}
 
+    public User(String uid){
+        this.uid = uid;
+    }
+
+
+
     public User(String uid, String last_name, String first_name, String sex, String city,
                 String number, String mail,
                 String description, String birthday_date){

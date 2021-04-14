@@ -1,0 +1,188 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".signUpActivities.SignUpMainActivity">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:orientation="horizontal">
+
+        <View
+            android:id="@+id/view2"
+            android:layout_width="match_parent"
+            android:layout_height="18dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginBottom="40dp"
+            android:layout_weight="1"
+            android:background="@drawable/custom_stepview" />
+
+        <androidx.cardview.widget.CardView
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_marginTop="4dp"
+            app:cardBackgroundColor="#00E9FD"
+            app:cardCornerRadius="20dp">
+
+            <androidx.cardview.widget.CardView
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_gravity="center"
+                android:background="@drawable/custom_stepview"
+                app:cardBackgroundColor="#FFFFFF"
+                app:cardCornerRadius="15dp">
+
+                <ImageView
+                    android:id="@+id/stepOne"
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
+                    android:layout_gravity="center"
+                    android:contentDescription="@string/TODO"
+                    app:srcCompat="@drawable/step_one" />
+            </androidx.cardview.widget.CardView>
+
+        </androidx.cardview.widget.CardView>
+
+        <View
+            android:id="@+id/view6"
+            android:layout_width="match_parent"
+            android:layout_height="18dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginBottom="40dp"
+            android:layout_weight="1"
+            android:background="#aaaaaa" />
+
+        <androidx.cardview.widget.CardView
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_marginTop="4dp"
+            app:cardBackgroundColor="#aaaaaa"
+            app:cardCornerRadius="20dp">
+
+            <androidx.cardview.widget.CardView
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_gravity="center"
+                android:background="@drawable/custom_stepview"
+                app:cardBackgroundColor="#FFFFFF"
+                app:cardCornerRadius="15dp">
+
+                <ImageView
+                    android:id="@+id/imageView8"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:contentDescription="@string/TODO"
+                    app:srcCompat="@drawable/step_four" />
+            </androidx.cardview.widget.CardView>
+
+        </androidx.cardview.widget.CardView>
+
+        <View
+            android:id="@+id/view7"
+            android:layout_width="match_parent"
+            android:layout_height="18dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginBottom="40dp"
+            android:layout_weight="1"
+            android:background="#aaaaaa" />
+
+        <androidx.cardview.widget.CardView
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_marginTop="4dp"
+            app:cardBackgroundColor="#aaaaaa"
+            app:cardCornerRadius="20dp">
+
+            <androidx.cardview.widget.CardView
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_gravity="center"
+                android:background="@drawable/custom_stepview"
+                app:cardBackgroundColor="#FFFFFF"
+                app:cardCornerRadius="15dp">
+
+                <ImageView
+                    android:id="@+id/imageView6"
+                    android:layout_width="35dp"
+                    android:layout_height="35dp"
+                    android:layout_gravity="center"
+                    android:contentDescription="@string/TODO"
+                    app:srcCompat="@drawable/step_two" />
+            </androidx.cardview.widget.CardView>
+
+        </androidx.cardview.widget.CardView>
+
+        <View
+            android:id="@+id/view9"
+            android:layout_width="match_parent"
+            android:layout_height="18dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginBottom="40dp"
+            android:layout_weight="1"
+            android:background="#aaaaaa" />
+
+        <androidx.cardview.widget.CardView
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_marginTop="4dp"
+            app:cardBackgroundColor="#aaaaaa"
+            app:cardCornerRadius="20dp">
+
+            <androidx.cardview.widget.CardView
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_gravity="center"
+                android:background="@drawable/custom_stepview"
+                app:cardBackgroundColor="#FFFFFF"
+                app:cardCornerRadius="15dp">
+
+                <ImageView
+                    android:id="@+id/imageView4"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:layout_gravity="center"
+                    android:contentDescription="@string/TODO"
+                    app:srcCompat="@drawable/step_three" />
+            </androidx.cardview.widget.CardView>
+
+        </androidx.cardview.widget.CardView>
+
+        <View
+            android:id="@+id/view16"
+            android:layout_width="match_parent"
+            android:layout_height="18dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginBottom="40dp"
+            android:layout_weight="1"
+            android:background="#aaaaaa" />
+
+    </LinearLayout>
+
+    <fragment
+        android:id="@+id/nav_host_sign_up"
+        android:name="androidx.navigation.fragment.NavHostFragment"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        app:navGraph="@navigation/signup_navigation" >
+    </fragment>
+
+    <Button
+        android:id="@+id/signUpNext"
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|center"
+        android:layout_marginBottom="60dp"
+        android:background="@drawable/custom_button_simple"
+        android:onClick="next"
+        android:text="@string/suivant"
+        android:textAllCaps="false"
+        android:textColor="#FFFFFF"
+        android:textSize="25sp" />
+
+</LinearLayout>

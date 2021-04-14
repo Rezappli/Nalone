@@ -28,7 +28,8 @@
         android:roundIcon="@mipmap/ic_logo_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme.NoActionBar">
-        <activity android:name=".ui.evenements.display.SearchEventActivity"></activity>
+        <activity android:name=".signUpActivities.SignUpMainActivity"></activity>
+        <activity android:name=".ui.evenements.display.SearchEventActivity" />
         <activity android:name=".ui.evenements.display.PlanningActivity" />
         <activity android:name=".ui.evenements.display.EventPlanningActivity" />
         <activity android:name=".ui.profil.ProfilActivity" />

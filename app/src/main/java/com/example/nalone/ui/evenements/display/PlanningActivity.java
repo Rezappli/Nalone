@@ -1,18 +1,14 @@
 package com.example.nalone.ui.evenements.display;
 
 import androidx.annotation.RequiresApi;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.annotation.SuppressLint;
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -20,15 +16,12 @@ import android.widget.Toast;
 
 import com.android.volley.VolleyError;
 import com.example.nalone.R;
-import com.example.nalone.SmartActivity;
+import com.example.nalone.NoLonelyActivity;
 import com.example.nalone.adapter.EvenementAdapter;
-import com.example.nalone.enumeration.FiltreDate;
 import com.example.nalone.enumeration.StatusEvent;
-import com.example.nalone.enumeration.VisibilityMap;
 import com.example.nalone.json.JSONController;
 import com.example.nalone.json.JSONObjectCrypt;
 import com.example.nalone.listeners.JSONArrayListener;
-import com.example.nalone.listeners.JSONObjectListener;
 import com.example.nalone.objects.Evenement;
 import com.example.nalone.ui.evenements.InfosEvenementsActivity;
 import com.example.nalone.util.Constants;
@@ -36,7 +29,6 @@ import com.example.nalone.util.TimeUtil;
 
 import org.json.JSONArray;
 import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -44,10 +36,9 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import static com.example.nalone.enumeration.TypeEvent.*;
 import static com.example.nalone.util.Constants.USER;
 
-public class PlanningActivity extends SmartActivity {
+public class PlanningActivity extends NoLonelyActivity {
 
     private ImageView buttonCalendar;
     private ImageView imageTypeEvent;
