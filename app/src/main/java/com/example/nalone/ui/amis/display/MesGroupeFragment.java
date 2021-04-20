@@ -9,17 +9,17 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 
+import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.nalone.NoLonelyApp.NoLonelyFragment;
+import com.example.nalone.R;
 import com.example.nalone.json.JSONObjectCrypt;
 import com.example.nalone.objects.Group;
-import com.example.nalone.R;
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 
-public class MesGroupeFragment extends NoLonelyFragment {
+public class MesGroupeFragment extends Fragment {
 
 
     private NavController navController;
@@ -33,11 +33,11 @@ public class MesGroupeFragment extends NoLonelyFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        rootView =  inflater.inflate(R.layout.fragment_mes_groupe, container, false);
+        rootView = inflater.inflate(R.layout.fragment_mes_groupe, container, false);
         return rootView;
     }
 
-    public void createFragment(){
+    public void createFragment() {
         Log.w("MesGroupes", "Call");
         mRecyclerView = rootView.findViewById(R.id.recyclerViewGroupe);
         addGroup = rootView.findViewById(R.id.create_group_button);
@@ -53,7 +53,7 @@ public class MesGroupeFragment extends NoLonelyFragment {
         });
     }
 
-    private void getMyGroups(){
+    private void getMyGroups() {
         JSONObjectCrypt params = new JSONObjectCrypt();
     }
 

@@ -1,8 +1,5 @@
 package com.example.nalone.signUpActivities;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.cardview.widget.CardView;
-
 import android.app.Dialog;
 import android.content.Intent;
 import android.graphics.Color;
@@ -18,6 +15,9 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.cardview.widget.CardView;
+
 import com.example.nalone.MainActivity;
 import com.example.nalone.R;
 import com.example.nalone.objects.User;
@@ -25,7 +25,6 @@ import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.material.textfield.TextInputEditText;
-import com.google.firebase.firestore.GeoPoint;
 
 import java.io.IOException;
 import java.util.Calendar;
@@ -33,6 +32,7 @@ import java.util.List;
 import java.util.UUID;
 
 public class SignUpInformationActivity extends AppCompatActivity {
+
     public TextInputEditText nom;
     public TextInputEditText prenom;
     public TextInputEditText ville;
@@ -70,24 +70,23 @@ public class SignUpInformationActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_sign_up_information);
+        // setContentView(R.layout.activity_sign_up_information);
 
         dialogCalendrier = new Dialog(this);
 
         user = null;
 
         buttonSignUpNext = (Button) findViewById(R.id.signUpNext);
-        nom =  (TextInputEditText) findViewById(R.id.signupNom);
-        prenom = (TextInputEditText)  findViewById(R.id.signupPrenom);
-        ville = (TextInputEditText)  findViewById(R.id.signupVille);
-        numero = (TextInputEditText)  findViewById(R.id.signupNumero);
+        nom = (TextInputEditText) findViewById(R.id.signupNom);
+        prenom = (TextInputEditText) findViewById(R.id.signupPrenom);
+        //ville = (TextInputEditText) findViewById(R.id.signupVille);
+        numero = (TextInputEditText) findViewById(R.id.signupNumero);
         adresseMail = (TextInputEditText) findViewById(R.id.signupMail);
-        dateNaissance = (TextInputEditText) findViewById(R.id.signupDate);
+        //dateNaissance = (TextInputEditText) findViewById(R.id.signupDate);
 
-
-        pass =  (TextInputEditText) findViewById(R.id.signupPass);
-        confirmPass = (TextInputEditText)  findViewById(R.id.signupConfirmPass);
-        homme =  findViewById(R.id.signUpHomme);
+        pass = (TextInputEditText) findViewById(R.id.signupPass);
+        confirmPass = (TextInputEditText) findViewById(R.id.signupConfirmPass);
+        homme = findViewById(R.id.signUpHomme);
         femme = findViewById(R.id.signUpFemme);
         imageF = findViewById(R.id.imageFemme);
         imageH = findViewById(R.id.imageHomme);
@@ -95,7 +94,7 @@ public class SignUpInformationActivity extends AppCompatActivity {
         textH = findViewById(R.id.textHomme);
 
         final GoogleSignInAccount acct = GoogleSignIn.getLastSignedInAccount(this);
-        if(acct != null){
+        if (acct != null) {
             nom.setText(acct.getFamilyName());
             prenom.setText(acct.getDisplayName());
             adresseMail.setText(acct.getEmail());
@@ -147,75 +146,73 @@ public class SignUpInformationActivity extends AppCompatActivity {
                 String confirmPassEntre = confirmPass.getText().toString();
 
 
+                if (bHomme == false && bFemme == false) {
+                    imageH.setImageResource(R.drawable.signup_homme_erreur);
+                    imageF.setImageResource(R.drawable.signup_femme_erreur);
+                    textF.setTextColor(Color.RED);
+                    textH.setTextColor(Color.RED);
+                    Toast.makeText(getApplicationContext(), "Selectionnez votre sexe", Toast.LENGTH_LONG).show();
+                    return;
+                }
 
-
-               if(bHomme == false && bFemme == false){
-                   imageH.setImageResource(R.drawable.signup_homme_erreur);
-                   imageF.setImageResource(R.drawable.signup_femme_erreur);
-                   textF.setTextColor(Color.RED);
-                   textH.setTextColor(Color.RED);
-                   Toast.makeText(getApplicationContext(), "Selectionnez votre sexe", Toast.LENGTH_LONG).show();
-                   return;
-               }
-
-                if (nomEntre.matches("")){
+                if (nomEntre.matches("")) {
                     nom.setError("Entrez votre nom", customErrorDrawable);
                     return;
                 }
 
-                if (prenomEntre.matches("")){
-                    prenom.setError("Entrez votre prénom",customErrorDrawable);
+                if (prenomEntre.matches("")) {
+                    prenom.setError("Entrez votre prénom", customErrorDrawable);
                     return;
                 }
 
-                if (villeEntre.matches("")){
-                    ville.setError("Entrez votre ville",customErrorDrawable);
+                if (villeEntre.matches("")) {
+                    ville.setError("Entrez votre ville", customErrorDrawable);
                     return;
                 }
 
-                if (numeroEntre.matches("")){
-                    numero.setError("Entrez votre numéro de téléphone",customErrorDrawable);
+                if (numeroEntre.matches("")) {
+                    numero.setError("Entrez votre numéro de téléphone", customErrorDrawable);
                     return;
                 }
 
-                if(mailEntre.matches("")){
-                    adresseMail.setError("Entrez votre adresse mail",customErrorDrawable);
+                if (mailEntre.matches("")) {
+                    adresseMail.setError("Entrez votre adresse mail", customErrorDrawable);
                     return;
                 }
 
-                if(passEntre.matches("")){
-                    pass.setError("Entrez votre mot de passe",customErrorDrawable);
+                if (passEntre.matches("")) {
+                    pass.setError("Entrez votre mot de passe", customErrorDrawable);
                     return;
                 }
 
-                if(passEntre.contains(confirmPassEntre)){
+                if (passEntre.contains(confirmPassEntre)) {
                     password = confirmPassEntre;
-                }else{
-                    confirmPass.setError("Le mot de passe ne correspond pas",customErrorDrawable);
+                } else {
+                    confirmPass.setError("Le mot de passe ne correspond pas", customErrorDrawable);
                     return;
                 }
 
                 LatLng pos = null;
 
-                try{
+                try {
                     pos = getLocationFromAddress(villeEntre);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
 
-                if(pos == null){
+                if (pos == null) {
                     ville.setError("Impossible de trouver ce lieu", customErrorDrawable);
                     return;
                 }
-              String sexe = "";
+                String sexe = "";
 
-              if(bHomme){
-                  sexe = "Homme";
-              }
+                if (bHomme) {
+                    sexe = "Homme";
+                }
 
-              if(bFemme){
-                  sexe = "Femme";
-              }
+                if (bFemme) {
+                    sexe = "Femme";
+                }
 
                 user = new User(UUID.randomUUID().toString(), nomEntre, prenomEntre, sexe, villeEntre, numeroEntre, mailEntre, "", dateNaissance.getText().toString());
                 user.setLatitude(pos.latitude);
@@ -233,13 +230,13 @@ public class SignUpInformationActivity extends AppCompatActivity {
     }
 
     @Override
-    public void onBackPressed(){
+    public void onBackPressed() {
         //super.onBackPressed();
         Intent intent = new Intent(getBaseContext(), MainActivity.class);
         startActivity(intent);
     }
 
-    public void showCalendrier(final View v){
+    public void showCalendrier(final View v) {
         dialogCalendrier.setContentView(R.layout.calendrier);
         calendarDate = dialogCalendrier.findViewById(R.id.calendarView);
         buttonCalendrier = dialogCalendrier.findViewById(R.id.buttonCalendrier);
@@ -262,11 +259,10 @@ public class SignUpInformationActivity extends AppCompatActivity {
         buttonCalendrier.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                dateNaissance.setText(newDay+"-"+newMonth+"-"+newYears);
+                dateNaissance.setText(newDay + "-" + newMonth + "-" + newYears);
                 dialogCalendrier.dismiss();
             }
         });
-
 
 
         dialogCalendrier.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
@@ -286,10 +282,10 @@ public class SignUpInformationActivity extends AppCompatActivity {
                 return null;
             }
 
-            if(address.size() > 0) {
+            if (address.size() > 0) {
                 Address location = address.get(0);
                 p1 = new LatLng(location.getLatitude(), location.getLongitude());
-            }else{
+            } else {
                 return null;
             }
 

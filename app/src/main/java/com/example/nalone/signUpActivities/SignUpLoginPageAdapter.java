@@ -14,12 +14,12 @@ public class SignUpLoginPageAdapter extends FragmentPagerAdapter {
 
     @Override
     public int getCount() {
-        return(3);
+        return (2);
     }
 
     @Override
     public Fragment getItem(int position) {
-        switch (position){
+        switch (position) {
             case 0: //Page number 1
                 return SignUpLoginMailFragment.newInstance();
             case 1: //Page number 2
@@ -31,7 +31,7 @@ public class SignUpLoginPageAdapter extends FragmentPagerAdapter {
 
     @Override
     public CharSequence getPageTitle(int position) {
-        switch (position){
+        switch (position) {
             case 0: //Page number 1
                 return "Mail";
             case 1: //Page number 2

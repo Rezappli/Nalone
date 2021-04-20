@@ -1,31 +1,45 @@
 package com.example.nalone.signUpActivities;
 
-import androidx.appcompat.app.AppCompatActivity;
+import android.os.Bundle;
+import android.view.View;
+
 import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.fragment.NavHostFragment;
 
-import android.os.Bundle;
-import android.util.Log;
-import android.view.View;
-
 import com.example.nalone.NoLonelyActivity;
 import com.example.nalone.R;
 import com.example.nalone.objects.User;
 
-import java.util.UUID;
-
 public class SignUpMainActivity extends NoLonelyActivity {
 
+    public static String userName;
+    public static String userSurname;
+    public static String userCity;
+    public static String userTel;
+    public static String userMail;
+    public static String userPassword;
+    public static String userSex;
+
     private NavController navController;
-    public static User currentUser;
+
+    private User currentUser;
+
+    private SignUpInfosFragment signUpInfosFragment;
+    private SignUpContactFragment signUpContactFragment;
+    private SignUpLocationFragment signUpLocationFragment;
+    private SignUpLoginFragment signUpLoginFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        super.contentView = R.layout.activity_sign_up_main;
-        navController = Navigation.findNavController(this,R.id.nav_host_sign_up);
+        setContentView(R.layout.activity_sign_up_main);
+        navController = Navigation.findNavController(this, R.id.nav_host_sign_up);
+        signUpContactFragment = SignUpContactFragment.newInstance();
+        signUpInfosFragment = SignUpInfosFragment.newInstance();
+        signUpLocationFragment = SignUpLocationFragment.newInstance();
+        signUpLoginFragment = SignUpLoginFragment.newInstance();
     }
 
     @Override
@@ -49,11 +63,11 @@ public class SignUpMainActivity extends NoLonelyActivity {
 
     }
 
-    public void next(View view){
+    public void next(View view) {
         NavHostFragment navHostFragment = (NavHostFragment) getSupportFragmentManager().findFragmentById(R.id.nav_host_sign_up);
 
-        for (Fragment fragment : navHostFragment.getChildFragmentManager().getFragments()){
-            if (fragment.getClass().equals(SignUpInfosFragment.class)) {
+        for (Fragment fragment : navHostFragment.getChildFragmentManager().getFragments()) {
+            if (fragment.getClass().equals(SignUpInfosFragment.class) && SignUpInfosFragment.checkValidity()) {
                 navController.navigate(R.id.action_signUpInfosFragment_to_signUpLocationFragment);
             }
             if (fragment.getClass().equals(SignUpLocationFragment.class)) {

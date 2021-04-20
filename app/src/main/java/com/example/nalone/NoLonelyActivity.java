@@ -1,19 +1,19 @@
 package com.example.nalone;
 
+import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
-public class NoLonelyActivity extends AppCompatActivity {
+public abstract class NoLonelyActivity extends AppCompatActivity {
 
     protected int contentView;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         super.onCreate(savedInstanceState);
-        if(contentView != -1)
-            setContentView(contentView);
     }
 
     @Override

@@ -16,8 +16,6 @@ import com.example.nalone.R;
 import com.example.nalone.objects.Evenement;
 import com.example.nalone.util.Constants;
 
-import org.xmlpull.v1.XmlPullParser;
-
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -34,16 +32,15 @@ public class EvenementAdapter extends RecyclerView.Adapter<EvenementAdapter.Even
     private OnItemClickListener mListener;
     private boolean participate;
 
-    public void setOnItemClickListener(OnItemClickListener listener){
-        mListener= listener;
+    public void setOnItemClickListener(OnItemClickListener listener) {
+        mListener = listener;
     }
-
 
     public interface OnItemClickListener {
         void onDisplayClick(int position);
     }
 
-    public EvenementAdapter(List<Evenement> nearby_events,int view, boolean participate) {
+    public EvenementAdapter(List<Evenement> nearby_events, int view, boolean participate) {
         this.evenementList = nearby_events;
         this.participate = participate;
         this.item = view;
@@ -53,7 +50,7 @@ public class EvenementAdapter extends RecyclerView.Adapter<EvenementAdapter.Even
     @Override
     public EventViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(item, parent, false);
-        return new EventViewHolder(view,mListener);
+        return new EventViewHolder(view, mListener);
     }
 
     @Override
@@ -79,8 +76,8 @@ public class EvenementAdapter extends RecyclerView.Adapter<EvenementAdapter.Even
         public TextView mTime;
         public TextView mVille;
         //public TextView mDescription;
-        public CardView textViewAfficher,  cardViewPrice;
-        public  TextView textViewNbMembers,textViewPrice;
+        public CardView textViewAfficher, cardViewPrice;
+        public TextView textViewNbMembers, textViewPrice;
         public ImageView imageViewCategory;
 
         public EventViewHolder(@NonNull View itemView, final OnItemClickListener listener) {
@@ -101,9 +98,9 @@ public class EvenementAdapter extends RecyclerView.Adapter<EvenementAdapter.Even
             this.textViewAfficher.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if(mListener != null){
+                    if (mListener != null) {
                         int position = getAdapterPosition();
-                        if(position != RecyclerView.NO_POSITION){
+                        if (position != RecyclerView.NO_POSITION) {
                             listener.onDisplayClick(position);
                         }
                     }
@@ -118,7 +115,7 @@ public class EvenementAdapter extends RecyclerView.Adapter<EvenementAdapter.Even
             this.mVille.setText(e.getCity());
             this.mDate.setText(Constants.getFullDate(d));
             this.mTime.setText(cutString(e.getStartDate(), 5, 11));
-            if(item != R.layout.item_evenement_bis){
+            if (item != R.layout.item_evenement_bis) {
                 this.textViewNbMembers.setText(e.getNbMembers() + "");
                 if (e.getPrice() != 0) {
                     this.textViewPrice.setText(e.getPrice() + " €");
@@ -130,20 +127,20 @@ public class EvenementAdapter extends RecyclerView.Adapter<EvenementAdapter.Even
     }
 
 
-    private String cutString(String s, int length, int start){
-        if(length > s.length()){
+    private String cutString(String s, int length, int start) {
+        if (length > s.length()) {
             return null;
         }
 
         String temp = "";
 
         int i = 0;
-        if(start != -1){
-            for(i=start; i<length+start; i++){
+        if (start != -1) {
+            for (i = start; i < length + start; i++) {
                 temp += s.charAt(i);
             }
-        }else{
-            for(i=0; i<length; i++){
+        } else {
+            for (i = 0; i < length; i++) {
                 temp += s.charAt(i);
             }
         }

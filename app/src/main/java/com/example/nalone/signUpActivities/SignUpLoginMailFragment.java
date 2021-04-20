@@ -1,12 +1,11 @@
 package com.example.nalone.signUpActivities;
 
 import android.os.Bundle;
-
-import androidx.fragment.app.Fragment;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
+import androidx.fragment.app.Fragment;
 
 import com.example.nalone.R;
 
@@ -32,6 +31,8 @@ public class SignUpLoginMailFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
+        //android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches();
+
         return inflater.inflate(R.layout.fragment_sign_up_login_mail, container, false);
     }
 }
