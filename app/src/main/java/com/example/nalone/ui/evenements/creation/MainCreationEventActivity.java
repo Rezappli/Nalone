@@ -11,7 +11,6 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -30,7 +29,6 @@ import com.example.nalone.json.JSONController;
 import com.example.nalone.json.JSONObjectCrypt;
 import com.example.nalone.listeners.JSONObjectListener;
 import com.example.nalone.objects.Evenement;
-import com.example.nalone.ui.NotificationActivity;
 import com.example.nalone.util.Constants;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 
@@ -348,22 +346,22 @@ public class MainCreationEventActivity extends AppCompatActivity {
     public static void createEvent(final Context context) {
         String imageData;
         JSONObjectCrypt params = new JSONObjectCrypt();
-        params.addParameter("uid", USER.getUid());
-        params.addParameter("uid_event", currentEvent.getUid());
-        params.addParameter("address", currentEvent.getAddress());
-        params.addParameter("city", currentEvent.getCity());
-        params.addParameter("description", currentEvent.getDescription());
-        params.addParameter("startDate", currentEvent.getStartDate());
-        params.addParameter("endDate", currentEvent.getEndDate());
-        params.addParameter("visibility", currentEvent.getVisibility());
-        params.addParameter("latitude", currentEvent.getLatitude());
-        params.addParameter("longitude", currentEvent.getLongitude());
-        params.addParameter("name", currentEvent.getName());
-        params.addParameter("ownerFirstName", USER.getFirst_name());
-        params.addParameter("ownerLastName", USER.getLast_name());
-        params.addParameter("nbMembers", currentEvent.getNbMembers());
-        params.addParameter("category", currentEvent.getCategory());
-        params.addParameter("price", currentEvent.getPrice());
+        params.putCryptParameter("uid", USER.getUid());
+        params.putCryptParameter("uid_event", currentEvent.getUid());
+        params.putCryptParameter("address", currentEvent.getAddress());
+        params.putCryptParameter("city", currentEvent.getCity());
+        params.putCryptParameter("description", currentEvent.getDescription());
+        params.putCryptParameter("startDate", currentEvent.getStartDate());
+        params.putCryptParameter("endDate", currentEvent.getEndDate());
+        params.putCryptParameter("visibility", currentEvent.getVisibility());
+        params.putCryptParameter("latitude", currentEvent.getLatitude());
+        params.putCryptParameter("longitude", currentEvent.getLongitude());
+        params.putCryptParameter("name", currentEvent.getName());
+        params.putCryptParameter("ownerFirstName", USER.getFirst_name());
+        params.putCryptParameter("ownerLastName", USER.getLast_name());
+        params.putCryptParameter("nbMembers", currentEvent.getNbMembers());
+        params.putCryptParameter("category", currentEvent.getCategory());
+        params.putCryptParameter("price", currentEvent.getPrice());
 
         try {
             imageData = new String(getBytes(activity, image), StandardCharsets.UTF_8);

@@ -3,15 +3,6 @@ package com.example.nalone.ui.evenements.creation;
 import android.annotation.SuppressLint;
 import android.os.Build;
 import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.RequiresApi;
-import androidx.cardview.widget.CardView;
-import androidx.fragment.app.Fragment;
-import androidx.navigation.NavController;
-import androidx.navigation.Navigation;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -21,12 +12,20 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
+import androidx.cardview.widget.CardView;
+import androidx.fragment.app.Fragment;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.android.volley.VolleyError;
 import com.example.nalone.R;
 import com.example.nalone.dialog.ListAmisFragment;
-import com.example.nalone.listeners.JSONArrayListener;
 import com.example.nalone.json.JSONController;
 import com.example.nalone.json.JSONObjectCrypt;
+import com.example.nalone.listeners.JSONArrayListener;
 import com.example.nalone.util.Constants;
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
@@ -99,7 +98,7 @@ public class MembersEventFragment extends Fragment {
             public void onClick(final View v) {
 
                 JSONObjectCrypt params = new JSONObjectCrypt();
-                params.addParameter("uid", USER.getUid());
+                params.putCryptParameter("uid", USER.getUid());
 
                 JSONController.getJsonArrayFromUrl(Constants.URL_FRIENDS, getContext(), params, new JSONArrayListener() {
                     @Override

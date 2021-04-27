@@ -293,5 +293,12 @@
     <string name="not_register"> Vous n\'êtes pas encore inscrit ! </string>
     <string name="mail_or_password_incorrect"> Vous n\'êtes pas encore inscrit ! </string>
 
+    <!--Strings for friends requests-->
+    <string name="invit_received"> Vous avez reçu une demande d\'amis de la part de cet utilisateur ! </string>
+    <string name="invit_in_progress"> Votre demande d\'amis est en attente ! </string>
+    <string name="invit_send"> Vous avez envoyé une demande d\'amis ! </string>
+
+    <string name="button_invit_waiting"> En attente </string>
+
 
 </resources>

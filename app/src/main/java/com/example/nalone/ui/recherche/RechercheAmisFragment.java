@@ -1,6 +1,5 @@
 package com.example.nalone.ui.recherche;
 
-import android.content.Context;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
@@ -17,7 +16,6 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.ViewModelProviders;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -25,18 +23,15 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.android.volley.VolleyError;
-import com.example.nalone.adapter.ItemFiltreAdapter;
-import com.example.nalone.adapter.RechercheAmisAdapter;
-import com.example.nalone.items.ItemFiltre;
-import com.example.nalone.items.ItemPerson;
 import com.example.nalone.R;
-import com.example.nalone.listeners.JSONArrayListener;
+import com.example.nalone.adapter.RechercheAmisAdapter;
+import com.example.nalone.items.ItemPerson;
 import com.example.nalone.json.JSONController;
 import com.example.nalone.json.JSONObjectCrypt;
+import com.example.nalone.listeners.JSONArrayListener;
 import com.example.nalone.objects.User;
 import com.example.nalone.ui.amis.display.PopupProfilFragment;
 import com.example.nalone.util.Constants;
-import com.google.firebase.firestore.FirebaseFirestore;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -75,60 +70,8 @@ public class RechercheAmisFragment extends Fragment {
 
     }
 
-    private void configureRecyclerViewAmis() {
-        this.mAdapter = new RechercheAmisAdapter(this.friends);
-        this.mRecyclerView.setAdapter(this.mAdapter);
-        final LinearLayoutManager llm = new LinearLayoutManager(getActivity());
-        this.mRecyclerView.setLayoutManager(llm);
-        mAdapter.setOnItemClickListener(new RechercheAmisAdapter.OnItemClickListener() {
-            @Override
-            public void onDisplayClick(int position) {
-                showPopUpProfil(friends.get(position));
-            }
-        });
-    }
-
     @RequiresApi(api = Build.VERSION_CODES.O)
-    private void getUsers() {
-        friends = new ArrayList<>();
-
-        JSONObjectCrypt params = new JSONObjectCrypt();
-        params.addParameter("uid", USER.getUid());
-        params.addParameter("limit", 10); //fix a limit to 10 users
-
-        JSONController.getJsonArrayFromUrl(Constants.URL_USER_WHITHOUT_ME, getContext(), params, new JSONArrayListener() {
-            @Override
-            public void onJSONReceived(JSONArray jsonArray) {
-
-                try {
-                    Log.w("Response", jsonArray.toString());
-                    for (int i = 0; i < jsonArray.length(); i++) {
-                        friends.add((User) JSONController.convertJSONToObject(jsonArray.getJSONObject(i), User.class));
-                    }
-
-                    for (int i = 0; i < friends.size(); i++) {
-                        Log.w("Recherche", friends.get(i).getFirst_name()+friends.get(i).getLast_name());
-                    }
-
-                    configureRecyclerViewAmis();
-                    loading.setVisibility(View.GONE);
-                } catch (JSONException e) {
-                    Log.w("Response", "Erreur:"+e.getMessage());
-                    Toast.makeText(getContext(), getResources().getString(R.string.error), Toast.LENGTH_SHORT).show();
-                }
-
-            }
-
-            @Override
-            public void onJSONReceivedError(VolleyError volleyError) {
-                Log.w("Response", "Erreur:"+volleyError.toString());
-                Toast.makeText(getContext(), getResources().getString(R.string.error_event), Toast.LENGTH_SHORT).show();
-            }
-        });
-    }
-
-    @RequiresApi(api = Build.VERSION_CODES.O)
-    public void createFragment(){
+    public void createFragment() {
         loading = rootView.findViewById(R.id.search_loading);
         buttonBack.setVisibility(View.VISIBLE);
         buttonBack.setOnClickListener(new View.OnClickListener() {
@@ -184,7 +127,59 @@ public class RechercheAmisFragment extends Fragment {
 
     }
 
-    private void configureSwipeRefreshLayout(){
+    private void configureRecyclerViewAmis() {
+        this.mAdapter = new RechercheAmisAdapter(this.friends);
+        this.mRecyclerView.setAdapter(this.mAdapter);
+        final LinearLayoutManager llm = new LinearLayoutManager(getActivity());
+        this.mRecyclerView.setLayoutManager(llm);
+        mAdapter.setOnItemClickListener(new RechercheAmisAdapter.OnItemClickListener() {
+            @Override
+            public void onDisplayClick(int position) {
+                showPopUpProfil(friends.get(position));
+            }
+        });
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    private void getUsers() {
+        friends = new ArrayList<>();
+
+        JSONObjectCrypt params = new JSONObjectCrypt();
+        params.putCryptParameter("uid", USER.getUid());
+        params.putCryptParameter("limit", 10); //fix a limit to 10 users
+
+        JSONController.getJsonArrayFromUrl(Constants.URL_USER_WHITHOUT_ME, getContext(), params, new JSONArrayListener() {
+            @Override
+            public void onJSONReceived(JSONArray jsonArray) {
+                try {
+                    if (jsonArray.length() > 0) {
+                        for (int i = 0; i < jsonArray.length(); i++) {
+                            friends.add((User) JSONController.convertJSONToObject(jsonArray.getJSONObject(i), User.class));
+                        }
+                        linearSansRechercheAmis.setVisibility(View.GONE);
+                        configureRecyclerViewAmis();
+
+                    } else {
+                        linearSansRechercheAmis.setVisibility(View.VISIBLE);
+                    }
+                    loading.setVisibility(View.GONE);
+
+                } catch (JSONException e) {
+                    Log.w("Response", "Erreur:" + e.getMessage());
+                    Toast.makeText(getContext(), getResources().getString(R.string.error), Toast.LENGTH_SHORT).show();
+                }
+
+            }
+
+            @Override
+            public void onJSONReceivedError(VolleyError volleyError) {
+                Log.w("Response", "Erreur:" + volleyError.toString());
+                Toast.makeText(getContext(), getResources().getString(R.string.error_event), Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    private void configureSwipeRefreshLayout() {
         swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @RequiresApi(api = Build.VERSION_CODES.O)
             @Override
@@ -212,7 +207,7 @@ public class RechercheAmisFragment extends Fragment {
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
-    public void onResume(){
+    public void onResume() {
         super.onResume();
         createFragment();
     }

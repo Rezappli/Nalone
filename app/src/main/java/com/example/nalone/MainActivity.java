@@ -1,9 +1,5 @@
 package com.example.nalone;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.RequiresApi;
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Build;
@@ -15,12 +11,15 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.android.volley.VolleyError;
 import com.example.nalone.json.JSONController;
 import com.example.nalone.json.JSONObjectCrypt;
 import com.example.nalone.listeners.JSONObjectListener;
 import com.example.nalone.objects.User;
-import com.example.nalone.signUpActivities.SignUpInformationActivity;
 import com.example.nalone.signUpActivities.SignUpMainActivity;
 import com.example.nalone.util.Constants;
 import com.example.nalone.util.CryptoUtils;
@@ -38,7 +37,6 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.firestore.QuerySnapshot;
 
-
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -47,7 +45,7 @@ import static com.example.nalone.util.Constants.currentUser;
 import static com.example.nalone.util.Constants.mAuth;
 import static com.example.nalone.util.Constants.mStoreBase;
 
-public class MainActivity extends AppCompatActivity{
+public class MainActivity extends AppCompatActivity {
     private TextView textViewSinscrire;
     private TextView textViewConnexion;
     private EditText editTextPass;
@@ -118,14 +116,14 @@ public class MainActivity extends AppCompatActivity{
                     return;
                 }
 
-                if(!textAddress.equalsIgnoreCase("") && !textPass.equalsIgnoreCase("")){
+                if (!textAddress.equalsIgnoreCase("") && !textPass.equalsIgnoreCase("")) {
                     progressBar.setVisibility(View.VISIBLE);
                     connectUser(textAddress, textPass);
                 }
             }
         });
 
-        if(currentUser != null){
+        if (currentUser != null) {
             editTextAddress.setText(currentUser.getEmail());
         }
     }
@@ -167,28 +165,23 @@ public class MainActivity extends AppCompatActivity{
         final SharedPreferences.Editor editor = loginPreferences.edit();
 
         JSONObjectCrypt params = new JSONObjectCrypt();
-        params.addParameter("mail", mail);
-        params.addParameter("password", pass);
+        params.putCryptParameter("mail", mail);
+        params.putCryptParameter("password", pass);
 
         JSONController.getJsonObjectFromUrl(Constants.URL_SIGN_IN, MainActivity.this, params, new JSONObjectListener() {
             @Override
             public void onJSONReceived(JSONObject jsonObject) {
-                if(jsonObject.length() == 3){
+                if (jsonObject.length() == 3) {
                     try {
-                        String key = pass;
-                        for(int i = pass.length(); i < 31; i++){
-                            key += 0;
-                        }
-
                         editor.putString("mail", CryptoUtils.encrypt(mail));
-                        editor.putString("password", CryptoUtils.encryptWithKey(pass, key));
+                        editor.putString("password", CryptoUtils.encrypt(pass));
                         editor.apply();
                         loadUserData(jsonObject);
                     } catch (JSONException e) {
                         Toast.makeText(MainActivity.this, getResources().getString(R.string.error), Toast.LENGTH_SHORT).show();
-                        Log.w("Response", "Erreur:"+e.getMessage());
+                        Log.w("Response", "Erreur:" + e.getMessage());
                     }
-                }else{
+                } else {
                     progressBar.setVisibility(View.GONE);
                     Toast.makeText(MainActivity.this, getResources().getString(R.string.mail_or_password_incorrect), Toast.LENGTH_SHORT).show();
                 }
@@ -198,7 +191,7 @@ public class MainActivity extends AppCompatActivity{
             public void onJSONReceivedError(VolleyError volleyError) {
                 progressBar.setVisibility(View.GONE);
                 Toast.makeText(MainActivity.this, getResources().getString(R.string.error), Toast.LENGTH_SHORT).show();
-                Log.w("Response", "Erreur : "+volleyError.toString());
+                Log.w("Response", "Erreur : " + volleyError.toString());
             }
         });
     }
@@ -206,24 +199,24 @@ public class MainActivity extends AppCompatActivity{
     @RequiresApi(api = Build.VERSION_CODES.O)
     private void loadUserData(JSONObject json) throws JSONException {
         JSONObjectCrypt params = new JSONObjectCrypt();
-        params.addParameter("uid", json.getString("uid"));
+        params.putCryptParameter("uid", json.getString("uid"));
 
         JSONController.getJsonObjectFromUrl(Constants.URL_ME, this, params, new JSONObjectListener() {
             @Override
             public void onJSONReceived(JSONObject jsonObject) {
-                USER = (User)JSONController.convertJSONToObject(jsonObject, User.class);
+                USER = (User) JSONController.convertJSONToObject(jsonObject, User.class);
                 launchHomeActivity();
             }
 
             @Override
             public void onJSONReceivedError(VolleyError volleyError) {
                 Toast.makeText(MainActivity.this, getResources().getString(R.string.error), Toast.LENGTH_SHORT).show();
-                Log.w("Response", "Erreur:"+volleyError.toString());
+                Log.w("Response", "Erreur:" + volleyError.toString());
             }
         });
     }
 
-    public void connectUserFromGoogle(String token){
+    public void connectUserFromGoogle(String token) {
         AuthCredential credential = GoogleAuthProvider.getCredential(token, null);
         mAuth.signInWithCredential(credential)
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
@@ -234,14 +227,14 @@ public class MainActivity extends AppCompatActivity{
                             mStoreBase.collection("users").whereEqualTo("mail", user.getEmail()).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                                 @Override
                                 public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                                    if(task.isSuccessful()){
-                                        if(!task.getResult().isEmpty()) {
+                                    if (task.isSuccessful()) {
+                                        if (!task.getResult().isEmpty()) {
                                             currentUser = mAuth.getCurrentUser();
-                                        }else{
+                                        } else {
                                             startActivity(new Intent(MainActivity.this, SignUpMainActivity.class));
                                             Toast.makeText(MainActivity.this, getResources().getString(R.string.not_register), Toast.LENGTH_SHORT).show();
                                         }
-                                    }else{
+                                    } else {
                                         Toast.makeText(MainActivity.this, getResources().getString(R.string.error), Toast.LENGTH_SHORT).show();
                                     }
                                 }
@@ -253,13 +246,14 @@ public class MainActivity extends AppCompatActivity{
                 });
     }
 
-    private void launchHomeActivity(){
+    private void launchHomeActivity() {
         Log.w("Launching", "Launching home activity");
         startActivity(new Intent(MainActivity.this, HomeActivity.class));
     }
 
     @Override
-    public void onBackPressed(){}
+    public void onBackPressed() {
+    }
 }
 
 

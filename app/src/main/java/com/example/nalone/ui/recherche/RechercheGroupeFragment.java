@@ -1,18 +1,14 @@
 package com.example.nalone.ui.recherche;
 
-import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
-import android.widget.TextView;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
@@ -21,34 +17,17 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
-import com.bumptech.glide.Glide;
-import com.example.nalone.adapter.RechercheGroupeAdapter;
-import com.example.nalone.enumeration.Visibility;
-import com.example.nalone.json.JSONObjectCrypt;
-import com.example.nalone.util.Cache;
-import com.example.nalone.objects.Group;
 import com.example.nalone.R;
+import com.example.nalone.adapter.RechercheGroupeAdapter;
+import com.example.nalone.json.JSONObjectCrypt;
+import com.example.nalone.objects.Group;
 import com.example.nalone.ui.amis.display.PopUpGroupFragment;
-import com.example.nalone.util.Constants;
-import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
-import com.firebase.ui.firestore.FirestoreRecyclerOptions;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.Query;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.firebase.firestore.QuerySnapshot;
-import com.google.firebase.storage.StorageReference;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 import static com.example.nalone.HomeActivity.buttonBack;
 import static com.example.nalone.util.Constants.USER;
-import static com.example.nalone.util.Constants.USER_ID;
-import static com.example.nalone.util.Constants.mStore;
-import static com.example.nalone.util.Constants.mStoreBase;
 
 public class RechercheGroupeFragment extends Fragment {
 
@@ -66,12 +45,12 @@ public class RechercheGroupeFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        root =  inflater.inflate(R.layout.fragment_recherche_groupe, container, false);
+        root = inflater.inflate(R.layout.fragment_recherche_groupe, container, false);
         return root;
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
-    private void createFragment(){
+    private void createFragment() {
         groupList = new ArrayList<>();
 
         buttonBack.setVisibility(View.VISIBLE);
@@ -110,15 +89,15 @@ public class RechercheGroupeFragment extends Fragment {
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
-    private void getGroups(){
+    private void getGroups() {
         JSONObjectCrypt params = new JSONObjectCrypt();
-        params.addParameter("uid", USER.getUid());
+        params.putCryptParameter("uid", USER.getUid());
 
         linearSansRechercheGroupe.setVisibility(View.VISIBLE);
         loading.setVisibility(View.GONE);
     }
 
-    private void configureSwipeRefreshLayout(){
+    private void configureSwipeRefreshLayout() {
         swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @RequiresApi(api = Build.VERSION_CODES.O)
             @Override
@@ -135,11 +114,10 @@ public class RechercheGroupeFragment extends Fragment {
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
-    public void onResume(){
+    public void onResume() {
         super.onResume();
         createFragment();
     }
-
 
 
 }

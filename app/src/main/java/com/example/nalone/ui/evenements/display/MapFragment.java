@@ -1,52 +1,45 @@
-
-
 package com.example.nalone.ui.evenements.display;
 
 import android.content.Intent;
 import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-import androidx.cardview.widget.CardView;
-import androidx.fragment.app.Fragment;
-
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-
-import com.android.volley.VolleyError;
-import com.example.nalone.adapter.EvenementAdapter;
-import com.example.nalone.adapter.TypeEventAdapter;
-import com.example.nalone.enumeration.TypeEvent;
-import com.example.nalone.enumeration.VisibilityMap;
-import com.example.nalone.listeners.JSONArrayListener;
-import com.example.nalone.json.JSONController;
-import com.example.nalone.json.JSONObjectCrypt;
-import com.example.nalone.objects.TypeEventObject;
-import com.example.nalone.ui.evenements.InfosEvenementsActivity;
-import com.example.nalone.R;
-import com.example.nalone.util.Constants;
-import com.google.android.gms.maps.CameraUpdateFactory;
-import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.MapView;
-
-import android.os.Build;
 import android.widget.SearchView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.cardview.widget.CardView;
+import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.nalone.objects.Evenement;
+import com.android.volley.VolleyError;
+import com.example.nalone.R;
+import com.example.nalone.adapter.EvenementAdapter;
+import com.example.nalone.adapter.TypeEventAdapter;
+import com.example.nalone.enumeration.TypeEvent;
 import com.example.nalone.enumeration.Visibility;
-
+import com.example.nalone.enumeration.VisibilityMap;
+import com.example.nalone.json.JSONController;
+import com.example.nalone.json.JSONObjectCrypt;
+import com.example.nalone.listeners.JSONArrayListener;
+import com.example.nalone.objects.Evenement;
+import com.example.nalone.objects.TypeEventObject;
+import com.example.nalone.ui.evenements.InfosEvenementsActivity;
+import com.example.nalone.util.Constants;
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
@@ -62,10 +55,9 @@ import org.json.JSONException;
 import java.util.ArrayList;
 import java.util.List;
 
-
 import static com.example.nalone.HomeActivity.buttonBack;
 import static com.example.nalone.HomeActivity.fab1;
-import static com.example.nalone.enumeration.TypeEvent.*;
+import static com.example.nalone.enumeration.TypeEvent.ART;
 import static com.example.nalone.util.Constants.MAPVIEW_BUNDLE_KEY;
 import static com.example.nalone.util.Constants.USER;
 import static com.example.nalone.util.Constants.range;
@@ -77,13 +69,13 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
 
     private MapView mMapView;
     private GoogleMap mMap;
-    private CardView cardViewLocationPrive,cardViewLocationAll, cardViewLocationPublic, cardViewLocationCreate, cardViewLocationInscrit;
-    private TextView textViewLocationPrive,textViewLocationAll, textViewLocationPublic, textViewLocationCreate, textViewLocationInscrit;
-    private ImageView imageViewLocationPrive,imageViewLocationAll, imageViewLocationPublic,imageViewLocationCreate,imageViewLocationInscrit;
+    private CardView cardViewLocationPrive, cardViewLocationAll, cardViewLocationPublic, cardViewLocationCreate, cardViewLocationInscrit;
+    private TextView textViewLocationPrive, textViewLocationAll, textViewLocationPublic, textViewLocationCreate, textViewLocationInscrit;
+    private ImageView imageViewLocationPrive, imageViewLocationAll, imageViewLocationPublic, imageViewLocationCreate, imageViewLocationInscrit;
 
     private NavController navController;
 
-    private EvenementAdapter adapteSuggestion, adapterPopulaire ;
+    private EvenementAdapter adapteSuggestion, adapterPopulaire;
     private TypeEventAdapter typeAdapter;
     private static VisibilityMap currentVisibilityMap = VisibilityMap.ALL;
 
@@ -92,7 +84,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     private List<Evenement> nearby_events;
     private List<Evenement> eventsPopular;
     private int iterator = 0;
-    private CardView  loading;
+    private CardView loading;
 
     private static CameraPosition posCam = null;
     private View viewGrey;
@@ -109,11 +101,12 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
 
     private List<TypeEventObject> filtreTypeList;
 
-    private TextView textViewDetailName,textViewDetailCity,textViewDetailDate,textViewDetailTime,textViewDetailNbMembers;
+    private TextView textViewDetailName, textViewDetailCity, textViewDetailDate, textViewDetailTime, textViewDetailNbMembers;
     private ImageView imageViewDetailCategory;
 
 
-    public MapFragment() {}
+    public MapFragment() {
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -128,7 +121,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         return rootView;
     }
 
-    private void createFragment(){
+    private void createFragment() {
         buttonBack.setVisibility(View.GONE);
         navController = Navigation.findNavController(getActivity(), R.id.nav_host_fragment);
         cardViewLocationCreate = rootView.findViewById(R.id.cardViewLocationCreate);
@@ -182,10 +175,10 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
             @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
             @Override
             public void onStateChanged(@NonNull View view, int state) {
-                switch (state){
+                switch (state) {
                     case BottomSheetBehavior.STATE_COLLAPSED:
                         isOpen = false;
-                        searchView.setQuery ("", false);
+                        searchView.setQuery("", false);
                         searchView.setIconified(true);
                         searchView.clearFocus();
                         imageViewFiltreSearch.setVisibility(View.GONE);
@@ -213,7 +206,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
             @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
             @Override
             public void onStateChanged(@NonNull View view, int state) {
-                switch (state){
+                switch (state) {
                     case BottomSheetBehavior.STATE_COLLAPSED:
                         viewGrey.setVisibility(View.GONE);
                         fab1.show();
@@ -378,7 +371,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     }
 
     private void configureSuggestion() {
-        this.adapteSuggestion = new EvenementAdapter(this.nearby_events,R.layout.item_evenement, false);
+        this.adapteSuggestion = new EvenementAdapter(this.nearby_events, R.layout.item_evenement, false);
         this.recyclerViewSuggestion.setAdapter(this.adapteSuggestion);
         final LinearLayoutManager llm = new LinearLayoutManager(getActivity(), RecyclerView.HORIZONTAL, false);
         this.recyclerViewSuggestion.setLayoutManager(llm);
@@ -387,14 +380,14 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
             public void onDisplayClick(int position) {
                 InfosEvenementsActivity.EVENT_LOAD = nearby_events.get(position);
                 //InfosEvenementsActivity.type = "nouveau";
-                               startActivity(new Intent(getContext(),InfosEvenementsActivity.class));
+                startActivity(new Intent(getContext(), InfosEvenementsActivity.class));
 
             }
         });
     }
 
-    private void configurePopular(){
-        this.adapterPopulaire = new EvenementAdapter(this.eventsPopular, R.layout.item_evenement,false);
+    private void configurePopular() {
+        this.adapterPopulaire = new EvenementAdapter(this.eventsPopular, R.layout.item_evenement, false);
         this.recyclerViewPopular.setAdapter(this.adapterPopulaire);
         final LinearLayoutManager llm1 = new LinearLayoutManager(getActivity(), RecyclerView.HORIZONTAL, false);
         this.recyclerViewPopular.setLayoutManager(llm1);
@@ -403,7 +396,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
             public void onDisplayClick(int position) {
                 InfosEvenementsActivity.EVENT_LOAD = eventsPopular.get(position);
                 //InfosEvenementsActivity.type = "nouveau";
-                               startActivity(new Intent(getContext(),InfosEvenementsActivity.class));
+                startActivity(new Intent(getContext(), InfosEvenementsActivity.class));
 
             }
         });
@@ -412,18 +405,18 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     private void initFiltres() {
         filtreTypeList = new ArrayList<>();
 
-        filtreTypeList.add(new TypeEventObject(getResources().getDrawable(R.drawable.event_art),getResources().getString(R.string.event_art), ART));
-        filtreTypeList.add(new TypeEventObject(getResources().getDrawable(R.drawable.event_sport),getResources().getString(R.string.event_sport),TypeEvent.SPORT));
-        filtreTypeList.add(new TypeEventObject(getResources().getDrawable(R.drawable.event_car),getResources().getString(R.string.event_car),TypeEvent.CAR));
-        filtreTypeList.add(new TypeEventObject(getResources().getDrawable(R.drawable.event_conference),getResources().getString(R.string.event_conference),TypeEvent.CONFERENCE));
-        filtreTypeList.add(new TypeEventObject(getResources().getDrawable(R.drawable.event_shop),getResources().getString(R.string.event_shop),TypeEvent.SHOP));
-        filtreTypeList.add(new TypeEventObject(getResources().getDrawable(R.drawable.event_show),getResources().getString(R.string.event_show),TypeEvent.SHOW));
-        filtreTypeList.add(new TypeEventObject(getResources().getDrawable(R.drawable.event_game),getResources().getString(R.string.event_game),TypeEvent.GAME));
-        filtreTypeList.add(new TypeEventObject(getResources().getDrawable(R.drawable.event_gather),getResources().getString(R.string.event_gather),TypeEvent.GATHER));
-        filtreTypeList.add(new TypeEventObject(getResources().getDrawable(R.drawable.event_movie),getResources().getString(R.string.event_movie),TypeEvent.MOVIE));
-        filtreTypeList.add(new TypeEventObject(getResources().getDrawable(R.drawable.event_music),getResources().getString(R.string.event_music),TypeEvent.MUSIC));
-        filtreTypeList.add(new TypeEventObject(getResources().getDrawable(R.drawable.event_party),getResources().getString(R.string.event_party),TypeEvent.PARTY));
-        filtreTypeList.add(new TypeEventObject(getResources().getDrawable(R.drawable.event_science),getResources().getString(R.string.event_science),TypeEvent.SCIENCE));
+        filtreTypeList.add(new TypeEventObject(getResources().getDrawable(R.drawable.event_art), getResources().getString(R.string.event_art), ART));
+        filtreTypeList.add(new TypeEventObject(getResources().getDrawable(R.drawable.event_sport), getResources().getString(R.string.event_sport), TypeEvent.SPORT));
+        filtreTypeList.add(new TypeEventObject(getResources().getDrawable(R.drawable.event_car), getResources().getString(R.string.event_car), TypeEvent.CAR));
+        filtreTypeList.add(new TypeEventObject(getResources().getDrawable(R.drawable.event_conference), getResources().getString(R.string.event_conference), TypeEvent.CONFERENCE));
+        filtreTypeList.add(new TypeEventObject(getResources().getDrawable(R.drawable.event_shop), getResources().getString(R.string.event_shop), TypeEvent.SHOP));
+        filtreTypeList.add(new TypeEventObject(getResources().getDrawable(R.drawable.event_show), getResources().getString(R.string.event_show), TypeEvent.SHOW));
+        filtreTypeList.add(new TypeEventObject(getResources().getDrawable(R.drawable.event_game), getResources().getString(R.string.event_game), TypeEvent.GAME));
+        filtreTypeList.add(new TypeEventObject(getResources().getDrawable(R.drawable.event_gather), getResources().getString(R.string.event_gather), TypeEvent.GATHER));
+        filtreTypeList.add(new TypeEventObject(getResources().getDrawable(R.drawable.event_movie), getResources().getString(R.string.event_movie), TypeEvent.MOVIE));
+        filtreTypeList.add(new TypeEventObject(getResources().getDrawable(R.drawable.event_music), getResources().getString(R.string.event_music), TypeEvent.MUSIC));
+        filtreTypeList.add(new TypeEventObject(getResources().getDrawable(R.drawable.event_party), getResources().getString(R.string.event_party), TypeEvent.PARTY));
+        filtreTypeList.add(new TypeEventObject(getResources().getDrawable(R.drawable.event_science), getResources().getString(R.string.event_science), TypeEvent.SCIENCE));
 
         recyclerTypeEvent = rootView.findViewById(R.id.recyclerTypeEvent);
         this.typeAdapter = new TypeEventAdapter(this.filtreTypeList);
@@ -431,7 +424,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
             @Override
             public void onAddClick(int position) {
                 SearchEventActivity.currentType = filtreTypeList.get(position).getmType();
-                startActivity(new Intent(getContext(),SearchEventActivity.class));
+                startActivity(new Intent(getContext(), SearchEventActivity.class));
             }
         });
         this.recyclerTypeEvent.setAdapter(this.typeAdapter);
@@ -452,7 +445,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         imageViewLocationCreate.setImageDrawable(getResources().getDrawable(R.drawable.location_create_24));
         imageViewLocationAll.setImageDrawable(getResources().getDrawable(R.drawable.location_all_24));
     }
-
 
 
     private void initGoogleMap(Bundle savedInstanceState) {
@@ -478,34 +470,35 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
             }
         });
 
-        if(posCam == null) {
+        if (posCam == null) {
             mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(USER.getLatitude(), USER.getLongitude()), 10));
-        }else{
+        } else {
             mMap.moveCamera(CameraUpdateFactory.newCameraPosition(posCam));
         }
         JSONObjectCrypt params = new JSONObjectCrypt();
 
-        params.addParameter("uid", USER.getUid());
-        params.addParameter("latitude", USER.getLatitude());
-        params.addParameter("longitude", USER.getLongitude());
-        params.addParameter("range", range);
+        params.putCryptParameter("uid", USER.getUid());
+        params.putCryptParameter("latitude", USER.getLatitude());
+        params.putCryptParameter("longitude", USER.getLongitude());
+        params.putCryptParameter("range", range);
 
-        Log.w("Response", "Params:"+params.toString());
-
+        Log.w("Params", params.toString());
 
         JSONController.getJsonArrayFromUrl(Constants.URL_NEARBY_EVENTS, getContext(), params, new JSONArrayListener() {
             @Override
             public void onJSONReceived(JSONArray jsonArray) {
-                Log.w("Response", "Value:"+jsonArray.toString());
+                Log.w("Response", "Value:" + jsonArray.toString());
                 try {
-                    nearby_events = new ArrayList<>();
-                    for(int i = 0; i < jsonArray.length(); i++) {
-                        nearby_events.add((Evenement) JSONController.convertJSONToObject(jsonArray.getJSONObject(i), Evenement.class));
+                    if (jsonArray.length() > 0) {
+                        nearby_events = new ArrayList<>();
+                        for (int i = 0; i < jsonArray.length(); i++) {
+                            nearby_events.add((Evenement) JSONController.convertJSONToObject(jsonArray.getJSONObject(i), Evenement.class));
+                        }
+                        configureSuggestion();
+                        updateMap(VisibilityMap.ALL);
                     }
-                    configureSuggestion();
-                    updateMap(VisibilityMap.ALL);
                 } catch (JSONException e) {
-                    Log.w("Response", "Erreur:"+e.getMessage());
+                    Log.w("Response", "Erreur:" + e.getMessage());
                     Toast.makeText(getContext(), getResources().getString(R.string.error_event), Toast.LENGTH_SHORT).show();
                 }
 
@@ -513,7 +506,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
 
             @Override
             public void onJSONReceivedError(VolleyError volleyError) {
-                Log.w("Response", "Erreur:"+volleyError.toString());
+                Log.w("Response", "Erreur:" + volleyError.toString());
                 Toast.makeText(getContext(), getResources().getString(R.string.error_event), Toast.LENGTH_SHORT).show();
             }
         });
@@ -522,13 +515,15 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
             @Override
             public void onJSONReceived(JSONArray jsonArray) {
                 try {
-                    eventsPopular = new ArrayList<>();
-                    for(int i = 0; i < jsonArray.length(); i++) {
-                        eventsPopular.add((Evenement) JSONController.convertJSONToObject(jsonArray.getJSONObject(i), Evenement.class));
+                    if (jsonArray.length() > 0) {
+                        eventsPopular = new ArrayList<>();
+                        for (int i = 0; i < jsonArray.length(); i++) {
+                            eventsPopular.add((Evenement) JSONController.convertJSONToObject(jsonArray.getJSONObject(i), Evenement.class));
+                        }
+                        configurePopular();
                     }
-                    configurePopular();
                 } catch (JSONException e) {
-                    Log.w("Response", "Erreur:"+e.getMessage());
+                    Log.w("Response events popular", "Erreur:" + e.getMessage());
                     Toast.makeText(getContext(), getResources().getString(R.string.error_event), Toast.LENGTH_SHORT).show();
                 }
 
@@ -536,7 +531,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
 
             @Override
             public void onJSONReceivedError(VolleyError volleyError) {
-                Log.w("Response", "Erreur:"+volleyError.toString());
+                Log.w("Response events popular", "Erreur:" + volleyError.toString());
                 Toast.makeText(getContext(), getResources().getString(R.string.error_event), Toast.LENGTH_SHORT).show();
             }
         });
@@ -546,29 +541,29 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     @RequiresApi(api = Build.VERSION_CODES.M)
     public void updateMap(VisibilityMap visibilityMap) {
         mMap.clear();
-        switch (visibilityMap){
+        switch (visibilityMap) {
             case ALL:
-                for(Evenement e : nearby_events){
+                for (Evenement e : nearby_events) {
                     addMarkerOnMap(e);
                 }
                 break;
             case PUBLIC:
-                for(Evenement e : nearby_events){
-                    if(e.getVisibility().equals(Visibility.PUBLIC)) {
+                for (Evenement e : nearby_events) {
+                    if (e.getVisibility().equals(Visibility.PUBLIC)) {
                         addMarkerOnMap(e);
                     }
                 }
                 break;
             case PRIVATE:
-                for(Evenement e : nearby_events){
-                    if(e.getVisibility().equals(Visibility.PRIVATE)) {
+                for (Evenement e : nearby_events) {
+                    if (e.getVisibility().equals(Visibility.PRIVATE)) {
                         addMarkerOnMap(e);
                     }
                 }
                 break;
             case CREATE:
-                for(Evenement e : nearby_events){
-                    if(e.getOwner_uid().equalsIgnoreCase(USER.getUid())) {
+                for (Evenement e : nearby_events) {
+                    if (e.getOwner_uid().equalsIgnoreCase(USER.getUid())) {
                         addMarkerOnMap(e);
                     }
                 }
@@ -591,12 +586,12 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         //mk.title(e.getName());
         mk.position(new LatLng(e.getLatitude(), e.getLongitude()));
 
-        if(e.getVisibility().equals(Visibility.PUBLIC)){
+        if (e.getVisibility().equals(Visibility.PUBLIC)) {
             mk.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));
-        }else{
-            if(e.getOwner_uid().equalsIgnoreCase(USER.getUid())) {
+        } else {
+            if (e.getOwner_uid().equalsIgnoreCase(USER.getUid())) {
                 mk.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));
-            }else{
+            } else {
                 mk.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE));
             }
         }
@@ -605,7 +600,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
             @Override
             public void onInfoWindowClick(Marker marker) {
                 InfosEvenementsActivity.EVENT_LOAD = (Evenement) marker.getTag();
-                startActivity(new Intent(getContext(),InfosEvenementsActivity.class));
+                startActivity(new Intent(getContext(), InfosEvenementsActivity.class));
             }
         });
 
@@ -615,8 +610,8 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                 fab1.hide();
                 Evenement e = (Evenement) marker.getTag();
 
-                if (e != null){
-                    textViewDetailNbMembers.setText(e.getNbMembers()+"");
+                if (e != null) {
+                    textViewDetailNbMembers.setText(e.getNbMembers() + "");
                     textViewDetailCity.setText(e.getCity());
                     textViewDetailDate.setText(e.getStartDate());
                     textViewDetailName.setText(e.getName());

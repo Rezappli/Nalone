@@ -105,7 +105,7 @@ public class PlanningActivity extends NoLonelyActivity {
         nextEvent = null;
         JSONObjectCrypt params = new JSONObjectCrypt();
 
-        params.addParameter("uid", USER.getUid());
+        params.putCryptParameter("uid", USER.getUid());
 
         JSONController.getJsonArrayFromUrl(Constants.URL_EVENT_NEXT, getBaseContext(), params, new JSONArrayListener() {
             @Override
@@ -140,7 +140,7 @@ public class PlanningActivity extends NoLonelyActivity {
             }
         });
 
-        params.addParameter("status", "FINI");
+        params.putCryptParameter("status", "FINI");
         JSONController.getJsonArrayFromUrl(Constants.URL_EVENT_NEXT, getBaseContext(), params, new JSONArrayListener() {
             @Override
             public void onJSONReceived(JSONArray jsonArray) {
@@ -175,7 +175,7 @@ public class PlanningActivity extends NoLonelyActivity {
         });
 
         params.remove("status");
-        params.addParameter("status", "BIENTOT");
+        params.putCryptParameter("status", "BIENTOT");
         JSONController.getJsonArrayFromUrl(Constants.URL_EVENT_NEXT, getBaseContext(), params, new JSONArrayListener() {
             @Override
             public void onJSONReceived(JSONArray jsonArray) {

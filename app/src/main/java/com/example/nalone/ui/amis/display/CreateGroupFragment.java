@@ -1,19 +1,8 @@
 package com.example.nalone.ui.amis.display;
 
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.RequiresApi;
-import androidx.cardview.widget.CardView;
-import androidx.fragment.app.Fragment;
-import androidx.navigation.NavController;
-import androidx.navigation.Navigation;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -21,50 +10,33 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.RequiresApi;
+import androidx.cardview.widget.CardView;
+import androidx.fragment.app.Fragment;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
+
 import com.android.volley.VolleyError;
-import com.bumptech.glide.Glide;
+import com.example.nalone.R;
+import com.example.nalone.dialog.ListAmisFragment;
+import com.example.nalone.enumeration.Visibility;
 import com.example.nalone.json.JSONController;
 import com.example.nalone.json.JSONObjectCrypt;
 import com.example.nalone.listeners.JSONObjectListener;
 import com.example.nalone.objects.Group;
-import com.example.nalone.dialog.ListAmisFragment;
-import com.example.nalone.R;
-import com.example.nalone.objects.User;
-import com.example.nalone.objects.ModelData;
-import com.example.nalone.enumeration.Visibility;
 import com.example.nalone.util.Constants;
-import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
-import com.firebase.ui.firestore.FirestoreRecyclerOptions;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
 import com.google.android.material.textfield.TextInputEditText;
-import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.Query;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.firebase.firestore.QuerySnapshot;
-import com.google.firebase.storage.StorageReference;
-import com.google.firebase.storage.UploadTask;
 
 import org.json.JSONObject;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
-import static android.app.Activity.RESULT_OK;
 import static com.example.nalone.HomeActivity.buttonBack;
 import static com.example.nalone.util.Constants.USER;
-import static com.example.nalone.util.Constants.USER_ID;
-import static com.example.nalone.util.Constants.USER_REFERENCE;
-import static com.example.nalone.util.Constants.mStore;
-import static com.example.nalone.util.Constants.mStoreBase;
 
 public class CreateGroupFragment extends Fragment {
 
@@ -91,6 +63,7 @@ public class CreateGroupFragment extends Fragment {
     private final int RESULT_LOAD_IMG = 1;
 
     private final boolean hasSelectedImage = false;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -102,8 +75,8 @@ public class CreateGroupFragment extends Fragment {
         return rootView;
     }
 
-    private void createFragment(){
-        navController = Navigation.findNavController(getActivity(),R.id.nav_host_fragment);
+    private void createFragment() {
+        navController = Navigation.findNavController(getActivity(), R.id.nav_host_fragment);
         navController = Navigation.findNavController(getActivity(), R.id.nav_host_fragment);
 
         ImageView imageGroup = rootView.findViewById(R.id.imageGroupCreation);
@@ -124,8 +97,8 @@ public class CreateGroupFragment extends Fragment {
             }
         });
 
-        if(groupAttente == null){
-            groupAttente  = new Group(UUID.randomUUID().toString(), USER.getFirst_name() + " " + USER.getLast_name(), "", "", Visibility.PUBLIC);
+        if (groupAttente == null) {
+            groupAttente = new Group(UUID.randomUUID().toString(), USER.getFirst_name() + " " + USER.getLast_name(), "", "", Visibility.PUBLIC);
         }
 
         CardView cardViewPrivate = rootView.findViewById(R.id.cardViewPrivate);
@@ -162,7 +135,6 @@ public class CreateGroupFragment extends Fragment {
         });
 
 
-
         buttonValidEvent.setOnClickListener(new View.OnClickListener() {
             @RequiresApi(api = Build.VERSION_CODES.O)
             @Override
@@ -177,14 +149,14 @@ public class CreateGroupFragment extends Fragment {
         groupAttente.setName(event_name.getText().toString());
         groupAttente.setDescription(event_resume.getText().toString());
 
-        if(!groupAttente.getName().matches(""))
+        if (!groupAttente.getName().matches(""))
             event_name.setText(groupAttente.getName());
-        if(!groupAttente.getDescription().matches(""))
+        if (!groupAttente.getDescription().matches(""))
             event_resume.setText(groupAttente.getDescription());
-        if(groupAttente.getVisibility() != null){
-            if(groupAttente.getVisibility().equals(Visibility.PUBLIC)){
+        if (groupAttente.getVisibility() != null) {
+            if (groupAttente.getVisibility().equals(Visibility.PUBLIC)) {
                 selectPublic();
-            }else{
+            } else {
                 selectPrivate();
             }
         }
@@ -204,29 +176,29 @@ public class CreateGroupFragment extends Fragment {
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
-    public void saveGroup(){
-        if(event_name.getText().toString().matches("")){
+    public void saveGroup() {
+        if (event_name.getText().toString().matches("")) {
             event_name.setError(getResources().getString(R.string.edittext_field_required));
         }
 
-        if(!event_name.getText().toString().matches("")){
+        if (!event_name.getText().toString().matches("")) {
             JSONObjectCrypt params = new JSONObjectCrypt();
-            params.addParameter("uid", USER.getUid());
-            params.addParameter("uid_group", groupAttente.getUid());
-            params.addParameter("name", event_name.getText());
-            params.addParameter("description", event_resume.getText());
-            params.addParameter("visibility", groupAttente.getVisibility());
+            params.putCryptParameter("uid", USER.getUid());
+            params.putCryptParameter("uid_group", groupAttente.getUid());
+            params.putCryptParameter("name", event_name.getText());
+            params.putCryptParameter("description", event_resume.getText());
+            params.putCryptParameter("visibility", groupAttente.getVisibility());
 
-            Log.w("Response", "Params send :"+params.toString());
+            Log.w("Response", "Params send :" + params.toString());
 
             JSONController.getJsonObjectFromUrl(Constants.URL_ADD_GROUP, getContext(), params, new JSONObjectListener() {
                 @Override
                 public void onJSONReceived(JSONObject jsonObject) {
-                    if(jsonObject.length() == 3){
+                    if (jsonObject.length() == 3) {
                         Toast.makeText(getContext(), getResources().getString(R.string.group_create), Toast.LENGTH_SHORT).show();
                         navController.navigate(R.id.action_navigation_creat_group_to_navigation_amis);
                         groupAttente = null;
-                    }else{
+                    } else {
                         Toast.makeText(getContext(), getResources().getString(R.string.error), Toast.LENGTH_SHORT).show();
                     }
                 }
@@ -234,7 +206,7 @@ public class CreateGroupFragment extends Fragment {
                 @Override
                 public void onJSONReceivedError(VolleyError volleyError) {
                     Toast.makeText(getContext(), getResources().getString(R.string.error), Toast.LENGTH_SHORT).show();
-                    Log.w("Response", "Erreur: "+volleyError.toString());
+                    Log.w("Response", "Erreur: " + volleyError.toString());
                 }
             });
         }

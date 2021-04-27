@@ -2,14 +2,8 @@ package com.example.nalone.ui.amis.display;
 
 import android.graphics.Color;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-import androidx.cardview.widget.CardView;
-import androidx.fragment.app.Fragment;
-import androidx.navigation.NavController;
-import androidx.navigation.Navigation;
-
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,19 +13,28 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
+import androidx.cardview.widget.CardView;
+import androidx.fragment.app.Fragment;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
+
+import com.android.volley.VolleyError;
 import com.bumptech.glide.Glide;
-import com.example.nalone.util.Cache;
-import com.example.nalone.objects.Notification;
 import com.example.nalone.R;
+import com.example.nalone.json.JSONController;
+import com.example.nalone.json.JSONObjectCrypt;
+import com.example.nalone.listeners.JSONObjectListener;
 import com.example.nalone.objects.User;
-import com.example.nalone.objects.ModelData;
+import com.example.nalone.util.Cache;
+import com.example.nalone.util.Constants;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.storage.StorageReference;
 
 import org.eazegraph.lib.charts.PieChart;
 import org.eazegraph.lib.models.PieModel;
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
@@ -40,8 +43,6 @@ import java.util.List;
 import static com.example.nalone.HomeActivity.buttonBack;
 import static com.example.nalone.util.Constants.USER;
 import static com.example.nalone.util.Constants.mStore;
-import static com.example.nalone.util.Constants.mStoreBase;
-import static com.example.nalone.util.Constants.sendNotification;
 
 public class PopupProfilFragment extends Fragment {
 
@@ -50,6 +51,9 @@ public class PopupProfilFragment extends Fragment {
     public static int button = 0;
     private NavController navController;
     public static String type;
+
+    private ImageView imagePerson;
+    private Button buttonAdd;
 
     final String TAG = "NOTIFICATION TAG";
 
@@ -67,7 +71,7 @@ public class PopupProfilFragment extends Fragment {
 
         navController = Navigation.findNavController(getActivity(), R.id.nav_host_fragment);
         buttonBack.setVisibility(View.VISIBLE);
-        if(type == "amis"){
+        if (type == "amis") {
             buttonBack.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -75,7 +79,7 @@ public class PopupProfilFragment extends Fragment {
                 }
             });
         }
-        if(type == "recherche"){
+        if (type == "recherche") {
             buttonBack.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -123,8 +127,6 @@ public class PopupProfilFragment extends Fragment {
         TextView nbParticipateProfil;
         TextView villeProfil;
 
-        final ImageView imagePerson;
-        final Button buttonAdd;
         CardView cardViewPhotoPerson;
 
         nameProfil = root.findViewById(R.id.profilName);
@@ -142,7 +144,7 @@ public class PopupProfilFragment extends Fragment {
         nbParticipateProfil.setText(USER_LOAD.getNumber_events_attend());
 
         if (USER_LOAD.getImage_url() != null) {
-            if(!Cache.fileExists(USER_LOAD.getUid())) {
+            if (!Cache.fileExists(USER_LOAD.getUid())) {
                 StorageReference imgRef = mStore.getReference("users/" + USER_LOAD.getUid());
                 if (imgRef != null) {
                     imgRef.getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
@@ -159,7 +161,7 @@ public class PopupProfilFragment extends Fragment {
                         }
                     });
                 }
-            }else{
+            } else {
                 Log.w("image", "get image from cache");
                 Glide.with(getContext()).load(Cache.getUriFromUid(USER_LOAD.getUid())).fitCenter().centerCrop().into(imagePerson);
             }
@@ -179,33 +181,6 @@ public class PopupProfilFragment extends Fragment {
         imageCentreInteret.add(img_centre4);
         imageCentreInteret.add(img_centre5);
 
-        /*if(USER_LOAD.getCenters_interests() != null){
-        for(int i = 0; i < USER_LOAD.getCenters_interests().size(); i++) {
-            int imgResource = 0;
-            if (USER_LOAD.getCenters_interests().get(i).toString().equalsIgnoreCase("programmation")) {
-                imgResource = R.drawable.ci_programmation;
-            } else if (USER_LOAD.getCenters_interests().get(i).toString().equalsIgnoreCase("musique")) {
-                imgResource = R.drawable.ci_musique;
-            } else if (USER_LOAD.getCenters_interests().get(i).toString().equalsIgnoreCase("livre")) {
-                imgResource = R.drawable.ci_livre;
-            } else if (USER_LOAD.getCenters_interests().get(i).toString().equalsIgnoreCase("film")) {
-                imgResource = R.drawable.ci_film;
-            } else if (USER_LOAD.getCenters_interests().get(i).toString().equalsIgnoreCase("video")) {
-                imgResource = R.drawable.ci_jeuxvideo;
-            } else if (USER_LOAD.getCenters_interests().get(i).toString().equalsIgnoreCase("peinture")) {
-                imgResource = R.drawable.ci_peinture;
-            } else if (USER_LOAD.getCenters_interests().get(i).toString().equalsIgnoreCase("photo")) {
-                imgResource = R.drawable.ci_photo;
-            } else if (USER_LOAD.getCenters_interests().get(i).toString().equalsIgnoreCase("sport")) {
-                imgResource = R.drawable.ci_sport;
-            }
-
-            imageCentreInteret.get(i).setImageResource(imgResource);
-            imageCentreInteret.get(i).setVisibility(View.VISIBLE);
-        }
-
-        }*/
-
 
         nameProfil.setText(USER_LOAD.getLast_name() + " " + USER_LOAD.getFirst_name());
         descriptionProfil.setText(USER_LOAD.getDescription());
@@ -218,57 +193,53 @@ public class PopupProfilFragment extends Fragment {
         }
 
         buttonAdd.setOnClickListener(new View.OnClickListener() {
+            @RequiresApi(api = Build.VERSION_CODES.O)
             @Override
             public void onClick(View v) {
                 Log.w("Button", "Button : " + button);
                 if (button == R.drawable.ic_round_mail_24) {
-                    Toast.makeText(getContext(), "Vous avez reçu une demande d'amis de la part de cet utilisateur !", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getContext(), getResources().getString(R.string.invit_received), Toast.LENGTH_SHORT).show();
                 } else if (button == R.drawable.ic_round_hourglass_top_24) {
-                    Toast.makeText(getContext(), "Votre demande d'amis est en attente !", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getContext(), getResources().getString(R.string.invit_in_progress), Toast.LENGTH_SHORT).show();
+                    buttonAdd.setText(getResources().getString(R.string.button_invit_waiting));
+                    buttonAdd.setBackground(getResources().getDrawable(R.drawable.custom_input));
                 } else {
-
-                        Toast.makeText(getContext(), "Vous avez envoyé une demande d'amis !", Toast.LENGTH_SHORT).show();
-                        addFriend();
-                        buttonAdd.setText("En attente");
-                        buttonAdd.setBackground(getResources().getDrawable(R.drawable.custom_input));
-
+                    addFriend();
                 }
             }
         });
 
 
-
         return root;
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     public void addFriend() {
-        ModelData data1 = new ModelData("received", mStoreBase.collection("users").document(USER.getUid()));
-        ModelData data2 = new ModelData("send", mStoreBase.collection("users").document(USER_LOAD.getUid()));
-        mStoreBase.collection("users").document(USER.getUid()).collection("friends").document(USER_LOAD.getUid()).set(data2);
-        mStoreBase.collection("users").document(USER_LOAD.getUid()).collection("friends").document(USER.getUid()).set(data1);
+        JSONObjectCrypt params = new JSONObjectCrypt();
+        params.putCryptParameter("uid", USER.getUid());
+        params.putCryptParameter("uid_friend", USER_LOAD.getUid());
 
-        //Notification.createNotif(USER_LOAD,Notification.demandeAmi());
+        Log.w("Params", params.toString());
 
-        TOPIC = "/topics/"+ USER_LOAD.getUid(); //topic must match with what the receiver subscribed to
-        Log.w("TOPIC", "Topic : " + TOPIC);
-        NOTIFICATION_TITLE = "Toc toc toc...";
-        NOTIFICATION_MESSAGE = USER.getFirst_name() + " " + USER.getLast_name() + " vient de vous envoyer une demande d'amis !";
+        JSONController.getJsonObjectFromUrl(Constants.URL_SEND_FRIEND_REQUEST, getContext(), params, new JSONObjectListener() {
+            @Override
+            public void onJSONReceived(JSONObject jsonObject) {
+                if (jsonObject.length() == 3) {
+                    Toast.makeText(getContext(), getResources().getString(R.string.invit_send), Toast.LENGTH_SHORT).show();
+                    buttonAdd.setText(getResources().getString(R.string.button_invit_waiting));
+                    buttonAdd.setBackground(getResources().getDrawable(R.drawable.custom_input));
+                } else {
+                    Toast.makeText(getContext(), getResources().getString(R.string.error), Toast.LENGTH_SHORT).show();
+                    Log.w("Response", "Error:" + jsonObject.toString());
+                }
+            }
 
-        JSONObject notification = new JSONObject();
-        JSONObject notifcationBody = new JSONObject();
-        try {
-            notifcationBody.put("title", NOTIFICATION_TITLE);
-            notifcationBody.put("message", NOTIFICATION_MESSAGE);
-            notifcationBody.put("sender", USER.getUid());
-            notifcationBody.put("type", "invitation");
-
-            notification.put("to", TOPIC);
-            notification.put("data", notifcationBody);
-        } catch (JSONException e) {
-            Log.e(TAG, "onCreate: " + e.getMessage());
-        }
-        sendNotification(notification, getContext());
-
+            @Override
+            public void onJSONReceivedError(VolleyError volleyError) {
+                Toast.makeText(getContext(), getResources().getString(R.string.error), Toast.LENGTH_SHORT).show();
+                Log.w("Response", "Error:" + volleyError.toString());
+            }
+        });
     }
 
 }

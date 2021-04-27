@@ -2,10 +2,8 @@ package com.example.nalone.util;
 
 import android.app.Application;
 import android.content.Context;
-import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Build;
-import android.util.Base64;
 import android.util.Log;
 import android.widget.ImageView;
 import android.widget.Toast;
@@ -18,16 +16,14 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.bumptech.glide.Glide;
-import com.example.nalone.R;
-import com.example.nalone.enumeration.ImageProtocol;
 import com.example.nalone.enumeration.ImageType;
+import com.example.nalone.fcm.MySingleton;
 import com.example.nalone.json.JSONController;
 import com.example.nalone.json.JSONObjectCrypt;
 import com.example.nalone.listeners.GetImageListener;
 import com.example.nalone.listeners.JSONObjectListener;
 import com.example.nalone.objects.Group;
 import com.example.nalone.objects.User;
-import com.example.nalone.fcm.MySingleton;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -38,28 +34,18 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
-//import com.koalap.geofirestore.GeoFire;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.ByteArrayOutputStream;
-import java.io.DataOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.ProtocolException;
-import java.net.URL;
-import java.nio.charset.StandardCharsets;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
+
+//import com.koalap.geofirestore.GeoFire;
 
 public class Constants {
 
@@ -117,7 +103,7 @@ public class Constants {
     public static String URL_USER_WHITHOUT_ME = "http://api.nolonely.fr:53000/get_users.php";
     public static String URL_MY_FRIENDS = "http://api.nolonely.fr:53000/get_friends.php";
     public static String URL_EVENT_DATE = "http://api.nolonely.fr:53000/get_event_date.php";
-    public static String URL_EVENT_ISREGISTERED = "http://api.nolonely.fr:53000/isRegistered.php";
+    public static String URL_EVENT_ISREGISTERED = "http://api.nolonely.fr:53000/is_registered.php";
     public static String URL_EVENT_NEXT = "http://api.nolonely.fr:53000/get_next_event.php";
     public static String URL_EVENT_POPULAR = "http://api.nolonely.fr:53000/get_event_popular.php";
     public static String URL_EVENT_FILTRE = "http://api.nolonely.fr:53000/get_event_filtre.php";
@@ -132,10 +118,11 @@ public class Constants {
 
 
     public static String URL_ADD_USER_TO_EVENT = "http://api.nolonely.fr:53000/add_user_event.php";
+    public static String URL_SEND_FRIEND_REQUEST = "http://api.nolonely.fr:53000/add_friend_request.php";
     public static String URL_ADD_FRIEND = "http://api.nolonely.fr:53000/add_friend.php";
     public static String URL_ADD_GROUP = "http://api.nolonely.fr:53000/add_group.php";
 
-    public static String URL_UPDATE_ME= "http://api.nolonely.fr:53000/update_me.php";
+    public static String URL_UPDATE_ME = "http://api.nolonely.fr:53000/update_me.php";
     public static String URL_TEST = "http://api.nolonely.fr:53000/test.php";
 
 
@@ -166,12 +153,12 @@ public class Constants {
     }
 
 
-    public static void setUserImage(final User u, final Context context, final ImageView imageView){
+    public static void setUserImage(final User u, final Context context, final ImageView imageView) {
         imageView.post(new Runnable() {
             @Override
             public void run() {
-                if(u.getImage_url() != null) {
-                    if(!Cache.fileExists(u.getUid())) {
+                if (u.getImage_url() != null) {
+                    if (!Cache.fileExists(u.getUid())) {
                         StorageReference imgRef = mStore.getReference("users/" + u.getUid());
                         if (imgRef != null) {
                             imgRef.getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
@@ -189,11 +176,11 @@ public class Constants {
                                 }
                             });
                         }
-                    }else{
+                    } else {
                         Uri imgCache = Cache.getUriFromUid(u.getUid());
-                        if(Cache.getImageDate(u.getUid()).equalsIgnoreCase(u.getImage_url())) {
+                        if (Cache.getImageDate(u.getUid()).equalsIgnoreCase(u.getImage_url())) {
                             Glide.with(context).load(imgCache).fitCenter().centerCrop().into(imageView);
-                        }else{
+                        } else {
                             StorageReference imgRef = mStore.getReference("users/" + u.getUid());
                             if (imgRef != null) {
                                 imgRef.getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
@@ -219,12 +206,12 @@ public class Constants {
 
     }
 
-    public static void setGroupImage(final Group g, final Context context, final ImageView imageView){
+    public static void setGroupImage(final Group g, final Context context, final ImageView imageView) {
         imageView.post(new Runnable() {
             @Override
             public void run() {
-                if(g.getImage_url() != null) {
-                    if(!Cache.fileExists(g.getUid())) {
+                if (g.getImage_url() != null) {
+                    if (!Cache.fileExists(g.getUid())) {
                         StorageReference imgRef = mStore.getReference("groups/" + g.getUid());
                         if (imgRef != null) {
                             imgRef.getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
@@ -242,11 +229,11 @@ public class Constants {
                                 }
                             });
                         }
-                    }else{
+                    } else {
                         Uri imgCache = Cache.getUriFromUid(g.getUid());
-                        if(Cache.getImageDate(g.getUid()).equalsIgnoreCase(g.getImage_url())) {
+                        if (Cache.getImageDate(g.getUid()).equalsIgnoreCase(g.getImage_url())) {
                             Glide.with(context).load(imgCache).fitCenter().centerCrop().into(imageView);
-                        }else{
+                        } else {
                             StorageReference imgRef = mStore.getReference("groups/" + g.getUid());
                             if (imgRef != null) {
                                 imgRef.getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
@@ -271,13 +258,13 @@ public class Constants {
         });
     }
 
-    public static String getFullDate(Date d){
+    public static String getFullDate(Date d) {
         String s = Constants.formatD.format(d);
         String temp = "";
-        for(int i=0; i < s.length(); i++){
-            if(i==0){
-                temp=Character.toUpperCase(s.charAt(i))+"";
-            }else{
+        for (int i = 0; i < s.length(); i++) {
+            if (i == 0) {
+                temp = Character.toUpperCase(s.charAt(i)) + "";
+            } else {
                 temp += s.charAt(i);
             }
         }
@@ -286,7 +273,7 @@ public class Constants {
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     public static void uploadImageOnServer(ImageType type, String name, String data,
-                                           final Context context){
+                                           final Context context) {
         JSONObjectCrypt params = new JSONObjectCrypt();
         try {
             params.put("image", data);
@@ -298,12 +285,12 @@ public class Constants {
         JSONController.getJsonObjectFromUrl("http://api.nolonely.fr:53000/test_image.php", context, params, new JSONObjectListener() {
             @Override
             public void onJSONReceived(JSONObject jsonObject) {
-                Log.w("Response", "Value:"+jsonObject.toString());
+                Log.w("Response", "Value:" + jsonObject.toString());
             }
 
             @Override
             public void onJSONReceivedError(VolleyError volleyError) {
-                Log.w("Response", "Erreur:"+volleyError);
+                Log.w("Response", "Erreur:" + volleyError);
             }
         });
         /*JSONObjectCrypt params = new JSONObjectCrypt();
@@ -341,7 +328,7 @@ public class Constants {
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
-    public static void downloadImageOnServer(final ImageType type, String name, final Context context, final GetImageListener imageListener){
+    public static void downloadImageOnServer(final ImageType type, String name, final Context context, final GetImageListener imageListener) {
 
     }
 

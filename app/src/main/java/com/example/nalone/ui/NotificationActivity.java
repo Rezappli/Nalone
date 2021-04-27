@@ -86,7 +86,7 @@ public class NotificationActivity extends AppCompatActivity {
         notificationList = new ArrayList<>();
 
         JSONObjectCrypt params = new JSONObjectCrypt();
-        params.addParameter("uid", USER.getUid());
+        params.putCryptParameter("uid", USER.getUid());
 
         JSONController.getJsonArrayFromUrl(Constants.URL_NOTIFICATIONS, NotificationActivity.this, params, new JSONArrayListener() {
             @Override
@@ -124,7 +124,7 @@ public class NotificationActivity extends AppCompatActivity {
         invitationsFriend = new ArrayList<>();
 
         JSONObjectCrypt params = new JSONObjectCrypt();
-        params.addParameter("uid", USER.getUid());
+        params.putCryptParameter("uid", USER.getUid());
 
         JSONController.getJsonArrayFromUrl(Constants.URL_FRIENDS_INVITATIONS, this, params, new JSONArrayListener() {
             @Override
@@ -159,7 +159,7 @@ public class NotificationActivity extends AppCompatActivity {
         invitationsEvent = new ArrayList<>();
 
         JSONObjectCrypt params = new JSONObjectCrypt();
-        params.addParameter("uid", USER.getUid());
+        params.putCryptParameter("uid", USER.getUid());
 
         JSONController.getJsonArrayFromUrl(Constants.URL_EVENT_INVITATIONS, this, params, new JSONArrayListener() {
             @Override

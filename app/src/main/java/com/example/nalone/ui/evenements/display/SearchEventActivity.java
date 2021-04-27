@@ -1,11 +1,8 @@
 package com.example.nalone.ui.evenements.display;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
-import androidx.navigation.NavController;
-import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -27,7 +24,6 @@ import com.example.nalone.enumeration.FiltreDate;
 import com.example.nalone.enumeration.FiltreEvent;
 import com.example.nalone.enumeration.FiltreSort;
 import com.example.nalone.enumeration.TypeEvent;
-import com.example.nalone.enumeration.VisibilityMap;
 import com.example.nalone.json.JSONController;
 import com.example.nalone.json.JSONObjectCrypt;
 import com.example.nalone.listeners.JSONArrayListener;
@@ -43,7 +39,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static com.example.nalone.util.Constants.USER;
-import static com.example.nalone.util.Constants.range;
 
 public class SearchEventActivity extends AppCompatActivity {
 
@@ -132,11 +127,11 @@ public class SearchEventActivity extends AppCompatActivity {
         Log.w("Filtre_JSON", currentType.toString());
         JSONObjectCrypt params = new JSONObjectCrypt();
 
-        params.addParameter("uid", USER.getUid());
-        params.addParameter("type", currentType.toString());
-        params.addParameter("sort", currentSort.toString());
+        params.putCryptParameter("uid", USER.getUid());
+        params.putCryptParameter("type", currentType.toString());
+        params.putCryptParameter("sort", currentSort.toString());
         if(currentDate != FiltreDate.NONE)
-            params.addParameter("date", currentDate.toString());
+            params.putCryptParameter("date", currentDate.toString());
 
         JSONController.getJsonArrayFromUrl(Constants.URL_EVENT_FILTRE, getBaseContext(), params, new JSONArrayListener() {
             @Override

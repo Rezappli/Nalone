@@ -1,14 +1,5 @@
 package com.example.nalone.ui.recherche;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.RequiresApi;
-import androidx.cardview.widget.CardView;
-import androidx.fragment.app.Fragment;
-import androidx.navigation.NavController;
-import androidx.navigation.Navigation;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
@@ -20,14 +11,23 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
+import androidx.cardview.widget.CardView;
+import androidx.fragment.app.Fragment;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.android.volley.VolleyError;
+import com.example.nalone.R;
 import com.example.nalone.adapter.RechercheAmisAdapter;
 import com.example.nalone.adapter.RechercheGroupeAdapter;
-import com.example.nalone.listeners.JSONArrayListener;
 import com.example.nalone.json.JSONController;
 import com.example.nalone.json.JSONObjectCrypt;
+import com.example.nalone.listeners.JSONArrayListener;
 import com.example.nalone.objects.Group;
-import com.example.nalone.R;
 import com.example.nalone.objects.User;
 import com.example.nalone.ui.amis.display.PopUpGroupFragment;
 import com.example.nalone.ui.amis.display.PopupProfilFragment;
@@ -60,7 +60,7 @@ public class RechercheFragment extends Fragment {
     private List<User> friends;
     private List<User> myGroups;
 
-    private RelativeLayout relativeAmis, relativeGroup;
+    private RelativeLayout relativeSansAmis, relativeSansGroup;
 
 
     @RequiresApi(api = Build.VERSION_CODES.O)
@@ -86,8 +86,8 @@ public class RechercheFragment extends Fragment {
         loading = rootView.findViewById(R.id.search_loading);
         cardViewRechercheAmis.setVisibility(View.INVISIBLE);
         cardViewRechercheGroupes.setVisibility(View.INVISIBLE);
-        relativeAmis = rootView.findViewById(R.id.relativeSansAmis);
-        relativeGroup = rootView.findViewById(R.id.relativeSansGroup);
+        relativeSansAmis = rootView.findViewById(R.id.relativeSansAmis);
+        relativeSansGroup = rootView.findViewById(R.id.relativeSansGroup);
 
         textViewRechercheAmis.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -114,32 +114,32 @@ public class RechercheFragment extends Fragment {
         friends = new ArrayList<>();
 
         JSONObjectCrypt params = new JSONObjectCrypt();
-        params.addParameter("uid", USER.getUid());
-        params.addParameter("limit", 3); //fix a limit to 10 users
-
-        Log.w("Response", "Value:"+params);
+        params.putCryptParameter("uid", USER.getUid());
+        params.putCryptParameter("limit", 3); //fix a limit to 10 users
 
         JSONController.getJsonArrayFromUrl(Constants.URL_USER_WHITHOUT_ME, getContext(), params, new JSONArrayListener() {
             @Override
             public void onJSONReceived(JSONArray jsonArray) {
                 try {
-                    for (int i = 0; i < jsonArray.length(); i++) {
-                        friends.add((User) JSONController.convertJSONToObject(jsonArray.getJSONObject(i), User.class));
+                    if (jsonArray.length() > 0) {
+
+                        for (int i = 0; i < jsonArray.length(); i++) {
+                            friends.add((User) JSONController.convertJSONToObject(jsonArray.getJSONObject(i), User.class));
+                        }
+
+                        configureRecyclerViewAmis();
+
+                        relativeSansAmis.setVisibility(View.GONE);
+                    } else {
+                        relativeSansAmis.setVisibility(View.VISIBLE);
+                        // cardViewRechercheAmis.setVisibility(View.GONE);
                     }
 
-                    if(friends.size()>0) {
-                        configureRecyclerViewAmis();
-                        loading.setVisibility(View.GONE);
-                        cardViewRechercheAmis.setVisibility(View.VISIBLE);
-                        cardViewRechercheGroupes.setVisibility(View.VISIBLE);
-                        relativeAmis.setVisibility(View.GONE);
-                    }else{
-                        relativeAmis.setVisibility(View.VISIBLE);
-                        loading.setVisibility(View.GONE);
-                        cardViewRechercheAmis.setVisibility(View.GONE);
-                    }
+                    loading.setVisibility(View.GONE);
+                    cardViewRechercheAmis.setVisibility(View.VISIBLE);
+
                 } catch (JSONException e) {
-                    Log.w("Response", "Erreur:"+e.getMessage());
+                    Log.w("Response", "Erreur:" + e.getMessage());
                     Toast.makeText(getContext(), getResources().getString(R.string.error), Toast.LENGTH_SHORT).show();
                 }
 
@@ -147,7 +147,7 @@ public class RechercheFragment extends Fragment {
 
             @Override
             public void onJSONReceivedError(VolleyError volleyError) {
-                Log.w("Response", "Erreur:"+volleyError.toString());
+                Log.w("Response", "Erreur:" + volleyError.toString());
                 Toast.makeText(getContext(), getResources().getString(R.string.error_event), Toast.LENGTH_SHORT).show();
             }
         });
@@ -157,9 +157,9 @@ public class RechercheFragment extends Fragment {
     private void getGroups() {
         myGroups = new ArrayList<>();
 
-        relativeGroup.setVisibility(View.VISIBLE);
+        relativeSansGroup.setVisibility(View.VISIBLE);
+        cardViewRechercheGroupes.setVisibility(View.VISIBLE);
         loading.setVisibility(View.GONE);
-        cardViewRechercheAmis.setVisibility(View.GONE);
     }
 
     private void configureRecyclerViewAmis() {

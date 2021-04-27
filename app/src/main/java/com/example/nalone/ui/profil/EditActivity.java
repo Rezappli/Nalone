@@ -151,14 +151,14 @@ public class EditActivity extends AppCompatActivity {
     @RequiresApi(api = Build.VERSION_CODES.O)
     private void updateDescription() {
         JSONObjectCrypt params = new JSONObjectCrypt();
-        params.addParameter("uid", USER.getUid());
-        params.addParameter("first_name", USER.getFirst_name());
-        params.addParameter("last_name", USER.getLast_name());
-        params.addParameter("birthday_date", USER.getBirthday_date());
-        params.addParameter("city", USER.getCity());
-        params.addParameter("description", USER.getDescription());
-        params.addParameter("latitude", USER.getLatitude());
-        params.addParameter("longitude", USER.getLongitude());
+        params.putCryptParameter("uid", USER.getUid());
+        params.putCryptParameter("first_name", USER.getFirst_name());
+        params.putCryptParameter("last_name", USER.getLast_name());
+        params.putCryptParameter("birthday_date", USER.getBirthday_date());
+        params.putCryptParameter("city", USER.getCity());
+        params.putCryptParameter("description", USER.getDescription());
+        params.putCryptParameter("latitude", USER.getLatitude());
+        params.putCryptParameter("longitude", USER.getLongitude());
 
         JSONController.getJsonObjectFromUrl(Constants.URL_UPDATE_ME, getBaseContext(), params, new JSONObjectListener() {
             @Override

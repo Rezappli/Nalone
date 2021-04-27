@@ -74,8 +74,8 @@ public class EventPlanningActivity extends AppCompatActivity implements DatePick
     private void getEvent(String date){
         JSONObjectCrypt params = new JSONObjectCrypt();
 
-        params.addParameter("uid", USER.getUid());
-        params.addParameter("date", date);
+        params.putCryptParameter("uid", USER.getUid());
+        params.putCryptParameter("date", date);
 
         JSONController.getJsonArrayFromUrl(Constants.URL_EVENT_DATE, this, params, new JSONArrayListener() {
             @Override

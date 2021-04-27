@@ -60,7 +60,7 @@ public class InfosEvenementsActivity extends AppCompatActivity {
     private boolean inscrit;
     private TextView textViewPartager;
     private TextView textViewTitleDebut;
-    private LinearLayout linearButton,linearParticipate;
+    private LinearLayout linearButton, linearParticipate;
     private CardView cardViewTermine;
     private LinearLayout linearAnnuler;
     private ImageView buttonBack;
@@ -115,7 +115,7 @@ public class InfosEvenementsActivity extends AppCompatActivity {
         buttonPartager.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(getBaseContext(), "Clicked on Share " , Toast.LENGTH_SHORT).show();
+                Toast.makeText(getBaseContext(), "Clicked on Share ", Toast.LENGTH_SHORT).show();
                 Intent sendIntent = new Intent();
                 sendIntent.setAction(Intent.ACTION_SEND);
                 sendIntent.putExtra(Intent.EXTRA_TEXT, "This is my text to send.");
@@ -132,17 +132,17 @@ public class InfosEvenementsActivity extends AppCompatActivity {
 
         String final_date_text = "";
         mTitle.setText(EVENT_LOAD.getName());
-        mOwner.setText(EVENT_LOAD.getOwner_first_name()+" "+EVENT_LOAD.getOwner_last_name());
-        nbParticipants.setText(EVENT_LOAD.getNbMembers()+"");
+        mOwner.setText(EVENT_LOAD.getOwner_first_name() + " " + EVENT_LOAD.getOwner_last_name());
+        nbParticipants.setText(EVENT_LOAD.getNbMembers() + "");
 
-        if(EVENT_LOAD.getDescription().matches("")){
+        if (EVENT_LOAD.getDescription().matches("")) {
             mDescription.setVisibility(View.GONE);
-        }else{
+        } else {
             mDescription.setText(EVENT_LOAD.getDescription());
         }
 
         handler = new Handler();
-        handler.postDelayed(runnable,0);
+        handler.postDelayed(runnable, 0);
 
         try {
             Date date = sdf.parse(EVENT_LOAD.getStartDate());
@@ -157,22 +157,22 @@ public class InfosEvenementsActivity extends AppCompatActivity {
 
             mDate.setText(final_date_text);
         } catch (ParseException e) {
-            Log.w("Response", "Erreur:"+e.getMessage());
+            Log.w("Response", "Erreur:" + e.getMessage());
             Toast.makeText(getBaseContext(), getResources().getString(R.string.error), Toast.LENGTH_SHORT).show();
         }
 
         mTimer.setText(cutString(EVENT_LOAD.getStartDate()));
 
-        Log.w("STATUS", EVENT_LOAD.getStatusEvent()+"");
-        if(EVENT_LOAD.getStatusEvent() == StatusEvent.ENCOURS) {
+        Log.w("STATUS", EVENT_LOAD.getStatusEvent() + "");
+        if (EVENT_LOAD.getStatusEvent() == StatusEvent.ENCOURS) {
             textViewTitleDebut.setText(getResources().getString(R.string.event_start_from));
-        }else if(EVENT_LOAD.getStatusEvent() == StatusEvent.FINI){
+        } else if (EVENT_LOAD.getStatusEvent() == StatusEvent.FINI) {
             textViewTitleDebut.setText(getResources().getString(R.string.event_end_from));
             textViewTitleDebut.setTextColor(Color.GRAY);
             linearButton.setVisibility(View.GONE);
             cardViewTermine.setVisibility(View.VISIBLE);
             diffDate.setTextColor(Color.GRAY);
-        }else if(EVENT_LOAD.getStatusEvent() == StatusEvent.BIENTOT){
+        } else if (EVENT_LOAD.getStatusEvent() == StatusEvent.BIENTOT) {
             textViewTitleDebut.setText(getResources().getString(R.string.event_start_in));
         }
         /*mStoreBase.collection("events").document(EVENT_LOAD.getUid())
@@ -221,7 +221,7 @@ public class InfosEvenementsActivity extends AppCompatActivity {
         });*/
 
         //if(EVENT_LOAD.getImage_url() != null){
-            //Constants.setEventImage(EVENT_LOAD, getBaseContext()(), imageEvent);
+        //Constants.setEventImage(EVENT_LOAD, getBaseContext()(), imageEvent);
         //}
     }
 
@@ -230,10 +230,10 @@ public class InfosEvenementsActivity extends AppCompatActivity {
         @Override
         public void run() {
             try {
-                TimeUtil.differenceDate(new Date(),sdf.parse(EVENT_LOAD.getStartDate()),diffDate);
-                handler.postDelayed(this,0);
+                TimeUtil.differenceDate(new Date(), sdf.parse(EVENT_LOAD.getStartDate()), diffDate);
+                handler.postDelayed(this, 0);
             } catch (ParseException e) {
-                Log.w("Response", "Erreur:"+e.getMessage());
+                Log.w("Response", "Erreur:" + e.getMessage());
                 Toast.makeText(getBaseContext(), getResources().getString(R.string.error), Toast.LENGTH_SHORT).show();
             }
         }
@@ -247,16 +247,16 @@ public class InfosEvenementsActivity extends AppCompatActivity {
                     @RequiresApi(api = Build.VERSION_CODES.O)
                     public void onClick(DialogInterface dialog, int id) {
                         JSONObjectCrypt params = new JSONObjectCrypt();
-                        params.addParameter("uid", USER.getUid());
-                        params.addParameter("uid_event", EVENT_LOAD.getUid());
+                        params.putCryptParameter("uid", USER.getUid());
+                        params.putCryptParameter("uid_event", EVENT_LOAD.getUid());
 
                         JSONController.getJsonObjectFromUrl(Constants.URL_EVENT_DELETE, getBaseContext(), params, new JSONObjectListener() {
                             @Override
                             public void onJSONReceived(JSONObject jsonObject) {
-                                if(jsonObject.length() == 3) {
+                                if (jsonObject.length() == 3) {
                                     Toast.makeText(getBaseContext(), getResources().getString(R.string.event_delete), Toast.LENGTH_SHORT).show();
                                     onBackPressed();
-                                }else{
+                                } else {
                                     Toast.makeText(getBaseContext(), getResources().getString(R.string.error), Toast.LENGTH_SHORT).show();
                                 }
                             }
@@ -264,7 +264,7 @@ public class InfosEvenementsActivity extends AppCompatActivity {
                             @Override
                             public void onJSONReceivedError(VolleyError volleyError) {
                                 Toast.makeText(getBaseContext(), getResources().getString(R.string.error), Toast.LENGTH_SHORT).show();
-                                Log.w("Response", "Erreur:"+volleyError.toString());
+                                Log.w("Response", "Erreur:" + volleyError.toString());
                             }
                         });
                     }
@@ -280,7 +280,7 @@ public class InfosEvenementsActivity extends AppCompatActivity {
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     private void setData() {
-        if(EVENT_LOAD.getOwner_uid().equalsIgnoreCase(USER.getUid())){
+        if (EVENT_LOAD.getOwner_uid().equalsIgnoreCase(USER.getUid())) {
             inscrit = true;
             linearParticipate.setVisibility(View.GONE);
             linearAnnuler.setVisibility(View.VISIBLE);
@@ -288,8 +288,8 @@ public class InfosEvenementsActivity extends AppCompatActivity {
         }
 
         JSONObjectCrypt params = new JSONObjectCrypt();
-        params.addParameter("uid", USER.getUid());
-        params.addParameter("uid_event", EVENT_LOAD.getUid());
+        params.putCryptParameter("uid", USER.getUid());
+        params.putCryptParameter("uid_event", EVENT_LOAD.getUid());
 
         JSONController.getJsonObjectFromUrl(Constants.URL_EVENT_ISREGISTERED, getBaseContext(), params, new JSONObjectListener() {
             @SuppressLint("UseCompatLoadingForDrawables")
@@ -314,14 +314,14 @@ public class InfosEvenementsActivity extends AppCompatActivity {
     private void incription() {
         Drawable resources = null;
         String inscriptionText = "";
-        if(!inscrit){
-            Toast.makeText(getBaseContext(), getResources().getString(R.string.register_message)+" "+ EVENT_LOAD.getName(), Toast.LENGTH_SHORT).show();
+        if (!inscrit) {
+            Toast.makeText(getBaseContext(), getResources().getString(R.string.register_message) + " " + EVENT_LOAD.getName(), Toast.LENGTH_SHORT).show();
             inscriptionText = getResources().getString(R.string.unregister);
             resources = getResources().getDrawable(R.drawable.inscrit_oui_50);
             inscrit = true;
             onRegisterUser();
-        }else{
-            Toast.makeText(getBaseContext(), getResources().getString(R.string.unregister_messge)+" "+ EVENT_LOAD.getName(), Toast.LENGTH_SHORT).show();
+        } else {
+            Toast.makeText(getBaseContext(), getResources().getString(R.string.unregister_messge) + " " + EVENT_LOAD.getName(), Toast.LENGTH_SHORT).show();
             inscriptionText = getResources().getString(R.string.register);
             resources = getResources().getDrawable(R.drawable.inscrit_50);
             inscrit = false;
@@ -333,14 +333,14 @@ public class InfosEvenementsActivity extends AppCompatActivity {
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
-    private void onRegisterUser(){
+    private void onRegisterUser() {
         JSONObjectCrypt params = new JSONObjectCrypt();
-        params.addParameter("uid", USER.getUid());
-        params.addParameter("uid_event", EVENT_LOAD.getUid());
-        if(EVENT_LOAD.getVisibility().equals(Visibility.PRIVATE)){
-            params.addParameter("status", "waiting");
-        }else{
-            params.addParameter("status", "add");
+        params.putCryptParameter("uid", USER.getUid());
+        params.putCryptParameter("uid_event", EVENT_LOAD.getUid());
+        if (EVENT_LOAD.getVisibility().equals(Visibility.PRIVATE)) {
+            params.putCryptParameter("status", "waiting");
+        } else {
+            params.putCryptParameter("status", "add");
         }
 
         JSONController.getJsonObjectFromUrl(Constants.URL_ADD_USER_TO_EVENT, getBaseContext(), params, new JSONObjectListener() {
@@ -352,16 +352,16 @@ public class InfosEvenementsActivity extends AppCompatActivity {
             @Override
             public void onJSONReceivedError(VolleyError volleyError) {
                 Toast.makeText(getBaseContext(), getResources().getString(R.string.error), Toast.LENGTH_SHORT).show();
-                Log.w("Response", "Erreur:"+volleyError.toString());
+                Log.w("Response", "Erreur:" + volleyError.toString());
             }
         });
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
-    private void onUnregisterUser(){
+    private void onUnregisterUser() {
         JSONObjectCrypt params = new JSONObjectCrypt();
-        params.addParameter("uid", USER.getUid());
-        params.addParameter("uid_event", EVENT_LOAD.getUid());
+        params.putCryptParameter("uid", USER.getUid());
+        params.putCryptParameter("uid_event", EVENT_LOAD.getUid());
 
         JSONController.getJsonObjectFromUrl(Constants.URL_DELETE_USER_TO_EVENT, getBaseContext(), params, new JSONObjectListener() {
             @Override
@@ -372,7 +372,7 @@ public class InfosEvenementsActivity extends AppCompatActivity {
             @Override
             public void onJSONReceivedError(VolleyError volleyError) {
                 Toast.makeText(getBaseContext(), getResources().getString(R.string.error), Toast.LENGTH_SHORT).show();
-                Log.w("Response", "Erreur:"+volleyError.toString());
+                Log.w("Response", "Erreur:" + volleyError.toString());
             }
         });
     }
@@ -385,24 +385,24 @@ public class InfosEvenementsActivity extends AppCompatActivity {
 
     @Override
     public void onResume() {
-        handler.postDelayed(runnable,0);
+        handler.postDelayed(runnable, 0);
         super.onResume();
     }
 
-    private String cutString(String s){
-        if(5 > s.length()){
+    private String cutString(String s) {
+        if (5 > s.length()) {
             return null;
         }
 
         StringBuilder temp = new StringBuilder();
 
         int i = 0;
-        if(11 != -1){
-            for(i= 11; i< 5 + 11; i++){
+        if (11 != -1) {
+            for (i = 11; i < 5 + 11; i++) {
                 temp.append(s.charAt(i));
             }
-        }else{
-            for(i=0; i< 5; i++){
+        } else {
+            for (i = 0; i < 5; i++) {
                 temp.append(s.charAt(i));
             }
         }

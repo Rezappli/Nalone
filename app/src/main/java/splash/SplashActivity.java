@@ -97,7 +97,7 @@ public class SplashActivity extends AppCompatActivity {
     @RequiresApi(api = Build.VERSION_CODES.O)
     private void loadUserData(final JSONObject json) throws JSONException {
         JSONObjectCrypt params = new JSONObjectCrypt();
-        params.addParameter("uid", json.getString("uid"));
+        params.putCryptParameter("uid", json.getString("uid"));
 
         JSONController.getJsonObjectFromUrl(Constants.URL_ME, this, params, new JSONObjectListener() {
             @Override
