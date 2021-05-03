@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.nalone.R;
 import com.example.nalone.objects.User;
+import com.example.nalone.util.Constants;
 
 import java.util.List;
 
@@ -27,8 +28,8 @@ public class RechercheAmisAdapter extends RecyclerView.Adapter<RechercheAmisAdap
 
     private OnItemClickListener mListener;
 
-    public void setOnItemClickListener(OnItemClickListener listener){
-        mListener= listener;
+    public void setOnItemClickListener(OnItemClickListener listener) {
+        mListener = listener;
     }
 
 
@@ -47,13 +48,13 @@ public class RechercheAmisAdapter extends RecyclerView.Adapter<RechercheAmisAdap
     @Override
     public void onBindViewHolder(@NonNull UserViewHolder holder, int position) {
         holder.update(this.userList.get(position));
+        Constants.setUserImage(this.userList.get(position), Constants.application, holder.imagePerson);
     }
 
     @Override
     public int getItemCount() {
         return this.userList.size();
     }
-
 
 
     public class UserViewHolder extends RecyclerView.ViewHolder {
@@ -65,7 +66,7 @@ public class RechercheAmisAdapter extends RecyclerView.Adapter<RechercheAmisAdap
         private ImageView button;
         private CardView cardViewPhotoPerson;
 
-        public UserViewHolder(@NonNull View itemView,final OnItemClickListener listener) {
+        public UserViewHolder(@NonNull View itemView, final OnItemClickListener listener) {
             super(itemView);
 
             nomInvit = itemView.findViewById(R.id.nomInvit);
@@ -77,9 +78,9 @@ public class RechercheAmisAdapter extends RecyclerView.Adapter<RechercheAmisAdap
             layoutProfil.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if(mListener != null){
+                    if (mListener != null) {
                         int position = getAdapterPosition();
-                        if(position != RecyclerView.NO_POSITION){
+                        if (position != RecyclerView.NO_POSITION) {
                             listener.onDisplayClick(position);
                         }
                     }
@@ -87,9 +88,9 @@ public class RechercheAmisAdapter extends RecyclerView.Adapter<RechercheAmisAdap
             });
         }
 
-        public void update(final User u){
+        public void update(final User u) {
             villePers.setText(u.getCity());
-            nomInvit.setText(u.getFirst_name() + " "+ u.getLast_name());
+            nomInvit.setText(u.getFirst_name() + " " + u.getLast_name());
             button.setImageResource(0);
         }
     }

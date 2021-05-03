@@ -53,9 +53,8 @@ public class CryptoUtils {
             byte[] encryptedData = cipher.doFinal((data.getBytes()));
 
             String base64_EncryptedData = Base64.getEncoder().encodeToString(encryptedData);
-            String base64_IV = Base64.getEncoder().encodeToString(Constants.iv.getBytes("UTF-8"));
 
-            return base64_EncryptedData + ":" + base64_IV;
+            return base64_EncryptedData;
 
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -94,9 +93,8 @@ public class CryptoUtils {
             byte[] encryptedData = cipher.doFinal((data.getBytes()));
 
             String base64_EncryptedData = Base64.getEncoder().encodeToString(encryptedData);
-            String base64_IV = Base64.getEncoder().encodeToString(Constants.iv.getBytes("UTF-8"));
 
-            return base64_EncryptedData + ":" + base64_IV;
+            return base64_EncryptedData;
 
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -116,15 +114,13 @@ public class CryptoUtils {
     public static String decrypt(String data) {
         try {
 
-            String[] parts = data.split(":");
-
-            IvParameterSpec iv = new IvParameterSpec(Base64.getDecoder().decode(parts[1]));
+            IvParameterSpec iv = new IvParameterSpec(Constants.iv.getBytes());
             SecretKeySpec skeySpec = new SecretKeySpec(Constants.key.getBytes("UTF-8"), "AES");
 
             Cipher cipher = Cipher.getInstance(CIPHER_NAME);
             cipher.init(Cipher.DECRYPT_MODE, skeySpec, iv);
 
-            byte[] decodedEncryptedData = Base64.getDecoder().decode(parts[0]);
+            byte[] decodedEncryptedData = Base64.getDecoder().decode(data);
 
             byte[] original = cipher.doFinal(decodedEncryptedData);
 
@@ -145,13 +141,13 @@ public class CryptoUtils {
                 JSONObject obj = arr.getJSONObject(i);
                 for (Iterator<String> it = obj.keys(); it.hasNext(); ) {
                     String key = it.next();
-                    temp.put(key, decrypt((String)obj.get(key)));
+                    temp.put(key, decrypt((String) obj.get(key)));
                 }
                 array.put(temp);
             }
             return array;
         } catch (JSONException e) {
-            Log.w("Response", "Erreur:"+e.getMessage());
+            Log.w("Response", "Erreur:" + e.getMessage());
         }
         return array;
     }
@@ -165,7 +161,7 @@ public class CryptoUtils {
                 temp.put(key, decrypt((String) obj.get(key)));
             }
         } catch (JSONException e) {
-            Log.w("Response", "Error:"+e.getMessage());
+            Log.w("Response", "Error:" + e.getMessage());
         }
 
         obj = temp;

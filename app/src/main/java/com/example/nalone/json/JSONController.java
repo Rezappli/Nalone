@@ -52,6 +52,7 @@ public class JSONController {
                          @Override
                          public void onErrorResponse(VolleyError volleyError) {
                              if (listener != null) {
+                                 Log.w("Response", "Error call from " + listener.getClass());
                                  listener.onJSONReceivedError(volleyError);
                              }
                          }
@@ -86,7 +87,7 @@ public class JSONController {
     }
 
     public static void getJsonObjectFromUrl(@NonNull String url, @NonNull Context context,
-                                            @NonNull JSONObject parameters, final JSONObjectListener listener){
+                                            @NonNull JSONObject parameters, final JSONObjectListener listener) {
         Volley.newRequestQueue(context)
                 .add(new JsonRequest<JSONObject>(Request.Method.POST,
                              url,
@@ -131,7 +132,7 @@ public class JSONController {
                 );
     }
 
-    public static Object convertJSONToObject(JSONObject s, Class c){
+    public static Object convertJSONToObject(JSONObject s, Class c) {
         return gson.fromJson(s.toString(), c);
     }
 }

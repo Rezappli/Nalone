@@ -2,13 +2,11 @@ package com.example.nalone.util;
 
 import android.app.Application;
 import android.content.Context;
-import android.net.Uri;
 import android.os.Build;
 import android.util.Log;
 import android.widget.ImageView;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 
 import com.android.volley.AuthFailureError;
@@ -20,13 +18,10 @@ import com.example.nalone.enumeration.ImageType;
 import com.example.nalone.fcm.MySingleton;
 import com.example.nalone.json.JSONController;
 import com.example.nalone.json.JSONObjectCrypt;
-import com.example.nalone.listeners.GetImageListener;
 import com.example.nalone.listeners.JSONObjectListener;
 import com.example.nalone.objects.Group;
 import com.example.nalone.objects.User;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
@@ -38,8 +33,6 @@ import com.google.firebase.storage.StorageReference;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.UnsupportedEncodingException;
-import java.net.URI;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -164,7 +157,8 @@ public class Constants {
         imageView.post(new Runnable() {
             @Override
             public void run() {
-                if(u.getImage_url() != null) {
+                Log.w("Image", "Image url :" + u.getImage_url());
+                if (u.getImage_url() != null && !u.getImage_url().equals("")) {
                     Glide.with(context).load(u.getImage_url()).fitCenter().centerCrop().into(imageView);
                 }
             }
@@ -176,8 +170,8 @@ public class Constants {
         imageView.post(new Runnable() {
             @Override
             public void run() {
-                if (g.getImage_url() != null) {
-                   Glide.with(context).load(g.getImage_url()).fitCenter().centerCrop().into(imageView);
+                if (g.getImage_url() != null && !g.getImage_url().equals("")) {
+                    Glide.with(context).load(g.getImage_url()).fitCenter().centerCrop().into(imageView);
                 }
             }
         });
@@ -196,7 +190,7 @@ public class Constants {
         return temp;
     }
 
-    public static String getDateDayHoursMinutesSeconds(Date d){
+    public static String getDateDayHoursMinutesSeconds(Date d) {
         return formatDayHoursMinutesSeconds.format(d);
     }
 

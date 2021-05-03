@@ -222,6 +222,7 @@
     <string name="date_in_futur">Veuillez selectionner des dates dans le futur</string>
     <string name="event_create">Vous avez créer votre évènement !</string>
     <string name="no_friends">Vous n\'avez pas d\'ami !</string>
+    <string name="delete_friend">Vous avez supprimé un(e) ami(e)</string>
 
     <!--Strings used for notifications -->
     <string name="notification_join_group">a rejoins un de vos groupe</string>
@@ -298,9 +299,9 @@
     <string name="invit_in_progress"> Votre demande d\'amis est en attente ! </string>
     <string name="invit_send"> Vous avez envoyé une demande d\'amis ! </string>
 
+
     <string name="button_invit_waiting"> En attente </string>
 
     <string name="update_fail">La mise à jour de vos informations à échouée</string>
-
 
 </resources>

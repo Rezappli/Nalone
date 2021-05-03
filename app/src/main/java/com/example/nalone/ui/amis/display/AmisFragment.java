@@ -55,6 +55,7 @@ public class AmisFragment extends Fragment {
     private View rootView;
     private RecyclerView mRecyclerView;
     private List<User> friends;
+    private TextView resultat;
 
     private LinearLayout linearSansMesAmis;
     private ProgressBar loading;
@@ -66,20 +67,19 @@ public class AmisFragment extends Fragment {
                              Bundle savedInstanceState) {
 
         rootView = inflater.inflate(R.layout.fragment_amis, container, false);
-        createFragment();
         return rootView;
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     private void createFragment() {
         search_bar = rootView.findViewById(R.id.search_bar_amis);
-        TextView resultat = rootView.findViewById(R.id.resultatText_amis);
+        resultat = rootView.findViewById(R.id.resultatText_amis);
         resultat.setVisibility(View.GONE);
         linearSansMesAmis = rootView.findViewById(R.id.linearSansMesAmis);
         navController = Navigation.findNavController(getActivity(), R.id.nav_host_fragment);
         buttonBack.setVisibility(View.GONE);
         mRecyclerView = rootView.findViewById(R.id.recyclerViewMesAmis);
-        SwipeRefreshLayout mSwipeRefreshLayout = rootView.findViewById(R.id.AmisSwipeRefreshLayout);
+        final SwipeRefreshLayout mSwipeRefreshLayout = rootView.findViewById(R.id.AmisSwipeRefreshLayout);
         loading = rootView.findViewById(R.id.loading);
         ImageView imagePerson = rootView.findViewById(R.id.imagePerson);
 
@@ -99,7 +99,6 @@ public class AmisFragment extends Fragment {
 
             @Override
             public boolean onQueryTextChange(String newText) {
-
                 return false;
             }
         });
@@ -108,11 +107,50 @@ public class AmisFragment extends Fragment {
             @Override
             public void onRefresh() {
                 createFragment();
+                mSwipeRefreshLayout.setRefreshing(false);
             }
         });
-
         getFriends();
-        mSwipeRefreshLayout.setRefreshing(false);
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    private void getFriends() {
+        friends = new ArrayList<>();
+
+        JSONObjectCrypt params = new JSONObjectCrypt();
+        params.putCryptParameter("uid", USER.getUid());
+        params.putCryptParameter("limit", 10); //fix a limit to 10 users
+
+        JSONController.getJsonArrayFromUrl(Constants.URL_MY_FRIENDS, getContext(), params, new JSONArrayListener() {
+            @Override
+            public void onJSONReceived(JSONArray jsonArray) {
+                try {
+                    if (jsonArray.length() > 0) {
+                        for (int i = 0; i < jsonArray.length(); i++) {
+                            friends.add((User) JSONController.convertJSONToObject(jsonArray.getJSONObject(i), User.class));
+                        }
+                        mRecyclerView.setVisibility(View.VISIBLE);
+                        linearSansMesAmis.setVisibility(View.GONE);
+
+                        configureRecyclerViewAmis();
+                    } else {
+                        mRecyclerView.setVisibility(View.GONE);
+                        linearSansMesAmis.setVisibility(View.VISIBLE);
+                    }
+
+                    loading.setVisibility(View.GONE);
+                } catch (JSONException e) {
+                    Log.w("Response", "Erreur: " + e.getMessage());
+                    Toast.makeText(getContext(), getResources().getString(R.string.error), Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onJSONReceivedError(VolleyError volleyError) {
+                Log.w("Response", "Erreur: " + volleyError.toString());
+                Toast.makeText(getContext(), getResources().getString(R.string.error_event), Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     private void configureRecyclerViewAmis() {
@@ -153,50 +191,6 @@ public class AmisFragment extends Fragment {
         });
     }
 
-
-    @RequiresApi(api = Build.VERSION_CODES.O)
-    private void getFriends() {
-        friends = new ArrayList<>();
-
-        JSONObjectCrypt params = new JSONObjectCrypt();
-        params.putCryptParameter("uid", USER.getUid());
-        params.putCryptParameter("limit", 10); //fix a limit to 10 users
-
-        Log.w("Response", "Valeur");
-
-        JSONController.getJsonArrayFromUrl(Constants.URL_MY_FRIENDS, getContext(), params, new JSONArrayListener() {
-            @Override
-            public void onJSONReceived(JSONArray jsonArray) {
-                try {
-                    if (jsonArray.length() > 0) {
-
-                        for (int i = 0; i < jsonArray.length(); i++) {
-                            friends.add((User) JSONController.convertJSONToObject(jsonArray.getJSONObject(i), User.class));
-                        }
-                        mRecyclerView.setVisibility(View.VISIBLE);
-                        linearSansMesAmis.setVisibility(View.GONE);
-
-                        configureRecyclerViewAmis();
-                    } else {
-                        mRecyclerView.setVisibility(View.GONE);
-                        linearSansMesAmis.setVisibility(View.VISIBLE);
-                    }
-
-                    loading.setVisibility(View.GONE);
-                } catch (JSONException e) {
-                    Log.w("Response", "Erreur: " + e.getMessage());
-                    Toast.makeText(getContext(), getResources().getString(R.string.error), Toast.LENGTH_SHORT).show();
-                }
-            }
-
-            @Override
-            public void onJSONReceivedError(VolleyError volleyError) {
-                Log.w("Response", "Erreur: " + volleyError.toString());
-                Toast.makeText(getContext(), getResources().getString(R.string.error_event), Toast.LENGTH_SHORT).show();
-            }
-        });
-    }
-
     public void showPopUpProfil(User u) {
 
         PopupProfilFragment.USER_LOAD = u;
@@ -216,7 +210,13 @@ public class AmisFragment extends Fragment {
             @Override
             public void onJSONReceived(JSONObject jsonObject) {
                 Log.w("Response", "Value:" + jsonObject);
-                createFragment();
+                if (jsonObject.length() == 3) {
+                    Toast.makeText(getContext(), getResources().getString(R.string.delete_friend), Toast.LENGTH_SHORT).show();
+                    createFragment();
+                } else {
+                    Toast.makeText(getContext(), getResources().getString(R.string.error), Toast.LENGTH_SHORT).show();
+                    Log.w("Response", "Erreur:" + jsonObject.toString());
+                }
             }
 
             @Override
