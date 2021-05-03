@@ -25,6 +25,7 @@ import com.example.nalone.util.Cache;
 import com.example.nalone.objects.Group;
 import com.example.nalone.R;
 import com.example.nalone.enumeration.Visibility;
+import com.example.nalone.util.Constants;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
@@ -178,31 +179,7 @@ public class PopUpMesGroupesFragment extends Fragment {
                 });
 
 
-
-
-        if (GROUP_LOAD.getImage_url() != null) {
-            if(!Cache.fileExists(GROUP_LOAD.getUid())) {
-                StorageReference imgRef = mStore.getReference("users/" + GROUP_LOAD.getUid());
-                if (imgRef != null) {
-                    imgRef.getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
-                        @Override
-                        public void onComplete(@NonNull Task<Uri> task) {
-                            if (task.isSuccessful()) {
-                                Uri img = task.getResult();
-                                if (img != null) {
-                                    Log.w("image", "save image from cache");
-                                    Cache.saveUriFile(GROUP_LOAD.getUid(), img);
-                                    Glide.with(getContext()).load(img).fitCenter().centerCrop().into(imageGroup);
-                                }
-                            }
-                        }
-                    });
-                }
-            }else{
-                Log.w("image", "get image from cache");
-                Glide.with(getContext()).load(Cache.getUriFromUid(GROUP_LOAD.getUid())).fitCenter().centerCrop().into(imageGroup);
-            }
-        }
+        Constants.setGroupImage(GROUP_LOAD, getContext(), imageGroup);
 
         if (GROUP_LOAD.getDescription().equalsIgnoreCase("")) {
             relativeDesc.setVisibility(View.GONE);

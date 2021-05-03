@@ -118,6 +118,7 @@ public class MainActivity extends AppCompatActivity {
 
                 if (!textAddress.equalsIgnoreCase("") && !textPass.equalsIgnoreCase("")) {
                     progressBar.setVisibility(View.VISIBLE);
+                    Log.w("Response", "Try to connect client");
                     connectUser(textAddress, textPass);
                 }
             }
@@ -168,6 +169,8 @@ public class MainActivity extends AppCompatActivity {
         params.putCryptParameter("mail", mail);
         params.putCryptParameter("password", pass);
 
+        Log.w("Response from Main", params.toString());
+
         JSONController.getJsonObjectFromUrl(Constants.URL_SIGN_IN, MainActivity.this, params, new JSONObjectListener() {
             @Override
             public void onJSONReceived(JSONObject jsonObject) {
@@ -176,6 +179,7 @@ public class MainActivity extends AppCompatActivity {
                         editor.putString("mail", CryptoUtils.encrypt(mail));
                         editor.putString("password", CryptoUtils.encrypt(pass));
                         editor.apply();
+                        Log.w("Response", "Mail and password match");
                         loadUserData(jsonObject);
                     } catch (JSONException e) {
                         Toast.makeText(MainActivity.this, getResources().getString(R.string.error), Toast.LENGTH_SHORT).show();
@@ -205,6 +209,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onJSONReceived(JSONObject jsonObject) {
                 USER = (User) JSONController.convertJSONToObject(jsonObject, User.class);
+                Log.w("Response", "User Informations load");
                 launchHomeActivity();
             }
 

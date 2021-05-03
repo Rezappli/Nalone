@@ -36,6 +36,7 @@ public class Evenement implements Serializable {
     private String ownerLastName;
     private int price;
     private TypeEvent category;
+    private String image_url;
 
     public Evenement() {
         this.uid = null;
@@ -55,6 +56,7 @@ public class Evenement implements Serializable {
         this.category = null;
         this.ownerFirstName = null;
         this.ownerLastName = null;
+        this.image_url = null;
     }
 
 
@@ -78,6 +80,7 @@ public class Evenement implements Serializable {
         this.price = price;
         this.ownerFirstName = Constants.USER.getFirst_name();
         this.ownerLastName = Constants.USER.getLast_name();
+        this.image_url = null;
     }
 
     public void setOwner_uid(String owner_uid) {
@@ -246,6 +249,14 @@ public class Evenement implements Serializable {
 
     public void setCategory(TypeEvent eventType) {
         this.category = eventType;
+    }
+
+    public String getImage_url() {
+        return image_url;
+    }
+
+    public void setImage_url(String image_url) {
+        this.image_url = image_url;
     }
 
     @Override

@@ -1,25 +1,5 @@
 package com.example.nalone.objects;
 
-import android.graphics.Bitmap;
-
-import com.example.nalone.util.Constants;
-import com.google.firebase.Timestamp;
-import com.google.firebase.firestore.CollectionReference;
-import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.GeoPoint;
-import com.google.firebase.firestore.local.ReferenceSet;
-import com.google.firestore.v1.Document;
-import com.google.android.gms.maps.model.LatLng;
-
-import java.lang.ref.Reference;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-
-import static com.example.nalone.util.Constants.USER_REFERENCE;
-import static com.example.nalone.util.Constants.mStoreBase;
-
 public class User {
     private String uid;
     private String sex;
@@ -32,7 +12,7 @@ public class User {
     private String number_events_create;
     private String number_events_attend;
     private String birthday_date;
-    private String image_date;
+    private String image_url;
     private double latitude;
     private double longitude;
 
@@ -54,13 +34,14 @@ public class User {
         this.city = city;
         this.number = number;
         this.mail = mail;
+        this.image_url = null;
 
         this.description = description;
         this.birthday_date = birthday_date;
 
         this.number_events_create = "0";
         this.number_events_attend = "0";
-        this.image_date = null;
+        this.image_url = null;
     }
 
     public String getUid() {
@@ -152,11 +133,11 @@ public class User {
     }
 
     public String getImage_url() {
-        return image_date;
+        return image_url;
     }
 
     public void setImage_url(String image_date) {
-        this.image_date = image_date;
+        this.image_url = image_date;
     }
 
     public double getLatitude() {
@@ -174,4 +155,6 @@ public class User {
     public void setLongitude(double longitude) {
         this.longitude = longitude;
     }
+
+
 }

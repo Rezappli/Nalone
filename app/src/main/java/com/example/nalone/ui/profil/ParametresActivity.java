@@ -24,6 +24,7 @@ import android.widget.TextView;
 
 import com.example.nalone.MainActivity;
 import com.example.nalone.R;
+import com.example.nalone.util.CryptoUtils;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
@@ -199,6 +200,12 @@ public class ParametresActivity extends AppCompatActivity {
                 .addOnCompleteListener(this, new OnCompleteListener<Void>() {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
+                        final SharedPreferences loginPreferences = getSharedPreferences("login", MODE_PRIVATE);
+                        final SharedPreferences.Editor editor = loginPreferences.edit();
+
+                        editor.clear();
+                        editor.apply();
+
                         Intent intent = new Intent(getBaseContext(), MainActivity.class);
                         startActivity(intent);
                     }

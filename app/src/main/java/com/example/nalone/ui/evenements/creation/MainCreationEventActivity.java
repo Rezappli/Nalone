@@ -9,11 +9,15 @@ import androidx.navigation.Navigation;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.provider.MediaStore;
+import android.util.Base64;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
@@ -344,7 +348,6 @@ public class MainCreationEventActivity extends AppCompatActivity {
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     public static void createEvent(final Context context) {
-        String imageData;
         JSONObjectCrypt params = new JSONObjectCrypt();
         params.putCryptParameter("uid", USER.getUid());
         params.putCryptParameter("uid_event", currentEvent.getUid());
@@ -363,13 +366,6 @@ public class MainCreationEventActivity extends AppCompatActivity {
         params.putCryptParameter("category", currentEvent.getCategory());
         params.putCryptParameter("price", currentEvent.getPrice());
 
-        try {
-            imageData = new String(getBytes(activity, image), StandardCharsets.UTF_8);
-            Constants.uploadImageOnServer(ImageType.EVENT, currentEvent.getUid(), imageData, activity); //upload image on web server
-        } catch (IOException e) {
-            Log.w("Response", "Erreur: "+e.getMessage());
-        }
-
         JSONController.getJsonObjectFromUrl(Constants.URL_ADD_EVENT, context, params, new JSONObjectListener() {
             @Override
             public void onJSONReceived(JSONObject jsonObject) {
@@ -387,6 +383,21 @@ public class MainCreationEventActivity extends AppCompatActivity {
                 Log.w("Response", "Erreur: "+volleyError.toString());
             }
         });
+
+        try {
+            String imageData = BitMapToString(MediaStore.Images.Media.getBitmap(context.getContentResolver(), image));
+            Constants.uploadImageOnServer(ImageType.EVENT, MainCreationEventActivity.currentEvent.getUid(), imageData, context); //upload image on web server
+            MainCreationEventActivity.currentEvent.setImage_url(Constants.BASE_API_URL+"/"+ImageType.EVENT+"/"+MainCreationEventActivity.currentEvent.getUid());
+        } catch (IOException e) {
+            Log.w("Response", "Erreur: "+e.getMessage());
+        }
+    }
+
+    private static String BitMapToString(Bitmap bitmap){
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+        byte[] imageBytes = baos.toByteArray();
+        return Base64.encodeToString(imageBytes, Base64.DEFAULT);
     }
 
     @Override
@@ -415,36 +426,5 @@ public class MainCreationEventActivity extends AppCompatActivity {
         nameValidate= false;
         membersValidate= false;
         addressValidate = false;
-    }
-
-    private static byte[] getBytes(Context context, Uri uri) throws IOException {
-        InputStream iStream = context.getContentResolver().openInputStream(uri);
-        try {
-            return getBytes(iStream);
-        } finally {
-            // close the stream
-            try {
-                iStream.close();
-            } catch (IOException ignored) { /* do nothing */ }
-        }
-    }
-
-    private static byte[] getBytes(InputStream inputStream) throws IOException {
-
-        byte[] bytesResult = null;
-        ByteArrayOutputStream byteBuffer = new ByteArrayOutputStream();
-        int bufferSize = 1024;
-        byte[] buffer = new byte[bufferSize];
-        try {
-            int len;
-            while ((len = inputStream.read(buffer)) != -1) {
-                byteBuffer.write(buffer, 0, len);
-            }
-            bytesResult = byteBuffer.toByteArray();
-        } finally {
-            // close the stream
-            try{ byteBuffer.close(); } catch (IOException ignored){ /* do nothing */ }
-        }
-        return bytesResult;
     }
 }

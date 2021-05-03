@@ -1,10 +1,12 @@
 package com.example.nalone.ui.profil;
 
-import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.provider.MediaStore;
+import android.util.Base64;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
@@ -24,7 +26,6 @@ import com.example.nalone.enumeration.ImageType;
 import com.example.nalone.json.JSONController;
 import com.example.nalone.json.JSONObjectCrypt;
 import com.example.nalone.listeners.JSONObjectListener;
-import com.example.nalone.ui.evenements.creation.MainCreationEventActivity;
 import com.example.nalone.qrcode.QRCodeFragment;
 import com.example.nalone.R;
 import com.example.nalone.util.Constants;
@@ -35,9 +36,9 @@ import org.json.JSONObject;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.nio.charset.StandardCharsets;
+import java.util.Date;
 
+import static com.example.nalone.util.Constants.BASE_API_URL;
 import static com.example.nalone.util.Constants.USER;
 
 public class ProfilActivity extends AppCompatActivity {
@@ -51,7 +52,6 @@ public class ProfilActivity extends AppCompatActivity {
     private boolean editPhoto;
     private Uri imageUri = null;
     private boolean hasSelectedImage = false;
-    private DialogFragment load;
 
     private int RESULT_LOAD_IMG = 1;
     private ImageView buttonBack;
@@ -68,12 +68,6 @@ public class ProfilActivity extends AppCompatActivity {
                 showQRCode();
             }
         });
-       /* buttonBack.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-            }
-        });*/
 
         userConnectText.setText(USER.getFirst_name() + " " + USER.getLast_name());
         userConnectVille.setText(USER.getCity());
@@ -99,7 +93,7 @@ public class ProfilActivity extends AppCompatActivity {
                     editDescription = false;
                     if(!userConnectDesc.getText().toString().equalsIgnoreCase(USER.getDescription())){
                         USER.setDescription(userConnectDesc.getText().toString());
-                        updateDescription();
+                        updateUserInformations();
                     }
                 }
 
@@ -141,11 +135,13 @@ public class ProfilActivity extends AppCompatActivity {
         });
 
         cardViewPhotoEdit.setOnClickListener(new View.OnClickListener() {
+            @RequiresApi(api = Build.VERSION_CODES.O)
             @Override
             public void onClick(View v) {
                 if(!editPhoto){
                     imageViewEditPhoto.setImageResource(R.drawable.ic_baseline_check_24);
                     editPhoto = true;
+                    hasSelectedImage = false;
 
                     Intent photoPickerIntent = new Intent(Intent.ACTION_PICK);
                     photoPickerIntent.setType("image/*");
@@ -156,24 +152,29 @@ public class ProfilActivity extends AppCompatActivity {
                     editPhoto = false;
 
                     if(hasSelectedImage){
-                        //uploadFile(imageUri);
+                        try {
+                            String imageDate = Constants.getDateDayHoursMinutesSeconds(new Date(System.currentTimeMillis())); //ne pas enlever et remplacer dans les fonctions sinon les temps ne seront pas les même au moment de l'execution
+                            //et peut créer un décalage de 1s
+                            String imageData = BitMapToString(MediaStore.Images.Media.getBitmap(getContentResolver(), imageUri));
+                            Constants.uploadImageOnServer(ImageType.USER, USER.getUid()+";"+imageDate, imageData, getBaseContext()); //upload image on web server
+                            USER.setImage_url(BASE_API_URL+"/images/"+ ImageType.USER + "/"+USER.getUid()+";"+imageDate+".jpg");
+
+                            Log.w("Image", "From profil activity new url : " + BASE_API_URL+"/images/"+ ImageType.USER + "/"+USER.getUid()+";"+imageDate+".jpg");
+                            Toast.makeText(ProfilActivity.this, getResources().getString(R.string.image_save), Toast.LENGTH_SHORT).show();
+                        } catch (IOException e) {
+                            Toast.makeText(ProfilActivity.this, getResources().getString(R.string.error), Toast.LENGTH_SHORT).show();
+                            Log.w("Response", "Erreur: "+e.getMessage());
+                        }
                     }
                 }
             }
         });
 
-        imageUser.post(new Runnable() {
-            @RequiresApi(api = Build.VERSION_CODES.O)
-            @Override
-            public void run() {
-                Uri uri =  Uri.parse("http://api.nolonely.fr:53000/images/EVENT/test.jpeg");
-                Glide.with(getBaseContext()).load(uri).fitCenter().centerCrop().into(imageUser);
-            }
-        });
+        Constants.setUserImage(USER, ProfilActivity.this, imageUser);
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
-    private void updateDescription() {
+    private void updateUserInformations() {
         JSONObjectCrypt params = new JSONObjectCrypt();
         params.putCryptParameter("uid", USER.getUid());
         params.putCryptParameter("first_name", USER.getFirst_name());
@@ -223,54 +224,15 @@ public class ProfilActivity extends AppCompatActivity {
         if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
             CropImage.ActivityResult result = CropImage.getActivityResult(data);
             if (resultCode == RESULT_OK) {
-                Uri resultUri = result.getUri();
-                Glide.with(this).load(resultUri).fitCenter().centerCrop().into(imageUser);
-                MainCreationEventActivity.image = resultUri;
-                try {
-                    String extension = resultUri.getPath().substring(resultUri.getPath().lastIndexOf("."));
-                    String imageData = new String(getBytes(getBaseContext(), MainCreationEventActivity.image), StandardCharsets.UTF_8);
-                    Constants.uploadImageOnServer(ImageType.USER, USER.getUid()+extension, imageData, getBaseContext()); //upload image on web server
-                } catch (IOException e) {
-                    Log.w("Response", "Erreur: "+e.getMessage());
-                }
+                imageUri = result.getUri();
+                Glide.with(this).load(imageUri).fitCenter().centerCrop().into(imageUser);
+                hasSelectedImage = true;
             } else if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
                 Log.w("Response", result.getError());
             }
         }
-
-
     }
 
-    public static byte[] getBytes(Context context, Uri uri) throws IOException {
-        InputStream iStream = context.getContentResolver().openInputStream(uri);
-        try {
-            return getBytes(iStream);
-        } finally {
-            // close the stream
-            try {
-                iStream.close();
-            } catch (IOException ignored) { /* do nothing */ }
-        }
-    }
-
-    public static byte[] getBytes(InputStream inputStream) throws IOException {
-
-        byte[] bytesResult = null;
-        ByteArrayOutputStream byteBuffer = new ByteArrayOutputStream();
-        int bufferSize = 1024;
-        byte[] buffer = new byte[bufferSize];
-        try {
-            int len;
-            while ((len = inputStream.read(buffer)) != -1) {
-                byteBuffer.write(buffer, 0, len);
-            }
-            bytesResult = byteBuffer.toByteArray();
-        } finally {
-            // close the stream
-            try{ byteBuffer.close(); } catch (IOException ignored){ /* do nothing */ }
-        }
-        return bytesResult;
-    }
 
 
     private void initView(){
@@ -296,5 +258,12 @@ public class ProfilActivity extends AppCompatActivity {
             }
         });
         cardViewQR = findViewById(R.id.cardViewQR);
+    }
+
+    private static String BitMapToString(Bitmap bitmap){
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+        byte[] imageBytes = baos.toByteArray();
+        return Base64.encodeToString(imageBytes, Base64.DEFAULT);
     }
 }

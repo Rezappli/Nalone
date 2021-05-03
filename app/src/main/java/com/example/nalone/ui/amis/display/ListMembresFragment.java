@@ -30,6 +30,7 @@ import com.example.nalone.R;
 import com.example.nalone.objects.User;
 import com.example.nalone.objects.ModelData;
 import com.example.nalone.items.ItemPerson;
+import com.example.nalone.util.Constants;
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -91,7 +92,6 @@ public class ListMembresFragment extends Fragment {
         });
 
 
-
         search_bar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -131,86 +131,39 @@ public class ListMembresFragment extends Fragment {
             @RequiresApi(api = Build.VERSION_CODES.O)
             @Override
             protected void onBindViewHolder(@NonNull final UserViewHolder userViewHolder, int i, @NonNull final User u) {
-                                        userViewHolder.villePers.setText(u.getCity());
-                                        userViewHolder.nomInvit.setText(u.getFirst_name() + " " + u.getLast_name());
-                                        userViewHolder.button.setImageResource(R.drawable.ic_baseline_remove_24);
+                userViewHolder.villePers.setText(u.getCity());
+                userViewHolder.nomInvit.setText(u.getFirst_name() + " " + u.getLast_name());
+                userViewHolder.button.setImageResource(R.drawable.ic_baseline_remove_24);
 
-                                        if(u.getImage_url() != null) {
-                                            if(!Cache.fileExists(u.getUid())) {
-                                                StorageReference imgRef = mStore.getReference("users/" + u.getUid());
-                                                if (imgRef != null) {
-                                                    imgRef.getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
-                                                        @Override
-                                                        public void onComplete(@NonNull Task<Uri> task) {
-                                                            if (task.isSuccessful()) {
-                                                                Uri img = task.getResult();
-                                                                if (img != null) {
-                                                                    Cache.saveUriFile(u.getUid(), img);
-                                                                    u.setImage_url(Cache.getImageDate(u.getUid()));
-                                                                    mStoreBase.collection("users").document(u.getUid()).set(u);
-                                                                    Glide.with(getContext()).load(img).fitCenter().centerCrop().into(userViewHolder.imagePerson);
-                                                                }
-                                                            }
-                                                        }
-                                                    });
-                                                }
-                                            }else{
-                                                Uri imgCache = Cache.getUriFromUid(u.getUid());
-                                                Log.w("Cache", "Image Cache : " + Cache.getImageDate(u.getUid()));
-                                                Log.w("Cache", "Data Cache : " + u.getImage_url());
-                                                if(Cache.getImageDate(u.getUid()).equalsIgnoreCase(u.getImage_url())) {
-                                                    Log.w("image", "get image from cache");
-                                                    Glide.with(getContext()).load(imgCache).fitCenter().centerCrop().into(userViewHolder.imagePerson);
-                                                }else{
-                                                    StorageReference imgRef = mStore.getReference("users/" + u.getUid());
-                                                    if (imgRef != null) {
-                                                        imgRef.getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
-                                                            @Override
-                                                            public void onComplete(@NonNull Task<Uri> task) {
-                                                                if (task.isSuccessful()) {
-                                                                    Uri img = task.getResult();
-                                                                    if (img != null) {
-                                                                        Cache.saveUriFile(u.getUid(), img);
-                                                                        u.setImage_url(Cache.getImageDate(u.getUid()));
-                                                                        mStoreBase.collection("users").document(u.getUid()).set(u);
-                                                                        Glide.with(getContext()).load(img).fitCenter().centerCrop().into(userViewHolder.imagePerson);
-                                                                    }
-                                                                }
-                                                            }
-                                                        });
-                                                    }
-                                                }
-                                            }
-                                        }
+                Constants.setUserImage(u, getContext(), userViewHolder.imagePerson);
+
+                userViewHolder.layoutProfil.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        showPopUpProfil(u);
+                    }
+                });
+
+                userViewHolder.button.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        removeFriend(u.getUid());
+                        navController.navigate(R.id.action_navigation_amis_self);
+                    }
+                });
+                loading.setVisibility(View.GONE);
 
 
-                                        userViewHolder.layoutProfil.setOnClickListener(new View.OnClickListener() {
-                                            @Override
-                                            public void onClick(View v) {
-                                                showPopUpProfil(u);
-                                            }
-                                        });
-
-                                        userViewHolder.button.setOnClickListener(new View.OnClickListener() {
-                                            @Override
-                                            public void onClick(View v) {
-                                                removeFriend(u.getUid());
-                                                navController.navigate(R.id.action_navigation_amis_self);
-                                            }
-                                        });
-                                        loading.setVisibility(View.GONE);
-
-
-                                    }
-                                };
-                                mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-                                mRecyclerView.setAdapter(adapter);
-                                adapter.startListening();
-                            }
+            }
+        };
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        mRecyclerView.setAdapter(adapter);
+        adapter.startListening();
+    }
 
     private void removeFriend(final String uid) {
-        if(mStoreBase.collection("users").document(USER.getUid()).
-                collection("friends").document(uid) != null){
+        if (mStoreBase.collection("users").document(USER.getUid()).
+                collection("friends").document(uid) != null) {
             mStoreBase.collection("users").document(USER.getUid()).
                     collection("friends").document(uid).delete();
 
@@ -229,13 +182,13 @@ public class ListMembresFragment extends Fragment {
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                 ModelData data = task.getResult().toObject(ModelData.class);
-                    if(data.getStatus().equalsIgnoreCase("send")){
-                        PopupProfilFragment.button = R.drawable.ic_round_hourglass_top_24;
-                    }else if(data.getStatus().equalsIgnoreCase("received")){
-                        PopupProfilFragment.button = R.drawable.ic_round_mail_24;
-                    }
-                    PopupProfilFragment.type = "amis";
-                    navController.navigate(R.id.action_navigation_amis_to_navigation_popup_profil);
+                if (data.getStatus().equalsIgnoreCase("send")) {
+                    PopupProfilFragment.button = R.drawable.ic_round_hourglass_top_24;
+                } else if (data.getStatus().equalsIgnoreCase("received")) {
+                    PopupProfilFragment.button = R.drawable.ic_round_mail_24;
+                }
+                PopupProfilFragment.type = "amis";
+                navController.navigate(R.id.action_navigation_amis_to_navigation_popup_profil);
 
             }
         });
@@ -245,7 +198,7 @@ public class ListMembresFragment extends Fragment {
     @Override
     public void onStop() {
         super.onStop();
-        if(adapter != null) {
+        if (adapter != null) {
             adapter.stopListening();
         }
     }

@@ -143,29 +143,7 @@ public class PopupProfilFragment extends Fragment {
         nbCreateProfil.setText(USER_LOAD.getNumber_events_create());
         nbParticipateProfil.setText(USER_LOAD.getNumber_events_attend());
 
-        if (USER_LOAD.getImage_url() != null) {
-            if (!Cache.fileExists(USER_LOAD.getUid())) {
-                StorageReference imgRef = mStore.getReference("users/" + USER_LOAD.getUid());
-                if (imgRef != null) {
-                    imgRef.getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
-                        @Override
-                        public void onComplete(@NonNull Task<Uri> task) {
-                            if (task.isSuccessful()) {
-                                Uri img = task.getResult();
-                                if (img != null) {
-                                    Log.w("image", "save image from cache");
-                                    Cache.saveUriFile(USER_LOAD.getUid(), img);
-                                    Glide.with(getContext()).load(img).fitCenter().centerCrop().into(imagePerson);
-                                }
-                            }
-                        }
-                    });
-                }
-            } else {
-                Log.w("image", "get image from cache");
-                Glide.with(getContext()).load(Cache.getUriFromUid(USER_LOAD.getUid())).fitCenter().centerCrop().into(imagePerson);
-            }
-        }
+        Constants.setUserImage(USER_LOAD, getContext(), imagePerson);
 
         List<ImageView> imageCentreInteret = new ArrayList<>();
 

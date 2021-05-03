@@ -95,7 +95,6 @@ public class Cache {
     }
 
     public static boolean fileExists(String uid){
-        Log.w("Cache ", "UID Enter : " +uid);
         String file_path = application.getCacheDir().getAbsolutePath();
         File dir = new File(file_path);
         File file = new File(dir, uid);

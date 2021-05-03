@@ -38,6 +38,8 @@ import com.google.firebase.storage.StorageReference;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URI;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -70,6 +72,8 @@ public class Constants {
     public static final DateFormat formatD = DateFormat.getDateInstance(DateFormat.FULL,
             new Locale("fr", "FR"));
 
+    public static final DateFormat formatDayHoursMinutesSeconds = new SimpleDateFormat("dd-mm-yyyy hh:MM:ss");
+
     public static SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yy");
     public static SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm");
     public static SimpleDateFormat allTimeFormat = new SimpleDateFormat("dd-MM-yy HH:mm");
@@ -93,37 +97,40 @@ public class Constants {
     public static String serverKey = null;
     public static String contentType = null;
 
-    public static String URL_ME = "http://api.nolonely.fr:53000/me.php";
-    public static String URL_SIGN_IN = "http://api.nolonely.fr:53000/sign_in.php";
-    public static String URL_NEARBY_EVENTS = "http://api.nolonely.fr:53000/nearby_events.php";
-    public static String URL_FRIENDS = "http://api.nolonely.fr:53000/get_friends.php";
-    public static String URL_FRIENDS_INVITATIONS = "http://api.nolonely.fr:53000/get_friends_invitations.php";
-    public static String URL_EVENT_INVITATIONS = "http://api.nolonely.fr:53000/get_event_invitations.php";
-    public static String URL_NOTIFICATIONS = "http://api.nolonely.fr:53000/get_my_notifications.php";
-    public static String URL_USER_WHITHOUT_ME = "http://api.nolonely.fr:53000/get_users.php";
-    public static String URL_MY_FRIENDS = "http://api.nolonely.fr:53000/get_friends.php";
-    public static String URL_EVENT_DATE = "http://api.nolonely.fr:53000/get_event_date.php";
-    public static String URL_EVENT_ISREGISTERED = "http://api.nolonely.fr:53000/is_registered.php";
-    public static String URL_EVENT_NEXT = "http://api.nolonely.fr:53000/get_next_event.php";
-    public static String URL_EVENT_POPULAR = "http://api.nolonely.fr:53000/get_event_popular.php";
-    public static String URL_EVENT_FILTRE = "http://api.nolonely.fr:53000/get_event_filtre.php";
-    public static String URL_ADD_EVENT = "http://api.nolonely.fr:53000/add_event.php";
-    public static String URL_IMAGE = "http://api.nolonely.fr:53000/test_image.php";
+    public static String BASE_URL = "http://nolonely.fr:53000";
+    public static String BASE_API_URL = "http://api.nolonely.fr:53000";
 
-    public static String URL_GET_GROUPS = "http://api.nolonely.fr:53000/get_groups.php";
+    public static String URL_ME = BASE_API_URL + "/me.php";
+    public static String URL_SIGN_IN = BASE_API_URL + "/sign_in.php";
+    public static String URL_NEARBY_EVENTS = BASE_API_URL + "/get_event_nearby.php";
+    public static String URL_FRIENDS = BASE_API_URL + "/get_friends.php";
+    public static String URL_FRIENDS_INVITATIONS = BASE_API_URL + "/get_friends_invitations.php";
+    public static String URL_EVENT_INVITATIONS = BASE_API_URL + "/get_event_invitations.php";
+    public static String URL_NOTIFICATIONS = BASE_API_URL + "/get_my_notifications.php";
+    public static String URL_USER_WHITHOUT_ME = BASE_API_URL + "/get_users.php";
+    public static String URL_MY_FRIENDS = BASE_API_URL + "/get_friends.php";
+    public static String URL_EVENT_DATE = BASE_API_URL + "/get_event_date.php";
+    public static String URL_EVENT_ISREGISTERED = BASE_API_URL + "/is_registered.php";
+    public static String URL_EVENT_NEXT = BASE_API_URL + "/get_next_event.php";
+    public static String URL_EVENT_POPULAR = BASE_API_URL + "/get_event_popular.php";
+    public static String URL_EVENT_FILTRE = BASE_API_URL + "/get_event_filtre.php";
+    public static String URL_ADD_EVENT = BASE_API_URL + "/add_event.php";
+    public static String URL_UPLOAD_IMAGE = BASE_API_URL + "/upload_image.php";
 
-    public static String URL_DELETE_USER_TO_EVENT = "http://api.nolonely.fr:53000/delete_user_event.php";
-    public static String URL_DELETE_FRIEND = "http://api.nolonely.fr:53000/delete_friend.php";
-    public static String URL_EVENT_DELETE = "http://api.nolonely.fr:53000/delete_event.php";
+    public static String URL_GET_GROUPS = BASE_API_URL + "/get_groups.php";
+
+    public static String URL_DELETE_USER_TO_EVENT = BASE_API_URL + "/delete_user_event.php";
+    public static String URL_DELETE_FRIEND = BASE_API_URL + "/delete_friend.php";
+    public static String URL_EVENT_DELETE = BASE_API_URL + "/delete_event.php";
 
 
-    public static String URL_ADD_USER_TO_EVENT = "http://api.nolonely.fr:53000/add_user_event.php";
-    public static String URL_SEND_FRIEND_REQUEST = "http://api.nolonely.fr:53000/add_friend_request.php";
-    public static String URL_ADD_FRIEND = "http://api.nolonely.fr:53000/add_friend.php";
-    public static String URL_ADD_GROUP = "http://api.nolonely.fr:53000/add_group.php";
+    public static String URL_ADD_USER_TO_EVENT = BASE_API_URL + "/add_user_event.php";
+    public static String URL_SEND_FRIEND_REQUEST = BASE_API_URL + "/add_friend_request.php";
+    public static String URL_ADD_FRIEND = BASE_API_URL + "/add_friend.php";
+    public static String URL_ADD_GROUP = BASE_API_URL + "/add_group.php";
 
-    public static String URL_UPDATE_ME = "http://api.nolonely.fr:53000/update_me.php";
-    public static String URL_TEST = "http://api.nolonely.fr:53000/test.php";
+    public static String URL_UPDATE_ME = BASE_API_URL + "/update_me.php";
+    public static String URL_TEST = BASE_API_URL + "/test.php";
 
 
     public static void sendNotification(JSONObject notification, final Context context) {
@@ -157,49 +164,8 @@ public class Constants {
         imageView.post(new Runnable() {
             @Override
             public void run() {
-                if (u.getImage_url() != null) {
-                    if (!Cache.fileExists(u.getUid())) {
-                        StorageReference imgRef = mStore.getReference("users/" + u.getUid());
-                        if (imgRef != null) {
-                            imgRef.getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
-                                @Override
-                                public void onComplete(@NonNull Task<Uri> task) {
-                                    if (task.isSuccessful()) {
-                                        Uri img = task.getResult();
-                                        if (img != null) {
-                                            Cache.saveUriFile(u.getUid(), img);
-                                            u.setImage_url(Cache.getImageDate(u.getUid()));
-                                            mStoreBase.collection("users").document(u.getUid()).set(u);
-                                            Glide.with(context).load(img).fitCenter().centerCrop().into(imageView);
-                                        }
-                                    }
-                                }
-                            });
-                        }
-                    } else {
-                        Uri imgCache = Cache.getUriFromUid(u.getUid());
-                        if (Cache.getImageDate(u.getUid()).equalsIgnoreCase(u.getImage_url())) {
-                            Glide.with(context).load(imgCache).fitCenter().centerCrop().into(imageView);
-                        } else {
-                            StorageReference imgRef = mStore.getReference("users/" + u.getUid());
-                            if (imgRef != null) {
-                                imgRef.getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
-                                    @Override
-                                    public void onComplete(@NonNull Task<Uri> task) {
-                                        if (task.isSuccessful()) {
-                                            Uri img = task.getResult();
-                                            if (img != null) {
-                                                Cache.saveUriFile(u.getUid(), img);
-                                                u.setImage_url(Cache.getImageDate(u.getUid()));
-                                                mStoreBase.collection("users").document(u.getUid()).set(u);
-                                                Glide.with(context).load(img).fitCenter().centerCrop().into(imageView);
-                                            }
-                                        }
-                                    }
-                                });
-                            }
-                        }
-                    }
+                if(u.getImage_url() != null) {
+                    Glide.with(context).load(u.getImage_url()).fitCenter().centerCrop().into(imageView);
                 }
             }
         });
@@ -211,48 +177,7 @@ public class Constants {
             @Override
             public void run() {
                 if (g.getImage_url() != null) {
-                    if (!Cache.fileExists(g.getUid())) {
-                        StorageReference imgRef = mStore.getReference("groups/" + g.getUid());
-                        if (imgRef != null) {
-                            imgRef.getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
-                                @Override
-                                public void onComplete(@NonNull Task<Uri> task) {
-                                    if (task.isSuccessful()) {
-                                        Uri img = task.getResult();
-                                        if (img != null) {
-                                            Cache.saveUriFile(g.getUid(), img);
-                                            g.setImage_url(Cache.getImageDate(g.getUid()));
-                                            mStoreBase.collection("groups").document(g.getUid()).set(g);
-                                            Glide.with(context).load(img).fitCenter().centerCrop().into(imageView);
-                                        }
-                                    }
-                                }
-                            });
-                        }
-                    } else {
-                        Uri imgCache = Cache.getUriFromUid(g.getUid());
-                        if (Cache.getImageDate(g.getUid()).equalsIgnoreCase(g.getImage_url())) {
-                            Glide.with(context).load(imgCache).fitCenter().centerCrop().into(imageView);
-                        } else {
-                            StorageReference imgRef = mStore.getReference("groups/" + g.getUid());
-                            if (imgRef != null) {
-                                imgRef.getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
-                                    @Override
-                                    public void onComplete(@NonNull Task<Uri> task) {
-                                        if (task.isSuccessful()) {
-                                            Uri img = task.getResult();
-                                            if (img != null) {
-                                                Cache.saveUriFile(g.getUid(), img);
-                                                g.setImage_url(Cache.getImageDate(g.getUid()));
-                                                mStoreBase.collection("groups").document(g.getUid()).set(g);
-                                                Glide.with(context).load(img).fitCenter().centerCrop().into(imageView);
-                                            }
-                                        }
-                                    }
-                                });
-                            }
-                        }
-                    }
+                   Glide.with(context).load(g.getImage_url()).fitCenter().centerCrop().into(imageView);
                 }
             }
         });
@@ -271,66 +196,38 @@ public class Constants {
         return temp;
     }
 
+    public static String getDateDayHoursMinutesSeconds(Date d){
+        return formatDayHoursMinutesSeconds.format(d);
+    }
+
     @RequiresApi(api = Build.VERSION_CODES.O)
     public static void uploadImageOnServer(ImageType type, String name, String data,
                                            final Context context) {
         JSONObjectCrypt params = new JSONObjectCrypt();
         try {
-            params.put("image", data);
+            params.put("uid", USER.getUid());
             params.put("name", name);
+            params.put("image", data);
+            params.put("type", type);
         } catch (JSONException e) {
             e.printStackTrace();
         }
 
-        JSONController.getJsonObjectFromUrl("http://api.nolonely.fr:53000/test_image.php", context, params, new JSONObjectListener() {
+        Log.w("ResponseImage", params.toString());
+
+        JSONController.getJsonObjectFromUrl(Constants.URL_UPLOAD_IMAGE, context, params, new JSONObjectListener() {
             @Override
             public void onJSONReceived(JSONObject jsonObject) {
-                Log.w("Response", "Value:" + jsonObject.toString());
+                Log.w("ResponseImage", "Value:" + jsonObject.toString());
             }
 
             @Override
             public void onJSONReceivedError(VolleyError volleyError) {
-                Log.w("Response", "Erreur:" + volleyError);
+                Log.w("ResponseImage", volleyError.toString());
             }
         });
-        /*JSONObjectCrypt params = new JSONObjectCrypt();
-        params.addParameter("uid", USER.getUid());
-        params.addParameter("protocol", ImageProtocol.SAVE);
-        params.addParameter("type", type);
-        params.addParameter("name", name);
-        params.addParameter("image", data);
-
-        //Base64.encodeToString(data.getBytes(), 0)
-
-        try {
-            Log.w("Image", "Params : "+params.getString("image"));
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-
-        JSONController.getJsonObjectFromUrl(Constants.URL_IMAGE, context, params, new JSONObjectListener() {
-            @Override
-            public void onJSONReceived(JSONObject jsonObject) {
-                Log.w("Response", "Response :"+jsonObject.toString());
-                Toast.makeText(context, context.getResources().getString(R.string.image_save), Toast.LENGTH_SHORT).show();
-            }
-
-            @Override
-            public void onJSONReceivedError(VolleyError volleyError) {
-                Log.w("Response", "Erreur: "+volleyError.toString());
-                Toast.makeText(context, context.getResources().getString(R.string.image_save_error), Toast.LENGTH_SHORT).show();
-            }
-        });*/
     }
 
-    public static void uploadFile(final String selectedFilePath, final Context context) {
-
-    }
-
-    @RequiresApi(api = Build.VERSION_CODES.O)
-    public static void downloadImageOnServer(final ImageType type, String name, final Context context, final GetImageListener imageListener) {
-
-    }
 
     public static String key = "kXp2s5v8y/B?E(H+MbQeThWmZq3t6w9z"; // 128 bit key
     public static String iv = "7w!z!C&F)J@NcRfU"; // 16 bytes IV

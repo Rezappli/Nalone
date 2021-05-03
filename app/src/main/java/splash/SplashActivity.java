@@ -48,6 +48,7 @@ public class SplashActivity extends AppCompatActivity {
     @RequiresApi(api = Build.VERSION_CODES.O)
     public void init() {
 
+        Constants.application = getApplication();
         SharedPreferences loginPreferences = getSharedPreferences("login", MODE_PRIVATE);
 
         if(loginPreferences.contains("mail") && loginPreferences.contains("password")){

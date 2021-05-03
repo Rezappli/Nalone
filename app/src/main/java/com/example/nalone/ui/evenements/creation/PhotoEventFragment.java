@@ -21,6 +21,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -216,25 +217,9 @@ public class PhotoEventFragment extends Fragment {
                 Uri resultUri = result.getUri();
                 Glide.with(this).load(resultUri).fitCenter().centerCrop().into(imagePhoto);
                 MainCreationEventActivity.image = resultUri;
-                try {
-                    Constants.uploadFile(resultUri.getPath(), getContext());
-                    String extension = resultUri.getPath().substring(resultUri.getPath().lastIndexOf("."));
-                    String imageData = BitMapToString(MediaStore.Images.Media.getBitmap(getContext().getContentResolver(), resultUri));
-                    //Constants.uploadImageOnServer(ImageType.EVENT, MainCreationEventActivity.currentEvent.getUid(), imageData, getContext()); //upload image on web server
-                } catch (IOException e) {
-                    Log.w("Response", "Erreur: "+e.getMessage());
-                }
             } else if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
                 Log.w("Response", result.getError());
             }
         }
-    }
-
-    private String BitMapToString(Bitmap bitmap){
-        ByteArrayOutputStream baos=new  ByteArrayOutputStream();
-        bitmap.compress(Bitmap.CompressFormat.PNG,100, baos);
-        byte [] b=baos.toByteArray();
-        String temp= Base64.encodeToString(b, Base64.DEFAULT);
-        return temp;
     }
 }

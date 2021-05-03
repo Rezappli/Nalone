@@ -291,7 +291,7 @@
     <string name="enter_address_error"> Entrer votre adresse </string>
     <string name="enter_password_error"> Entrer votre mot de passe </string>
     <string name="not_register"> Vous n\'êtes pas encore inscrit ! </string>
-    <string name="mail_or_password_incorrect"> Vous n\'êtes pas encore inscrit ! </string>
+    <string name="mail_or_password_incorrect"> Votre adresse mail ou votre mot de passe est incorrect ! </string>
 
     <!--Strings for friends requests-->
     <string name="invit_received"> Vous avez reçu une demande d\'amis de la part de cet utilisateur ! </string>
@@ -299,6 +299,8 @@
     <string name="invit_send"> Vous avez envoyé une demande d\'amis ! </string>
 
     <string name="button_invit_waiting"> En attente </string>
+
+    <string name="update_fail">La mise à jour de vos informations à échouée</string>
 
 
 </resources>

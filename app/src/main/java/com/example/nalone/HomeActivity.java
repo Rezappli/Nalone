@@ -3,16 +3,24 @@ package com.example.nalone;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.Toast;
 
+import com.android.volley.VolleyError;
 import com.example.nalone.enumeration.TypeEvent;
 import com.example.nalone.enumeration.Visibility;
+import com.example.nalone.json.JSONController;
+import com.example.nalone.json.JSONObjectCrypt;
+import com.example.nalone.listeners.JSONObjectListener;
 import com.example.nalone.objects.Evenement;
+import com.example.nalone.objects.User;
 import com.example.nalone.ui.NotificationActivity;
 import com.example.nalone.ui.evenements.creation.MainCreationEventActivity;
 import com.example.nalone.ui.evenements.display.PlanningActivity;
 import com.example.nalone.ui.profil.ProfilActivity;
+import com.example.nalone.util.Constants;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -26,7 +34,11 @@ import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
+import org.json.JSONObject;
+
 import java.util.UUID;
+
+import static com.example.nalone.util.Constants.USER;
 
 
 public class HomeActivity extends AppCompatActivity{
@@ -70,15 +82,15 @@ public class HomeActivity extends AppCompatActivity{
         cardViewPublic = findViewById(R.id.cardViewPublic);
         item_profil = findViewById(R.id.item_profil);
         item_profil.setOnClickListener(new View.OnClickListener() {
+            @RequiresApi(api = Build.VERSION_CODES.O)
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(getBaseContext(), ProfilActivity.class));
+                updateUserInformations(); //Mise à jour des informations utilisateurs
+                startActivity(new Intent(getBaseContext(), ProfilActivity.class)); //Affichage de la page de profil
             }
         });
 
-        initCardView();
-
-
+        initCardView(); //Initalisation des cards views
 
         cardViewPrivate.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -100,17 +112,6 @@ public class HomeActivity extends AppCompatActivity{
                 startActivity(new Intent(getBaseContext(), NotificationActivity.class));
             }
         });
-/*        mStoreBase.collection("users").document(USER_ID).collection("notifications").get()
-                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        if (task.isSuccessful()) {
-                            if(task.getResult().size() > 0) {
-                                buttonNotif.setImageDrawable(getResources().getDrawable(R.drawable.notification));
-                            }
-                    }
-                    }
-                });*/
 
         buttonBack.setVisibility(View.GONE);
         AppBarConfiguration appBarConfiguration = new AppBarConfiguration.Builder(
@@ -196,6 +197,33 @@ public class HomeActivity extends AppCompatActivity{
 
     }
 
+    /**
+     * Méthode permettant de mettre à jour les informations de l'utilisateur avant d'ouvrir la page de profil
+     */
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    private void updateUserInformations() {
+        JSONObjectCrypt params = new JSONObjectCrypt();
+        params.putCryptParameter("uid", USER.getUid());
+
+        JSONController.getJsonObjectFromUrl(Constants.URL_ME, HomeActivity.this, params, new JSONObjectListener() {
+            @Override
+            public void onJSONReceived(JSONObject jsonObject) {
+                USER = (User) JSONController.convertJSONToObject(jsonObject, User.class);
+                Log.w("Response", "Mise à jour des informations utilisateurs");
+                Log.w("Response", jsonObject.toString());
+            }
+
+            @Override
+            public void onJSONReceivedError(VolleyError volleyError) {
+                Log.w("Response", volleyError.toString());
+                Toast.makeText(HomeActivity.this, getResources().getString(R.string.update_fail), Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    /**
+     * Méthode permettant l'initialisation des cards views
+     */
     private void initCardView() {
         cardViewEventArt = findViewById(R.id.cardTypeEventArt);
         cardTypeEventSport = findViewById(R.id.cardTypeEventSport);
@@ -271,12 +299,20 @@ goCreateEvent(TypeEvent.SCIENCE);            }
         });
     }
 
+    /**
+     * Méthode permettant l'ouverture du bottom sheet lors du clique sur le haut de la fenetre
+     * @param v
+     */
     public void openType(Visibility v){
         currentVisibility = v;
         bottomSheetBehaviorType.setState(BottomSheetBehavior.STATE_EXPANDED);
         //bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
     }
 
+    /**
+     * Ouverture de la page de création des évènements
+     * @param tp
+     */
     public void goCreateEvent(TypeEvent tp){
         MainCreationEventActivity.currentEvent = new Evenement();
         MainCreationEventActivity.currentEvent.setUid(UUID.randomUUID().toString());
