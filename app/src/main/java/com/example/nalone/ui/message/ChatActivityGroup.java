@@ -20,11 +20,11 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
+import com.example.nalone.R;
 import com.example.nalone.objects.Chat;
 import com.example.nalone.objects.ChatModel;
 import com.example.nalone.objects.Group;
 import com.example.nalone.objects.Message;
-import com.example.nalone.R;
 import com.example.nalone.util.Constants;
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
@@ -108,24 +108,21 @@ public class ChatActivityGroup extends AppCompatActivity {
         otherLayoutMessages = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         otherLayoutMessages.setMargins(10, 1, 80, 1);
 
-            mStoreBase.collection("users").document(USER.getUid()).collection("chat_friends").whereEqualTo("uid", GROUP_LOAD.getUid()).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                @Override
-                public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                    for(QueryDocumentSnapshot doc : task.getResult()) {
-                        Chat c = doc.toObject(Chat.class);
-                        chatRef = c.getChatRef();
-                        Log.w("Chat", "Chat Ref : " + chatRef);
-                    }
-
-                    if(chatRef != null) {
-                        adapterMessages();
-                        mRecyclerView.getLayoutManager().scrollToPosition(0);
-                    }
+        mStoreBase.collection("users").document(USER.getUid()).collection("chat_friends").whereEqualTo("uid", GROUP_LOAD.getUid()).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                for (QueryDocumentSnapshot doc : task.getResult()) {
+                    Chat c = doc.toObject(Chat.class);
+                    chatRef = c.getChatRef();
+                    Log.w("Chat", "Chat Ref : " + chatRef);
                 }
-            });
 
-
-
+                if (chatRef != null) {
+                    adapterMessages();
+                    mRecyclerView.getLayoutManager().scrollToPosition(0);
+                }
+            }
+        });
 
 
         mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
@@ -150,19 +147,19 @@ public class ChatActivityGroup extends AppCompatActivity {
             @Override
             public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
-                if(isLastVisible()){
-                    if(newMessagePopUp.getVisibility() == View.VISIBLE){
+                if (isLastVisible()) {
+                    if (newMessagePopUp.getVisibility() == View.VISIBLE) {
                         newMessagePopUp.setVisibility(View.GONE);
                     }
                 }
             }
         });
 
-        Constants.setGroupImage(GROUP_LOAD, ChatActivityGroup.this, profile_view);
+        Constants.setGroupImage(GROUP_LOAD, profile_view);
     }
 
     private void sendMessage(Message msg) {
-        if(msg != null || msg.getSender() != null || msg.getMessage() != null || msg.getTime() != null) {
+        if (msg != null || msg.getSender() != null || msg.getMessage() != null || msg.getTime() != null) {
             if (!nouveau) {
                 mStoreBase.collection("chat").document(chatRef.getId()).collection("messages").document(UUID.randomUUID().toString()).set(msg);
                 messageEditText.setText("");
@@ -200,10 +197,10 @@ public class ChatActivityGroup extends AppCompatActivity {
 
             @Override
             protected void onBindViewHolder(@NonNull final MessageViewHolder messageViewHolder, int i, @NonNull Message m) {
-                if(m.getSender().equals(USER_REFERENCE)){
+                if (m.getSender().equals(USER_REFERENCE)) {
                     messageViewHolder.messageLayout.setLayoutParams(myLayoutMessages);
                     messageViewHolder.backgroundItem.setCardBackgroundColor(Color.parseColor("#18ECC5"));
-                }else{
+                } else {
                     messageViewHolder.messageLayout.setLayoutParams(otherLayoutMessages);
                     messageViewHolder.backgroundItem.setCardBackgroundColor(Color.LTGRAY);
                 }
@@ -213,9 +210,9 @@ public class ChatActivityGroup extends AppCompatActivity {
                 messageViewHolder.messageLayout.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        if(messageViewHolder.dateText.getVisibility() == View.GONE) {
+                        if (messageViewHolder.dateText.getVisibility() == View.GONE) {
                             messageViewHolder.dateText.setVisibility(View.VISIBLE);
-                        }else{
+                        } else {
                             messageViewHolder.dateText.setVisibility(View.GONE);
                         }
                     }
@@ -237,7 +234,7 @@ public class ChatActivityGroup extends AppCompatActivity {
                 boolean newMessage = false;
                 super.onItemRangeInserted(positionStart, itemCount);
 
-                if(positionStart == 0) {
+                if (positionStart == 0) {
                     try {
                         Message m = (Message) adapter.getItem(0);
                         if (lastMessage == null) {
@@ -299,14 +296,14 @@ public class ChatActivityGroup extends AppCompatActivity {
     }
 
     private boolean isLastVisible() {
-        LinearLayoutManager layoutManager = ((LinearLayoutManager)mRecyclerView.getLayoutManager());
+        LinearLayoutManager layoutManager = ((LinearLayoutManager) mRecyclerView.getLayoutManager());
         int pos = layoutManager.findFirstCompletelyVisibleItemPosition();
         int numItems = mRecyclerView.getAdapter().getItemCount();
         return (pos == 0);
     }
 
-    public void sendMessageNotification(String msg){
-        TOPIC = "/topics/"+ GROUP_LOAD.getUid(); //topic must match with what the receiver subscribed to
+    public void sendMessageNotification(String msg) {
+        TOPIC = "/topics/" + GROUP_LOAD.getUid(); //topic must match with what the receiver subscribed to
         Log.w("TOPIC", "Topic : " + TOPIC);
         NOTIFICATION_TITLE = "Message de " + USER.getFirst_name() + " " + USER.getLast_name();
         NOTIFICATION_MESSAGE = msg;
@@ -333,7 +330,7 @@ public class ChatActivityGroup extends AppCompatActivity {
         ON_MESSAGE_ACTIVITY = false;
     }
 
-    private void clearNotifications(){
+    private void clearNotifications() {
         NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         notificationManager.cancel(GROUP_LOAD.getUid(), ID_NOTIFICATION_MESSAGES);
     }

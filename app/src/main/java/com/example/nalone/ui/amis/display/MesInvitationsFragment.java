@@ -1,17 +1,7 @@
 package com.example.nalone.ui.amis.display;
 
-import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.RequiresApi;
-import androidx.fragment.app.Fragment;
-import androidx.navigation.NavController;
-import androidx.navigation.Navigation;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -22,13 +12,18 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.bumptech.glide.Glide;
-import com.example.nalone.objects.Notification;
-import com.example.nalone.util.Cache;
+import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
+import androidx.fragment.app.Fragment;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
+import com.example.nalone.R;
+import com.example.nalone.items.ItemPerson;
 import com.example.nalone.objects.ModelData;
 import com.example.nalone.objects.User;
-import com.example.nalone.items.ItemPerson;
-import com.example.nalone.R;
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -36,16 +31,13 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
-import com.google.firebase.storage.StorageReference;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import static com.example.nalone.HomeActivity.buttonBack;
 import static com.example.nalone.util.Constants.USER;
-import static com.example.nalone.util.Constants.mStore;
 import static com.example.nalone.util.Constants.mStoreBase;
-import static com.example.nalone.util.Constants.setUserImage;
 
 public class MesInvitationsFragment extends Fragment {
 
@@ -110,7 +102,7 @@ public class MesInvitationsFragment extends Fragment {
                                         userViewHolder.villePers.setText(u.getCity());
                                         userViewHolder.nomInvit.setText(u.getFirst_name() + " " + u.getLast_name());
 
-                                        setUserImage(u,getContext(),userViewHolder.imagePerson);
+                                        //setUserImage(u,getContext(),userViewHolder.imagePerson);
 
                                         userViewHolder.layoutProfil.setOnClickListener(new View.OnClickListener() {
                                             @Override
@@ -144,8 +136,7 @@ public class MesInvitationsFragment extends Fragment {
                                 adapter.startListening();
 
 
-
-                            }else{
+                            } else {
                                 navController.navigate(R.id.action_navigation_invitations_to_navigation_amis);
                             }
                         }

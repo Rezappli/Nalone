@@ -22,8 +22,8 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
 
     private OnItemClickListener mListener;
 
-    public void setOnItemClickListener(OnItemClickListener listener){
-        mListener= listener;
+    public void setOnItemClickListener(OnItemClickListener listener) {
+        mListener = listener;
     }
 
 
@@ -74,10 +74,9 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
 
         }
 
-        public void update(final Notification n){
+        public void update(final Notification n) {
             descNotif.setText(n.getMessage());
-            dateNotif.setText(TimeUtil.verifDay(n.getDate()));
-
+            dateNotif.setText(TimeUtil.getBestDateAnnotation(n.getDate()));
         }
     }
 

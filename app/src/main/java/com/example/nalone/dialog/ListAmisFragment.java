@@ -2,15 +2,6 @@ package com.example.nalone.dialog;
 
 import android.content.Intent;
 import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-import androidx.cardview.widget.CardView;
-import androidx.fragment.app.Fragment;
-import androidx.navigation.NavController;
-import androidx.navigation.Navigation;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -22,14 +13,23 @@ import android.widget.ProgressBar;
 import android.widget.SearchView;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.cardview.widget.CardView;
+import androidx.fragment.app.Fragment;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
+import com.example.nalone.R;
+import com.example.nalone.items.ItemPerson;
 import com.example.nalone.objects.Evenement;
 import com.example.nalone.objects.Group;
-import com.example.nalone.R;
 import com.example.nalone.objects.User;
-import com.example.nalone.items.ItemPerson;
 import com.example.nalone.ui.amis.display.CreateGroupFragment;
 import com.example.nalone.ui.message.ChatActivityFriend;
 import com.example.nalone.ui.message.ChatActivityGroup;
+import com.example.nalone.util.Constants;
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -47,8 +47,6 @@ import static com.example.nalone.HomeActivity.buttonBack;
 import static com.example.nalone.util.Constants.USER;
 import static com.example.nalone.util.Constants.USER_ID;
 import static com.example.nalone.util.Constants.mStoreBase;
-import static com.example.nalone.util.Constants.setGroupImage;
-import static com.example.nalone.util.Constants.setUserImage;
 
 public class ListAmisFragment extends Fragment {
 
@@ -84,7 +82,7 @@ public class ListAmisFragment extends Fragment {
         return rootView;
     }
 
-    private void createFragment(){
+    private void createFragment() {
         adds = new ArrayList<>();
         search_bar = rootView.findViewById(R.id.search_bar_amis);
         resultat = rootView.findViewById(R.id.resultatText_amis);
@@ -139,7 +137,7 @@ public class ListAmisFragment extends Fragment {
 
         if (type == "message_groupe") {
             adapterGroups();
-        }else
+        } else
             adapterUsers();
         search_bar.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -207,11 +205,11 @@ public class ListAmisFragment extends Fragment {
                                             ChatActivityGroup.nouveau = true;
                                         }
                                     }
-                                    ChatActivityGroup.GROUP_LOAD =g;
+                                    ChatActivityGroup.GROUP_LOAD = g;
                                     startActivity(new Intent(getContext(), ChatActivityGroup.class));
                                 }
                             });
-                        }else{
+                        } else {
                             /*else{
                                                     if (!adds.contains(u.getUid()) || adds.isEmpty()) {
                                                         userViewHolder.button.setImageDrawable(getResources().getDrawable(remove));
@@ -226,7 +224,7 @@ public class ListAmisFragment extends Fragment {
                 });
 
 
-                setGroupImage(g, getContext(), userViewHolder.imagePerson);
+                Constants.setGroupImage(g, userViewHolder.imagePerson);
 
                 loading.setVisibility(View.GONE);
 
@@ -243,12 +241,12 @@ public class ListAmisFragment extends Fragment {
     }
 
     private void ajoutMembres() {
-        if(type == "group"){
-            for(String s : CreateGroupFragment.adds ){
+        if (type == "group") {
+            for (String s : CreateGroupFragment.adds) {
                 adds.add(s);
             }
         }
-        if(type == "event"){
+        if (type == "event") {
            /* for(String s : CreateEventFragment.adds){
                 adds.add(s);
             }*/
@@ -287,13 +285,13 @@ public class ListAmisFragment extends Fragment {
                                         userViewHolder.villePers.setText(u.getCity());
                                         userViewHolder.nomInvit.setText(u.getFirst_name() + " " + u.getLast_name());
 
-                                        if(type.equalsIgnoreCase("message_ami")){
+                                        if (type.equalsIgnoreCase("message_ami")) {
                                             userViewHolder.button.setImageResource(R.drawable.ic_baseline_keyboard_arrow_right_24);
-                                        }else{
+                                        } else {
                                             userViewHolder.button.setImageResource(R.drawable.ic_baseline_add_24);
-                                            if(adds.contains(u.getUid())){
+                                            if (adds.contains(u.getUid())) {
                                                 userViewHolder.button.setImageDrawable(getResources().getDrawable(remove));
-                                            }else{
+                                            } else {
                                                 userViewHolder.button.setImageDrawable(getResources().getDrawable(add));
                                             }
                                         }
@@ -301,7 +299,7 @@ public class ListAmisFragment extends Fragment {
                                         userViewHolder.layoutProfil.setOnClickListener(new View.OnClickListener() {
                                             @Override
                                             public void onClick(View v) {
-                                                if (type == "message_ami"){
+                                                if (type == "message_ami") {
                                                     mStoreBase.collection("users").document(USER_ID).collection("chat_friends")
                                                             .document(u.getUid()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                                                         @Override
@@ -324,7 +322,7 @@ public class ListAmisFragment extends Fragment {
                                         userViewHolder.button.setOnClickListener(new View.OnClickListener() {
                                             @Override
                                             public void onClick(View v) {
-                                                if (type == "message_ami"){
+                                                if (type == "message_ami") {
                                                     mStoreBase.collection("users").document(USER_ID).collection("chat_friends")
                                                             .document(u.getUid()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                                                         @Override
@@ -341,7 +339,7 @@ public class ListAmisFragment extends Fragment {
                                                             startActivity(new Intent(getContext(), ChatActivityFriend.class));
                                                         }
                                                     });
-                                                }else{
+                                                } else {
                                                     if (!adds.contains(u.getUid()) || adds.isEmpty()) {
                                                         userViewHolder.button.setImageDrawable(getResources().getDrawable(remove));
                                                         adds.add(u.getUid());
@@ -353,7 +351,7 @@ public class ListAmisFragment extends Fragment {
                                             }
                                         });
 
-                                        setUserImage(u,getContext(),userViewHolder.imagePerson);
+                                        Constants.setUserImage(u, userViewHolder.imagePerson);
 
                                         loading.setVisibility(View.GONE);
 
@@ -401,7 +399,7 @@ public class ListAmisFragment extends Fragment {
     @Override
     public void onStop() {
         super.onStop();
-        if(adapter != null) {
+        if (adapter != null) {
             adapter.stopListening();
         }
     }

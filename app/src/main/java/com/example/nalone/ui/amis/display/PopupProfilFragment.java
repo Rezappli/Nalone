@@ -1,7 +1,7 @@
 package com.example.nalone.ui.amis.display;
 
+import android.annotation.SuppressLint;
 import android.graphics.Color;
-import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
@@ -13,7 +13,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
@@ -21,17 +20,12 @@ import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 
 import com.android.volley.VolleyError;
-import com.bumptech.glide.Glide;
 import com.example.nalone.R;
 import com.example.nalone.json.JSONController;
 import com.example.nalone.json.JSONObjectCrypt;
 import com.example.nalone.listeners.JSONObjectListener;
 import com.example.nalone.objects.User;
-import com.example.nalone.util.Cache;
 import com.example.nalone.util.Constants;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.storage.StorageReference;
 
 import org.eazegraph.lib.charts.PieChart;
 import org.eazegraph.lib.models.PieModel;
@@ -42,7 +36,6 @@ import java.util.List;
 
 import static com.example.nalone.HomeActivity.buttonBack;
 import static com.example.nalone.util.Constants.USER;
-import static com.example.nalone.util.Constants.mStore;
 
 public class PopupProfilFragment extends Fragment {
 
@@ -63,6 +56,7 @@ public class PopupProfilFragment extends Fragment {
 
     int nbEventFirt, nbEventSecond, nbEventThird, nbEventFourth;
 
+    @SuppressLint("SetTextI18n")
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -143,7 +137,7 @@ public class PopupProfilFragment extends Fragment {
         nbCreateProfil.setText(USER_LOAD.getNumber_events_create());
         nbParticipateProfil.setText(USER_LOAD.getNumber_events_attend());
 
-        Constants.setUserImage(USER_LOAD, getContext(), imagePerson);
+        Constants.setUserImage(USER_LOAD, imagePerson);
 
         List<ImageView> imageCentreInteret = new ArrayList<>();
 
@@ -196,10 +190,11 @@ public class PopupProfilFragment extends Fragment {
         JSONObjectCrypt params = new JSONObjectCrypt();
         params.putCryptParameter("uid", USER.getUid());
         params.putCryptParameter("uid_friend", USER_LOAD.getUid());
-
-        Log.w("Params", params.toString());
+        params.putCryptParameter("notification_sender", getResources().getString(R.string.invit_send));
+        params.putCryptParameter("notification_receiver", getResources().getString(R.string.invit_received));
 
         JSONController.getJsonObjectFromUrl(Constants.URL_SEND_FRIEND_REQUEST, getContext(), params, new JSONObjectListener() {
+            @SuppressLint("UseCompatLoadingForDrawables")
             @Override
             public void onJSONReceived(JSONObject jsonObject) {
                 if (jsonObject.length() == 3) {

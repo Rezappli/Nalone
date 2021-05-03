@@ -48,7 +48,7 @@ public class RechercheAmisAdapter extends RecyclerView.Adapter<RechercheAmisAdap
     @Override
     public void onBindViewHolder(@NonNull UserViewHolder holder, int position) {
         holder.update(this.userList.get(position));
-        Constants.setUserImage(this.userList.get(position), Constants.application, holder.imagePerson);
+        Constants.setUserImage(this.userList.get(position), holder.imagePerson);
     }
 
     @Override

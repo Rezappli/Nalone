@@ -231,6 +231,7 @@
     <string name="notification_request_join_group">vous a envoyé une invitation pour rejoindre son groupe</string>
     <string name="notification_participate_your_event">participe à un de vos évènement</string>
     <string name="notification_accept_friend_request">a accepté votre demande d\'ami</string>
+    <string name="notifications_yesterday">Hier à </string>
 
     <!--String used for alert dialog-->
     <string name="button_yes">Oui</string>
@@ -303,5 +304,6 @@
     <string name="button_invit_waiting"> En attente </string>
 
     <string name="update_fail">La mise à jour de vos informations à échouée</string>
+
 
 </resources>

@@ -1,60 +1,51 @@
 package com.example.nalone.util;
 
+import android.annotation.SuppressLint;
 import android.util.Log;
 import android.widget.TextView;
 
+import com.example.nalone.R;
 import com.example.nalone.enumeration.StatusEvent;
-import com.google.firebase.Timestamp;
 
+import org.joda.time.DateTime;
+
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class TimeUtil {
 
-    private static SimpleDateFormat sdfToday = new SimpleDateFormat("HH:mm");
-    private static SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yy");
-    private static String currentDay = sdf.format(new Date(System.currentTimeMillis()));
-
-   /* public boolean eventTermine(Date startDate, Date endDate) {
-        //milliseconds
-        long different = endDate.getTime() - startDate.getTime();
-
-        Log.w("date","startDate : " + startDate);
-        Log.w("date","endDate : "+ endDate);
-        Log.w("date","different : " + different);
-
-
-        if(different < 0){
-            return true;
-        }else{
-            return false;
-        }
-    }*/
+    private static SimpleDateFormat sdfHoursMinutes = new SimpleDateFormat("HH:mm");
+    private static SimpleDateFormat sdfDayMonthYear = new SimpleDateFormat("yyyy-MM-dd");
+    private static SimpleDateFormat fullSdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+    private static String currentDay = sdfDayMonthYear.format(new Date(System.currentTimeMillis()));
 
     public static StatusEvent verifStatut(Date startDate, Date endDate) {
         //milliseconds
         long different = endDate.getTime() - startDate.getTime();
 
-        Log.w("date","startDate : " + startDate);
-        Log.w("date","endDate : "+ endDate);
-        Log.w("date","different : " + different);
+        Log.w("date", "startDate : " + startDate);
+        Log.w("date", "endDate : " + endDate);
+        Log.w("date", "different : " + different);
 
 
-        if(different <= 0 && different >= -7200000){
+        if (different <= 0 && different >= -7200000) {
             return StatusEvent.ENCOURS;
         }
-        if(different > 0){
+        if (different > 0) {
             return StatusEvent.BIENTOT;
         }
-        if(different < -7200000 && different > -86400000){
+        if (different < -7200000 && different > -86400000) {
             return StatusEvent.FINI;
-        }if(different <= -86400000){
+        }
+        if (different <= -86400000) {
             return StatusEvent.EXPIRE;
         }
 
         return null;
     }
 
+    @SuppressLint("SetTextI18n")
     public static void differenceDate(Date startDate, Date endDate, TextView textView) {
         long different = endDate.getTime() - startDate.getTime();
 
@@ -75,45 +66,59 @@ public class TimeUtil {
         long elapsedSeconds = different / secondsInMilli;
 
         Log.w("date",
-                elapsedDays + "d " + elapsedHours + "h " + elapsedMinutes +"m "+ elapsedSeconds+"secondes ");
+                elapsedDays + "d " + elapsedHours + "h " + elapsedMinutes + "m " + elapsedSeconds + "secondes ");
 
-        if(elapsedDays < 0 || elapsedHours < 0 || elapsedMinutes < 0 || elapsedSeconds < 0){
-            if(elapsedDays < 0)
-                elapsedDays = elapsedDays*-1;
-            if(elapsedHours < 0 )
-                elapsedHours = elapsedHours*-1;
-            if(elapsedMinutes < 0)
-                elapsedMinutes = elapsedMinutes*-1;
-            if(elapsedSeconds < 0)
-                elapsedSeconds = elapsedSeconds*-1;
+        if (elapsedDays < 0 || elapsedHours < 0 || elapsedMinutes < 0 || elapsedSeconds < 0) {
+            if (elapsedDays < 0)
+                elapsedDays = elapsedDays * -1;
+            if (elapsedHours < 0)
+                elapsedHours = elapsedHours * -1;
+            if (elapsedMinutes < 0)
+                elapsedMinutes = elapsedMinutes * -1;
+            if (elapsedSeconds < 0)
+                elapsedSeconds = elapsedSeconds * -1;
 
 
         }
-        textView.setText(elapsedDays + "j " + elapsedHours + "h " + elapsedMinutes +"m "+ elapsedSeconds+"s ");
+        textView.setText(elapsedDays + "j " + elapsedHours + "h " + elapsedMinutes + "m " + elapsedSeconds + "s ");
     }
 
-    public static String verifDay(String date){
-        if(date.equalsIgnoreCase(currentDay)){
-            return sdfToday.format(date);
-        }else {
-            return date;
+    public static String getBestDateAnnotation(String date) {
+        try {
+            Date dateEnter = sdfDayMonthYear.parse(date);
+            Date dateYestearday = new DateTime(new Date(System.currentTimeMillis())).minusDays(1).toDate();
+            if (dateEnter.toString().equalsIgnoreCase(currentDay)) { //NE FONCTIONNE PAS
+                Log.w("Date", "Cas 1");
+                return sdfHoursMinutes.parse(date).toString();
+            } else if (dateEnter.toString().equalsIgnoreCase(dateYestearday.toString())) {
+                Log.w("Date", "Cas 2");
+                return Constants.application.getResources().getString(R.string.notifications_yesterday) + sdfHoursMinutes.parse(date);
+            } else {
+                Log.w("Date", "Cas 3");
+                return sdfDayMonthYear.parse(date).toString();
+            }
+        } catch (ParseException e) {
+            Log.w("Response", "Une erreur est survenue");
+            e.printStackTrace();
         }
+
+        return "";
     }
 
-    public static String cutString(String s, int length, int start){
-        if(length > s.length()){
+    public static String cutString(String s, int length, int start) {
+        if (length > s.length()) {
             return null;
         }
 
         String temp = "";
 
         int i = 0;
-        if(start != -1){
-            for(i=start; i<length+start; i++){
+        if (start != -1) {
+            for (i = start; i < length + start; i++) {
                 temp += s.charAt(i);
             }
-        }else{
-            for(i=0; i<length; i++){
+        } else {
+            for (i = 0; i < length; i++) {
                 temp += s.charAt(i);
             }
         }

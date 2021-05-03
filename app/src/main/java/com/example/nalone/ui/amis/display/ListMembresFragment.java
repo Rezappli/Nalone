@@ -1,9 +1,7 @@
 package com.example.nalone.ui.amis.display;
 
-import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,13 +21,11 @@ import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.bumptech.glide.Glide;
-import com.example.nalone.util.Cache;
-import com.example.nalone.objects.Group;
 import com.example.nalone.R;
-import com.example.nalone.objects.User;
-import com.example.nalone.objects.ModelData;
 import com.example.nalone.items.ItemPerson;
+import com.example.nalone.objects.Group;
+import com.example.nalone.objects.ModelData;
+import com.example.nalone.objects.User;
 import com.example.nalone.util.Constants;
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
@@ -38,14 +34,12 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
-import com.google.firebase.storage.StorageReference;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import static com.example.nalone.HomeActivity.buttonBack;
 import static com.example.nalone.util.Constants.USER;
-import static com.example.nalone.util.Constants.mStore;
 import static com.example.nalone.util.Constants.mStoreBase;
 
 public class ListMembresFragment extends Fragment {
@@ -135,7 +129,7 @@ public class ListMembresFragment extends Fragment {
                 userViewHolder.nomInvit.setText(u.getFirst_name() + " " + u.getLast_name());
                 userViewHolder.button.setImageResource(R.drawable.ic_baseline_remove_24);
 
-                Constants.setUserImage(u, getContext(), userViewHolder.imagePerson);
+                Constants.setUserImage(u, userViewHolder.imagePerson);
 
                 userViewHolder.layoutProfil.setOnClickListener(new View.OnClickListener() {
                     @Override

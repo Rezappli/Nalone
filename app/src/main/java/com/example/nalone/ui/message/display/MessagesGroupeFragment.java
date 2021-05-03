@@ -16,9 +16,9 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
-import com.example.nalone.objects.Group;
 import com.example.nalone.R;
 import com.example.nalone.dialog.ListAmisFragment;
+import com.example.nalone.objects.Group;
 import com.example.nalone.ui.amis.display.PopUpMesGroupesFragment;
 import com.example.nalone.util.Constants;
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
@@ -42,12 +42,12 @@ public class MessagesGroupeFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        rootView =  inflater.inflate(R.layout.fragment_mes_groupe, container, false);
+        rootView = inflater.inflate(R.layout.fragment_mes_groupe, container, false);
         createFragment();
         return rootView;
     }
 
-    private void createFragment(){
+    private void createFragment() {
         mRecyclerView = rootView.findViewById(R.id.recyclerViewGroupe);
         addGroup = rootView.findViewById(R.id.create_group_button);
         navController = Navigation.findNavController(getActivity(), R.id.nav_host_fragment);
@@ -73,57 +73,57 @@ public class MessagesGroupeFragment extends Fragment {
 
     private void adapterGroups() {
 
-        Query query = mStoreBase.collection("groups").whereEqualTo("ownerDoc", "users/"+ USER.getUid());
+        Query query = mStoreBase.collection("groups").whereEqualTo("ownerDoc", "users/" + USER.getUid());
         FirestoreRecyclerOptions<Group> options = new FirestoreRecyclerOptions.Builder<Group>().setQuery(query, Group.class).build();
 
         adapter = new FirestoreRecyclerAdapter<Group, GroupViewHolder>(options) {
-                @NonNull
-                @Override
-                public GroupViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-                    View view= LayoutInflater.from(parent.getContext()).inflate(R.layout.item_groupe,parent,false);
-                    return new GroupViewHolder(view);
-                }
-
-                @Override
-                protected void onBindViewHolder(@NonNull final GroupViewHolder userViewHolder, int i, @NonNull final Group g) {
-                    final Group group = g;
-                    userViewHolder.nomGroup.setText(g.getName());
-
-                    userViewHolder.layoutGroup.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                           showPopUpGroup(group);
-                        }
-                    });
-
-                    Constants.setGroupImage(g, getContext() ,userViewHolder.imageGroup);
-
-                }
-            };
-            mRecyclerView.setHasFixedSize(true);
-            mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-
-            mRecyclerView.setAdapter(adapter);
-            mSwipeRefreshLayout.setRefreshing(false);
-        }
-
-        private class GroupViewHolder extends RecyclerView.ViewHolder {
-
-            private TextView nomGroup;
-            private LinearLayout layoutGroup;
-            private ImageView imageGroup;
-            private ImageView button;
-
-            public GroupViewHolder(@NonNull View itemView) {
-                super(itemView);
-
-                nomGroup = itemView.findViewById(R.id.nomGroupe);
-                layoutGroup = itemView.findViewById(R.id.layoutGroupe);
-                imageGroup = itemView.findViewById(R.id.imageGroupe);
-
+            @NonNull
+            @Override
+            public GroupViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+                View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_groupe, parent, false);
+                return new GroupViewHolder(view);
             }
 
+            @Override
+            protected void onBindViewHolder(@NonNull final GroupViewHolder userViewHolder, int i, @NonNull final Group g) {
+                final Group group = g;
+                userViewHolder.nomGroup.setText(g.getName());
+
+                userViewHolder.layoutGroup.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        showPopUpGroup(group);
+                    }
+                });
+
+                Constants.setGroupImage(g, userViewHolder.imageGroup);
+
+            }
+        };
+        mRecyclerView.setHasFixedSize(true);
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+
+        mRecyclerView.setAdapter(adapter);
+        mSwipeRefreshLayout.setRefreshing(false);
+    }
+
+    private class GroupViewHolder extends RecyclerView.ViewHolder {
+
+        private TextView nomGroup;
+        private LinearLayout layoutGroup;
+        private ImageView imageGroup;
+        private ImageView button;
+
+        public GroupViewHolder(@NonNull View itemView) {
+            super(itemView);
+
+            nomGroup = itemView.findViewById(R.id.nomGroupe);
+            layoutGroup = itemView.findViewById(R.id.layoutGroupe);
+            imageGroup = itemView.findViewById(R.id.imageGroupe);
+
         }
+
+    }
 
     public void showPopUpGroup(final Group g) {
         PopUpMesGroupesFragment.GROUP_LOAD = g;
@@ -131,14 +131,14 @@ public class MessagesGroupeFragment extends Fragment {
     }
 
     @Override
-    public void onResume(){
+    public void onResume() {
         super.onResume();
         createFragment();
     }
 
 
     @Override
-    public void onStart(){
+    public void onStart() {
         super.onStart();
         adapter.startListening();
     }
@@ -146,7 +146,7 @@ public class MessagesGroupeFragment extends Fragment {
     @Override
     public void onStop() {
         super.onStop();
-        if(adapter != null) {
+        if (adapter != null) {
             adapter.stopListening();
         }
     }

@@ -1,8 +1,6 @@
 package com.example.nalone.ui.amis.display;
 
-import android.net.Uri;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,23 +18,19 @@ import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 
-import com.bumptech.glide.Glide;
-import com.example.nalone.util.Cache;
-import com.example.nalone.objects.Group;
 import com.example.nalone.R;
 import com.example.nalone.enumeration.Visibility;
+import com.example.nalone.objects.Group;
 import com.example.nalone.util.Constants;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
-import com.google.firebase.storage.StorageReference;
 
 import java.util.List;
 
 import static com.example.nalone.HomeActivity.buttonBack;
 import static com.example.nalone.util.Constants.USER;
-import static com.example.nalone.util.Constants.mStore;
 import static com.example.nalone.util.Constants.mStoreBase;
 
 
@@ -62,7 +56,7 @@ public class PopUpMesGroupesFragment extends Fragment {
     RelativeLayout relativeLayout;
     private TextView ajoutDesc;
 
-    private CardView cardViewPhotoEdit, cardViewPhotoEditDesc,cardViewProfilEdit,cardViewProfilMembers, getCardViewPhotoEditDesc;
+    private CardView cardViewPhotoEdit, cardViewPhotoEditDesc, cardViewProfilEdit, cardViewProfilMembers, getCardViewPhotoEditDesc;
     private ImageView imageViewEditDescription;
     FrameLayout fenetrePrincipal;
     View root;
@@ -119,10 +113,10 @@ public class PopUpMesGroupesFragment extends Fragment {
         ownerGroup = root.findViewById(R.id.groupOwner);
         visibilityGroup = root.findViewById(R.id.groupVisibility);
 
-        if(GROUP_LOAD.getVisibility() == Visibility.PUBLIC)
-         visibilityGroup.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_baseline_public_24, 0, 0, 0);
+        if (GROUP_LOAD.getVisibility() == Visibility.PUBLIC)
+            visibilityGroup.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_baseline_public_24, 0, 0, 0);
         else
-            visibilityGroup.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_baseline_lock_24,0,0,0);
+            visibilityGroup.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_baseline_lock_24, 0, 0, 0);
 
         cardViewPhotoPerson = root.findViewById(R.id.cardViewPhotoPerson);
 
@@ -145,14 +139,14 @@ public class PopUpMesGroupesFragment extends Fragment {
         cardViewPhotoEditDesc.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(!editDescription){
+                if (!editDescription) {
                     modifierDescription();
-                }else{
+                } else {
                     groupDesc.setClickable(false);
                     groupDesc.setEnabled(false);
                     imageViewEditDescription.setImageResource(R.drawable.ic_baseline_edit_24);
                     editDescription = false;
-                    if(!groupDesc.getText().toString().equalsIgnoreCase(USER.getDescription())){
+                    if (!groupDesc.getText().toString().equalsIgnoreCase(USER.getDescription())) {
                         GROUP_LOAD.setDescription(groupDesc.getText().toString());
                         mStoreBase.collection("groups").document(GROUP_LOAD.getUid()).set(GROUP_LOAD);
                         Toast.makeText(getContext(), "Vous avez mis à jour la description du groupe", Toast.LENGTH_SHORT).show();
@@ -172,19 +166,19 @@ public class PopUpMesGroupesFragment extends Fragment {
                                 nbMembers++;
                             }
                         }
-                        textViewNbMembers.setText(nbMembers+" membres");
+                        textViewNbMembers.setText(nbMembers + " membres");
 
                         fenetrePrincipal.setVisibility(View.VISIBLE);
                     }
                 });
 
 
-        Constants.setGroupImage(GROUP_LOAD, getContext(), imageGroup);
+        Constants.setGroupImage(GROUP_LOAD, imageGroup);
 
         if (GROUP_LOAD.getDescription().equalsIgnoreCase("")) {
             relativeDesc.setVisibility(View.GONE);
             ajoutDesc.setVisibility(View.VISIBLE);
-        }else{
+        } else {
             afficherDescription();
         }
     }

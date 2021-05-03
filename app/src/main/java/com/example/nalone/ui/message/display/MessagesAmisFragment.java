@@ -1,15 +1,13 @@
 package com.example.nalone.ui.message.display;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Filter;
-import android.widget.Filterable;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.SearchView;
@@ -26,16 +24,14 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.example.nalone.R;
-import com.example.nalone.objects.ModelData;
-import com.example.nalone.objects.User;
 import com.example.nalone.dialog.ListAmisFragment;
+import com.example.nalone.objects.User;
 import com.example.nalone.ui.message.ChatActivityFriend;
 import com.example.nalone.util.Constants;
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
-import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
@@ -146,6 +142,7 @@ public class MessagesAmisFragment extends Fragment {
                                         return new UserViewHolder(view);
                                     }
 
+                                    @SuppressLint("SetTextI18n")
                                     @RequiresApi(api = Build.VERSION_CODES.O)
                                     @Override
                                     protected void onBindViewHolder(@NonNull final UserViewHolder userViewHolder, int i, @NonNull final User u) {
@@ -153,7 +150,7 @@ public class MessagesAmisFragment extends Fragment {
                                         userViewHolder.nomInvit.setText(u.getFirst_name() + " " + u.getLast_name());
                                         userViewHolder.button.setImageResource(R.drawable.ic_baseline_keyboard_arrow_right_24);
 
-                                        Constants.setUserImage(u, getContext(), userViewHolder.imagePerson);
+                                        Constants.setUserImage(u, userViewHolder.imagePerson);
 
                                         userViewHolder.layoutProfil.setOnClickListener(new View.OnClickListener() {
                                             @Override
@@ -174,7 +171,7 @@ public class MessagesAmisFragment extends Fragment {
                                 mRecyclerView.setAdapter(adapter);
                                 adapter.startListening();
                                 mSwipeRefreshLayout.setRefreshing(false);
-                            }else{
+                            } else {
                                 mRecyclerView.setAdapter(null);
                             }
                         }

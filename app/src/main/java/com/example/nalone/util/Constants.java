@@ -97,7 +97,7 @@ public class Constants {
     public static String URL_SIGN_IN = BASE_API_URL + "/sign_in.php";
     public static String URL_NEARBY_EVENTS = BASE_API_URL + "/get_event_nearby.php";
     public static String URL_FRIENDS = BASE_API_URL + "/get_friends.php";
-    public static String URL_FRIENDS_INVITATIONS = BASE_API_URL + "/get_friends_invitations.php";
+    public static String URL_FRIENDS_INVITATIONS = BASE_API_URL + "/get_friends_request.php";
     public static String URL_EVENT_INVITATIONS = BASE_API_URL + "/get_event_invitations.php";
     public static String URL_NOTIFICATIONS = BASE_API_URL + "/get_my_notifications.php";
     public static String URL_USER_WHITHOUT_ME = BASE_API_URL + "/get_users.php";
@@ -153,25 +153,24 @@ public class Constants {
     }
 
 
-    public static void setUserImage(final User u, final Context context, final ImageView imageView) {
+    public static void setUserImage(final User u, final ImageView imageView) {
         imageView.post(new Runnable() {
             @Override
             public void run() {
-                Log.w("Image", "Image url :" + u.getImage_url());
                 if (u.getImage_url() != null && !u.getImage_url().equals("")) {
-                    Glide.with(context).load(u.getImage_url()).fitCenter().centerCrop().into(imageView);
+                    Glide.with(application).load(u.getImage_url()).fitCenter().centerCrop().into(imageView);
                 }
             }
         });
 
     }
 
-    public static void setGroupImage(final Group g, final Context context, final ImageView imageView) {
+    public static void setGroupImage(final Group g, final ImageView imageView) {
         imageView.post(new Runnable() {
             @Override
             public void run() {
                 if (g.getImage_url() != null && !g.getImage_url().equals("")) {
-                    Glide.with(context).load(g.getImage_url()).fitCenter().centerCrop().into(imageView);
+                    Glide.with(application).load(g.getImage_url()).fitCenter().centerCrop().into(imageView);
                 }
             }
         });

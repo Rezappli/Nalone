@@ -1,16 +1,7 @@
 package com.example.nalone.ui.amis.display;
 
 import android.graphics.Color;
-import android.net.Uri;
 import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-import androidx.cardview.widget.CardView;
-import androidx.fragment.app.Fragment;
-import androidx.navigation.NavController;
-import androidx.navigation.Navigation;
-
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,25 +12,25 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.bumptech.glide.Glide;
-import com.example.nalone.util.Cache;
-import com.example.nalone.objects.Group;
+import androidx.annotation.NonNull;
+import androidx.cardview.widget.CardView;
+import androidx.fragment.app.Fragment;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
+
 import com.example.nalone.R;
-import com.example.nalone.objects.ModelData;
 import com.example.nalone.enumeration.Visibility;
+import com.example.nalone.objects.Group;
+import com.example.nalone.objects.ModelData;
 import com.example.nalone.util.Constants;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
-import com.google.firebase.storage.StorageReference;
-
-import java.util.List;
 
 import static com.example.nalone.HomeActivity.buttonBack;
 import static com.example.nalone.util.Constants.USER;
 import static com.example.nalone.util.Constants.USER_ID;
-import static com.example.nalone.util.Constants.mStore;
 import static com.example.nalone.util.Constants.mStoreBase;
 
 
@@ -93,17 +84,17 @@ public class PopUpGroupFragment extends Fragment {
                         if (task.isSuccessful()) {
                             for (QueryDocumentSnapshot document : task.getResult()) {
                                 nbMembers++;
-                                if(document.getId().equals(USER_ID) || buttonQuitter){
+                                if (document.getId().equals(USER_ID) || buttonQuitter) {
                                     changeButtonQuitter();
-                                }else{
+                                } else {
                                     changeButtonRejoindre();
                                 }
                             }
                         }
-                        textViewNbMembers.setText(nbMembers+" membres");
-                        if (nbMembers != 0){
+                        textViewNbMembers.setText(nbMembers + " membres");
+                        if (nbMembers != 0) {
                             buttonVoirMembres.setVisibility(View.VISIBLE);
-                        }else{
+                        } else {
                             buttonVoirMembres.setVisibility(View.GONE);
                         }
                         fenetrePrincipal.setVisibility(View.VISIBLE);
@@ -121,14 +112,14 @@ public class PopUpGroupFragment extends Fragment {
 
         cardViewPhotoPerson = root.findViewById(R.id.cardViewPhotoPerson);
 
-        if(buttonQuitter){
+        if (buttonQuitter) {
             changeButtonQuitter();
-        }else{
+        } else {
             changeButtonRejoindre();
         }
 
         if (GROUP_LOAD.getImage_url() != null) {
-            Constants.setGroupImage(GROUP_LOAD, getContext(), imageGroup);
+            Constants.setGroupImage(GROUP_LOAD, imageGroup);
         }
 
 
@@ -137,10 +128,10 @@ public class PopUpGroupFragment extends Fragment {
         ownerGroup.setText(GROUP_LOAD.getOwner());
         visibilityGroup.setText(GROUP_LOAD.getVisibility().toString());
 
-        if(GROUP_LOAD.getVisibility() == Visibility.PUBLIC)
+        if (GROUP_LOAD.getVisibility() == Visibility.PUBLIC)
             visibilityGroup.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_baseline_public_24, 0, 0, 0);
         else
-            visibilityGroup.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_baseline_lock_24,0,0,0);
+            visibilityGroup.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_baseline_lock_24, 0, 0, 0);
 
         //nbCreateGroup.setText(GROUP_LOAD.get);
 
@@ -151,17 +142,17 @@ public class PopUpGroupFragment extends Fragment {
         buttonAdd.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(GROUP_LOAD.getVisibility() == Visibility.PUBLIC){
-                    if(!buttonQuitter){
+                if (GROUP_LOAD.getVisibility() == Visibility.PUBLIC) {
+                    if (!buttonQuitter) {
                         joinPublic();
                         buttonQuitter = true;
-                    } else{
+                    } else {
                         quitterGroup();
                         buttonQuitter = false;
                     }
 
 
-                }else {
+                } else {
                     joinPrive();
 
                 }
@@ -204,7 +195,7 @@ public class PopUpGroupFragment extends Fragment {
     public void joinPrive() {
         ModelData data1 = new ModelData("received", mStoreBase.collection("users").document(USER.getUid()));
         mStoreBase.collection("groups").document(GROUP_LOAD.getUid()).collection("members").document(USER.getUid()).set(data1);
-        Toast.makeText(getContext(), "Vous avez envoyé une demande pour rejoindre le groupe "+ GROUP_LOAD.getName() + " !", Toast.LENGTH_SHORT).show();
+        Toast.makeText(getContext(), "Vous avez envoyé une demande pour rejoindre le groupe " + GROUP_LOAD.getName() + " !", Toast.LENGTH_SHORT).show();
     }
 
-    }
+}

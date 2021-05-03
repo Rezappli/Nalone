@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.daimajia.swipe.SwipeLayout;
 import com.example.nalone.R;
 import com.example.nalone.objects.User;
+import com.example.nalone.util.Constants;
 
 import java.util.List;
 
@@ -30,15 +31,18 @@ public class MesAmisAdapter extends RecyclerView.Adapter<MesAmisAdapter.UserView
 
     private OnItemClickListener mListener;
 
-    public void setOnItemClickListener(OnItemClickListener listener){
-        mListener= listener;
+    public void setOnItemClickListener(OnItemClickListener listener) {
+        mListener = listener;
     }
 
 
     public interface OnItemClickListener {
         void onDisplayClick(int position);
+
         void onDeleteClick(int position);
+
         void onCallClick(int position);
+
         void onMessageClick(int position);
     }
 
@@ -52,13 +56,13 @@ public class MesAmisAdapter extends RecyclerView.Adapter<MesAmisAdapter.UserView
     @Override
     public void onBindViewHolder(@NonNull UserViewHolder holder, int position) {
         holder.update(this.userList.get(position));
+        Constants.setUserImage(this.userList.get(position), holder.imagePerson);
     }
 
     @Override
     public int getItemCount() {
         return this.userList.size();
     }
-
 
 
     public class UserViewHolder extends RecyclerView.ViewHolder {
@@ -138,9 +142,9 @@ public class MesAmisAdapter extends RecyclerView.Adapter<MesAmisAdapter.UserView
             btnLocation.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if(mListener != null){
+                    if (mListener != null) {
                         int position = getAdapterPosition();
-                        if(position != RecyclerView.NO_POSITION){
+                        if (position != RecyclerView.NO_POSITION) {
                             listener.onDisplayClick(position);
                         }
                     }
@@ -151,9 +155,9 @@ public class MesAmisAdapter extends RecyclerView.Adapter<MesAmisAdapter.UserView
             Share.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    if(mListener != null){
+                    if (mListener != null) {
                         int position = getAdapterPosition();
-                        if(position != RecyclerView.NO_POSITION){
+                        if (position != RecyclerView.NO_POSITION) {
                             listener.onMessageClick(position);
                         }
                     }
@@ -164,9 +168,9 @@ public class MesAmisAdapter extends RecyclerView.Adapter<MesAmisAdapter.UserView
             Appel.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    if(mListener != null){
+                    if (mListener != null) {
                         int position = getAdapterPosition();
-                        if(position != RecyclerView.NO_POSITION){
+                        if (position != RecyclerView.NO_POSITION) {
                             listener.onCallClick(position);
                         }
                     }
@@ -178,9 +182,9 @@ public class MesAmisAdapter extends RecyclerView.Adapter<MesAmisAdapter.UserView
             Delete.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if(mListener != null){
+                    if (mListener != null) {
                         int position = getAdapterPosition();
-                        if(position != RecyclerView.NO_POSITION){
+                        if (position != RecyclerView.NO_POSITION) {
                             listener.onDeleteClick(position);
                         }
                     }
@@ -191,11 +195,10 @@ public class MesAmisAdapter extends RecyclerView.Adapter<MesAmisAdapter.UserView
             button.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if(swipe == false) {
+                    if (swipe == false) {
                         swipeLayout.open();
                         swipe = true;
-                    }
-                    else{
+                    } else {
                         swipeLayout.close();
                         swipe = false;
                     }
@@ -205,9 +208,9 @@ public class MesAmisAdapter extends RecyclerView.Adapter<MesAmisAdapter.UserView
         }
 
 
-        public void update(final User u){
+        public void update(final User u) {
             villePers.setText(u.getCity());
-            nomInvit.setText(u.getFirst_name() + " "+ u.getLast_name());
+            nomInvit.setText(u.getFirst_name() + " " + u.getLast_name());
         }
     }
 

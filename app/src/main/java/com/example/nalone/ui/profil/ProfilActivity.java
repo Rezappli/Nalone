@@ -22,12 +22,12 @@ import androidx.fragment.app.DialogFragment;
 
 import com.android.volley.VolleyError;
 import com.bumptech.glide.Glide;
+import com.example.nalone.R;
 import com.example.nalone.enumeration.ImageType;
 import com.example.nalone.json.JSONController;
 import com.example.nalone.json.JSONObjectCrypt;
 import com.example.nalone.listeners.JSONObjectListener;
 import com.example.nalone.qrcode.QRCodeFragment;
-import com.example.nalone.R;
 import com.example.nalone.util.Constants;
 import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
@@ -46,7 +46,7 @@ public class ProfilActivity extends AppCompatActivity {
     private TextView userConnectText;
     private EditText userConnectDesc;
     private TextView userConnectVille, userConnectNbC, userConnectNbP;
-    private CardView cardViewQR,cardViewPhotoPerson,cardViewProfilParametres,cardViewProfilEdit,cardViewProfilAide, cardViewPhotoEditDesc, cardViewPhotoEdit;
+    private CardView cardViewQR, cardViewPhotoPerson, cardViewProfilParametres, cardViewProfilEdit, cardViewProfilAide, cardViewPhotoEditDesc, cardViewPhotoEdit;
     private ImageView imageViewEditDescription, imageUser, imageViewEditPhoto;
     private boolean editDescription;
     private boolean editPhoto;
@@ -81,17 +81,17 @@ public class ProfilActivity extends AppCompatActivity {
             @RequiresApi(api = Build.VERSION_CODES.O)
             @Override
             public void onClick(View v) {
-                if(!editDescription){
+                if (!editDescription) {
                     userConnectDesc.setClickable(true);
                     userConnectDesc.setEnabled(true);
                     imageViewEditDescription.setImageResource(R.drawable.ic_baseline_check_24);
                     editDescription = true;
-                }else{
+                } else {
                     userConnectDesc.setClickable(false);
                     userConnectDesc.setEnabled(false);
                     imageViewEditDescription.setImageResource(R.drawable.ic_baseline_edit_24);
                     editDescription = false;
-                    if(!userConnectDesc.getText().toString().equalsIgnoreCase(USER.getDescription())){
+                    if (!userConnectDesc.getText().toString().equalsIgnoreCase(USER.getDescription())) {
                         USER.setDescription(userConnectDesc.getText().toString());
                         updateUserInformations();
                     }
@@ -126,7 +126,7 @@ public class ProfilActivity extends AppCompatActivity {
         imageUser.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(editPhoto){
+                if (editPhoto) {
                     Intent photoPickerIntent = new Intent(Intent.ACTION_PICK);
                     photoPickerIntent.setType("image/*");
                     startActivityForResult(photoPickerIntent, RESULT_LOAD_IMG);
@@ -138,7 +138,7 @@ public class ProfilActivity extends AppCompatActivity {
             @RequiresApi(api = Build.VERSION_CODES.O)
             @Override
             public void onClick(View v) {
-                if(!editPhoto){
+                if (!editPhoto) {
                     imageViewEditPhoto.setImageResource(R.drawable.ic_baseline_check_24);
                     editPhoto = true;
                     hasSelectedImage = false;
@@ -147,30 +147,30 @@ public class ProfilActivity extends AppCompatActivity {
                     photoPickerIntent.setType("image/*");
                     startActivityForResult(photoPickerIntent, RESULT_LOAD_IMG);
 
-                }else{
+                } else {
                     imageViewEditPhoto.setImageResource(R.drawable.ic_baseline_edit_24);
                     editPhoto = false;
 
-                    if(hasSelectedImage){
+                    if (hasSelectedImage) {
                         try {
                             String imageDate = Constants.getDateDayHoursMinutesSeconds(new Date(System.currentTimeMillis())); //ne pas enlever et remplacer dans les fonctions sinon les temps ne seront pas les même au moment de l'execution
                             //et peut créer un décalage de 1s
                             String imageData = BitMapToString(MediaStore.Images.Media.getBitmap(getContentResolver(), imageUri));
-                            Constants.uploadImageOnServer(ImageType.USER, USER.getUid()+";"+imageDate, imageData, getBaseContext()); //upload image on web server
-                            USER.setImage_url(BASE_API_URL+"/images/"+ ImageType.USER + "/"+USER.getUid()+";"+imageDate+".jpg");
+                            Constants.uploadImageOnServer(ImageType.USER, USER.getUid() + ";" + imageDate, imageData, getBaseContext()); //upload image on web server
+                            USER.setImage_url(BASE_API_URL + "/images/" + ImageType.USER + "/" + USER.getUid() + ";" + imageDate + ".jpg");
 
-                            Log.w("Image", "From profil activity new url : " + BASE_API_URL+"/images/"+ ImageType.USER + "/"+USER.getUid()+";"+imageDate+".jpg");
+                            Log.w("Image", "From profil activity new url : " + BASE_API_URL + "/images/" + ImageType.USER + "/" + USER.getUid() + ";" + imageDate + ".jpg");
                             Toast.makeText(ProfilActivity.this, getResources().getString(R.string.image_save), Toast.LENGTH_SHORT).show();
                         } catch (IOException e) {
                             Toast.makeText(ProfilActivity.this, getResources().getString(R.string.error), Toast.LENGTH_SHORT).show();
-                            Log.w("Response", "Erreur: "+e.getMessage());
+                            Log.w("Response", "Erreur: " + e.getMessage());
                         }
                     }
                 }
             }
         });
 
-        Constants.setUserImage(USER, ProfilActivity.this, imageUser);
+        Constants.setUserImage(USER, imageUser);
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
@@ -194,7 +194,7 @@ public class ProfilActivity extends AppCompatActivity {
             @Override
             public void onJSONReceivedError(VolleyError volleyError) {
                 Toast.makeText(getBaseContext(), getResources().getString(R.string.error), Toast.LENGTH_SHORT).show();
-                Log.w("Response","Erreur:"+volleyError.toString());
+                Log.w("Response", "Erreur:" + volleyError.toString());
             }
         });
     }
@@ -213,7 +213,7 @@ public class ProfilActivity extends AppCompatActivity {
 
             CropImage.activity(data.getData())
                     .setMultiTouchEnabled(true)
-                    .setAspectRatio(1,1)
+                    .setAspectRatio(1, 1)
                     .setGuidelines(CropImageView.Guidelines.ON)
                     .setAllowFlipping(false)
                     .setCropShape(CropImageView.CropShape.OVAL)
@@ -234,8 +234,7 @@ public class ProfilActivity extends AppCompatActivity {
     }
 
 
-
-    private void initView(){
+    private void initView() {
         userConnectDesc = findViewById(R.id.userConnectDescription);
         userConnectText = findViewById(R.id.userConnectText);
         userConnectVille = findViewById(R.id.useConnectVille);
@@ -260,7 +259,7 @@ public class ProfilActivity extends AppCompatActivity {
         cardViewQR = findViewById(R.id.cardViewQR);
     }
 
-    private static String BitMapToString(Bitmap bitmap){
+    private static String BitMapToString(Bitmap bitmap) {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
         byte[] imageBytes = baos.toByteArray();
