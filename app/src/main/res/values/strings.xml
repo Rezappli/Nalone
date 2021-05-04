@@ -289,12 +289,13 @@
     <string name="update_description"> Vous avez mis à jour votre description </string>
     <string name="update_informations"> Vous avez mis à jour vos informations </string>
 
-    <!--Strings for fields -->
+    <!--Strings for login fields -->
     <string name="edittext_field_required"> Champs obligatoire </string>
     <string name="enter_address_error"> Entrer votre adresse </string>
     <string name="enter_password_error"> Entrer votre mot de passe </string>
     <string name="not_register"> Vous n\'êtes pas encore inscrit ! </string>
     <string name="mail_or_password_incorrect"> Votre adresse mail ou votre mot de passe est incorrect ! </string>
+    <string name="mail_not_verified"> Votre adresse mail n\'est pas vérifiée ! </string>
 
     <!--Strings for friends requests-->
     <string name="invit_received"> Vous avez reçu une demande d\'amis de la part de cet utilisateur ! </string>

@@ -185,10 +185,13 @@ public class MainActivity extends AppCompatActivity {
                         Toast.makeText(MainActivity.this, getResources().getString(R.string.error), Toast.LENGTH_SHORT).show();
                         Log.w("Response", "Erreur:" + e.getMessage());
                     }
-                } else {
-                    progressBar.setVisibility(View.GONE);
+                }else if(jsonObject.length() == 4){
+                    Toast.makeText(MainActivity.this, getResources().getString(R.string.mail_not_verified), Toast.LENGTH_SHORT).show();
+                    Log.w("Response", "Mail not verified");
+                }else{
                     Toast.makeText(MainActivity.this, getResources().getString(R.string.mail_or_password_incorrect), Toast.LENGTH_SHORT).show();
                 }
+                progressBar.setVisibility(View.GONE);
             }
 
             @Override
