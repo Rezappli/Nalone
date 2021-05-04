@@ -11,7 +11,6 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -29,21 +28,13 @@ import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.SignInButton;
 import com.google.android.gms.common.api.ApiException;
-import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.AuthCredential;
-import com.google.firebase.auth.AuthResult;
-import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.auth.GoogleAuthProvider;
-import com.google.firebase.firestore.QuerySnapshot;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import static com.example.nalone.util.Constants.USER;
 import static com.example.nalone.util.Constants.currentUser;
-import static com.example.nalone.util.Constants.mAuth;
-import static com.example.nalone.util.Constants.mStoreBase;
 
 public class MainActivity extends AppCompatActivity {
     private TextView textViewSinscrire;
@@ -87,7 +78,7 @@ public class MainActivity extends AppCompatActivity {
         passwordForget.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivityForResult(new Intent(getBaseContext(), ResetPasswordActivity.class), 0);
+                launchForgetPasswordActivity();
             }
         });
 
@@ -95,7 +86,7 @@ public class MainActivity extends AppCompatActivity {
         textViewSinscrire.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivityForResult(new Intent(getBaseContext(), SignUpMainActivity.class), 0);
+                launchRegisterActivity();
             }
         });
 
@@ -134,26 +125,22 @@ public class MainActivity extends AppCompatActivity {
         startActivityForResult(signInIntent, 0);
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
         if (requestCode == 0) {
-            Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
-            try {
-                GoogleSignInAccount account = task.getResult(ApiException.class);
-                connectUserFromGoogle(account.getIdToken());
-            } catch (ApiException e) {
-                Log.w("GoogleSignIn", "Google sign in failed", e);
-            }
+                Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
+                handleSignInResult(task);
         }
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     private void handleSignInResult(Task<GoogleSignInAccount> completedTask) {
         try {
-            final GoogleSignInAccount account = completedTask.getResult(ApiException.class);
-            Intent intent = new Intent(MainActivity.this, HomeActivity.class);
-            startActivity(intent);
+            GoogleSignInAccount account = completedTask.getResult(ApiException.class);
+            connectUserFromGoogle(account);
         } catch (ApiException e) {
             Log.w("GoogleError", "signInResult:failed code=" + e.getStatusCode());
         }
@@ -169,8 +156,6 @@ public class MainActivity extends AppCompatActivity {
         params.putCryptParameter("mail", mail);
         params.putCryptParameter("password", pass);
 
-        Log.w("Response from Main", params.toString());
-
         JSONController.getJsonObjectFromUrl(Constants.URL_SIGN_IN, MainActivity.this, params, new JSONObjectListener() {
             @Override
             public void onJSONReceived(JSONObject jsonObject) {
@@ -179,19 +164,20 @@ public class MainActivity extends AppCompatActivity {
                         editor.putString("mail", CryptoUtils.encrypt(mail));
                         editor.putString("password", CryptoUtils.encrypt(pass));
                         editor.apply();
-                        Log.w("Response", "Mail and password match");
                         loadUserData(jsonObject);
                     } catch (JSONException e) {
                         Toast.makeText(MainActivity.this, getResources().getString(R.string.error), Toast.LENGTH_SHORT).show();
                         Log.w("Response", "Erreur:" + e.getMessage());
+                        progressBar.setVisibility(View.GONE);
                     }
                 }else if(jsonObject.length() == 4){
                     Toast.makeText(MainActivity.this, getResources().getString(R.string.mail_not_verified), Toast.LENGTH_SHORT).show();
                     Log.w("Response", "Mail not verified");
+                    progressBar.setVisibility(View.GONE);
                 }else{
                     Toast.makeText(MainActivity.this, getResources().getString(R.string.mail_or_password_incorrect), Toast.LENGTH_SHORT).show();
+                    progressBar.setVisibility(View.GONE);
                 }
-                progressBar.setVisibility(View.GONE);
             }
 
             @Override
@@ -212,7 +198,6 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onJSONReceived(JSONObject jsonObject) {
                 USER = (User) JSONController.convertJSONToObject(jsonObject, User.class);
-                Log.w("Response", "User Informations load");
                 launchHomeActivity();
             }
 
@@ -224,44 +209,70 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    public void connectUserFromGoogle(String token) {
-        AuthCredential credential = GoogleAuthProvider.getCredential(token, null);
-        mAuth.signInWithCredential(credential)
-                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        if (task.isSuccessful()) {
-                            FirebaseUser user = mAuth.getCurrentUser();
-                            mStoreBase.collection("users").whereEqualTo("mail", user.getEmail()).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                                @Override
-                                public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                                    if (task.isSuccessful()) {
-                                        if (!task.getResult().isEmpty()) {
-                                            currentUser = mAuth.getCurrentUser();
-                                        } else {
-                                            startActivity(new Intent(MainActivity.this, SignUpMainActivity.class));
-                                            Toast.makeText(MainActivity.this, getResources().getString(R.string.not_register), Toast.LENGTH_SHORT).show();
-                                        }
-                                    } else {
-                                        Toast.makeText(MainActivity.this, getResources().getString(R.string.error), Toast.LENGTH_SHORT).show();
-                                    }
-                                }
-                            });
-                        } else {
-                            Toast.makeText(MainActivity.this, getResources().getString(R.string.error), Toast.LENGTH_LONG).show();
-                        }
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    public void connectUserFromGoogle(final GoogleSignInAccount account) {
+        final SharedPreferences loginPreferences = getSharedPreferences("login", MODE_PRIVATE);
+        final SharedPreferences.Editor editor = loginPreferences.edit();
+
+        JSONObjectCrypt params = new JSONObjectCrypt();
+        params.putCryptParameter("mail", account.getEmail());
+        params.putCryptParameter("type", "Google");
+        params.putCryptParameter("statut", "OK");
+        params.putCryptParameter("key", Constants.g_key);
+
+        Log.w("params", params.toString());
+
+        JSONController.getJsonObjectFromUrl(Constants.URL_SIGN_IN, MainActivity.this, params, new JSONObjectListener() {
+            @Override
+            public void onJSONReceived(JSONObject jsonObject) {
+                if (jsonObject.length() == 3) {
+                    try {
+                        editor.putString("connection", "google");
+                        editor.putString("mail", CryptoUtils.encrypt(account.getEmail()));
+                        editor.apply();
+                        loadUserData(jsonObject);
+                    } catch (JSONException e) {
+                        Toast.makeText(MainActivity.this, getResources().getString(R.string.error), Toast.LENGTH_SHORT).show();
+                        Log.w("Response", "Erreur:" + e.getMessage());
+                        progressBar.setVisibility(View.GONE);
                     }
-                });
+                }else if(jsonObject.length() == 4){
+                    Toast.makeText(MainActivity.this, getResources().getString(R.string.mail_not_verified), Toast.LENGTH_SHORT).show();
+                    Log.w("Response", "Mail not verified");
+                    progressBar.setVisibility(View.GONE);
+                }else if(jsonObject.length() == 5){
+                    Toast.makeText(MainActivity.this, getResources().getString(R.string.not_register), Toast.LENGTH_SHORT).show();
+                    launchRegisterActivity();
+                }else{
+                    Toast.makeText(MainActivity.this, getResources().getString(R.string.mail_or_password_incorrect), Toast.LENGTH_SHORT).show();
+                    progressBar.setVisibility(View.GONE);
+                }
+            }
+
+            @Override
+            public void onJSONReceivedError(VolleyError volleyError) {
+                progressBar.setVisibility(View.GONE);
+                Toast.makeText(MainActivity.this, getResources().getString(R.string.error), Toast.LENGTH_SHORT).show();
+                Log.w("Response", "Erreur : " + volleyError.toString());
+            }
+        });
     }
 
     private void launchHomeActivity() {
-        Log.w("Launching", "Launching home activity");
         startActivity(new Intent(MainActivity.this, HomeActivity.class));
     }
 
-    @Override
-    public void onBackPressed() {
+    private void launchRegisterActivity() {
+        startActivity(new Intent(MainActivity.this, SignUpMainActivity.class));
     }
+
+    private void launchForgetPasswordActivity() {
+        startActivity(new Intent(MainActivity.this, ResetPasswordActivity.class));
+    }
+
+
+    @Override
+    public void onBackPressed() {}
 }
 
 

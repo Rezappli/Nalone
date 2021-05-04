@@ -295,6 +295,7 @@
     <string name="enter_password_error"> Entrer votre mot de passe </string>
     <string name="not_register"> Vous n\'êtes pas encore inscrit ! </string>
     <string name="mail_or_password_incorrect"> Votre adresse mail ou votre mot de passe est incorrect ! </string>
+    <string name="google_mail_or_password_incorrect"> Votre adresse mail ou votre mot de passe est incorrect ! </string>
     <string name="mail_not_verified"> Votre adresse mail n\'est pas vérifiée ! </string>
 
     <!--Strings for friends requests-->

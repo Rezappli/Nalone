@@ -236,4 +236,5 @@ public class Constants {
 
     public static String key = "kXp2s5v8y/B?E(H+MbQeThWmZq3t6w9z"; // 128 bit key
     public static String iv = "7w!z!C&F)J@NcRfU"; // 16 bytes IV
+    public static String g_key = "E0:48:BF:89:66:92:6F:30:7E:B1:3A:EC:6D:01:E7:F2:29:7F:B6:FF";
 }
