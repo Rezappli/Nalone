@@ -46,6 +46,7 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
     @Override
     public void onBindViewHolder(@NonNull NotifViewHolder holder, int position) {
         holder.update(this.notificationList.get(position));
+
     }
 
     @Override

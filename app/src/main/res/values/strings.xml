@@ -185,6 +185,7 @@
     <string name="modify_type"> Modifier le type</string>
     <string name="type"> Catégorie</string>
     <string name="title_activity_main_profil">MainProfilActivity</string>
+
     <!-- Strings used for fragments for navigation -->
     <string name="first_fragment_label">First Fragment</string>
     <string name="second_fragment_label">Second Fragment</string>
@@ -299,11 +300,8 @@
     <string name="invit_received"> Vous avez reçu une demande d\'amis de la part de cet utilisateur ! </string>
     <string name="invit_in_progress"> Votre demande d\'amis est en attente ! </string>
     <string name="invit_send"> Vous avez envoyé une demande d\'amis ! </string>
-
-
     <string name="button_invit_waiting"> En attente </string>
 
     <string name="update_fail">La mise à jour de vos informations à échouée</string>
-
 
 </resources>

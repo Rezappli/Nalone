@@ -18,6 +18,7 @@ import com.example.nalone.R;
 import com.example.nalone.enumeration.Visibility;
 import com.example.nalone.objects.Group;
 import com.example.nalone.objects.User;
+import com.example.nalone.util.Constants;
 
 import java.util.List;
 
@@ -53,6 +54,7 @@ public class RechercheGroupeAdapter extends RecyclerView.Adapter<RechercheGroupe
     @Override
     public void onBindViewHolder(@NonNull GroupViewHolder holder, int position) {
         holder.update(this.groupList.get(position));
+        Constants.setGroupImage(this.groupList.get(position), holder.imageGroup);
     }
 
     @Override

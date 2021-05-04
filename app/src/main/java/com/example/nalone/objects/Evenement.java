@@ -242,7 +242,7 @@ public class Evenement implements Serializable {
             final_date_text += character;
         }
         tvDate.setText(final_date_text);
-        tvTime.setText(TimeUtil.cutString(this.getStartDate(), 5, 11));
+        tvTime.setText(this.getStartDate().substring(5, 11)); //cutString(this.getStartDate(), 5, 11)
         tvName.setText(this.getName());
         iv.setImageResource(this.getImageCategory());
     }

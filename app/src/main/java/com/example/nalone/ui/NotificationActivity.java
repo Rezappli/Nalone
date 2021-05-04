@@ -68,6 +68,7 @@ public class NotificationActivity extends AppCompatActivity {
                 // navController.navigate(R.id.action_navigation_amis_to_navigation_invitations);
             }
         });
+
         buttonBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -116,9 +117,7 @@ public class NotificationActivity extends AppCompatActivity {
 
     private void configureRecyclerViewNotifications() {
         this.mAdapter = new NotificationAdapter(this.notificationList);
-        // 3.3 - Attach the adapter to the recyclerview to populate items
         this.mRecycler.setAdapter(this.mAdapter);
-        // 3.4 - Set layout manager to position the items
         final LinearLayoutManager llm = new LinearLayoutManager(this);
         this.mRecycler.setLayoutManager(llm);
     }

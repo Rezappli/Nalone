@@ -83,19 +83,29 @@ public class TimeUtil {
         textView.setText(elapsedDays + "j " + elapsedHours + "h " + elapsedMinutes + "m " + elapsedSeconds + "s ");
     }
 
+    /**
+     * Methode permettant d'obtenir la meilleur annotation possible pour la date
+     * Soit l'heure si la notification date d'aujourd'hui
+     * Soit Hier à + heure de la notification
+     * Soit la date sous le forme dd-MM-yyyy
+     * @param date
+     * @return
+     */
     public static String getBestDateAnnotation(String date) {
         try {
+            Date dateEnterFull = fullSdf.parse(date);
             Date dateEnter = sdfDayMonthYear.parse(date);
             Date dateYestearday = new DateTime(new Date(System.currentTimeMillis())).minusDays(1).toDate();
-            if (dateEnter.toString().equalsIgnoreCase(currentDay)) { //NE FONCTIONNE PAS
-                Log.w("Date", "Cas 1");
+
+            String dateEnterFormated = sdfDayMonthYear.format(dateEnter);
+            String dateYeasterdayFormated = sdfDayMonthYear.format(dateYestearday);
+
+            if (dateEnterFormated.equalsIgnoreCase(currentDay)) {
                 return sdfHoursMinutes.parse(date).toString();
-            } else if (dateEnter.toString().equalsIgnoreCase(dateYestearday.toString())) {
-                Log.w("Date", "Cas 2");
-                return Constants.application.getResources().getString(R.string.notifications_yesterday) + sdfHoursMinutes.parse(date);
+            } else if (dateEnterFormated.equalsIgnoreCase(dateYeasterdayFormated)) {
+                return Constants.application.getResources().getString(R.string.notifications_yesterday) + " " + sdfHoursMinutes.format(dateEnterFull);
             } else {
-                Log.w("Date", "Cas 3");
-                return sdfDayMonthYear.parse(date).toString();
+                return dateEnterFormated;
             }
         } catch (ParseException e) {
             Log.w("Response", "Une erreur est survenue");
@@ -105,6 +115,13 @@ public class TimeUtil {
         return "";
     }
 
+    /**
+     * Methode permettant de couper un String pour obtenir un resultat
+     * @param s
+     * @param length
+     * @param start
+     * @return
+     */
     public static String cutString(String s, int length, int start) {
         if (length > s.length()) {
             return null;

@@ -57,6 +57,7 @@ public class EvenementAdapter extends RecyclerView.Adapter<EvenementAdapter.Even
     public void onBindViewHolder(@NonNull EventViewHolder holder, int position) {
         try {
             holder.updateWhithEvent(this.evenementList.get(position));
+            Constants.setEventImage(this.evenementList.get(position), holder.mImageView);
         } catch (ParseException e) {
             e.printStackTrace();
         }

@@ -19,6 +19,7 @@ import com.example.nalone.fcm.MySingleton;
 import com.example.nalone.json.JSONController;
 import com.example.nalone.json.JSONObjectCrypt;
 import com.example.nalone.listeners.JSONObjectListener;
+import com.example.nalone.objects.Evenement;
 import com.example.nalone.objects.Group;
 import com.example.nalone.objects.User;
 import com.google.android.gms.maps.model.LatLng;
@@ -171,6 +172,17 @@ public class Constants {
             public void run() {
                 if (g.getImage_url() != null && !g.getImage_url().equals("")) {
                     Glide.with(application).load(g.getImage_url()).fitCenter().centerCrop().into(imageView);
+                }
+            }
+        });
+    }
+
+    public static void setEventImage(final Evenement e, final ImageView imageView) {
+        imageView.post(new Runnable() {
+            @Override
+            public void run() {
+                if (e.getImage_url() != null && !e.getImage_url().equals("")) {
+                    Glide.with(application).load(e.getImage_url()).fitCenter().centerCrop().into(imageView);
                 }
             }
         });

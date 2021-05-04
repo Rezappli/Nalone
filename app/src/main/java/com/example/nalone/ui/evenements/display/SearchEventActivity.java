@@ -85,7 +85,7 @@ public class SearchEventActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if(hasChange){
-                    callJson();
+                    getEventFiltred();
                 }
                 bottomExpandedToCollapsed();
             }
@@ -96,7 +96,7 @@ public class SearchEventActivity extends AppCompatActivity {
         initTextView();
         initBottomSheet();
         selectedGenType();
-        callJson();
+        getEventFiltred();
     }
 
     private void initRecyclerView() {
@@ -121,7 +121,7 @@ public class SearchEventActivity extends AppCompatActivity {
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
-    private void callJson(){
+    private void getEventFiltred(){
         cardViewLoading.setVisibility(View.VISIBLE);
         linearLayoutNoResult.setVisibility(View.GONE);
         Log.w("Filtre_JSON", currentType.toString());
@@ -163,15 +163,15 @@ public class SearchEventActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * Methode permettant l'initialisation des text view de la fenetre
+     * Event category
+     * Sort filter
+     * Date filter
+     */
     private void initTextView() {
-
-        //TextView of event category
         initTextViewType();
-
-        // TextView of sort filter
         initTextViewSort();
-
-        // TextView of date filter
         initTextViewDate();
     }
 

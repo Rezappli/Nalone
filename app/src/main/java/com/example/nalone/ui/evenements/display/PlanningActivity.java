@@ -197,8 +197,6 @@ public class PlanningActivity extends NoLonelyActivity {
                     Log.w("Response", "Erreur:"+e.getMessage());
                     Toast.makeText(getBaseContext(), getResources().getString(R.string.error_event), Toast.LENGTH_SHORT).show();
                 }
-
-
             }
 
             @Override
@@ -220,17 +218,17 @@ public class PlanningActivity extends NoLonelyActivity {
     }
 
     private void initRecyclerEnd() {
-        EvenementAdapter mAdapterEnd = new EvenementAdapter(this.eventsEnd, R.layout.item_evenement_bis, false);
-        this.mRecyclerEnd.setAdapter(mAdapterEnd);
-        final LinearLayoutManager llm = new LinearLayoutManager(this, RecyclerView.VERTICAL, false);
-        this.mRecyclerEnd.setLayoutManager(llm);
+        //EvenementAdapter mAdapterEnd = new EvenementAdapter(this.eventsEnd, R.layout.item_evenement_bis, false);
+        this.mRecyclerEnd.setAdapter(new EvenementAdapter(this.eventsEnd, R.layout.item_evenement_bis, false));
+        //final LinearLayoutManager llm = new LinearLayoutManager(this, RecyclerView.VERTICAL, false);
+        this.mRecyclerEnd.setLayoutManager(new LinearLayoutManager(this, RecyclerView.VERTICAL, false));
     }
 
     private void initRecyclerSoon() {
-        EvenementAdapter mAdapterSoon = new EvenementAdapter(this.eventsSoon, R.layout.item_evenement_bis, false);
-        this.mRecyclerSoon.setAdapter(mAdapterSoon);
-        final LinearLayoutManager llm = new LinearLayoutManager(this, RecyclerView.VERTICAL, false);
-        this.mRecyclerSoon.setLayoutManager(llm);
+        //EvenementAdapter mAdapterSoon = new EvenementAdapter(this.eventsSoon, R.layout.item_evenement_bis, false);
+        this.mRecyclerSoon.setAdapter(new EvenementAdapter(this.eventsSoon, R.layout.item_evenement_bis, false));
+        //final LinearLayoutManager llm = new LinearLayoutManager(this, RecyclerView.VERTICAL, false);
+        this.mRecyclerSoon.setLayoutManager(new LinearLayoutManager(this, RecyclerView.VERTICAL, false));
     }
 
 
