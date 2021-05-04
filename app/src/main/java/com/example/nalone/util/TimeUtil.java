@@ -88,6 +88,7 @@ public class TimeUtil {
      * Soit l'heure si la notification date d'aujourd'hui
      * Soit Hier à + heure de la notification
      * Soit la date sous le forme dd-MM-yyyy
+     *
      * @param date
      * @return
      */
@@ -101,7 +102,7 @@ public class TimeUtil {
             String dateYeasterdayFormated = sdfDayMonthYear.format(dateYestearday);
 
             if (dateEnterFormated.equalsIgnoreCase(currentDay)) {
-                return sdfHoursMinutes.parse(date).toString();
+                return sdfHoursMinutes.format(dateEnterFull);
             } else if (dateEnterFormated.equalsIgnoreCase(dateYeasterdayFormated)) {
                 return Constants.application.getResources().getString(R.string.notifications_yesterday) + " " + sdfHoursMinutes.format(dateEnterFull);
             } else {
@@ -117,6 +118,7 @@ public class TimeUtil {
 
     /**
      * Methode permettant de couper un String pour obtenir un resultat
+     *
      * @param s
      * @param length
      * @param start

@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -44,6 +45,7 @@ public class NotificationActivity extends AppCompatActivity {
     private TextView textViewNbInvitFriend, textViewNbInvitEvent;
     private List<UserInvitation> invitationsFriend;
     private List<Evenement> invitationsEvent;
+    private ProgressBar progressBar;
 
 
     @RequiresApi(api = Build.VERSION_CODES.O)
@@ -51,10 +53,18 @@ public class NotificationActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_notification);
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    private void createActivity() {
         mRecycler = findViewById(R.id.recyclerNotif);
+        progressBar = findViewById(R.id.progressBar);
         buttonBack = findViewById(R.id.buttonBack);
         cardViewInvitsFriend = findViewById(R.id.cardViewInvitsFriend);
         cardViewInvitsEvent = findViewById(R.id.cardViewInvitsEvent);
+
+        textViewNbInvitEvent = findViewById(R.id.nbInvitsEvent);
+        textViewNbInvitFriend = findViewById(R.id.nbInvitsFriend);
 
         cardViewInvitsEvent.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -77,7 +87,7 @@ public class NotificationActivity extends AppCompatActivity {
         });
         HomeActivity.buttonNotif.setImageDrawable(getResources().getDrawable(R.drawable.notification_none));
         adapterNotif();
-        //getInvitationsFriend();
+        getInvitationsFriend();
         //getInvitationsEvent();
     }
 
@@ -105,6 +115,7 @@ public class NotificationActivity extends AppCompatActivity {
                     Log.w("Response", "Erreur:" + e.getMessage());
                     Toast.makeText(NotificationActivity.this, getResources().getString(R.string.error), Toast.LENGTH_SHORT).show();
                 }
+                progressBar.setVisibility(View.GONE);
             }
 
             @Override
@@ -116,10 +127,10 @@ public class NotificationActivity extends AppCompatActivity {
     }
 
     private void configureRecyclerViewNotifications() {
+        this.mRecycler.setVisibility(View.VISIBLE);
         this.mAdapter = new NotificationAdapter(this.notificationList);
         this.mRecycler.setAdapter(this.mAdapter);
-        final LinearLayoutManager llm = new LinearLayoutManager(this);
-        this.mRecycler.setLayoutManager(llm);
+        this.mRecycler.setLayoutManager(new LinearLayoutManager(this));
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
@@ -133,15 +144,18 @@ public class NotificationActivity extends AppCompatActivity {
             @Override
             public void onJSONReceived(JSONArray jsonArray) {
                 try {
-                    for (int i = 0; i < jsonArray.length(); i++) {
-                        invitationsFriend.add((UserInvitation) JSONController.convertJSONToObject(jsonArray.getJSONObject(i), UserInvitation.class));
-                    }
+                    Log.w("Response", "Value" + jsonArray.toString());
+                    if (jsonArray.length() > 0) {
+                        for (int i = 0; i < jsonArray.length(); i++) {
+                            invitationsFriend.add((UserInvitation) JSONController.convertJSONToObject(jsonArray.getJSONObject(i), UserInvitation.class));
+                        }
 
-                    if (invitationsFriend.size() != 0) {
-                        cardViewInvitsFriend.setVisibility(View.VISIBLE);
-                        textViewNbInvitFriend.setText(invitationsFriend.size());
-                    } else {
-                        cardViewInvitsFriend.setVisibility(View.GONE);
+                        if (invitationsFriend.size() > 0) {
+                            cardViewInvitsFriend.setVisibility(View.VISIBLE);
+                            textViewNbInvitFriend.setText(invitationsFriend.size() + "");
+                        } else {
+                            cardViewInvitsFriend.setVisibility(View.GONE);
+                        }
                     }
                 } catch (JSONException e) {
                     Log.w("Response", "Erreur:" + e.getMessage());
@@ -190,5 +204,12 @@ public class NotificationActivity extends AppCompatActivity {
                 Toast.makeText(getBaseContext(), getResources().getString(R.string.error_event), Toast.LENGTH_SHORT).show();
             }
         });
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    @Override
+    public void onResume() {
+        super.onResume();
+        createActivity();
     }
 }

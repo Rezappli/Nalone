@@ -1,23 +1,20 @@
 package com.example.nalone.objects;
 
-import java.sql.Date;
+public class UserInvitation {
 
-public class UserInvitation extends User{
+    private String uid;
+    private String requestDate;
 
-    private Date invitationDate;
-
-    public UserInvitation(String uid, String last_name, String first_name, String sex, String city,
-                String number, String mail,
-                String description, String birthday_date, Date date){
-        super(uid,last_name,first_name,sex,city,number,mail,description,birthday_date);
-        this.invitationDate = date;
+    public UserInvitation(String uid, String date) {
+        this.uid = uid;
+        this.requestDate = date;
     }
 
-    public Date getInvitationDate() {
-        return invitationDate;
+    public String setRequestDate() {
+        return requestDate;
     }
 
-    public void setInvitationDate(Date invitationDate) {
-        this.invitationDate = invitationDate;
+    public void setRequestDate(String invitationDate) {
+        this.requestDate = invitationDate;
     }
 }

@@ -39,7 +39,6 @@ import static com.example.nalone.util.Constants.USER;
 
 public class PopupProfilFragment extends Fragment {
 
-
     public static User USER_LOAD;
     public static int button = 0;
     private NavController navController;
@@ -190,8 +189,8 @@ public class PopupProfilFragment extends Fragment {
         JSONObjectCrypt params = new JSONObjectCrypt();
         params.putCryptParameter("uid", USER.getUid());
         params.putCryptParameter("uid_friend", USER_LOAD.getUid());
-        params.putCryptParameter("notification_sender", getResources().getString(R.string.invit_send));
-        params.putCryptParameter("notification_receiver", getResources().getString(R.string.invit_received));
+        params.putCryptParameter("notification_sender", getResources().getString(R.string.invit_received_notifications) + " " + USER.getFirst_name() + " " + USER.getLast_name());
+        params.putCryptParameter("notification_receiver", getResources().getString(R.string.invit_send_notifications) + " " + USER_LOAD.getFirst_name() + " " + USER_LOAD.getLast_name());
 
         JSONController.getJsonObjectFromUrl(Constants.URL_SEND_FRIEND_REQUEST, getContext(), params, new JSONObjectListener() {
             @SuppressLint("UseCompatLoadingForDrawables")

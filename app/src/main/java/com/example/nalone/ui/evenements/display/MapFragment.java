@@ -79,11 +79,8 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     private TypeEventAdapter typeAdapter;
     private static VisibilityMap currentVisibilityMap = VisibilityMap.ALL;
 
-    private double unit = 74.6554;
-
     private List<Evenement> nearby_events;
     private List<Evenement> eventsPopular;
-    private int iterator = 0;
     private CardView loading;
 
     private static CameraPosition posCam = null;
@@ -114,7 +111,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         rootView = inflater.inflate(R.layout.fragment_map, container, false);
 
         mMapView = rootView.findViewById(R.id.mapView);
-
         initGoogleMap(savedInstanceState);
         ((AppCompatActivity) getActivity()).getSupportActionBar().hide();
 

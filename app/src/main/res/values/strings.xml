@@ -304,6 +304,10 @@
     <string name="invit_send"> Vous avez envoyé une demande d\'amis ! </string>
     <string name="button_invit_waiting"> En attente </string>
 
+    <string name="invit_received_notifications"> Vous avez reçu une demande d\'amis de  </string>
+    <string name="invit_send_notifications"> Vous avez envoyé une demande d\'amis à  </string>
+
+
     <string name="update_fail">La mise à jour de vos informations à échouée</string>
 
 </resources>
