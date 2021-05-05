@@ -18,6 +18,7 @@
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE" />
     <uses-permission android:name="android.permission.CALL_PHONE" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
 
     <application
         android:name="splash.MyApp"
@@ -102,13 +103,20 @@
             android:name="com.google.android.gms.vision.DEPENDENCIES"
             android:value="barcode" />
 
-        <service
-            android:name=".MyFirebaseInstance"
-            android:directBootAware="true"
-            android:exported="false">
+        <receiver
+            android:name="Restarter"
+            android:enabled="true"
+            android:exported="true">
             <intent-filter>
-                <action android:name="com.google.firebase.MESSAGING_EVENT" />
+                <action android:name="restartservice" />
             </intent-filter>
+        </receiver>
+
+        <service
+            android:name=".NotificationService"
+            android:directBootAware="true"
+            android:exported="true"
+            android:enabled="true">
         </service>
     </application>
 
