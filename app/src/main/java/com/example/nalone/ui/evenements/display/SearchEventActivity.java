@@ -1,11 +1,5 @@
 package com.example.nalone.ui.evenements.display;
 
-import androidx.annotation.RequiresApi;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.cardview.widget.CardView;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Build;
@@ -16,6 +10,12 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.annotation.RequiresApi;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.cardview.widget.CardView;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.android.volley.VolleyError;
 import com.example.nalone.R;
@@ -43,17 +43,15 @@ import static com.example.nalone.util.Constants.USER;
 public class SearchEventActivity extends AppCompatActivity {
 
     private TextView textViewType, textViewSort, textViewDate, textViewLocation, textViewPrice;
-    private BottomSheetBehavior bottomSheetBehaviorDate, bottomSheetBehaviorType,bottomSheetBehaviorSort
-            ,bottomSheetBehaviorPrice,bottomSheetBehaviorLocation,bottomSheetBehaviorParticipation;
-    private View viewGrey, bottomSheetType,bottomSheetDate,bottomSheetSort,bottomSheetPrice,bottomSheetLocation, bottomSheetParticipation;
+    private BottomSheetBehavior bottomSheetBehaviorDate, bottomSheetBehaviorType, bottomSheetBehaviorSort, bottomSheetBehaviorPrice, bottomSheetBehaviorLocation, bottomSheetBehaviorParticipation;
+    private View viewGrey, bottomSheetType, bottomSheetDate, bottomSheetSort, bottomSheetPrice, bottomSheetLocation, bottomSheetParticipation;
     public static TypeEvent currentType;
     private FiltreSort currentSort;
     private FiltreDate currentDate;
     private int currentLocation, currentPrice;
-    private TextView textViewSortPertinence, textViewSortPriceASC,textViewSortPriceDESC,textViewSortLocation ,textViewSortDate;
-    private TextView textViewDateToday,textViewDateTomorrow,textViewDateWeek,textViewDateMonth,textViewDateOther;
-    private TextView textViewEventArt, textViewEventSport,textViewEventParty,textViewEventMusic,textViewEventMovie,textViewEventGame
-            ,textViewEventCar,textViewEventGather,textViewEventConference,textViewEventShop,textViewEventShow,textViewEventScience;
+    private TextView textViewSortPertinence, textViewSortPriceASC, textViewSortPriceDESC, textViewSortLocation, textViewSortDate;
+    private TextView textViewDateToday, textViewDateTomorrow, textViewDateWeek, textViewDateMonth, textViewDateOther;
+    private TextView textViewEventArt, textViewEventSport, textViewEventParty, textViewEventMusic, textViewEventMovie, textViewEventGame, textViewEventCar, textViewEventGather, textViewEventConference, textViewEventShop, textViewEventShow, textViewEventScience;
     private SearchEvenementAdapter mAdapter;
     private RecyclerView mRecycler;
     private List<Evenement> evenementList;
@@ -84,7 +82,7 @@ public class SearchEventActivity extends AppCompatActivity {
         viewGrey.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(hasChange){
+                if (hasChange) {
                     getEventFiltred();
                 }
                 bottomExpandedToCollapsed();
@@ -106,7 +104,7 @@ public class SearchEventActivity extends AppCompatActivity {
             @Override
             public void onDisplayClick(int position) {
                 InfosEvenementsActivity.EVENT_LOAD = evenementList.get(position);
-                startActivity(new Intent(getBaseContext(),InfosEvenementsActivity.class));
+                startActivity(new Intent(getBaseContext(), InfosEvenementsActivity.class));
                 //InfosEvenementsActivity.type = "nouveau";
             }
 
@@ -121,7 +119,7 @@ public class SearchEventActivity extends AppCompatActivity {
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
-    private void getEventFiltred(){
+    private void getEventFiltred() {
         cardViewLoading.setVisibility(View.VISIBLE);
         linearLayoutNoResult.setVisibility(View.GONE);
         Log.w("Filtre_JSON", currentType.toString());
@@ -130,7 +128,7 @@ public class SearchEventActivity extends AppCompatActivity {
         params.putCryptParameter("uid", USER.getUid());
         params.putCryptParameter("type", currentType.toString());
         params.putCryptParameter("sort", currentSort.toString());
-        if(currentDate != FiltreDate.NONE)
+        if (currentDate != FiltreDate.NONE)
             params.putCryptParameter("date", currentDate.toString());
 
         JSONController.getJsonArrayFromUrl(Constants.URL_EVENT_FILTRE, getBaseContext(), params, new JSONArrayListener() {
@@ -138,18 +136,18 @@ public class SearchEventActivity extends AppCompatActivity {
             public void onJSONReceived(JSONArray jsonArray) {
                 try {
                     evenementList = new ArrayList<>();
-                    for(int i = 0; i < jsonArray.length(); i++) {
+                    for (int i = 0; i < jsonArray.length(); i++) {
                         evenementList.add((Evenement) JSONController.convertJSONToObject(jsonArray.getJSONObject(i), Evenement.class));
                     }
                     initRecyclerView();
-                    if(evenementList.isEmpty()){
+                    if (evenementList.isEmpty()) {
                         linearLayoutNoResult.setVisibility(View.VISIBLE);
-                    }else{
+                    } else {
                         linearLayoutNoResult.setVisibility(View.GONE);
                     }
                     cardViewLoading.setVisibility(View.GONE);
                 } catch (JSONException e) {
-                    Log.w("Response", "Erreur:"+e.getMessage());
+                    Log.w("Response", "Erreur:" + e.getMessage());
                     Toast.makeText(getBaseContext(), getResources().getString(R.string.error_event), Toast.LENGTH_SHORT).show();
                 }
 
@@ -157,7 +155,7 @@ public class SearchEventActivity extends AppCompatActivity {
 
             @Override
             public void onJSONReceivedError(VolleyError volleyError) {
-                Log.w("Response", "Erreur:"+volleyError.toString());
+                Log.w("Response", "Erreur:" + volleyError.toString());
                 Toast.makeText(getBaseContext(), getResources().getString(R.string.error_event), Toast.LENGTH_SHORT).show();
             }
         });
@@ -219,7 +217,7 @@ public class SearchEventActivity extends AppCompatActivity {
 
     }
 
-    private void initTextViewSort(){
+    private void initTextViewSort() {
         textViewType = findViewById(R.id.textViewType);
         changeTextViewType();
         textViewSort = findViewById(R.id.textViewSort);
@@ -356,7 +354,7 @@ public class SearchEventActivity extends AppCompatActivity {
             @RequiresApi(api = Build.VERSION_CODES.O)
             @Override
             public void onClick(View v) {
-                changeActualType(TypeEvent.MOVIE);
+                changeActualType(TypeEvent.MULTIMEDIA);
             }
         });
         textViewEventGame.setOnClickListener(new View.OnClickListener() {
@@ -412,27 +410,27 @@ public class SearchEventActivity extends AppCompatActivity {
 
     private void initBottomSheet() {
         bottomSheetType = findViewById(R.id.sheetType);
-        bottomSheetBehaviorType= BottomSheetBehavior.from(bottomSheetType);
+        bottomSheetBehaviorType = BottomSheetBehavior.from(bottomSheetType);
 
         bottomSheetDate = findViewById(R.id.sheetDate);
-        bottomSheetBehaviorDate= BottomSheetBehavior.from(bottomSheetDate);
+        bottomSheetBehaviorDate = BottomSheetBehavior.from(bottomSheetDate);
 
         bottomSheetSort = findViewById(R.id.sheetSort);
-        bottomSheetBehaviorSort= BottomSheetBehavior.from(bottomSheetSort);
+        bottomSheetBehaviorSort = BottomSheetBehavior.from(bottomSheetSort);
 
         bottomSheetLocation = findViewById(R.id.sheetLocation);
-        bottomSheetBehaviorLocation= BottomSheetBehavior.from(bottomSheetLocation);
+        bottomSheetBehaviorLocation = BottomSheetBehavior.from(bottomSheetLocation);
 
         bottomSheetPrice = findViewById(R.id.sheetPrice);
-        bottomSheetBehaviorPrice= BottomSheetBehavior.from(bottomSheetPrice);
+        bottomSheetBehaviorPrice = BottomSheetBehavior.from(bottomSheetPrice);
 
         bottomSheetParticipation = findViewById(R.id.sheetParticipate);
         bottomSheetBehaviorParticipation = BottomSheetBehavior.from(bottomSheetParticipation);
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
-    private void changeActualType(TypeEvent typeEvent){
-        if(typeEvent != currentType){
+    private void changeActualType(TypeEvent typeEvent) {
+        if (typeEvent != currentType) {
             currentType = typeEvent;
             textViewEventArt.setTextColor(Color.DKGRAY);
             textViewEventSport.setTextColor(Color.DKGRAY);
@@ -444,46 +442,58 @@ public class SearchEventActivity extends AppCompatActivity {
             textViewEventGather.setTextColor(Color.DKGRAY);
             textViewEventConference.setTextColor(Color.DKGRAY);
             textViewEventShop.setTextColor(Color.DKGRAY);
-            textViewEventShow .setTextColor(Color.DKGRAY);
+            textViewEventShow.setTextColor(Color.DKGRAY);
             textViewEventScience.setTextColor(Color.DKGRAY);
 
             textViewEventArt.setCompoundDrawablesWithIntrinsicBounds(R.drawable.event_art_grey, 0, 0, 0);
             textViewEventSport.setCompoundDrawablesWithIntrinsicBounds(R.drawable.event_sport_grey, 0, 0, 0);
-            textViewEventParty.setCompoundDrawablesWithIntrinsicBounds(R.drawable.event_party_grey,0, 0, 0);
-            textViewEventMusic.setCompoundDrawablesWithIntrinsicBounds(R.drawable.event_music_grey,0, 0, 0);
+            textViewEventParty.setCompoundDrawablesWithIntrinsicBounds(R.drawable.event_party_grey, 0, 0, 0);
+            textViewEventMusic.setCompoundDrawablesWithIntrinsicBounds(R.drawable.event_music_grey, 0, 0, 0);
             textViewEventMovie.setCompoundDrawablesWithIntrinsicBounds(R.drawable.event_movie_grey, 0, 0, 0);
-            textViewEventGame.setCompoundDrawablesWithIntrinsicBounds(R.drawable.event_game_grey,0, 0, 0);
-            textViewEventCar.setCompoundDrawablesWithIntrinsicBounds(R.drawable.event_car_grey,0, 0, 0);
+            textViewEventGame.setCompoundDrawablesWithIntrinsicBounds(R.drawable.event_game_grey, 0, 0, 0);
+            textViewEventCar.setCompoundDrawablesWithIntrinsicBounds(R.drawable.event_car_grey, 0, 0, 0);
             textViewEventGather.setCompoundDrawablesWithIntrinsicBounds(R.drawable.event_gather_grey, 0, 0, 0);
             textViewEventConference.setCompoundDrawablesWithIntrinsicBounds(R.drawable.event_conference_grey, 0, 0, 0);
             textViewEventShop.setCompoundDrawablesWithIntrinsicBounds(R.drawable.event_shop_grey, 0, 0, 0);
             textViewEventShow.setCompoundDrawablesWithIntrinsicBounds(R.drawable.event_show_grey, 0, 0, 0);
             textViewEventScience.setCompoundDrawablesWithIntrinsicBounds(R.drawable.event_science_grey, 0, 0, 0);
 
-            switch (typeEvent){
-                case ART:selectedType(textViewEventArt);
+            switch (typeEvent) {
+                case ART:
+                    selectedType(textViewEventArt);
                     break;
-                case CAR:selectedType(textViewEventCar);
+                case CAR:
+                    selectedType(textViewEventCar);
                     break;
-                case GAME:selectedType(textViewEventGame);
+                case GAME:
+                    selectedType(textViewEventGame);
                     break;
-                case SHOP:selectedType(textViewEventShop);
+                case SHOP:
+                    selectedType(textViewEventShop);
                     break;
-                case SHOW:selectedType(textViewEventShow);
+                case SHOW:
+                    selectedType(textViewEventShow);
                     break;
-                case MOVIE:selectedType(textViewEventMovie);
+                case MULTIMEDIA:
+                    selectedType(textViewEventMovie);
                     break;
-                case MUSIC:selectedType(textViewEventMusic);
+                case MUSIC:
+                    selectedType(textViewEventMusic);
                     break;
-                case PARTY:selectedType(textViewEventParty);
+                case PARTY:
+                    selectedType(textViewEventParty);
                     break;
-                case SPORT:selectedType(textViewEventSport);
+                case SPORT:
+                    selectedType(textViewEventSport);
                     break;
-                case SCIENCE:selectedType(textViewEventScience);
+                case SCIENCE:
+                    selectedType(textViewEventScience);
                     break;
-                case CONFERENCE:selectedType(textViewEventConference);
+                case CONFERENCE:
+                    selectedType(textViewEventConference);
                     break;
-                case GATHER:selectedType(textViewEventGather);
+                case GATHER:
+                    selectedType(textViewEventGather);
                     break;
             }
             hasChange = true;
@@ -491,8 +501,8 @@ public class SearchEventActivity extends AppCompatActivity {
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
-    private void changeActualDate(FiltreDate filtreDate){
-        if(filtreDate != currentDate){
+    private void changeActualDate(FiltreDate filtreDate) {
+        if (filtreDate != currentDate) {
             currentDate = filtreDate;
             textViewDateToday.setTextColor(Color.DKGRAY);
             textViewDateTomorrow.setTextColor(Color.DKGRAY);
@@ -507,16 +517,21 @@ public class SearchEventActivity extends AppCompatActivity {
             textViewDateOther.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_baseline_event_24, 0, 0, 0);
 
 
-            switch (filtreDate){
-                case WEEK:selectedDate(textViewDateWeek,getResources().getString(R.string.filter_date_week));
+            switch (filtreDate) {
+                case WEEK:
+                    selectedDate(textViewDateWeek, getResources().getString(R.string.filter_date_week));
                     break;
-                case MONTH:selectedDate(textViewDateMonth,getResources().getString(R.string.filter_date_month));
+                case MONTH:
+                    selectedDate(textViewDateMonth, getResources().getString(R.string.filter_date_month));
                     break;
-                case OTHER:selectedDate(textViewDateOther,getResources().getString(R.string.filter_date_choose));
+                case OTHER:
+                    selectedDate(textViewDateOther, getResources().getString(R.string.filter_date_choose));
                     break;
-                case TODAY:selectedDate(textViewDateToday,getResources().getString(R.string.filter_date_today));
+                case TODAY:
+                    selectedDate(textViewDateToday, getResources().getString(R.string.filter_date_today));
                     break;
-                case TOMORROW:selectedDate(textViewDateTomorrow,getResources().getString(R.string.filter_date_tomorrow));
+                case TOMORROW:
+                    selectedDate(textViewDateTomorrow, getResources().getString(R.string.filter_date_tomorrow));
                     break;
             }
             hasChange = true;
@@ -524,8 +539,8 @@ public class SearchEventActivity extends AppCompatActivity {
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
-    private void changeActualSort(FiltreSort filtreSort){
-        if(filtreSort != currentSort){
+    private void changeActualSort(FiltreSort filtreSort) {
+        if (filtreSort != currentSort) {
             currentSort = filtreSort;
             textViewSortPertinence.setTextColor(Color.DKGRAY);
             textViewSortPriceDESC.setTextColor(Color.DKGRAY);
@@ -539,17 +554,21 @@ public class SearchEventActivity extends AppCompatActivity {
             textViewSortDate.setCompoundDrawablesWithIntrinsicBounds(R.drawable.filtre_sort, 0, 0, 0);
             textViewSortLocation.setCompoundDrawablesWithIntrinsicBounds(R.drawable.filtre_sort, 0, 0, 0);
 
-            switch (filtreSort){
+            switch (filtreSort) {
                 case PERTINENCE:
-                    selectedSort(textViewSortPertinence,getResources().getString(R.string.filter_sort_pertinence));
+                    selectedSort(textViewSortPertinence, getResources().getString(R.string.filter_sort_pertinence));
                     break;
-                case PRICEDESC:selectedSort(textViewSortPriceDESC,getResources().getString(R.string.filter_sort_price_desc));
+                case PRICEDESC:
+                    selectedSort(textViewSortPriceDESC, getResources().getString(R.string.filter_sort_price_desc));
                     break;
-                case PRICEASC:selectedSort(textViewSortPriceASC,getResources().getString(R.string.filter_sort_price_asc));
+                case PRICEASC:
+                    selectedSort(textViewSortPriceASC, getResources().getString(R.string.filter_sort_price_asc));
                     break;
-                case DATE:selectedSort(textViewSortDate,getResources().getString(R.string.filter_sort_date));
+                case DATE:
+                    selectedSort(textViewSortDate, getResources().getString(R.string.filter_sort_date));
                     break;
-                case LOCATION:selectedSort(textViewSortLocation,getResources().getString(R.string.filter_sort_location));
+                case LOCATION:
+                    selectedSort(textViewSortLocation, getResources().getString(R.string.filter_sort_location));
                     break;
             }
             hasChange = true;
@@ -557,25 +576,25 @@ public class SearchEventActivity extends AppCompatActivity {
 
     }
 
-    private void selectedDate(TextView textView, String text){
+    private void selectedDate(TextView textView, String text) {
         textView.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_baseline_event_24_primary, 0, 0, 0);
         textView.setTextColor(getResources().getColor(R.color.colorPrimary));
         textViewDate.setText(text);
         textViewDate.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_baseline_event_24_primary, 0, 0, 0);
     }
 
-    private void selectedType(TextView textView){
+    private void selectedType(TextView textView) {
         textView.setCompoundDrawablesWithIntrinsicBounds(getDrawableType(currentType), 0, 0, 0);
         textView.setTextColor(getResources().getColor(R.color.colorPrimary));
         selectedGenType();
     }
 
-    private void selectedGenType(){
+    private void selectedGenType() {
         textViewType.setCompoundDrawablesWithIntrinsicBounds(getDrawableType(currentType), 0, 0, 0);
         textViewType.setText(getTextType(currentType));
     }
 
-    private void selectedSort(TextView textView, String text){
+    private void selectedSort(TextView textView, String text) {
         textViewSort.setText(text);
         textView.setTextColor(getResources().getColor(R.color.colorPrimary));
         textView.setCompoundDrawablesWithIntrinsicBounds(R.drawable.sort, 0, 0, 0);
@@ -584,95 +603,126 @@ public class SearchEventActivity extends AppCompatActivity {
     private void bottomCollapsedToExpanded(FiltreEvent filtreEvent) {
         bottomExpandedToCollapsed();
         viewGrey.setVisibility(View.VISIBLE);
-        switch (filtreEvent){
-            case DATE:if(bottomSheetBehaviorDate.getState() == BottomSheetBehavior.STATE_COLLAPSED)
+        switch (filtreEvent) {
+            case DATE:
+                if (bottomSheetBehaviorDate.getState() == BottomSheetBehavior.STATE_COLLAPSED)
                     bottomSheetBehaviorDate.setState(BottomSheetBehavior.STATE_EXPANDED);
                 break;
-            case SORT:if(bottomSheetBehaviorSort.getState() == BottomSheetBehavior.STATE_COLLAPSED)
-                bottomSheetBehaviorSort.setState(BottomSheetBehavior.STATE_EXPANDED);
+            case SORT:
+                if (bottomSheetBehaviorSort.getState() == BottomSheetBehavior.STATE_COLLAPSED)
+                    bottomSheetBehaviorSort.setState(BottomSheetBehavior.STATE_EXPANDED);
                 break;
 
-            case TYPE:if(bottomSheetBehaviorType.getState() == BottomSheetBehavior.STATE_COLLAPSED)
-                bottomSheetBehaviorType.setState(BottomSheetBehavior.STATE_EXPANDED);
+            case TYPE:
+                if (bottomSheetBehaviorType.getState() == BottomSheetBehavior.STATE_COLLAPSED)
+                    bottomSheetBehaviorType.setState(BottomSheetBehavior.STATE_EXPANDED);
                 break;
 
-            case PRICE:if(bottomSheetBehaviorPrice.getState() == BottomSheetBehavior.STATE_COLLAPSED)
-                bottomSheetBehaviorPrice.setState(BottomSheetBehavior.STATE_EXPANDED);
+            case PRICE:
+                if (bottomSheetBehaviorPrice.getState() == BottomSheetBehavior.STATE_COLLAPSED)
+                    bottomSheetBehaviorPrice.setState(BottomSheetBehavior.STATE_EXPANDED);
                 break;
 
-            case LOCATION:if(bottomSheetBehaviorLocation.getState() == BottomSheetBehavior.STATE_COLLAPSED)
-                bottomSheetBehaviorLocation.setState(BottomSheetBehavior.STATE_EXPANDED);
+            case LOCATION:
+                if (bottomSheetBehaviorLocation.getState() == BottomSheetBehavior.STATE_COLLAPSED)
+                    bottomSheetBehaviorLocation.setState(BottomSheetBehavior.STATE_EXPANDED);
                 break;
         }
     }
 
     private void bottomExpandedToCollapsed() {
 
-        if(bottomSheetBehaviorPrice.getState() == BottomSheetBehavior.STATE_EXPANDED){
+        if (bottomSheetBehaviorPrice.getState() == BottomSheetBehavior.STATE_EXPANDED) {
             bottomSheetBehaviorPrice.setState(BottomSheetBehavior.STATE_COLLAPSED);
         }
 
-        if(bottomSheetBehaviorDate.getState() == BottomSheetBehavior.STATE_EXPANDED){
+        if (bottomSheetBehaviorDate.getState() == BottomSheetBehavior.STATE_EXPANDED) {
             bottomSheetBehaviorDate.setState(BottomSheetBehavior.STATE_COLLAPSED);
         }
 
-        if(bottomSheetBehaviorSort.getState() == BottomSheetBehavior.STATE_EXPANDED ){
+        if (bottomSheetBehaviorSort.getState() == BottomSheetBehavior.STATE_EXPANDED) {
             bottomSheetBehaviorSort.setState(BottomSheetBehavior.STATE_COLLAPSED);
         }
 
-        if(bottomSheetBehaviorLocation.getState() == BottomSheetBehavior.STATE_EXPANDED ){
+        if (bottomSheetBehaviorLocation.getState() == BottomSheetBehavior.STATE_EXPANDED) {
             bottomSheetBehaviorLocation.setState(BottomSheetBehavior.STATE_COLLAPSED);
         }
 
-        if(bottomSheetBehaviorType.getState() == BottomSheetBehavior.STATE_EXPANDED){
+        if (bottomSheetBehaviorType.getState() == BottomSheetBehavior.STATE_EXPANDED) {
             bottomSheetBehaviorType.setState(BottomSheetBehavior.STATE_COLLAPSED);
         }
 
-        if(bottomSheetBehaviorParticipation.getState() == BottomSheetBehavior.STATE_EXPANDED){
+        if (bottomSheetBehaviorParticipation.getState() == BottomSheetBehavior.STATE_EXPANDED) {
             bottomSheetBehaviorParticipation.setState(BottomSheetBehavior.STATE_COLLAPSED);
         }
 
         viewGrey.setVisibility(View.GONE);
     }
 
-    private void changeTextViewType(){
+    private void changeTextViewType() {
         textViewType.setCompoundDrawablesWithIntrinsicBounds(getDrawableType(currentType), 0, 0, 0);
         textViewType.setText(getTextType(currentType));
     }
 
     private int getDrawableType(TypeEvent te) {
-        switch (te){
-            case ART:return R.drawable.event_art;
-            case CAR:return R.drawable.event_car;
-            case GAME:return R.drawable.event_game;
-            case SHOP:return R.drawable.event_shop;
-            case SHOW:return R.drawable.event_show;
-            case MOVIE:return R.drawable.event_movie;
-            case MUSIC:return R.drawable.event_music;
-            case PARTY:return R.drawable.event_party;
-            case SPORT:return R.drawable.event_sport;
-            case GATHER:return R.drawable.event_gather;
-            case SCIENCE:return R.drawable.event_science;
-            case CONFERENCE:return R.drawable.event_conference;
-            default:return 0;
+        switch (te) {
+            case ART:
+                return R.drawable.event_art;
+            case CAR:
+                return R.drawable.event_car;
+            case GAME:
+                return R.drawable.event_game;
+            case SHOP:
+                return R.drawable.event_shop;
+            case SHOW:
+                return R.drawable.event_show;
+            case MULTIMEDIA:
+                return R.drawable.event_movie;
+            case MUSIC:
+                return R.drawable.event_music;
+            case PARTY:
+                return R.drawable.event_party;
+            case SPORT:
+                return R.drawable.event_sport;
+            case GATHER:
+                return R.drawable.event_gather;
+            case SCIENCE:
+                return R.drawable.event_science;
+            case CONFERENCE:
+                return R.drawable.event_conference;
+            default:
+                return 0;
         }
     }
 
     private String getTextType(TypeEvent te) {
-        switch (te){
-            case ART:return getResources().getString(R.string.event_art);
-            case CAR:return getResources().getString(R.string.event_car);
-            case GAME:return getResources().getString(R.string.event_game);
-            case SHOP:return getResources().getString(R.string.event_shop);
-            case SHOW:return getResources().getString(R.string.event_show);
-            case MOVIE:return getResources().getString(R.string.event_movie);
-            case MUSIC:return getResources().getString(R.string.event_music);
-            case PARTY:return getResources().getString(R.string.event_party);
-            case SPORT:return getResources().getString(R.string.event_sport);
-            case GATHER:return getResources().getString(R.string.event_gather);
-            case SCIENCE:return getResources().getString(R.string.event_science);
-            case CONFERENCE:return getResources().getString(R.string.event_conference);
-            default:return "Error";
+        switch (te) {
+            case ART:
+                return getResources().getString(R.string.event_art);
+            case CAR:
+                return getResources().getString(R.string.event_car);
+            case GAME:
+                return getResources().getString(R.string.event_game);
+            case SHOP:
+                return getResources().getString(R.string.event_shop);
+            case SHOW:
+                return getResources().getString(R.string.event_show);
+            case MULTIMEDIA:
+                return getResources().getString(R.string.event_movie);
+            case MUSIC:
+                return getResources().getString(R.string.event_music);
+            case PARTY:
+                return getResources().getString(R.string.event_party);
+            case SPORT:
+                return getResources().getString(R.string.event_sport);
+            case GATHER:
+                return getResources().getString(R.string.event_gather);
+            case SCIENCE:
+                return getResources().getString(R.string.event_science);
+            case CONFERENCE:
+                return getResources().getString(R.string.event_conference);
+            default:
+                return "Error";
         }
     }
 }

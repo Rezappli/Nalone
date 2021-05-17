@@ -1,16 +1,12 @@
 package com.example.nalone.objects;
 
-import android.graphics.drawable.Drawable;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.example.nalone.R;
 import com.example.nalone.enumeration.StatusEvent;
 import com.example.nalone.enumeration.TypeEvent;
 import com.example.nalone.enumeration.Visibility;
 import com.example.nalone.util.Constants;
-import com.example.nalone.util.TimeUtil;
-import com.google.firebase.database.core.view.Event;
 
 import java.io.Serializable;
 import java.text.ParseException;
@@ -60,9 +56,9 @@ public class Evenement implements Serializable {
     }
 
 
-    public Evenement(String uid, StatusEvent status,String owner, String name, String description,
+    public Evenement(String uid, StatusEvent status, String owner, String name, String description,
                      String address, String city, Visibility visibility, String startDate, String endDate,
-                     double latitude, double longitude, int nbMembers, TypeEvent category,int price){
+                     double latitude, double longitude, int nbMembers, TypeEvent category, int price) {
         this.uid = uid;
         this.name = name;
         this.description = description;
@@ -207,31 +203,17 @@ public class Evenement implements Serializable {
         return category;
     }
 
-    public int getImageCategory(){
-        switch (this.getCategory()){
-            case ART: return R.drawable.event_art;
-            case CAR: return R.drawable.event_car;
-            case GAME: return R.drawable.event_game;
-            case SHOP: return R.drawable.event_shop;
-            case SHOW: return R.drawable.event_show;
-            case MOVIE: return R.drawable.event_movie;
-            case MUSIC: return R.drawable.event_music;
-            case PARTY: return R.drawable.event_party;
-            case SPORT: return R.drawable.event_sport;
-            case CONTEST: return R.drawable.event_contest;
-            case SCIENCE: return R.drawable.event_science;
-            case CONFERENCE: return R.drawable.event_conference;
-            case GATHER: return R.drawable.event_gather;
-        }
-        return 0;
+    public int getImageCategory() {
+        TypeEventObject typeEventObject = new TypeEventObject();
+        return typeEventObject.getDrawableType(getCategory());
     }
 
-    public void replaceFields(TextView tvName,TextView tvCity,TextView tvNbMembers,TextView tvDate,TextView tvTime, ImageView iv) throws ParseException {
+    public void replaceFields(TextView tvName, TextView tvCity, TextView tvNbMembers, TextView tvDate, TextView tvTime, ImageView iv) throws ParseException {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd hh:mm");
         String final_date_text = "";
         tvName.setText(this.getName());
         tvCity.setText(this.getCity());
-        tvNbMembers.setText(this.getNbMembers()+"");
+        tvNbMembers.setText(this.getNbMembers() + "");
         Date date = sdf.parse(this.getStartDate());
         String date_text = Constants.formatD.format(date);
         for (int i = 0; i < date_text.length() - 5; i++) {
@@ -260,12 +242,12 @@ public class Evenement implements Serializable {
     }
 
     @Override
-    public String toString(){
+    public String toString() {
         String date_text = Constants.formatD.format(this.startDate);
         String final_date_text = "";
-        for(int i = 0; i < date_text.length(); i++){
+        for (int i = 0; i < date_text.length(); i++) {
             char character = date_text.charAt(i);
-            if(i == 0) {
+            if (i == 0) {
                 character = Character.toUpperCase(character);
             }
             final_date_text += character;

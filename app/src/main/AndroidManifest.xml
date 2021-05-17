@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="com.example.nalone">
     <!--
          The ACCESS_COARSE/FINE_LOCATION permissions are not required to use
@@ -29,7 +30,10 @@
         android:roundIcon="@mipmap/ic_logo_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme.NoActionBar">
-        <activity android:name=".signUpActivities.SignUpMainActivity"></activity>
+        <activity android:name=".signUpActivities.WelcomeActivity" />
+        <activity android:name=".signUpActivities.ChoiceTypeAccountActivity" />
+        <activity android:name=".signUpActivities.CheckMailValidationActivity" />
+        <activity android:name=".signUpActivities.SignUpMainActivity" />
         <activity android:name=".ui.evenements.display.SearchEventActivity" />
         <activity android:name=".ui.evenements.display.PlanningActivity" />
         <activity android:name=".ui.evenements.display.EventPlanningActivity" />
@@ -66,14 +70,11 @@
             android:resource="@array/preloaded_fonts" />
 
         <activity android:name=".ErrorConnexionActivity" />
-        <activity android:name=".signUpActivities.SignUpStudiesActivity" />
         <activity
             android:name=".HomeActivity"
             android:label="@string/title_activity_home"
             android:theme="@style/AppTheme" />
         <activity android:name=".signUpActivities.SignUpProfilActivity" />
-        <activity android:name=".signUpActivities.SignUpHobbiesActivity" />
-        <activity android:name=".signUpActivities.SignUpInformationActivity" />
         <!--
 <activity
             android:name=".MainActivity"
@@ -104,20 +105,22 @@
             android:value="barcode" />
 
         <receiver
-            android:name="Restarter"
+            android:name=".Restarter"
             android:enabled="true"
             android:exported="true">
             <intent-filter>
                 <action android:name="restartservice" />
             </intent-filter>
         </receiver>
+        <receiver
+            android:name=".signUpActivities.CheckPhoneValidationActivity$SmsReceiver"
+            tools:ignore="MissingClass" />
 
         <service
             android:name=".NotificationService"
             android:directBootAware="true"
-            android:exported="true"
-            android:enabled="true">
-        </service>
+            android:enabled="true"
+            android:exported="true" />
     </application>
 
 </manifest>

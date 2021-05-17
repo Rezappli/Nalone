@@ -1,15 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#03DAC5</color>
-    <color name="colorPrimaryDark">#3700B3</color>
-    <color name="colorAccent">#03DAC5</color>
-    <color name="black"> #000000</color>
-    <color name="pink"> #C71585 </color>
-    <color name="indigo"> #4B0082 </color>
-    <color name="green"> #16CB2D </color>
-    <color name="red"> #D31717 </color>
-    <color name="red_clair"> #F34747 </color>
-    <color name="white"> #FFFFFF </color>
+    <color name="colorPrimary">#00D7F3</color>
+    <color name="colorPrimaryDark">#335cdd</color>
+    <color name="colorAccent">#00D7F3</color>
+    <color name="black">#000000</color>
+    <color name="pink">#C71585</color>
+    <color name="indigo">#4B0082</color>
+    <color name="green">#16CB2D</color>
+    <color name="red">#D31717</color>
+    <color name="red_clair">#F34747</color>
+    <color name="white">#FFFFFF</color>
     <color name="semi_transparent">#424242</color>
     <color name="lightGrey">#E4E4E4</color>
+    <color name="grey">#AAAAAA</color>
+    <color name="cultural">#C600F3</color>
+    <color name="ecology">#19D604</color>
+    <color name="sport">#DA0000</color>
+    <color name="technology">#0083DA</color>
+    <color name="human">#00DAAE</color>
+    <color name="object">#FF8C00</color>
+
+
 </resources>

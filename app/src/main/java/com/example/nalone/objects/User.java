@@ -5,6 +5,7 @@ public class User {
     private String sex;
     private String last_name;
     private String first_name;
+    private String center_of_interest;
     private String city;
     private String number;
     private String mail;
@@ -16,20 +17,21 @@ public class User {
     private double latitude;
     private double longitude;
 
-    public User(){}
+    public User() {
+    }
 
-    public User(String uid){
+    public User(String uid) {
         this.uid = uid;
     }
 
 
-
-    public User(String uid, String last_name, String first_name, String sex, String city,
+    public User(String uid, String last_name, String first_name, String center_of_interest, String sex, String city,
                 String number, String mail,
-                String description, String birthday_date){
+                String description, String birthday_date) {
         this.uid = uid;
         this.last_name = last_name;
         this.first_name = first_name;
+        this.center_of_interest = center_of_interest;
         this.sex = sex;
         this.city = city;
         this.number = number;
@@ -156,5 +158,11 @@ public class User {
         this.longitude = longitude;
     }
 
+    public String getCenter_of_interest() {
+        return center_of_interest;
+    }
 
+    public void setCenter_of_interest(String center_of_interest) {
+        this.center_of_interest = center_of_interest;
+    }
 }

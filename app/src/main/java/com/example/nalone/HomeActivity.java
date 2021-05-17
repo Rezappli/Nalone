@@ -8,6 +8,15 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.cardview.widget.CardView;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
+import androidx.navigation.ui.AppBarConfiguration;
+import androidx.navigation.ui.NavigationUI;
+
 import com.android.volley.VolleyError;
 import com.example.nalone.enumeration.TypeEvent;
 import com.example.nalone.enumeration.Visibility;
@@ -25,15 +34,6 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.RequiresApi;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.cardview.widget.CardView;
-import androidx.navigation.NavController;
-import androidx.navigation.Navigation;
-import androidx.navigation.ui.AppBarConfiguration;
-import androidx.navigation.ui.NavigationUI;
-
 import org.json.JSONObject;
 
 import java.util.UUID;
@@ -41,20 +41,19 @@ import java.util.UUID;
 import static com.example.nalone.util.Constants.USER;
 
 
-public class HomeActivity extends AppCompatActivity{
+public class HomeActivity extends AppCompatActivity {
 
     private NavController navController;
     public static ImageView buttonBack, buttonNotif, buttonPlanning;
     public static FloatingActionButton fab1;
     private CardView cardViewPrivate, cardViewPublic;
-    private CardView cardViewEventArt, cardTypeEventSport,cardTypeEventParty,cardTypeEventMusic,cardTypeEventMovie,cardTypeEventGame
-            ,cardTypeEventCar,cardTypeEventGather,cardTypeEventConference,cardTypeEventShop,cardTypeEventShow,cardTypeEventScience;
+    private CardView cardViewEventArt, cardTypeEventSport, cardTypeEventParty, cardTypeEventMusic, cardTypeEventMovie, cardTypeEventGame, cardTypeEventCar, cardTypeEventGather, cardTypeEventConference, cardTypeEventShop, cardTypeEventShow, cardTypeEventScience;
     private boolean isOpen = false;
     private ImageView item_profil;
     private View bottomSheetVisibility, bottomSheetType;
     private Visibility currentVisibility;
 
-    private BottomSheetBehavior bottomSheetBehaviorVisibility,bottomSheetBehaviorType;
+    private BottomSheetBehavior bottomSheetBehaviorVisibility, bottomSheetBehaviorType;
 
 
     @RequiresApi(api = Build.VERSION_CODES.M)
@@ -75,7 +74,7 @@ public class HomeActivity extends AppCompatActivity{
                 startActivity(new Intent(getBaseContext(), PlanningActivity.class));
             }
         });
-        bottomSheetVisibility =  findViewById(R.id.sheetCreateEvent);
+        bottomSheetVisibility = findViewById(R.id.sheetCreateEvent);
         fab1 = findViewById(R.id.fab1);
         final View viewGrey = findViewById(R.id.viewGrey);
         cardViewPrivate = findViewById(R.id.cardViewPrivate);
@@ -121,13 +120,13 @@ public class HomeActivity extends AppCompatActivity{
         NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
         NavigationUI.setupWithNavController(navView, navController);
 
-        bottomSheetType=  findViewById(R.id.sheetCreateEventType);
-        bottomSheetBehaviorType= BottomSheetBehavior.from(bottomSheetType);
+        bottomSheetType = findViewById(R.id.sheetCreateEventType);
+        bottomSheetBehaviorType = BottomSheetBehavior.from(bottomSheetType);
         bottomSheetBehaviorType.setHideable(false);
         bottomSheetBehaviorType.setBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
             @Override
             public void onStateChanged(@NonNull View view, int state) {
-                switch (state){
+                switch (state) {
                     case BottomSheetBehavior.STATE_COLLAPSED:
                         fab1.show();
                         viewGrey.setVisibility(View.GONE);
@@ -153,9 +152,9 @@ public class HomeActivity extends AppCompatActivity{
         bottomSheetBehaviorVisibility.setBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
             @Override
             public void onStateChanged(@NonNull View view, int state) {
-                switch (state){
+                switch (state) {
                     case BottomSheetBehavior.STATE_COLLAPSED:
-                        if(bottomSheetBehaviorType.getState() == BottomSheetBehavior.STATE_COLLAPSED) {
+                        if (bottomSheetBehaviorType.getState() == BottomSheetBehavior.STATE_COLLAPSED) {
                             fab1.show();
                             viewGrey.setVisibility(View.GONE);
                         }
@@ -240,70 +239,83 @@ public class HomeActivity extends AppCompatActivity{
         cardViewEventArt.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                goCreateEvent(TypeEvent.ART);             }
+                goCreateEvent(TypeEvent.ART);
+            }
         });
         cardTypeEventSport.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                goCreateEvent(TypeEvent.SPORT);             }
+                goCreateEvent(TypeEvent.SPORT);
+            }
         });
         cardTypeEventParty.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                goCreateEvent(TypeEvent.PARTY);             }
+                goCreateEvent(TypeEvent.PARTY);
+            }
         });
         cardTypeEventMusic.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                goCreateEvent(TypeEvent.MUSIC);             }
+                goCreateEvent(TypeEvent.MUSIC);
+            }
         });
         cardTypeEventMovie.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                goCreateEvent(TypeEvent.MOVIE);             }
+                goCreateEvent(TypeEvent.MULTIMEDIA);
+            }
         });
         cardTypeEventGame.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                goCreateEvent(TypeEvent.GAME);             }
+                goCreateEvent(TypeEvent.GAME);
+            }
         });
         cardTypeEventCar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                goCreateEvent(TypeEvent.CAR);             }
+                goCreateEvent(TypeEvent.CAR);
+            }
         });
         cardTypeEventGather.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                goCreateEvent(TypeEvent.GATHER);             }
+                goCreateEvent(TypeEvent.GATHER);
+            }
         });
         cardTypeEventConference.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                goCreateEvent(TypeEvent.CONFERENCE);             }
+                goCreateEvent(TypeEvent.CONFERENCE);
+            }
         });
         cardTypeEventShop.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                goCreateEvent(TypeEvent.SHOP);             }
+                goCreateEvent(TypeEvent.SHOP);
+            }
         });
         cardTypeEventShow.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                goCreateEvent(TypeEvent.SHOW);             }
+                goCreateEvent(TypeEvent.SHOW);
+            }
         });
         cardTypeEventScience.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-goCreateEvent(TypeEvent.SCIENCE);            }
+                goCreateEvent(TypeEvent.SCIENCE);
+            }
         });
     }
 
     /**
      * Méthode permettant l'ouverture du bottom sheet lors du clique sur le haut de la fenetre
+     *
      * @param v
      */
-    public void openType(Visibility v){
+    public void openType(Visibility v) {
         currentVisibility = v;
         bottomSheetBehaviorType.setState(BottomSheetBehavior.STATE_EXPANDED);
         //bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
@@ -311,16 +323,17 @@ goCreateEvent(TypeEvent.SCIENCE);            }
 
     /**
      * Ouverture de la page de création des évènements
+     *
      * @param tp
      */
-    public void goCreateEvent(TypeEvent tp){
+    public void goCreateEvent(TypeEvent tp) {
         MainCreationEventActivity.currentEvent = new Evenement();
         MainCreationEventActivity.currentEvent.setUid(UUID.randomUUID().toString());
         MainCreationEventActivity.image = null;
         MainCreationEventActivity.currentEvent.setVisibility(currentVisibility);
         MainCreationEventActivity.currentEvent.setCategory(tp);
         bottomSheetBehaviorType.setState(BottomSheetBehavior.STATE_COLLAPSED);
-        startActivity(new Intent(getBaseContext(),MainCreationEventActivity.class));
+        startActivity(new Intent(getBaseContext(), MainCreationEventActivity.class));
     }
 
 
@@ -330,7 +343,7 @@ goCreateEvent(TypeEvent.SCIENCE);            }
     }
 
     @Override
-    public void onBackPressed(){
+    public void onBackPressed() {
         //super.onBackPressed();
     }
 

@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
 
 
     android:layout_width="match_parent"
@@ -16,40 +15,44 @@
         android:layout_marginBottom="55dp"
         app:navGraph="@navigation/mobile_navigation" />
 
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fab1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|center"
+        android:clickable="true"
+        android:contentDescription="@string/TODO"
+        android:elevation="0dp"
+        android:visibility="visible"
+        app:fabSize="mini"
+        app:layout_anchor="@+id/bottomAppBar"
+        app:layout_anchorGravity="center"
+        app:srcCompat="@drawable/ic_baseline_add_24" />
+
     <com.google.android.material.bottomappbar.BottomAppBar
         android:id="@+id/bottomAppBar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
-        app:backgroundTint="@color/lightGrey"
-        app:fabCradleMargin="0dp"
-        app:fabCradleRoundedCornerRadius="20dp"
-        app:fabCradleVerticalOffset="0dp">
+        app:backgroundTint="@color/white"
+        app:fabCradleMargin="0dp">
 
 
         <com.google.android.material.bottomnavigation.BottomNavigationView
             android:id="@+id/nav_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:menu="@menu/bottom_nav_menu" />
+            app:menu="@menu/bottom_nav_menu">
+
+            <View
+                android:id="@+id/divider17"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/lightGrey" />
+        </com.google.android.material.bottomnavigation.BottomNavigationView>
 
     </com.google.android.material.bottomappbar.BottomAppBar>
 
-
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/fab1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:layout_marginEnd="@dimen/fab_margin"
-        android:layout_marginBottom="0dp"
-        android:clickable="true"
-        android:elevation="0dp"
-        android:visibility="visible"
-        app:fabSize="mini"
-        app:layout_anchor="@id/bottomAppBar"
-        app:srcCompat="@drawable/ic_baseline_add_24"
-        android:contentDescription="@string/TODO" />
 
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/appbar"

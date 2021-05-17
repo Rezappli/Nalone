@@ -20,13 +20,13 @@
             android:layout_marginTop="20dp"
             android:layout_marginBottom="40dp"
             android:layout_weight="1"
-            android:background="@drawable/custom_stepview" />
+            android:background="@color/colorPrimary" />
 
         <androidx.cardview.widget.CardView
             android:layout_width="50dp"
             android:layout_height="50dp"
             android:layout_marginTop="4dp"
-            app:cardBackgroundColor="#00E9FD"
+            app:cardBackgroundColor="@color/colorPrimary"
             app:cardCornerRadius="20dp">
 
             <androidx.cardview.widget.CardView
@@ -38,10 +38,11 @@
                 app:cardCornerRadius="15dp">
 
                 <ImageView
-                    android:id="@+id/stepOne"
-                    android:layout_width="25dp"
-                    android:layout_height="25dp"
+                    android:id="@+id/imageViewStep1"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
                     android:layout_gravity="center"
+                    android:layout_marginTop="2dp"
                     android:contentDescription="@string/TODO"
                     app:srcCompat="@drawable/step_one" />
             </androidx.cardview.widget.CardView>
@@ -49,7 +50,7 @@
         </androidx.cardview.widget.CardView>
 
         <View
-            android:id="@+id/view6"
+            android:id="@+id/viewStep2"
             android:layout_width="match_parent"
             android:layout_height="18dp"
             android:layout_marginTop="20dp"
@@ -58,6 +59,7 @@
             android:background="#aaaaaa" />
 
         <androidx.cardview.widget.CardView
+            android:id="@+id/cardViewStep2"
             android:layout_width="50dp"
             android:layout_height="50dp"
             android:layout_marginTop="4dp"
@@ -73,44 +75,11 @@
                 app:cardCornerRadius="15dp">
 
                 <ImageView
-                    android:id="@+id/imageView8"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:contentDescription="@string/TODO"
-                    app:srcCompat="@drawable/step_four" />
-            </androidx.cardview.widget.CardView>
-
-        </androidx.cardview.widget.CardView>
-
-        <View
-            android:id="@+id/view7"
-            android:layout_width="match_parent"
-            android:layout_height="18dp"
-            android:layout_marginTop="20dp"
-            android:layout_marginBottom="40dp"
-            android:layout_weight="1"
-            android:background="#aaaaaa" />
-
-        <androidx.cardview.widget.CardView
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:layout_marginTop="4dp"
-            app:cardBackgroundColor="#aaaaaa"
-            app:cardCornerRadius="20dp">
-
-            <androidx.cardview.widget.CardView
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:layout_gravity="center"
-                android:background="@drawable/custom_stepview"
-                app:cardBackgroundColor="#FFFFFF"
-                app:cardCornerRadius="15dp">
-
-                <ImageView
-                    android:id="@+id/imageView6"
-                    android:layout_width="35dp"
-                    android:layout_height="35dp"
+                    android:id="@+id/imageViewStep2"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
                     android:layout_gravity="center"
+                    android:layout_marginTop="2dp"
                     android:contentDescription="@string/TODO"
                     app:srcCompat="@drawable/step_two" />
             </androidx.cardview.widget.CardView>
@@ -118,7 +87,7 @@
         </androidx.cardview.widget.CardView>
 
         <View
-            android:id="@+id/view9"
+            android:id="@+id/viewStep3"
             android:layout_width="match_parent"
             android:layout_height="18dp"
             android:layout_marginTop="20dp"
@@ -127,6 +96,7 @@
             android:background="#aaaaaa" />
 
         <androidx.cardview.widget.CardView
+            android:id="@+id/cardViewStep3"
             android:layout_width="50dp"
             android:layout_height="50dp"
             android:layout_marginTop="4dp"
@@ -142,18 +112,54 @@
                 app:cardCornerRadius="15dp">
 
                 <ImageView
-                    android:id="@+id/imageView4"
-                    android:layout_width="30dp"
-                    android:layout_height="30dp"
+                    android:id="@+id/imageViewStep3"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
                     android:layout_gravity="center"
                     android:contentDescription="@string/TODO"
-                    app:srcCompat="@drawable/step_three" />
+                    app:srcCompat="@drawable/ic_baseline_location_edit" />
             </androidx.cardview.widget.CardView>
 
         </androidx.cardview.widget.CardView>
 
         <View
-            android:id="@+id/view16"
+            android:id="@+id/viewStep4"
+            android:layout_width="match_parent"
+            android:layout_height="18dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginBottom="40dp"
+            android:layout_weight="1"
+            android:background="#aaaaaa" />
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/cardViewStep4"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_marginTop="4dp"
+            app:cardBackgroundColor="#aaaaaa"
+            app:cardCornerRadius="20dp">
+
+            <androidx.cardview.widget.CardView
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_gravity="center"
+                android:background="@drawable/custom_stepview"
+                app:cardBackgroundColor="#FFFFFF"
+                app:cardCornerRadius="15dp">
+
+                <ImageView
+                    android:id="@+id/imageViewStep4"
+                    android:layout_width="35dp"
+                    android:layout_height="35dp"
+                    android:layout_gravity="center"
+                    android:contentDescription="@string/TODO"
+                    app:srcCompat="@drawable/login_door" />
+            </androidx.cardview.widget.CardView>
+
+        </androidx.cardview.widget.CardView>
+
+        <View
+            android:id="@+id/viewStepFinal"
             android:layout_width="match_parent"
             android:layout_height="18dp"
             android:layout_marginTop="20dp"
@@ -168,9 +174,7 @@
         android:name="androidx.navigation.fragment.NavHostFragment"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1"
-        app:navGraph="@navigation/signup_navigation" >
-    </fragment>
+        android:layout_weight="1"></fragment>
 
     <Button
         android:id="@+id/signUpNext"

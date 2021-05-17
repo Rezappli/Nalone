@@ -12,20 +12,13 @@
         <item name="android:textColor">@color/black</item>
     </style>
 
-    <!--Input field style-->
-    <style name="MyEditText" parent="Theme.AppCompat.Light">
-        <item name="colorControlNormal">@color/white</item>
-        <item name="colorControlActivated">@color/white</item>
-
-    </style>
-
-    <style name="TextInputLayoutWithPrimaryColor" parent="Widget.Design.TextInputLayout">
-        <item name="colorAccent">@color/colorPrimary</item>
-    </style>
 
     <style name="AppTheme.NoActionBar">
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/white</item>
+        <item name="colorAccent">@color/colorAccent</item>
     </style>
 
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
@@ -35,9 +28,10 @@
     <style name="SplashTheme" parent="Theme.AppCompat.NoActionBar">
         <!--<item name="android:windowBackground">@drawable/background_image</item> -->
         <item name="android:color">@color/black</item>
-            <!--<item name="android:navigationBarColor">@android:color/transparent</item>-->
+        <!--<item name="android:navigationBarColor">@android:color/transparent</item>-->
         <item name="colorPrimaryDark">@android:color/black</item>
 
     </style>
+
 
 </resources>

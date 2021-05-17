@@ -18,7 +18,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="30dp"
             android:gravity="center"
-            android:text="@string/titleSignUpTwo"
+            android:text="@string/titleSignUpThree"
             android:textSize="30sp" />
 
     </LinearLayout>

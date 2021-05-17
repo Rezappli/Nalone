@@ -410,7 +410,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         filtreTypeList.add(new TypeEventObject(getResources().getDrawable(R.drawable.event_show), getResources().getString(R.string.event_show), TypeEvent.SHOW));
         filtreTypeList.add(new TypeEventObject(getResources().getDrawable(R.drawable.event_game), getResources().getString(R.string.event_game), TypeEvent.GAME));
         filtreTypeList.add(new TypeEventObject(getResources().getDrawable(R.drawable.event_gather), getResources().getString(R.string.event_gather), TypeEvent.GATHER));
-        filtreTypeList.add(new TypeEventObject(getResources().getDrawable(R.drawable.event_movie), getResources().getString(R.string.event_movie), TypeEvent.MOVIE));
+        filtreTypeList.add(new TypeEventObject(getResources().getDrawable(R.drawable.event_movie), getResources().getString(R.string.event_movie), TypeEvent.MULTIMEDIA));
         filtreTypeList.add(new TypeEventObject(getResources().getDrawable(R.drawable.event_music), getResources().getString(R.string.event_music), TypeEvent.MUSIC));
         filtreTypeList.add(new TypeEventObject(getResources().getDrawable(R.drawable.event_party), getResources().getString(R.string.event_party), TypeEvent.PARTY));
         filtreTypeList.add(new TypeEventObject(getResources().getDrawable(R.drawable.event_science), getResources().getString(R.string.event_science), TypeEvent.SCIENCE));

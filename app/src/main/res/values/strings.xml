@@ -9,15 +9,23 @@
     <string name="participer"> Participer</string>
     <string name="desinscriptionButton">Se désinscrire </string>
     <string name="buttonConnexion"> Se connecter </string>
-    <string name="titleSignUpOne"> Coordonnées </string>
-    <string name="titleSignUpTwo"> Localisation </string>
+    <string name="titleSignUpOne"> Nom et prénom </string>
+    <string name="titleSignUpTwo"> Centre d\'intéret préféré </string>
+    <string name="titleSignUpThree"> Localisation </string>
     <string name="titleSignUpContact"> Contact </string>
     <string name="titleSignUpLogin"> Moyen de connexion </string>
-    <string name="titleSignUpThree"> Profil </string>
+    <string name="titleSignUpFour"> Profil </string>
     <string name="homme"> Homme </string>
     <string name="femme"> Femme </string>
+    <string name="activity"> Activité </string>
     <string name="nom"> Nom </string>
+    <string name="pseudo"> Pseudo </string>
     <string name="prenom"> Prenom </string>
+    <string name="error_name_short">Nom trop court</string>
+    <string name="error_surname_short">Prénom trop court</string>
+    <string name="error_name_empty">Entrez votre nom</string>
+    <string name="error_surname_empty">Entrez votre prénom</string>
+    <string name="select_sex">Sélectionnez votre sexe</string>
     <string name="ville"> Ville </string>
     <string name="pays"> Pays </string>
     <string name="adresse"> Adresse </string>
@@ -28,6 +36,13 @@
     <string name="prem_annee"> 1ère année </string>
     <string name="deux_annee"> 2ème année</string>
     <string name="licence"> Licence </string>
+
+    <string name="title_check_mail"> Verification de votre adresse mail</string>
+    <string name="title_check_phone"> Verification de votre téléphone</string>
+    <string name="subtitle_check_phone"> Un code vous à été envoyé au </string>
+    <string name="subtitle_check_mail"> Un lien vous à été envoyé a l\'adresse </string>
+    <string name="title_notsend"> Rien reçu ? </string>
+    <string name="subtitle_notsend"> Renvoyer le lien </string>
     <string name="autre"> Autre </string>
     <string name="choixAnnee"> Ton année d\'étude ?</string>
     <string name="TC"> TC </string>
@@ -70,6 +85,7 @@
     <string name="back"> Retour </string>
     <string name="quand"> Quand ? </string>
     <string name="qui"> Avec qui ? </string>
+    <string name="signup_who"> Vous êtes ? </string>
     <string name="par_qui"> Par qui ? </string>
     <string name="ou"> Ou ? </string>
     <string name="search_title"> Rechercher un ami </string>
@@ -99,6 +115,9 @@
     <string name="descriptionNF"> Description : </string>
     <string name="afficher"> Afficher </string>
     <string name="CI"> Centres d\'interêt </string>
+    <string name="or_main"> OU </string>
+    <string name="particular"> Particulier </string>
+    <string name="professional"> Professionnel </string>
     <string name="aucun_encours"> Aucun évènement en cours </string>
     <string name="aucun_bientot"> Aucun évènement bientôt </string>
     <string name="aucun_fini"> Aucun évènement fini </string>
@@ -197,16 +216,23 @@
     <string name="filter"> Filtres </string>
 
     <string name="event_art">Art</string>
-    <string name="event_car">Motorisé</string>
+    <string name="event_animal">Animaux</string>
+    <string name="event_well_being">Bien-être</string>
+    <string name="event_health">Santé</string>
+    <string name="event_agriculture">Agriculture</string>
+    <string name="event_environment">Environnement</string>
+    <string name="event_book">Livre</string>
+    <string name="event_car">Mécanique</string>
     <string name="event_conference">Conference</string>
     <string name="event_sport">Sport</string>
     <string name="event_party">Fête</string>
     <string name="event_music">Musique</string>
     <string name="event_show">Spectacle</string>
-    <string name="event_movie">Cinéma</string>
+    <string name="event_movie">Multimédia</string>
     <string name="event_gather">Rassemblement</string>
     <string name="event_game">Jeux vidéo</string>
-    <string name="event_contest">Concour</string>
+    <string name="event_technology">Technologie</string>
+    <string name="event_contest">Concours</string>
     <string name="event_science">Science</string>
     <string name="event_shop">Vente</string>
 
@@ -264,7 +290,8 @@
     <string name="filter_date_week"> Cette semaine </string>
     <string name="filter_date_month"> Ce mois </string>
     <string name="filter_date_choose"> Choisir une date </string>
-
+    <string name="welcome_title">Bienvenu sur </string>
+    <string name="welcome_subtitle">Complète ton profil </string>
     <!--Strings for BottomParticipate -->
     <string name="amount">Quantité</string>
     <string name="CGU_participation"> En validant votre participation, vous accceptez les

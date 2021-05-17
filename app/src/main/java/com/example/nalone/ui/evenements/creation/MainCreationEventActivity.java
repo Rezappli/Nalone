@@ -1,15 +1,7 @@
 package com.example.nalone.ui.evenements.creation;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.RequiresApi;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.cardview.widget.CardView;
-import androidx.navigation.NavController;
-import androidx.navigation.Navigation;
-
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.content.ContentResolver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.Bitmap;
@@ -24,6 +16,13 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.cardview.widget.CardView;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
+
 import com.android.volley.VolleyError;
 import com.example.nalone.R;
 import com.example.nalone.enumeration.ImageType;
@@ -33,6 +32,7 @@ import com.example.nalone.json.JSONController;
 import com.example.nalone.json.JSONObjectCrypt;
 import com.example.nalone.listeners.JSONObjectListener;
 import com.example.nalone.objects.Evenement;
+import com.example.nalone.objects.TypeEventObject;
 import com.example.nalone.util.Constants;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 
@@ -40,8 +40,6 @@ import org.json.JSONObject;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.nio.charset.StandardCharsets;
 
 import static com.example.nalone.util.Constants.USER;
 
@@ -56,13 +54,12 @@ public class MainCreationEventActivity extends AppCompatActivity {
     private static Activity activity;
 
     private BottomSheetBehavior bottomSheetBehavior, bottomSheetBehaviorType;
-    private View bottomSheetType,viewGrey,bottomSheet;
+    private View bottomSheetType, viewGrey, bottomSheet;
     private TextView textViewVisibility, textViewType;
 
     private CardView cardViewPublic, cardViewPrivate;
 
-    private CardView cardViewEventArt, cardTypeEventSport,cardTypeEventParty,cardTypeEventMusic,cardTypeEventMovie,cardTypeEventGame
-            ,cardTypeEventCar,cardTypeEventGather,cardTypeEventConference,cardTypeEventShop,cardTypeEventShow,cardTypeEventScience;
+    private CardView cardViewEventArt, cardTypeEventSport, cardTypeEventParty, cardTypeEventMusic, cardTypeEventMovie, cardTypeEventGame, cardTypeEventCar, cardTypeEventGather, cardTypeEventConference, cardTypeEventShop, cardTypeEventShow, cardTypeEventScience;
 
 
     @Override
@@ -74,9 +71,9 @@ public class MainCreationEventActivity extends AppCompatActivity {
         viewGrey.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(bottomSheetBehavior.getState() == BottomSheetBehavior.STATE_EXPANDED)
+                if (bottomSheetBehavior.getState() == BottomSheetBehavior.STATE_EXPANDED)
                     bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
-                if(bottomSheetBehaviorType.getState() == BottomSheetBehavior.STATE_EXPANDED)
+                if (bottomSheetBehaviorType.getState() == BottomSheetBehavior.STATE_EXPANDED)
                     bottomSheetBehaviorType.setState(BottomSheetBehavior.STATE_COLLAPSED);
             }
         });
@@ -95,12 +92,12 @@ public class MainCreationEventActivity extends AppCompatActivity {
         });
 
         bottomSheetType = findViewById(R.id.sheetCreateEventType);
-        bottomSheetBehaviorType= BottomSheetBehavior.from(bottomSheetType);
+        bottomSheetBehaviorType = BottomSheetBehavior.from(bottomSheetType);
         bottomSheetBehaviorType.setHideable(false);
         bottomSheetBehaviorType.setBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
             @Override
             public void onStateChanged(@NonNull View view, int state) {
-                switch (state){
+                switch (state) {
                     case BottomSheetBehavior.STATE_COLLAPSED:
                         viewGrey.setVisibility(View.GONE);
                         break;
@@ -126,7 +123,7 @@ public class MainCreationEventActivity extends AppCompatActivity {
         bottomSheetBehavior.setBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
             @Override
             public void onStateChanged(@NonNull View view, int state) {
-                switch (state){
+                switch (state) {
                     case BottomSheetBehavior.STATE_COLLAPSED:
                         viewGrey.setVisibility(View.GONE);
                         break;
@@ -174,62 +171,74 @@ public class MainCreationEventActivity extends AppCompatActivity {
         cardViewEventArt.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                changeType(TypeEvent.ART);             }
+                changeType(TypeEvent.ART);
+            }
         });
         cardTypeEventSport.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                changeType(TypeEvent.SPORT);             }
+                changeType(TypeEvent.SPORT);
+            }
         });
         cardTypeEventParty.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                changeType(TypeEvent.PARTY);             }
+                changeType(TypeEvent.PARTY);
+            }
         });
         cardTypeEventMusic.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                changeType(TypeEvent.MUSIC);             }
+                changeType(TypeEvent.MUSIC);
+            }
         });
         cardTypeEventMovie.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                changeType(TypeEvent.MOVIE);             }
+                changeType(TypeEvent.MULTIMEDIA);
+            }
         });
         cardTypeEventGame.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                changeType(TypeEvent.GAME);             }
+                changeType(TypeEvent.GAME);
+            }
         });
         cardTypeEventCar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                changeType(TypeEvent.CAR);             }
+                changeType(TypeEvent.CAR);
+            }
         });
         cardTypeEventGather.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                changeType(TypeEvent.GATHER);             }
+                changeType(TypeEvent.GATHER);
+            }
         });
         cardTypeEventConference.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                changeType(TypeEvent.CONFERENCE);             }
+                changeType(TypeEvent.CONFERENCE);
+            }
         });
         cardTypeEventShop.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                changeType(TypeEvent.SHOP);             }
+                changeType(TypeEvent.SHOP);
+            }
         });
         cardTypeEventShow.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                changeType(TypeEvent.SHOW);             }
+                changeType(TypeEvent.SHOW);
+            }
         });
         cardTypeEventScience.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                changeType(TypeEvent.SCIENCE);            }
+                changeType(TypeEvent.SCIENCE);
+            }
         });
     }
 
@@ -238,11 +247,11 @@ public class MainCreationEventActivity extends AppCompatActivity {
         cardViewPrivate = findViewById(R.id.cardViewPrivate);
         cardViewPublic = findViewById(R.id.cardViewPublic);
         cardViewPrivate.setOnClickListener(new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            changeVisibility(Visibility.PRIVATE);
-        }
-    });
+            @Override
+            public void onClick(View v) {
+                changeVisibility(Visibility.PRIVATE);
+            }
+        });
 
         cardViewPublic.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -253,26 +262,29 @@ public class MainCreationEventActivity extends AppCompatActivity {
     }
 
     private void changeVisibility(Visibility v) {
-        currentEvent.setVisibility(v);;
+        currentEvent.setVisibility(v);
+        ;
         initFirstFiltre();
         bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
     }
 
     private void changeType(TypeEvent te) {
-        currentEvent.setCategory(te);;
+        currentEvent.setCategory(te);
+        ;
         initFirstFiltre();
         bottomSheetBehaviorType.setState(BottomSheetBehavior.STATE_COLLAPSED);
     }
 
     private void initFirstFiltre() {
         textViewVisibility = findViewById(R.id.textViewVisibility);
-        textViewType= findViewById(R.id.textViewType);
-        textViewType.setCompoundDrawablesWithIntrinsicBounds(getDrawableType(currentEvent.getCategory()), 0, 0, 0);
-        textViewType.setText(getTextType(currentEvent.getCategory()));
+        textViewType = findViewById(R.id.textViewType);
+        TypeEventObject typeEvent = new TypeEventObject(getBaseContext());
+        textViewType.setCompoundDrawablesWithIntrinsicBounds(typeEvent.getDrawableType(currentEvent.getCategory()), 0, 0, 0);
+        textViewType.setText(typeEvent.getTextType(currentEvent.getCategory()));
         textViewType.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(bottomSheetBehavior.getState() == BottomSheetBehavior.STATE_EXPANDED){
+                if (bottomSheetBehavior.getState() == BottomSheetBehavior.STATE_EXPANDED) {
                     bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
                 }
                 viewGrey.setVisibility(View.VISIBLE);
@@ -286,62 +298,32 @@ public class MainCreationEventActivity extends AppCompatActivity {
     }
 
     private int getDrawableVisibility(Visibility v) {
-        switch (v){
-            case PUBLIC:return R.drawable.add_event_public;
-            case PRIVATE:return R.drawable.add_event_prive;
-            default:return 0;
+        switch (v) {
+            case PUBLIC:
+                return R.drawable.add_event_public;
+            case PRIVATE:
+                return R.drawable.add_event_prive;
+            default:
+                return 0;
         }
     }
 
     private String getTextVisibility(Visibility v) {
-        switch (v){
-            case PUBLIC:return getResources().getString(R.string.location_public);
-            case PRIVATE:return getResources().getString(R.string.location_private);
-            default:return "Error";
-        }
-    }
-
-    private int getDrawableType(TypeEvent te) {
-        switch (te){
-            case ART:return R.drawable.event_art;
-            case CAR:return R.drawable.event_car;
-            case GAME:return R.drawable.event_game;
-            case SHOP:return R.drawable.event_shop;
-            case SHOW:return R.drawable.event_show;
-            case MOVIE:return R.drawable.event_movie;
-            case MUSIC:return R.drawable.event_music;
-            case PARTY:return R.drawable.event_party;
-            case SPORT:return R.drawable.event_sport;
-            case GATHER:return R.drawable.event_gather;
-            case SCIENCE:return R.drawable.event_science;
-            case CONFERENCE:return R.drawable.event_conference;
-            default:return 0;
-        }
-    }
-
-    private String getTextType(TypeEvent te) {
-        switch (te){
-            case ART:return getResources().getString(R.string.event_art);
-            case CAR:return getResources().getString(R.string.event_car);
-            case GAME:return getResources().getString(R.string.event_game);
-            case SHOP:return getResources().getString(R.string.event_shop);
-            case SHOW:return getResources().getString(R.string.event_show);
-            case MOVIE:return getResources().getString(R.string.event_movie);
-            case MUSIC:return getResources().getString(R.string.event_music);
-            case PARTY:return getResources().getString(R.string.event_party);
-            case SPORT:return getResources().getString(R.string.event_sport);
-            case GATHER:return getResources().getString(R.string.event_gather);
-            case SCIENCE:return getResources().getString(R.string.event_science);
-            case CONFERENCE:return getResources().getString(R.string.event_conference);
-            default:return "Error";
+        switch (v) {
+            case PUBLIC:
+                return getResources().getString(R.string.location_public);
+            case PRIVATE:
+                return getResources().getString(R.string.location_private);
+            default:
+                return "Error";
         }
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
-    public static boolean isAllValidate(Context context){
-        if (photoValidate && nameValidate && membersValidate && dateValidate && addressValidate){
+    public static boolean isAllValidate(Context context) {
+        if (photoValidate && nameValidate && membersValidate && dateValidate && addressValidate) {
             return true;
-        }else{
+        } else {
             return false;
         }
     }
@@ -369,31 +351,31 @@ public class MainCreationEventActivity extends AppCompatActivity {
         JSONController.getJsonObjectFromUrl(Constants.URL_ADD_EVENT, context, params, new JSONObjectListener() {
             @Override
             public void onJSONReceived(JSONObject jsonObject) {
-                if(jsonObject.length() == 3){
+                if (jsonObject.length() == 3) {
                     Toast.makeText(context, context.getResources().getString(R.string.event_create), Toast.LENGTH_SHORT).show();
                     activity.finish();
-                }else{
+                } else {
                     Toast.makeText(context, context.getResources().getString(R.string.event_error_create), Toast.LENGTH_SHORT).show();
                 }
             }
 
             @Override
             public void onJSONReceivedError(VolleyError volleyError) {
-                Toast.makeText(context, context.getResources().getString(R.string.event_error_create),Toast.LENGTH_SHORT).show();
-                Log.w("Response", "Erreur: "+volleyError.toString());
+                Toast.makeText(context, context.getResources().getString(R.string.event_error_create), Toast.LENGTH_SHORT).show();
+                Log.w("Response", "Erreur: " + volleyError.toString());
             }
         });
 
         try {
             String imageData = BitMapToString(MediaStore.Images.Media.getBitmap(context.getContentResolver(), image));
             Constants.uploadImageOnServer(ImageType.EVENT, MainCreationEventActivity.currentEvent.getUid(), imageData, context); //upload image on web server
-            MainCreationEventActivity.currentEvent.setImage_url(Constants.BASE_API_URL+"/"+ImageType.EVENT+"/"+MainCreationEventActivity.currentEvent.getUid());
+            MainCreationEventActivity.currentEvent.setImage_url(Constants.BASE_API_URL + "/" + ImageType.EVENT + "/" + MainCreationEventActivity.currentEvent.getUid());
         } catch (IOException e) {
-            Log.w("Response", "Erreur: "+e.getMessage());
+            Log.w("Response", "Erreur: " + e.getMessage());
         }
     }
 
-    private static String BitMapToString(Bitmap bitmap){
+    private static String BitMapToString(Bitmap bitmap) {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
         byte[] imageBytes = baos.toByteArray();
@@ -419,12 +401,12 @@ public class MainCreationEventActivity extends AppCompatActivity {
         builder.show();
     }
 
-    private void clearEvent(){
+    private void clearEvent() {
         currentEvent = null;
         photoValidate = false;
-        dateValidate= false;
-        nameValidate= false;
-        membersValidate= false;
+        dateValidate = false;
+        nameValidate = false;
+        membersValidate = false;
         addressValidate = false;
     }
 }

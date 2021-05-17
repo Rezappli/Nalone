@@ -1,5 +1,6 @@
 package com.example.nalone;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Build;
@@ -46,6 +47,8 @@ public class MainActivity extends AppCompatActivity {
 
     private GoogleSignInClient mGoogleSignInClient;
 
+    public static Context context;
+
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -56,7 +59,7 @@ public class MainActivity extends AppCompatActivity {
                 .build();
 
         mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
-
+        context = getBaseContext();
         setContentView(R.layout.activity_main);
         SignInButton signInButton = findViewById(R.id.sign_in_button);
         signInButton.setSize(SignInButton.SIZE_STANDARD);
@@ -131,8 +134,8 @@ public class MainActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
 
         if (requestCode == 0) {
-                Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
-                handleSignInResult(task);
+            Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
+            handleSignInResult(task);
         }
     }
 
@@ -170,11 +173,11 @@ public class MainActivity extends AppCompatActivity {
                         Log.w("Response", "Erreur:" + e.getMessage());
                         progressBar.setVisibility(View.GONE);
                     }
-                }else if(jsonObject.length() == 4){
+                } else if (jsonObject.length() == 4) {
                     Toast.makeText(MainActivity.this, getResources().getString(R.string.mail_not_verified), Toast.LENGTH_SHORT).show();
                     Log.w("Response", "Mail not verified");
                     progressBar.setVisibility(View.GONE);
-                }else{
+                } else {
                     Toast.makeText(MainActivity.this, getResources().getString(R.string.mail_or_password_incorrect), Toast.LENGTH_SHORT).show();
                     progressBar.setVisibility(View.GONE);
                 }
@@ -236,14 +239,14 @@ public class MainActivity extends AppCompatActivity {
                         Log.w("Response", "Erreur:" + e.getMessage());
                         progressBar.setVisibility(View.GONE);
                     }
-                }else if(jsonObject.length() == 4){
+                } else if (jsonObject.length() == 4) {
                     Toast.makeText(MainActivity.this, getResources().getString(R.string.mail_not_verified), Toast.LENGTH_SHORT).show();
                     Log.w("Response", "Mail not verified");
                     progressBar.setVisibility(View.GONE);
-                }else if(jsonObject.length() == 5){
+                } else if (jsonObject.length() == 5) {
                     Toast.makeText(MainActivity.this, getResources().getString(R.string.not_register), Toast.LENGTH_SHORT).show();
                     launchRegisterActivity();
-                }else{
+                } else {
                     Toast.makeText(MainActivity.this, getResources().getString(R.string.mail_or_password_incorrect), Toast.LENGTH_SHORT).show();
                     progressBar.setVisibility(View.GONE);
                 }
@@ -272,7 +275,8 @@ public class MainActivity extends AppCompatActivity {
 
 
     @Override
-    public void onBackPressed() {}
+    public void onBackPressed() {
+    }
 }
 
 

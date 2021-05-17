@@ -1,16 +1,15 @@
 package com.example.nalone.signUpActivities;
 
 import android.content.Intent;
+import android.location.Address;
+import android.location.Geocoder;
 import android.os.Bundle;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
 
 import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
 
 import com.example.nalone.R;
 import com.google.android.gms.common.api.Status;
+import com.google.android.gms.maps.model.LatLng;
 import com.google.android.libraries.places.api.Places;
 import com.google.android.libraries.places.api.model.Place;
 import com.google.android.libraries.places.api.model.TypeFilter;
@@ -19,45 +18,40 @@ import com.google.android.libraries.places.widget.Autocomplete;
 import com.google.android.libraries.places.widget.model.AutocompleteActivityMode;
 import com.google.android.material.textfield.TextInputEditText;
 
+import java.io.IOException;
 import java.util.Arrays;
+import java.util.List;
 
 import static android.app.Activity.RESULT_CANCELED;
 import static android.app.Activity.RESULT_OK;
 
 
-public class SignUpLocationFragment extends Fragment {
+public class SignUpLocationFragment extends SignUpFragment implements SignUpListener {
 
-    public TextInputEditText inputCity;
-    public TextInputEditText inputAdress;
-
-    public static SignUpLocationFragment newInstance() {
-        return new SignUpLocationFragment();
-    }
+    private TextInputEditText inputCity;
+    private TextInputEditText inputAdress;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        rootView = R.layout.fragment_sign_up_location;
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        View root = inflater.inflate(R.layout.fragment_sign_up_location, container, false);
-
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
         Places.initialize(getContext(), "APKSdhsjsgdkKH1872");
         PlacesClient placesClient = Places.createClient(getContext());
         // Inflate the layout for this fragment
-        inputCity = root.findViewById(R.id.signupCountry);
-        inputAdress = root.findViewById(R.id.signupAdress);
+        inputCity = view.findViewById(R.id.signupCountry);
+        inputAdress = view.findViewById(R.id.signupAdress);
 
-        inputCity.setOnClickListener(new View.OnClickListener() {
+       /* inputCity.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 startAutocompleteActivity();
             }
-        });
-        return root;
+        });*/
     }
 
     public void startAutocompleteActivity() {
@@ -75,7 +69,58 @@ public class SignUpLocationFragment extends Fragment {
             Place place = Autocomplete.getPlaceFromIntent(data);
         } else if (resultCode == RESULT_CANCELED) {
             Status status = Autocomplete.getStatusFromIntent(data);
-        } else if (resultCode == RESULT_CANCELED) {
         }
+
+
+    }
+
+    private LatLng getLocationFromAddress(String strAddress) {
+
+        Geocoder coder = new Geocoder(getContext());
+        List<Address> address;
+        LatLng p1 = null;
+
+        try {
+            // May throw an IOException
+            address = coder.getFromLocationName(strAddress, 10);
+            if (address == null) {
+                return null;
+            }
+
+            if (address.size() > 0) {
+                Address location = address.get(0);
+                p1 = new LatLng(location.getLatitude(), location.getLongitude());
+            } else {
+                return null;
+            }
+
+        } catch (IOException ex) {
+
+            ex.printStackTrace();
+        }
+
+        return p1;
+    }
+
+
+    @Override
+    public void onNextClicked() {
+        String fieldCity = inputCity.getText().toString();
+
+        /*LatLng pos = null;
+
+        try {
+            pos = getLocationFromAddress(fieldCity);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        if (pos == null) {
+            inputCity.setError("Impossible de trouver ce lieu", customErrorDrawable);
+            return;
+        }
+        user.setLatitude(pos.latitude);
+        user.setLongitude(pos.longitude);*/
+        SignUpMainActivity.listenerMain.onFragmentValidate(this);
     }
 }
