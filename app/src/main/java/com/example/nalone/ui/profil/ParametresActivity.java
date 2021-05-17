@@ -5,15 +5,6 @@ import android.content.SharedPreferences;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.annotation.RequiresApi;
-import androidx.appcompat.app.AppCompatActivity;
-
-import androidx.navigation.NavController;
-import androidx.navigation.Navigation;
-
 import android.view.View;
 import android.widget.Button;
 import android.widget.CompoundButton;
@@ -22,9 +13,13 @@ import android.widget.SeekBar;
 import android.widget.Switch;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.example.nalone.MainActivity;
 import com.example.nalone.R;
-import com.example.nalone.util.CryptoUtils;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
@@ -42,9 +37,9 @@ public class ParametresActivity extends AppCompatActivity {
     private GoogleSignInClient mGoogleSignInClient;
     private SeekBar seekBar;
     private TextView textViewRayon, textViewLocationActuel, textViewMaPosition;
-    public static final String SHARED_PREFS = "sharedPrefs", sharedRange = "sharedRange",sharedNotif = "sharedNotif",sharedPosition = "sharedPosition";
+    public static final String SHARED_PREFS = "sharedPrefs", sharedRange = "sharedRange", sharedNotif = "sharedNotif", sharedPosition = "sharedPosition";
     private int rangeActual;
-    private boolean  notification = true, position;
+    private boolean notification = true, position;
     private ImageView buttonBack;
 
     @RequiresApi(api = Build.VERSION_CODES.O)
@@ -77,7 +72,7 @@ public class ParametresActivity extends AppCompatActivity {
 
         textViewLocationActuel.setText(USER.getCity());
 
-        if(position) {
+        if (position) {
             Drawable img = getBaseContext().getResources().getDrawable(R.drawable.ic_baseline_my_location_focused);
             img.setBounds(0, 0, 100, 100);
             textViewMaPosition.setCompoundDrawables(img, null, null, null);
@@ -85,7 +80,7 @@ public class ParametresActivity extends AppCompatActivity {
             Drawable img2 = getBaseContext().getResources().getDrawable(R.drawable.ic_baseline_location_edit);
             img2.setBounds(0, 0, 100, 100);
             textViewLocationActuel.setCompoundDrawables(img2, null, null, null);
-        }else{
+        } else {
             Drawable img = getBaseContext().getResources().getDrawable(R.drawable.ic_baseline_my_location_24);
             img.setBounds(0, 0, 100, 100);
             textViewMaPosition.setCompoundDrawables(img, null, null, null);
@@ -123,9 +118,9 @@ public class ParametresActivity extends AppCompatActivity {
             }
         });
 
-        textViewRayon.setText(range+" km");
+        textViewRayon.setText(range + " km");
 
-        final SeekBar seekBar =  findViewById(R.id.seekBarRayon);
+        final SeekBar seekBar = findViewById(R.id.seekBarRayon);
 
         seekBar.setMax(200);
         seekBar.setMin(50);
@@ -139,6 +134,7 @@ public class ParametresActivity extends AppCompatActivity {
             public void onProgressChanged(SeekBar seekBar, int progressValue, boolean fromUser) {
                 progress = progressValue;
                 textViewRayon.setText(progressValue + " km");
+                range = progressValue;
             }
 
             // Notification that the user has started a touch gesture.
@@ -155,10 +151,9 @@ public class ParametresActivity extends AppCompatActivity {
         });
 
 
+        if (notification) {
 
-        if(notification){
-
-        }else{
+        } else {
 
         }
 
@@ -169,9 +164,9 @@ public class ParametresActivity extends AppCompatActivity {
         swNotif.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if(isChecked){
+                if (isChecked) {
                     notification = true;
-                }else{
+                } else {
                     notification = false;
 
                 }
@@ -218,7 +213,7 @@ public class ParametresActivity extends AppCompatActivity {
         setData();
     }
 
-    private void setData(){
+    private void setData() {
         SharedPreferences settings = this.getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
         SharedPreferences.Editor editor = settings.edit();
         editor.putInt(sharedRange, range);

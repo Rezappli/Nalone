@@ -41,7 +41,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_below="@id/divider14"
-            android:layout_marginBottom="80dp"
+            android:layout_marginBottom="92dp"
             android:visibility="visible" />
 
         <LinearLayout
@@ -304,7 +304,7 @@
                 android:id="@+id/recyclerViewSearchPopulaire"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:background="#ffffff" >
+                android:background="#ffffff">
 
             </androidx.recyclerview.widget.RecyclerView>
 

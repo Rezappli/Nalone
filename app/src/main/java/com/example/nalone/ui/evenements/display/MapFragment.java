@@ -43,6 +43,7 @@ import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
+import com.google.android.gms.maps.model.Circle;
 import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
@@ -85,6 +86,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
 
     private static CameraPosition posCam = null;
     private View viewGrey;
+    private Circle circle = null;
 
 
     // Bottom sheet
@@ -347,7 +349,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
             public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
                 super.onScrollStateChanged(recyclerView, newState);
             }
-
             @Override
             public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
@@ -492,6 +493,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                         }
                         configureSuggestion();
                         updateMap(VisibilityMap.ALL);
+                        updateCircle();
                     }
                 } catch (JSONException e) {
                     Log.w("Response", "Erreur:" + e.getMessage());
@@ -566,14 +568,28 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                 break;
             case REGISTER:
                 break;
-
         }
+    }
 
-        mMap.addCircle(new CircleOptions()
-                .center(new LatLng(USER.getLatitude(), USER.getLongitude()))
-                .radius(range * 1000)
-                .strokeWidth(3f)
-                .strokeColor(Color.BLUE));
+    private void updateCircle() {
+        if (mMap != null) {
+            if (circle != null) {
+                circle.remove();
+                circle = mMap.addCircle(new CircleOptions()
+                        .center(new LatLng(USER.getLatitude(), USER.getLongitude()))
+                        .radius(range * 1000)
+                        .strokeWidth(3f)
+                        .strokeColor(Color.BLUE));
+            } else {
+                if (USER != null) {
+                    circle = mMap.addCircle(new CircleOptions()
+                            .center(new LatLng(USER.getLatitude(), USER.getLongitude()))
+                            .radius(range * 1000)
+                            .strokeWidth(3f)
+                            .strokeColor(Color.BLUE));
+                }
+            }
+        }
     }
 
     private void addMarkerOnMap(Evenement e) {
@@ -643,6 +659,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     public void onResume() {
         super.onResume();
         createFragment();
+        updateCircle();
     }
 
     @Override
@@ -667,4 +684,3 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         super.onStop();
     }
 }
-

@@ -40,7 +40,7 @@
     <string name="title_activity_home">MainActivity</string>
     <string name="title_recherche"> Recherche </string>
     <string name="title_amis"> Amis </string>
-    <string name="title_evenements"> Evenements </string>
+    <string name="title_evenements"> Événements </string>
     <string name="title_messages"> Messages </string>
     <string name="title_profil"> Profil </string>
     <string name="choixCI"> Séléctionnez 5 centres d\'intérêt</string>
@@ -309,5 +309,12 @@
 
 
     <string name="update_fail">La mise à jour de vos informations à échouée</string>
+
+    <!-- Strings used for help activity -->
+    <string name="CGU"> Conditions Générales d\'Utilisation </string>
+    <string name="issues"> Signaler un problème </string>
+    <string name="support_us"> Nous soutenir </string>
+    <string name="about_us"> Qui sommes-nous </string>
+
 
 </resources>
