@@ -345,5 +345,12 @@
     <string name="support_us"> Nous soutenir </string>
     <string name="about_us"> Qui sommes-nous </string>
 
+    <!--Strings used for notifications service -->
+    <string name="title_notification"> NoLonely - Notification </string>
+    <string name="description_more_one_event"> Vous avez plusieurs notifications en attente ! </string>
+    <string name="title_message"> NoLonely - Message </string>
+    <string name="title_event_soon"> NoLonely - Événement </string>
+    <string name="description_event_soon"> Un événement va bientôt démarrer ! </string>
+
 
 </resources>

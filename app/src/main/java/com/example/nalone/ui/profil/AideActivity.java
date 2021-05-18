@@ -12,6 +12,11 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.nalone.R;
 import com.example.nalone.util.Constants;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
+import com.google.android.gms.ads.MobileAds;
+import com.google.android.gms.ads.initialization.InitializationStatus;
+import com.google.android.gms.ads.initialization.OnInitializationCompleteListener;
 
 
 public class AideActivity extends AppCompatActivity {
@@ -21,9 +26,11 @@ public class AideActivity extends AppCompatActivity {
     private LinearLayout linearIssues;
     private LinearLayout linearAboutUs;
     private LinearLayout linearSupportUs;
+    private AdView ad;
 
 
     @Override
+
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.fragment_aide);
@@ -34,6 +41,7 @@ public class AideActivity extends AppCompatActivity {
         linearIssues = findViewById(R.id.linearIssues);
         linearAboutUs = findViewById(R.id.linearAboutUs);
         linearSupportUs = findViewById(R.id.linearSupportUs);
+        ad = findViewById(R.id.adView);
 
         buttonBack.setVisibility(View.VISIBLE);
         buttonBack.setOnClickListener(new View.OnClickListener() {
@@ -42,6 +50,15 @@ public class AideActivity extends AppCompatActivity {
                 onBackPressed();
             }
         });
+
+        MobileAds.initialize(this, new OnInitializationCompleteListener() {
+            @Override
+            public void onInitializationComplete(InitializationStatus initializationStatus) {
+                AdRequest adRequest = new AdRequest.Builder().build();
+                ad.loadAd(adRequest);
+            }
+        });
+
 
         linearCGU.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -67,7 +84,7 @@ public class AideActivity extends AppCompatActivity {
         linearSupportUs.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startWebBrowserOnUrl(Constants.BASE_URL + "/support");
+                startWebBrowserOnUrl(Constants.BASE_URL + "/support-us");
             }
         });
 

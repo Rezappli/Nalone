@@ -30,6 +30,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
+import com.paypal.android.sdk.payments.PayPalConfiguration;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -101,7 +102,10 @@ public class Constants {
     public static String URL_FRIENDS = BASE_API_URL + "/get_friends.php";
     public static String URL_FRIENDS_INVITATIONS = BASE_API_URL + "/get_friends_request.php";
     public static String URL_EVENT_INVITATIONS = BASE_API_URL + "/get_event_invitations.php";
+
     public static String URL_NOTIFICATIONS = BASE_API_URL + "/get_my_notifications.php";
+    public static String URL_NEW_NOTIFICATIONS = BASE_API_URL + "/get_my_new_notifications.php";
+
     public static String URL_USER_WHITHOUT_ME = BASE_API_URL + "/get_users.php";
     public static String URL_MY_FRIENDS = BASE_API_URL + "/get_friends.php";
     public static String URL_EVENT_DATE = BASE_API_URL + "/get_event_date.php";
@@ -126,6 +130,10 @@ public class Constants {
 
     public static String URL_UPDATE_ME = BASE_API_URL + "/update_me.php";
     public static String URL_TEST = BASE_API_URL + "/test.php";
+
+    public static PayPalConfiguration payPalConfiguration = new PayPalConfiguration()
+            .environment(PayPalConfiguration.ENVIRONMENT_SANDBOX)
+            .clientId("AirpTrJ-Q9l6EHEcmEQkVi4udhzgAWfVxUv9NaMTTFJJ1vgvjxILjxZG");
 
 
     public static void sendNotification(JSONObject notification, final Context context) {
@@ -233,7 +241,6 @@ public class Constants {
             }
         });
     }
-
 
     public static String key = "kXp2s5v8y/B?E(H+MbQeThWmZq3t6w9z"; // 128 bit key
     public static String iv = "7w!z!C&F)J@NcRfU"; // 16 bytes IV

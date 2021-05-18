@@ -159,6 +159,8 @@ public class MainActivity extends AppCompatActivity {
         params.putCryptParameter("mail", mail);
         params.putCryptParameter("password", pass);
 
+        Log.w("Params", params.toString());
+
         JSONController.getJsonObjectFromUrl(Constants.URL_SIGN_IN, MainActivity.this, params, new JSONObjectListener() {
             @Override
             public void onJSONReceived(JSONObject jsonObject) {
@@ -178,6 +180,7 @@ public class MainActivity extends AppCompatActivity {
                     Log.w("Response", "Mail not verified");
                     progressBar.setVisibility(View.GONE);
                 } else {
+                    Log.w("Response", "Mail/Password incorrect : " + jsonObject.toString());
                     Toast.makeText(MainActivity.this, getResources().getString(R.string.mail_or_password_incorrect), Toast.LENGTH_SHORT).show();
                     progressBar.setVisibility(View.GONE);
                 }

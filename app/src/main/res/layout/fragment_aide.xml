@@ -154,6 +154,14 @@
                 android:text="@string/support_us" />
         </LinearLayout>
 
+        <com.google.android.gms.ads.AdView
+            android:id="@+id/adView"
+            android:layout_width="match_parent"
+            android:layout_height="100dp"
+            android:layout_marginTop="40dp"
+            app:adSize="BANNER"
+            app:adUnitId="ca-app-pub-6518187753315110/6926843494" />
+
     </LinearLayout>
 
 
