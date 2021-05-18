@@ -44,7 +44,6 @@ public class SignUpLocationFragment extends SignUpFragment implements SignUpList
         PlacesClient placesClient = Places.createClient(getContext());
         // Inflate the layout for this fragment
         inputCity = view.findViewById(R.id.signupCountry);
-        inputAdress = view.findViewById(R.id.signupAdress);
 
        /* inputCity.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -122,7 +121,7 @@ public class SignUpLocationFragment extends SignUpFragment implements SignUpList
         user.setCity(fieldCity);
         user.setLatitude(pos.latitude);
         user.setLongitude(pos.longitude);
-        
+
         SignUpMainActivity.listenerMain.onFragmentValidate(this);
     }
 }

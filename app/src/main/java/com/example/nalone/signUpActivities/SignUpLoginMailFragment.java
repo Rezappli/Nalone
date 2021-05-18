@@ -59,7 +59,7 @@ public class SignUpLoginMailFragment extends SignUpFragment {
                 inputMail.setError("Adresse mail inconnue", customErrorDrawable);
                 return;
             }
-            
+
             String substringl3 = mailEntered.substring(mailEntered.length() - 3);
             String substringl4 = mailEntered.substring(mailEntered.length() - 4);
             if (!mailEntered.contains("@") ||
@@ -85,8 +85,10 @@ public class SignUpLoginMailFragment extends SignUpFragment {
             }
 
             Intent intent = new Intent(getContext(), CheckMailValidationActivity.class);
-            intent.putExtra("field", mailEntered);
+            intent.putExtra("login", mailEntered);
             intent.putExtra("password", passEntered);
+            intent.putExtra("user", user);
+
             startActivity(intent);
 
         }

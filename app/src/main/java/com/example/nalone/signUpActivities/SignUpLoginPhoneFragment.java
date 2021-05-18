@@ -16,7 +16,6 @@ import com.google.android.material.textfield.TextInputEditText;
  */
 public class SignUpLoginPhoneFragment extends SignUpFragment {
 
-
     private TextInputEditText inputPhone;
     private TextInputEditText inputPass;
     private TextInputEditText inputConfirmPass;
@@ -72,16 +71,10 @@ public class SignUpLoginPhoneFragment extends SignUpFragment {
             }
 
             Intent intent = new Intent(getContext(), CheckPhoneValidationActivity.class);
-            intent.putExtra("field", telEntered);
+            intent.putExtra("login", telEntered);
             intent.putExtra("password", passEntered);
             intent.putExtra("user", user);
             startActivity(intent);
         }
-
-    }
-
-    public void displayError(String error) {
-        inputConfirmPass.setError(error, customErrorDrawable);
-
     }
 }

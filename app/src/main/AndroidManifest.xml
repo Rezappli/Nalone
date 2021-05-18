@@ -31,8 +31,8 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme.NoActionBar">
         <activity android:name=".signUpActivities.WelcomeActivity" />
-        <activity android:name=".signUpActivities.ChoiceTypeAccountActivity" />
         <activity android:name=".signUpActivities.CheckMailValidationActivity" />
+        <activity android:name=".signUpActivities.CheckPhoneValidationActivity" />
         <activity android:name=".signUpActivities.SignUpMainActivity" />
         <activity android:name=".ui.evenements.display.SearchEventActivity" />
         <activity android:name=".ui.evenements.display.PlanningActivity" />

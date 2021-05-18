@@ -4,12 +4,10 @@ import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
-import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.RequiresApi;
-import androidx.appcompat.app.AppCompatActivity;
 
 import com.android.volley.VolleyError;
 import com.example.nalone.R;
@@ -25,10 +23,7 @@ import org.json.JSONObject;
 
 import static com.example.nalone.util.Constants.USER;
 
-public class CheckMailValidationActivity extends AppCompatActivity {
-
-    private String password;
-    private String field;
+public class CheckMailValidationActivity extends CheckValidationActivity {
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
@@ -39,7 +34,8 @@ public class CheckMailValidationActivity extends AppCompatActivity {
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
             password = extras.getString("password");
-            field = extras.getString("field");
+            login = extras.getString("field");
+            user = (User) extras.getSerializable("user");
             initWidgets();
         }
     }
@@ -47,10 +43,8 @@ public class CheckMailValidationActivity extends AppCompatActivity {
     @RequiresApi(api = Build.VERSION_CODES.O)
     private void initWidgets() {
         TextView infoUser = findViewById(R.id.infoUserCheckValidation);
-        Button buttonCheckValidation = findViewById(R.id.buttonCheckValidation);
-        TextView buttonResendLink = findViewById(R.id.buttonResendCheckValidation);
-        checkMail(field, password);
-        infoUser.setText(field);
+        checkMail(login, password);
+        infoUser.setText(login);
 
     }
 

@@ -147,4 +147,23 @@ public class User implements Serializable {
     public void setCenter_interest(String center_interest) {
         this.center_interest = center_interest;
     }
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "uid='" + uid + '\'' +
+                ", name='" + name + '\'' +
+                ", pseudo='" + pseudo + '\'' +
+                ", center_interest='" + center_interest + '\'' +
+                ", city='" + city + '\'' +
+                ", number='" + number + '\'' +
+                ", mail='" + mail + '\'' +
+                ", description='" + description + '\'' +
+                ", number_events_create='" + number_events_create + '\'' +
+                ", number_events_attend='" + number_events_attend + '\'' +
+                ", image_url='" + image_url + '\'' +
+                ", latitude=" + latitude +
+                ", longitude=" + longitude +
+                '}';
+    }
 }
