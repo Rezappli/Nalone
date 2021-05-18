@@ -23,9 +23,10 @@
     <string name="pseudo"> Pseudo </string>
     <string name="prenom"> Prenom </string>
     <string name="error_name_short">Nom trop court</string>
-    <string name="error_surname_short">Prénom trop court</string>
+    <string name="error_surname_short">Pseudo trop court</string>
     <string name="error_name_empty">Entrez votre nom</string>
-    <string name="error_surname_empty">Entrez votre prénom</string>
+    <string name="error_surname_empty">Entrez votre pseudo</string>
+    <string name="error_surname_existing">Pseudo déjà utilisé</string>
     <string name="select_sex">Sélectionnez votre sexe</string>
     <string name="ville"> Ville </string>
     <string name="pays"> Pays </string>
@@ -276,6 +277,7 @@
     <string name="image_get_error">Impossible d\'e récupérer l\'image :(</string>
     <string name="event_not_save">Votre évènement n\'est pas sauvegardé ! \nCette action est irréversible ! Vous vous continuez ?</string>
     <string name="event_error_create">Impossible de créer l\'évènement :(</string>
+    <string name="user_error_create">Impossible de vous inscrire :( Veuillez réessayer</string>
 
     <string name="wait"> Attente </string>
     <string name="canceled"> Annulé </string>

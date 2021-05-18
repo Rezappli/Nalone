@@ -1,5 +1,6 @@
 package com.example.nalone.signUpActivities;
 
+import android.os.Build;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -7,11 +8,19 @@ import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 
+import com.android.volley.VolleyError;
 import com.example.nalone.R;
+import com.example.nalone.json.JSONController;
+import com.example.nalone.json.JSONObjectCrypt;
+import com.example.nalone.listeners.JSONObjectListener;
+import com.example.nalone.util.Constants;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.material.textfield.TextInputEditText;
+
+import org.json.JSONObject;
 
 public class SignUpInfosFragment extends SignUpFragment {
 
@@ -52,6 +61,7 @@ public class SignUpInfosFragment extends SignUpFragment {
     }
 
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     public void onNextClicked() {
         String nameEntered = inputName.getText().toString();
@@ -77,9 +87,25 @@ public class SignUpInfosFragment extends SignUpFragment {
             return;
         }
 
-        user.setName(nameEntered);
+        JSONObjectCrypt params = new JSONObjectCrypt();
+        params.putCryptParameter("pseudo", pseudoEntered);
+
+        JSONController.getJsonObjectFromUrl(Constants.URL_EXISTING_PSEUDO, getContext(), params, new JSONObjectListener() {
+            @Override
+            public void onJSONReceived(JSONObject jsonObject) {
+
+            }
+
+            @Override
+            public void onJSONReceivedError(VolleyError volleyError) {
+                inputPseudo.setError(getResources().getString(R.string.error_surname_existing), customErrorDrawable);
+                //return;
+            }
+        });
         user.setPseudo(pseudoEntered);
+        user.setName(nameEntered);
         notifySignUpMainListenerChange();
+
     }
 
     private void initFields() {

@@ -107,7 +107,7 @@ public class SignUpLocationFragment extends SignUpFragment implements SignUpList
     public void onNextClicked() {
         String fieldCity = inputCity.getText().toString();
 
-        /*LatLng pos = null;
+        LatLng pos = null;
 
         try {
             pos = getLocationFromAddress(fieldCity);
@@ -119,8 +119,10 @@ public class SignUpLocationFragment extends SignUpFragment implements SignUpList
             inputCity.setError("Impossible de trouver ce lieu", customErrorDrawable);
             return;
         }
+        user.setCity(fieldCity);
         user.setLatitude(pos.latitude);
-        user.setLongitude(pos.longitude);*/
+        user.setLongitude(pos.longitude);
+        
         SignUpMainActivity.listenerMain.onFragmentValidate(this);
     }
 }
