@@ -1,7 +1,6 @@
 package com.example.nalone.ui.amis.display;
 
 import android.annotation.SuppressLint;
-import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
@@ -96,22 +95,17 @@ public class PopupProfilFragment extends Fragment {
                 new PieModel(
                         "R",
                         nbEventFirt,
-                        Color.parseColor("#FFA726")));
+                        getResources().getColor(R.color.colorPrimary)));
         pieChart.addPieSlice(
                 new PieModel(
                         "Python",
                         nbEventSecond,
-                        Color.parseColor("#66BB6A")));
+                        getResources().getColor(R.color.colorSecond)));
         pieChart.addPieSlice(
                 new PieModel(
                         "C++",
                         nbEventThird,
-                        Color.parseColor("#EF5350")));
-        pieChart.addPieSlice(
-                new PieModel(
-                        "Java",
-                        nbEventFourth,
-                        Color.parseColor("#29B6F6")));
+                        getResources().getColor(R.color.colorThird)));
 
         pieChart.startAnimation();
         TextView nameProfil;
@@ -131,7 +125,7 @@ public class PopupProfilFragment extends Fragment {
         cardViewPhotoPerson = root.findViewById(R.id.cardViewPhotoPerson);
         villeProfil = root.findViewById(R.id.userConnectVille);
 
-        nameProfil.setText(USER_LOAD.getFirst_name() + " " + USER_LOAD.getLast_name());
+        nameProfil.setText(USER_LOAD.getName());
         villeProfil.setText(USER_LOAD.getCity());
         nbCreateProfil.setText(USER_LOAD.getNumber_events_create());
         nbParticipateProfil.setText(USER_LOAD.getNumber_events_attend());
@@ -153,7 +147,7 @@ public class PopupProfilFragment extends Fragment {
         imageCentreInteret.add(img_centre5);
 
 
-        nameProfil.setText(USER_LOAD.getLast_name() + " " + USER_LOAD.getFirst_name());
+        nameProfil.setText(USER_LOAD.getName());
         descriptionProfil.setText(USER_LOAD.getDescription());
         nbCreateProfil.setText(USER_LOAD.getNumber_events_create());
         nbParticipateProfil.setText(USER_LOAD.getNumber_events_attend());
@@ -189,8 +183,8 @@ public class PopupProfilFragment extends Fragment {
         JSONObjectCrypt params = new JSONObjectCrypt();
         params.putCryptParameter("uid", USER.getUid());
         params.putCryptParameter("uid_friend", USER_LOAD.getUid());
-        params.putCryptParameter("notification_sender", getResources().getString(R.string.invit_received_notifications) + " " + USER.getFirst_name() + " " + USER.getLast_name());
-        params.putCryptParameter("notification_receiver", getResources().getString(R.string.invit_send_notifications) + " " + USER_LOAD.getFirst_name() + " " + USER_LOAD.getLast_name());
+        params.putCryptParameter("notification_sender", getResources().getString(R.string.invit_received_notifications) + " " + USER.getName());
+        params.putCryptParameter("notification_receiver", getResources().getString(R.string.invit_send_notifications) + " " + USER_LOAD.getName());
 
         JSONController.getJsonObjectFromUrl(Constants.URL_SEND_FRIEND_REQUEST, getContext(), params, new JSONObjectListener() {
             @SuppressLint("UseCompatLoadingForDrawables")

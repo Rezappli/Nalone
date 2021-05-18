@@ -210,7 +210,7 @@ public class MesAmisAdapter extends RecyclerView.Adapter<MesAmisAdapter.UserView
 
         public void update(final User u) {
             villePers.setText(u.getCity());
-            nomInvit.setText(u.getFirst_name() + " " + u.getLast_name());
+            nomInvit.setText(u.getName());
         }
     }
 

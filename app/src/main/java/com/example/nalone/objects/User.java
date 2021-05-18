@@ -1,18 +1,18 @@
 package com.example.nalone.objects;
 
-public class User {
+import java.io.Serializable;
+
+public class User implements Serializable {
     private String uid;
-    private String sex;
-    private String last_name;
-    private String first_name;
-    private String center_of_interest;
+    private String name;
+    private String pseudo;
+    private String center_interest;
     private String city;
     private String number;
     private String mail;
     private String description;
     private String number_events_create;
     private String number_events_attend;
-    private String birthday_date;
     private String image_url;
     private double latitude;
     private double longitude;
@@ -25,21 +25,19 @@ public class User {
     }
 
 
-    public User(String uid, String last_name, String first_name, String center_of_interest, String sex, String city,
+    public User(String uid, String name, String pseudo, String center_of_interest, String city,
                 String number, String mail,
-                String description, String birthday_date) {
+                String description) {
         this.uid = uid;
-        this.last_name = last_name;
-        this.first_name = first_name;
-        this.center_of_interest = center_of_interest;
-        this.sex = sex;
+        this.name = name;
+        this.pseudo = pseudo;
+        this.center_interest = center_of_interest;
         this.city = city;
         this.number = number;
         this.mail = mail;
         this.image_url = null;
 
         this.description = description;
-        this.birthday_date = birthday_date;
 
         this.number_events_create = "0";
         this.number_events_attend = "0";
@@ -52,30 +50,6 @@ public class User {
 
     public void setUid(String uid) {
         this.uid = uid;
-    }
-
-    public String getSex() {
-        return sex;
-    }
-
-    public void setSex(String sex) {
-        this.sex = sex;
-    }
-
-    public String getLast_name() {
-        return last_name;
-    }
-
-    public void setLast_name(String last_name) {
-        this.last_name = last_name;
-    }
-
-    public String getFirst_name() {
-        return first_name;
-    }
-
-    public void setFirst_name(String first_name) {
-        this.first_name = first_name;
     }
 
     public String getCity() {
@@ -126,14 +100,6 @@ public class User {
         this.number_events_attend = number_events_attend;
     }
 
-    public String getBirthday_date() {
-        return birthday_date;
-    }
-
-    public void setBirthday_date(String birthday_date) {
-        this.birthday_date = birthday_date;
-    }
-
     public String getImage_url() {
         return image_url;
     }
@@ -158,11 +124,27 @@ public class User {
         this.longitude = longitude;
     }
 
-    public String getCenter_of_interest() {
-        return center_of_interest;
+    public String getName() {
+        return name;
     }
 
-    public void setCenter_of_interest(String center_of_interest) {
-        this.center_of_interest = center_of_interest;
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getPseudo() {
+        return pseudo;
+    }
+
+    public void setPseudo(String pseudo) {
+        this.pseudo = pseudo;
+    }
+
+    public String getCenter_interest() {
+        return center_interest;
+    }
+
+    public void setCenter_interest(String center_interest) {
+        this.center_interest = center_interest;
     }
 }

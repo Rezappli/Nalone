@@ -7,6 +7,7 @@
     <string name="pasInscrit"> Pas encore inscrit ?</string>
     <string name="inscrireButton">S\'inscrire </string>
     <string name="participer"> Participer</string>
+    <string name="ignorer"> Ignorer</string>
     <string name="desinscriptionButton">Se désinscrire </string>
     <string name="buttonConnexion"> Se connecter </string>
     <string name="titleSignUpOne"> Nom et prénom </string>
@@ -40,6 +41,7 @@
     <string name="title_check_mail"> Verification de votre adresse mail</string>
     <string name="title_check_phone"> Verification de votre téléphone</string>
     <string name="subtitle_check_phone"> Un code vous à été envoyé au </string>
+    <string name="subtitle_check_phone_code"> Code </string>
     <string name="subtitle_check_mail"> Un lien vous à été envoyé a l\'adresse </string>
     <string name="title_notsend"> Rien reçu ? </string>
     <string name="subtitle_notsend"> Renvoyer le lien </string>

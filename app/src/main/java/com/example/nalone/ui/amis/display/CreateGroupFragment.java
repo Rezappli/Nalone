@@ -98,7 +98,7 @@ public class CreateGroupFragment extends Fragment {
         });
 
         if (groupAttente == null) {
-            groupAttente = new Group(UUID.randomUUID().toString(), USER.getFirst_name() + " " + USER.getLast_name(), "", "", Visibility.PUBLIC);
+            groupAttente = new Group(UUID.randomUUID().toString(), USER.getName(), "", "", Visibility.PUBLIC);
         }
 
         CardView cardViewPrivate = rootView.findViewById(R.id.cardViewPrivate);

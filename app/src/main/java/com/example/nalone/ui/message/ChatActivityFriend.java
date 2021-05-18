@@ -88,7 +88,7 @@ public class ChatActivityFriend extends AppCompatActivity {
         buttonSend = findViewById(R.id.buttonSend);
         messageEditText = findViewById(R.id.messageEditText);
         nameUser = findViewById(R.id.nameUser);
-        nameUser.setText(USER_LOAD.getFirst_name() + " " + USER_LOAD.getLast_name());
+        nameUser.setText(USER_LOAD.getName());
         mRecyclerView = findViewById(R.id.messagesRecyclerView);
         profile_view = findViewById(R.id.profile_view);
         CardView card_view = findViewById(R.id.card_view);
@@ -303,7 +303,7 @@ public class ChatActivityFriend extends AppCompatActivity {
 
     public void sendMessageNotification(String msg) {
         TOPIC = "/topics/" + USER_LOAD.getUid(); //topic must match with what the receiver subscribed to
-        NOTIFICATION_TITLE = "Message de " + USER.getFirst_name() + " " + USER.getLast_name();
+        NOTIFICATION_TITLE = "Message de " + USER.getName();
         NOTIFICATION_MESSAGE = msg;
 
         JSONObject notification = new JSONObject();

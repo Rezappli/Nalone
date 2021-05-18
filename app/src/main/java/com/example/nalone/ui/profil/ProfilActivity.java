@@ -69,7 +69,7 @@ public class ProfilActivity extends AppCompatActivity {
             }
         });
 
-        userConnectText.setText(USER.getFirst_name() + " " + USER.getLast_name());
+        userConnectText.setText(USER.getName());
         userConnectVille.setText(USER.getCity());
         userConnectNbC.setText(USER.getNumber_events_create());
         userConnectNbP.setText(USER.getNumber_events_attend());
@@ -177,9 +177,8 @@ public class ProfilActivity extends AppCompatActivity {
     private void updateUserInformations() {
         JSONObjectCrypt params = new JSONObjectCrypt();
         params.putCryptParameter("uid", USER.getUid());
-        params.putCryptParameter("first_name", USER.getFirst_name());
-        params.putCryptParameter("last_name", USER.getLast_name());
-        params.putCryptParameter("birthday_date", USER.getBirthday_date());
+        params.putCryptParameter("name", USER.getName());
+        params.putCryptParameter("center_interest", USER.getCenter_interest());
         params.putCryptParameter("city", USER.getCity());
         params.putCryptParameter("description", USER.getDescription());
         params.putCryptParameter("latitude", USER.getLatitude());

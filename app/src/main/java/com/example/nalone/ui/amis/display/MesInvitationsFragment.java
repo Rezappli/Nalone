@@ -100,7 +100,7 @@ public class MesInvitationsFragment extends Fragment {
                                     @Override
                                     protected void onBindViewHolder(@NonNull final UserViewHolder userViewHolder, int i, @NonNull final User u) {
                                         userViewHolder.villePers.setText(u.getCity());
-                                        userViewHolder.nomInvit.setText(u.getFirst_name() + " " + u.getLast_name());
+                                        userViewHolder.nomInvit.setText(u.getName());
 
                                         //setUserImage(u,getContext(),userViewHolder.imagePerson);
 

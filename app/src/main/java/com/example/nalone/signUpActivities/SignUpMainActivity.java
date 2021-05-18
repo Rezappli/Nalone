@@ -34,12 +34,7 @@ public class SignUpMainActivity extends NoLonelyActivity implements SignUpMainLi
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_up_main);
         navController = Navigation.findNavController(this, R.id.nav_host_sign_up);
-        Bundle extras = getIntent().getExtras();
-        /*if (extras != null && extras.getBoolean("isBusinessAccount")) {
-            navController.setGraph(R.navigation.signup_business_navigation);
-        } else {
-            navController.setGraph(R.navigation.signup_person_navigation);
-        }*/
+
         navController.setGraph(R.navigation.signup_person_navigation);
 
         viewStep2 = findViewById(R.id.viewStep2);
@@ -81,7 +76,7 @@ public class SignUpMainActivity extends NoLonelyActivity implements SignUpMainLi
     @Override
     public void onFragmentValidate(Fragment fragment) {
         // step 1
-        if (fragment instanceof SignUpInfosFragment || fragment instanceof SignUpInfosBusinessFragment) {
+        if (fragment instanceof SignUpInfosFragment) {
             updateStep(imageViewStep1, cardViewStep2, viewStep2, false);
             navController.navigate(R.id.action_signUpInfosFragment_to_signUpCenterInterestFragment);
         }
@@ -106,11 +101,11 @@ public class SignUpMainActivity extends NoLonelyActivity implements SignUpMainLi
 
         assert navHostFragment != null;
         for (Fragment fragment : navHostFragment.getChildFragmentManager().getFragments()) {
-            if (fragment instanceof SignUpInfosFragment || fragment instanceof SignUpInfosBusinessFragment) {
+            if (fragment instanceof SignUpInfosFragment) {
                 super.onBackPressed();
             }
             if (fragment instanceof SignUpCenterInterestFragment) {
-                updateStep(imageViewStep1, cardViewStep2, viewStep2, false);
+                updateStep(imageViewStep1, cardViewStep2, viewStep2, true);
                 navController.navigate(R.id.action_signUpCenterInterestFragment_to_signUpInfosFragment);
             }
 
@@ -126,7 +121,7 @@ public class SignUpMainActivity extends NoLonelyActivity implements SignUpMainLi
     }
 
     private void updateStep(ImageView imageView, CardView cardView, View view, boolean isBack) {
-        int customBlue = isBack ? Color.parseColor("#aaaaaa") : Color.parseColor("#00E9FD");
+        int customBlue = isBack ? Color.parseColor("#aaaaaa") : getResources().getColor(R.color.colorPrimary);
         imageView.setColorFilter(customBlue);
         cardView.setCardBackgroundColor(customBlue);
         view.setBackground(new ColorDrawable(customBlue));

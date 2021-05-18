@@ -74,6 +74,7 @@ public class SignUpLoginPhoneFragment extends SignUpFragment {
             Intent intent = new Intent(getContext(), CheckPhoneValidationActivity.class);
             intent.putExtra("field", telEntered);
             intent.putExtra("password", passEntered);
+            intent.putExtra("user", user);
             startActivity(intent);
         }
 

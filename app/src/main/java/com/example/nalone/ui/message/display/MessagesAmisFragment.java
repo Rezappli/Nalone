@@ -147,7 +147,7 @@ public class MessagesAmisFragment extends Fragment {
                                     @Override
                                     protected void onBindViewHolder(@NonNull final UserViewHolder userViewHolder, int i, @NonNull final User u) {
                                         userViewHolder.villePers.setText(u.getCity());
-                                        userViewHolder.nomInvit.setText(u.getFirst_name() + " " + u.getLast_name());
+                                        userViewHolder.nomInvit.setText(u.getName());
                                         userViewHolder.button.setImageResource(R.drawable.ic_baseline_keyboard_arrow_right_24);
 
                                         Constants.setUserImage(u, userViewHolder.imagePerson);
@@ -180,10 +180,10 @@ public class MessagesAmisFragment extends Fragment {
     }
 
     private boolean matchToUser(User u) {
-        Log.w("Recherche", "Utilisateur : " + u.getFirst_name());
+        Log.w("Recherche", "Utilisateur : " + u.getName());
         int max_lenght = 0;
-        max_lenght = u.getFirst_name().length();
-        if (u.getFirst_name().length() < u.getLast_name().length()) {
+        max_lenght = u.getName().length();
+        /*if (u.getFirst_name().length() < u.getLast_name().length()) {
             max_lenght = u.getLast_name().length();
         }
         for (int i = 0; i < search.length(); i++) {
@@ -193,7 +193,7 @@ public class MessagesAmisFragment extends Fragment {
 
             Log.w("Recherche", "Valeur de recherche :" + (u_first.charAt(i) == search.charAt(i) || u_last.charAt(i) == search.charAt(i)));
             return (u_first.charAt(i) == search.charAt(i) || u_last.charAt(i) == search.charAt(i));
-        }
+        }*/
 
         return false;
     }

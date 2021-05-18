@@ -1,7 +1,11 @@
 package com.example.nalone.signUpActivities;
 
 import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.example.nalone.R;
@@ -13,7 +17,7 @@ public class SignUpInfosFragment extends SignUpFragment {
 
 
     private TextInputEditText inputName;
-    private TextInputEditText inputSurname;
+    private TextInputEditText inputPseudo;
 
 
     @Override
@@ -22,34 +26,36 @@ public class SignUpInfosFragment extends SignUpFragment {
         rootView = R.layout.fragment_sign_up_infos;
     }
 
+    @Nullable
+    @Override
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        return super.onCreateView(inflater, container, savedInstanceState);
+    }
+
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        initParticularAccount();
-
-    }
-
-    private void initParticularAccount() {
-
         inputName = (TextInputEditText) view.findViewById(R.id.signupName);
 
+        inputName = view.findViewById(R.id.signupName);
+        inputPseudo = view.findViewById(R.id.signupSurname);
         initFields();
-        inputName = (TextInputEditText) view.findViewById(R.id.signupName);
-        inputSurname = (TextInputEditText) view.findViewById(R.id.signupSurname);
 
         final GoogleSignInAccount acct = GoogleSignIn.getLastSignedInAccount(getContext());
         if (acct != null) {
             inputName.setText(acct.getFamilyName());
-            inputSurname.setText(acct.getDisplayName());
+            inputPseudo.setText(acct.getDisplayName());
         }
 
         initFields();
+
     }
+
 
     @Override
     public void onNextClicked() {
         String nameEntered = inputName.getText().toString();
-        String surnameEntered = inputSurname.getText().toString();
+        String pseudoEntered = inputPseudo.getText().toString();
 
         if (nameEntered.length() == 1) {
             inputName.setError(getResources().getString(R.string.error_name_short), customErrorDrawable);
@@ -61,27 +67,27 @@ public class SignUpInfosFragment extends SignUpFragment {
             return;
         }
 
-        if (surnameEntered.length() == 1) {
-            inputSurname.setError(getResources().getString(R.string.error_name_short), customErrorDrawable);
+        if (pseudoEntered.length() == 1) {
+            inputPseudo.setError(getResources().getString(R.string.error_name_short), customErrorDrawable);
             return;
         }
 
-        if (surnameEntered.matches("")) {
-            inputSurname.setError(getResources().getString(R.string.error_surname_empty), customErrorDrawable);
+        if (pseudoEntered.matches("")) {
+            inputPseudo.setError(getResources().getString(R.string.error_surname_empty), customErrorDrawable);
             return;
         }
 
-        user.setLast_name(nameEntered);
-        user.setFirst_name(surnameEntered);
+        user.setName(nameEntered);
+        user.setPseudo(pseudoEntered);
         notifySignUpMainListenerChange();
     }
 
     private void initFields() {
-        if (user.getLast_name() != null)
-            inputName.setText(user.getLast_name());
+        if (user.getName() != null)
+            inputName.setText(user.getName());
 
-        if (user.getFirst_name() != null)
-            inputSurname.setText(user.getFirst_name());
+        if (user.getPseudo() != null)
+            inputPseudo.setText(user.getPseudo());
     }
 
 

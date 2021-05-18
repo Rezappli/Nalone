@@ -74,8 +74,6 @@ public class Evenement implements Serializable {
         this.status = status;
         this.category = category;
         this.price = price;
-        this.ownerFirstName = Constants.USER.getFirst_name();
-        this.ownerLastName = Constants.USER.getLast_name();
         this.image_url = null;
     }
 

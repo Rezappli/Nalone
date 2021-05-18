@@ -15,7 +15,6 @@ import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
-
 import com.android.volley.VolleyError;
 import com.example.nalone.R;
 import com.example.nalone.ResetPasswordActivity;
@@ -33,7 +32,7 @@ public class EditActivity extends AppCompatActivity {
 
 
     TextView profilEditPassword, textProfilEditMail, profilEditMail;
-    EditText profilEditNumero,profilEditPrenom,profilEditNom,profilEditVille,profilEditDate;
+    EditText profilEditNumero, profilEditPrenom, profilEditNom, profilEditVille, profilEditDate;
     Button profilEditValider;
     ImageView buttonBack;
 
@@ -61,14 +60,12 @@ public class EditActivity extends AppCompatActivity {
         profilEditVille = findViewById(R.id.profilEditVille);
         profilEditValider = findViewById(R.id.profilEditValider);
 
-        profilEditNom.setText(USER.getLast_name());
-        profilEditPrenom.setText(USER.getFirst_name());
-        profilEditDate.setText(USER.getBirthday_date());
+        profilEditNom.setText(USER.getName());
         textProfilEditMail.setText(USER.getMail());
         profilEditNumero.setText(USER.getNumber());
         profilEditVille.setText(USER.getCity());
         textProfilEditMail.setText(USER.getMail());
-        Log.w("Data", "Mail:"+USER.getMail());
+        Log.w("Data", "Mail:" + USER.getMail());
 
         profilEditPassword.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -87,59 +84,53 @@ public class EditActivity extends AppCompatActivity {
                 String date = profilEditDate.getText().toString();
                 String num = profilEditNumero.getText().toString();
                 boolean error = false;
-                if(nom.equalsIgnoreCase("")){
+                if (nom.equalsIgnoreCase("")) {
                     profilEditNom.setError("Entrez votre nom");
                     error = true;
                 }
 
-                if(prenom.equalsIgnoreCase("")){
+                if (prenom.equalsIgnoreCase("")) {
                     profilEditPrenom.setError("Entrez votre prénom");
                     error = true;
                 }
 
-                if(date.length() != 10 || date.charAt(4) != '-' || date.charAt(7) != '-'){
+                if (date.length() != 10 || date.charAt(4) != '-' || date.charAt(7) != '-') {
                     profilEditDate.setError("Entrez votre date de naissance");
                     error = true;
                 }
 
-                if(num.length() != 13){
+                if (num.length() != 13) {
                     profilEditNumero.setError("Entrez votre numéro");
                     error = true;
                 }
 
-                if(ville.equalsIgnoreCase("")){
+                if (ville.equalsIgnoreCase("")) {
                     profilEditVille.setError("Entrez votre ville");
                     error = true;
                 }
 
-                if(!error){
-                    if(!USER.getLast_name().equalsIgnoreCase(nom) || !USER.getFirst_name().equalsIgnoreCase(prenom) ||
-                            !USER.getCity().equalsIgnoreCase(ville)  || !USER.getNumber().equalsIgnoreCase(num)
-                            || !USER.getBirthday_date().equalsIgnoreCase(date)){
+                if (!error) {
+                    if (!USER.getName().equalsIgnoreCase(nom) ||
+                            !USER.getCity().equalsIgnoreCase(ville) || !USER.getNumber().equalsIgnoreCase(num)
+                    ) {
 
-                        if(!USER.getLast_name().equalsIgnoreCase(nom)){
-                            USER.setLast_name(nom);
+                        if (!USER.getName().equalsIgnoreCase(nom)) {
+                            USER.setName(nom);
                         }
 
-                        if(!USER.getFirst_name().equalsIgnoreCase(prenom)){
-                            USER.setFirst_name(prenom);
-                        }
 
-                        if(!USER.getCity().equalsIgnoreCase(ville)){
+                        if (!USER.getCity().equalsIgnoreCase(ville)) {
                             USER.setCity(ville);
                         }
 
-                        if(!USER.getNumber().equalsIgnoreCase(num)){
+                        if (!USER.getNumber().equalsIgnoreCase(num)) {
                             USER.setNumber(num);
                         }
 
-                        if(!USER.getBirthday_date().equalsIgnoreCase(date)){
-                            USER.setBirthday_date(date);
-                        }
 
                         updateDescription();
-                    }else{
-                        startActivity(new Intent(getBaseContext(),ProfilActivity.class));
+                    } else {
+                        startActivity(new Intent(getBaseContext(), ProfilActivity.class));
                     }
                 }
             }
@@ -152,9 +143,8 @@ public class EditActivity extends AppCompatActivity {
     private void updateDescription() {
         JSONObjectCrypt params = new JSONObjectCrypt();
         params.putCryptParameter("uid", USER.getUid());
-        params.putCryptParameter("first_name", USER.getFirst_name());
-        params.putCryptParameter("last_name", USER.getLast_name());
-        params.putCryptParameter("birthday_date", USER.getBirthday_date());
+        params.putCryptParameter("name", USER.getName());
+        params.putCryptParameter("center_interest", USER.getCenter_interest());
         params.putCryptParameter("city", USER.getCity());
         params.putCryptParameter("description", USER.getDescription());
         params.putCryptParameter("latitude", USER.getLatitude());
@@ -164,13 +154,13 @@ public class EditActivity extends AppCompatActivity {
             @Override
             public void onJSONReceived(JSONObject jsonObject) {
                 Toast.makeText(getBaseContext(), getResources().getString(R.string.update_description), Toast.LENGTH_SHORT).show();
-                startActivity(new Intent(getBaseContext(),ProfilActivity.class));
+                startActivity(new Intent(getBaseContext(), ProfilActivity.class));
             }
 
             @Override
             public void onJSONReceivedError(VolleyError volleyError) {
                 Toast.makeText(getBaseContext(), getResources().getString(R.string.error), Toast.LENGTH_SHORT).show();
-                Log.w("Response","Erreur:"+volleyError.toString());
+                Log.w("Response", "Erreur:" + volleyError.toString());
             }
         });
     }

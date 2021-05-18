@@ -59,8 +59,6 @@ public class MainCreationEventActivity extends AppCompatActivity {
 
     private CardView cardViewPublic, cardViewPrivate;
 
-    private CardView cardViewEventArt, cardTypeEventSport, cardTypeEventParty, cardTypeEventMusic, cardTypeEventMovie, cardTypeEventGame, cardTypeEventCar, cardTypeEventGather, cardTypeEventConference, cardTypeEventShop, cardTypeEventShow, cardTypeEventScience;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -125,14 +123,11 @@ public class MainCreationEventActivity extends AppCompatActivity {
             public void onStateChanged(@NonNull View view, int state) {
                 switch (state) {
                     case BottomSheetBehavior.STATE_COLLAPSED:
+                    case BottomSheetBehavior.STATE_HIDDEN:
                         viewGrey.setVisibility(View.GONE);
                         break;
                     case BottomSheetBehavior.STATE_DRAGGING:
-                        break;
                     case BottomSheetBehavior.STATE_EXPANDED:
-                        break;
-                    case BottomSheetBehavior.STATE_HIDDEN:
-                        viewGrey.setVisibility(View.GONE);
                         break;
 
                 }
@@ -156,18 +151,18 @@ public class MainCreationEventActivity extends AppCompatActivity {
     }
 
     private void initCardViewType() {
-        cardViewEventArt = findViewById(R.id.cardTypeEventArt);
-        cardTypeEventSport = findViewById(R.id.cardTypeEventSport);
-        cardTypeEventParty = findViewById(R.id.cardTypeEventCar);
-        cardTypeEventMusic = findViewById(R.id.cardTypeEventMusic);
-        cardTypeEventMovie = findViewById(R.id.cardTypeEventMovie);
-        cardTypeEventGame = findViewById(R.id.cardTypeEventGame);
-        cardTypeEventCar = findViewById(R.id.cardTypeEventCar);
-        cardTypeEventGather = findViewById(R.id.cardTypeEventGather);
-        cardTypeEventConference = findViewById(R.id.cardTypeEventConference);
-        cardTypeEventShop = findViewById(R.id.cardTypeEventCar);
-        cardTypeEventShow = findViewById(R.id.cardTypeEventShow);
-        cardTypeEventScience = findViewById(R.id.cardTypeEventScience);
+        CardView cardViewEventArt = findViewById(R.id.cardTypeEventArt);
+        CardView cardTypeEventSport = findViewById(R.id.cardTypeEventSport);
+        CardView cardTypeEventParty = findViewById(R.id.cardTypeEventCar);
+        CardView cardTypeEventMusic = findViewById(R.id.cardTypeEventMusic);
+        CardView cardTypeEventMovie = findViewById(R.id.cardTypeEventMovie);
+        CardView cardTypeEventGame = findViewById(R.id.cardTypeEventGame);
+        CardView cardTypeEventCar = findViewById(R.id.cardTypeEventCar);
+        CardView cardTypeEventGather = findViewById(R.id.cardTypeEventGather);
+        CardView cardTypeEventConference = findViewById(R.id.cardTypeEventConference);
+        CardView cardTypeEventShop = findViewById(R.id.cardTypeEventCar);
+        CardView cardTypeEventShow = findViewById(R.id.cardTypeEventShow);
+        CardView cardTypeEventScience = findViewById(R.id.cardTypeEventScience);
         cardViewEventArt.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -342,8 +337,6 @@ public class MainCreationEventActivity extends AppCompatActivity {
         params.putCryptParameter("latitude", currentEvent.getLatitude());
         params.putCryptParameter("longitude", currentEvent.getLongitude());
         params.putCryptParameter("name", currentEvent.getName());
-        params.putCryptParameter("ownerFirstName", USER.getFirst_name());
-        params.putCryptParameter("ownerLastName", USER.getLast_name());
         params.putCryptParameter("nbMembers", currentEvent.getNbMembers());
         params.putCryptParameter("category", currentEvent.getCategory());
         params.putCryptParameter("price", currentEvent.getPrice());

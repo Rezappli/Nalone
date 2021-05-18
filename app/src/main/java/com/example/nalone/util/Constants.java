@@ -96,6 +96,7 @@ public class Constants {
 
     public static String URL_ME = BASE_API_URL + "/me.php";
     public static String URL_SIGN_IN = BASE_API_URL + "/sign_in.php";
+    public static String URL_REGISTER = BASE_API_URL + "/register.php";
     public static String URL_NEARBY_EVENTS = BASE_API_URL + "/get_event_nearby.php";
     public static String URL_FRIENDS = BASE_API_URL + "/get_friends.php";
     public static String URL_FRIENDS_INVITATIONS = BASE_API_URL + "/get_friends_request.php";

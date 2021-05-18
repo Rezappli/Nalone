@@ -90,7 +90,7 @@ public class RechercheAmisAdapter extends RecyclerView.Adapter<RechercheAmisAdap
 
         public void update(final User u) {
             villePers.setText(u.getCity());
-            nomInvit.setText(u.getFirst_name() + " " + u.getLast_name());
+            nomInvit.setText(u.getName());
             button.setImageResource(0);
         }
     }

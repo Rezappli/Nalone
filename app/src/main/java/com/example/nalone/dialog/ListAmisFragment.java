@@ -283,7 +283,7 @@ public class ListAmisFragment extends Fragment {
                                     @Override
                                     protected void onBindViewHolder(@NonNull final UserViewHolder userViewHolder, int i, @NonNull final User u) {
                                         userViewHolder.villePers.setText(u.getCity());
-                                        userViewHolder.nomInvit.setText(u.getFirst_name() + " " + u.getLast_name());
+                                        userViewHolder.nomInvit.setText(u.getName());
 
                                         if (type.equalsIgnoreCase("message_ami")) {
                                             userViewHolder.button.setImageResource(R.drawable.ic_baseline_keyboard_arrow_right_24);

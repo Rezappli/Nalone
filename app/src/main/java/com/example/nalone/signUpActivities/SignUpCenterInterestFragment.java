@@ -37,7 +37,7 @@ public class SignUpCenterInterestFragment extends SignUpFragment implements Adap
 
     @Override
     public void onNextClicked() {
-        user.setCenter_of_interest(inputCenterOfInterest);
+        user.setCenter_interest(inputCenterOfInterest);
         notifySignUpMainListenerChange();
     }
 
