@@ -175,10 +175,6 @@ public class MainActivity extends AppCompatActivity {
                         Log.w("Response", "Erreur:" + e.getMessage());
                         progressBar.setVisibility(View.GONE);
                     }
-                } else if (jsonObject.length() == 4) {
-                    Toast.makeText(MainActivity.this, getResources().getString(R.string.mail_not_verified), Toast.LENGTH_SHORT).show();
-                    Log.w("Response", "Mail not verified");
-                    progressBar.setVisibility(View.GONE);
                 } else {
                     Log.w("Response", "Mail/Password incorrect : " + jsonObject.toString());
                     Toast.makeText(MainActivity.this, getResources().getString(R.string.mail_or_password_incorrect), Toast.LENGTH_SHORT).show();

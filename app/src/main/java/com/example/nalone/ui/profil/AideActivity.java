@@ -54,8 +54,7 @@ public class AideActivity extends AppCompatActivity {
         MobileAds.initialize(this, new OnInitializationCompleteListener() {
             @Override
             public void onInitializationComplete(InitializationStatus initializationStatus) {
-                AdRequest adRequest = new AdRequest.Builder().build();
-                ad.loadAd(adRequest);
+                ad.loadAd(new AdRequest.Builder().build());
             }
         });
 
