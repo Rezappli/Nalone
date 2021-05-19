@@ -186,6 +186,8 @@ public class PopupProfilFragment extends Fragment {
         params.putCryptParameter("notification_sender", getResources().getString(R.string.invit_received_notifications) + " " + USER.getName());
         params.putCryptParameter("notification_receiver", getResources().getString(R.string.invit_send_notifications) + " " + USER_LOAD.getName());
 
+        Log.w("Response", "Params "+ params.toString());
+
         JSONController.getJsonObjectFromUrl(Constants.URL_SEND_FRIEND_REQUEST, getContext(), params, new JSONObjectListener() {
             @SuppressLint("UseCompatLoadingForDrawables")
             @Override

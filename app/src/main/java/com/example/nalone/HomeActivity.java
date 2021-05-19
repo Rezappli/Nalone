@@ -22,6 +22,7 @@ import com.example.nalone.enumeration.TypeEvent;
 import com.example.nalone.enumeration.Visibility;
 import com.example.nalone.json.JSONController;
 import com.example.nalone.json.JSONObjectCrypt;
+import com.example.nalone.listeners.JSONArrayListener;
 import com.example.nalone.listeners.JSONObjectListener;
 import com.example.nalone.objects.Evenement;
 import com.example.nalone.objects.User;
@@ -34,6 +35,7 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.UUID;
@@ -56,7 +58,7 @@ public class HomeActivity extends AppCompatActivity {
     private BottomSheetBehavior bottomSheetBehaviorVisibility, bottomSheetBehaviorType;
 
 
-    @RequiresApi(api = Build.VERSION_CODES.M)
+    @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -193,7 +195,6 @@ public class HomeActivity extends AppCompatActivity {
                 viewGrey.setVisibility(View.GONE);
             }
         });
-
     }
 
     /**
@@ -315,7 +316,7 @@ public class HomeActivity extends AppCompatActivity {
      *
      * @param v
      */
-    public void openType(Visibility v) {
+    private void openType(Visibility v) {
         currentVisibility = v;
         bottomSheetBehaviorType.setState(BottomSheetBehavior.STATE_EXPANDED);
         //bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
@@ -326,7 +327,7 @@ public class HomeActivity extends AppCompatActivity {
      *
      * @param tp
      */
-    public void goCreateEvent(TypeEvent tp) {
+    private void goCreateEvent(TypeEvent tp) {
         MainCreationEventActivity.currentEvent = new Evenement();
         MainCreationEventActivity.currentEvent.setUid(UUID.randomUUID().toString());
         MainCreationEventActivity.image = null;
@@ -336,10 +337,38 @@ public class HomeActivity extends AppCompatActivity {
         startActivity(new Intent(getBaseContext(), MainCreationEventActivity.class));
     }
 
+    /**
+     * Methode permettant de savoir si il y a des notifications en attente
+     */
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    private void getNotifications(){
+        if(USER != null) {
+            JSONObjectCrypt params = new JSONObjectCrypt();
+            params.putCryptParameter("uid", USER.getUid());
 
+            JSONController.getJsonArrayFromUrl(Constants.URL_NEW_NOTIFICATIONS, HomeActivity.this, params, new JSONArrayListener() {
+                @Override
+                public void onJSONReceived(JSONArray jsonArray) {
+                    if (jsonArray.length() > 0) {
+                        buttonNotif.setImageResource(R.drawable.notification);
+                    }
+                }
+
+                @Override
+                public void onJSONReceivedError(VolleyError volleyError) {
+                    Toast.makeText(HomeActivity.this, getResources().getString(R.string.error_notifications), Toast.LENGTH_SHORT).show();
+                    Log.w("Response", "Value:" + volleyError.toString());
+                }
+            });
+        }
+    }
+
+
+    @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     protected void onResume() {
         super.onResume();
+        getNotifications();
     }
 
     @Override
