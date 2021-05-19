@@ -11,6 +11,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.RequiresApi;
@@ -40,6 +41,7 @@ public class WelcomeActivity extends AppCompatActivity {
     private Button signupNext;
     private boolean hasSelectedImage = false;
     private Uri imageUri = null;
+    private TextView textViewIgnore;
 
 
     static final int RESULT_LOAD_IMG = 1;
@@ -62,6 +64,10 @@ public class WelcomeActivity extends AppCompatActivity {
         linearLayoutBackgroundPP = findViewById(R.id.signupBgPhotoProfil);
         signupNext = findViewById(R.id.signUpNextEnd);
         signUpDescription = findViewById(R.id.signUpDescription);
+        textViewIgnore = findViewById(R.id.textViewIgnore);
+        textViewIgnore.setOnClickListener(v -> {
+            startHomeActivity();
+        });
 
 
         signupNext.setOnClickListener(new View.OnClickListener() {
