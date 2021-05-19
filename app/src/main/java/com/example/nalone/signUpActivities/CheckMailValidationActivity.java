@@ -97,6 +97,7 @@ public class CheckMailValidationActivity extends CheckValidationActivity {
                     buttonValidate.setTextColor(Color.WHITE);
                     buttonValidate.setClickable(true);
                     user.setMail(login);
+                    user.setNumber(login);
                     Log.w("MAIL", "VALIDATE");
                     handler.removeCallbacks(runnable);
                 }

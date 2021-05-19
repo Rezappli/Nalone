@@ -7,7 +7,6 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -41,7 +40,7 @@ public class WelcomeActivity extends AppCompatActivity {
     private Button signupNext;
     private boolean hasSelectedImage = false;
     private Uri imageUri = null;
-    private TextView textViewIgnore;
+    private TextView textViewIgnore, textViewPhoto;
 
 
     static final int RESULT_LOAD_IMG = 1;
@@ -61,43 +60,42 @@ public class WelcomeActivity extends AppCompatActivity {
         }
 
         imageViewPhotoProfil = findViewById(R.id.signupPhotoProfil);
+        imageViewPhotoProfil.setOnClickListener(v -> choosePhoto());
         linearLayoutBackgroundPP = findViewById(R.id.signupBgPhotoProfil);
         signupNext = findViewById(R.id.signUpNextEnd);
         signUpDescription = findViewById(R.id.signUpDescription);
+        textViewPhoto = findViewById(R.id.textViewPhoto);
+        textViewPhoto.setOnClickListener(v -> choosePhoto());
+
         textViewIgnore = findViewById(R.id.textViewIgnore);
         textViewIgnore.setOnClickListener(v -> {
             startHomeActivity();
         });
 
+        signupNext.setOnClickListener(view -> {
+            if (!hasSelectedImage) {
+                final AlertDialog.Builder builder = new AlertDialog.Builder(getBaseContext());
+                builder.setMessage("Vous n'avez pas séléctionné de photo de profil ! Voulez-vous continuer ?")
+                        .setPositiveButton("Oui", new DialogInterface.OnClickListener() {
+                            @RequiresApi(api = Build.VERSION_CODES.O)
+                            public void onClick(DialogInterface dialog, int id) {
+                                checkDescription();
+                            }
+                        })
+                        .setNegativeButton("Non", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
 
-        signupNext.setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View view) {
-                if (!hasSelectedImage) {
-                    final AlertDialog.Builder builder = new AlertDialog.Builder(getBaseContext());
-                    builder.setMessage("Vous n'avez pas séléctionné de photo de profil ! Voulez-vous continuer ?")
-                            .setPositiveButton("Oui", new DialogInterface.OnClickListener() {
-                                @RequiresApi(api = Build.VERSION_CODES.O)
-                                public void onClick(DialogInterface dialog, int id) {
-                                    checkDescription();
-                                }
-                            })
-                            .setNegativeButton("Non", new DialogInterface.OnClickListener() {
-                                public void onClick(DialogInterface dialog, int id) {
-
-                                }
-                            });
-                    builder.create();
-                    builder.show();
-                } else {
-                    startHomeActivity();
-                }
+                            }
+                        });
+                builder.create();
+                builder.show();
+            } else {
+                startHomeActivity();
             }
         });
     }
 
-    private void choosePhoto(View view) {
+    private void choosePhoto() {
         Intent photoPickerIntent = new Intent(Intent.ACTION_PICK);
         photoPickerIntent.setType("image/*");
         startActivityForResult(photoPickerIntent, RESULT_LOAD_IMG);
