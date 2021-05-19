@@ -71,8 +71,8 @@ public class ProfilActivity extends AppCompatActivity {
 
         userConnectText.setText(USER.getName());
         userConnectVille.setText(USER.getCity());
-        userConnectNbC.setText(USER.getNumber_events_create());
-        userConnectNbP.setText(USER.getNumber_events_attend());
+        userConnectNbC.setText(USER.getNumber_events_create()+"");
+        userConnectNbP.setText(USER.getNumber_events_attend()+"");
         userConnectDesc.setText(USER.getDescription());
         userConnectDesc.setClickable(false);
         userConnectDesc.setEnabled(false);

@@ -127,8 +127,8 @@ public class PopupProfilFragment extends Fragment {
 
         nameProfil.setText(USER_LOAD.getName());
         villeProfil.setText(USER_LOAD.getCity());
-        nbCreateProfil.setText(USER_LOAD.getNumber_events_create());
-        nbParticipateProfil.setText(USER_LOAD.getNumber_events_attend());
+        nbCreateProfil.setText(USER_LOAD.getNumber_events_create()+"");
+        nbParticipateProfil.setText(USER_LOAD.getNumber_events_attend()+"");
 
         Constants.setUserImage(USER_LOAD, imagePerson);
 
