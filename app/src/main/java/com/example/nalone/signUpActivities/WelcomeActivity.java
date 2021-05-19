@@ -100,7 +100,7 @@ public class WelcomeActivity extends AppCompatActivity {
         photoPickerIntent.setType("image/*");
         startActivityForResult(photoPickerIntent, RESULT_LOAD_IMG);
     }
-
+ 
     @RequiresApi(api = Build.VERSION_CODES.O)
     private void checkDescription() {
         if (!signUpDescription.getText().toString().matches("")) {

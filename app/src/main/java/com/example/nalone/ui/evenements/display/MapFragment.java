@@ -49,6 +49,8 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
+import com.google.maps.android.clustering.ClusterItem;
+import com.google.maps.android.clustering.ClusterManager;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -460,6 +462,11 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
 
+        clusterManager = new ClusterManager<>(getContext(), mMap);
+        mMap.setOnCameraIdleListener(clusterManager);
+        mMap.setOnMarkerClickListener(clusterManager);
+        addRandomPointsToMap();
+
         mMap.setOnCameraMoveListener(new GoogleMap.OnCameraMoveListener() {
             @Override
             public void onCameraMove() {
@@ -468,7 +475,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         });
 
         if (posCam == null) {
-            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(USER.getLatitude(), USER.getLongitude()), 10));
+            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(5, USER.getLongitude()), 10));
         } else {
             mMap.moveCamera(CameraUpdateFactory.newCameraPosition(posCam));
         }
@@ -481,10 +488,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
 
         nearby_events = new ArrayList<>();
         eventsPopular = new ArrayList<>();
-
-
-
-        Log.w("Params", params.toString());
 
         JSONController.getJsonArrayFromUrl(Constants.URL_NEARBY_EVENTS, getContext(), params, new JSONArrayListener() {
             @Override
@@ -513,6 +516,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
             }
         });
 
+
         JSONController.getJsonArrayFromUrl(Constants.URL_EVENT_POPULAR, getContext(), params, new JSONArrayListener() {
             @Override
             public void onJSONReceived(JSONArray jsonArray) {
@@ -521,7 +525,9 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                         for (int i = 0; i < jsonArray.length(); i++) {
                             eventsPopular.add((Evenement) JSONController.convertJSONToObject(jsonArray.getJSONObject(i), Evenement.class));
                         }
-                        configurePopular();
+                        if (recyclerViewPopular == null)
+                            configurePopular();
+                        adapterPopulaire.notifyDataSetChanged();
                     }
                 } catch (JSONException e) {
                     Log.w("Response events popular", "Erreur:" + e.getMessage());
@@ -537,7 +543,57 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
             }
         });
         loading.setVisibility(View.GONE);
+
+
     }
+
+    public void addRandomPointsToMap() {
+        int LOWER = 1, UPPER = 10;
+        int sydneyLatitude = -30;
+        int sydneyLongitude = 120;
+        LatLng location = new LatLng(0, 0);
+        for (int i = 0; i < 5; i++) {
+            int latitude = sydneyLatitude + (int) (Math.random() * (UPPER - LOWER)) + LOWER;
+            int longitude = sydneyLongitude + (int) (Math.random() * (UPPER - LOWER)) + LOWER;
+            location = new LatLng(latitude, longitude);
+            mMap.addMarker(new MarkerOptions().position(location));
+            MyItem offsetItem = new MyItem(latitude, longitude, "test", "This is a test item");
+            clusterManager.addItem(offsetItem);
+        }
+
+        mMap.moveCamera(CameraUpdateFactory.newLatLng(location));
+
+    }
+
+    public class MyItem implements ClusterItem {
+        private final LatLng position;
+        private final String title;
+        private final String snippet;
+
+        public MyItem(double lat, double lng, String title, String snippet) {
+            position = new LatLng(lat, lng);
+            this.title = title;
+            this.snippet = snippet;
+        }
+
+        @Override
+        public LatLng getPosition() {
+            return position;
+        }
+
+        @Override
+        public String getTitle() {
+            return title;
+        }
+
+        @Override
+        public String getSnippet() {
+            return snippet;
+        }
+    }
+
+    // Declare a variable for the cluster manager.
+    private ClusterManager<MyItem> clusterManager;
 
     @RequiresApi(api = Build.VERSION_CODES.M)
     public void updateMap(VisibilityMap visibilityMap) {
@@ -596,6 +652,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     }
 
     private void addMarkerOnMap(Evenement e) {
+
         MarkerOptions mk = new MarkerOptions();
 
         //mk.title(e.getName());
@@ -611,6 +668,15 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
             }
         }
         mMap.addMarker(mk).setTag(e);
+        MyItem offsetItem = new MyItem(e.getLatitude(), e.getLongitude(), null, null);
+        clusterManager.addItem(offsetItem);
+        clusterManager.setOnClusterItemClickListener(new ClusterManager.OnClusterItemClickListener<MyItem>() {
+            @Override
+            public boolean onClusterItemClick(MyItem item) {
+                return false;
+            }
+        });
+
         mMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
             @Override
             public void onInfoWindowClick(Marker marker) {

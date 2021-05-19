@@ -62,12 +62,13 @@ public class ProfilActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.fragment_profil);
         initView();
-        cardViewQR.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                showQRCode();
-            }
-        });
+        cardViewQR.setOnClickListener(v -> showQRCode());
+
+        userConnectText = findViewById(R.id.userConnectText);
+        userConnectDesc = findViewById(R.id.userConnectDescription);
+        userConnectNbC = findViewById(R.id.userConnectNbCreation);
+        userConnectNbP = findViewById(R.id.userConnectNbParticipation);
+        userConnectVille = findViewById(R.id.userConnectVille);
 
         userConnectText.setText(USER.getName());
         userConnectVille.setText(USER.getCity());

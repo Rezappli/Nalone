@@ -27,7 +27,7 @@ import org.json.JSONObject;
  * create an instance of this fragment.
  */
 public class SignUpLoginMailFragment extends SignUpFragment {
-
+ 
 
     public TextInputEditText inputMail;
     public TextInputEditText inputPass;
