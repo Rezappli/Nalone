@@ -64,6 +64,7 @@
     <string name="INFO"> INFO </string>
     <string name="LP"> LP </string>
     <string name="description"> Description (Facultatif) </string>
+    <string name="biographie"> Biographie </string>
     <string name="centresInteretsTitle"> Tes centres d\'intérêts : </string>
     <string name="title_activity_home">MainActivity</string>
     <string name="title_recherche"> Recherche </string>
