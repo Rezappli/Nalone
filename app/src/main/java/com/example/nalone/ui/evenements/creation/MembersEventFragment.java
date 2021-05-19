@@ -27,7 +27,6 @@ import com.example.nalone.json.JSONController;
 import com.example.nalone.json.JSONObjectCrypt;
 import com.example.nalone.listeners.JSONArrayListener;
 import com.example.nalone.util.Constants;
-import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 
 import org.json.JSONArray;
@@ -42,7 +41,6 @@ public class MembersEventFragment extends Fragment {
     private List<String> adds = new ArrayList<>();
     private RecyclerView mRecyclerView;
     private NavController navController;
-    private FirestoreRecyclerAdapter adapter;
     private Button buttonMoreInvit;
     private Button next;
     private boolean haveFriends;

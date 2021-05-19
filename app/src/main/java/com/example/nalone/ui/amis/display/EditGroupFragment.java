@@ -20,7 +20,6 @@ import com.example.nalone.enumeration.Visibility;
 import com.google.android.material.textfield.TextInputEditText;
 
 import static com.example.nalone.HomeActivity.buttonBack;
-import static com.example.nalone.util.Constants.mStoreBase;
 
 
 public class EditGroupFragment extends Fragment {
@@ -56,7 +55,6 @@ public class EditGroupFragment extends Fragment {
         buttonDeleteGroup.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mStoreBase.collection("groups").document(GROUP_LOAD.getUid()).delete();
                 navController.navigate(R.id.action_navigation_edit_group_to_navigation_mes_groupes);
             }
         });
@@ -95,7 +93,6 @@ public class EditGroupFragment extends Fragment {
 
                 GROUP_LOAD.setVisibility(visibility);
 
-                mStoreBase.collection("groups").document(GROUP_LOAD.getUid()).set(GROUP_LOAD);
                 Toast.makeText(getContext(), "Vous avez mis à jour le groupe", Toast.LENGTH_SHORT).show();
 
             }

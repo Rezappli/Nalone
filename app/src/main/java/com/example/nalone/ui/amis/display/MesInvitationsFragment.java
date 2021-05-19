@@ -24,26 +24,16 @@ import com.example.nalone.R;
 import com.example.nalone.items.ItemPerson;
 import com.example.nalone.objects.ModelData;
 import com.example.nalone.objects.User;
-import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
-import com.firebase.ui.firestore.FirestoreRecyclerOptions;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.firestore.Query;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import static com.example.nalone.HomeActivity.buttonBack;
 import static com.example.nalone.util.Constants.USER;
-import static com.example.nalone.util.Constants.mStoreBase;
-
 public class MesInvitationsFragment extends Fragment {
 
     private NavController navController;
     private RecyclerView mRecyclerView;
-    private FirestoreRecyclerAdapter adapter;
     private View rootView;
     private ArrayList<ItemPerson> invits = new ArrayList<>();
     private ProgressBar loading;
@@ -65,141 +55,8 @@ public class MesInvitationsFragment extends Fragment {
 
         navController = Navigation.findNavController(getActivity(), R.id.nav_host_fragment);
         mRecyclerView = rootView.findViewById(R.id.recyclerViewInvitAmis);
-        adapterInvits();
 
         return rootView;
-    }
-
-    private void adapterInvits() {
-
-        friends = new ArrayList<>();
-        mStoreBase.collection("users").document(USER.getUid()).collection("friends").whereEqualTo("status", "received").limit(10)
-                .get()
-                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        if (task.isSuccessful()) {
-                            for (QueryDocumentSnapshot document : task.getResult()) {
-                                Log.d("TAG", document.getId() + " => " + document.getData());
-                                friends.add(document.getId());
-                            }
-                            //query
-                            if (!friends.isEmpty()) {
-                                Query query = mStoreBase.collection("users").whereIn("uid", friends);
-                                FirestoreRecyclerOptions<User> options = new FirestoreRecyclerOptions.Builder<User>().setQuery(query, User.class).build();
-
-                                adapter = new FirestoreRecyclerAdapter<User, UserViewHolder>(options) {
-                                    @NonNull
-                                    @Override
-                                    public UserViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-                                        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_invit_amis, parent, false);
-                                        return new UserViewHolder(view);
-                                    }
-
-                                    @RequiresApi(api = Build.VERSION_CODES.O)
-                                    @Override
-                                    protected void onBindViewHolder(@NonNull final UserViewHolder userViewHolder, int i, @NonNull final User u) {
-                                        userViewHolder.villePers.setText(u.getCity());
-                                        userViewHolder.nomInvit.setText(u.getName());
-
-                                        //setUserImage(u,getContext(),userViewHolder.imagePerson);
-
-                                        userViewHolder.layoutProfil.setOnClickListener(new View.OnClickListener() {
-                                            @Override
-                                            public void onClick(View v) {
-                                                showPopUpProfil(u);
-                                            }
-                                        });
-
-                                        userViewHolder.buttonAdd.setOnClickListener(new View.OnClickListener() {
-                                            @Override
-                                            public void onClick(View v) {
-                                                acceptFriendRequest(u.getUid());
-                                                //Notification.createNotif(u,Notification.joinAmi());
-                                            }
-                                        });
-
-                                        userViewHolder.buttonRemove.setOnClickListener(new View.OnClickListener() {
-                                            @Override
-                                            public void onClick(View v) {
-                                                declineFriendRequest(u.getUid());
-                                            }
-                                        });
-                                        loading.setVisibility(View.GONE);
-
-                                    }
-                                };
-                                mRecyclerView.setHasFixedSize(true);
-                                mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-
-                                mRecyclerView.setAdapter(adapter);
-                                adapter.startListening();
-
-
-                            } else {
-                                navController.navigate(R.id.action_navigation_invitations_to_navigation_amis);
-                            }
-                        }
-                    }
-                });
-    }
-
-    public void showPopUpProfil(User u) {
-
-        PopupProfilFragment.USER_LOAD = u;
-        PopupProfilFragment.button = 0;
-
-        navController.navigate(R.id.action_navigation_amis_to_navigation_popup_profil);
-    }
-
-
-    private class UserViewHolder extends RecyclerView.ViewHolder {
-
-        private TextView nomInvit;
-        private LinearLayout layoutProfil;
-        private ImageView imagePerson;
-        private TextView villePers;
-        private ImageView buttonAdd, buttonRemove;
-
-        public UserViewHolder(@NonNull View itemView) {
-            super(itemView);
-
-            nomInvit = itemView.findViewById(R.id.nomAmisInvit);
-            villePers = itemView.findViewById(R.id.villeAmisInvit);
-            layoutProfil = itemView.findViewById(R.id.layoutInvitAmi);
-            imagePerson = itemView.findViewById(R.id.imageInvitAmis);
-            buttonAdd = itemView.findViewById(R.id.addInvitAmis);
-            buttonRemove = itemView.findViewById(R.id.removeInvitAmis);
-        }
-
-    }
-
-    private void acceptFriendRequest(final String uid) {
-        ModelData data1 = new ModelData("add", mStoreBase.collection("users").document(USER.getUid()));
-        ModelData data2 = new ModelData("add", mStoreBase.collection("users").document(uid));
-        mStoreBase.collection("users").document(USER.getUid()).collection("friends").document(uid).set(data2);
-        mStoreBase.collection("users").document(uid).collection("friends").document(USER.getUid()).set(data1);
-        Toast.makeText(getContext(), "Vous avez ajouté(e) cet utilisateur", Toast.LENGTH_SHORT).show();
-        navController.navigate(R.id.action_navigation_invitations_self);
-    }
-
-    private void declineFriendRequest(final String uid) {
-
-        mStoreBase.collection("users").document(USER.getUid()).collection("friends").document(uid).delete();
-
-        mStoreBase.collection("users").document(uid).collection("friends").document(USER.getUid()).delete();
-
-        Toast.makeText(getContext(), "Vous n'avez pas accepté(e) cet utilisateur", Toast.LENGTH_SHORT).show();
-        navController.navigate(R.id.action_navigation_invitations_self);
-    }
-
-
-    @Override
-    public void onStop() {
-        super.onStop();
-        if (adapter != null) {
-            adapter.stopListening();
-        }
     }
 
 

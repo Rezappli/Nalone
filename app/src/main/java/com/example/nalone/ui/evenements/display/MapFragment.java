@@ -479,6 +479,11 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         params.putCryptParameter("longitude", USER.getLongitude());
         params.putCryptParameter("range", range);
 
+        nearby_events = new ArrayList<>();
+        eventsPopular = new ArrayList<>();
+
+
+
         Log.w("Params", params.toString());
 
         JSONController.getJsonArrayFromUrl(Constants.URL_NEARBY_EVENTS, getContext(), params, new JSONArrayListener() {
@@ -487,7 +492,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                 Log.w("Response", "Value:" + jsonArray.toString());
                 try {
                     if (jsonArray.length() > 0) {
-                        nearby_events = new ArrayList<>();
                         for (int i = 0; i < jsonArray.length(); i++) {
                             nearby_events.add((Evenement) JSONController.convertJSONToObject(jsonArray.getJSONObject(i), Evenement.class));
                         }
@@ -514,7 +518,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
             public void onJSONReceived(JSONArray jsonArray) {
                 try {
                     if (jsonArray.length() > 0) {
-                        eventsPopular = new ArrayList<>();
                         for (int i = 0; i < jsonArray.length(); i++) {
                             eventsPopular.add((Evenement) JSONController.convertJSONToObject(jsonArray.getJSONObject(i), Evenement.class));
                         }

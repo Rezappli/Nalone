@@ -21,18 +21,14 @@ import androidx.navigation.Navigation;
 import com.example.nalone.R;
 import com.example.nalone.objects.User;
 import com.example.nalone.ui.amis.display.PopupProfilFragment;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.android.gms.vision.CameraSource;
 import com.google.android.gms.vision.Detector;
 import com.google.android.gms.vision.barcode.Barcode;
 import com.google.android.gms.vision.barcode.BarcodeDetector;
-import com.google.firebase.firestore.DocumentSnapshot;
 
 import java.io.IOException;
 
 import static com.example.nalone.util.Constants.USER;
-import static com.example.nalone.util.Constants.mStoreBase;
 
 public class CameraFragment extends Fragment {
 
@@ -120,7 +116,7 @@ public class CameraFragment extends Fragment {
                             found = true;
                             Vibrator v = (Vibrator) getActivity().getApplicationContext().getSystemService(Context.VIBRATOR_SERVICE);
                             v.vibrate(400);
-                            mStoreBase.collection("users").document(qrcodes.valueAt(0).displayValue).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                            /*mStoreBase.collection("users").document(qrcodes.valueAt(0).displayValue).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                                 @Override
                                 public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                                     User u = task.getResult().toObject(User.class);
@@ -129,7 +125,7 @@ public class CameraFragment extends Fragment {
                                         navController.navigate(R.id.action_navigation_camera_to_navigation_popup_profil);
                                     }
                                 }
-                            });
+                            });*/
                         }
                     }
                 }

@@ -21,19 +21,14 @@ import com.example.nalone.dialog.ListAmisFragment;
 import com.example.nalone.objects.Group;
 import com.example.nalone.ui.amis.display.PopUpMesGroupesFragment;
 import com.example.nalone.util.Constants;
-import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
-import com.firebase.ui.firestore.FirestoreRecyclerOptions;
-import com.google.firebase.firestore.Query;
 
 import static com.example.nalone.util.Constants.USER;
-import static com.example.nalone.util.Constants.mStoreBase;
 
 public class MessagesGroupeFragment extends Fragment {
 
 
     private NavController navController;
     private RecyclerView mRecyclerView;
-    private FirestoreRecyclerAdapter adapter;
     private ImageView addGroup;
     private SwipeRefreshLayout mSwipeRefreshLayout;
     private View rootView;
@@ -73,38 +68,6 @@ public class MessagesGroupeFragment extends Fragment {
 
     private void adapterGroups() {
 
-        Query query = mStoreBase.collection("groups").whereEqualTo("ownerDoc", "users/" + USER.getUid());
-        FirestoreRecyclerOptions<Group> options = new FirestoreRecyclerOptions.Builder<Group>().setQuery(query, Group.class).build();
-
-        adapter = new FirestoreRecyclerAdapter<Group, GroupViewHolder>(options) {
-            @NonNull
-            @Override
-            public GroupViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-                View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_groupe, parent, false);
-                return new GroupViewHolder(view);
-            }
-
-            @Override
-            protected void onBindViewHolder(@NonNull final GroupViewHolder userViewHolder, int i, @NonNull final Group g) {
-                final Group group = g;
-                userViewHolder.nomGroup.setText(g.getName());
-
-                userViewHolder.layoutGroup.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        showPopUpGroup(group);
-                    }
-                });
-
-                Constants.setGroupImage(g, userViewHolder.imageGroup);
-
-            }
-        };
-        mRecyclerView.setHasFixedSize(true);
-        mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-
-        mRecyclerView.setAdapter(adapter);
-        mSwipeRefreshLayout.setRefreshing(false);
     }
 
     private class GroupViewHolder extends RecyclerView.ViewHolder {
@@ -135,21 +98,4 @@ public class MessagesGroupeFragment extends Fragment {
         super.onResume();
         createFragment();
     }
-
-
-    @Override
-    public void onStart() {
-        super.onStart();
-        adapter.startListening();
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
-        if (adapter != null) {
-            adapter.stopListening();
-        }
-    }
-
-
 }

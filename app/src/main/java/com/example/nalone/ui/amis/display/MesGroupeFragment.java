@@ -17,14 +17,12 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.nalone.R;
 import com.example.nalone.json.JSONObjectCrypt;
 import com.example.nalone.objects.Group;
-import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 
 public class MesGroupeFragment extends Fragment {
 
 
     private NavController navController;
     private RecyclerView mRecyclerView;
-    private FirestoreRecyclerAdapter adapter;
     private ImageView addGroup;
     private ProgressBar loading;
     private LinearLayout linearSansMesGroupes;

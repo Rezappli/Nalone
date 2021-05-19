@@ -1,7 +1,6 @@
 package com.example.nalone.objects;
 
 import com.example.nalone.enumeration.Visibility;
-import com.google.firebase.firestore.DocumentReference;
 
 public class Group {
     private String uid;

@@ -22,16 +22,11 @@ import com.example.nalone.R;
 import com.example.nalone.enumeration.Visibility;
 import com.example.nalone.objects.Group;
 import com.example.nalone.util.Constants;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.List;
 
 import static com.example.nalone.HomeActivity.buttonBack;
 import static com.example.nalone.util.Constants.USER;
-import static com.example.nalone.util.Constants.mStoreBase;
 
 
 public class PopUpMesGroupesFragment extends Fragment {
@@ -73,125 +68,6 @@ public class PopUpMesGroupesFragment extends Fragment {
     }
 
     private void createFragment() {
-        nbMembers = 0;
-        navController = Navigation.findNavController(getActivity(), R.id.nav_host_fragment);
-        textViewNbMembers = root.findViewById(R.id.groupNbMembers);
-        buttonBack.setVisibility(View.VISIBLE);
-        fenetrePrincipal = root.findViewById(R.id.fenetrePrincipal);
-        fenetrePrincipal.setVisibility(View.GONE);
 
-        descriptionGroup = root.findViewById(R.id.groupDescription);
-        ajoutDesc = root.findViewById(R.id.ajoutDesc);
-        ajoutDesc.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                afficherDescription();
-                modifierDescription();
-            }
-        });
-
-        relativeDesc = root.findViewById(R.id.relativeDesc);
-        cardViewProfilEdit = root.findViewById(R.id.cardViewEditGroup);
-        cardViewPhotoEdit = root.findViewById(R.id.cardViewPhotoEditImg);
-        cardViewPhotoEditDesc = root.findViewById(R.id.cardViewPhotoEditDesc);
-        cardViewProfilMembers = root.findViewById(R.id.cardViewEditMembers);
-
-        cardViewProfilMembers.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                ListMembresFragment.GROUP_LOAD = GROUP_LOAD;
-                navController.navigate(R.id.action_navigation_popup_mes_groupes_to_navigation_list_membres);
-            }
-        });
-        groupDesc = root.findViewById(R.id.groupDesc);
-        imageViewEditDescription = root.findViewById(R.id.imageViewEditDescription);
-
-        nameGroup = root.findViewById(R.id.groupName);
-        nbCreateGroup = root.findViewById(R.id.nbEventCreate);
-        nbParticipateGroup = root.findViewById(R.id.nbEventParticipe);
-        imageGroup = root.findViewById(R.id.imageViewGroup);
-        ownerGroup = root.findViewById(R.id.groupOwner);
-        visibilityGroup = root.findViewById(R.id.groupVisibility);
-
-        if (GROUP_LOAD.getVisibility() == Visibility.PUBLIC)
-            visibilityGroup.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_baseline_public_24, 0, 0, 0);
-        else
-            visibilityGroup.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_baseline_lock_24, 0, 0, 0);
-
-        cardViewPhotoPerson = root.findViewById(R.id.cardViewPhotoPerson);
-
-        nameGroup.setText(GROUP_LOAD.getName());
-        groupDesc.setText(GROUP_LOAD.getDescription());
-        groupDesc.setText(GROUP_LOAD.getDescription());
-        groupDesc.setClickable(false);
-        groupDesc.setEnabled(false);
-        ownerGroup.setText(GROUP_LOAD.getOwner());
-        visibilityGroup.setText(GROUP_LOAD.getVisibility().toString());
-
-        cardViewProfilEdit.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                EditGroupFragment.GROUP_LOAD = GROUP_LOAD;
-                navController.navigate(R.id.action_navigation_popup_mes_groupes_to_navigation_edit_group);
-            }
-        });
-
-        cardViewPhotoEditDesc.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (!editDescription) {
-                    modifierDescription();
-                } else {
-                    groupDesc.setClickable(false);
-                    groupDesc.setEnabled(false);
-                    imageViewEditDescription.setImageResource(R.drawable.ic_baseline_edit_24);
-                    editDescription = false;
-                    if (!groupDesc.getText().toString().equalsIgnoreCase(USER.getDescription())) {
-                        GROUP_LOAD.setDescription(groupDesc.getText().toString());
-                        mStoreBase.collection("groups").document(GROUP_LOAD.getUid()).set(GROUP_LOAD);
-                        Toast.makeText(getContext(), "Vous avez mis à jour la description du groupe", Toast.LENGTH_SHORT).show();
-                    }
-                }
-            }
-        });
-
-
-        mStoreBase.collection("groups").document(GROUP_LOAD.getUid()).collection("members").whereEqualTo("status", "add")
-                .get()
-                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        if (task.isSuccessful()) {
-                            for (QueryDocumentSnapshot document : task.getResult()) {
-                                nbMembers++;
-                            }
-                        }
-                        textViewNbMembers.setText(nbMembers + " membres");
-
-                        fenetrePrincipal.setVisibility(View.VISIBLE);
-                    }
-                });
-
-
-        Constants.setGroupImage(GROUP_LOAD, imageGroup);
-
-        if (GROUP_LOAD.getDescription().equalsIgnoreCase("")) {
-            relativeDesc.setVisibility(View.GONE);
-            ajoutDesc.setVisibility(View.VISIBLE);
-        } else {
-            afficherDescription();
-        }
-    }
-
-    private void modifierDescription() {
-        groupDesc.setClickable(true);
-        groupDesc.setEnabled(true);
-        imageViewEditDescription.setImageResource(R.drawable.ic_baseline_check_24);
-        editDescription = true;
-    }
-
-    private void afficherDescription() {
-        relativeDesc.setVisibility(View.VISIBLE);
-        ajoutDesc.setVisibility(View.GONE);
     }
 }

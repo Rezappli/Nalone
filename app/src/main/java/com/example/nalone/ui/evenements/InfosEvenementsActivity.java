@@ -48,13 +48,12 @@ public class InfosEvenementsActivity extends AppCompatActivity {
     public static Evenement EVENT_LOAD;
 
     public static String type;
-    private View rootView;
     private TextView textViewNbMembers;
     private TextView nbParticipants;
     private int participants;
     private ImageView buttonInscription, ownerImage;
     private TextView textViewInscription;
-    private ImageView buttonPartager, buttonAnnuler;
+    private ImageView imageEvenement, buttonPartager, buttonAnnuler;
     private TextView diffDate;
     private Handler handler = new Handler();
     private boolean inscrit;
@@ -70,10 +69,9 @@ public class InfosEvenementsActivity extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_infos_evenements);
-        createFragment();
-        setData();
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     private void createFragment() {
         participants = 0;
         TextView mTitle = findViewById(R.id.title);
@@ -94,6 +92,7 @@ public class InfosEvenementsActivity extends AppCompatActivity {
         buttonAnnuler = findViewById(R.id.buttonAnnuler);
         ownerImage = findViewById(R.id.ownerImage);
         buttonBack = findViewById(R.id.buttonBack);
+        imageEvenement = findViewById(R.id.imageEvenement);
         buttonBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -175,54 +174,10 @@ public class InfosEvenementsActivity extends AppCompatActivity {
         } else if (EVENT_LOAD.getStatusEvent() == StatusEvent.BIENTOT) {
             textViewTitleDebut.setText(getResources().getString(R.string.event_start_in));
         }
-        /*mStoreBase.collection("events").document(EVENT_LOAD.getUid())
-                .collection("members").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                for(QueryDocumentSnapshot doc : task.getResult()){
-                    //members.add(doc.toObject(ModelDataEvent.class).getUser().getId());
-                    members.add(doc.getId());
-                    participants ++;
-                }
-                nbParticipants.setText(participants+"");
-                if(!members.isEmpty()){
-                    Query query = mStoreBase.collection("users").whereIn("uid", members);
-                    FirestoreRecyclerOptions<User> options = new FirestoreRecyclerOptions.Builder<User>().setQuery(query, User.class).build();
 
-                    adapter = new FirestoreRecyclerAdapter<User, InfosEvenementsActivity.UserViewHolder>(options) {
+        Constants.setEventImage(EVENT_LOAD, imageEvenement);
 
-                        @Override
-                        public InfosEvenementsActivity.UserViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-                            View view = LayoutInflater.from(parent.getBaseContext()()).inflate(R.layout.image_user, parent, false);
-                            return new InfosEvenementsActivity.UserViewHolder(view);
-                        }
-
-                        @RequiresApi(api = Build.VERSION_CODES.O)
-                        @Override
-                        protected void onBindViewHolder(@NonNull final InfosEvenementsActivity.UserViewHolder userViewHolder, int i, @NonNull final User u) {
-                            Constants.setUserImage(u, getBaseContext()(), userViewHolder.imagePerson);
-                        }
-                    };
-
-                    mRecyclerView.setAdapter(adapter);
-                    adapter.startListening();
-
-
-                    mLayoutManager = new LinearLayoutManager(
-                            getBaseContext()(),
-                            LinearLayoutManager.HORIZONTAL,
-                            false);
-                    mRecyclerView.setLayoutManager(mLayoutManager);
-                }else{
-                    mRecyclerView.setVisibility(View.GONE);
-                }
-
-            }
-        });*/
-
-        //if(EVENT_LOAD.getImage_url() != null){
-        //Constants.setEventImage(EVENT_LOAD, getBaseContext()(), imageEvent);
-        //}
+        setData();
     }
 
 
@@ -383,9 +338,11 @@ public class InfosEvenementsActivity extends AppCompatActivity {
         handler.removeCallbacks(runnable);
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     public void onResume() {
         handler.postDelayed(runnable, 0);
+        createFragment();
         super.onResume();
     }
 
