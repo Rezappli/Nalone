@@ -1,13 +1,16 @@
 package com.example.nalone.signUpActivities;
 
-import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
+import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.RequiresApi;
+import androidx.core.content.ContextCompat;
 
 import com.android.volley.VolleyError;
 import com.example.nalone.R;
@@ -16,14 +19,14 @@ import com.example.nalone.json.JSONObjectCrypt;
 import com.example.nalone.listeners.JSONObjectListener;
 import com.example.nalone.objects.User;
 import com.example.nalone.util.Constants;
-import com.example.nalone.util.CryptoUtils;
 
-import org.json.JSONException;
 import org.json.JSONObject;
 
-import static com.example.nalone.util.Constants.USER;
-
 public class CheckMailValidationActivity extends CheckValidationActivity {
+
+    private Button buttonValidate;
+    private Handler handler;
+    private Runnable runnable;
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
@@ -31,52 +34,44 @@ public class CheckMailValidationActivity extends CheckValidationActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_check_mail_validation);
 
+        buttonValidate = findViewById(R.id.buttonCheckValidation);
+        buttonValidate.setOnClickListener(v -> createUser());
         Bundle extras = getIntent().getExtras();
+
         if (extras != null) {
             password = extras.getString("password");
-            login = extras.getString("field");
+            login = extras.getString("login");
             user = (User) extras.getSerializable("user");
             initWidgets();
         }
+
+        handler = new Handler();
+
+        runnable = this::checkValidationMail;
+
+
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     private void initWidgets() {
         TextView infoUser = findViewById(R.id.infoUserCheckValidation);
-        checkMail(login, password);
+        checkMail();
         infoUser.setText(login);
-
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
-    private void checkMail(final String mail, final String pass) {
-        final SharedPreferences loginPreferences = getSharedPreferences("login", MODE_PRIVATE);
-        final SharedPreferences.Editor editor = loginPreferences.edit();
+    private void checkMail() {
 
         JSONObjectCrypt params = new JSONObjectCrypt();
-        params.putCryptParameter("mail", mail);
-        params.putCryptParameter("password", pass);
+        params.putCryptParameter("mail", login);
+        params.putCryptParameter("uid", user.getUid());
 
 
-        JSONController.getJsonObjectFromUrl(Constants.URL_SIGN_IN, this, params, new JSONObjectListener() {
+        JSONController.getJsonObjectFromUrl(Constants.URL_SEND_MAIL, this, params, new JSONObjectListener() {
             @Override
             public void onJSONReceived(JSONObject jsonObject) {
-                if (jsonObject.length() == 3) {
-                    try {
-                        editor.putString("mail", CryptoUtils.encrypt(mail));
-                        editor.putString("password", CryptoUtils.encrypt(pass));
-                        editor.apply();
-                        loadUserData(jsonObject);
-                    } catch (JSONException e) {
-                        Toast.makeText(getBaseContext(), getResources().getString(R.string.error), Toast.LENGTH_SHORT).show();
-                        Log.w("Response", "Erreur:" + e.getMessage());
-                    }
-                } else if (jsonObject.length() == 4) {
-                    Toast.makeText(getBaseContext(), getResources().getString(R.string.mail_not_verified), Toast.LENGTH_SHORT).show();
-                    Log.w("Response", "Mail not verified");
-                } else {
-                    Toast.makeText(getBaseContext(), getResources().getString(R.string.mail_or_password_incorrect), Toast.LENGTH_SHORT).show();
-                }
+                Log.w("Response", "JSON Object received, uid : " + user.getUid());
+                handler.postDelayed(runnable, 1000);
             }
 
             @Override
@@ -88,21 +83,31 @@ public class CheckMailValidationActivity extends CheckValidationActivity {
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
-    private void loadUserData(JSONObject json) throws JSONException {
+    private void checkValidationMail() {
         JSONObjectCrypt params = new JSONObjectCrypt();
-        params.putCryptParameter("uid", json.getString("uid"));
+        params.putCryptParameter("uid", user.getUid());
 
-        JSONController.getJsonObjectFromUrl(Constants.URL_ME, this, params, new JSONObjectListener() {
+        JSONController.getJsonObjectFromUrl(Constants.URL_CHECK_MAIL_VALIDATION, getBaseContext(), params, new JSONObjectListener() {
             @Override
             public void onJSONReceived(JSONObject jsonObject) {
-                USER = (User) JSONController.convertJSONToObject(jsonObject, User.class);
-                Toast.makeText(getBaseContext(), "CA FONCTIONNNNNE", Toast.LENGTH_SHORT).show();
+                handler.postDelayed(runnable, 1000);
+
+                if (jsonObject.length() == 3) {
+                    buttonValidate.setBackground(ContextCompat.getDrawable(getBaseContext(), R.drawable.custom_button_simple));
+                    buttonValidate.setTextColor(Color.WHITE);
+                    buttonValidate.setClickable(true);
+                    user.setMail(login);
+                    Log.w("MAIL", "VALIDATE");
+                    handler.removeCallbacks(runnable);
+                }
+                Log.w("MAIL", "NO VALIDATE");
+
             }
 
             @Override
             public void onJSONReceivedError(VolleyError volleyError) {
-                Toast.makeText(getBaseContext(), getResources().getString(R.string.error), Toast.LENGTH_SHORT).show();
-                Log.w("Response", "Erreur:" + volleyError.toString());
+                Log.w("MAIL", "NOOO");
+
             }
         });
     }

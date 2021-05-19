@@ -178,7 +178,6 @@ public class ProfilActivity extends AppCompatActivity {
         JSONObjectCrypt params = new JSONObjectCrypt();
         params.putCryptParameter("uid", USER.getUid());
         params.putCryptParameter("name", USER.getName());
-        params.putCryptParameter("center_interest", USER.getCenter_interest());
         params.putCryptParameter("city", USER.getCity());
         params.putCryptParameter("description", USER.getDescription());
         params.putCryptParameter("latitude", USER.getLatitude());

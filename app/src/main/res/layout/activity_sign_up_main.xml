@@ -79,9 +79,9 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_gravity="center"
-                    android:layout_marginTop="2dp"
                     android:contentDescription="@string/TODO"
-                    app:srcCompat="@drawable/step_two" />
+                    app:srcCompat="@drawable/ic_baseline_location_edit" />
+
             </androidx.cardview.widget.CardView>
 
         </androidx.cardview.widget.CardView>
@@ -113,42 +113,6 @@
 
                 <ImageView
                     android:id="@+id/imageViewStep3"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_gravity="center"
-                    android:contentDescription="@string/TODO"
-                    app:srcCompat="@drawable/ic_baseline_location_edit" />
-            </androidx.cardview.widget.CardView>
-
-        </androidx.cardview.widget.CardView>
-
-        <View
-            android:id="@+id/viewStep4"
-            android:layout_width="match_parent"
-            android:layout_height="18dp"
-            android:layout_marginTop="20dp"
-            android:layout_marginBottom="40dp"
-            android:layout_weight="1"
-            android:background="#aaaaaa" />
-
-        <androidx.cardview.widget.CardView
-            android:id="@+id/cardViewStep4"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:layout_marginTop="4dp"
-            app:cardBackgroundColor="#aaaaaa"
-            app:cardCornerRadius="20dp">
-
-            <androidx.cardview.widget.CardView
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:layout_gravity="center"
-                android:background="@drawable/custom_stepview"
-                app:cardBackgroundColor="#FFFFFF"
-                app:cardCornerRadius="15dp">
-
-                <ImageView
-                    android:id="@+id/imageViewStep4"
                     android:layout_width="35dp"
                     android:layout_height="35dp"
                     android:layout_gravity="center"

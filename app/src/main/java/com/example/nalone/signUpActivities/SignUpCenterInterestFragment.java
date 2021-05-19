@@ -19,7 +19,7 @@ public class SignUpCenterInterestFragment extends SignUpFragment implements Adap
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        rootView = R.layout.fragment_sign_up_center_interest;
+        rootView = R.layout.fragment_welcome_center_interest;
     }
 
     @Override
@@ -37,7 +37,6 @@ public class SignUpCenterInterestFragment extends SignUpFragment implements Adap
 
     @Override
     public void onNextClicked() {
-        user.setCenter_interest(inputCenterOfInterest);
         notifySignUpMainListenerChange();
     }
 

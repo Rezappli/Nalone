@@ -2,7 +2,6 @@ package com.example.nalone.signUpActivities;
 
 import android.os.Build;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -91,8 +90,7 @@ public class SignUpInfosFragment extends SignUpFragment {
         JSONObjectCrypt params = new JSONObjectCrypt();
         params.putCryptParameter("pseudo", pseudoEntered);
 
-        Log.w("param", params.toString());
-        JSONController.getJsonObjectFromUrl(Constants.URL_EXISTING_PSEUDO, getContext(), params, new JSONObjectListener() {
+        JSONController.getJsonObjectFromUrl(Constants.URL_EXISTING_OBJECT, getContext(), params, new JSONObjectListener() {
             @Override
             public void onJSONReceived(JSONObject jsonObject) {
                 if (jsonObject.length() == 3) {

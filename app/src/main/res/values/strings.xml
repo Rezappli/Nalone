@@ -10,7 +10,8 @@
     <string name="ignorer"> Ignorer</string>
     <string name="desinscriptionButton">Se désinscrire </string>
     <string name="buttonConnexion"> Se connecter </string>
-    <string name="titleSignUpOne"> Nom et prénom </string>
+    <string name="titleSignUpOne"> Nom et pseudo </string>
+    <string name="subtitleSignUpOne"> Le pseudo permet aux autre utilisateurs de vous retrouver plus facilement </string>
     <string name="titleSignUpTwo"> Centre d\'intéret préféré </string>
     <string name="titleSignUpThree"> Localisation </string>
     <string name="titleSignUpContact"> Contact </string>
@@ -19,14 +20,23 @@
     <string name="homme"> Homme </string>
     <string name="femme"> Femme </string>
     <string name="activity"> Activité </string>
-    <string name="nom"> Nom </string>
+    <string name="nom">Prénom Nom </string>
     <string name="pseudo"> Pseudo </string>
     <string name="prenom"> Prenom </string>
     <string name="error_name_short">Nom trop court</string>
     <string name="error_surname_short">Pseudo trop court</string>
+    <string name="error_mail_incorrect">Adresse mail invalide</string>
+    <string name="error_phone_incorrect">Numéro de téléphone invalide</string>
     <string name="error_name_empty">Entrez votre nom</string>
+    <string name="error_mail_empty">Entrez votre adresse mail</string>
+    <string name="error_password_empty">Entrez votre mot de passe</string>
+    <string name="error_conifrm_password_empty">Confirmez votre mot de passe</string>
+    <string name="error_conifrm_password_incorrect">Le mot de passe ne correspond pas</string>
+    <string name="error_phone_empty">Entrez votre numéro de téléphone</string>
     <string name="error_surname_empty">Entrez votre pseudo</string>
     <string name="error_surname_existing">Pseudo déjà utilisé</string>
+    <string name="error_mail_existing">Adresse mail déjà utilisé</string>
+    <string name="error_phone_existing">Téléphone déjà utilisé</string>
     <string name="select_sex">Sélectionnez votre sexe</string>
     <string name="ville"> Ville </string>
     <string name="pays"> Pays </string>
@@ -117,7 +127,7 @@
     <string name="location_mesevent"> Créer </string>
     <string name="descriptionNF"> Description : </string>
     <string name="afficher"> Afficher </string>
-    <string name="CI"> Centres d\'interêt </string>
+    <string name="CI"> Centre d\'interêt </string>
     <string name="or_main"> OU </string>
     <string name="particular"> Particulier </string>
     <string name="professional"> Professionnel </string>
@@ -277,7 +287,7 @@
     <string name="image_get_error">Impossible d\'e récupérer l\'image :(</string>
     <string name="event_not_save">Votre évènement n\'est pas sauvegardé ! \nCette action est irréversible ! Vous vous continuez ?</string>
     <string name="event_error_create">Impossible de créer l\'évènement :(</string>
-    <string name="user_error_create">Impossible de vous inscrire :( Veuillez réessayer</string>
+    <string name="user_error_create">Impossible de vous inscrire... Veuillez réessayer</string>
 
     <string name="wait"> Attente </string>
     <string name="canceled"> Annulé </string>
@@ -296,6 +306,7 @@
     <string name="filter_date_choose"> Choisir une date </string>
     <string name="welcome_title">Bienvenu sur </string>
     <string name="welcome_subtitle">Complète ton profil </string>
+    <string name="welcome_photo_title">Changer de photo</string>
     <!--Strings for BottomParticipate -->
     <string name="amount">Quantité</string>
     <string name="CGU_participation"> En validant votre participation, vous accceptez les

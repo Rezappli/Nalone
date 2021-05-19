@@ -18,7 +18,7 @@ import java.util.UUID;
 
 public abstract class SignUpFragment extends Fragment implements SignUpListener {
 
-    protected static User user;
+    protected User user;
     protected int rootView;
     protected View view;
     protected Drawable customErrorDrawable;

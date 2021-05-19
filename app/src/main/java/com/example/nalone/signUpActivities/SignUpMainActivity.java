@@ -24,9 +24,9 @@ public class SignUpMainActivity extends NoLonelyActivity implements SignUpMainLi
     private static List<SignUpListener> listeners;
     public static SignUpMainListener listenerMain;
 
-    private View viewStep2, viewStep3, viewStep4, viewStepFinal;
-    private CardView cardViewStep2, cardViewStep3, cardViewStep4;
-    private ImageView imageViewStep1, imageViewStep2, imageViewStep3, imageViewStep4;
+    private View viewStep2, viewStep3, viewStepFinal;
+    private CardView cardViewStep2, cardViewStep3;
+    private ImageView imageViewStep1, imageViewStep2, imageViewStep3;
 
 
     @Override
@@ -39,17 +39,14 @@ public class SignUpMainActivity extends NoLonelyActivity implements SignUpMainLi
 
         viewStep2 = findViewById(R.id.viewStep2);
         viewStep3 = findViewById(R.id.viewStep3);
-        viewStep4 = findViewById(R.id.viewStep4);
         viewStepFinal = findViewById(R.id.viewStepFinal);
 
         cardViewStep2 = findViewById(R.id.cardViewStep2);
         cardViewStep3 = findViewById(R.id.cardViewStep3);
-        cardViewStep4 = findViewById(R.id.cardViewStep4);
 
         imageViewStep1 = findViewById(R.id.imageViewStep1);
         imageViewStep2 = findViewById(R.id.imageViewStep2);
         imageViewStep3 = findViewById(R.id.imageViewStep3);
-        imageViewStep4 = findViewById(R.id.imageViewStep4);
 
         listenerMain = this;
     }
@@ -78,21 +75,17 @@ public class SignUpMainActivity extends NoLonelyActivity implements SignUpMainLi
         // step 1
         if (fragment instanceof SignUpInfosFragment) {
             updateStep(imageViewStep1, cardViewStep2, viewStep2, false);
-            navController.navigate(R.id.action_signUpInfosFragment_to_signUpCenterInterestFragment);
+            navController.navigate(R.id.action_signUpInfosFragment_to_signUpLocationFragment);
         }
-        if (fragment instanceof SignUpCenterInterestFragment) {
-            updateStep(imageViewStep2, cardViewStep3, viewStep3, false);
-            navController.navigate(R.id.action_signUpCenterInterestFragment_to_signUpLocationFragment);
-        }
-
         if (fragment instanceof SignUpLocationFragment) {
-            updateStep(imageViewStep3, cardViewStep4, viewStep4, false);
+            updateStep(imageViewStep2, cardViewStep3, viewStep3, false);
             navController.navigate(R.id.action_signUpLocationFragment_to_signUpLoginFragment);
         }
 
         if (fragment instanceof SignUpLoginFragment) {
-            updateStep(imageViewStep4, null, viewStepFinal, false);
+            updateStep(imageViewStep3, null, viewStepFinal, false);
         }
+
     }
 
     @Override
@@ -104,19 +97,16 @@ public class SignUpMainActivity extends NoLonelyActivity implements SignUpMainLi
             if (fragment instanceof SignUpInfosFragment) {
                 super.onBackPressed();
             }
-            if (fragment instanceof SignUpCenterInterestFragment) {
+            if (fragment instanceof SignUpLocationFragment) {
                 updateStep(imageViewStep1, cardViewStep2, viewStep2, true);
-                navController.navigate(R.id.action_signUpCenterInterestFragment_to_signUpInfosFragment);
+                navController.navigate(R.id.action_signUpLocationFragment_to_signUpInfosFragment);
             }
 
-            if (fragment instanceof SignUpLocationFragment) {
-                updateStep(imageViewStep2, cardViewStep3, viewStep3, true);
-                navController.navigate(R.id.action_signUpLocationFragment_to_signUpCenterInterestFragment);
-            }
             if (fragment instanceof SignUpLoginFragment) {
-                updateStep(imageViewStep3, cardViewStep4, viewStep4, true);
+                updateStep(imageViewStep2, cardViewStep3, viewStep3, true);
                 navController.navigate(R.id.action_signUpLoginFragment_to_signUpLocationFragment);
             }
+
         }
     }
 

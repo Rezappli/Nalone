@@ -11,8 +11,8 @@
         android:label="fragment_sign_up_infos"
         tools:layout="@layout/fragment_sign_up_infos">
         <action
-            android:id="@+id/action_signUpInfosFragment_to_signUpCenterInterestFragment"
-            app:destination="@id/signUpCenterInterestFragment" />
+            android:id="@+id/action_signUpInfosFragment_to_signUpLocationFragment"
+            app:destination="@id/signUpLocationFragment" />
     </fragment>
     <fragment
         android:id="@+id/signUpLocationFragment"
@@ -23,8 +23,8 @@
             android:id="@+id/action_signUpLocationFragment_to_signUpLoginFragment"
             app:destination="@id/signUpLoginFragment" />
         <action
-            android:id="@+id/action_signUpLocationFragment_to_signUpCenterInterestFragment"
-            app:destination="@id/signUpCenterInterestFragment" />
+            android:id="@+id/action_signUpLocationFragment_to_signUpInfosFragment"
+            app:destination="@id/signUpInfosFragment" />
     </fragment>
     <fragment
         android:id="@+id/signUpLoginFragment"
@@ -33,18 +33,6 @@
         tools:layout="@layout/fragment_sign_up_login">
         <action
             android:id="@+id/action_signUpLoginFragment_to_signUpLocationFragment"
-            app:destination="@id/signUpLocationFragment" />
-    </fragment>
-    <fragment
-        android:id="@+id/signUpCenterInterestFragment"
-        android:name="com.example.nalone.signUpActivities.SignUpCenterInterestFragment"
-        android:label="fragment_sign_up_center_interest"
-        tools:layout="@layout/fragment_sign_up_center_interest">
-        <action
-            android:id="@+id/action_signUpCenterInterestFragment_to_signUpInfosFragment"
-            app:destination="@id/signUpInfosFragment" />
-        <action
-            android:id="@+id/action_signUpCenterInterestFragment_to_signUpLocationFragment"
             app:destination="@id/signUpLocationFragment" />
     </fragment>
 </navigation>

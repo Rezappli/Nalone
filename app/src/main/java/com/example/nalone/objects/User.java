@@ -6,13 +6,12 @@ public class User implements Serializable {
     private String uid;
     private String name;
     private String pseudo;
-    private String center_interest;
     private String city;
     private String number;
     private String mail;
     private String description;
-    private String number_events_create;
-    private String number_events_attend;
+    private int number_events_create;
+    private int number_events_attend;
     private String image_url;
     private double latitude;
     private double longitude;
@@ -25,13 +24,12 @@ public class User implements Serializable {
     }
 
 
-    public User(String uid, String name, String pseudo, String center_of_interest, String city,
+    public User(String uid, String name, String pseudo, String city,
                 String number, String mail,
                 String description) {
         this.uid = uid;
         this.name = name;
         this.pseudo = pseudo;
-        this.center_interest = center_of_interest;
         this.city = city;
         this.number = number;
         this.mail = mail;
@@ -39,8 +37,8 @@ public class User implements Serializable {
 
         this.description = description;
 
-        this.number_events_create = "0";
-        this.number_events_attend = "0";
+        this.number_events_create = 0;
+        this.number_events_attend = 0;
         this.image_url = null;
     }
 
@@ -84,19 +82,19 @@ public class User implements Serializable {
         this.description = description;
     }
 
-    public String getNumber_events_create() {
+    public int getNumber_events_create() {
         return number_events_create;
     }
 
-    public void setNumber_events_create(String number_events_create) {
+    public void setNumber_events_create(int number_events_create) {
         this.number_events_create = number_events_create;
     }
 
-    public String getNumber_events_attend() {
+    public int getNumber_events_attend() {
         return number_events_attend;
     }
 
-    public void setNumber_events_attend(String number_events_attend) {
+    public void setNumber_events_attend(int number_events_attend) {
         this.number_events_attend = number_events_attend;
     }
 
@@ -140,21 +138,12 @@ public class User implements Serializable {
         this.pseudo = pseudo;
     }
 
-    public String getCenter_interest() {
-        return center_interest;
-    }
-
-    public void setCenter_interest(String center_interest) {
-        this.center_interest = center_interest;
-    }
-
     @Override
     public String toString() {
         return "User{" +
                 "uid='" + uid + '\'' +
                 ", name='" + name + '\'' +
                 ", pseudo='" + pseudo + '\'' +
-                ", center_interest='" + center_interest + '\'' +
                 ", city='" + city + '\'' +
                 ", number='" + number + '\'' +
                 ", mail='" + mail + '\'' +

@@ -2,15 +2,24 @@ package com.example.nalone.signUpActivities;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.fragment.app.Fragment;
 
+import com.android.volley.VolleyError;
 import com.example.nalone.R;
+import com.example.nalone.json.JSONController;
+import com.example.nalone.json.JSONObjectCrypt;
+import com.example.nalone.listeners.JSONObjectListener;
+import com.example.nalone.util.Constants;
 import com.google.android.material.textfield.TextInputEditText;
+
+import org.json.JSONObject;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -43,6 +52,7 @@ public class SignUpLoginMailFragment extends SignUpFragment {
         Log.w("SIGNUP", "CREATE MAIL");
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     public void onNextClicked() {
         if (isMail) {
@@ -51,12 +61,12 @@ public class SignUpLoginMailFragment extends SignUpFragment {
             String confirmPassEntered = inputConfirmPass.getText().toString();
 
             if (mailEntered.matches("")) {
-                inputMail.setError("Entrez votre adresse mail", customErrorDrawable);
+                inputMail.setError(getResources().getString(R.string.error_mail_empty), customErrorDrawable);
                 return;
             }
 
             if (mailEntered.length() <= 3) {
-                inputMail.setError("Adresse mail inconnue", customErrorDrawable);
+                inputMail.setError(getResources().getString(R.string.error_mail_incorrect), customErrorDrawable);
                 return;
             }
 
@@ -67,30 +77,46 @@ public class SignUpLoginMailFragment extends SignUpFragment {
                             && !substringl3.contains(".be")
                             && !substringl4.contains(".com")
                             && !substringl4.contains(".net"))) {
-                inputMail.setError("Adresse mail inconnue", customErrorDrawable);
+                inputMail.setError(getResources().getString(R.string.error_mail_incorrect), customErrorDrawable);
                 return;
             }
 
             if (passEntered.matches("")) {
-                inputPass.setError("Entrez votre mot de passe", customErrorDrawable);
+                inputPass.setError(getResources().getString(R.string.error_password_empty), customErrorDrawable);
                 return;
             }
             if (passEntered.matches("")) {
-                inputConfirmPass.setError("Confirmez votre mot de passe", customErrorDrawable);
+                inputConfirmPass.setError(getResources().getString(R.string.error_conifrm_password_empty), customErrorDrawable);
                 return;
             }
             if (!passEntered.equals(confirmPassEntered)) {
-                inputConfirmPass.setError("Le mot de passe ne correspond pas", customErrorDrawable);
+                inputConfirmPass.setError(getResources().getString(R.string.error_conifrm_password_incorrect), customErrorDrawable);
                 return;
             }
 
-            Intent intent = new Intent(getContext(), CheckMailValidationActivity.class);
-            intent.putExtra("login", mailEntered);
-            intent.putExtra("password", passEntered);
-            intent.putExtra("user", user);
+            JSONObjectCrypt params = new JSONObjectCrypt();
+            params.putCryptParameter("mail", mailEntered);
 
-            startActivity(intent);
+            JSONController.getJsonObjectFromUrl(Constants.URL_EXISTING_OBJECT, getContext(), params, new JSONObjectListener() {
+                @Override
+                public void onJSONReceived(JSONObject jsonObject) {
+                    if (jsonObject.length() == 3) {
+                        Intent intent = new Intent(getContext(), CheckMailValidationActivity.class);
+                        intent.putExtra("login", mailEntered);
+                        intent.putExtra("password", passEntered);
+                        intent.putExtra("user", user);
+                        startActivity(intent);
+                    } else {
+                        inputMail.setError(getResources().getString(R.string.error_mail_existing), customErrorDrawable);
+                    }
+                }
 
+                @Override
+                public void onJSONReceivedError(VolleyError volleyError) {
+                    inputMail.setError(getResources().getString(R.string.error), customErrorDrawable);
+
+                }
+            });
         }
 
     }

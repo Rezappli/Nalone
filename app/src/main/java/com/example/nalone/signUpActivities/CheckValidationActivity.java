@@ -40,25 +40,23 @@ public class CheckValidationActivity extends AppCompatActivity {
         params.putCryptParameter("uid", user.getUid());
         params.putCryptParameter("name", user.getName());
         params.putCryptParameter("pseudo", user.getPseudo());
-        params.putCryptParameter("center_interest", user.getCenter_interest());
         params.putCryptParameter("city", user.getCity());
-        params.putCryptParameter("description", null);
         params.putCryptParameter("mail", user.getMail());
         params.putCryptParameter("phone", user.getNumber());
-        params.putCryptParameter("number_events_attend", "0");
-        params.putCryptParameter("number_events_create", "0");
-        params.putCryptParameter("image_url", null);
         params.putCryptParameter("latitude", user.getLatitude());
         params.putCryptParameter("longitude", user.getLongitude());
         params.putCryptParameter("password", password);
-        params.putCryptParameter("is_valid", 1);
+
+        Log.w("CREATION_USER", params.toString());
 
 
         JSONController.getJsonObjectFromUrl(Constants.URL_REGISTER, getBaseContext(), params, new JSONObjectListener() {
             @Override
             public void onJSONReceived(JSONObject jsonObject) {
                 USER = user;
-                startActivity(new Intent(getBaseContext(), WelcomeActivity.class));
+                Intent intent = new Intent(getBaseContext(), WelcomeActivity.class);
+                intent.putExtra("user", user);
+                startActivity(intent);
             }
 
             @Override

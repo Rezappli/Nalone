@@ -1,13 +1,22 @@
 package com.example.nalone.signUpActivities;
 
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.fragment.app.Fragment;
 
+import com.android.volley.VolleyError;
 import com.example.nalone.R;
+import com.example.nalone.json.JSONController;
+import com.example.nalone.json.JSONObjectCrypt;
+import com.example.nalone.listeners.JSONObjectListener;
+import com.example.nalone.util.Constants;
 import com.google.android.material.textfield.TextInputEditText;
+
+import org.json.JSONObject;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -38,6 +47,7 @@ public class SignUpLoginPhoneFragment extends SignUpFragment {
         inputConfirmPass = view.findViewById(R.id.signupConfirmPass);
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     public void onNextClicked() {
         if (!isMail) {
@@ -46,35 +56,47 @@ public class SignUpLoginPhoneFragment extends SignUpFragment {
             String confirmPassEntered = inputConfirmPass.getText().toString();
 
             if (telEntered.matches("")) {
-                inputPhone.setError("Entrez votre numéro de téléphone", customErrorDrawable);
-                return;
-            }
-
-            if (telEntered.length() < 8) {
-                inputPhone.setError("Entrez votre numéro de téléphone", customErrorDrawable);
+                inputPhone.setError(getString(R.string.error_phone_empty), customErrorDrawable);
                 return;
             }
 
             if (passEntered.matches("")) {
-                inputPass.setError("Entrez votre mot de passe", customErrorDrawable);
+                inputPass.setError(getString(R.string.error_password_empty), customErrorDrawable);
                 return;
             }
 
             if (passEntered.matches("")) {
-                inputConfirmPass.setError("Confirmez votre mot de passe", customErrorDrawable);
+                inputConfirmPass.setError(getString(R.string.error_conifrm_password_empty), customErrorDrawable);
                 return;
             }
 
             if (!passEntered.equals(confirmPassEntered)) {
-                inputConfirmPass.setError("Le mot de passe ne correspond pas", customErrorDrawable);
+                inputConfirmPass.setError(getString(R.string.error_conifrm_password_incorrect), customErrorDrawable);
                 return;
             }
+            JSONObjectCrypt params = new JSONObjectCrypt();
+            params.putCryptParameter("phone", telEntered);
 
-            Intent intent = new Intent(getContext(), CheckPhoneValidationActivity.class);
-            intent.putExtra("login", telEntered);
-            intent.putExtra("password", passEntered);
-            intent.putExtra("user", user);
-            startActivity(intent);
+            JSONController.getJsonObjectFromUrl(Constants.URL_EXISTING_OBJECT, getContext(), params, new JSONObjectListener() {
+                @Override
+                public void onJSONReceived(JSONObject jsonObject) {
+                    if (jsonObject.length() == 3) {
+                        Intent intent = new Intent(getContext(), CheckPhoneValidationActivity.class);
+                        intent.putExtra("login", telEntered);
+                        intent.putExtra("password", passEntered);
+                        intent.putExtra("user", user);
+                        startActivity(intent);
+                    } else {
+                        inputPhone.setError(getResources().getString(R.string.error_mail_existing), customErrorDrawable);
+                    }
+                }
+
+                @Override
+                public void onJSONReceivedError(VolleyError volleyError) {
+                    inputPhone.setError(getResources().getString(R.string.error), customErrorDrawable);
+                }
+            });
+
         }
     }
 }
