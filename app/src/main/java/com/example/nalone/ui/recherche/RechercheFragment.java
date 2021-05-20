@@ -120,6 +120,7 @@ public class RechercheFragment extends Fragment {
         JSONController.getJsonArrayFromUrl(Constants.URL_USER_WHITHOUT_ME, getContext(), params, new JSONArrayListener() {
             @Override
             public void onJSONReceived(JSONArray jsonArray) {
+                Log.w("Response", "Valeur" + jsonArray.toString());
                 try {
                     if (jsonArray.length() > 0) {
 

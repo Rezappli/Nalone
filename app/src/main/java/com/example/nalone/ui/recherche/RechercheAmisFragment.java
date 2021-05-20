@@ -165,6 +165,7 @@ public class RechercheAmisFragment extends Fragment {
                     loading.setVisibility(View.GONE);
 
                 } catch (JSONException e) {
+                    Log.w("Response", "Valeur" + jsonArray.toString());
                     Log.w("Response", "Erreur:" + e.getMessage());
                     Toast.makeText(getContext(), getResources().getString(R.string.error), Toast.LENGTH_SHORT).show();
                 }

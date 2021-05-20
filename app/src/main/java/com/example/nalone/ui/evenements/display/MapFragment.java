@@ -33,6 +33,8 @@ import com.example.nalone.enumeration.VisibilityMap;
 import com.example.nalone.json.JSONController;
 import com.example.nalone.json.JSONObjectCrypt;
 import com.example.nalone.listeners.JSONArrayListener;
+import com.example.nalone.objects.CustomMarker;
+import com.example.nalone.objects.CustomRenderer;
 import com.example.nalone.objects.Evenement;
 import com.example.nalone.objects.TypeEventObject;
 import com.example.nalone.ui.evenements.InfosEvenementsActivity;
@@ -47,9 +49,7 @@ import com.google.android.gms.maps.model.Circle;
 import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
-import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
-import com.google.maps.android.clustering.ClusterItem;
 import com.google.maps.android.clustering.ClusterManager;
 
 import org.json.JSONArray;
@@ -89,6 +89,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     private static CameraPosition posCam = null;
     private View viewGrey;
     private Circle circle = null;
+    private ClusterManager<CustomMarker> clusterManager;
 
 
     // Bottom sheet
@@ -463,9 +464,9 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         mMap = googleMap;
 
         clusterManager = new ClusterManager<>(getContext(), mMap);
+        clusterManager.setRenderer(new CustomRenderer<>(getContext(), mMap, clusterManager));
         mMap.setOnCameraIdleListener(clusterManager);
         mMap.setOnMarkerClickListener(clusterManager);
-        addRandomPointsToMap();
 
         mMap.setOnCameraMoveListener(new GoogleMap.OnCameraMoveListener() {
             @Override
@@ -475,7 +476,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         });
 
         if (posCam == null) {
-            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(5, USER.getLongitude()), 10));
+            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(USER.getLatitude(), USER.getLongitude()), 10));
         } else {
             mMap.moveCamera(CameraUpdateFactory.newCameraPosition(posCam));
         }
@@ -547,57 +548,11 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
 
     }
 
-    public void addRandomPointsToMap() {
-        int LOWER = 1, UPPER = 10;
-        int sydneyLatitude = -30;
-        int sydneyLongitude = 120;
-        LatLng location = new LatLng(0, 0);
-        for (int i = 0; i < 5; i++) {
-            int latitude = sydneyLatitude + (int) (Math.random() * (UPPER - LOWER)) + LOWER;
-            int longitude = sydneyLongitude + (int) (Math.random() * (UPPER - LOWER)) + LOWER;
-            location = new LatLng(latitude, longitude);
-            mMap.addMarker(new MarkerOptions().position(location));
-            MyItem offsetItem = new MyItem(latitude, longitude, "test", "This is a test item");
-            clusterManager.addItem(offsetItem);
-        }
-
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(location));
-
-    }
-
-    public class MyItem implements ClusterItem {
-        private final LatLng position;
-        private final String title;
-        private final String snippet;
-
-        public MyItem(double lat, double lng, String title, String snippet) {
-            position = new LatLng(lat, lng);
-            this.title = title;
-            this.snippet = snippet;
-        }
-
-        @Override
-        public LatLng getPosition() {
-            return position;
-        }
-
-        @Override
-        public String getTitle() {
-            return title;
-        }
-
-        @Override
-        public String getSnippet() {
-            return snippet;
-        }
-    }
-
-    // Declare a variable for the cluster manager.
-    private ClusterManager<MyItem> clusterManager;
-
     @RequiresApi(api = Build.VERSION_CODES.M)
     public void updateMap(VisibilityMap visibilityMap) {
-        mMap.clear();
+        Log.w("Marker", "Clear cluster");
+        clusterManager.clearItems();
+        //mMap.clear();
         switch (visibilityMap) {
             case ALL:
                 for (Evenement e : nearby_events) {
@@ -652,27 +607,22 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     }
 
     private void addMarkerOnMap(Evenement e) {
-
-        MarkerOptions mk = new MarkerOptions();
-
-        //mk.title(e.getName());
-        mk.position(new LatLng(e.getLatitude(), e.getLongitude()));
+        Log.w("Marker", "Marker add on map : " + e.getName());
+        CustomMarker m;
 
         if (e.getVisibility().equals(Visibility.PUBLIC)) {
-            mk.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));
+            m = new CustomMarker(new LatLng(e.getLatitude(), e.getLongitude()), BitmapDescriptorFactory.HUE_RED);
         } else {
             if (e.getOwner_uid().equalsIgnoreCase(USER.getUid())) {
-                mk.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));
+                m = new CustomMarker(new LatLng(e.getLatitude(), e.getLongitude()), BitmapDescriptorFactory.HUE_GREEN);
             } else {
-                mk.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE));
+                m = new CustomMarker(new LatLng(e.getLatitude(), e.getLongitude()), BitmapDescriptorFactory.HUE_BLUE);
             }
         }
-        mMap.addMarker(mk).setTag(e);
-        MyItem offsetItem = new MyItem(e.getLatitude(), e.getLongitude(), null, null);
-        clusterManager.addItem(offsetItem);
-        clusterManager.setOnClusterItemClickListener(new ClusterManager.OnClusterItemClickListener<MyItem>() {
+
+        clusterManager.setOnClusterItemClickListener(new ClusterManager.OnClusterItemClickListener<CustomMarker>() {
             @Override
-            public boolean onClusterItemClick(MyItem item) {
+            public boolean onClusterItemClick(CustomMarker item) {
                 return false;
             }
         });
@@ -708,7 +658,9 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
             }
         });
 
-
+        //mMap.addMarker(m.getMarkerOptions()).setTag(e);
+        clusterManager.addItem(m);
+        clusterManager.setAnimation(true);
     }
 
     @Override

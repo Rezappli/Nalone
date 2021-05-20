@@ -214,7 +214,7 @@
                 android:textStyle="bold" />
 
             <TextView
-                android:id="@+id/useConnectVille"
+                android:id="@+id/userConnectVille"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/userConnectText"
@@ -227,7 +227,7 @@
                 android:id="@+id/cardViewProfilDescription"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/useConnectVille"
+                android:layout_below="@id/userConnectVille"
                 android:layout_marginTop="15dp"
                 android:paddingStart="10dp">
 

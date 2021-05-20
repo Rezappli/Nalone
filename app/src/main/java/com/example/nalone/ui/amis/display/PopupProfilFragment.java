@@ -22,12 +22,14 @@ import com.android.volley.VolleyError;
 import com.example.nalone.R;
 import com.example.nalone.json.JSONController;
 import com.example.nalone.json.JSONObjectCrypt;
+import com.example.nalone.listeners.JSONArrayListener;
 import com.example.nalone.listeners.JSONObjectListener;
 import com.example.nalone.objects.User;
 import com.example.nalone.util.Constants;
 
 import org.eazegraph.lib.charts.PieChart;
 import org.eazegraph.lib.models.PieModel;
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
@@ -176,6 +178,25 @@ public class PopupProfilFragment extends Fragment {
 
 
         return root;
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    public void hasFriendRequest() {
+        JSONObjectCrypt params = new JSONObjectCrypt();
+        params.putCryptParameter("uid", USER_LOAD.getUid());
+
+        JSONController.getJsonArrayFromUrl(Constants.URL_FRIENDS_INVITATIONS, getContext(), params, new JSONArrayListener() {
+            @Override
+            public void onJSONReceived(JSONArray jsonArray) {
+                if (jsonArray.length() > 0) {
+                }
+            }
+
+            @Override
+            public void onJSONReceivedError(VolleyError volleyError) {
+
+            }
+        });
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)

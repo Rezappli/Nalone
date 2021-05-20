@@ -5,7 +5,6 @@ import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
-import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
@@ -52,14 +51,14 @@ public class SplashActivity extends AppCompatActivity {
         Constants.application = getApplication();
         SharedPreferences loginPreferences = getSharedPreferences("login", MODE_PRIVATE);
 
-        if(loginPreferences.contains("mail") && loginPreferences.contains("password")){
+        if (loginPreferences.contains("mail") && loginPreferences.contains("password")) {
             try {
                 verifyUserData(loginPreferences);
             } catch (JSONException e) {
                 Log.w("Response", e.getMessage());
                 launchMainActivity();
             }
-        }else{
+        } else {
             launchMainActivity();
         }
     }
@@ -70,12 +69,12 @@ public class SplashActivity extends AppCompatActivity {
         params.put("mail", loginPreferences.getString("mail", null)); //just put and not crypt because already mail and password crypt
         params.put("password", loginPreferences.getString("password", null));
 
-        Log.w("Splash", "Params: "+params.toString());
+        Log.w("Splash", "Params: " + params.toString());
 
         JSONController.getJsonObjectFromUrl(Constants.URL_SIGN_IN, SplashActivity.this, params, new JSONObjectListener() {
             @Override
             public void onJSONReceived(JSONObject jsonObject) {
-                if(jsonObject.length() == 3){
+                if (jsonObject.length() == 3) {
                     try {
                         loadUserData(jsonObject);
                     } catch (JSONException e) {
@@ -83,7 +82,7 @@ public class SplashActivity extends AppCompatActivity {
                         launchMainActivity();
                     }
                     launchHomeActivity();
-                }else{
+                } else {
                     launchMainActivity();
                 }
             }
@@ -91,7 +90,7 @@ public class SplashActivity extends AppCompatActivity {
             @Override
             public void onJSONReceivedError(VolleyError volleyError) {
                 launchMainActivity();
-                Log.w("Response", "Erreur : "+volleyError.toString());
+                Log.w("Response", "Erreur : " + volleyError.toString());
             }
         });
     }
@@ -104,23 +103,25 @@ public class SplashActivity extends AppCompatActivity {
         JSONController.getJsonObjectFromUrl(Constants.URL_ME, this, params, new JSONObjectListener() {
             @Override
             public void onJSONReceived(JSONObject jsonObject) {
-                USER = (User)JSONController.convertJSONToObject(jsonObject, User.class);
+                Log.w("User", jsonObject.toString());
+                USER = (User) JSONController.convertJSONToObject(jsonObject, User.class);
+                Log.w("User", "Ville : " + USER.getCity());
                 launchHomeActivity();
             }
 
             @Override
             public void onJSONReceivedError(VolleyError volleyError) {
-                Log.w("Response", "Erreur : "+volleyError.toString());
+                Log.w("Response", "Erreur : " + volleyError.toString());
                 launchMainActivity();
             }
         });
     }
 
-    private void launchMainActivity(){
+    private void launchMainActivity() {
         startActivity(new Intent(SplashActivity.this, MainActivity.class));
     }
 
-    private void launchHomeActivity(){
+    private void launchHomeActivity() {
         startActivity(new Intent(SplashActivity.this, HomeActivity.class));
     }
 }

@@ -64,16 +64,10 @@ public class ProfilActivity extends AppCompatActivity {
         initView();
         cardViewQR.setOnClickListener(v -> showQRCode());
 
-        userConnectText = findViewById(R.id.userConnectText);
-        userConnectDesc = findViewById(R.id.userConnectDescription);
-        userConnectNbC = findViewById(R.id.userConnectNbCreation);
-        userConnectNbP = findViewById(R.id.userConnectNbParticipation);
-        userConnectVille = findViewById(R.id.userConnectVille);
-
         userConnectText.setText(USER.getName());
-        userConnectVille.setText(USER.getCity());
-        userConnectNbC.setText(USER.getNumber_events_create()+"");
-        userConnectNbP.setText(USER.getNumber_events_attend()+"");
+        userConnectVille.setText(USER.getCity() + "");
+        userConnectNbC.setText(USER.getNumber_events_create() + "");
+        userConnectNbP.setText(USER.getNumber_events_attend() + "");
         userConnectDesc.setText(USER.getDescription());
         userConnectDesc.setClickable(false);
         userConnectDesc.setEnabled(false);
@@ -236,7 +230,7 @@ public class ProfilActivity extends AppCompatActivity {
     private void initView() {
         userConnectDesc = findViewById(R.id.userConnectDescription);
         userConnectText = findViewById(R.id.userConnectText);
-        userConnectVille = findViewById(R.id.useConnectVille);
+        userConnectVille = findViewById(R.id.userConnectVille);
         userConnectNbC = findViewById(R.id.userConnectNbCreation);
         userConnectNbP = findViewById(R.id.userConnectNbParticipation);
         cardViewProfilParametres = findViewById(R.id.cardViewProfilParametres);
