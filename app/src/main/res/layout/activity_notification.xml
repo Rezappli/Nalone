@@ -59,7 +59,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="0.8"
-                app:srcCompat="@drawable/ic_round_groups_24" />
+                app:srcCompat="@drawable/ic_baseline_groups_default" />
 
             <TextView
                 android:id="@+id/nomInvit"

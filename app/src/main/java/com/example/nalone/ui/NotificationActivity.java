@@ -1,5 +1,6 @@
 package com.example.nalone.ui;
 
+import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
@@ -24,6 +25,7 @@ import com.example.nalone.json.JSONObjectCrypt;
 import com.example.nalone.listeners.JSONArrayListener;
 import com.example.nalone.objects.Evenement;
 import com.example.nalone.objects.Notification;
+import com.example.nalone.objects.User;
 import com.example.nalone.objects.UserInvitation;
 import com.example.nalone.util.Constants;
 
@@ -46,7 +48,7 @@ public class NotificationActivity extends AppCompatActivity {
     private List<UserInvitation> invitationsFriend;
     private List<Evenement> invitationsEvent;
     private ProgressBar progressBar;
-
+    private ArrayList<User> listInvitations;
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
@@ -61,6 +63,8 @@ public class NotificationActivity extends AppCompatActivity {
         progressBar = findViewById(R.id.progressBar);
         buttonBack = findViewById(R.id.buttonBack);
         cardViewInvitsFriend = findViewById(R.id.cardViewInvitsFriend);
+
+        listInvitations = new ArrayList<User>();
         cardViewInvitsEvent = findViewById(R.id.cardViewInvitsEvent);
 
         textViewNbInvitEvent = findViewById(R.id.nbInvitsEvent);
@@ -76,6 +80,9 @@ public class NotificationActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 // navController.navigate(R.id.action_navigation_amis_to_navigation_invitations);
+                Intent intent = new Intent(getBaseContext(), UserListActivity.class);
+                intent.putExtra("users", listInvitations);
+                startActivity(intent);
             }
         });
 
