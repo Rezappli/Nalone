@@ -7,170 +7,24 @@
     android:background="@color/white"
     tools:context=".ui.evenements.creation.PhotoEventFragment">
 
-    <RelativeLayout
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:orientation="vertical">
 
-        <LinearLayout
-            android:id="@+id/iconsProgessLayout"
+        <ImageView
+            android:id="@+id/imagePhoto"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_above="@+id/progessLayout"
-            android:layout_marginBottom="0dp"
-            android:orientation="horizontal">
+            android:layout_height="200dp"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:layout_gravity="center"
+            android:layout_marginStart="20dp"
+            android:layout_marginEnd="20dp"
+            android:background="@drawable/custom_input1"
+            app:srcCompat="@drawable/ic_baseline_add_a_photo_24" />
 
-            <ImageView
-                android:id="@+id/imageProgessCreationPhoto"
-                android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:layout_weight="1"
-                android:src="@drawable/creation_event_photo" />
-
-            <ImageView
-                android:id="@+id/imageProgessCreationName"
-                android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:layout_weight="1"
-                android:src="@drawable/creation_event_name" />
-
-            <ImageView
-                android:id="@+id/imageProgessCreationDate"
-                android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:layout_weight="1"
-                android:src="@drawable/creation_event_date" />
-
-            <ImageView
-                android:id="@+id/imageProgessCreationPosition"
-                android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:layout_weight="1"
-                android:src="@drawable/creation_event_adress" />
-
-            <ImageView
-                android:id="@+id/imageProgessCreationMembers"
-                android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:layout_weight="1"
-                android:src="@drawable/creation_event_members" />
-
-            <ImageView
-                android:id="@+id/imageProgessCreationCost"
-                android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:layout_weight="1"
-                android:src="@drawable/cost_event" />
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/progessLayout"
-            android:layout_width="match_parent"
-            android:layout_height="5dp"
-            android:layout_alignParentBottom="true"
-            android:layout_marginBottom="0dp"
-            android:orientation="horizontal">
-
-            <androidx.cardview.widget.CardView
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                app:cardBackgroundColor="@color/colorPrimary"
-                app:cardCornerRadius="0dp" />
-
-            <androidx.cardview.widget.CardView
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                app:cardBackgroundColor="@color/lightGrey"
-                app:cardCornerRadius="0dp" />
-
-            <androidx.cardview.widget.CardView
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                app:cardBackgroundColor="@color/lightGrey"
-                app:cardCornerRadius="0dp" />
-
-            <androidx.cardview.widget.CardView
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                app:cardBackgroundColor="@color/lightGrey"
-                app:cardCornerRadius="0dp" />
-
-            <androidx.cardview.widget.CardView
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                app:cardBackgroundColor="@color/lightGrey"
-                app:cardCornerRadius="0dp">
-
-            </androidx.cardview.widget.CardView>
-
-            <androidx.cardview.widget.CardView
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                app:cardBackgroundColor="@color/lightGrey"
-                app:cardCornerRadius="0dp" />
-
-        </LinearLayout>
-
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_above="@+id/iconsProgessLayout"
-            android:layout_marginBottom="0dp">
-
-            <ImageView
-                android:id="@+id/imagePhoto"
-                android:layout_width="match_parent"
-                android:layout_height="200dp"
-                android:layout_centerInParent="true"
-                android:layout_gravity="center"
-                android:layout_marginStart="20dp"
-                android:layout_marginEnd="20dp"
-                android:background="@drawable/custom_input1"
-                app:srcCompat="@drawable/ic_baseline_add_a_photo_24" />
-
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_above="@id/imagePhoto"
-                android:layout_marginBottom="0dp">
-
-                <TextView
-                    android:id="@+id/textView55"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_centerInParent="true"
-                    android:gravity="center"
-                    android:text="@string/title_creation_event_photo"
-                    android:textSize="30sp" />
-            </RelativeLayout>
-
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_below="@id/imagePhoto"
-                android:layout_marginTop="0dp">
-
-                <Button
-                    android:id="@+id/buttonNextFragmentDate"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_centerInParent="true"
-                    android:layout_marginStart="50dp"
-                    android:layout_marginEnd="50dp"
-                    android:background="@drawable/custom_button_simple"
-                    android:text="@string/valid"
-                    android:textColor="@color/white" />
-
-            </RelativeLayout>
-
-        </RelativeLayout>
-
-    </RelativeLayout>
+    </LinearLayout>
 
 </FrameLayout>

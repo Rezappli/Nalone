@@ -1,35 +1,50 @@
 package com.example.nalone.ui.evenements.creation;
 
-import android.annotation.SuppressLint;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Build;
 import android.os.Bundle;
-
-import androidx.annotation.RequiresApi;
-import androidx.fragment.app.DialogFragment;
-import androidx.fragment.app.Fragment;
-
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.annotation.RequiresApi;
+import androidx.fragment.app.DialogFragment;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.example.nalone.R;
 import com.example.nalone.dialog.SelectDateFragment;
 import com.example.nalone.dialog.TimePickerFragment;
 import com.example.nalone.enumeration.StatusEvent;
+import com.example.nalone.listeners.CreationFragmentListener;
 import com.example.nalone.util.TimeUtil;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-public class DateEventFragment extends Fragment {
-    public static TextView eventStartDate, eventStartHoraire, eventEndDate, eventEndHoraire;
-    private Button next;
+import static com.example.nalone.dialog.SelectDateFragment.ACTION_RECEIVE_DATE;
+import static com.example.nalone.dialog.SelectDateFragment.EXTRA_START_DATE;
+
+public class DateEventFragment extends EventFragment implements CreationFragmentListener {
+    private TextView eventStartDate, eventStartHoraire, eventEndDate, eventEndHoraire;
+
+    private final BroadcastReceiver receiverDate = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if (intent != null) {
+                if (intent.getStringExtra(EXTRA_START_DATE) != null) {
+                    eventStartDate.setText(intent.getStringExtra(EXTRA_START_DATE));
+                } else {
+                    eventEndDate.setText(intent.getStringExtra(EXTRA_START_DATE));
+                }
+            }
+        }
+    };
 
     public DateEventFragment() {
         // Required empty public constructor
@@ -44,19 +59,7 @@ public class DateEventFragment extends Fragment {
         eventEndDate = root.findViewById(R.id.eventEndDate);
         eventStartHoraire = root.findViewById(R.id.eventHoraire);
         eventEndHoraire = root.findViewById(R.id.eventEndHoraire);
-        next = root.findViewById(R.id.buttonNextFragmentDate);
-        next.setOnClickListener(new View.OnClickListener() {
-            @RequiresApi(api = Build.VERSION_CODES.O)
-            @Override
-            public void onClick(View v) {
-                try {
-                    validateDate();
-                } catch (ParseException e) {
-                    Log.w("Response", "Erreur:" + e);
-                    Toast.makeText(getContext(), getResources().getString(R.string.error), Toast.LENGTH_SHORT).show();
-                }
-            }
-        });
+
         eventStartHoraire.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -93,80 +96,107 @@ public class DateEventFragment extends Fragment {
             }
         });
 
-
-        initialiserImageView(root);
-        checkValidation();
         return root;
     }
 
-    private ImageView imageProgessCreationPhoto,imageProgessCreationDate,imageProgessCreationPosition,imageProgessCreationName,
-            imageProgessCreationMembers,imageProgressCreationCost;
+    @Override
+    public void onResume() {
+        super.onResume();
+        IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction(ACTION_RECEIVE_DATE);
+        LocalBroadcastManager.getInstance(getContext()).registerReceiver(receiverDate, intentFilter);
+    }
 
-    private void initialiserImageView(View root) {
-        imageProgessCreationDate = root.findViewById(R.id.imageProgessCreationDate);
-        imageProgessCreationMembers = root.findViewById(R.id.imageProgessCreationMembers);
-        imageProgessCreationName = root.findViewById(R.id.imageProgessCreationName);
-        imageProgessCreationPosition = root.findViewById(R.id.imageProgessCreationPosition);
-        imageProgessCreationPhoto = root.findViewById(R.id.imageProgessCreationPhoto);
-        imageProgressCreationCost = root.findViewById(R.id.imageProgessCreationCost);
-        imageProgressCreationCost.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                MainCreationEventActivity.navController.navigate(R.id.action_dateEventFragment_to_costEventFragment);
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        LocalBroadcastManager.getInstance(getContext()).unregisterReceiver(receiverDate);
+
+    }
+
+    private String cutString(String s, int length, int start) {
+        if (length > s.length()) {
+            return null;
+        }
+
+        String temp = "";
+
+        int i = 0;
+        if (start != -1) {
+            for (i = start; i < length + start; i++) {
+                temp += s.charAt(i);
             }
-        });
-
-        imageProgessCreationName.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                goName();            }
-        });
-        imageProgessCreationPhoto.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                goPhoto();            }
-        });
-        imageProgessCreationPosition.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                goAdress();            }
-        });
-        imageProgessCreationMembers.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                goMembers();            }
-        });
-    }
-
-    @SuppressLint("UseCompatLoadingForDrawables")
-    private void checkValidation() {
-        if (MainCreationEventActivity.addressValidate) {
-            imageProgessCreationPosition.setImageDrawable(getResources().getDrawable(R.drawable.creation_event_adress_focused));
+        } else {
+            for (i = 0; i < length; i++) {
+                temp += s.charAt(i);
+            }
         }
-        if (MainCreationEventActivity.dateValidate) {
-            imageProgessCreationDate.setImageDrawable(getResources().getDrawable(R.drawable.creation_event_date_focused));
-            eventStartDate.setText(cutString(MainCreationEventActivity.currentEvent.getStartDate(), 10, -1));
-            eventEndDate.setText(cutString(MainCreationEventActivity.currentEvent.getStartDate(), 10, -1));
-            eventStartHoraire.setText(cutString(MainCreationEventActivity.currentEvent.getStartDate(), 5, 11));
-            eventEndHoraire.setText(cutString(MainCreationEventActivity.currentEvent.getStartDate(), 5, 11));
-        }
-        if (MainCreationEventActivity.membersValidate) {
-            imageProgessCreationMembers.setImageDrawable(getResources().getDrawable(R.drawable.creation_event_members_focused));
-        }
-        if (MainCreationEventActivity.nameValidate) {
-            imageProgessCreationName.setImageDrawable(getResources().getDrawable(R.drawable.creation_event_name_focused));
-        }
-        if (MainCreationEventActivity.photoValidate) {
-            imageProgessCreationPhoto.setImageDrawable(getResources().getDrawable(R.drawable.creation_event_photo_focused));
-        }
-        if (MainCreationEventActivity.costValidate){
-            imageProgressCreationCost.setImageDrawable(getResources().getDrawable(R.drawable.cost_event_focused));
-        }
+        return temp;
 
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.O)
-    private void validateDate() throws ParseException {
+    private final BroadcastReceiver receiverNextClick = new BroadcastReceiver() {
+        @RequiresApi(api = Build.VERSION_CODES.O)
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy hh:mm");
+
+            if (eventStartDate.getText().toString().equalsIgnoreCase("date")) {
+                eventStartDate.setError(getResources().getString(R.string.required_field));
+                return;
+            } else {
+                eventStartDate.setError(null);
+            }
+
+            if (eventEndDate.getText().toString().equalsIgnoreCase("date")) {
+                eventEndDate.setError(getResources().getString(R.string.required_field));
+                return;
+            } else {
+                eventEndDate.setError(null);
+            }
+
+            if (eventStartHoraire.getText().toString().equalsIgnoreCase("horaire")) {
+                eventStartHoraire.setError(getResources().getString(R.string.required_field));
+                return;
+            } else {
+                eventStartHoraire.setError(null);
+            }
+
+            if (eventEndHoraire.getText().toString().equalsIgnoreCase("horaire")) {
+                eventEndHoraire.setError(getResources().getString(R.string.required_field));
+                return;
+            } else {
+                eventEndHoraire.setError(null);
+            }
+
+
+            String tsStart = eventStartDate.getText().toString() + " " + eventStartHoraire.getText().toString();
+            String tsEnd = eventEndDate.getText().toString() + " " + eventEndHoraire.getText().toString();
+            StatusEvent seStart = null;
+            try {
+                seStart = TimeUtil.verifStatut(new Date(), sdf.parse(tsStart));
+                StatusEvent seEnd = TimeUtil.verifStatut(new Date(), sdf.parse(tsEnd));
+                if (seStart == StatusEvent.FINI || seStart == StatusEvent.EXPIRE || seEnd == StatusEvent.FINI || seEnd == StatusEvent.EXPIRE) {
+                    Toast.makeText(getContext(), getResources().getString(R.string.date_in_futur), Toast.LENGTH_SHORT).show();
+                } else {
+
+                    tsStart = tsStart.replaceAll("/", "-"); //convertion de date pour sql
+                    tsEnd = tsEnd.replaceAll("/", "-");
+
+                    MainCreationEventActivity.currentEvent.setStartDate(tsStart);
+                    MainCreationEventActivity.currentEvent.setEndDate(tsEnd);
+
+                    sendFragmentBroadcast(MainCreationEventActivity.CurrentFragment.DATE);
+                }
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+        }
+    };
+
+    @Override
+    public void onNextClicked() {
         SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy hh:mm");
 
         if (eventStartDate.getText().toString().equalsIgnoreCase("date")) {
@@ -200,72 +230,26 @@ public class DateEventFragment extends Fragment {
 
         String tsStart = eventStartDate.getText().toString() + " " + eventStartHoraire.getText().toString();
         String tsEnd = eventEndDate.getText().toString() + " " + eventEndHoraire.getText().toString();
-        StatusEvent seStart = TimeUtil.verifStatut(new Date(), sdf.parse(tsStart));
-        StatusEvent seEnd = TimeUtil.verifStatut(new Date(), sdf.parse(tsEnd));
-        if (seStart == StatusEvent.FINI || seStart == StatusEvent.EXPIRE || seEnd == StatusEvent.FINI || seEnd == StatusEvent.EXPIRE) {
-            Toast.makeText(getContext(), getResources().getString(R.string.date_in_futur), Toast.LENGTH_SHORT).show();
-        } else {
+        StatusEvent seStart = null;
+        try {
+            seStart = TimeUtil.verifStatut(new Date(), sdf.parse(tsStart));
+            StatusEvent seEnd = TimeUtil.verifStatut(new Date(), sdf.parse(tsEnd));
+            if (seStart == StatusEvent.FINI || seStart == StatusEvent.EXPIRE || seEnd == StatusEvent.FINI || seEnd == StatusEvent.EXPIRE) {
+                Toast.makeText(getContext(), getResources().getString(R.string.date_in_futur), Toast.LENGTH_SHORT).show();
+            } else {
 
-            tsStart = tsStart.replaceAll("/", "-"); //convertion de date pour sql
-            tsEnd = tsEnd.replaceAll("/", "-");
+                tsStart = tsStart.replaceAll("/", "-"); //convertion de date pour sql
+                tsEnd = tsEnd.replaceAll("/", "-");
 
-            MainCreationEventActivity.dateValidate = true;
-            MainCreationEventActivity.currentEvent.setStartDate(tsStart);
-            MainCreationEventActivity.currentEvent.setEndDate(tsEnd);
-            if (MainCreationEventActivity.isAllValidate(getContext())){
-                MainCreationEventActivity.createEvent(getContext());
-            } else if (!MainCreationEventActivity.photoValidate) {
-                goPhoto();
-            }else if (!MainCreationEventActivity.nameValidate) {
-                goName();
-            } else if (!MainCreationEventActivity.addressValidate) {
-                goAdress();
-            }  else if (!MainCreationEventActivity.membersValidate) {
-                goMembers();
-            }else if(!MainCreationEventActivity.costValidate){
-                goCost();
+                MainCreationEventActivity.currentEvent.setStartDate(tsStart);
+                MainCreationEventActivity.currentEvent.setEndDate(tsEnd);
+
+                sendFragmentBroadcast(MainCreationEventActivity.CurrentFragment.DATE);
             }
+        } catch (ParseException e) {
+            e.printStackTrace();
         }
 
-    }
-
-    private void goAdress() {
-        MainCreationEventActivity.navController.navigate(R.id.action_dateEventFragment_to_adressEventFragment);
-    }
-
-    private void goMembers() {
-        MainCreationEventActivity.navController.navigate(R.id.action_dateEventFragment_to_membersEventFragment);
-    }
-
-    private void goName() {
-        MainCreationEventActivity.navController.navigate(R.id.action_dateEventFragment_to_nameEventFragment);
-    }
-
-    private void goPhoto() {
-        MainCreationEventActivity.navController.navigate(R.id.action_dateEventFragment_to_photoEventFragment);
-    }
-    private void goCost(){
-        MainCreationEventActivity.navController.navigate(R.id.action_dateEventFragment_to_costEventFragment);    }
-
-
-    private String cutString(String s, int length, int start){
-        if(length > s.length()){
-            return null;
-        }
-
-        String temp = "";
-
-        int i = 0;
-        if(start != -1){
-            for(i=start; i<length+start; i++){
-                temp += s.charAt(i);
-            }
-        }else{
-            for(i=0; i<length; i++){
-                temp += s.charAt(i);
-            }
-        }
-        return temp;
 
     }
 }

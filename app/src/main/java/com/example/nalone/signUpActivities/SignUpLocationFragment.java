@@ -8,6 +8,7 @@ import android.os.Bundle;
 import androidx.annotation.Nullable;
 
 import com.example.nalone.R;
+import com.example.nalone.listeners.CreationFragmentListener;
 import com.google.android.gms.common.api.Status;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.libraries.places.api.Places;
@@ -26,7 +27,7 @@ import static android.app.Activity.RESULT_CANCELED;
 import static android.app.Activity.RESULT_OK;
 
 
-public class SignUpLocationFragment extends SignUpFragment implements SignUpListener {
+public class SignUpLocationFragment extends SignUpFragment implements CreationFragmentListener {
 
     private TextInputEditText inputCity;
     private TextInputEditText inputAdress;

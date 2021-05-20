@@ -12,11 +12,12 @@ import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
 import com.example.nalone.R;
+import com.example.nalone.listeners.CreationFragmentListener;
 import com.example.nalone.objects.User;
 
 import java.util.UUID;
 
-public abstract class SignUpFragment extends Fragment implements SignUpListener {
+public abstract class SignUpFragment extends Fragment implements CreationFragmentListener {
 
     protected static User user;
     protected int rootView;

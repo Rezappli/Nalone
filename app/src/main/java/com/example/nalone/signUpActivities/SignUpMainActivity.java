@@ -14,15 +14,17 @@ import androidx.navigation.fragment.NavHostFragment;
 
 import com.example.nalone.NoLonelyActivity;
 import com.example.nalone.R;
+import com.example.nalone.listeners.CreationFragmentListener;
+import com.example.nalone.listeners.CreationMainListener;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class SignUpMainActivity extends NoLonelyActivity implements SignUpMainListener {
+public class SignUpMainActivity extends NoLonelyActivity implements CreationMainListener {
 
     private NavController navController;
-    private static List<SignUpListener> listeners;
-    public static SignUpMainListener listenerMain;
+    private static List<CreationFragmentListener> listeners;
+    public static CreationMainListener listenerMain;
 
     private View viewStep2, viewStep3, viewStepFinal;
     private CardView cardViewStep2, cardViewStep3;
@@ -55,17 +57,17 @@ public class SignUpMainActivity extends NoLonelyActivity implements SignUpMainLi
         notifySignUpListenersNext();
     }
 
-    public static void registerSignUpListener(SignUpListener listener) {
+    public static void registerSignUpListener(CreationFragmentListener listener) {
         if (listeners == null) listeners = new ArrayList<>();
         listeners.add(listener);
     }
 
-    public static void unregisterSignUpListener(SignUpListener listener) {
+    public static void unregisterSignUpListener(CreationFragmentListener listener) {
         listeners.remove(listener);
     }
 
     private void notifySignUpListenersNext() {
-        for (SignUpListener listener : listeners) {
+        for (CreationFragmentListener listener : listeners) {
             listener.onNextClicked();
         }
     }

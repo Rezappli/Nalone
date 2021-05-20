@@ -1,9 +1,12 @@
 package com.example.nalone.ui.evenements.creation;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.BroadcastReceiver;
 import android.content.Context;
-import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Build;
@@ -12,6 +15,7 @@ import android.provider.MediaStore;
 import android.util.Base64;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -20,6 +24,9 @@ import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
+import androidx.core.content.ContextCompat;
+import androidx.fragment.app.Fragment;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 
@@ -48,7 +55,7 @@ public class MainCreationEventActivity extends AppCompatActivity {
     public static NavController navController;
     public static ImageView buttonBack, buttonNotif;
     public static Evenement currentEvent;
-    public static boolean photoValidate, dateValidate, nameValidate, membersValidate, addressValidate, costValidate;
+    private boolean photoValidate, dateValidate, nameValidate, membersValidate, addressValidate, costValidate;
     public static Uri image = null;
 
     private static Activity activity;
@@ -59,21 +66,99 @@ public class MainCreationEventActivity extends AppCompatActivity {
 
     private CardView cardViewPublic, cardViewPrivate;
 
+    private ImageView imageProgessCreationDate, imageProgessCreationMembers,
+            imageProgessCreationName, imageProgessCreationPosition, imageProgessCreationPhoto, imageProgressCreationCost;
+    private CardView cardViewProgressCreationDate, cardViewProgressCreationMembers,
+            cardViewProgressCreationName, cardViewProgressCreationPosition, cardViewProgressCreationPhoto, cardViewProgressCreationCost;
+
+    public static String ACTION_RECEIVE_FRAGMENT = "ACTION_RECEIVE_FRAGMENT";
+    public static String ACTION_RECEIVE_NEXT_CLICK = "ACTION_RECEIVE_NEXT_CLICK";
+
+    private final BroadcastReceiver receiverFragmentValidate = new BroadcastReceiver() {
+        @RequiresApi(api = Build.VERSION_CODES.O)
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if (intent != null) {
+                CurrentFragment currentFragment = CurrentFragment.valueOf(intent.getStringExtra("fragment"));
+
+                switch (currentFragment) {
+                    case DATE:
+                        imageProgessCreationDate.setImageDrawable(ContextCompat.getDrawable(getBaseContext(), R.drawable.creation_event_date_focused));
+                        dateValidate = true;
+                        break;
+                    case COST:
+                        imageProgressCreationCost.setImageDrawable(ContextCompat.getDrawable(getBaseContext(), R.drawable.cost_event_focused));
+                        costValidate = true;
+                        break;
+                    case NAME:
+                        imageProgessCreationName.setImageDrawable(ContextCompat.getDrawable(getBaseContext(), R.drawable.creation_event_name_focused));
+                        nameValidate = true;
+                        break;
+                    case PHOTO:
+                        imageProgessCreationPhoto.setImageDrawable(ContextCompat.getDrawable(getBaseContext(), R.drawable.creation_event_photo_focused));
+                        photoValidate = true;
+                        break;
+                    case ADRESS:
+                        imageProgessCreationPosition.setImageDrawable(ContextCompat.getDrawable(getBaseContext(), R.drawable.creation_event_adress_focused));
+                        addressValidate = true;
+                        break;
+                    case MEMBERS:
+                        imageProgessCreationMembers.setImageDrawable(ContextCompat.getDrawable(getBaseContext(), R.drawable.creation_event_members_focused));
+                        membersValidate = true;
+                        break;
+
+                }
+
+                Fragment nextFrag = null;
+
+                if (photoValidate && nameValidate && membersValidate && dateValidate && addressValidate) {
+                    createEvent();
+                } else if (!photoValidate) {
+                    nextFrag = new PhotoEventFragment();
+                } else if (!dateValidate) {
+                    nextFrag = new DateEventFragment();
+                } else if (!addressValidate) {
+                    nextFrag = new AdressEventFragment();
+                } else if (!membersValidate) {
+                    nextFrag = new MembersEventFragment();
+                } else if (!costValidate) {
+                    nextFrag = new CostEventFragment();
+                }
+
+
+                if (nextFrag != null) {
+                    changeFragment(nextFrag);
+                }
+
+                Log.w("EVENT", nameValidate + "");
+            }
+        }
+    };
+
+
+    public enum CurrentFragment {
+        NAME, ADRESS, DATE, COST, PHOTO, MEMBERS
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_creation_event);
+
+        initialiserImageView();
+        initialiserCardView();
+        Button buttonValidate = findViewById(R.id.buttonNextFragmentMembers);
+        buttonValidate.setOnClickListener(v -> {
+            LocalBroadcastManager localBctMgr = LocalBroadcastManager.getInstance(this);
+            localBctMgr.sendBroadcast(new Intent(ACTION_RECEIVE_NEXT_CLICK));
+        });
         bottomSheet = findViewById(R.id.sheetCreateEvent);
         viewGrey = findViewById(R.id.viewGrey2);
-        viewGrey.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (bottomSheetBehavior.getState() == BottomSheetBehavior.STATE_EXPANDED)
-                    bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
-                if (bottomSheetBehaviorType.getState() == BottomSheetBehavior.STATE_EXPANDED)
-                    bottomSheetBehaviorType.setState(BottomSheetBehavior.STATE_COLLAPSED);
-            }
+        viewGrey.setOnClickListener(v -> {
+            if (bottomSheetBehavior.getState() == BottomSheetBehavior.STATE_EXPANDED)
+                bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+            if (bottomSheetBehaviorType.getState() == BottomSheetBehavior.STATE_EXPANDED)
+                bottomSheetBehaviorType.setState(BottomSheetBehavior.STATE_COLLAPSED);
         });
         initFirstFiltre();
         initCardViewVisibility();
@@ -82,12 +167,7 @@ public class MainCreationEventActivity extends AppCompatActivity {
         activity = this;
         buttonBack = findViewById(R.id.buttonBack);
 
-        buttonBack.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                onBackPressed();
-            }
-        });
+        buttonBack.setOnClickListener(v -> onBackPressed());
 
         bottomSheetType = findViewById(R.id.sheetCreateEventType);
         bottomSheetBehaviorType = BottomSheetBehavior.from(bottomSheetType);
@@ -100,9 +180,7 @@ public class MainCreationEventActivity extends AppCompatActivity {
                         viewGrey.setVisibility(View.GONE);
                         break;
                     case BottomSheetBehavior.STATE_DRAGGING:
-                        break;
                     case BottomSheetBehavior.STATE_EXPANDED:
-                        break;
                     case BottomSheetBehavior.STATE_HIDDEN:
                         break;
 
@@ -140,15 +218,27 @@ public class MainCreationEventActivity extends AppCompatActivity {
         });
 
         bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
-        textViewVisibility.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                bottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
-                viewGrey.setVisibility(View.VISIBLE);
-            }
+        textViewVisibility.setOnClickListener(v -> {
+            bottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
+            viewGrey.setVisibility(View.VISIBLE);
         });
         navController = Navigation.findNavController(this, R.id.nav_host_fragment2);
     }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction(ACTION_RECEIVE_FRAGMENT);
+        LocalBroadcastManager.getInstance(getBaseContext()).registerReceiver(receiverFragmentValidate, intentFilter);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        LocalBroadcastManager.getInstance(getBaseContext()).unregisterReceiver(receiverFragmentValidate);
+    }
+
 
     private void initCardViewType() {
         CardView cardViewEventArt = findViewById(R.id.cardTypeEventArt);
@@ -160,112 +250,40 @@ public class MainCreationEventActivity extends AppCompatActivity {
         CardView cardTypeEventCar = findViewById(R.id.cardTypeEventCar);
         CardView cardTypeEventGather = findViewById(R.id.cardTypeEventGather);
         CardView cardTypeEventConference = findViewById(R.id.cardTypeEventConference);
-        CardView cardTypeEventShop = findViewById(R.id.cardTypeEventCar);
+        @SuppressLint("CutPasteId") CardView cardTypeEventShop = findViewById(R.id.cardTypeEventCar);
         CardView cardTypeEventShow = findViewById(R.id.cardTypeEventShow);
         CardView cardTypeEventScience = findViewById(R.id.cardTypeEventScience);
-        cardViewEventArt.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                changeType(TypeEvent.ART);
-            }
-        });
-        cardTypeEventSport.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                changeType(TypeEvent.SPORT);
-            }
-        });
-        cardTypeEventParty.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                changeType(TypeEvent.PARTY);
-            }
-        });
-        cardTypeEventMusic.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                changeType(TypeEvent.MUSIC);
-            }
-        });
-        cardTypeEventMovie.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                changeType(TypeEvent.MULTIMEDIA);
-            }
-        });
-        cardTypeEventGame.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                changeType(TypeEvent.GAME);
-            }
-        });
-        cardTypeEventCar.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                changeType(TypeEvent.CAR);
-            }
-        });
-        cardTypeEventGather.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                changeType(TypeEvent.GATHER);
-            }
-        });
-        cardTypeEventConference.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                changeType(TypeEvent.CONFERENCE);
-            }
-        });
-        cardTypeEventShop.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                changeType(TypeEvent.SHOP);
-            }
-        });
-        cardTypeEventShow.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                changeType(TypeEvent.SHOW);
-            }
-        });
-        cardTypeEventScience.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                changeType(TypeEvent.SCIENCE);
-            }
-        });
+        cardViewEventArt.setOnClickListener(v -> changeType(TypeEvent.ART));
+        cardTypeEventSport.setOnClickListener(v -> changeType(TypeEvent.SPORT));
+        cardTypeEventParty.setOnClickListener(v -> changeType(TypeEvent.PARTY));
+        cardTypeEventMusic.setOnClickListener(v -> changeType(TypeEvent.MUSIC));
+        cardTypeEventMovie.setOnClickListener(v -> changeType(TypeEvent.MULTIMEDIA));
+        cardTypeEventGame.setOnClickListener(v -> changeType(TypeEvent.GAME));
+        cardTypeEventCar.setOnClickListener(v -> changeType(TypeEvent.CAR));
+        cardTypeEventGather.setOnClickListener(v -> changeType(TypeEvent.GATHER));
+        cardTypeEventConference.setOnClickListener(v -> changeType(TypeEvent.CONFERENCE));
+        cardTypeEventShop.setOnClickListener(v -> changeType(TypeEvent.SHOP));
+        cardTypeEventShow.setOnClickListener(v -> changeType(TypeEvent.SHOW));
+        cardTypeEventScience.setOnClickListener(v -> changeType(TypeEvent.SCIENCE));
     }
 
     private void initCardViewVisibility() {
 
         cardViewPrivate = findViewById(R.id.cardViewPrivate);
         cardViewPublic = findViewById(R.id.cardViewPublic);
-        cardViewPrivate.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                changeVisibility(Visibility.PRIVATE);
-            }
-        });
+        cardViewPrivate.setOnClickListener(v -> changeVisibility(Visibility.PRIVATE));
 
-        cardViewPublic.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                changeVisibility(Visibility.PUBLIC);
-            }
-        });
+        cardViewPublic.setOnClickListener(v -> changeVisibility(Visibility.PUBLIC));
     }
 
     private void changeVisibility(Visibility v) {
         currentEvent.setVisibility(v);
-        ;
         initFirstFiltre();
         bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
     }
 
     private void changeType(TypeEvent te) {
         currentEvent.setCategory(te);
-        ;
         initFirstFiltre();
         bottomSheetBehaviorType.setState(BottomSheetBehavior.STATE_COLLAPSED);
     }
@@ -276,15 +294,12 @@ public class MainCreationEventActivity extends AppCompatActivity {
         TypeEventObject typeEvent = new TypeEventObject(getBaseContext());
         textViewType.setCompoundDrawablesWithIntrinsicBounds(typeEvent.getDrawableType(currentEvent.getCategory()), 0, 0, 0);
         textViewType.setText(typeEvent.getTextType(currentEvent.getCategory()));
-        textViewType.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (bottomSheetBehavior.getState() == BottomSheetBehavior.STATE_EXPANDED) {
-                    bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
-                }
-                viewGrey.setVisibility(View.VISIBLE);
-                bottomSheetBehaviorType.setState(BottomSheetBehavior.STATE_EXPANDED);
+        textViewType.setOnClickListener(v -> {
+            if (bottomSheetBehavior.getState() == BottomSheetBehavior.STATE_EXPANDED) {
+                bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
             }
+            viewGrey.setVisibility(View.VISIBLE);
+            bottomSheetBehaviorType.setState(BottomSheetBehavior.STATE_EXPANDED);
         });
 
         textViewVisibility.setCompoundDrawablesWithIntrinsicBounds(getDrawableVisibility(currentEvent.getVisibility()), 0, 0, 0);
@@ -315,16 +330,7 @@ public class MainCreationEventActivity extends AppCompatActivity {
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
-    public static boolean isAllValidate(Context context) {
-        if (photoValidate && nameValidate && membersValidate && dateValidate && addressValidate) {
-            return true;
-        } else {
-            return false;
-        }
-    }
-
-    @RequiresApi(api = Build.VERSION_CODES.O)
-    public static void createEvent(final Context context) {
+    private void createEvent() {
         JSONObjectCrypt params = new JSONObjectCrypt();
         params.putCryptParameter("uid", USER.getUid());
         params.putCryptParameter("uid_event", currentEvent.getUid());
@@ -341,27 +347,27 @@ public class MainCreationEventActivity extends AppCompatActivity {
         params.putCryptParameter("category", currentEvent.getCategory());
         params.putCryptParameter("price", currentEvent.getPrice());
 
-        JSONController.getJsonObjectFromUrl(Constants.URL_ADD_EVENT, context, params, new JSONObjectListener() {
+        JSONController.getJsonObjectFromUrl(Constants.URL_ADD_EVENT, getBaseContext(), params, new JSONObjectListener() {
             @Override
             public void onJSONReceived(JSONObject jsonObject) {
                 if (jsonObject.length() == 3) {
-                    Toast.makeText(context, context.getResources().getString(R.string.event_create), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getBaseContext(), getString(R.string.event_create), Toast.LENGTH_SHORT).show();
                     activity.finish();
                 } else {
-                    Toast.makeText(context, context.getResources().getString(R.string.event_error_create), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getBaseContext(), getString(R.string.event_error_create), Toast.LENGTH_SHORT).show();
                 }
             }
 
             @Override
             public void onJSONReceivedError(VolleyError volleyError) {
-                Toast.makeText(context, context.getResources().getString(R.string.event_error_create), Toast.LENGTH_SHORT).show();
+                Toast.makeText(getBaseContext(), getString(R.string.event_error_create), Toast.LENGTH_SHORT).show();
                 Log.w("Response", "Erreur: " + volleyError.toString());
             }
         });
 
         try {
-            String imageData = BitMapToString(MediaStore.Images.Media.getBitmap(context.getContentResolver(), image));
-            Constants.uploadImageOnServer(ImageType.EVENT, MainCreationEventActivity.currentEvent.getUid(), imageData, context); //upload image on web server
+            String imageData = BitMapToString(MediaStore.Images.Media.getBitmap(getBaseContext().getContentResolver(), image));
+            Constants.uploadImageOnServer(ImageType.EVENT, MainCreationEventActivity.currentEvent.getUid(), imageData, getBaseContext()); //upload image on web server
             MainCreationEventActivity.currentEvent.setImage_url(Constants.BASE_API_URL + "/" + ImageType.EVENT + "/" + MainCreationEventActivity.currentEvent.getUid());
         } catch (IOException e) {
             Log.w("Response", "Erreur: " + e.getMessage());
@@ -379,17 +385,11 @@ public class MainCreationEventActivity extends AppCompatActivity {
     public void onBackPressed() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setMessage(getResources().getString(R.string.event_not_save))
-                .setPositiveButton(getResources().getString(R.string.button_yes), new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        clearEvent();
-                        finish();
-                    }
+                .setPositiveButton(getResources().getString(R.string.button_yes), (dialog, id) -> {
+                    clearEvent();
+                    finish();
                 })
-                .setNegativeButton(getResources().getString(R.string.button_no), new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        dialog.dismiss();
-                    }
-                });
+                .setNegativeButton(getResources().getString(R.string.button_no), (dialog, id) -> dialog.dismiss());
         builder.create();
         builder.show();
     }
@@ -401,5 +401,67 @@ public class MainCreationEventActivity extends AppCompatActivity {
         nameValidate = false;
         membersValidate = false;
         addressValidate = false;
+    }
+
+    private void setCurrentProgressColor(CardView cardView) {
+        cardViewProgressCreationDate.setCardBackgroundColor(getResources().getColor(R.color.grey));
+        cardViewProgressCreationName.setCardBackgroundColor(getResources().getColor(R.color.grey));
+        cardViewProgressCreationMembers.setCardBackgroundColor(getResources().getColor(R.color.grey));
+        cardViewProgressCreationPhoto.setCardBackgroundColor(getResources().getColor(R.color.grey));
+        cardViewProgressCreationPosition.setCardBackgroundColor(getResources().getColor(R.color.grey));
+        cardViewProgressCreationCost.setCardBackgroundColor(getResources().getColor(R.color.grey));
+
+        cardView.setCardBackgroundColor(getResources().getColor(R.color.colorPrimary));
+    }
+
+    private void initialiserImageView() {
+        imageProgessCreationDate = findViewById(R.id.imageProgessCreationDate);
+        imageProgessCreationMembers = findViewById(R.id.imageProgessCreationMembers);
+        imageProgessCreationName = findViewById(R.id.imageProgessCreationName);
+        imageProgessCreationPosition = findViewById(R.id.imageProgessCreationPosition);
+        imageProgessCreationPhoto = findViewById(R.id.imageProgessCreationPhoto);
+        imageProgressCreationCost = findViewById(R.id.imageProgessCreationCost);
+
+        imageProgressCreationCost.setOnClickListener(v -> changeFragment(new CostEventFragment()));
+        imageProgessCreationDate.setOnClickListener(v -> changeFragment(new DateEventFragment()));
+        imageProgessCreationName.setOnClickListener(v -> changeFragment(new NameEventFragment()));
+        imageProgessCreationPosition.setOnClickListener(v -> changeFragment(new AdressEventFragment()));
+        imageProgessCreationMembers.setOnClickListener(v -> changeFragment(new MembersEventFragment()));
+        imageProgessCreationPhoto.setOnClickListener(v -> changeFragment(new PhotoEventFragment()));
+    }
+
+    private void initialiserCardView() {
+        cardViewProgressCreationDate = findViewById(R.id.cardViewProgressCreationDate);
+        cardViewProgressCreationMembers = findViewById(R.id.cardViewProgressCreationMembers);
+        cardViewProgressCreationName = findViewById(R.id.cardViewProgressCreationName);
+        cardViewProgressCreationPhoto = findViewById(R.id.cardViewProgressCreationPhoto);
+        cardViewProgressCreationPosition = findViewById(R.id.cardViewProgressCreationAdress);
+        cardViewProgressCreationCost = findViewById(R.id.cardViewProgressCreationCost);
+
+    }
+
+    private void changeFragment(Fragment fragment) {
+        if (fragment instanceof NameEventFragment) {
+            setCurrentProgressColor(cardViewProgressCreationName);
+        }
+        if (fragment instanceof AdressEventFragment) {
+            setCurrentProgressColor(cardViewProgressCreationPosition);
+        }
+        if (fragment instanceof DateEventFragment) {
+            setCurrentProgressColor(cardViewProgressCreationDate);
+        }
+        if (fragment instanceof CostEventFragment) {
+            setCurrentProgressColor(cardViewProgressCreationCost);
+        }
+        if (fragment instanceof MembersEventFragment) {
+            setCurrentProgressColor(cardViewProgressCreationMembers);
+        }
+        if (fragment instanceof PhotoEventFragment) {
+            setCurrentProgressColor(cardViewProgressCreationPhoto);
+        }
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.nav_host_fragment2, fragment, "findThisFragment")
+                .addToBackStack(null)
+                .commit();
     }
 }

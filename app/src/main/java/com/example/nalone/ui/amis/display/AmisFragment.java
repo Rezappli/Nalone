@@ -129,12 +129,10 @@ public class AmisFragment extends Fragment {
                         for (int i = 0; i < jsonArray.length(); i++) {
                             friends.add((User) JSONController.convertJSONToObject(jsonArray.getJSONObject(i), User.class));
                         }
-                        mRecyclerView.setVisibility(View.VISIBLE);
                         linearSansMesAmis.setVisibility(View.GONE);
 
                         configureRecyclerViewAmis();
                     } else {
-                        mRecyclerView.setVisibility(View.GONE);
                         linearSansMesAmis.setVisibility(View.VISIBLE);
                     }
 

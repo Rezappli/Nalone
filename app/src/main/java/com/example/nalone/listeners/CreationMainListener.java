@@ -1,7 +1,7 @@
-package com.example.nalone.signUpActivities;
+package com.example.nalone.listeners;
 
 import androidx.fragment.app.Fragment;
 
-public interface SignUpMainListener {
+public interface CreationMainListener {
     void onFragmentValidate(Fragment fragment);
 }

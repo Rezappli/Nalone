@@ -7,202 +7,52 @@
     android:background="@color/white"
     tools:context=".ui.evenements.creation.NameEventFragment">
 
-    <RelativeLayout
+    <LinearLayout
+        android:id="@+id/linearName"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:layout_gravity="center"
+        android:orientation="vertical">
 
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_above="@+id/iconsProgessLayout"
-            android:layout_marginBottom="0dp">
-
-            <LinearLayout
-                android:id="@+id/linearName"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_centerInParent="true"
-                android:orientation="vertical">
-
-                <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/signupNom"
-                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="20dp"
-                    android:layout_marginEnd="20dp">
-
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/eventName"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:hint="@string/nom"
-                        android:singleLine="true"
-                        android:textSize="18sp" />
-                </com.google.android.material.textfield.TextInputLayout>
-
-                <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/signupDesc"
-                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="20dp"
-                    android:layout_marginTop="20dp"
-                    android:layout_marginEnd="20dp"
-                    android:layout_marginBottom="20dp"
-                    app:counterEnabled="true"
-                    app:counterMaxLength="100">
-
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/eventResume"
-                        android:layout_width="match_parent"
-                        android:layout_height="120dp"
-                        android:gravity="top"
-                        android:hint="@string/description" />
-                </com.google.android.material.textfield.TextInputLayout>
-
-            </LinearLayout>
-
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_above="@id/linearName"
-                android:layout_marginBottom="0dp">
-
-                <TextView
-                    android:id="@+id/textView55"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_centerInParent="true"
-                    android:gravity="center"
-                    android:text="@string/title_creation_event_name"
-                    android:textSize="30sp" />
-            </RelativeLayout>
-
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_below="@id/linearName"
-                android:layout_marginTop="0dp">
-
-                <Button
-                    android:id="@+id/buttonNextFragmentDate"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_centerInParent="true"
-                    android:layout_marginStart="50dp"
-                    android:layout_marginEnd="50dp"
-                    android:background="@drawable/custom_button_simple"
-                    android:text="@string/valid"
-                    android:textColor="@color/white" />
-            </RelativeLayout>
-
-        </RelativeLayout>
-
-        <LinearLayout
-            android:id="@+id/iconsProgessLayout"
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/signupNom"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_above="@+id/progessLayout"
-            android:layout_marginBottom="0dp"
-            android:orientation="horizontal">
+            android:layout_marginStart="20dp"
+            android:layout_marginEnd="20dp">
 
-            <ImageView
-                android:id="@+id/imageProgessCreationPhoto"
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/eventName"
                 android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:layout_weight="1"
-                android:src="@drawable/creation_event_photo" />
+                android:layout_height="wrap_content"
+                android:hint="@string/nom"
+                android:singleLine="true"
+                android:textSize="18sp" />
+        </com.google.android.material.textfield.TextInputLayout>
 
-            <ImageView
-                android:id="@+id/imageProgessCreationName"
-                android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:layout_weight="1"
-                android:src="@drawable/creation_event_name" />
-
-            <ImageView
-                android:id="@+id/imageProgessCreationDate"
-                android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:layout_weight="1"
-                android:src="@drawable/creation_event_date" />
-
-            <ImageView
-                android:id="@+id/imageProgessCreationPosition"
-                android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:layout_weight="1"
-                android:src="@drawable/creation_event_adress" />
-
-            <ImageView
-                android:id="@+id/imageProgessCreationMembers"
-                android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:layout_weight="1"
-                android:src="@drawable/creation_event_members" />
-
-            <ImageView
-                android:id="@+id/imageProgessCreationCost"
-                android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:layout_weight="1"
-                android:src="@drawable/cost_event" />
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/progessLayout"
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/signupDesc"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
             android:layout_width="match_parent"
-            android:layout_height="5dp"
-            android:layout_alignParentBottom="true"
-            android:layout_marginBottom="0dp"
-            android:orientation="horizontal">
+            android:layout_height="wrap_content"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginEnd="20dp"
+            android:layout_marginBottom="20dp"
+            app:counterEnabled="true"
+            app:counterMaxLength="100">
 
-            <androidx.cardview.widget.CardView
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/eventResume"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                app:cardBackgroundColor="@color/lightGrey"
-                app:cardCornerRadius="0dp" />
+                android:layout_height="120dp"
+                android:gravity="top"
+                android:hint="@string/description" />
+        </com.google.android.material.textfield.TextInputLayout>
 
-            <androidx.cardview.widget.CardView
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                app:cardBackgroundColor="@color/colorPrimary"
-                app:cardCornerRadius="0dp" />
+    </LinearLayout>
 
-            <androidx.cardview.widget.CardView
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                app:cardBackgroundColor="@color/lightGrey"
-                app:cardCornerRadius="0dp" />
-
-            <androidx.cardview.widget.CardView
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                app:cardBackgroundColor="@color/lightGrey"
-                app:cardCornerRadius="0dp" />
-
-            <androidx.cardview.widget.CardView
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                app:cardBackgroundColor="@color/lightGrey"
-                app:cardCornerRadius="0dp">
-
-            </androidx.cardview.widget.CardView>
-
-            <androidx.cardview.widget.CardView
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                app:cardBackgroundColor="@color/lightGrey"
-                app:cardCornerRadius="0dp" />
-
-        </LinearLayout>
-    </RelativeLayout>
 </FrameLayout>
