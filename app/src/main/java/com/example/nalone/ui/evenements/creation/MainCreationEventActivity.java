@@ -28,7 +28,6 @@ import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.navigation.NavController;
-import androidx.navigation.Navigation;
 
 import com.android.volley.VolleyError;
 import com.example.nalone.R;
@@ -70,7 +69,7 @@ public class MainCreationEventActivity extends AppCompatActivity {
             imageProgessCreationName, imageProgessCreationPosition, imageProgessCreationPhoto, imageProgressCreationCost;
     private CardView cardViewProgressCreationDate, cardViewProgressCreationMembers,
             cardViewProgressCreationName, cardViewProgressCreationPosition, cardViewProgressCreationPhoto, cardViewProgressCreationCost;
-
+    private TextView textViewTitleEvent;
     public static String ACTION_RECEIVE_FRAGMENT = "ACTION_RECEIVE_FRAGMENT";
     public static String ACTION_RECEIVE_NEXT_CLICK = "ACTION_RECEIVE_NEXT_CLICK";
 
@@ -144,7 +143,11 @@ public class MainCreationEventActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_creation_event);
-
+        textViewTitleEvent = findViewById(R.id.textViewTitleEvent);
+        getSupportFragmentManager().beginTransaction()
+                .add(R.id.fragmentCreationEvent, new PhotoEventFragment(), "findThisFragment")
+                .addToBackStack(null)
+                .commit();
         initialiserImageView();
         initialiserCardView();
         Button buttonValidate = findViewById(R.id.buttonNextFragmentMembers);
@@ -222,7 +225,8 @@ public class MainCreationEventActivity extends AppCompatActivity {
             bottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
             viewGrey.setVisibility(View.VISIBLE);
         });
-        navController = Navigation.findNavController(this, R.id.nav_host_fragment2);
+        // navController = Navigation.findNavController(this, R.id.nav_host_fragment2);
+
     }
 
     @Override
@@ -443,25 +447,40 @@ public class MainCreationEventActivity extends AppCompatActivity {
     private void changeFragment(Fragment fragment) {
         if (fragment instanceof NameEventFragment) {
             setCurrentProgressColor(cardViewProgressCreationName);
+            textViewTitleEvent.setText(getString(R.string.title_creation_event_name));
         }
         if (fragment instanceof AdressEventFragment) {
             setCurrentProgressColor(cardViewProgressCreationPosition);
+            textViewTitleEvent.setText(getString(R.string.title_creation_event_adress));
         }
         if (fragment instanceof DateEventFragment) {
             setCurrentProgressColor(cardViewProgressCreationDate);
+            textViewTitleEvent.setText(getString(R.string.title_creation_event_date));
         }
         if (fragment instanceof CostEventFragment) {
             setCurrentProgressColor(cardViewProgressCreationCost);
+            textViewTitleEvent.setText(getString(R.string.title_creation_event_cost));
         }
         if (fragment instanceof MembersEventFragment) {
             setCurrentProgressColor(cardViewProgressCreationMembers);
+            textViewTitleEvent.setText(getString(R.string.title_creation_event_members));
         }
         if (fragment instanceof PhotoEventFragment) {
             setCurrentProgressColor(cardViewProgressCreationPhoto);
+            textViewTitleEvent.setText(getString(R.string.title_creation_event_photo));
         }
+
         getSupportFragmentManager().beginTransaction()
-                .replace(R.id.nav_host_fragment2, fragment, "findThisFragment")
+                .replace(R.id.fragmentCreationEvent, fragment, "findThisFragment")
                 .addToBackStack(null)
                 .commit();
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        for (Fragment fragment : getSupportFragmentManager().getFragments()) {
+            fragment.onActivityResult(requestCode, resultCode, data);
+        }
     }
 }

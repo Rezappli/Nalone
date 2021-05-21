@@ -1,4 +1,4 @@
-package com.example.nalone.adapter;
+package com.example.nalone.adapter.user;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,13 +19,13 @@ import com.example.nalone.util.Constants;
 
 import java.util.List;
 
-public class MesAmisAdapter extends RecyclerView.Adapter<MesAmisAdapter.UserViewHolder> {
+public class MyFriendsAdapter extends RecyclerView.Adapter<MyFriendsAdapter.UserViewHolder> {
 
 
     private List<User> userList;
     private boolean swipe;
 
-    public MesAmisAdapter(List<User> list) {
+    public MyFriendsAdapter(List<User> list) {
         this.userList = list;
     }
 

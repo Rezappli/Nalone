@@ -20,7 +20,6 @@ import com.example.nalone.R;
 import com.example.nalone.dialog.SelectDateFragment;
 import com.example.nalone.dialog.TimePickerFragment;
 import com.example.nalone.enumeration.StatusEvent;
-import com.example.nalone.listeners.CreationFragmentListener;
 import com.example.nalone.util.TimeUtil;
 
 import java.text.ParseException;
@@ -28,9 +27,15 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import static com.example.nalone.dialog.SelectDateFragment.ACTION_RECEIVE_DATE;
+import static com.example.nalone.dialog.SelectDateFragment.EXTRA_END_DATE;
 import static com.example.nalone.dialog.SelectDateFragment.EXTRA_START_DATE;
+import static com.example.nalone.dialog.TimePickerFragment.ACTION_RECEIVE_TIME;
+import static com.example.nalone.dialog.TimePickerFragment.EXTRA_END_TIME;
+import static com.example.nalone.dialog.TimePickerFragment.EXTRA_START_TIME;
+import static com.example.nalone.ui.evenements.creation.MainCreationEventActivity.ACTION_RECEIVE_NEXT_CLICK;
+import static com.example.nalone.ui.evenements.creation.MainCreationEventActivity.currentEvent;
 
-public class DateEventFragment extends EventFragment implements CreationFragmentListener {
+public class DateEventFragment extends EventFragment {
     private TextView eventStartDate, eventStartHoraire, eventEndDate, eventEndHoraire;
 
     private final BroadcastReceiver receiverDate = new BroadcastReceiver() {
@@ -40,7 +45,20 @@ public class DateEventFragment extends EventFragment implements CreationFragment
                 if (intent.getStringExtra(EXTRA_START_DATE) != null) {
                     eventStartDate.setText(intent.getStringExtra(EXTRA_START_DATE));
                 } else {
-                    eventEndDate.setText(intent.getStringExtra(EXTRA_START_DATE));
+                    eventEndDate.setText(intent.getStringExtra(EXTRA_END_DATE));
+                }
+            }
+        }
+    };
+
+    private final BroadcastReceiver receiverTime = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if (intent != null) {
+                if (intent.getStringExtra(EXTRA_START_TIME) != null) {
+                    eventStartHoraire.setText(intent.getStringExtra(EXTRA_START_TIME));
+                } else {
+                    eventEndHoraire.setText(intent.getStringExtra(EXTRA_END_TIME));
                 }
             }
         }
@@ -60,40 +78,39 @@ public class DateEventFragment extends EventFragment implements CreationFragment
         eventStartHoraire = root.findViewById(R.id.eventHoraire);
         eventEndHoraire = root.findViewById(R.id.eventEndHoraire);
 
-        eventStartHoraire.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                DialogFragment newFragment = new TimePickerFragment();
-                TimePickerFragment.isStart = true;
-                newFragment.show(getActivity().getSupportFragmentManager(), "DIALOG_TIME");
-            }
+        if (currentEvent.getStartDate() != null) {
+            String tsStart = currentEvent.getStartDate().replaceAll("-", "-"); //convertion de date pour sql
+            eventStartDate.setText(tsStart.substring(0, 10));
+            eventStartHoraire.setText(TimeUtil.timeOfDate(currentEvent.getStartDate()));
+        }
+        if (currentEvent.getEndDate() != null) {
+            String tsEnd = currentEvent.getEndDate().replaceAll("-", "/"); //convertion de date pour sql
+            eventEndDate.setText(tsEnd.substring(0, 10));
+            eventEndHoraire.setText(TimeUtil.timeOfDate(currentEvent.getStartDate()));
+        }
+
+        eventStartHoraire.setOnClickListener(v -> {
+            DialogFragment newFragment = new TimePickerFragment();
+            TimePickerFragment.isStart = true;
+            newFragment.show(getActivity().getSupportFragmentManager(), "DIALOG_TIME");
         });
 
-        eventStartDate.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                DialogFragment newFragment = new SelectDateFragment();
-                SelectDateFragment.isStart = true;
-                newFragment.show(getActivity().getSupportFragmentManager(), "DatePicker");
-            }
+        eventStartDate.setOnClickListener(v -> {
+            DialogFragment newFragment = new SelectDateFragment();
+            SelectDateFragment.isStart = true;
+            newFragment.show(getActivity().getSupportFragmentManager(), "DatePicker");
         });
 
-        eventEndDate.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                DialogFragment newFragment = new SelectDateFragment();
-                SelectDateFragment.isStart = false;
-                newFragment.show(getActivity().getSupportFragmentManager(), "DatePicker");
-            }
+        eventEndDate.setOnClickListener(v -> {
+            DialogFragment newFragment = new SelectDateFragment();
+            SelectDateFragment.isStart = false;
+            newFragment.show(getActivity().getSupportFragmentManager(), "DatePicker");
         });
 
-        eventEndHoraire.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                DialogFragment newFragment = new TimePickerFragment();
-                TimePickerFragment.isStart = false;
-                newFragment.show(getActivity().getSupportFragmentManager(), "DIALOG_TIME");
-            }
+        eventEndHoraire.setOnClickListener(v -> {
+            DialogFragment newFragment = new TimePickerFragment();
+            TimePickerFragment.isStart = false;
+            newFragment.show(getActivity().getSupportFragmentManager(), "DIALOG_TIME");
         });
 
         return root;
@@ -105,6 +122,16 @@ public class DateEventFragment extends EventFragment implements CreationFragment
         IntentFilter intentFilter = new IntentFilter();
         intentFilter.addAction(ACTION_RECEIVE_DATE);
         LocalBroadcastManager.getInstance(getContext()).registerReceiver(receiverDate, intentFilter);
+
+        IntentFilter intentFilter1 = new IntentFilter();
+        intentFilter1.addAction(ACTION_RECEIVE_TIME);
+        LocalBroadcastManager.getInstance(getContext()).registerReceiver(receiverTime, intentFilter1);
+
+        IntentFilter intentFilter2 = new IntentFilter();
+        intentFilter2.addAction(ACTION_RECEIVE_NEXT_CLICK);
+        LocalBroadcastManager.getInstance(getContext()).registerReceiver(receiverNextClick, intentFilter2);
+
+
     }
 
 
@@ -112,6 +139,7 @@ public class DateEventFragment extends EventFragment implements CreationFragment
     public void onPause() {
         super.onPause();
         LocalBroadcastManager.getInstance(getContext()).unregisterReceiver(receiverDate);
+        LocalBroadcastManager.getInstance(getContext()).unregisterReceiver(receiverTime);
 
     }
 
@@ -194,62 +222,4 @@ public class DateEventFragment extends EventFragment implements CreationFragment
             }
         }
     };
-
-    @Override
-    public void onNextClicked() {
-        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy hh:mm");
-
-        if (eventStartDate.getText().toString().equalsIgnoreCase("date")) {
-            eventStartDate.setError(getResources().getString(R.string.required_field));
-            return;
-        } else {
-            eventStartDate.setError(null);
-        }
-
-        if (eventEndDate.getText().toString().equalsIgnoreCase("date")) {
-            eventEndDate.setError(getResources().getString(R.string.required_field));
-            return;
-        } else {
-            eventEndDate.setError(null);
-        }
-
-        if (eventStartHoraire.getText().toString().equalsIgnoreCase("horaire")) {
-            eventStartHoraire.setError(getResources().getString(R.string.required_field));
-            return;
-        } else {
-            eventStartHoraire.setError(null);
-        }
-
-        if (eventEndHoraire.getText().toString().equalsIgnoreCase("horaire")) {
-            eventEndHoraire.setError(getResources().getString(R.string.required_field));
-            return;
-        } else {
-            eventEndHoraire.setError(null);
-        }
-
-
-        String tsStart = eventStartDate.getText().toString() + " " + eventStartHoraire.getText().toString();
-        String tsEnd = eventEndDate.getText().toString() + " " + eventEndHoraire.getText().toString();
-        StatusEvent seStart = null;
-        try {
-            seStart = TimeUtil.verifStatut(new Date(), sdf.parse(tsStart));
-            StatusEvent seEnd = TimeUtil.verifStatut(new Date(), sdf.parse(tsEnd));
-            if (seStart == StatusEvent.FINI || seStart == StatusEvent.EXPIRE || seEnd == StatusEvent.FINI || seEnd == StatusEvent.EXPIRE) {
-                Toast.makeText(getContext(), getResources().getString(R.string.date_in_futur), Toast.LENGTH_SHORT).show();
-            } else {
-
-                tsStart = tsStart.replaceAll("/", "-"); //convertion de date pour sql
-                tsEnd = tsEnd.replaceAll("/", "-");
-
-                MainCreationEventActivity.currentEvent.setStartDate(tsStart);
-                MainCreationEventActivity.currentEvent.setEndDate(tsEnd);
-
-                sendFragmentBroadcast(MainCreationEventActivity.CurrentFragment.DATE);
-            }
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-
-
-    }
 }

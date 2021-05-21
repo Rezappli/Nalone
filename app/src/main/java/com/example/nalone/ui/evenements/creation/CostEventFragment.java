@@ -49,9 +49,7 @@ public class CostEventFragment extends EventFragment {
         cardViewFree.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (!isTaping) {
-                    changeToFree();
-                }
+                changeToFree();
                 isTaping = true;
                 isFree = true;
             }
@@ -60,9 +58,7 @@ public class CostEventFragment extends EventFragment {
         cardViewPaying.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (!isTaping) {
-                    changeToPaying();
-                }
+                changeToPaying();
                 isTaping = true;
                 isFree = false;
             }

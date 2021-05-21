@@ -29,6 +29,13 @@
                 android:layout_weight="1"
                 android:orientation="vertical">
 
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:gravity="center"
+                    android:text="@string/title_amis" />
+
                 <androidx.cardview.widget.CardView
                     android:id="@+id/cardViewMemberFriend"
                     android:layout_width="80dp"
@@ -47,11 +54,12 @@
                 </androidx.cardview.widget.CardView>
 
                 <TextView
+                    android:id="@+id/textView13"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:gravity="center"
-                    android:text="@string/title_amis" />
+                    android:text="@string/subtitle_event_amis" />
 
             </LinearLayout>
 
@@ -60,6 +68,14 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/textView46"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:gravity="center"
+                    android:text="@string/custom" />
 
                 <androidx.cardview.widget.CardView
                     android:id="@+id/cardViewMemberCustom"
@@ -83,16 +99,18 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:gravity="center"
-                    android:text="@string/custom" />
+                    android:text="@string/subtitle_event_custom" />
 
             </LinearLayout>
 
         </LinearLayout>
 
         <LinearLayout
+            android:id="@+id/linearCustomInvit"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:visibility="invisible">
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/recyclerView1"
@@ -107,13 +125,13 @@
 
             <Button
                 android:id="@+id/buttonMoreInvit"
-                android:layout_width="match_parent"
+                android:layout_width="250dp"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:layout_marginStart="100dp"
                 android:layout_marginTop="20dp"
-                android:layout_marginEnd="100dp"
                 android:background="@drawable/custom_button_signup"
+                android:paddingStart="10dp"
+                android:paddingEnd="10dp"
                 android:text="@string/add_member" />
 
         </LinearLayout>

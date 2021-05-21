@@ -22,8 +22,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.android.volley.VolleyError;
 import com.example.nalone.R;
-import com.example.nalone.adapter.RechercheAmisAdapter;
 import com.example.nalone.adapter.RechercheGroupeAdapter;
+import com.example.nalone.adapter.user.SearchUserAdapter;
 import com.example.nalone.json.JSONController;
 import com.example.nalone.json.JSONObjectCrypt;
 import com.example.nalone.listeners.JSONArrayListener;
@@ -45,7 +45,7 @@ import static com.example.nalone.util.Constants.USER;
 public class RechercheFragment extends Fragment {
 
     private RecyclerView recyclerAmis;
-    private RechercheAmisAdapter adapterAmis;
+    private SearchUserAdapter adapterAmis;
     private RechercheGroupeAdapter adapterGroup;
     private RecyclerView recyclerGroup;
     private CardView cardViewRechercheAmis;
@@ -164,11 +164,11 @@ public class RechercheFragment extends Fragment {
     }
 
     private void configureRecyclerViewAmis() {
-        this.adapterAmis = new RechercheAmisAdapter(this.friends);
+        this.adapterAmis = new SearchUserAdapter(this.friends);
         this.recyclerAmis.setAdapter(this.adapterAmis);
         final LinearLayoutManager llm = new LinearLayoutManager(getActivity());
         this.recyclerAmis.setLayoutManager(llm);
-        adapterAmis.setOnItemClickListener(new RechercheAmisAdapter.OnItemClickListener() {
+        adapterAmis.setOnItemClickListener(new SearchUserAdapter.OnItemClickListener() {
             @Override
             public void onDisplayClick(int position) {
                 showPopUpProfil(friends.get(position));

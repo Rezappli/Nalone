@@ -42,13 +42,6 @@
 
     </com.google.android.material.appbar.AppBarLayout>
 
-    <View
-        android:id="@+id/viewGrey2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:background="#39292929"
-        android:visibility="gone" />
-
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -91,44 +84,36 @@
         </RelativeLayout>
 
         <TextView
-            android:id="@+id/textView46"
+            android:id="@+id/textViewTitleEvent"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
             android:layout_centerVertical="true"
-            android:layout_marginTop="20dp"
+            android:layout_marginTop="30dp"
             android:gravity="center"
             android:text="@string/title_creation_event_name"
             android:textSize="30sp" />
 
-        <fragment
-            android:id="@+id/nav_host_fragment2"
-            android:name="androidx.navigation.fragment.NavHostFragment"
+        <FrameLayout
+            android:id="@+id/fragmentCreationEvent"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="0.3"
-            app:navGraph="@navigation/creation_event_navigation" />
+            android:layout_weight="0.8"
+            android:background="@color/white" />
 
-        <RelativeLayout
+        <Button
+            android:id="@+id/buttonNextFragmentMembers"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@id/linearMembers"
-            android:layout_alignParentBottom="true"
-            android:layout_marginTop="0dp"
-            android:layout_marginBottom="0dp"
-            android:layout_weight="0.3">
-
-            <Button
-                android:id="@+id/buttonNextFragmentMembers"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_centerInParent="true"
-                android:layout_marginStart="50dp"
-                android:layout_marginEnd="50dp"
-                android:background="@drawable/custom_button_simple"
-                android:text="@string/valid"
-                android:textColor="@color/white" />
-        </RelativeLayout>
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:layout_marginStart="50dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginEnd="50dp"
+            android:layout_marginBottom="50dp"
+            android:background="@drawable/custom_button_simple"
+            android:text="@string/valid"
+            android:textColor="@color/white" />
 
         <LinearLayout
             android:id="@+id/iconsProgessLayout"
@@ -243,6 +228,13 @@
         </LinearLayout>
 
     </LinearLayout>
+
+    <View
+        android:id="@+id/viewGrey2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="#39292929"
+        android:visibility="gone" />
 
     <androidx.core.widget.NestedScrollView
         android:id="@+id/sheetCreateEventType"

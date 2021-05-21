@@ -118,7 +118,9 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         rootView = inflater.inflate(R.layout.fragment_map, container, false);
 
         mMapView = rootView.findViewById(R.id.mapView);
-        initGoogleMap(savedInstanceState);
+        if (USER != null) {
+            initGoogleMap(savedInstanceState);
+        }
         ((AppCompatActivity) getActivity()).getSupportActionBar().hide();
 
         return rootView;

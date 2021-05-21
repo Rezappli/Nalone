@@ -45,6 +45,31 @@ public class TimeUtil {
         return null;
     }
 
+    public static String dateOfDateLetter(String mDate) throws ParseException {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd hh:mm");
+
+        String final_date_text = "";
+        Date date = sdf.parse(mDate);
+        String date_text = Constants.formatD.format(date);
+        for (int i = 0; i < date_text.length() - 5; i++) {
+            char character = date_text.charAt(i);
+            if (i == 0) {
+                character = Character.toUpperCase(character);
+            }
+            final_date_text += character;
+        }
+
+        return final_date_text;
+    }
+
+    public static String dateOfDateNumber(String mDate) throws ParseException {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd hh:mm");
+        SimpleDateFormat sdfDate = new SimpleDateFormat("yyyy/MM/dd");
+
+        Date date = sdf.parse(mDate);
+        return sdfDate.format(date);
+    }
+
     @SuppressLint("SetTextI18n")
     public static void differenceDate(Date startDate, Date endDate, TextView textView) {
         long different = endDate.getTime() - startDate.getTime();
@@ -142,6 +167,26 @@ public class TimeUtil {
             }
         }
         return temp;
+    }
+
+    public static String timeOfDate(String s) {
+        if (5 > s.length()) {
+            return null;
+        }
+
+        StringBuilder temp = new StringBuilder();
+
+        int i = 0;
+        if (11 != -1) {
+            for (i = 11; i < 5 + 11; i++) {
+                temp.append(s.charAt(i));
+            }
+        } else {
+            for (i = 0; i < 5; i++) {
+                temp.append(s.charAt(i));
+            }
+        }
+        return temp.toString();
     }
 
 }

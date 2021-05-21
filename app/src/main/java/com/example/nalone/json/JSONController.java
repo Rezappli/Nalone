@@ -45,7 +45,11 @@ public class JSONController {
                                  @Override
                                  public void onResponse(JSONArray jsonArray) {
                                      if (listener != null) {
-                                         listener.onJSONReceived(CryptoUtils.decryptArray(jsonArray));
+                                         try {
+                                             listener.onJSONReceived(CryptoUtils.decryptArray(jsonArray));
+                                         } catch (JSONException e) {
+                                             e.printStackTrace();
+                                         }
                                      }
                                  }
                              }, new Response.ErrorListener() {

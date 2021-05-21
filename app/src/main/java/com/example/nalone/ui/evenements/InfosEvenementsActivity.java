@@ -144,7 +144,8 @@ public class InfosEvenementsActivity extends AppCompatActivity {
         handler.postDelayed(runnable, 0);
 
         try {
-            Date date = sdf.parse(EVENT_LOAD.getStartDate());
+
+            /*§Date date = sdf.parse(EVENT_LOAD.getStartDate());
             String date_text = Constants.formatD.format(date);
             for (int i = 0; i < date_text.length() - 5; i++) {
                 char character = date_text.charAt(i);
@@ -152,15 +153,16 @@ public class InfosEvenementsActivity extends AppCompatActivity {
                     character = Character.toUpperCase(character);
                 }
                 final_date_text += character;
-            }
+            }*/
 
-            mDate.setText(final_date_text);
+            //mDate.setText(final_date_text);
+            mDate.setText(TimeUtil.dateOfDateLetter(EVENT_LOAD.getStartDate()));
         } catch (ParseException e) {
             Log.w("Response", "Erreur:" + e.getMessage());
             Toast.makeText(getBaseContext(), getResources().getString(R.string.error), Toast.LENGTH_SHORT).show();
         }
 
-        mTimer.setText(cutString(EVENT_LOAD.getStartDate()));
+        mTimer.setText(TimeUtil.timeOfDate(EVENT_LOAD.getStartDate()));
 
         Log.w("STATUS", EVENT_LOAD.getStatusEvent() + "");
         if (EVENT_LOAD.getStatusEvent() == StatusEvent.ENCOURS) {

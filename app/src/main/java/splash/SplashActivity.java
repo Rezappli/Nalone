@@ -81,7 +81,6 @@ public class SplashActivity extends AppCompatActivity {
                         Log.w("Response", e.getMessage());
                         launchMainActivity();
                     }
-                    launchHomeActivity();
                 } else {
                     launchMainActivity();
                 }

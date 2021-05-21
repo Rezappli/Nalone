@@ -1,4 +1,4 @@
-package com.example.nalone.adapter;
+package com.example.nalone.adapter.user;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,12 +17,12 @@ import com.example.nalone.util.Constants;
 
 import java.util.List;
 
-public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.UserViewHolder> {
+public class SearchUserAdapter extends RecyclerView.Adapter<SearchUserAdapter.UserViewHolder> {
 
 
     private List<User> userList;
 
-    public UserListAdapter(List<User> list) {
+    public SearchUserAdapter(List<User> list) {
         this.userList = list;
     }
 
@@ -35,16 +35,12 @@ public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.UserVi
 
     public interface OnItemClickListener {
         void onDisplayClick(int position);
-
-        void onAddClick(int position);
-
-        void onRemoveClick(int position);
     }
 
     @NonNull
     @Override
     public UserViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_invit_amis, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_person, parent, false);
         UserViewHolder uvh = new UserViewHolder(view, mListener);
         return uvh;
     }
@@ -65,19 +61,20 @@ public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.UserVi
 
         private TextView nomInvit;
         private TextView villePers;
+        private LinearLayout layoutProfil;
         private ImageView imagePerson;
+        private ImageView button;
         private CardView cardViewPhotoPerson;
 
         public UserViewHolder(@NonNull View itemView, final OnItemClickListener listener) {
             super(itemView);
 
-            nomInvit = itemView.findViewById(R.id.nomAmisInvit);
-            villePers = itemView.findViewById(R.id.villeAmisInvit);
-            LinearLayout layoutProfil = itemView.findViewById(R.id.layoutInvitAmi);
-            imagePerson = itemView.findViewById(R.id.imageInvitAmis);
-            ImageView buttonAdd = itemView.findViewById(R.id.addInvitAmis);
-            ImageView buttonRemove = itemView.findViewById(R.id.removeInvitAmis);
-
+            nomInvit = itemView.findViewById(R.id.nomInvit);
+            villePers = itemView.findViewById(R.id.villePers);
+            layoutProfil = itemView.findViewById(R.id.layoutProfil);
+            imagePerson = itemView.findViewById(R.id.imagePerson);
+            button = itemView.findViewById(R.id.buttonImage);
+            cardViewPhotoPerson = itemView.findViewById(R.id.cardViewPhotoPerson);
             layoutProfil.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -89,35 +86,12 @@ public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.UserVi
                     }
                 }
             });
-
-            buttonAdd.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if (mListener != null) {
-                        int position = getAdapterPosition();
-                        if (position != RecyclerView.NO_POSITION) {
-                            listener.onAddClick(position);
-                        }
-                    }
-                }
-            });
-
-            buttonRemove.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if (mListener != null) {
-                        int position = getAdapterPosition();
-                        if (position != RecyclerView.NO_POSITION) {
-                            listener.onRemoveClick(position);
-                        }
-                    }
-                }
-            });
         }
 
         public void update(final User u) {
             villePers.setText(u.getCity());
             nomInvit.setText(u.getName());
+            button.setImageResource(0);
         }
     }
 

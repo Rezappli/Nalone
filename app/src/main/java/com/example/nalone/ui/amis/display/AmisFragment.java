@@ -28,7 +28,7 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.android.volley.VolleyError;
 import com.example.nalone.R;
-import com.example.nalone.adapter.MesAmisAdapter;
+import com.example.nalone.adapter.user.MyFriendsAdapter;
 import com.example.nalone.json.JSONController;
 import com.example.nalone.json.JSONObjectCrypt;
 import com.example.nalone.listeners.JSONArrayListener;
@@ -152,11 +152,11 @@ public class AmisFragment extends Fragment {
     }
 
     private void configureRecyclerViewAmis() {
-        MesAmisAdapter mAdapter = new MesAmisAdapter(this.friends);
+        MyFriendsAdapter mAdapter = new MyFriendsAdapter(this.friends);
         this.mRecyclerView.setAdapter(mAdapter);
         final LinearLayoutManager llm = new LinearLayoutManager(getActivity());
         this.mRecyclerView.setLayoutManager(llm);
-        mAdapter.setOnItemClickListener(new MesAmisAdapter.OnItemClickListener() {
+        mAdapter.setOnItemClickListener(new MyFriendsAdapter.OnItemClickListener() {
             @Override
             public void onDisplayClick(int position) {
                 showPopUpProfil(friends.get(position));

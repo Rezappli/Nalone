@@ -69,6 +69,7 @@
     <string name="title_activity_home">MainActivity</string>
     <string name="title_recherche"> Recherche </string>
     <string name="title_amis"> Amis </string>
+    <string name="subtitle_event_amis"> Invites tout tes amis </string>
     <string name="title_evenements"> Événements </string>
     <string name="title_messages"> Messages </string>
     <string name="title_profil"> Profil </string>
@@ -125,6 +126,7 @@
     <string name="pay"> Payant </string>
     <string name="price"> Prix </string>
     <string name="custom"> Personnalisé </string>
+    <string name="subtitle_event_custom"> Invites qui tu veux </string>
     <string name="location_inscrit"> Inscrit </string>
     <string name="location_mesevent"> Créer </string>
     <string name="descriptionNF"> Description : </string>
@@ -189,6 +191,8 @@
     <string name="qr_code_event"> QR Code </string>
     <string name="enter_message"> Entrez votre message </string>
     <string name="ajout_desc"> <u>Ajouter une description</u> </string>
+    <string name="add_participant"> Ajout de participants </string>
+    <string name="adding_participant"> à été ajouté à la liste d\'invités </string>
     <string name="new_message"> Nouveau message </string>
     <string name="desc"> Description </string>
     <string name="aucun_group"> Aucun groupe </string>
