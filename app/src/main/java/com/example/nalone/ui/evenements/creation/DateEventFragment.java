@@ -42,7 +42,7 @@ public class DateEventFragment extends EventFragment {
         @Override
         public void onReceive(Context context, Intent intent) {
             if (intent != null) {
-                if (intent.getStringExtra(EXTRA_START_DATE) != null) {
+                if (intent.hasExtra(EXTRA_START_DATE)) {
                     eventStartDate.setText(intent.getStringExtra(EXTRA_START_DATE));
                 } else {
                     eventEndDate.setText(intent.getStringExtra(EXTRA_END_DATE));
@@ -55,7 +55,7 @@ public class DateEventFragment extends EventFragment {
         @Override
         public void onReceive(Context context, Intent intent) {
             if (intent != null) {
-                if (intent.getStringExtra(EXTRA_START_TIME) != null) {
+                if (intent.hasExtra(EXTRA_START_TIME)) {
                     eventStartHoraire.setText(intent.getStringExtra(EXTRA_START_TIME));
                 } else {
                     eventEndHoraire.setText(intent.getStringExtra(EXTRA_END_TIME));

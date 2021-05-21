@@ -191,7 +191,8 @@
     <string name="qr_code_event"> QR Code </string>
     <string name="enter_message"> Entrez votre message </string>
     <string name="ajout_desc"> <u>Ajouter une description</u> </string>
-    <string name="add_participant"> Ajout de participants </string>
+    <string name="title_add_participant"> Ajout de participants </string>
+    <string name="title_invitation_friend"> Demandes d\'ami </string>
     <string name="adding_participant"> à été ajouté à la liste d\'invités </string>
     <string name="new_message"> Nouveau message </string>
     <string name="desc"> Description </string>
@@ -261,6 +262,7 @@
     <!-- Strings used for map -->
     <string name="description_event">Cliquez pour plus d\'informations</string>
     <string name="error">Une erreur est survenue :(</string>
+
     <string name="error_event">Une erreur est survenue lors du chargement des évènements :(</string>
     <string name="error_notifications">Une erreur est survenue lors du chargement des notifications :(</string>
     <string name="error_address">Nous n\'avons pas réussie à trouver l\'adresse :(</string>
@@ -268,8 +270,10 @@
     <string name="int_over_zero">Veuillez entrer un prix supérieur à 0</string>
     <string name="date_in_futur">Veuillez selectionner des dates dans le futur</string>
     <string name="event_create">Vous avez créer votre évènement !</string>
-    <string name="no_friends">Vous n\'avez pas d\'ami !</string>
+    <string name="no_friends">Invitez des amis</string>
+    <string name="no_more_friends">Vous avez invité tous vos amis</string>
     <string name="delete_friend">Vous avez supprimé un(e) ami(e)</string>
+    <string name="limit_members">Limite de participants</string>
 
     <!--Strings used for notifications -->
     <string name="notification_join_group">a rejoins un de vos groupe</string>

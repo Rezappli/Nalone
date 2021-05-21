@@ -17,9 +17,9 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.android.volley.VolleyError;
-import com.example.nalone.HomeActivity;
 import com.example.nalone.R;
 import com.example.nalone.adapter.NotificationAdapter;
+import com.example.nalone.enumeration.UserList;
 import com.example.nalone.json.JSONController;
 import com.example.nalone.json.JSONObjectCrypt;
 import com.example.nalone.listeners.JSONArrayListener;
@@ -35,6 +35,8 @@ import org.json.JSONException;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.example.nalone.ui.UserListActivity.EXTRA_TYPE_LIST;
+import static com.example.nalone.ui.UserListActivity.EXTRA_USERS_LIST;
 import static com.example.nalone.util.Constants.USER;
 
 public class NotificationActivity extends AppCompatActivity {
@@ -48,7 +50,7 @@ public class NotificationActivity extends AppCompatActivity {
     private List<UserInvitation> invitationsFriend;
     private List<Evenement> invitationsEvent;
     private ProgressBar progressBar;
-    private ArrayList<User> listInvitations;
+    private ArrayList<User> listInvitated;
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
@@ -64,7 +66,7 @@ public class NotificationActivity extends AppCompatActivity {
         buttonBack = findViewById(R.id.buttonBack);
         cardViewInvitsFriend = findViewById(R.id.cardViewInvitsFriend);
 
-        listInvitations = new ArrayList<User>();
+        listInvitated = new ArrayList<User>();
         cardViewInvitsEvent = findViewById(R.id.cardViewInvitsEvent);
 
         textViewNbInvitEvent = findViewById(R.id.nbInvitsEvent);
@@ -79,20 +81,43 @@ public class NotificationActivity extends AppCompatActivity {
         cardViewInvitsFriend.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // navController.navigate(R.id.action_navigation_amis_to_navigation_invitations);
-                Intent intent = new Intent(getBaseContext(), UserListActivity.class);
-                intent.putExtra("users", listInvitations);
-                startActivity(intent);
+                JSONObjectCrypt params = new JSONObjectCrypt();
+                params.putCryptParameter("uid", USER.getUid());
+
+                JSONController.getJsonArrayFromUrl(Constants.URL_FRIENDS_INVITATIONS, NotificationActivity.this, params, new JSONArrayListener() {
+                    @Override
+                    public void onJSONReceived(JSONArray jsonArray) {
+                        try {
+                            if (jsonArray.length() > 0) {
+                                for (int i = 0; i < jsonArray.length(); i++) {
+                                    listInvitated.add((User) JSONController.convertJSONToObject(jsonArray.getJSONObject(i), User.class));
+                                }
+                                Intent intent = new Intent(getBaseContext(), UserListActivity.class);
+                                intent.putExtra(EXTRA_USERS_LIST, listInvitated);
+                                intent.putExtra(EXTRA_TYPE_LIST, UserList.INVIT_FRIEND.toString());
+                                startActivity(intent);
+                            } else {
+                                //affiche menu sans notif
+                            }
+                        } catch (JSONException e) {
+                            Log.w("Response", "Erreur:" + e.getMessage());
+                            Toast.makeText(NotificationActivity.this, getResources().getString(R.string.error), Toast.LENGTH_SHORT).show();
+                        }
+                        progressBar.setVisibility(View.GONE);
+                    }
+
+                    @Override
+                    public void onJSONReceivedError(VolleyError volleyError) {
+                        Log.w("Response", "Erreur:" + volleyError.toString());
+                        Toast.makeText(NotificationActivity.this, getResources().getString(R.string.error), Toast.LENGTH_SHORT).show();
+                    }
+                });
+
             }
         });
 
-        buttonBack.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                onBackPressed();
-            }
-        });
-        HomeActivity.buttonNotif.setImageDrawable(getResources().getDrawable(R.drawable.notification_none));
+        buttonBack.setOnClickListener(v -> onBackPressed());
+        //HomeActivity.buttonNotif.setImageDrawable(getResources().getDrawable(R.drawable.notification_none));
         adapterNotif();
         getInvitationsFriend();
         //getInvitationsEvent();

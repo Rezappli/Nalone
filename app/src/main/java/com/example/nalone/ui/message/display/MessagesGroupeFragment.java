@@ -12,17 +12,12 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
-import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.example.nalone.R;
-import com.example.nalone.dialog.ListAmisFragment;
 import com.example.nalone.objects.Group;
 import com.example.nalone.ui.amis.display.PopUpMesGroupesFragment;
-import com.example.nalone.util.Constants;
-
-import static com.example.nalone.util.Constants.USER;
 
 public class MessagesGroupeFragment extends Fragment {
 
@@ -51,8 +46,6 @@ public class MessagesGroupeFragment extends Fragment {
         addGroup.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ListAmisFragment.type = "message_groupe";
-                navController.navigate(R.id.action_navigation_messages_to_navigation_list_amis);
             }
         });
 

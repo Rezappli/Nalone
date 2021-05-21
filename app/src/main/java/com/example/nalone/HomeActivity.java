@@ -36,7 +36,6 @@ import com.example.nalone.ui.profil.ProfilActivity;
 import com.example.nalone.util.Constants;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -48,9 +47,7 @@ import static com.example.nalone.util.Constants.USER;
 
 public class HomeActivity extends AppCompatActivity {
 
-    private NavController navController;
     public static ImageView buttonBack, buttonNotif, buttonPlanning;
-    public static FloatingActionButton fab1;
     private CardView cardViewPrivate, cardViewPublic;
     private CardView cardViewEventArt, cardTypeEventSport, cardTypeEventParty, cardTypeEventMusic, cardTypeEventMovie, cardTypeEventGame, cardTypeEventCar, cardTypeEventGather, cardTypeEventConference, cardTypeEventShop, cardTypeEventShow, cardTypeEventScience;
     private boolean isOpen = false;
@@ -82,28 +79,18 @@ public class HomeActivity extends AppCompatActivity {
             }
         });
         bottomSheetVisibility = findViewById(R.id.sheetCreateEvent);
-        fab1 = findViewById(R.id.fab1);
         final View viewGrey = findViewById(R.id.viewGrey);
         cardViewPrivate = findViewById(R.id.cardViewPrivate);
         cardViewPublic = findViewById(R.id.cardViewPublic);
         item_profil = findViewById(R.id.item_profil);
-        item_profil.setOnClickListener(new View.OnClickListener() {
-            @RequiresApi(api = Build.VERSION_CODES.O)
-            @Override
-            public void onClick(View v) {
-                updateUserInformations(); //Mise à jour des informations utilisateurs
-                startActivity(new Intent(getBaseContext(), ProfilActivity.class)); //Affichage de la page de profil
-            }
+        item_profil.setOnClickListener(v -> {
+            updateUserInformations(); //Mise à jour des informations utilisateurs
+            startActivity(new Intent(getBaseContext(), ProfilActivity.class)); //Affichage de la page de profil
         });
 
         initCardView(); //Initalisation des cards views
 
-        cardViewPrivate.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                openType(Visibility.PRIVATE);
-            }
-        });
+        cardViewPrivate.setOnClickListener(v -> openType(Visibility.PRIVATE));
 
         cardViewPublic.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -112,18 +99,13 @@ public class HomeActivity extends AppCompatActivity {
             }
         });
 
-        buttonNotif.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(getBaseContext(), NotificationActivity.class));
-            }
-        });
+        buttonNotif.setOnClickListener(v -> startActivity(new Intent(getBaseContext(), NotificationActivity.class)));
 
         buttonBack.setVisibility(View.GONE);
         AppBarConfiguration appBarConfiguration = new AppBarConfiguration.Builder(
                 R.id.navigation_recherche, R.id.navigation_amis, R.id.navigation_evenements, R.id.navigation_messages)
                 .build();
-        navController = Navigation.findNavController(this, R.id.nav_host_fragment);
+        NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
         NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
         NavigationUI.setupWithNavController(navView, navController);
 
@@ -135,7 +117,6 @@ public class HomeActivity extends AppCompatActivity {
             public void onStateChanged(@NonNull View view, int state) {
                 switch (state) {
                     case BottomSheetBehavior.STATE_COLLAPSED:
-                        fab1.show();
                         viewGrey.setVisibility(View.GONE);
                         break;
                     case BottomSheetBehavior.STATE_DRAGGING:
@@ -162,7 +143,6 @@ public class HomeActivity extends AppCompatActivity {
                 switch (state) {
                     case BottomSheetBehavior.STATE_COLLAPSED:
                         if (bottomSheetBehaviorType.getState() == BottomSheetBehavior.STATE_COLLAPSED) {
-                            fab1.show();
                             viewGrey.setVisibility(View.GONE);
                         }
                         break;
@@ -184,10 +164,10 @@ public class HomeActivity extends AppCompatActivity {
         });
 
 
-        fab1.setOnClickListener(new View.OnClickListener() {
+        ImageView imageViewAdd = findViewById(R.id.imageViewAdd);
+        imageViewAdd.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                fab1.hide();
                 bottomSheetBehaviorVisibility.setState(BottomSheetBehavior.STATE_EXPANDED);
                 viewGrey.setVisibility(View.VISIBLE);
             }
@@ -326,7 +306,6 @@ public class HomeActivity extends AppCompatActivity {
     private void openType(Visibility v) {
         currentVisibility = v;
         bottomSheetBehaviorType.setState(BottomSheetBehavior.STATE_EXPANDED);
-        //bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
     }
 
     /**

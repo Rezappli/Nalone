@@ -119,7 +119,7 @@ public class MainCreationEventActivity extends AppCompatActivity {
                 } else if (!addressValidate) {
                     nextFrag = new AdressEventFragment();
                 } else if (!membersValidate) {
-                    nextFrag = new MembersEventFragment();
+                    nextFrag = new MembersEventPrivateFragment();
                 } else if (!costValidate) {
                     nextFrag = new CostEventFragment();
                 }
@@ -133,7 +133,6 @@ public class MainCreationEventActivity extends AppCompatActivity {
             }
         }
     };
-
 
     public enum CurrentFragment {
         NAME, ADRESS, DATE, COST, PHOTO, MEMBERS
@@ -275,9 +274,15 @@ public class MainCreationEventActivity extends AppCompatActivity {
 
         cardViewPrivate = findViewById(R.id.cardViewPrivate);
         cardViewPublic = findViewById(R.id.cardViewPublic);
-        cardViewPrivate.setOnClickListener(v -> changeVisibility(Visibility.PRIVATE));
+        cardViewPrivate.setOnClickListener(v -> {
+            changeVisibility(Visibility.PRIVATE);
+            changeFragment(new MembersEventPrivateFragment());
+        });
 
-        cardViewPublic.setOnClickListener(v -> changeVisibility(Visibility.PUBLIC));
+        cardViewPublic.setOnClickListener(v -> {
+            changeFragment(new MembersEventPublicFragment());
+            changeVisibility(Visibility.PUBLIC);
+        });
     }
 
     private void changeVisibility(Visibility v) {
@@ -430,7 +435,12 @@ public class MainCreationEventActivity extends AppCompatActivity {
         imageProgessCreationDate.setOnClickListener(v -> changeFragment(new DateEventFragment()));
         imageProgessCreationName.setOnClickListener(v -> changeFragment(new NameEventFragment()));
         imageProgessCreationPosition.setOnClickListener(v -> changeFragment(new AdressEventFragment()));
-        imageProgessCreationMembers.setOnClickListener(v -> changeFragment(new MembersEventFragment()));
+        imageProgessCreationMembers.setOnClickListener(v -> {
+            if (currentEvent.getVisibility().equals(Visibility.PRIVATE))
+                changeFragment(new MembersEventPrivateFragment());
+            else
+                changeFragment(new MembersEventPublicFragment());
+        });
         imageProgessCreationPhoto.setOnClickListener(v -> changeFragment(new PhotoEventFragment()));
     }
 
@@ -461,7 +471,7 @@ public class MainCreationEventActivity extends AppCompatActivity {
             setCurrentProgressColor(cardViewProgressCreationCost);
             textViewTitleEvent.setText(getString(R.string.title_creation_event_cost));
         }
-        if (fragment instanceof MembersEventFragment) {
+        if (fragment instanceof MembersEventPrivateFragment || fragment instanceof MembersEventPublicFragment) {
             setCurrentProgressColor(cardViewProgressCreationMembers);
             textViewTitleEvent.setText(getString(R.string.title_creation_event_members));
         }
@@ -476,11 +486,5 @@ public class MainCreationEventActivity extends AppCompatActivity {
                 .commit();
     }
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        for (Fragment fragment : getSupportFragmentManager().getFragments()) {
-            fragment.onActivityResult(requestCode, resultCode, data);
-        }
-    }
+
 }

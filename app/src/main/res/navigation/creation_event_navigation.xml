@@ -9,7 +9,7 @@
         android:id="@+id/nameEventFragment"
         android:name="com.example.nalone.ui.evenements.creation.NameEventFragment"
         android:label="fragment_name_event"
-        tools:layout="@layout/fragment_name_event" >
+        tools:layout="@layout/fragment_name_event">
         <action
             android:id="@+id/action_nameEventFragment_to_photoEventFragment"
             app:destination="@id/photoEventFragment" />
@@ -30,7 +30,7 @@
         android:id="@+id/photoEventFragment"
         android:name="com.example.nalone.ui.evenements.creation.PhotoEventFragment"
         android:label="fragment_photo_event"
-        tools:layout="@layout/fragment_photo_event" >
+        tools:layout="@layout/fragment_photo_event">
         <action
             android:id="@+id/action_photoEventFragment_to_nameEventFragment"
             app:destination="@id/nameEventFragment" />
@@ -51,7 +51,7 @@
         android:id="@+id/adressEventFragment"
         android:name="com.example.nalone.ui.evenements.creation.AdressEventFragment"
         android:label="fragment_adress_event"
-        tools:layout="@layout/fragment_adress_event" >
+        tools:layout="@layout/fragment_adress_event">
         <action
             android:id="@+id/action_adressEventFragment_to_nameEventFragment"
             app:destination="@id/nameEventFragment" />
@@ -72,7 +72,7 @@
         android:id="@+id/dateEventFragment"
         android:name="com.example.nalone.ui.evenements.creation.DateEventFragment"
         android:label="fragment_date_event"
-        tools:layout="@layout/fragment_date_event" >
+        tools:layout="@layout/fragment_date_event">
         <action
             android:id="@+id/action_dateEventFragment_to_adressEventFragment"
             app:destination="@id/adressEventFragment" />
@@ -91,9 +91,9 @@
     </fragment>
     <fragment
         android:id="@+id/membersEventFragment"
-        android:name="com.example.nalone.ui.evenements.creation.MembersEventFragment"
+        android:name="com.example.nalone.ui.evenements.creation.MembersEventPrivateFragment"
         android:label="fragment_members_event"
-        tools:layout="@layout/fragment_members_event" >
+        tools:layout="@layout/fragment_members_private_event">
         <action
             android:id="@+id/action_membersEventFragment_to_photoEventFragment"
             app:destination="@id/photoEventFragment" />

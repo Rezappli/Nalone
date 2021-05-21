@@ -37,14 +37,14 @@ import org.json.JSONException;
 import java.util.ArrayList;
 import java.util.List;
 
-import static android.app.Activity.RESULT_OK;
+import static com.example.nalone.ui.UserListActivity.ACTION_RECEIVE_USERS_LIST;
 import static com.example.nalone.ui.UserListActivity.EXTRA_BROADCAST_USERS_LIST;
 import static com.example.nalone.ui.UserListActivity.EXTRA_TYPE_LIST;
 import static com.example.nalone.ui.UserListActivity.EXTRA_USERS_LIST;
 import static com.example.nalone.ui.evenements.creation.MainCreationEventActivity.ACTION_RECEIVE_NEXT_CLICK;
 import static com.example.nalone.util.Constants.USER;
 
-public class MembersEventFragment extends EventFragment {
+public class MembersEventPrivateFragment extends EventFragment {
 
     private List<User> adds;
     private RecyclerView mRecyclerView;
@@ -53,7 +53,7 @@ public class MembersEventFragment extends EventFragment {
     private ImageView imageViewMemberFriend, imageViewMemberCustom;
     private LinearLayout linearCustomInvit;
 
-    public MembersEventFragment() {
+    public MembersEventPrivateFragment() {
         // Required empty public constructor
     }
 
@@ -61,6 +61,7 @@ public class MembersEventFragment extends EventFragment {
     public void onResume() {
         super.onResume();
 
+        Log.w("MEMBER", "REGISTER");
         IntentFilter intentFilter1 = new IntentFilter();
         intentFilter1.addAction(ACTION_RECEIVE_NEXT_CLICK);
         LocalBroadcastManager.getInstance(getContext()).registerReceiver(receiverNextClick, intentFilter1);
@@ -70,43 +71,21 @@ public class MembersEventFragment extends EventFragment {
     public void onPause() {
         super.onPause();
         LocalBroadcastManager.getInstance(getContext()).unregisterReceiver(receiverNextClick);
-
+        //getActivity().unregisterReceiver(receiverListMembers);
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View root = inflater.inflate(R.layout.fragment_members_event, container, false);
+        View root = inflater.inflate(R.layout.fragment_members_private_event, container, false);
+        getActivity().registerReceiver(receiverListMembers, new IntentFilter(ACTION_RECEIVE_USERS_LIST));
 
         linearCustomInvit = root.findViewById(R.id.linearCustomInvit);
         mRecyclerView = root.findViewById(R.id.recyclerView1);
         buttonMoreInvit = root.findViewById(R.id.buttonMoreInvit);
         imageViewMemberFriend = root.findViewById(R.id.imageViewMemberFriend);
         imageViewMemberCustom = root.findViewById(R.id.imageViewMemberCustom);
-
-        if (adds != null) {
-            mAdapter = new UserListAdapter(this.adds, UserList.MEMBERS);
-            mAdapter.setOnItemClickListener(new UserListAdapter.OnItemClickListener() {
-                @Override
-                public void onDisplayClick(int position) {
-
-                }
-
-                @Override
-                public void onAddClick(int position) {
-
-                }
-
-                @Override
-                public void onRemoveClick(int position) {
-
-                }
-            });
-            mRecyclerView.setAdapter(mAdapter);
-            mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        }
-
 
         imageViewMemberFriend.setColorFilter(getResources().getColor(R.color.grey));
         imageViewMemberCustom.setColorFilter(getResources().getColor(R.color.grey));
@@ -133,12 +112,20 @@ public class MembersEventFragment extends EventFragment {
                     if (jsonArray.length() > 0) {
                         ArrayList<User> friends = new ArrayList<>();
                         for (int i = 0; i < jsonArray.length(); i++) {
-                            friends.add((User) JSONController.convertJSONToObject(jsonArray.getJSONObject(i), User.class));
+                            User user = (User) JSONController.convertJSONToObject(jsonArray.getJSONObject(i), User.class);
+                            if (adds == null || adds.isEmpty() || !adds.get(i).getUid().equals(user.getUid())) {
+                                friends.add(user);
+                            }
                         }
-                        Intent intent = new Intent(getContext(), UserListActivity.class);
-                        intent.putExtra(EXTRA_USERS_LIST, friends);
-                        intent.putExtra(EXTRA_TYPE_LIST, UserList.INVIT_EVENT.toString());
-                        startActivityForResult(intent, 1);
+                        if (!friends.isEmpty()) {
+                            Intent intent = new Intent(getContext(), UserListActivity.class);
+                            intent.putExtra(EXTRA_USERS_LIST, friends);
+                            intent.putExtra(EXTRA_TYPE_LIST, UserList.INVIT_EVENT.toString());
+                            startActivity(intent);
+                        } else {
+                            Toast.makeText(getContext(), getResources().getString(R.string.no_more_friends), Toast.LENGTH_SHORT).show();
+                        }
+
                     } else {
                         Toast.makeText(getContext(), getResources().getString(R.string.no_friends), Toast.LENGTH_SHORT).show();
                     }
@@ -164,16 +151,36 @@ public class MembersEventFragment extends EventFragment {
         }
     };
 
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        Log.w("MEMBER", "ACTIVITY RESULT");
-        if (resultCode == RESULT_OK) {
+    private final BroadcastReceiver receiverListMembers = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
             adds = new ArrayList<>();
-            adds = (ArrayList<User>) data.getSerializableExtra(EXTRA_BROADCAST_USERS_LIST);
-            mAdapter.notifyDataSetChanged();
-            Log.w("MEMBER", "" + adds.size());
+
+            Bundle bundle = intent.getExtras();
+            if (bundle != null)
+                adds = (ArrayList<User>) bundle.getSerializable(EXTRA_BROADCAST_USERS_LIST);
+            mAdapter = new UserListAdapter(adds, UserList.MEMBERS);
+            mAdapter.setOnItemClickListener(new UserListAdapter.OnItemClickListener() {
+                @Override
+                public void onDisplayClick(int position) {
+
+                }
+
+                @Override
+                public void onAddClick(int position) {
+
+                }
+
+                @Override
+                public void onRemoveClick(int position) {
+                    adds.remove(position);
+                    mAdapter.notifyDataSetChanged();
+                }
+            });
+            mRecyclerView.setAdapter(mAdapter);
+            mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+            //mAdapter.notifyDataSetChanged();*/
         }
-    }
+    };
 
 }

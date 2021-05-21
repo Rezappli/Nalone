@@ -60,7 +60,6 @@ import java.util.Iterator;
 import java.util.List;
 
 import static com.example.nalone.HomeActivity.buttonBack;
-import static com.example.nalone.HomeActivity.fab1;
 import static com.example.nalone.enumeration.TypeEvent.ART;
 import static com.example.nalone.util.Constants.MAPVIEW_BUNDLE_KEY;
 import static com.example.nalone.util.Constants.USER;
@@ -214,7 +213,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                 switch (state) {
                     case BottomSheetBehavior.STATE_COLLAPSED:
                         viewGrey.setVisibility(View.GONE);
-                        fab1.show();
                         detailsIsOpen = false;
                         break;
                     case BottomSheetBehavior.STATE_EXPANDED:
@@ -645,7 +643,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         clusterManager.setOnClusterItemClickListener(new ClusterManager.OnClusterItemClickListener<CustomMarker>() {
             @Override
             public boolean onClusterItemClick(CustomMarker item) {
-                fab1.hide();
                 Iterator<Evenement> it = nearby_events.iterator();
                 while (it.hasNext()) {
                     if (it.next().getUid().equalsIgnoreCase(item.getTag())) {
@@ -673,7 +670,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
             @Override
             public boolean onMarkerClick(Marker marker) {
-                fab1.hide();
                 Evenement e = (Evenement) marker.getTag();
 
                 if (e != null) {

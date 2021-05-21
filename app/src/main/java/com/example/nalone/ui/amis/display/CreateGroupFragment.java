@@ -20,7 +20,6 @@ import androidx.navigation.Navigation;
 
 import com.android.volley.VolleyError;
 import com.example.nalone.R;
-import com.example.nalone.dialog.ListAmisFragment;
 import com.example.nalone.enumeration.Visibility;
 import com.example.nalone.json.JSONController;
 import com.example.nalone.json.JSONObjectCrypt;
@@ -129,8 +128,6 @@ public class CreateGroupFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 updateFields();
-                ListAmisFragment.type = "group";
-                navController.navigate(R.id.action_navigation_creat_group_to_navigation_list_amis);
             }
         });
 
