@@ -1,5 +1,6 @@
 package com.example.nalone.ui.profil;
 
+import android.app.job.JobScheduler;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.drawable.Drawable;
@@ -189,7 +190,9 @@ public class ParametresActivity extends AppCompatActivity {
 
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     private void signOut() {
+        cancelJob();
         mAuth.signOut();
         mGoogleSignInClient.signOut()
                 .addOnCompleteListener(this, new OnCompleteListener<Void>() {
@@ -211,6 +214,12 @@ public class ParametresActivity extends AppCompatActivity {
     public void onStop() {
         super.onStop();
         setData();
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+    public void cancelJob() {
+        JobScheduler scheduler = (JobScheduler) getSystemService(JOB_SCHEDULER_SERVICE);
+        scheduler.cancel(123);
     }
 
     private void setData() {

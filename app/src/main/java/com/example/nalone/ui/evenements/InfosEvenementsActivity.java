@@ -131,7 +131,7 @@ public class InfosEvenementsActivity extends AppCompatActivity {
 
         String final_date_text = "";
         mTitle.setText(EVENT_LOAD.getName());
-        mOwner.setText(EVENT_LOAD.getOwner_first_name() + " " + EVENT_LOAD.getOwner_last_name());
+        mOwner.setText(EVENT_LOAD.getOwnerName());
         nbParticipants.setText(EVENT_LOAD.getNbMembers() + "");
 
         if (EVENT_LOAD.getDescription().matches("")) {

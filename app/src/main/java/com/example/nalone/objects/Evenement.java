@@ -28,8 +28,7 @@ public class Evenement implements Serializable {
     private String owner_uid;
     private int nbMembers;
     private StatusEvent status;
-    private String ownerFirstName;
-    private String ownerLastName;
+    private String ownerName;
     private int price;
     private TypeEvent category;
     private String image_url;
@@ -50,8 +49,7 @@ public class Evenement implements Serializable {
         this.status = null;
         this.price = 0;
         this.category = null;
-        this.ownerFirstName = null;
-        this.ownerLastName = null;
+        this.ownerName = null;
         this.image_url = null;
     }
 
@@ -181,12 +179,8 @@ public class Evenement implements Serializable {
         this.status = statusEvent;
     }
 
-    public String getOwner_first_name() {
-        return ownerFirstName;
-    }
-
-    public String getOwner_last_name() {
-        return ownerLastName;
+    public String getOwnerName() {
+        return ownerName;
     }
 
     public int getPrice() {

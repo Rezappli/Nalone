@@ -1,5 +1,8 @@
 package com.example.nalone;
 
+import android.app.job.JobInfo;
+import android.app.job.JobScheduler;
+import android.content.ComponentName;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
@@ -63,6 +66,8 @@ public class HomeActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
+
+        scheduleJob();
 
         BottomNavigationView navView = findViewById(R.id.nav_view);
 
@@ -195,6 +200,8 @@ public class HomeActivity extends AppCompatActivity {
                 viewGrey.setVisibility(View.GONE);
             }
         });
+
+
     }
 
     /**
@@ -341,8 +348,8 @@ public class HomeActivity extends AppCompatActivity {
      * Methode permettant de savoir si il y a des notifications en attente
      */
     @RequiresApi(api = Build.VERSION_CODES.O)
-    private void getNotifications(){
-        if(USER != null) {
+    private void getNotifications() {
+        if (USER != null) {
             JSONObjectCrypt params = new JSONObjectCrypt();
             params.putCryptParameter("uid", USER.getUid());
 
@@ -369,6 +376,24 @@ public class HomeActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         getNotifications();
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+    public void scheduleJob() {
+        ComponentName componentName = new ComponentName(this, NotificationMessagingService.class);
+        JobInfo info = new JobInfo.Builder(123, componentName)
+                .setRequiresCharging(false)
+                .setRequiredNetworkType(JobInfo.NETWORK_TYPE_UNMETERED)
+                .setPersisted(true)
+                .setPeriodic(15 * 60 * 1000)
+                .build();
+        JobScheduler scheduler = (JobScheduler) getSystemService(JOB_SCHEDULER_SERVICE);
+        int resultCode = scheduler.schedule(info);
+        if (resultCode == JobScheduler.RESULT_SUCCESS) {
+            Log.d("MyOwnService", "Job scheduled");
+        } else {
+            Log.d("MyOwnService", "Job scheduling failed");
+        }
     }
 
     @Override

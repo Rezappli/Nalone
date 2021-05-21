@@ -29,8 +29,8 @@ public class PlanningEvenementAdapter extends RecyclerView.Adapter<PlanningEvene
     private OnItemClickListener mListener;
     private boolean participate;
 
-    public void setOnItemClickListener(OnItemClickListener listener){
-        mListener= listener;
+    public void setOnItemClickListener(OnItemClickListener listener) {
+        mListener = listener;
     }
 
 
@@ -47,7 +47,7 @@ public class PlanningEvenementAdapter extends RecyclerView.Adapter<PlanningEvene
     @Override
     public EventViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_evenements_list_, parent, false);
-        EventViewHolder evh = new EventViewHolder(view,mListener);
+        EventViewHolder evh = new EventViewHolder(view, mListener);
         return evh;
     }
 
@@ -78,7 +78,7 @@ public class PlanningEvenementAdapter extends RecyclerView.Adapter<PlanningEvene
         public TextView textViewAfficher, textViewParticiper;
         public CardView mAfficher;
         public CardView mCarwViewOwner;
-        public  TextView textViewNbMembers;
+        public TextView textViewNbMembers;
 
         public EventViewHolder(@NonNull View itemView, final OnItemClickListener listener) {
             super(itemView);
@@ -91,7 +91,7 @@ public class PlanningEvenementAdapter extends RecyclerView.Adapter<PlanningEvene
             mAfficher = itemView.findViewById(R.id.cardViewEventList);
             textViewAfficher = itemView.findViewById(R.id.textViewAfficher);
             textViewParticiper = itemView.findViewById(R.id.textViewParticiper);
-            if(participate){
+            if (participate) {
                 textViewParticiper.setText("Désinscrire");
                 textViewParticiper.setCompoundDrawablesWithIntrinsicBounds(
                         R.drawable.desinscrire, //left
@@ -105,9 +105,9 @@ public class PlanningEvenementAdapter extends RecyclerView.Adapter<PlanningEvene
             this.textViewAfficher.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if(mListener != null){
+                    if (mListener != null) {
                         int position = getAdapterPosition();
-                        if(position != RecyclerView.NO_POSITION){
+                        if (position != RecyclerView.NO_POSITION) {
                             listener.onDisplayClick(position);
                         }
                     }
@@ -121,26 +121,26 @@ public class PlanningEvenementAdapter extends RecyclerView.Adapter<PlanningEvene
             this.mVille.setText(e.getCity());
             this.mDate.setText(Constants.getFullDate(d));
             this.mTime.setText(cutString(e.getStartDate(), 5, 11));
-            this.mProprietaire.setText(e.getOwner_first_name()+" "+e.getOwner_last_name());
-            this.textViewNbMembers.setText(e.getNbMembers()+"");
+            this.mProprietaire.setText(e.getOwnerName());
+            this.textViewNbMembers.setText(e.getNbMembers() + "");
 
         }
     }
 
-    private String cutString(String s, int length, int start){
-        if(length > s.length()){
+    private String cutString(String s, int length, int start) {
+        if (length > s.length()) {
             return null;
         }
 
         String temp = "";
 
         int i = 0;
-        if(start != -1){
-            for(i=start; i<length+start; i++){
+        if (start != -1) {
+            for (i = start; i < length + start; i++) {
                 temp += s.charAt(i);
             }
-        }else{
-            for(i=0; i<length; i++){
+        } else {
+            for (i = 0; i < length; i++) {
                 temp += s.charAt(i);
             }
         }

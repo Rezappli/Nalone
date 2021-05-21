@@ -129,8 +129,8 @@ public class PopupProfilFragment extends Fragment {
 
         nameProfil.setText(USER_LOAD.getName());
         villeProfil.setText(USER_LOAD.getCity());
-        nbCreateProfil.setText(USER_LOAD.getNumber_events_create()+"");
-        nbParticipateProfil.setText(USER_LOAD.getNumber_events_attend()+"");
+        nbCreateProfil.setText(USER_LOAD.getNumber_events_create() + "");
+        nbParticipateProfil.setText(USER_LOAD.getNumber_events_attend() + "");
 
         Constants.setUserImage(USER_LOAD, imagePerson);
 
@@ -204,10 +204,10 @@ public class PopupProfilFragment extends Fragment {
         JSONObjectCrypt params = new JSONObjectCrypt();
         params.putCryptParameter("uid", USER.getUid());
         params.putCryptParameter("uid_friend", USER_LOAD.getUid());
-        params.putCryptParameter("notification_sender", getResources().getString(R.string.invit_received_notifications) + " " + USER.getName());
-        params.putCryptParameter("notification_receiver", getResources().getString(R.string.invit_send_notifications) + " " + USER_LOAD.getName());
+        params.putCryptParameter("notification_receiver", getResources().getString(R.string.invit_received_notifications) + " " + USER.getName());
+        params.putCryptParameter("notification_sender", getResources().getString(R.string.invit_send_notifications) + " " + USER_LOAD.getName());
 
-        Log.w("Response", "Params "+ params.toString());
+        Log.w("Response", "Params " + params.toString());
 
         JSONController.getJsonObjectFromUrl(Constants.URL_SEND_FRIEND_REQUEST, getContext(), params, new JSONObjectListener() {
             @SuppressLint("UseCompatLoadingForDrawables")

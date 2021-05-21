@@ -33,6 +33,8 @@ import com.example.nalone.enumeration.VisibilityMap;
 import com.example.nalone.json.JSONController;
 import com.example.nalone.json.JSONObjectCrypt;
 import com.example.nalone.listeners.JSONArrayListener;
+import com.example.nalone.objects.CustomMarker;
+import com.example.nalone.objects.CustomRenderer;
 import com.example.nalone.objects.Evenement;
 import com.example.nalone.objects.TypeEventObject;
 import com.example.nalone.ui.evenements.InfosEvenementsActivity;
@@ -47,15 +49,14 @@ import com.google.android.gms.maps.model.Circle;
 import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
-import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
-import com.google.maps.android.clustering.ClusterItem;
 import com.google.maps.android.clustering.ClusterManager;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import static com.example.nalone.HomeActivity.buttonBack;
@@ -104,6 +105,8 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
 
     private TextView textViewDetailName, textViewDetailCity, textViewDetailDate, textViewDetailTime, textViewDetailNbMembers;
     private ImageView imageViewDetailCategory;
+
+    private ClusterManager<CustomMarker> clusterManager;
 
 
     public MapFragment() {
@@ -462,10 +465,9 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
 
-        clusterManager = new ClusterManager<>(getContext(), mMap);
+        clusterManager = new ClusterManager<CustomMarker>(getContext(), mMap);
         mMap.setOnCameraIdleListener(clusterManager);
         mMap.setOnMarkerClickListener(clusterManager);
-        addRandomPointsToMap();
 
         mMap.setOnCameraMoveListener(new GoogleMap.OnCameraMoveListener() {
             @Override
@@ -475,7 +477,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         });
 
         if (posCam == null) {
-            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(5, USER.getLongitude()), 10));
+            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(USER.getLatitude(), USER.getLongitude()), 10));
         } else {
             mMap.moveCamera(CameraUpdateFactory.newCameraPosition(posCam));
         }
@@ -547,57 +549,10 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
 
     }
 
-    public void addRandomPointsToMap() {
-        int LOWER = 1, UPPER = 10;
-        int sydneyLatitude = -30;
-        int sydneyLongitude = 120;
-        LatLng location = new LatLng(0, 0);
-        for (int i = 0; i < 5; i++) {
-            int latitude = sydneyLatitude + (int) (Math.random() * (UPPER - LOWER)) + LOWER;
-            int longitude = sydneyLongitude + (int) (Math.random() * (UPPER - LOWER)) + LOWER;
-            location = new LatLng(latitude, longitude);
-            mMap.addMarker(new MarkerOptions().position(location));
-            MyItem offsetItem = new MyItem(latitude, longitude, "test", "This is a test item");
-            clusterManager.addItem(offsetItem);
-        }
-
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(location));
-
-    }
-
-    public class MyItem implements ClusterItem {
-        private final LatLng position;
-        private final String title;
-        private final String snippet;
-
-        public MyItem(double lat, double lng, String title, String snippet) {
-            position = new LatLng(lat, lng);
-            this.title = title;
-            this.snippet = snippet;
-        }
-
-        @Override
-        public LatLng getPosition() {
-            return position;
-        }
-
-        @Override
-        public String getTitle() {
-            return title;
-        }
-
-        @Override
-        public String getSnippet() {
-            return snippet;
-        }
-    }
-
-    // Declare a variable for the cluster manager.
-    private ClusterManager<MyItem> clusterManager;
-
     @RequiresApi(api = Build.VERSION_CODES.M)
     public void updateMap(VisibilityMap visibilityMap) {
         mMap.clear();
+        clusterManager.clearItems();
         switch (visibilityMap) {
             case ALL:
                 for (Evenement e : nearby_events) {
@@ -607,14 +562,18 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
             case PUBLIC:
                 for (Evenement e : nearby_events) {
                     if (e.getVisibility().equals(Visibility.PUBLIC)) {
-                        addMarkerOnMap(e);
+                        if (!e.getOwner_uid().equalsIgnoreCase(USER.getUid())) {
+                            addMarkerOnMap(e);
+                        }
                     }
                 }
                 break;
             case PRIVATE:
                 for (Evenement e : nearby_events) {
                     if (e.getVisibility().equals(Visibility.PRIVATE)) {
-                        addMarkerOnMap(e);
+                        if (!e.getOwner_uid().equalsIgnoreCase(USER.getUid())) {
+                            addMarkerOnMap(e);
+                        }
                     }
                 }
                 break;
@@ -653,36 +612,59 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
 
     private void addMarkerOnMap(Evenement e) {
 
-        MarkerOptions mk = new MarkerOptions();
-
-        //mk.title(e.getName());
-        mk.position(new LatLng(e.getLatitude(), e.getLongitude()));
+        CustomMarker m;
 
         if (e.getVisibility().equals(Visibility.PUBLIC)) {
-            mk.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));
+            if (e.getOwner_uid().equalsIgnoreCase(USER.getUid())) {
+                m = new CustomMarker(new LatLng(e.getLatitude(), e.getLongitude()), BitmapDescriptorFactory.HUE_GREEN, e.getUid());
+            } else {
+                m = new CustomMarker(new LatLng(e.getLatitude(), e.getLongitude()), BitmapDescriptorFactory.HUE_RED, e.getUid());
+            }
         } else {
             if (e.getOwner_uid().equalsIgnoreCase(USER.getUid())) {
-                mk.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));
+                m = new CustomMarker(new LatLng(e.getLatitude(), e.getLongitude()), BitmapDescriptorFactory.HUE_GREEN, e.getUid());
             } else {
-                mk.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE));
+                m = new CustomMarker(new LatLng(e.getLatitude(), e.getLongitude()), BitmapDescriptorFactory.HUE_AZURE, e.getUid());
             }
         }
 
-        mMap.addMarker(mk).setTag(e);
-        MyItem offsetItem = new MyItem(e.getLatitude(), e.getLongitude(), null, null);
-        clusterManager.addItem(offsetItem);
-        clusterManager.setOnClusterItemClickListener(new ClusterManager.OnClusterItemClickListener<MyItem>() {
-            @Override
-            public boolean onClusterItemClick(MyItem item) {
-                return false;
-            }
-        });
+        clusterManager.addItem(m);
+        clusterManager.setRenderer(new CustomRenderer(getContext(), mMap, clusterManager));
+
 
         mMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
             @Override
             public void onInfoWindowClick(Marker marker) {
                 InfosEvenementsActivity.EVENT_LOAD = (Evenement) marker.getTag();
                 startActivity(new Intent(getContext(), InfosEvenementsActivity.class));
+            }
+        });
+
+        clusterManager.setOnClusterItemClickListener(new ClusterManager.OnClusterItemClickListener<CustomMarker>() {
+            @Override
+            public boolean onClusterItemClick(CustomMarker item) {
+                fab1.hide();
+                Iterator<Evenement> it = nearby_events.iterator();
+                while (it.hasNext()) {
+                    if (it.next().getUid().equalsIgnoreCase(item.getTag())) {
+                        Evenement e = it.next();
+                    }
+                }
+
+                if (e != null) {
+                    textViewDetailNbMembers.setText(e.getNbMembers() + "");
+                    textViewDetailCity.setText(e.getCity());
+                    textViewDetailDate.setText(e.getStartDate());
+                    textViewDetailName.setText(e.getName());
+                    textViewDetailTime.setText(e.getStartDate());
+                    imageViewDetailCategory.setImageResource(e.getImageCategory());
+
+                }
+
+                // Check if a click count was set, then display the click count.
+                bottomSheetBehaviorDetails.setState(BottomSheetBehavior.STATE_EXPANDED);
+
+                return false;
             }
         });
 

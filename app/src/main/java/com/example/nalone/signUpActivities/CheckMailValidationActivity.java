@@ -96,8 +96,8 @@ public class CheckMailValidationActivity extends CheckValidationActivity {
                     buttonValidate.setBackground(ContextCompat.getDrawable(getBaseContext(), R.drawable.custom_button_simple));
                     buttonValidate.setTextColor(Color.WHITE);
                     buttonValidate.setClickable(true);
-                    user.setMail(login);
-                    user.setNumber(login);
+                    user.setMail(login); //picaxe56250@gmail.com
+                    user.setNumber("+33");
                     Log.w("MAIL", "VALIDATE");
                     handler.removeCallbacks(runnable);
                 }
@@ -108,7 +108,6 @@ public class CheckMailValidationActivity extends CheckValidationActivity {
             @Override
             public void onJSONReceivedError(VolleyError volleyError) {
                 Log.w("MAIL", "NOOO");
-
             }
         });
     }
