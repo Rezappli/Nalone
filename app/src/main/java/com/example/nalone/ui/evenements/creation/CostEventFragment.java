@@ -4,14 +4,12 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.os.Build;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
-import androidx.annotation.RequiresApi;
 import androidx.cardview.widget.CardView;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
@@ -20,6 +18,7 @@ import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 
 import static com.example.nalone.ui.evenements.creation.MainCreationEventActivity.ACTION_RECEIVE_NEXT_CLICK;
+import static com.example.nalone.ui.evenements.creation.MainCreationEventActivity.currentEvent;
 
 public class CostEventFragment extends EventFragment {
     private CardView cardViewPaying;
@@ -46,22 +45,30 @@ public class CostEventFragment extends EventFragment {
         textInputPrice = root.findViewById(R.id.textInputPrice);
         textInputLayoutPrice = root.findViewById(R.id.textInputLayoutPrice);
 
-        cardViewFree.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                changeToFree();
-                isTaping = true;
-                isFree = true;
-            }
+
+        if (currentEvent.getPrice() == 0) {
+            changeToFree();
+            isTaping = true;
+            isFree = false;
+        } else {
+            changeToPaying();
+            isTaping = true;
+            isFree = false;
+            textInputPrice.setText(String.valueOf(currentEvent.getPrice()));
+
+        }
+
+
+        cardViewFree.setOnClickListener(v -> {
+            changeToFree();
+            isTaping = true;
+            isFree = true;
         });
 
-        cardViewPaying.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                changeToPaying();
-                isTaping = true;
-                isFree = false;
-            }
+        cardViewPaying.setOnClickListener(v -> {
+            changeToPaying();
+            isTaping = true;
+            isFree = false;
         });
 
         return root;
@@ -74,6 +81,7 @@ public class CostEventFragment extends EventFragment {
         IntentFilter intentFilter = new IntentFilter();
         intentFilter.addAction(ACTION_RECEIVE_NEXT_CLICK);
         LocalBroadcastManager.getInstance(getContext()).registerReceiver(receiverNextClick, intentFilter);
+
     }
 
     @Override
@@ -96,11 +104,15 @@ public class CostEventFragment extends EventFragment {
     }
 
     private final BroadcastReceiver receiverNextClick = new BroadcastReceiver() {
-        @RequiresApi(api = Build.VERSION_CODES.O)
         @Override
         public void onReceive(Context context, Intent intent) {
+            int finalValue;
             String value = textInputPrice.getText().toString();
-            int finalValue = Integer.parseInt(value);
+            if (!value.matches("")) {
+                finalValue = Integer.parseInt(value);
+            } else {
+                finalValue = 0;
+            }
             if (!isTaping) {
                 imageViewPaying.setImageDrawable(getResources().getDrawable(R.drawable.ic_baseline_attach_money_24_error));
                 imageViewFree.setImageDrawable(getResources().getDrawable(R.drawable.ic_baseline_money_off_24_error));
@@ -108,8 +120,10 @@ public class CostEventFragment extends EventFragment {
                 if (!isFree) {
                     if (textInputPrice.getText().toString().matches("")) {
                         textInputPrice.setError(getResources().getString(R.string.required_field));
+                        return;
                     } else if (finalValue <= 0) {
                         textInputPrice.setError(getResources().getString(R.string.int_over_zero));
+                        return;
                     } else {
                         MainCreationEventActivity.currentEvent.setPrice(finalValue);
                     }
