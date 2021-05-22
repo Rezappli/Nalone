@@ -1,45 +1,10 @@
 package com.example.nalone.ui.amis.display;
 
-import android.content.Intent;
-import android.os.Build;
-import android.os.Bundle;
-import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.ImageButton;
-import android.widget.ImageView;
-import android.widget.Toast;
-
-import androidx.annotation.RequiresApi;
-import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
-import androidx.navigation.NavController;
-import androidx.navigation.Navigation;
-
-import com.android.volley.VolleyError;
-import com.example.nalone.R;
-import com.example.nalone.enumeration.Visibility;
-import com.example.nalone.json.JSONController;
-import com.example.nalone.json.JSONObjectCrypt;
-import com.example.nalone.listeners.JSONObjectListener;
-import com.example.nalone.objects.Group;
-import com.example.nalone.util.Constants;
-import com.google.android.material.textfield.TextInputEditText;
-
-import org.json.JSONObject;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
-
-import static com.example.nalone.HomeActivity.buttonBack;
-import static com.example.nalone.util.Constants.USER;
 
 public class CreateGroupFragment extends Fragment {
 
-    private TextInputEditText event_name;
+  /*  private TextInputEditText event_name;
     private TextInputEditText event_resume;
 
     private ImageView imageViewPrivate;
@@ -207,5 +172,5 @@ public class CreateGroupFragment extends Fragment {
                 }
             });
         }
-    }
+    }*/
 }

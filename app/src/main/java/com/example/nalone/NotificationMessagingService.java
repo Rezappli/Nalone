@@ -65,36 +65,36 @@ public class NotificationMessagingService extends JobService {
     private void readNotifications() {
 
         if (USER != null) {
-                JSONObjectCrypt params = new JSONObjectCrypt();
-                params.putCryptParameter("uid", USER.getUid());
+            JSONObjectCrypt params = new JSONObjectCrypt();
+            params.putCryptParameter("uid", USER.getUid());
 
-                JSONController.getJsonArrayFromUrl(Constants.URL_NEW_NOTIFICATIONS, getApplicationContext(), params, new JSONArrayListener() {
-                    @Override
-                    public void onJSONReceived(JSONArray jsonArray) {
-                        try {
-                            if (jsonArray.length() > 0) {
-                                if(nbNotifications != jsonArray.length() || nbNotifications == -1){
-                                    if (jsonArray.length() == 1) {
-                                        Notification notif = (Notification) JSONController.convertJSONToObject(jsonArray.getJSONObject(0), Notification.class);
-                                        sendNotification(getApplicationContext().getResources().getString(R.string.title_notification), notif.getMessage());
-                                    } else {
-                                        sendNotification(getApplicationContext().getResources().getString(R.string.title_notification), getApplicationContext().getResources().getString(R.string.description_more_one_event));
-                                    }
+            JSONController.getJsonArrayFromUrl(Constants.URL_NEW_NOTIFICATIONS, getApplicationContext(), params, new JSONArrayListener() {
+                @Override
+                public void onJSONReceived(JSONArray jsonArray) {
+                    try {
+                        if (jsonArray.length() > 0) {
+                            if (nbNotifications != jsonArray.length() || nbNotifications == -1) {
+                                if (jsonArray.length() == 1) {
+                                    Notification notif = (Notification) JSONController.convertJSONToObject(jsonArray.getJSONObject(0), Notification.class);
+                                    sendNotification(getApplicationContext().getResources().getString(R.string.title_notification), notif.getMessage());
+                                } else {
+                                    sendNotification(getApplicationContext().getResources().getString(R.string.title_notification), getApplicationContext().getResources().getString(R.string.description_more_one_event));
                                 }
                             }
-
-                            nbNotifications = jsonArray.length();
-                        } catch (JSONException e) {
-                            Log.w("Response", "Erreur:" + e.getMessage());
                         }
-                    }
 
-                    @Override
-                    public void onJSONReceivedError(VolleyError volleyError) {
-                        Log.w("Response", "Erreur:" + volleyError.toString());
+                        nbNotifications = jsonArray.length();
+                    } catch (JSONException e) {
+                        Log.w("Response", "Erreur:" + e.getMessage());
                     }
-                });
-            }
+                }
+
+                @Override
+                public void onJSONReceivedError(VolleyError volleyError) {
+                    Log.w("Response", "Erreur:" + volleyError.toString());
+                }
+            });
+        }
     }
 
     @Override

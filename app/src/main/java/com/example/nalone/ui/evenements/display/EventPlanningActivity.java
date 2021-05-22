@@ -1,22 +1,22 @@
 package com.example.nalone.ui.evenements.display;
 
-import androidx.annotation.RequiresApi;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.Toast;
 
+import androidx.annotation.RequiresApi;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.android.volley.VolleyError;
 import com.example.nalone.R;
 import com.example.nalone.adapter.PlanningEvenementAdapter;
-import com.example.nalone.listeners.JSONArrayListener;
 import com.example.nalone.json.JSONController;
 import com.example.nalone.json.JSONObjectCrypt;
+import com.example.nalone.listeners.JSONArrayListener;
 import com.example.nalone.objects.Evenement;
 import com.example.nalone.util.Constants;
 import com.github.jhonnyx2012.horizontalpicker.DatePickerListener;
@@ -32,7 +32,7 @@ import java.util.List;
 
 import static com.example.nalone.util.Constants.USER;
 
-public class EventPlanningActivity extends AppCompatActivity implements DatePickerListener{
+public class EventPlanningActivity extends AppCompatActivity implements DatePickerListener {
     private RecyclerView mRecycler;
     private List<Evenement> evenementList;
     private PlanningEvenementAdapter mAdapter;
@@ -71,7 +71,7 @@ public class EventPlanningActivity extends AppCompatActivity implements DatePick
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
-    private void getEvent(String date){
+    private void getEvent(String date) {
         JSONObjectCrypt params = new JSONObjectCrypt();
 
         params.putCryptParameter("uid", USER.getUid());
@@ -82,12 +82,12 @@ public class EventPlanningActivity extends AppCompatActivity implements DatePick
             public void onJSONReceived(JSONArray jsonArray) {
                 try {
                     evenementList = new ArrayList<>();
-                    for(int i = 0; i < jsonArray.length(); i++) {
+                    for (int i = 0; i < jsonArray.length(); i++) {
                         evenementList.add((Evenement) JSONController.convertJSONToObject(jsonArray.getJSONObject(i), Evenement.class));
                     }
                     configureRecyclerView();
                 } catch (JSONException e) {
-                    Log.w("Response", "Erreur:"+e.getMessage());
+                    Log.w("Response", "Erreur:" + e.getMessage());
                     Toast.makeText(getBaseContext(), getResources().getString(R.string.error_event), Toast.LENGTH_SHORT).show();
                 }
 
@@ -95,7 +95,7 @@ public class EventPlanningActivity extends AppCompatActivity implements DatePick
 
             @Override
             public void onJSONReceivedError(VolleyError volleyError) {
-                Log.w("Response", "Erreur:"+volleyError.toString());
+                Log.w("Response", "Erreur:" + volleyError.toString());
                 Toast.makeText(getBaseContext(), getResources().getString(R.string.error_event), Toast.LENGTH_SHORT).show();
             }
         });

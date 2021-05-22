@@ -92,6 +92,7 @@ public class Constants {
     public static String URL_NEARBY_EVENTS = BASE_API_URL + "/get_event_nearby.php";
     public static String URL_FRIENDS = BASE_API_URL + "/get_friends.php";
     public static String URL_FRIENDS_INVITATIONS = BASE_API_URL + "/get_friends_request.php";
+    public static String URL_GET_USER_INVITATIONS = BASE_API_URL + "/get_friends_invitations.php";
     public static String URL_EVENT_INVITATIONS = BASE_API_URL + "/get_event_invitations.php";
 
     public static String URL_NOTIFICATIONS = BASE_API_URL + "/get_my_notifications.php";
@@ -103,6 +104,8 @@ public class Constants {
     public static String URL_EVENT_ISREGISTERED = BASE_API_URL + "/is_registered.php";
     public static String URL_EVENT_NEXT = BASE_API_URL + "/get_next_event.php";
     public static String URL_EVENT_POPULAR = BASE_API_URL + "/get_event_popular.php";
+    public static String URL_EVENT_SUGGEST = BASE_API_URL + "/get_event_suggest.php";
+    public static String URL_EVENT_LIST_MAP = BASE_API_URL + "/get_event_list_map.php";
     public static String URL_EVENT_FILTRE = BASE_API_URL + "/get_event_filtre.php";
     public static String URL_ADD_EVENT = BASE_API_URL + "/add_event.php";
     public static String URL_UPLOAD_IMAGE = BASE_API_URL + "/upload_image.php";

@@ -103,7 +103,7 @@ public class HomeActivity extends AppCompatActivity {
 
         buttonBack.setVisibility(View.GONE);
         AppBarConfiguration appBarConfiguration = new AppBarConfiguration.Builder(
-                R.id.navigation_recherche, R.id.navigation_amis, R.id.navigation_evenements, R.id.navigation_messages)
+                R.id.navigation_recherche_friends, R.id.navigation_amis, R.id.navigation_evenements, R.id.navigation_messages)
                 .build();
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
         NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);

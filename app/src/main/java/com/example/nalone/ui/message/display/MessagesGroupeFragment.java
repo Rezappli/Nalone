@@ -1,28 +1,11 @@
 package com.example.nalone.ui.message.display;
 
-import android.os.Bundle;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.TextView;
-
-import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
-import androidx.navigation.NavController;
-import androidx.navigation.Navigation;
-import androidx.recyclerview.widget.RecyclerView;
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
-
-import com.example.nalone.R;
-import com.example.nalone.objects.Group;
-import com.example.nalone.ui.amis.display.PopUpMesGroupesFragment;
 
 public class MessagesGroupeFragment extends Fragment {
 
 
-    private NavController navController;
+ /*   private NavController navController;
     private RecyclerView mRecyclerView;
     private ImageView addGroup;
     private SwipeRefreshLayout mSwipeRefreshLayout;
@@ -90,5 +73,5 @@ public class MessagesGroupeFragment extends Fragment {
     public void onResume() {
         super.onResume();
         createFragment();
-    }
+    }*/
 }

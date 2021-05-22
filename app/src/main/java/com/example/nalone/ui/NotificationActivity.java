@@ -72,48 +72,42 @@ public class NotificationActivity extends AppCompatActivity {
         textViewNbInvitEvent = findViewById(R.id.nbInvitsEvent);
         textViewNbInvitFriend = findViewById(R.id.nbInvitsFriend);
 
-        cardViewInvitsEvent.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // navController.navigate(R.id.action_navigation_amis_to_navigation_invitations);
-            }
+        cardViewInvitsEvent.setOnClickListener(v -> {
+            // navController.navigate(R.id.action_navigation_amis_to_navigation_invitations);
         });
-        cardViewInvitsFriend.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                JSONObjectCrypt params = new JSONObjectCrypt();
-                params.putCryptParameter("uid", USER.getUid());
+        cardViewInvitsFriend.setOnClickListener(v -> {
+            JSONObjectCrypt params = new JSONObjectCrypt();
+            params.putCryptParameter("uid", USER.getUid());
 
-                JSONController.getJsonArrayFromUrl(Constants.URL_FRIENDS_INVITATIONS, NotificationActivity.this, params, new JSONArrayListener() {
-                    @Override
-                    public void onJSONReceived(JSONArray jsonArray) {
-                        try {
-                            if (jsonArray.length() > 0) {
-                                for (int i = 0; i < jsonArray.length(); i++) {
-                                    listInvitated.add((User) JSONController.convertJSONToObject(jsonArray.getJSONObject(i), User.class));
-                                }
-                                Intent intent = new Intent(getBaseContext(), UserListActivity.class);
-                                intent.putExtra(EXTRA_USERS_LIST, listInvitated);
-                                intent.putExtra(EXTRA_TYPE_LIST, UserList.INVIT_FRIEND.toString());
-                                startActivity(intent);
-                            } else {
-                                //affiche menu sans notif
+            JSONController.getJsonArrayFromUrl(Constants.URL_GET_USER_INVITATIONS, getBaseContext(), params, new JSONArrayListener() {
+                @Override
+                public void onJSONReceived(JSONArray jsonArray) {
+                    try {
+                        if (jsonArray.length() > 0) {
+                            for (int i = 0; i < jsonArray.length(); i++) {
+                                listInvitated.add((User) JSONController.convertJSONToObject(jsonArray.getJSONObject(i), User.class));
                             }
-                        } catch (JSONException e) {
-                            Log.w("Response", "Erreur:" + e.getMessage());
-                            Toast.makeText(NotificationActivity.this, getResources().getString(R.string.error), Toast.LENGTH_SHORT).show();
+                            Intent intent = new Intent(getBaseContext(), UserListActivity.class);
+                            intent.putExtra(EXTRA_USERS_LIST, listInvitated);
+                            intent.putExtra(EXTRA_TYPE_LIST, UserList.INVIT_FRIEND.toString());
+                            startActivity(intent);
+                        } else {
+                            Toast.makeText(NotificationActivity.this, getResources().getString(R.string.error_user_invitation), Toast.LENGTH_SHORT).show();
                         }
-                        progressBar.setVisibility(View.GONE);
-                    }
-
-                    @Override
-                    public void onJSONReceivedError(VolleyError volleyError) {
-                        Log.w("Response", "Erreur:" + volleyError.toString());
+                    } catch (JSONException e) {
+                        Log.w("Response", "Erreur:" + e.getMessage());
                         Toast.makeText(NotificationActivity.this, getResources().getString(R.string.error), Toast.LENGTH_SHORT).show();
                     }
-                });
+                    progressBar.setVisibility(View.GONE);
+                }
 
-            }
+                @Override
+                public void onJSONReceivedError(VolleyError volleyError) {
+                    Log.w("Response", "Erreur:" + volleyError.toString());
+                    Toast.makeText(NotificationActivity.this, getResources().getString(R.string.error), Toast.LENGTH_SHORT).show();
+                }
+            });
+
         });
 
         buttonBack.setOnClickListener(v -> onBackPressed());

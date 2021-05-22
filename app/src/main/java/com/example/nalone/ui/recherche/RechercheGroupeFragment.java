@@ -1,38 +1,11 @@
 package com.example.nalone.ui.recherche;
 
-import android.os.Build;
-import android.os.Bundle;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.ProgressBar;
-
-import androidx.annotation.RequiresApi;
 import androidx.fragment.app.Fragment;
-import androidx.navigation.NavController;
-import androidx.navigation.Navigation;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
-
-import com.example.nalone.R;
-import com.example.nalone.adapter.RechercheGroupeAdapter;
-import com.example.nalone.json.JSONObjectCrypt;
-import com.example.nalone.objects.Group;
-import com.example.nalone.ui.amis.display.PopUpGroupFragment;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import static com.example.nalone.HomeActivity.buttonBack;
-import static com.example.nalone.util.Constants.USER;
 
 public class RechercheGroupeFragment extends Fragment {
 
 
-    private NavController navController;
+ /*   private NavController navController;
     private RecyclerView mRecyclerView;
     private RechercheGroupeAdapter mAdapter;
     private ImageView addGroup;
@@ -119,5 +92,5 @@ public class RechercheGroupeFragment extends Fragment {
         createFragment();
     }
 
-
+*/
 }

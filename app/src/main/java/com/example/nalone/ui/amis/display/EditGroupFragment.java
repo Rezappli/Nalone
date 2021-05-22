@@ -1,31 +1,13 @@
 package com.example.nalone.ui.amis.display;
 
 
-import android.annotation.SuppressLint;
-import android.os.Bundle;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.ImageView;
-import android.widget.Toast;
-
 import androidx.fragment.app.Fragment;
-import androidx.navigation.NavController;
-import androidx.navigation.Navigation;
-
-import com.example.nalone.objects.Group;
-import com.example.nalone.R;
-import com.example.nalone.enumeration.Visibility;
-import com.google.android.material.textfield.TextInputEditText;
-
-import static com.example.nalone.HomeActivity.buttonBack;
 
 
 public class EditGroupFragment extends Fragment {
 
 
-    TextInputEditText groupName;
+/*    TextInputEditText groupName;
     Button profilEditValider, buttonDeleteGroup;
     private ImageView imageViewPublic, imageViewPrive;
     private NavController navController;
@@ -114,5 +96,5 @@ public class EditGroupFragment extends Fragment {
         imageViewPublic.setImageDrawable(getResources().getDrawable(R.drawable.ic_baseline_public_focused));
         imageViewPrive.setImageDrawable(getResources().getDrawable(R.drawable.ic_baseline_lock_24));
         visibility = Visibility.PUBLIC;
-    }
+    }*/
 }

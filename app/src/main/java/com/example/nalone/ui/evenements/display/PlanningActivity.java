@@ -1,9 +1,5 @@
 package com.example.nalone.ui.evenements.display;
 
-import androidx.annotation.RequiresApi;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
@@ -14,9 +10,13 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.RequiresApi;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.android.volley.VolleyError;
-import com.example.nalone.R;
 import com.example.nalone.NoLonelyActivity;
+import com.example.nalone.R;
 import com.example.nalone.adapter.EvenementAdapter;
 import com.example.nalone.enumeration.StatusEvent;
 import com.example.nalone.json.JSONController;
@@ -43,10 +43,10 @@ public class PlanningActivity extends NoLonelyActivity {
     private ImageView buttonCalendar;
     private ImageView imageTypeEvent;
     private ImageView showMoreButton;
-    private TextView nextEventName,nextEventCity,nextEventDate,nextEventTime, nextEventNbMembers, nextEventStatus,textViewTitleDebut,differenceDate;
+    private TextView nextEventName, nextEventCity, nextEventDate, nextEventTime, nextEventNbMembers, nextEventStatus, textViewTitleDebut, differenceDate;
     private List<Evenement> eventsSoon, eventsEnd;
     private Evenement nextEvent;
-    private LinearLayout linearPlanning,linearNoResult, linearSoon, linearEnd;
+    private LinearLayout linearPlanning, linearNoResult, linearSoon, linearEnd;
     private RecyclerView mRecyclerSoon, mRecyclerEnd;
 
     @RequiresApi(api = Build.VERSION_CODES.O)
@@ -90,10 +90,9 @@ public class PlanningActivity extends NoLonelyActivity {
         buttonCalendar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(getBaseContext(),EventPlanningActivity.class));
+                startActivity(new Intent(getBaseContext(), EventPlanningActivity.class));
             }
         });
-
 
 
         callJson();
@@ -101,7 +100,7 @@ public class PlanningActivity extends NoLonelyActivity {
 
 
     @RequiresApi(api = Build.VERSION_CODES.O)
-    private void callJson(){
+    private void callJson() {
         nextEvent = null;
         JSONObjectCrypt params = new JSONObjectCrypt();
 
@@ -110,23 +109,23 @@ public class PlanningActivity extends NoLonelyActivity {
         JSONController.getJsonArrayFromUrl(Constants.URL_EVENT_NEXT, getBaseContext(), params, new JSONArrayListener() {
             @Override
             public void onJSONReceived(JSONArray jsonArray) {
-                Log.w("Response", "Value:"+jsonArray.toString());
+                Log.w("Response", "Value:" + jsonArray.toString());
                 try {
 
                     nextEvent = (Evenement) JSONController.convertJSONToObject(jsonArray.getJSONObject(0), Evenement.class);
 
-                    if(nextEvent != null){
+                    if (nextEvent != null) {
                         linearPlanning.setVisibility(View.VISIBLE);
                         linearNoResult.setVisibility(View.GONE);
                         initNextEvent();
-                    }else{
+                    } else {
                         linearPlanning.setVisibility(View.GONE);
                         linearNoResult.setVisibility(View.VISIBLE);
                     }
 
 
                 } catch (JSONException | ParseException e) {
-                    Log.w("Response", "Erreur:"+e.getMessage());
+                    Log.w("Response", "Erreur:" + e.getMessage());
                     Toast.makeText(getBaseContext(), getResources().getString(R.string.error_event), Toast.LENGTH_SHORT).show();
                 }
 
@@ -135,7 +134,7 @@ public class PlanningActivity extends NoLonelyActivity {
 
             @Override
             public void onJSONReceivedError(VolleyError volleyError) {
-                Log.w("Response", "Erreur:"+volleyError.toString());
+                Log.w("Response", "Erreur:" + volleyError.toString());
                 Toast.makeText(getBaseContext(), getResources().getString(R.string.error_event), Toast.LENGTH_SHORT).show();
             }
         });
@@ -144,23 +143,23 @@ public class PlanningActivity extends NoLonelyActivity {
         JSONController.getJsonArrayFromUrl(Constants.URL_EVENT_NEXT, getBaseContext(), params, new JSONArrayListener() {
             @Override
             public void onJSONReceived(JSONArray jsonArray) {
-                Log.w("Response", "Value:"+jsonArray.toString());
+                Log.w("Response", "Value:" + jsonArray.toString());
                 try {
 
                     eventsEnd = new ArrayList<>();
-                    for(int i = 0; i < jsonArray.length(); i++) {
+                    for (int i = 0; i < jsonArray.length(); i++) {
                         eventsEnd.add((Evenement) JSONController.convertJSONToObject(jsonArray.getJSONObject(i), Evenement.class));
                     }
-                    if(eventsEnd.isEmpty()){
+                    if (eventsEnd.isEmpty()) {
                         linearEnd.setVisibility(View.GONE);
-                    }else{
+                    } else {
                         initRecyclerEnd();
                         linearEnd.setVisibility(View.VISIBLE);
                     }
 
 
                 } catch (JSONException e) {
-                    Log.w("Response", "Erreur:"+e.getMessage());
+                    Log.w("Response", "Erreur:" + e.getMessage());
                     Toast.makeText(getBaseContext(), getResources().getString(R.string.error_event), Toast.LENGTH_SHORT).show();
                 }
 
@@ -169,7 +168,7 @@ public class PlanningActivity extends NoLonelyActivity {
 
             @Override
             public void onJSONReceivedError(VolleyError volleyError) {
-                Log.w("Response", "Erreur:"+volleyError.toString());
+                Log.w("Response", "Erreur:" + volleyError.toString());
                 Toast.makeText(getBaseContext(), getResources().getString(R.string.error_event), Toast.LENGTH_SHORT).show();
             }
         });
@@ -179,42 +178,42 @@ public class PlanningActivity extends NoLonelyActivity {
         JSONController.getJsonArrayFromUrl(Constants.URL_EVENT_NEXT, getBaseContext(), params, new JSONArrayListener() {
             @Override
             public void onJSONReceived(JSONArray jsonArray) {
-                Log.w("Response", "Value:"+jsonArray.toString());
+                Log.w("Response", "Value:" + jsonArray.toString());
                 try {
 
                     eventsSoon = new ArrayList<>();
-                    for(int i = 0; i < jsonArray.length(); i++) {
+                    for (int i = 0; i < jsonArray.length(); i++) {
                         eventsSoon.add((Evenement) JSONController.convertJSONToObject(jsonArray.getJSONObject(i), Evenement.class));
                     }
-                    if(eventsSoon.isEmpty()){
+                    if (eventsSoon.isEmpty()) {
                         linearSoon.setVisibility(View.GONE);
-                    }else{
+                    } else {
                         initRecyclerSoon();
                         linearSoon.setVisibility(View.VISIBLE);
                     }
 
                 } catch (JSONException e) {
-                    Log.w("Response", "Erreur:"+e.getMessage());
+                    Log.w("Response", "Erreur:" + e.getMessage());
                     Toast.makeText(getBaseContext(), getResources().getString(R.string.error_event), Toast.LENGTH_SHORT).show();
                 }
             }
 
             @Override
             public void onJSONReceivedError(VolleyError volleyError) {
-                Log.w("Response", "Erreur:"+volleyError.toString());
+                Log.w("Response", "Erreur:" + volleyError.toString());
                 Toast.makeText(getBaseContext(), getResources().getString(R.string.error_event), Toast.LENGTH_SHORT).show();
             }
         });
     }
 
     private void initNextEvent() throws ParseException {
-        nextEvent.replaceFields(nextEventName,nextEventCity,nextEventNbMembers,nextEventDate,nextEventTime,imageTypeEvent);
-        if(nextEvent.getStatusEvent() == StatusEvent.ENCOURS) {
+        nextEvent.replaceFields(nextEventName, nextEventCity, nextEventNbMembers, nextEventDate, nextEventTime, imageTypeEvent);
+        if (nextEvent.getStatusEvent() == StatusEvent.ENCOURS) {
             textViewTitleDebut.setText(getResources().getString(R.string.event_start_from));
-        } else if(nextEvent.getStatusEvent() == StatusEvent.BIENTOT){
+        } else if (nextEvent.getStatusEvent() == StatusEvent.BIENTOT) {
             textViewTitleDebut.setText(getResources().getString(R.string.event_start_in));
         }
-        TimeUtil.differenceDate(new Date(),new SimpleDateFormat("yyyy-MM-dd hh:mm").parse(nextEvent.getStartDate()),differenceDate);
+        TimeUtil.differenceDate(new Date(), new SimpleDateFormat("yyyy-MM-dd hh:mm").parse(nextEvent.getStartDate()), differenceDate);
     }
 
     private void initRecyclerEnd() {
@@ -230,7 +229,6 @@ public class PlanningActivity extends NoLonelyActivity {
         //final LinearLayoutManager llm = new LinearLayoutManager(this, RecyclerView.VERTICAL, false);
         this.mRecyclerSoon.setLayoutManager(new LinearLayoutManager(this, RecyclerView.VERTICAL, false));
     }
-
 
 
 }

@@ -9,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.SearchView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -76,6 +77,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     private TextView textViewLocationPrive, textViewLocationAll, textViewLocationPublic, textViewLocationCreate, textViewLocationInscrit;
     private ImageView imageViewLocationPrive, imageViewLocationAll, imageViewLocationPublic, imageViewLocationCreate, imageViewLocationInscrit;
 
+    private LinearLayout linearLayoutPopular, linearLayoutSuggest, linearNoResult;
     private NavController navController;
 
     private EvenementAdapter adapteSuggestion, adapterPopulaire;
@@ -84,6 +86,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
 
     private List<Evenement> nearby_events;
     private List<Evenement> eventsPopular;
+    private List<Evenement> eventsSuggest;
     private CardView loading;
 
     private static CameraPosition posCam = null;
@@ -128,6 +131,9 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     private void createFragment() {
         buttonBack.setVisibility(View.GONE);
         navController = Navigation.findNavController(getActivity(), R.id.nav_host_fragment);
+        linearLayoutPopular = rootView.findViewById(R.id.linearPopular);
+        linearLayoutSuggest = rootView.findViewById(R.id.linearSuggest);
+        linearNoResult = rootView.findViewById(R.id.linearNoResult);
         cardViewLocationCreate = rootView.findViewById(R.id.cardViewLocationCreate);
         cardViewLocationPrive = rootView.findViewById(R.id.cardViewLocationPrivate);
         cardViewLocationPublic = rootView.findViewById(R.id.cardViewLocationPublic);
@@ -176,7 +182,9 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         bottomSheetBehavior.setHideable(false);
 
         bottomSheetBehavior.setBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
-            @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+
+
+            @RequiresApi(api = Build.VERSION_CODES.O)
             @Override
             public void onStateChanged(@NonNull View view, int state) {
                 switch (state) {
@@ -189,6 +197,9 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                         break;
                     case BottomSheetBehavior.STATE_DRAGGING:
                         imageViewFiltreSearch.setVisibility(View.VISIBLE);
+                        if (!isOpen) {
+                            getEventsList();
+                        }
                         break;
                     case BottomSheetBehavior.STATE_EXPANDED:
                         isOpen = true;
@@ -207,7 +218,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         });
 
         bottomSheetBehaviorDetails.setBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
-            @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+            @RequiresApi(api = Build.VERSION_CODES.O)
             @Override
             public void onStateChanged(@NonNull View view, int state) {
                 switch (state) {
@@ -223,6 +234,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                     case BottomSheetBehavior.STATE_HIDDEN:
                         viewGrey.setVisibility(View.GONE);
                         break;
+
                 }
             }
 
@@ -314,73 +326,17 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
 
         initFiltres();
 
-        //this.configureRecyclerView();
-
-
-        /*HomeActivity.floatingActionButton.setOnClickListener(new View.OnClickListener() {
-            @RequiresApi(api = Build.VERSION_CODES.M)
-            @Override
-            public void onClick(View v) {
-                CreateEventFragment.edit = false;
-                CreateEventFragment.EVENT_LOAD = null;
-                CreateEventFragment.evenementAttente = null;
-                //navController.navigate(R.id.action_navigation_evenements_to_navigation_create_event);
-                startActivity(new Intent(getContext(), MainCreationEventActivity.class));
-            }
-        });*/
-
-        /*CardView cardViewBottom = rootView.findViewById(R.id.cardViewBottomSheet);
-        cardViewBottom.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                BottomSheetFragment bottomSheetFragment = new BottomSheetFragment();
-                bottomSheetFragment.show(getActivity().getSupportFragmentManager(),bottomSheetFragment.getTag());
-            }
-        });*/
-
-        /* FILTRES TYPE EVENT */
-
-    }
-
-    private void configureRecyclerView() {
-
-        configureSuggestion();
-        configurePopular();
-        initFiltres();
-
-        /* INTERESSANT
-        this.recyclerViewSuggestion.addOnScrollListener(new RecyclerView.OnScrollListener() {
-            @Override
-            public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
-                super.onScrollStateChanged(recyclerView, newState);
-            }
-            @Override
-            public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
-                super.onScrolled(recyclerView, dx, dy);
-                int visiblePosition = llm.findFirstCompletelyVisibleItemPosition();
-                if(visiblePosition > -1) {
-                    View v = llm.findViewByPosition(visiblePosition);
-                    //do something
-                    MapEvenementAdapter.EventViewHolder firstViewHolder = (MapEvenementAdapter.EventViewHolder) recyclerViewSearchEvent.findViewHolderForLayoutPosition(visiblePosition);
-                    if(firstViewHolder != null){
-//                        dateSearchEvent.setText(firstViewHolder.mDate.getText());
-                    }
-                }
-            }
-        });*/
-
-
     }
 
     private void configureSuggestion() {
-        this.adapteSuggestion = new EvenementAdapter(this.nearby_events, R.layout.item_evenement, false);
+        this.adapteSuggestion = new EvenementAdapter(this.eventsSuggest, R.layout.item_evenement, false);
         this.recyclerViewSuggestion.setAdapter(this.adapteSuggestion);
         final LinearLayoutManager llm = new LinearLayoutManager(getActivity(), RecyclerView.HORIZONTAL, false);
         this.recyclerViewSuggestion.setLayoutManager(llm);
         adapteSuggestion.setOnItemClickListener(new EvenementAdapter.OnItemClickListener() {
             @Override
             public void onDisplayClick(int position) {
-                InfosEvenementsActivity.EVENT_LOAD = nearby_events.get(position);
+                InfosEvenementsActivity.EVENT_LOAD = eventsSuggest.get(position);
                 //InfosEvenementsActivity.type = "nouveau";
                 startActivity(new Intent(getContext(), InfosEvenementsActivity.class));
 
@@ -489,7 +445,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         params.putCryptParameter("range", range);
 
         nearby_events = new ArrayList<>();
-        eventsPopular = new ArrayList<>();
 
         JSONController.getJsonArrayFromUrl(Constants.URL_NEARBY_EVENTS, getContext(), params, new JSONArrayListener() {
             @Override
@@ -519,17 +474,37 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         });
 
 
-        JSONController.getJsonArrayFromUrl(Constants.URL_EVENT_POPULAR, getContext(), params, new JSONArrayListener() {
+        loading.setVisibility(View.GONE);
+
+
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    public void getEventsList() {
+        getEventPopular();
+        getEventSuggest();
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    public void getEventSuggest() {
+        JSONObjectCrypt params = new JSONObjectCrypt();
+        eventsSuggest = new ArrayList<>();
+
+        params.putCryptParameter("uid", USER.getUid());
+        params.putCryptParameter("latitude", USER.getLatitude());
+        params.putCryptParameter("longitude", USER.getLongitude());
+        params.putCryptParameter("range", range);
+
+        JSONController.getJsonArrayFromUrl(Constants.URL_NEARBY_EVENTS, getContext(), params, new JSONArrayListener() {
             @Override
             public void onJSONReceived(JSONArray jsonArray) {
                 try {
                     if (jsonArray.length() > 0) {
                         for (int i = 0; i < jsonArray.length(); i++) {
-                            eventsPopular.add((Evenement) JSONController.convertJSONToObject(jsonArray.getJSONObject(i), Evenement.class));
+                            eventsSuggest.add((Evenement) JSONController.convertJSONToObject(jsonArray.getJSONObject(i), Evenement.class));
                         }
-                        if (recyclerViewPopular == null)
-                            configurePopular();
-                        adapterPopulaire.notifyDataSetChanged();
+                        configureSuggestion();
+                        linearLayoutSuggest.setVisibility(View.VISIBLE);
                     }
                 } catch (JSONException e) {
                     Log.w("Response events popular", "Erreur:" + e.getMessage());
@@ -544,9 +519,45 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                 Toast.makeText(getContext(), getResources().getString(R.string.error_event), Toast.LENGTH_SHORT).show();
             }
         });
-        loading.setVisibility(View.GONE);
+    }
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    public void getEventPopular() {
+        JSONObjectCrypt params = new JSONObjectCrypt();
+        eventsPopular = new ArrayList<>();
 
+        params.putCryptParameter("uid", USER.getUid());
+        params.putCryptParameter("latitude", USER.getLatitude());
+        params.putCryptParameter("longitude", USER.getLongitude());
+        params.putCryptParameter("range", range);
+
+        JSONController.getJsonArrayFromUrl(Constants.URL_EVENT_LIST_MAP, getContext(), params, new JSONArrayListener() {
+            @Override
+            public void onJSONReceived(JSONArray jsonArray) {
+                try {
+                    if (jsonArray.length() > 0) {
+                        linearLayoutPopular.setVisibility(View.VISIBLE);
+
+                        for (int i = 0; i < jsonArray.length(); i++) {
+                            eventsPopular.add((Evenement) JSONController.convertJSONToObject(jsonArray.getJSONObject(i), Evenement.class));
+                        }
+                        configurePopular();
+                    } else {
+                        linearNoResult.setVisibility(View.VISIBLE);
+                    }
+                } catch (JSONException e) {
+                    Log.w("Response events popular", "Erreur:" + e.getMessage());
+                    Toast.makeText(getContext(), getResources().getString(R.string.error_event), Toast.LENGTH_SHORT).show();
+                }
+
+            }
+
+            @Override
+            public void onJSONReceivedError(VolleyError volleyError) {
+                Log.w("Response events popular", "Erreur:" + volleyError.toString());
+                Toast.makeText(getContext(), getResources().getString(R.string.error_event), Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     @RequiresApi(api = Build.VERSION_CODES.M)

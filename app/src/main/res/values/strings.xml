@@ -20,7 +20,7 @@
     <string name="homme"> Homme </string>
     <string name="femme"> Femme </string>
     <string name="activity"> Activité </string>
-    <string name="nom">Prénom Nom </string>
+    <string name="nom">Nom </string>
     <string name="pseudo"> Pseudo </string>
     <string name="prenom"> Prenom </string>
     <string name="error_name_short">Nom trop court</string>
@@ -132,6 +132,7 @@
     <string name="descriptionNF"> Description : </string>
     <string name="afficher"> Afficher </string>
     <string name="CI"> Centre d\'interêt </string>
+    <string name="title_sold"> Solde </string>
     <string name="or_main"> OU </string>
     <string name="particular"> Particulier </string>
     <string name="professional"> Professionnel </string>
@@ -262,6 +263,7 @@
     <!-- Strings used for map -->
     <string name="description_event">Cliquez pour plus d\'informations</string>
     <string name="error">Une erreur est survenue :(</string>
+    <string name="error_user_invitation">Aucune invitation</string>
 
     <string name="error_event">Une erreur est survenue lors du chargement des évènements :(</string>
     <string name="error_notifications">Une erreur est survenue lors du chargement des notifications :(</string>
@@ -326,6 +328,7 @@
 
     <!--Strings for SearchActivity -->
     <string name="no_result"> Aucun résultat</string>
+    <string name="no_result_event"> Aucun évènement en cours</string>
     <string name="no_result_planning"> Aucun évènement planifié </string>
 
     <!--Strings for InfosEventsActivity -->

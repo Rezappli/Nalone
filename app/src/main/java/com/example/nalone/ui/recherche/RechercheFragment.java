@@ -1,50 +1,10 @@
 package com.example.nalone.ui.recherche;
 
-import android.os.Build;
-import android.os.Bundle;
-import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ProgressBar;
-import android.widget.RelativeLayout;
-import android.widget.TextView;
-import android.widget.Toast;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.RequiresApi;
-import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
-import androidx.navigation.NavController;
-import androidx.navigation.Navigation;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
-import com.android.volley.VolleyError;
-import com.example.nalone.R;
-import com.example.nalone.adapter.RechercheGroupeAdapter;
-import com.example.nalone.adapter.user.SearchUserAdapter;
-import com.example.nalone.json.JSONController;
-import com.example.nalone.json.JSONObjectCrypt;
-import com.example.nalone.listeners.JSONArrayListener;
-import com.example.nalone.objects.Group;
-import com.example.nalone.objects.User;
-import com.example.nalone.ui.amis.display.PopUpGroupFragment;
-import com.example.nalone.ui.amis.display.PopupProfilFragment;
-import com.example.nalone.util.Constants;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import static com.example.nalone.HomeActivity.buttonBack;
-import static com.example.nalone.util.Constants.USER;
 
 public class RechercheFragment extends Fragment {
 
-    private RecyclerView recyclerAmis;
+/*    private RecyclerView recyclerAmis;
     private SearchUserAdapter adapterAmis;
     private RechercheGroupeAdapter adapterGroup;
     private RecyclerView recyclerGroup;
@@ -99,7 +59,7 @@ public class RechercheFragment extends Fragment {
         textViewRechercheGroupes.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                navController.navigate(R.id.action_navigation_recherche_to_navigation_rcherche_groupe);
+                //navController.navigate(R.id.action_navigation_recherche_to_navigation_rcherche_groupe);
             }
         });
 
@@ -185,7 +145,7 @@ public class RechercheFragment extends Fragment {
 
     public void showPopUpGroup(final Group g) {
         PopUpGroupFragment.GROUP_LOAD = g;
-        navController.navigate(R.id.action_navigation_recherche_to_navigation_popup_group);
+        // navController.navigate(R.id.action_navigation_recherche_to_navigation_popup_group);
     }
 
     public void showPopUpProfil(User u) {
@@ -202,5 +162,5 @@ public class RechercheFragment extends Fragment {
     public void onResume() {
         super.onResume();
         createFragment();
-    }
+    }*/
 }

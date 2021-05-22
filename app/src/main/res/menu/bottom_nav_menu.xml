@@ -7,7 +7,7 @@
         android:icon="@drawable/ic_baseline_map_menu" />
 
     <item
-        android:id="@+id/navigation_recherche"
+        android:id="@+id/navigation_recherche_friends"
         android:title="@string/title_recherche"
         android:icon="@drawable/baseline_person_search_24" />
 

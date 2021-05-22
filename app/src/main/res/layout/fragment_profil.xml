@@ -51,6 +51,43 @@
             android:layout_height="0dp">
 
             <androidx.cardview.widget.CardView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentTop="true"
+                android:layout_marginStart="20dp"
+                android:layout_marginTop="20dp"
+                app:cardCornerRadius="10dp">
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal"
+                    android:paddingStart="10dp"
+                    android:paddingTop="5dp"
+                    android:paddingEnd="5dp"
+                    android:paddingBottom="5dp">
+
+                    <TextView
+                        android:id="@+id/textView52"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:text="0,00"
+                        android:textSize="18sp"
+                        android:textStyle="bold" />
+
+                    <ImageView
+                        android:id="@+id/imageView10"
+                        android:layout_width="wrap_content"
+                        android:layout_height="18dp"
+                        android:layout_gravity="center"
+                        android:layout_weight="1"
+                        app:srcCompat="@drawable/ic_baseline_euro_24" />
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+
+            <androidx.cardview.widget.CardView
                 android:id="@+id/cardViewQR"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -87,7 +124,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:padding="5dp"
-                    android:src="@drawable/ic_baseline_edit_24" />
+                    app:srcCompat="@drawable/ic_baseline_edit_24" />
             </androidx.cardview.widget.CardView>
 
             <LinearLayout
@@ -129,7 +166,7 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="bottom|center"
                         android:layout_marginBottom="5dp"
-                        android:text="TextView"
+                        android:text="0"
                         android:textColor="@android:color/secondary_text_dark" />
                 </androidx.cardview.widget.CardView>
 
@@ -165,7 +202,7 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="bottom|center"
                         android:layout_marginBottom="5dp"
-                        android:text="TextView"
+                        android:text="0"
                         android:textColor="@android:color/secondary_text_dark" />
                 </androidx.cardview.widget.CardView>
 
@@ -214,14 +251,14 @@
                 android:textStyle="bold" />
 
             <TextView
+                android:text="@string/ville"
                 android:id="@+id/userConnectVille"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/userConnectText"
                 android:layout_centerHorizontal="true"
                 android:layout_marginTop="5dp"
-                android:drawableStart="@drawable/ic_baseline_location_grey"
-                android:text="TextView" />
+                app:drawableStartCompat="@drawable/ic_baseline_location_grey" />
 
             <androidx.cardview.widget.CardView
                 android:id="@+id/cardViewProfilDescription"
@@ -229,7 +266,9 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@id/userConnectVille"
                 android:layout_marginTop="15dp"
-                android:paddingStart="10dp">
+                android:paddingStart="10dp"
+                android:paddingEnd="10dp"
+                app:cardElevation="1dp">
 
                 <EditText
                     android:id="@+id/userConnectDescription"
@@ -239,8 +278,7 @@
                     android:editable="false"
                     android:ems="10"
                     android:inputType="textPersonName"
-                    android:padding="10dp"
-                    android:text="Name" />
+                    android:padding="10dp" />
             </androidx.cardview.widget.CardView>
 
             <androidx.cardview.widget.CardView
@@ -274,7 +312,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:padding="5dp"
-                    android:src="@drawable/ic_baseline_edit_24" />
+                    app:srcCompat="@drawable/ic_baseline_edit_24" />
             </androidx.cardview.widget.CardView>
 
             <androidx.cardview.widget.CardView
@@ -310,7 +348,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:padding="20dp"
-                    app:srcCompat="@drawable/ic_baseline_settings_24" />
+                    app:srcCompat="@drawable/ic_baseline_settings_24"
+                    android:contentDescription="@string/TODO" />
             </androidx.cardview.widget.CardView>
 
             <androidx.cardview.widget.CardView
@@ -327,7 +366,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:padding="20dp"
-                    app:srcCompat="@drawable/ic_baseline_edit_profil" />
+                    app:srcCompat="@drawable/ic_baseline_edit_profil"
+                    android:contentDescription="@string/TODO" />
             </androidx.cardview.widget.CardView>
 
             <TextView
