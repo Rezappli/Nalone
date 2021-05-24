@@ -80,8 +80,8 @@ public class Constants {
     public static String serverKey = null;
     public static String contentType = null;
 
-    public static String BASE_URL = "http://nolonely.fr:53000";
-    public static String BASE_API_URL = "http://api.nolonely.fr:53000";
+    public static String BASE_URL = "http://nolonely.fr";
+    public static String BASE_API_URL = "http://api.nolonely.fr";
 
     public static String URL_ME = BASE_API_URL + "/me.php";
     public static String URL_SIGN_IN = BASE_API_URL + "/sign_in.php";
