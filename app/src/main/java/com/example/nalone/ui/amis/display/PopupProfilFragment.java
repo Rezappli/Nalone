@@ -151,8 +151,8 @@ public class PopupProfilFragment extends Fragment {
 
         nameProfil.setText(USER_LOAD.getName());
         descriptionProfil.setText(USER_LOAD.getDescription());
-        nbCreateProfil.setText(USER_LOAD.getNumber_events_create());
-        nbParticipateProfil.setText(USER_LOAD.getNumber_events_attend());
+        nbCreateProfil.setText(USER_LOAD.getNumber_events_create() + "");
+        nbParticipateProfil.setText(USER_LOAD.getNumber_events_attend() + "");
         //buttonAdd.setImageResource(button);
 
         if (USER_LOAD.getDescription().matches("")) {

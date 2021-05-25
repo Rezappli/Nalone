@@ -110,7 +110,7 @@ public class MainCreationEventActivity extends AppCompatActivity {
 
                 Fragment nextFrag = null;
 
-                if (photoValidate && nameValidate && membersValidate && dateValidate && addressValidate) {
+                if (photoValidate && nameValidate && membersValidate && dateValidate && addressValidate && costValidate) {
                     createEvent();
                 } else if (!photoValidate) {
                     nextFrag = new PhotoEventFragment();
@@ -355,6 +355,8 @@ public class MainCreationEventActivity extends AppCompatActivity {
         params.putCryptParameter("nbMembers", currentEvent.getNbMembers());
         params.putCryptParameter("category", currentEvent.getCategory());
         params.putCryptParameter("price", currentEvent.getPrice());
+
+        Log.w("Params", params.toString());
 
         JSONController.getJsonObjectFromUrl(Constants.URL_ADD_EVENT, getBaseContext(), params, new JSONObjectListener() {
             @Override
