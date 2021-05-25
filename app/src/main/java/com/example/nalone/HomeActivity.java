@@ -1,5 +1,6 @@
 package com.example.nalone;
 
+import android.annotation.SuppressLint;
 import android.app.job.JobInfo;
 import android.app.job.JobScheduler;
 import android.content.ComponentName;
@@ -72,12 +73,7 @@ public class HomeActivity extends AppCompatActivity {
         buttonBack.setVisibility(View.GONE);
         buttonNotif = findViewById(R.id.buttonNotif);
         buttonPlanning = findViewById(R.id.buttonPlanning);
-        buttonPlanning.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(getBaseContext(), PlanningActivity.class));
-            }
-        });
+        buttonPlanning.setOnClickListener(v -> startActivity(new Intent(getBaseContext(), PlanningActivity.class)));
         bottomSheetVisibility = findViewById(R.id.sheetCreateEvent);
         final View viewGrey = findViewById(R.id.viewGrey);
         cardViewPrivate = findViewById(R.id.cardViewPrivate);
@@ -92,12 +88,7 @@ public class HomeActivity extends AppCompatActivity {
 
         cardViewPrivate.setOnClickListener(v -> openType(Visibility.PRIVATE));
 
-        cardViewPublic.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                openType(Visibility.PUBLIC);
-            }
-        });
+        cardViewPublic.setOnClickListener(v -> openType(Visibility.PUBLIC));
 
         buttonNotif.setOnClickListener(v -> startActivity(new Intent(getBaseContext(), NotificationActivity.class)));
 
@@ -120,11 +111,12 @@ public class HomeActivity extends AppCompatActivity {
                         viewGrey.setVisibility(View.GONE);
                         break;
                     case BottomSheetBehavior.STATE_DRAGGING:
+                    case BottomSheetBehavior.STATE_SETTLING:
+                    case BottomSheetBehavior.STATE_HALF_EXPANDED:
+                    case BottomSheetBehavior.STATE_HIDDEN:
                         break;
                     case BottomSheetBehavior.STATE_EXPANDED:
                         bottomSheetBehaviorVisibility.setState(BottomSheetBehavior.STATE_COLLAPSED);
-                        break;
-                    case BottomSheetBehavior.STATE_HIDDEN:
                         break;
                 }
             }
@@ -147,11 +139,9 @@ public class HomeActivity extends AppCompatActivity {
                         }
                         break;
                     case BottomSheetBehavior.STATE_DRAGGING:
-                        break;
+                    case BottomSheetBehavior.STATE_HIDDEN:
                     case BottomSheetBehavior.STATE_EXPANDED:
 
-                        break;
-                    case BottomSheetBehavior.STATE_HIDDEN:
                         break;
 
                 }
@@ -165,20 +155,14 @@ public class HomeActivity extends AppCompatActivity {
 
 
         ImageView imageViewAdd = findViewById(R.id.imageViewAdd);
-        imageViewAdd.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                bottomSheetBehaviorVisibility.setState(BottomSheetBehavior.STATE_EXPANDED);
-                viewGrey.setVisibility(View.VISIBLE);
-            }
+        imageViewAdd.setOnClickListener(v -> {
+            bottomSheetBehaviorVisibility.setState(BottomSheetBehavior.STATE_EXPANDED);
+            viewGrey.setVisibility(View.VISIBLE);
         });
 
-        viewGrey.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                bottomSheetBehaviorVisibility.setState(BottomSheetBehavior.STATE_COLLAPSED);
-                viewGrey.setVisibility(View.GONE);
-            }
+        viewGrey.setOnClickListener(v -> {
+            bottomSheetBehaviorVisibility.setState(BottomSheetBehavior.STATE_COLLAPSED);
+            viewGrey.setVisibility(View.GONE);
         });
 
 
@@ -211,6 +195,7 @@ public class HomeActivity extends AppCompatActivity {
     /**
      * Méthode permettant l'initialisation des cards views
      */
+    @SuppressLint("CutPasteId")
     private void initCardView() {
         cardViewEventArt = findViewById(R.id.cardTypeEventArt);
         cardTypeEventSport = findViewById(R.id.cardTypeEventSport);
@@ -224,84 +209,24 @@ public class HomeActivity extends AppCompatActivity {
         cardTypeEventShop = findViewById(R.id.cardTypeEventCar);
         cardTypeEventShow = findViewById(R.id.cardTypeEventShow);
         cardTypeEventScience = findViewById(R.id.cardTypeEventScience);
-        cardViewEventArt.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                goCreateEvent(TypeEvent.ART);
-            }
-        });
-        cardTypeEventSport.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                goCreateEvent(TypeEvent.SPORT);
-            }
-        });
-        cardTypeEventParty.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                goCreateEvent(TypeEvent.PARTY);
-            }
-        });
-        cardTypeEventMusic.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                goCreateEvent(TypeEvent.MUSIC);
-            }
-        });
-        cardTypeEventMovie.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                goCreateEvent(TypeEvent.MULTIMEDIA);
-            }
-        });
-        cardTypeEventGame.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                goCreateEvent(TypeEvent.GAME);
-            }
-        });
-        cardTypeEventCar.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                goCreateEvent(TypeEvent.CAR);
-            }
-        });
-        cardTypeEventGather.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                goCreateEvent(TypeEvent.GATHER);
-            }
-        });
-        cardTypeEventConference.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                goCreateEvent(TypeEvent.CONFERENCE);
-            }
-        });
-        cardTypeEventShop.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                goCreateEvent(TypeEvent.SHOP);
-            }
-        });
-        cardTypeEventShow.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                goCreateEvent(TypeEvent.SHOW);
-            }
-        });
-        cardTypeEventScience.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                goCreateEvent(TypeEvent.SCIENCE);
-            }
-        });
+        cardViewEventArt.setOnClickListener(v -> goCreateEvent(TypeEvent.ART));
+        cardTypeEventSport.setOnClickListener(v -> goCreateEvent(TypeEvent.SPORT));
+        cardTypeEventParty.setOnClickListener(v -> goCreateEvent(TypeEvent.PARTY));
+        cardTypeEventMusic.setOnClickListener(v -> goCreateEvent(TypeEvent.MUSIC));
+        cardTypeEventMovie.setOnClickListener(v -> goCreateEvent(TypeEvent.MULTIMEDIA));
+        cardTypeEventGame.setOnClickListener(v -> goCreateEvent(TypeEvent.GAME));
+        cardTypeEventCar.setOnClickListener(v -> goCreateEvent(TypeEvent.CAR));
+        cardTypeEventGather.setOnClickListener(v -> goCreateEvent(TypeEvent.GATHER));
+        cardTypeEventConference.setOnClickListener(v -> goCreateEvent(TypeEvent.CONFERENCE));
+        cardTypeEventShop.setOnClickListener(v -> goCreateEvent(TypeEvent.SHOP));
+        cardTypeEventShow.setOnClickListener(v -> goCreateEvent(TypeEvent.SHOW));
+        cardTypeEventScience.setOnClickListener(v -> goCreateEvent(TypeEvent.SCIENCE));
     }
 
     /**
      * Méthode permettant l'ouverture du bottom sheet lors du clique sur le haut de la fenetre
      *
-     * @param v
+     * @param v visibilité
      */
     private void openType(Visibility v) {
         currentVisibility = v;
@@ -311,7 +236,7 @@ public class HomeActivity extends AppCompatActivity {
     /**
      * Ouverture de la page de création des évènements
      *
-     * @param tp
+     * @param tp type of event
      */
     private void goCreateEvent(TypeEvent tp) {
         MainCreationEventActivity.currentEvent = new Evenement();

@@ -31,7 +31,7 @@
 
     <fragment
         android:id="@+id/navigation_amis"
-        android:name="com.example.nalone.ui.amis.MesAmisFragment"
+        android:name="com.example.nalone.ui.amis.display.AmisFragment"
         android:label="@string/title_amis"
         tools:layout="@layout/fragment_mes_amis">
         <action

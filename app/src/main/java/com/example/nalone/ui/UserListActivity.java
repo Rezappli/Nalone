@@ -56,6 +56,7 @@ public class UserListActivity extends AppCompatActivity {
                     title.setText(getString(R.string.title_invitation_friend));
                     break;
                 case MEMBERS:
+                case INVIT_EVENT:
                     title.setText(getString(R.string.title_add_participant));
                     break;
             }
@@ -76,7 +77,7 @@ public class UserListActivity extends AppCompatActivity {
                         case INVIT_FRIEND:
                             addInvitationFriend(position);
                             break;
-                        case MEMBERS:
+                        case INVIT_EVENT:
                             addMember(position);
                             break;
                     }
