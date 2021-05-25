@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Bitmap;
@@ -114,6 +115,8 @@ public class MainCreationEventActivity extends AppCompatActivity {
                     createEvent();
                 } else if (!photoValidate) {
                     nextFrag = new PhotoEventFragment();
+                } else if (!nameValidate) {
+                    nextFrag = new NameEventFragment();
                 } else if (!dateValidate) {
                     nextFrag = new DateEventFragment();
                 } else if (!addressValidate) {
@@ -275,20 +278,43 @@ public class MainCreationEventActivity extends AppCompatActivity {
         cardViewPrivate = findViewById(R.id.cardViewPrivate);
         cardViewPublic = findViewById(R.id.cardViewPublic);
         cardViewPrivate.setOnClickListener(v -> {
-            changeVisibility(Visibility.PRIVATE);
-            changeFragment(new MembersEventPrivateFragment());
+            checkChangeVisibility(Visibility.PRIVATE);
         });
 
         cardViewPublic.setOnClickListener(v -> {
-            changeFragment(new MembersEventPublicFragment());
-            changeVisibility(Visibility.PUBLIC);
+            checkChangeVisibility(Visibility.PUBLIC);
         });
     }
 
     private void changeVisibility(Visibility v) {
+        changeFragment(new MembersEventPublicFragment());
         currentEvent.setVisibility(v);
         initFirstFiltre();
         bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+    }
+
+    private void checkChangeVisibility(Visibility v) {
+        if (membersValidate) {
+            final AlertDialog.Builder builder = new AlertDialog.Builder(getBaseContext());
+            builder.setMessage(getResources().getString(R.string.no_image_select))
+                    .setPositiveButton(getResources().getString(R.string.button_yes), new DialogInterface.OnClickListener() {
+                        @RequiresApi(api = Build.VERSION_CODES.O)
+                        public void onClick(DialogInterface dialog, int id) {
+                            membersValidate = false;
+                            changeVisibility(v);
+                        }
+                    })
+                    .setNegativeButton(getResources().getString(R.string.button_no), new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                            dialog.dismiss();
+                        }
+                    });
+            builder.create();
+            builder.show();
+        } else {
+            changeVisibility(v);
+        }
+
     }
 
     private void changeType(TypeEvent te) {
@@ -397,7 +423,6 @@ public class MainCreationEventActivity extends AppCompatActivity {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setMessage(getResources().getString(R.string.event_not_save))
                 .setPositiveButton(getResources().getString(R.string.button_yes), (dialog, id) -> {
-                    clearEvent();
                     finish();
                 })
                 .setNegativeButton(getResources().getString(R.string.button_no), (dialog, id) -> dialog.dismiss());
@@ -405,13 +430,10 @@ public class MainCreationEventActivity extends AppCompatActivity {
         builder.show();
     }
 
-    private void clearEvent() {
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
         currentEvent = null;
-        photoValidate = false;
-        dateValidate = false;
-        nameValidate = false;
-        membersValidate = false;
-        addressValidate = false;
     }
 
     private void setCurrentProgressColor(CardView cardView) {

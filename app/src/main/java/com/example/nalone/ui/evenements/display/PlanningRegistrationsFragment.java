@@ -47,7 +47,7 @@ public class PlanningRegistrationsFragment extends Fragment {
     private TextView nextEventName, nextEventCity, nextEventDate, nextEventTime, nextEventNbMembers, nextEventStatus, textViewTitleDebut, differenceDate;
     private List<Evenement> eventsSoon, eventsEnd;
     private Evenement nextEvent;
-    private LinearLayout linearPlanning, linearNoResult, linearSoon, linearEnd;
+    private LinearLayout linearPlanning, linearNoResult, linearSoon, linearEnd, linearNext;
     private RecyclerView mRecyclerSoon, mRecyclerEnd;
 
     @RequiresApi(api = Build.VERSION_CODES.O)
@@ -66,10 +66,13 @@ public class PlanningRegistrationsFragment extends Fragment {
         nextEventStatus = view.findViewById(R.id.textViewStatus);
         imageTypeEvent = view.findViewById(R.id.imageTypeEvent);
         showMoreButton = view.findViewById(R.id.showMoreButton);
-        linearPlanning = view.findViewById(R.id.linearPlanning);
+        linearNext = view.findViewById(R.id.linearNext);
         linearNoResult = view.findViewById(R.id.linearNoResult);
         linearEnd = view.findViewById(R.id.linearEnd);
         linearSoon = view.findViewById(R.id.linearSoon);
+        linearNext.setVisibility(View.GONE);
+        linearSoon.setVisibility(View.GONE);
+        linearEnd.setVisibility(View.GONE);
 
         mRecyclerEnd = view.findViewById(R.id.recyclerViewEnd);
         mRecyclerSoon = view.findViewById(R.id.recyclerViewSoon);
@@ -79,12 +82,13 @@ public class PlanningRegistrationsFragment extends Fragment {
             startActivity(new Intent(getContext(), InfosEvenementsActivity.class));
         });
 
-        callJson();
+        callNextEvent();
+        callEventEnd();
         return view;
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
-    private void callJson() {
+    private void callNextEvent() {
         nextEvent = null;
         JSONObjectCrypt params = new JSONObjectCrypt();
 
@@ -96,24 +100,20 @@ public class PlanningRegistrationsFragment extends Fragment {
                 Log.w("Response", "Value:" + jsonArray.toString());
                 try {
 
-                    nextEvent = (Evenement) JSONController.convertJSONToObject(jsonArray.getJSONObject(0), Evenement.class);
-
-                    if (nextEvent != null) {
-                        linearPlanning.setVisibility(View.VISIBLE);
+                    if (jsonArray.length() > 0) {
+                        nextEvent = (Evenement) JSONController.convertJSONToObject(jsonArray.getJSONObject(0), Evenement.class);
+                        linearNext.setVisibility(View.VISIBLE);
                         linearNoResult.setVisibility(View.GONE);
+                        callEventSoon();
                         initNextEvent();
                     } else {
-                        linearPlanning.setVisibility(View.GONE);
+                        linearNext.setVisibility(View.GONE);
                         linearNoResult.setVisibility(View.VISIBLE);
                     }
-
-
                 } catch (JSONException | ParseException e) {
                     Log.w("Response", "Erreur:" + e.getMessage());
                     Toast.makeText(getContext(), getResources().getString(R.string.error_event), Toast.LENGTH_SHORT).show();
                 }
-
-
             }
 
             @Override
@@ -122,32 +122,33 @@ public class PlanningRegistrationsFragment extends Fragment {
                 Toast.makeText(getContext(), getResources().getString(R.string.error_event), Toast.LENGTH_SHORT).show();
             }
         });
+    }
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    private void callEventEnd() {
+        JSONObjectCrypt params = new JSONObjectCrypt();
+
+        params.putCryptParameter("uid", USER.getUid());
         params.putCryptParameter("status", "FINI");
         JSONController.getJsonArrayFromUrl(Constants.URL_EVENT_NEXT, getContext(), params, new JSONArrayListener() {
             @Override
             public void onJSONReceived(JSONArray jsonArray) {
                 Log.w("Response", "Value:" + jsonArray.toString());
                 try {
-
-                    eventsEnd = new ArrayList<>();
-                    for (int i = 0; i < jsonArray.length(); i++) {
-                        eventsEnd.add((Evenement) JSONController.convertJSONToObject(jsonArray.getJSONObject(i), Evenement.class));
-                    }
-                    if (eventsEnd.isEmpty()) {
-                        linearEnd.setVisibility(View.GONE);
-                    } else {
+                    if (jsonArray.length() > 0) {
+                        eventsEnd = new ArrayList<>();
+                        for (int i = 0; i < jsonArray.length(); i++) {
+                            eventsEnd.add((Evenement) JSONController.convertJSONToObject(jsonArray.getJSONObject(i), Evenement.class));
+                        }
                         initRecyclerEnd();
                         linearEnd.setVisibility(View.VISIBLE);
+                    } else {
+                        linearEnd.setVisibility(View.GONE);
                     }
-
-
                 } catch (JSONException e) {
                     Log.w("Response", "Erreur:" + e.getMessage());
                     Toast.makeText(getContext(), getResources().getString(R.string.error_event), Toast.LENGTH_SHORT).show();
                 }
-
-
             }
 
             @Override
@@ -156,8 +157,13 @@ public class PlanningRegistrationsFragment extends Fragment {
                 Toast.makeText(getContext(), getResources().getString(R.string.error_event), Toast.LENGTH_SHORT).show();
             }
         });
+    }
 
-        params.remove("status");
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    private void callEventSoon() {
+        JSONObjectCrypt params = new JSONObjectCrypt();
+
+        params.putCryptParameter("uid", USER.getUid());
         params.putCryptParameter("status", "BIENTOT");
         JSONController.getJsonArrayFromUrl(Constants.URL_EVENT_NEXT, getContext(), params, new JSONArrayListener() {
             @Override
@@ -165,15 +171,15 @@ public class PlanningRegistrationsFragment extends Fragment {
                 Log.w("Response", "Value:" + jsonArray.toString());
                 try {
 
-                    eventsSoon = new ArrayList<>();
-                    for (int i = 0; i < jsonArray.length(); i++) {
-                        eventsSoon.add((Evenement) JSONController.convertJSONToObject(jsonArray.getJSONObject(i), Evenement.class));
-                    }
-                    if (eventsSoon.isEmpty()) {
-                        linearSoon.setVisibility(View.GONE);
-                    } else {
+                    if (jsonArray.length() > 1) {
+                        eventsSoon = new ArrayList<>();
+                        for (int i = 1; i < jsonArray.length(); i++) {
+                            eventsSoon.add((Evenement) JSONController.convertJSONToObject(jsonArray.getJSONObject(i), Evenement.class));
+                        }
                         initRecyclerSoon();
                         linearSoon.setVisibility(View.VISIBLE);
+                    } else {
+                        linearSoon.setVisibility(View.GONE);
                     }
 
                 } catch (JSONException e) {

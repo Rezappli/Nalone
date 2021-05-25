@@ -30,6 +30,8 @@ public class TypeEventObject {
         switch (te) {
             case ANIMAL:
                 return R.drawable.event_animal;
+            case WORK:
+                return R.drawable.event_work;
             case WELL_BEING:
                 return R.drawable.event_well_being;
             case HEALTH:
@@ -71,6 +73,8 @@ public class TypeEventObject {
         switch (te) {
             case ANIMAL:
                 return context.getResources().getString(R.string.event_animal);
+            case WORK:
+                return context.getResources().getString(R.string.event_work);
             case WELL_BEING:
                 return context.getResources().getString(R.string.event_well_being);
             case HEALTH:
@@ -110,6 +114,7 @@ public class TypeEventObject {
 
     public String[] getListActivitiesName() {
         return new String[]{context.getResources().getString(R.string.event_animal),
+                context.getResources().getString(R.string.event_animal),
                 context.getResources().getString(R.string.event_well_being),
                 context.getResources().getString(R.string.event_health),
                 context.getResources().getString(R.string.event_book),
@@ -131,6 +136,7 @@ public class TypeEventObject {
 
     public int[] getListActivitiesImage() {
         return new int[]{R.drawable.event_animal,
+                R.drawable.event_work,
                 R.drawable.event_well_being,
                 R.drawable.event_health,
                 R.drawable.event_book,

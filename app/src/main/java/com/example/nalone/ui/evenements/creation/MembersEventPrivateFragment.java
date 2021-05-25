@@ -4,6 +4,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
@@ -42,6 +43,7 @@ import static com.example.nalone.ui.UserListActivity.EXTRA_BROADCAST_USERS_LIST;
 import static com.example.nalone.ui.UserListActivity.EXTRA_TYPE_LIST;
 import static com.example.nalone.ui.UserListActivity.EXTRA_USERS_LIST;
 import static com.example.nalone.ui.evenements.creation.MainCreationEventActivity.ACTION_RECEIVE_NEXT_CLICK;
+import static com.example.nalone.ui.evenements.creation.MainCreationEventActivity.currentEvent;
 import static com.example.nalone.util.Constants.USER;
 
 public class MembersEventPrivateFragment extends EventFragment {
@@ -52,6 +54,8 @@ public class MembersEventPrivateFragment extends EventFragment {
     private Button buttonMoreInvit;
     private ImageView imageViewMemberFriend, imageViewMemberCustom;
     private LinearLayout linearCustomInvit;
+    private boolean isClicked;
+    private boolean isCustom;
 
     public MembersEventPrivateFragment() {
         // Required empty public constructor
@@ -91,16 +95,21 @@ public class MembersEventPrivateFragment extends EventFragment {
         imageViewMemberCustom.setColorFilter(getResources().getColor(R.color.grey));
 
         imageViewMemberCustom.setOnClickListener(v -> {
+            isClicked = true;
+            isCustom = true;
             imageViewMemberCustom.setColorFilter(getResources().getColor(R.color.colorPrimary));
             imageViewMemberFriend.setColorFilter(getResources().getColor(R.color.grey));
             linearCustomInvit.setVisibility(View.VISIBLE);
         });
 
         imageViewMemberFriend.setOnClickListener(v -> {
+            isClicked = true;
+            isCustom = false;
             imageViewMemberCustom.setColorFilter(getResources().getColor(R.color.grey));
             imageViewMemberFriend.setColorFilter(getResources().getColor(R.color.colorPrimary));
             linearCustomInvit.setVisibility(View.INVISIBLE);
         });
+
         buttonMoreInvit.setOnClickListener(v -> {
 
             JSONObjectCrypt params = new JSONObjectCrypt();
@@ -146,8 +155,28 @@ public class MembersEventPrivateFragment extends EventFragment {
         @RequiresApi(api = Build.VERSION_CODES.O)
         @Override
         public void onReceive(Context context, Intent intent) {
-            MainCreationEventActivity.currentEvent.setNbMembers(adds.size() + 1);
-            sendFragmentBroadcast(MainCreationEventActivity.CurrentFragment.MEMBERS);
+
+            if (!isClicked) {
+                imageViewMemberCustom.setColorFilter(Color.RED);
+                imageViewMemberFriend.setColorFilter(Color.RED);
+                Toast.makeText(context, getString(R.string.error_lise_member_not_selected), Toast.LENGTH_SHORT).show();
+            } else {
+                if (isCustom) {
+                    if (adds != null && !adds.isEmpty()) {
+                        currentEvent.setNbMembers(adds.size() + 1);
+                        currentEvent.setLimitMembers(0);
+                        // THIBAULT ENVOIS AUX AMIS DE LA LIST
+
+                    } else {
+                        Toast.makeText(context, getString(R.string.error_lise_member_empty), Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+
+                } else {
+                    // THIBAULT ENVOIS A TOUT LES AMIS UNE INVITE
+                }
+                sendFragmentBroadcast(MainCreationEventActivity.CurrentFragment.MEMBERS);
+            }
         }
     };
 
