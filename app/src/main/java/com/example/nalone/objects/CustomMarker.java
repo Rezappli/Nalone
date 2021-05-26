@@ -6,10 +6,10 @@ import com.google.maps.android.clustering.ClusterItem;
 public class CustomMarker implements ClusterItem {
 
     private LatLng pos;
-    private String tag;
+    private Evenement tag;
     private float color;
 
-    public CustomMarker(LatLng pos, float color, String tag) {
+    public CustomMarker(LatLng pos, float color, Evenement tag) {
         this.pos = pos;
         this.color = color;
         this.tag = tag;
@@ -30,7 +30,7 @@ public class CustomMarker implements ClusterItem {
         return null;
     }
 
-    public String getTag() {
+    public Evenement getTag() {
         return tag;
     }
 
