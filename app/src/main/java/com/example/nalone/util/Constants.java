@@ -127,7 +127,9 @@ public class Constants {
 
     public static PayPalConfiguration payPalConfiguration = new PayPalConfiguration()
             .environment(PayPalConfiguration.ENVIRONMENT_SANDBOX)
-            .clientId("AirpTrJ-Q9l6EHEcmEQkVi4udhzgAWfVxUv9NaMTTFJJ1vgvjxILjxZG");
+            .clientId("AdY_jy3oUvBy5lsZW8jva7OQpCplEfY86EVtUsNImMEDFjiy5wlK2AbRTOcFijOaCcqQDUR6LHTxMEAl");
+
+    public static final float margin_percentage = 3.5142f;
 
 
     public static void sendNotification(JSONObject notification, final Context context) {

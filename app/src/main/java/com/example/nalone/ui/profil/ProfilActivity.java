@@ -9,6 +9,7 @@ import android.provider.MediaStore;
 import android.util.Base64;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -29,6 +30,9 @@ import com.example.nalone.json.JSONObjectCrypt;
 import com.example.nalone.listeners.JSONObjectListener;
 import com.example.nalone.qrcode.QRCodeFragment;
 import com.example.nalone.util.Constants;
+import com.paypal.android.sdk.payments.PayPalPayment;
+import com.paypal.android.sdk.payments.PayPalService;
+import com.paypal.android.sdk.payments.PaymentActivity;
 import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
 
@@ -36,6 +40,7 @@ import org.json.JSONObject;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.util.Date;
 
 import static com.example.nalone.util.Constants.BASE_API_URL;
@@ -56,6 +61,7 @@ public class ProfilActivity extends AppCompatActivity {
     private int RESULT_LOAD_IMG = 1;
     private ImageView buttonBack;
 
+    private Button paypalButton;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -242,6 +248,13 @@ public class ProfilActivity extends AppCompatActivity {
         imageUser = findViewById(R.id.imageUser);
         imageViewEditPhoto = findViewById(R.id.imageViewEditPhoto);
         cardViewPhotoPerson = findViewById(R.id.cardViewUser);
+        paypalButton = findViewById(R.id.paypal_button);
+        paypalButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
         buttonBack = findViewById(R.id.buttonBack);
         buttonBack.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -257,5 +270,17 @@ public class ProfilActivity extends AppCompatActivity {
         bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
         byte[] imageBytes = baos.toByteArray();
         return Base64.encodeToString(imageBytes, Base64.DEFAULT);
+    }
+
+    public void beginPayment(View view) {
+        Intent serviceConfig = new Intent(this, PayPalService.class);
+        serviceConfig.putExtra(PayPalService.EXTRA_PAYPAL_CONFIGURATION, Constants.payPalConfiguration);
+        startService(serviceConfig);
+        PayPalPayment payment = new PayPalPayment(new BigDecimal("5.65"),
+                "USD", "My Awesome Item", PayPalPayment.PAYMENT_INTENT_SALE);
+        Intent paymentConfig = new Intent(this, PaymentActivity.class);
+        paymentConfig.putExtra(PayPalService.EXTRA_PAYPAL_CONFIGURATION, Constants.payPalConfiguration);
+        paymentConfig.putExtra(PaymentActivity.EXTRA_PAYMENT, payment);
+        startActivityForResult(paymentConfig, 0);
     }
 }
