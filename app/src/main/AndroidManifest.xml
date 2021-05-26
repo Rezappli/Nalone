@@ -73,6 +73,7 @@
             android:value="ca-app-pub-6518187753315110~3040048308" />
 
         <activity android:name=".ErrorConnexionActivity" />
+        <activity android:name=".ui.profil.SampleActivity" />
         <activity
             android:name=".HomeActivity"
             android:label="@string/title_activity_home"

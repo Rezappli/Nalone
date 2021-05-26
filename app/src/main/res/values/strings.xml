@@ -125,6 +125,7 @@
     <string name="location_all"> Tout </string>
     <string name="location_public"> Public </string>
     <string name="location_public_maj"> PUBLIC </string>
+    <string name="location_not_found"> Localisation de votre adresse impossible </string>
     <string name="free"> Gratuit </string>
     <string name="pay"> Payant </string>
     <string name="price"> Prix </string>

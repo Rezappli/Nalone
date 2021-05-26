@@ -120,7 +120,7 @@ public class MainCreationEventActivity extends AppCompatActivity {
                 } else if (!dateValidate) {
                     nextFrag = new DateEventFragment();
                 } else if (!addressValidate) {
-                    nextFrag = new AdressEventFragment();
+                    nextFrag = new AddressEventFragment();
                 } else if (!membersValidate) {
                     nextFrag = new MembersEventPrivateFragment();
                 } else if (!costValidate) {
@@ -378,10 +378,12 @@ public class MainCreationEventActivity extends AppCompatActivity {
         params.putCryptParameter("latitude", currentEvent.getLatitude());
         params.putCryptParameter("longitude", currentEvent.getLongitude());
         params.putCryptParameter("name", currentEvent.getName());
-        params.putCryptParameter("nbMembers", currentEvent.getNbMembers());
+        params.putCryptParameter("nbMembers", currentEvent.getNbMembers() + "");
         params.putCryptParameter("category", currentEvent.getCategory());
-        params.putCryptParameter("price", currentEvent.getPrice());
+        params.putCryptParameter("price", currentEvent.getPrice() + "");
 
+        Log.w("Prix", "Prix : " + currentEvent.getPrice());
+        Log.w("nbMembers", "nbMembers : " + currentEvent.getNbMembers());
         Log.w("Params", params.toString());
 
         JSONController.getJsonObjectFromUrl(Constants.URL_ADD_EVENT, getBaseContext(), params, new JSONObjectListener() {
@@ -458,7 +460,7 @@ public class MainCreationEventActivity extends AppCompatActivity {
         imageProgressCreationCost.setOnClickListener(v -> changeFragment(new CostEventFragment()));
         imageProgessCreationDate.setOnClickListener(v -> changeFragment(new DateEventFragment()));
         imageProgessCreationName.setOnClickListener(v -> changeFragment(new NameEventFragment()));
-        imageProgessCreationPosition.setOnClickListener(v -> changeFragment(new AdressEventFragment()));
+        imageProgessCreationPosition.setOnClickListener(v -> changeFragment(new AddressEventFragment()));
         imageProgessCreationMembers.setOnClickListener(v -> {
             if (currentEvent.getVisibility().equals(Visibility.PRIVATE))
                 changeFragment(new MembersEventPrivateFragment());
@@ -483,7 +485,7 @@ public class MainCreationEventActivity extends AppCompatActivity {
             setCurrentProgressColor(cardViewProgressCreationName);
             textViewTitleEvent.setText(getString(R.string.title_creation_event_name));
         }
-        if (fragment instanceof AdressEventFragment) {
+        if (fragment instanceof AddressEventFragment) {
             setCurrentProgressColor(cardViewProgressCreationPosition);
             textViewTitleEvent.setText(getString(R.string.title_creation_event_adress));
         }

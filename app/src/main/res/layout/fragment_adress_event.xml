@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/white"
-    tools:context=".ui.evenements.creation.AdressEventFragment">
+    tools:context=".ui.evenements.creation.AddressEventFragment">
 
     <LinearLayout
         android:id="@+id/linearAdress"
@@ -21,22 +21,6 @@
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="20dp"
-            android:layout_marginEnd="20dp">
-
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/eventCity"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="@string/ville"
-                android:singleLine="true" />
-
-        </com.google.android.material.textfield.TextInputLayout>
-
-        <com.google.android.material.textfield.TextInputLayout
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
             android:layout_margin="20dp">
 
             <com.google.android.material.textfield.TextInputEditText
@@ -46,6 +30,11 @@
                 android:hint="@string/adresse"
                 android:singleLine="true" />
         </com.google.android.material.textfield.TextInputLayout>
+
+        <ListView
+            android:id="@+id/listViewEvent"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
 
     </LinearLayout>
 

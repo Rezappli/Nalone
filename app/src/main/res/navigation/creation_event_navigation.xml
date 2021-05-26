@@ -49,7 +49,7 @@
     </fragment>
     <fragment
         android:id="@+id/adressEventFragment"
-        android:name="com.example.nalone.ui.evenements.creation.AdressEventFragment"
+        android:name="com.example.nalone.ui.evenements.creation.AddressEventFragment"
         android:label="fragment_adress_event"
         tools:layout="@layout/fragment_adress_event">
         <action

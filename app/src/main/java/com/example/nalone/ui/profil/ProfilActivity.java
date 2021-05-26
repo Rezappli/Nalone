@@ -22,7 +22,6 @@ import androidx.cardview.widget.CardView;
 import androidx.fragment.app.DialogFragment;
 
 import com.android.volley.VolleyError;
-import com.bumptech.glide.Glide;
 import com.example.nalone.R;
 import com.example.nalone.enumeration.ImageType;
 import com.example.nalone.json.JSONController;
@@ -30,17 +29,11 @@ import com.example.nalone.json.JSONObjectCrypt;
 import com.example.nalone.listeners.JSONObjectListener;
 import com.example.nalone.qrcode.QRCodeFragment;
 import com.example.nalone.util.Constants;
-import com.paypal.android.sdk.payments.PayPalPayment;
-import com.paypal.android.sdk.payments.PayPalService;
-import com.paypal.android.sdk.payments.PaymentActivity;
-import com.theartofdev.edmodo.cropper.CropImage;
-import com.theartofdev.edmodo.cropper.CropImageView;
 
 import org.json.JSONObject;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.math.BigDecimal;
 import java.util.Date;
 
 import static com.example.nalone.util.Constants.BASE_API_URL;
@@ -203,7 +196,7 @@ public class ProfilActivity extends AppCompatActivity {
         qrcode.show(this.getSupportFragmentManager(), "QR_CODE");
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.O)
+    /*@RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -230,7 +223,7 @@ public class ProfilActivity extends AppCompatActivity {
                 Log.w("Response", result.getError());
             }
         }
-    }
+    }*/
 
 
     private void initView() {
@@ -252,7 +245,7 @@ public class ProfilActivity extends AppCompatActivity {
         paypalButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                startActivity(new Intent(ProfilActivity.this, SampleActivity.class));
             }
         });
         buttonBack = findViewById(R.id.buttonBack);
@@ -270,17 +263,5 @@ public class ProfilActivity extends AppCompatActivity {
         bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
         byte[] imageBytes = baos.toByteArray();
         return Base64.encodeToString(imageBytes, Base64.DEFAULT);
-    }
-
-    public void beginPayment(View view) {
-        Intent serviceConfig = new Intent(this, PayPalService.class);
-        serviceConfig.putExtra(PayPalService.EXTRA_PAYPAL_CONFIGURATION, Constants.payPalConfiguration);
-        startService(serviceConfig);
-        PayPalPayment payment = new PayPalPayment(new BigDecimal("5.65"),
-                "USD", "My Awesome Item", PayPalPayment.PAYMENT_INTENT_SALE);
-        Intent paymentConfig = new Intent(this, PaymentActivity.class);
-        paymentConfig.putExtra(PayPalService.EXTRA_PAYPAL_CONFIGURATION, Constants.payPalConfiguration);
-        paymentConfig.putExtra(PaymentActivity.EXTRA_PAYMENT, payment);
-        startActivityForResult(paymentConfig, 0);
     }
 }

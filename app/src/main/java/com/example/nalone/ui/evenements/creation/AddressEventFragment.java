@@ -4,14 +4,15 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.location.Address;
-import android.location.Geocoder;
 import android.os.Build;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ListView;
 import android.widget.Toast;
 
 import androidx.annotation.RequiresApi;
@@ -20,21 +21,23 @@ import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.example.nalone.R;
 import com.example.nalone.dialog.LoadFragment;
+import com.example.nalone.objects.AddressSearch;
+import com.example.nalone.thread.SearchThread;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.material.textfield.TextInputEditText;
 
-import java.io.IOException;
-import java.util.List;
-
 import static com.example.nalone.ui.evenements.creation.MainCreationEventActivity.ACTION_RECEIVE_NEXT_CLICK;
 
-public class AdressEventFragment extends EventFragment {
+public class AddressEventFragment extends EventFragment {
 
-    private TextInputEditText event_adresse, event_city;
+    private TextInputEditText event_adresse;
     private DialogFragment load;
+    private LatLng pos = null;
+    private SearchThread t;
+    private String city;
+    private ListView listView;
 
-    public AdressEventFragment() {
-        // Required empty public constructor
+    public AddressEventFragment() {
     }
 
 
@@ -44,14 +47,50 @@ public class AdressEventFragment extends EventFragment {
         // Inflate the layout for this fragment
         View root = inflater.inflate(R.layout.fragment_adress_event, container, false);
         event_adresse = root.findViewById(R.id.eventAdress);
-        event_city = root.findViewById(R.id.eventCity);
+        listView = root.findViewById(R.id.listViewEvent);
 
         if (MainCreationEventActivity.currentEvent.getAddress() != null) {
             event_adresse.setText(MainCreationEventActivity.currentEvent.getAddress());
         }
-        if (MainCreationEventActivity.currentEvent.getCity() != null) {
-            event_city.setText(MainCreationEventActivity.currentEvent.getCity());
-        }
+
+        event_adresse.setOnClickListener(v -> {
+            if (listView != null) {
+                if (listView.getVisibility() == View.GONE) {
+                    listView.setVisibility(View.VISIBLE);
+                }
+            }
+        });
+
+        event_adresse.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                if (t != null) {
+                    if (t.isAlive()) {
+                        t.interrupt();
+                    }
+                }
+                t = new SearchThread(listView, s + "", getActivity());
+                t.start();
+            }
+        });
+
+        listView.setOnItemClickListener((parent, view, position, id) -> {
+            AddressSearch ad = (AddressSearch) listView.getAdapter().getItem(position);
+            pos = new LatLng(ad.getLatitude(), ad.getLongitude());
+            city = ad.getCity();
+            event_adresse.setText(ad.getAddress());
+            listView.setVisibility(View.GONE);
+        });
 
         return root;
     }
@@ -73,36 +112,6 @@ public class AdressEventFragment extends EventFragment {
     }
 
 
-    private LatLng getLocationFromAddress(String strAddress) {
-        showLoadDialog();
-        Geocoder coder = new Geocoder(getContext());
-        List<Address> address;
-        LatLng p1 = null;
-
-        try {
-            // May throw an IOException
-            address = coder.getFromLocationName(strAddress, 10);
-            if (address == null) {
-                return null;
-            }
-
-            if (address.size() > 0) {
-                Address location = address.get(0);
-                p1 = new LatLng(location.getLatitude(), location.getLongitude());
-            } else {
-                dismissLoadDialog();
-                return null;
-            }
-
-        } catch (IOException ex) {
-            dismissLoadDialog();
-            ex.printStackTrace();
-        }
-
-        dismissLoadDialog();
-        return p1;
-    }
-
     private void showLoadDialog() {
         load = new LoadFragment();
         load.show(getActivity().getSupportFragmentManager(), "LOAD");
@@ -120,16 +129,14 @@ public class AdressEventFragment extends EventFragment {
         @Override
         public void onReceive(Context context, Intent intent) {
             try {
-                LatLng pos = getLocationFromAddress(event_adresse.getText().toString() + " " + event_city.getText().toString());
-                if (pos == null) {
-                    event_adresse.setError("Adresse introuvable");
+
+                if (pos == null || city == null) {
+                    event_adresse.setError(getActivity().getResources().getString(R.string.location_not_found));
                 } else if (event_adresse.getText().toString().matches("")) {
-                    event_adresse.setError("Champs obligatoire");
-                } else if (event_city.getText().toString().matches("")) {
-                    event_city.setError("Champs obligatoire");
+                    event_adresse.setError(getActivity().getResources().getString(R.string.required_field));
                 } else {
                     MainCreationEventActivity.currentEvent.setAddress(event_adresse.getText().toString());
-                    MainCreationEventActivity.currentEvent.setCity(event_city.getText().toString());
+                    MainCreationEventActivity.currentEvent.setCity(city);
                     MainCreationEventActivity.currentEvent.setLatitude(pos.latitude);
                     MainCreationEventActivity.currentEvent.setLongitude(pos.longitude);
                     sendFragmentBroadcast(MainCreationEventActivity.CurrentFragment.ADRESS);

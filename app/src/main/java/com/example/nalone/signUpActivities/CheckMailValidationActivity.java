@@ -25,6 +25,7 @@ import org.json.JSONObject;
 public class CheckMailValidationActivity extends CheckValidationActivity {
 
     private Button buttonValidate;
+    private TextView buttonResendCheckValidation;
     private Handler handler;
     private Runnable runnable;
 
@@ -35,6 +36,8 @@ public class CheckMailValidationActivity extends CheckValidationActivity {
         setContentView(R.layout.activity_check_mail_validation);
 
         buttonValidate = findViewById(R.id.buttonCheckValidation);
+        buttonResendCheckValidation = findViewById(R.id.buttonResendCheckValidation);
+        buttonResendCheckValidation.setOnClickListener(v -> checkMail(true));
         buttonValidate.setOnClickListener(v -> createUser());
         Bundle extras = getIntent().getExtras();
 
@@ -55,16 +58,17 @@ public class CheckMailValidationActivity extends CheckValidationActivity {
     @RequiresApi(api = Build.VERSION_CODES.O)
     private void initWidgets() {
         TextView infoUser = findViewById(R.id.infoUserCheckValidation);
-        checkMail();
+        checkMail(false);
         infoUser.setText(login);
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
-    private void checkMail() {
+    private void checkMail(boolean isForceSend) {
 
         JSONObjectCrypt params = new JSONObjectCrypt();
         params.putCryptParameter("mail", login);
         params.putCryptParameter("uid", user.getUid());
+        params.putCryptParameter("force", isForceSend);
 
 
         JSONController.getJsonObjectFromUrl(Constants.URL_SEND_MAIL, this, params, new JSONObjectListener() {

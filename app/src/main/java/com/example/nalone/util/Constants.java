@@ -25,7 +25,6 @@ import com.example.nalone.objects.User;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.paypal.android.sdk.payments.PayPalConfiguration;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -124,10 +123,6 @@ public class Constants {
 
     public static String URL_UPDATE_ME = BASE_API_URL + "/update_me.php";
     public static String URL_TEST = BASE_API_URL + "/test.php";
-
-    public static PayPalConfiguration payPalConfiguration = new PayPalConfiguration()
-            .environment(PayPalConfiguration.ENVIRONMENT_SANDBOX)
-            .clientId("AdY_jy3oUvBy5lsZW8jva7OQpCplEfY86EVtUsNImMEDFjiy5wlK2AbRTOcFijOaCcqQDUR6LHTxMEAl");
 
     public static final float margin_percentage = 3.5142f;
 
