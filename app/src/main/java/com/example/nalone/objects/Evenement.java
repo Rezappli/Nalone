@@ -27,6 +27,7 @@ public class Evenement implements Serializable {
     private String endDate;
     private String owner_uid;
     private int nbMembers;
+    private int limitMembers;
     private StatusEvent status;
     private String ownerName;
     private int price;
@@ -46,6 +47,7 @@ public class Evenement implements Serializable {
         this.latitude = null;
         this.longitude = null;
         this.nbMembers = 0;
+        this.limitMembers = 0;
         this.status = null;
         this.price = 0;
         this.category = null;
@@ -56,7 +58,7 @@ public class Evenement implements Serializable {
 
     public Evenement(String uid, StatusEvent status, String owner, String name, String description,
                      String address, String city, Visibility visibility, String startDate, String endDate,
-                     double latitude, double longitude, int nbMembers, TypeEvent category, int price) {
+                     double latitude, double longitude, int nbMembers, int limitMembers, TypeEvent category, int price) {
         this.uid = uid;
         this.name = name;
         this.description = description;
@@ -69,6 +71,7 @@ public class Evenement implements Serializable {
         this.latitude = latitude;
         this.longitude = longitude;
         this.nbMembers = nbMembers;
+        this.limitMembers = limitMembers;
         this.status = status;
         this.category = category;
         this.price = price;
@@ -231,6 +234,14 @@ public class Evenement implements Serializable {
 
     public void setImage_url(String image_url) {
         this.image_url = image_url;
+    }
+
+    public int getLimitMembers() {
+        return limitMembers;
+    }
+
+    public void setLimitMembers(int limitMembers) {
+        this.limitMembers = limitMembers;
     }
 
     @Override

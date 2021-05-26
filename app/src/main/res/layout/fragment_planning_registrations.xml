@@ -15,7 +15,8 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:gravity="center"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:visibility="visible">
 
             <LinearLayout
                 android:id="@+id/linearNext"
@@ -380,14 +381,15 @@
                 android:layout_width="wrap_content"
                 android:layout_height="200dp"
                 android:layout_gravity="center"
-                app:srcCompat="@drawable/sans_mes_events" />
+                android:layout_marginBottom="30dp"
+                app:srcCompat="@drawable/icon_event" />
 
             <TextView
                 android:id="@+id/textView30"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center"
-                android:text="@string/no_result_planning" />
+                android:text="@string/no_result_planning_registrations" />
         </LinearLayout>
 
     </RelativeLayout>
