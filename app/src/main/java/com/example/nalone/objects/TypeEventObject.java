@@ -46,6 +46,8 @@ public class TypeEventObject {
                 return R.drawable.event_car;
             case GAME:
                 return R.drawable.event_game;
+            case TECHNOLOGY:
+                return R.drawable.event_technology;
             case SHOP:
                 return R.drawable.event_shop;
             case SHOW:
@@ -89,6 +91,8 @@ public class TypeEventObject {
                 return context.getResources().getString(R.string.event_car);
             case GAME:
                 return context.getResources().getString(R.string.event_game);
+            case TECHNOLOGY:
+                return context.getResources().getString(R.string.event_technology);
             case SHOP:
                 return context.getResources().getString(R.string.event_shop);
             case SHOW:
@@ -97,6 +101,7 @@ public class TypeEventObject {
                 return context.getResources().getString(R.string.event_movie);
             case MUSIC:
                 return context.getResources().getString(R.string.event_music);
+
             case PARTY:
                 return context.getResources().getString(R.string.event_party);
             case SPORT:
@@ -113,8 +118,9 @@ public class TypeEventObject {
     }
 
     public String[] getListActivitiesName() {
-        return new String[]{context.getResources().getString(R.string.event_animal),
+        return new String[]{
                 context.getResources().getString(R.string.event_animal),
+                context.getResources().getString(R.string.event_work),
                 context.getResources().getString(R.string.event_well_being),
                 context.getResources().getString(R.string.event_health),
                 context.getResources().getString(R.string.event_book),
@@ -133,6 +139,29 @@ public class TypeEventObject {
                 context.getResources().getString(R.string.event_science),
                 context.getResources().getString(R.string.event_conference)};
     }
+
+    public TypeEvent[] getListTypeEvent() {
+        return new TypeEvent[]{TypeEvent.ANIMAL,
+                TypeEvent.WORK,
+                TypeEvent.WELL_BEING,
+                TypeEvent.HEALTH,
+                TypeEvent.BOOK,
+                TypeEvent.ENVIRONMENT,
+                TypeEvent.ART,
+                TypeEvent.CAR,
+                TypeEvent.GAME,
+                TypeEvent.TECHNOLOGY,
+                TypeEvent.SHOP,
+                TypeEvent.SHOW,
+                TypeEvent.MULTIMEDIA,
+                TypeEvent.MUSIC,
+                TypeEvent.PARTY,
+                TypeEvent.SPORT,
+                TypeEvent.GATHER,
+                TypeEvent.SCIENCE,
+                TypeEvent.CONFERENCE};
+    }
+
 
     public int[] getListActivitiesImage() {
         return new int[]{R.drawable.event_animal,

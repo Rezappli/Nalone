@@ -1,6 +1,5 @@
 package com.example.nalone.ui.evenements.creation;
 
-import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.BroadcastReceiver;
@@ -16,8 +15,10 @@ import android.provider.MediaStore;
 import android.util.Base64;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -40,6 +41,7 @@ import com.example.nalone.json.JSONObjectCrypt;
 import com.example.nalone.listeners.JSONObjectListener;
 import com.example.nalone.objects.Evenement;
 import com.example.nalone.objects.TypeEventObject;
+import com.example.nalone.signUpActivities.SpinnerAdapter;
 import com.example.nalone.util.Constants;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 
@@ -47,10 +49,11 @@ import org.json.JSONObject;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.util.Arrays;
 
 import static com.example.nalone.util.Constants.USER;
 
-public class MainCreationEventActivity extends AppCompatActivity {
+public class MainCreationEventActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
 
     public static NavController navController;
     public static ImageView buttonBack, buttonNotif;
@@ -73,6 +76,9 @@ public class MainCreationEventActivity extends AppCompatActivity {
     private TextView textViewTitleEvent;
     public static String ACTION_RECEIVE_FRAGMENT = "ACTION_RECEIVE_FRAGMENT";
     public static String ACTION_RECEIVE_NEXT_CLICK = "ACTION_RECEIVE_NEXT_CLICK";
+    private TypeEventObject typeEventObject;
+
+    private boolean isTypeChoosed;
 
     private final BroadcastReceiver receiverFragmentValidate = new BroadcastReceiver() {
         @RequiresApi(api = Build.VERSION_CODES.O)
@@ -134,6 +140,20 @@ public class MainCreationEventActivity extends AppCompatActivity {
         }
     };
 
+    @Override
+    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+        if (isTypeChoosed) {
+            changeType(typeEventObject.getListTypeEvent()[position]);
+        } else {
+            isTypeChoosed = true;
+        }
+    }
+
+    @Override
+    public void onNothingSelected(AdapterView<?> parent) {
+
+    }
+
     public enum CurrentFragment {
         NAME, ADRESS,
         DATE, COST,
@@ -144,6 +164,7 @@ public class MainCreationEventActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_creation_event);
+        isTypeChoosed = false;
         textViewTitleEvent = findViewById(R.id.textViewTitleEvent);
         getSupportFragmentManager().beginTransaction()
                 .add(R.id.fragmentCreationEvent, new PhotoEventFragment(), "findThisFragment")
@@ -164,12 +185,22 @@ public class MainCreationEventActivity extends AppCompatActivity {
             if (bottomSheetBehaviorType.getState() == BottomSheetBehavior.STATE_EXPANDED)
                 bottomSheetBehaviorType.setState(BottomSheetBehavior.STATE_COLLAPSED);
         });
-        initFirstFiltre();
-        initCardViewVisibility();
-        initCardViewType();
+
 
         activity = this;
         buttonBack = findViewById(R.id.buttonBack);
+
+
+        initFirstFiltre();
+        initCardViewVisibility();
+        
+        Spinner spin = (Spinner) findViewById(R.id.spinnerType);
+
+        spin.setOnItemSelectedListener(this);
+
+        SpinnerAdapter customAdapter = new SpinnerAdapter(getBaseContext(), typeEventObject.getListActivitiesImage(), typeEventObject.getListActivitiesName());
+        spin.setAdapter(customAdapter);
+        spin.setSelection(Arrays.asList(typeEventObject.getListTypeEvent()).indexOf(currentEvent.getCategory()));
 
         buttonBack.setOnClickListener(v -> onBackPressed());
 
@@ -180,12 +211,12 @@ public class MainCreationEventActivity extends AppCompatActivity {
             @Override
             public void onStateChanged(@NonNull View view, int state) {
                 switch (state) {
+                    case BottomSheetBehavior.STATE_HIDDEN:
                     case BottomSheetBehavior.STATE_COLLAPSED:
                         viewGrey.setVisibility(View.GONE);
                         break;
                     case BottomSheetBehavior.STATE_DRAGGING:
                     case BottomSheetBehavior.STATE_EXPANDED:
-                    case BottomSheetBehavior.STATE_HIDDEN:
                         break;
 
                 }
@@ -242,34 +273,6 @@ public class MainCreationEventActivity extends AppCompatActivity {
     protected void onPause() {
         super.onPause();
         LocalBroadcastManager.getInstance(getBaseContext()).unregisterReceiver(receiverFragmentValidate);
-    }
-
-
-    private void initCardViewType() {
-        CardView cardViewEventArt = findViewById(R.id.cardTypeEventArt);
-        CardView cardTypeEventSport = findViewById(R.id.cardTypeEventSport);
-        CardView cardTypeEventParty = findViewById(R.id.cardTypeEventCar);
-        CardView cardTypeEventMusic = findViewById(R.id.cardTypeEventMusic);
-        CardView cardTypeEventMovie = findViewById(R.id.cardTypeEventMovie);
-        CardView cardTypeEventGame = findViewById(R.id.cardTypeEventGame);
-        CardView cardTypeEventCar = findViewById(R.id.cardTypeEventCar);
-        CardView cardTypeEventGather = findViewById(R.id.cardTypeEventGather);
-        CardView cardTypeEventConference = findViewById(R.id.cardTypeEventConference);
-        @SuppressLint("CutPasteId") CardView cardTypeEventShop = findViewById(R.id.cardTypeEventCar);
-        CardView cardTypeEventShow = findViewById(R.id.cardTypeEventShow);
-        CardView cardTypeEventScience = findViewById(R.id.cardTypeEventScience);
-        cardViewEventArt.setOnClickListener(v -> changeType(TypeEvent.ART));
-        cardTypeEventSport.setOnClickListener(v -> changeType(TypeEvent.SPORT));
-        cardTypeEventParty.setOnClickListener(v -> changeType(TypeEvent.PARTY));
-        cardTypeEventMusic.setOnClickListener(v -> changeType(TypeEvent.MUSIC));
-        cardTypeEventMovie.setOnClickListener(v -> changeType(TypeEvent.MULTIMEDIA));
-        cardTypeEventGame.setOnClickListener(v -> changeType(TypeEvent.GAME));
-        cardTypeEventCar.setOnClickListener(v -> changeType(TypeEvent.CAR));
-        cardTypeEventGather.setOnClickListener(v -> changeType(TypeEvent.GATHER));
-        cardTypeEventConference.setOnClickListener(v -> changeType(TypeEvent.CONFERENCE));
-        cardTypeEventShop.setOnClickListener(v -> changeType(TypeEvent.SHOP));
-        cardTypeEventShow.setOnClickListener(v -> changeType(TypeEvent.SHOW));
-        cardTypeEventScience.setOnClickListener(v -> changeType(TypeEvent.SCIENCE));
     }
 
     private void initCardViewVisibility() {
@@ -344,12 +347,16 @@ public class MainCreationEventActivity extends AppCompatActivity {
             if (bottomSheetBehavior.getState() == BottomSheetBehavior.STATE_EXPANDED) {
                 bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
             }
+
             viewGrey.setVisibility(View.VISIBLE);
             bottomSheetBehaviorType.setState(BottomSheetBehavior.STATE_EXPANDED);
         });
 
         textViewVisibility.setCompoundDrawablesWithIntrinsicBounds(getDrawableVisibility(currentEvent.getVisibility()), 0, 0, 0);
         textViewVisibility.setText(getTextVisibility(currentEvent.getVisibility()));
+
+        typeEventObject = new TypeEventObject(getBaseContext());
+
 
     }
 

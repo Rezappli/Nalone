@@ -32,6 +32,7 @@ public class SignUpCenterInterestFragment extends SignUpFragment implements Adap
 
         SpinnerAdapter customAdapter = new SpinnerAdapter(getContext(), typeEventObject.getListActivitiesImage(), typeEventObject.getListActivitiesName());
         spin.setAdapter(customAdapter);
+        
 
     }
 

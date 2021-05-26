@@ -1,6 +1,5 @@
 package com.example.nalone;
 
-import android.annotation.SuppressLint;
 import android.app.job.JobInfo;
 import android.app.job.JobScheduler;
 import android.content.ComponentName;
@@ -9,7 +8,9 @@ import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ImageView;
+import android.widget.Spinner;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -29,7 +30,9 @@ import com.example.nalone.json.JSONObjectCrypt;
 import com.example.nalone.listeners.JSONArrayListener;
 import com.example.nalone.listeners.JSONObjectListener;
 import com.example.nalone.objects.Evenement;
+import com.example.nalone.objects.TypeEventObject;
 import com.example.nalone.objects.User;
+import com.example.nalone.signUpActivities.SpinnerAdapter;
 import com.example.nalone.ui.NotificationActivity;
 import com.example.nalone.ui.evenements.creation.MainCreationEventActivity;
 import com.example.nalone.ui.evenements.display.PlanningActivity;
@@ -46,17 +49,19 @@ import java.util.UUID;
 import static com.example.nalone.util.Constants.USER;
 
 
-public class HomeActivity extends AppCompatActivity {
+public class HomeActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
 
     public static ImageView buttonBack, buttonNotif, buttonPlanning;
     private CardView cardViewPrivate, cardViewPublic;
-    private CardView cardViewEventArt, cardTypeEventSport, cardTypeEventParty, cardTypeEventMusic, cardTypeEventMovie, cardTypeEventGame, cardTypeEventCar, cardTypeEventGather, cardTypeEventConference, cardTypeEventShop, cardTypeEventShow, cardTypeEventScience;
     private boolean isOpen = false;
     private ImageView item_profil;
     private View bottomSheetVisibility, bottomSheetType;
     private Visibility currentVisibility;
 
     private BottomSheetBehavior bottomSheetBehaviorVisibility, bottomSheetBehaviorType;
+    private TypeEventObject typeEventObject;
+
+    private boolean typeChoosed;
 
 
     @RequiresApi(api = Build.VERSION_CODES.O)
@@ -65,6 +70,7 @@ public class HomeActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
 
+        typeChoosed = false;
         scheduleJob();
 
         BottomNavigationView navView = findViewById(R.id.nav_view);
@@ -84,7 +90,13 @@ public class HomeActivity extends AppCompatActivity {
             startActivity(new Intent(getBaseContext(), ProfilActivity.class)); //Affichage de la page de profil
         });
 
-        initCardView(); //Initalisation des cards views
+        typeEventObject = new TypeEventObject(getBaseContext());
+        Spinner spin = (Spinner) findViewById(R.id.spinnerType);
+
+        spin.setOnItemSelectedListener(this);
+
+        SpinnerAdapter customAdapter = new SpinnerAdapter(getBaseContext(), typeEventObject.getListActivitiesImage(), typeEventObject.getListActivitiesName());
+        spin.setAdapter(customAdapter);
 
         cardViewPrivate.setOnClickListener(v -> openType(Visibility.PRIVATE));
 
@@ -162,6 +174,7 @@ public class HomeActivity extends AppCompatActivity {
 
         viewGrey.setOnClickListener(v -> {
             bottomSheetBehaviorVisibility.setState(BottomSheetBehavior.STATE_COLLAPSED);
+            bottomSheetBehaviorType.setState(BottomSheetBehavior.STATE_COLLAPSED);
             viewGrey.setVisibility(View.GONE);
         });
 
@@ -193,37 +206,6 @@ public class HomeActivity extends AppCompatActivity {
     }
 
     /**
-     * Méthode permettant l'initialisation des cards views
-     */
-    @SuppressLint("CutPasteId")
-    private void initCardView() {
-        cardViewEventArt = findViewById(R.id.cardTypeEventArt);
-        cardTypeEventSport = findViewById(R.id.cardTypeEventSport);
-        cardTypeEventParty = findViewById(R.id.cardTypeEventCar);
-        cardTypeEventMusic = findViewById(R.id.cardTypeEventMusic);
-        cardTypeEventMovie = findViewById(R.id.cardTypeEventMovie);
-        cardTypeEventGame = findViewById(R.id.cardTypeEventGame);
-        cardTypeEventCar = findViewById(R.id.cardTypeEventCar);
-        cardTypeEventGather = findViewById(R.id.cardTypeEventGather);
-        cardTypeEventConference = findViewById(R.id.cardTypeEventConference);
-        cardTypeEventShop = findViewById(R.id.cardTypeEventCar);
-        cardTypeEventShow = findViewById(R.id.cardTypeEventShow);
-        cardTypeEventScience = findViewById(R.id.cardTypeEventScience);
-        cardViewEventArt.setOnClickListener(v -> goCreateEvent(TypeEvent.ART));
-        cardTypeEventSport.setOnClickListener(v -> goCreateEvent(TypeEvent.SPORT));
-        cardTypeEventParty.setOnClickListener(v -> goCreateEvent(TypeEvent.PARTY));
-        cardTypeEventMusic.setOnClickListener(v -> goCreateEvent(TypeEvent.MUSIC));
-        cardTypeEventMovie.setOnClickListener(v -> goCreateEvent(TypeEvent.MULTIMEDIA));
-        cardTypeEventGame.setOnClickListener(v -> goCreateEvent(TypeEvent.GAME));
-        cardTypeEventCar.setOnClickListener(v -> goCreateEvent(TypeEvent.CAR));
-        cardTypeEventGather.setOnClickListener(v -> goCreateEvent(TypeEvent.GATHER));
-        cardTypeEventConference.setOnClickListener(v -> goCreateEvent(TypeEvent.CONFERENCE));
-        cardTypeEventShop.setOnClickListener(v -> goCreateEvent(TypeEvent.SHOP));
-        cardTypeEventShow.setOnClickListener(v -> goCreateEvent(TypeEvent.SHOW));
-        cardTypeEventScience.setOnClickListener(v -> goCreateEvent(TypeEvent.SCIENCE));
-    }
-
-    /**
      * Méthode permettant l'ouverture du bottom sheet lors du clique sur le haut de la fenetre
      *
      * @param v visibilité
@@ -244,8 +226,8 @@ public class HomeActivity extends AppCompatActivity {
         MainCreationEventActivity.image = null;
         MainCreationEventActivity.currentEvent.setVisibility(currentVisibility);
         MainCreationEventActivity.currentEvent.setCategory(tp);
-        bottomSheetBehaviorType.setState(BottomSheetBehavior.STATE_COLLAPSED);
         startActivity(new Intent(getBaseContext(), MainCreationEventActivity.class));
+        bottomSheetBehaviorType.setState(BottomSheetBehavior.STATE_COLLAPSED);
     }
 
     /**
@@ -308,5 +290,18 @@ public class HomeActivity extends AppCompatActivity {
     @Override
     protected void onStop() {
         super.onStop();
+    }
+
+    @Override
+    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+        if (typeChoosed) {
+            goCreateEvent(typeEventObject.getListTypeEvent()[position]);
+        }
+        typeChoosed = true;
+    }
+
+    @Override
+    public void onNothingSelected(AdapterView<?> parent) {
+
     }
 }
