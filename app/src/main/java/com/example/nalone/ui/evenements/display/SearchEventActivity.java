@@ -66,12 +66,7 @@ public class SearchEventActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search_event);
         buttonBack = findViewById(R.id.buttonBack);
-        buttonBack.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                onBackPressed();
-            }
-        });
+        buttonBack.setOnClickListener(v -> onBackPressed());
         currentSort = FiltreSort.PERTINENCE;
         currentDate = FiltreDate.NONE;
         currentLocation = Constants.range;

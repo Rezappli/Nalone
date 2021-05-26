@@ -384,7 +384,7 @@
     <androidx.core.widget.NestedScrollView
         android:id="@+id/sheetEvent"
         android:layout_width="match_parent"
-        android:layout_height="230dp"
+        android:layout_height="300dp"
         android:background="@drawable/custom_header_bottom_sheet"
         android:clipToPadding="false"
         android:fillViewport="false"
@@ -408,7 +408,7 @@
 
             <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="200dp">
+                android:layout_height="270dp">
 
                 <androidx.cardview.widget.CardView
                     android:id="@+id/cardViewPrice"
@@ -555,6 +555,16 @@
                                 android:textSize="12sp" />
 
                         </LinearLayout>
+
+                        <Button
+                            android:id="@+id/buttonDisplay"
+                            android:layout_width="150dp"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:layout_margin="10dp"
+                            android:background="@drawable/custom_button_simple"
+                            android:text="@string/afficher"
+                            android:textColor="@color/white" />
 
                     </LinearLayout>
 

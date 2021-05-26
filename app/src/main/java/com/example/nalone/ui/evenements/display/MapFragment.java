@@ -8,6 +8,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.SearchView;
@@ -177,6 +178,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         textViewDetailDate = rootView.findViewById(R.id.textViewDetailDate);
         textViewDetailTime = rootView.findViewById(R.id.textViewDetailTime);
         textViewDetailNbMembers = rootView.findViewById(R.id.textViewDetailNbMembers);
+
 
         bottomSheetBehavior = BottomSheetBehavior.from(bottomSheet);
         bottomSheetBehaviorDetails = BottomSheetBehavior.from(bottomSheetDetails);
@@ -428,12 +430,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         mMap.setOnCameraIdleListener(clusterManager);
         mMap.setOnMarkerClickListener(clusterManager);
 
-        mMap.setOnCameraMoveListener(new GoogleMap.OnCameraMoveListener() {
-            @Override
-            public void onCameraMove() {
-                posCam = mMap.getCameraPosition();
-            }
-        });
+        mMap.setOnCameraMoveListener(() -> posCam = mMap.getCameraPosition());
 
         if (posCam == null) {
             mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(USER.getLatitude(), USER.getLongitude()), 10));
@@ -658,6 +655,13 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
             Evenement e1 = item.getTag();
 
             if (e1 != null) {
+                Button buttonDisplay = rootView.findViewById(R.id.buttonDisplay);
+                buttonDisplay.setOnClickListener(v -> {
+                    Intent intent = new Intent(getContext(), InfosEvenementsActivity.class);
+                    intent.putExtra("event", e1);
+                    startActivity(intent);
+                });
+
                 Date d = null;
                 try {
                     d = Constants.allTimeFormat.parse(e1.getStartDate());
