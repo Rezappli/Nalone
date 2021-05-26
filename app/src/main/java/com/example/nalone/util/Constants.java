@@ -56,9 +56,9 @@ public class Constants {
 
     public static final DateFormat formatDayHoursMinutesSeconds = new SimpleDateFormat("dd-mm-yyyy hh:MM:ss");
 
-    public static SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yy");
+    public static SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
     public static SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm");
-    public static SimpleDateFormat allTimeFormat = new SimpleDateFormat("dd-MM-yy HH:mm");
+    public static SimpleDateFormat allTimeFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
     public static LatLng targetZoom;
 
@@ -79,7 +79,7 @@ public class Constants {
     public static String serverKey = null;
     public static String contentType = null;
 
-    public static String BASE_URL = "http://nolonely.fr";
+    public static String BASE_URL = "https://nolonely.fr";
     public static String BASE_API_URL = "http://api.nolonely.fr";
 
     public static String URL_ME = BASE_API_URL + "/me.php";

@@ -49,15 +49,16 @@ import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.Circle;
 import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.Marker;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
+import com.google.maps.android.clustering.Cluster;
 import com.google.maps.android.clustering.ClusterManager;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 
+import java.text.ParseException;
 import java.util.ArrayList;
-import java.util.Iterator;
+import java.util.Date;
 import java.util.List;
 
 import static com.example.nalone.HomeActivity.buttonBack;
@@ -437,8 +438,8 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         } else {
             mMap.moveCamera(CameraUpdateFactory.newCameraPosition(posCam));
         }
-        JSONObjectCrypt params = new JSONObjectCrypt();
 
+        JSONObjectCrypt params = new JSONObjectCrypt();
         params.putCryptParameter("uid", USER.getUid());
         params.putCryptParameter("latitude", USER.getLatitude());
         params.putCryptParameter("longitude", USER.getLongitude());
@@ -627,80 +628,62 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
 
         if (e.getVisibility().equals(Visibility.PUBLIC)) {
             if (e.getOwner_uid().equalsIgnoreCase(USER.getUid())) {
-                m = new CustomMarker(new LatLng(e.getLatitude(), e.getLongitude()), BitmapDescriptorFactory.HUE_GREEN, e.getUid());
+                m = new CustomMarker(new LatLng(e.getLatitude(), e.getLongitude()), BitmapDescriptorFactory.HUE_GREEN, e);
             } else {
-                m = new CustomMarker(new LatLng(e.getLatitude(), e.getLongitude()), BitmapDescriptorFactory.HUE_RED, e.getUid());
+                m = new CustomMarker(new LatLng(e.getLatitude(), e.getLongitude()), BitmapDescriptorFactory.HUE_RED, e);
             }
         } else {
             if (e.getOwner_uid().equalsIgnoreCase(USER.getUid())) {
-                m = new CustomMarker(new LatLng(e.getLatitude(), e.getLongitude()), BitmapDescriptorFactory.HUE_GREEN, e.getUid());
+                m = new CustomMarker(new LatLng(e.getLatitude(), e.getLongitude()), BitmapDescriptorFactory.HUE_GREEN, e);
             } else {
-                m = new CustomMarker(new LatLng(e.getLatitude(), e.getLongitude()), BitmapDescriptorFactory.HUE_AZURE, e.getUid());
+                m = new CustomMarker(new LatLng(e.getLatitude(), e.getLongitude()), BitmapDescriptorFactory.HUE_AZURE, e);
             }
         }
 
         clusterManager.addItem(m);
         clusterManager.setRenderer(new CustomRenderer(getContext(), mMap, clusterManager));
 
+        mMap.setOnMarkerClickListener(clusterManager);
 
-        mMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
+        clusterManager.setOnClusterClickListener(new ClusterManager.OnClusterClickListener<CustomMarker>() {
             @Override
-            public void onInfoWindowClick(Marker marker) {
-                InfosEvenementsActivity.EVENT_LOAD = (Evenement) marker.getTag();
-                startActivity(new Intent(getContext(), InfosEvenementsActivity.class));
-            }
-        });
-
-        clusterManager.setOnClusterItemClickListener(new ClusterManager.OnClusterItemClickListener<CustomMarker>() {
-            @Override
-            public boolean onClusterItemClick(CustomMarker item) {
-                Iterator<Evenement> it = nearby_events.iterator();
-                while (it.hasNext()) {
-                    if (it.next().getUid().equalsIgnoreCase(item.getTag())) {
-                        Evenement e = it.next();
-                    }
-                }
-
-                if (e != null) {
-                    textViewDetailNbMembers.setText(e.getNbMembers() + "");
-                    textViewDetailCity.setText(e.getCity());
-                    textViewDetailDate.setText(e.getStartDate());
-                    textViewDetailName.setText(e.getName());
-                    textViewDetailTime.setText(e.getStartDate());
-                    imageViewDetailCategory.setImageResource(e.getImageCategory());
-
-                }
-
-                // Check if a click count was set, then display the click count.
-                bottomSheetBehaviorDetails.setState(BottomSheetBehavior.STATE_EXPANDED);
-
+            public boolean onClusterClick(Cluster<CustomMarker> cluster) {
                 return false;
             }
         });
 
-        mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
-            @Override
-            public boolean onMarkerClick(Marker marker) {
-                Evenement e = (Evenement) marker.getTag();
+        clusterManager.setOnClusterItemClickListener(item -> {
+            Evenement e1 = item.getTag();
 
-                if (e != null) {
-                    textViewDetailNbMembers.setText(e.getNbMembers() + "");
-                    textViewDetailCity.setText(e.getCity());
-                    textViewDetailDate.setText(e.getStartDate());
-                    textViewDetailName.setText(e.getName());
-                    textViewDetailTime.setText(e.getStartDate());
-                    imageViewDetailCategory.setImageResource(e.getImageCategory());
-
+            if (e1 != null) {
+                Date d = null;
+                try {
+                    d = Constants.allTimeFormat.parse(e1.getStartDate());
+                } catch (ParseException parseException) {
+                    parseException.printStackTrace();
                 }
 
-                // Check if a click count was set, then display the click count.
-                bottomSheetBehaviorDetails.setState(BottomSheetBehavior.STATE_EXPANDED);
-
-                return false;
+                if (d == null) {
+                    textViewDetailNbMembers.setText(e1.getNbMembers() + "");
+                    textViewDetailCity.setText(e1.getCity());
+                    textViewDetailDate.setText(Constants.dateFormat.format(d));
+                    textViewDetailName.setText(e1.getName());
+                    imageViewDetailCategory.setImageResource(e1.getImageCategory());
+                } else {
+                    textViewDetailNbMembers.setText(e1.getNbMembers() + "");
+                    textViewDetailCity.setText(e1.getCity());
+                    textViewDetailDate.setText(Constants.dateFormat.format(d));
+                    textViewDetailName.setText(e1.getName());
+                    textViewDetailTime.setText(Constants.timeFormat.format(d));
+                    imageViewDetailCategory.setImageResource(e1.getImageCategory());
+                }
             }
+
+            // Check if a click count was set, then display the click count.
+            bottomSheetBehaviorDetails.setState(BottomSheetBehavior.STATE_EXPANDED);
+
+            return false;
         });
-
-
     }
 
     @Override
