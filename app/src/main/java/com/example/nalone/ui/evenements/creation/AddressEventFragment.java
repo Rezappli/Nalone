@@ -3,7 +3,6 @@ package com.example.nalone.ui.evenements.creation;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.Editable;
@@ -17,7 +16,6 @@ import android.widget.Toast;
 
 import androidx.annotation.RequiresApi;
 import androidx.fragment.app.DialogFragment;
-import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.example.nalone.R;
 import com.example.nalone.dialog.LoadFragment;
@@ -25,8 +23,6 @@ import com.example.nalone.objects.AddressSearch;
 import com.example.nalone.thread.SearchThread;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.material.textfield.TextInputEditText;
-
-import static com.example.nalone.ui.evenements.creation.MainCreationEventActivity.ACTION_RECEIVE_NEXT_CLICK;
 
 public class AddressEventFragment extends EventFragment {
 
@@ -91,26 +87,32 @@ public class AddressEventFragment extends EventFragment {
             event_adresse.setText(ad.getAddress());
             listView.setVisibility(View.GONE);
         });
+        receiverNextClick = new BroadcastReceiver() {
+            @RequiresApi(api = Build.VERSION_CODES.O)
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                try {
 
+                    if (pos == null || city == null) {
+                        event_adresse.setError(getActivity().getResources().getString(R.string.location_not_found));
+                    } else if (event_adresse.getText().toString().matches("")) {
+                        event_adresse.setError(getActivity().getResources().getString(R.string.required_field));
+                    } else {
+                        MainCreationEventActivity.currentEvent.setAddress(event_adresse.getText().toString());
+                        MainCreationEventActivity.currentEvent.setCity(city);
+                        MainCreationEventActivity.currentEvent.setLatitude(pos.latitude);
+                        MainCreationEventActivity.currentEvent.setLongitude(pos.longitude);
+                        sendFragmentBroadcast(MainCreationEventActivity.CurrentFragment.ADRESS);
+                    }
+
+                } catch (Exception e) {
+                    Log.w("Response", e.getMessage());
+                    Toast.makeText(getContext(), getResources().getString(R.string.error_address), Toast.LENGTH_SHORT).show();
+                }
+            }
+        };
         return root;
     }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-
-        IntentFilter intentFilter = new IntentFilter();
-        intentFilter.addAction(ACTION_RECEIVE_NEXT_CLICK);
-        LocalBroadcastManager.getInstance(getContext()).registerReceiver(receiverNextClick, intentFilter);
-    }
-
-    @Override
-    public void onPause() {
-        super.onPause();
-        LocalBroadcastManager.getInstance(getContext()).unregisterReceiver(receiverNextClick);
-
-    }
-
 
     private void showLoadDialog() {
         load = new LoadFragment();
@@ -123,30 +125,4 @@ public class AddressEventFragment extends EventFragment {
         load.dismiss();
         Log.w("Dialog", "Dismiss");
     }
-
-    private final BroadcastReceiver receiverNextClick = new BroadcastReceiver() {
-        @RequiresApi(api = Build.VERSION_CODES.O)
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            try {
-
-                if (pos == null || city == null) {
-                    event_adresse.setError(getActivity().getResources().getString(R.string.location_not_found));
-                } else if (event_adresse.getText().toString().matches("")) {
-                    event_adresse.setError(getActivity().getResources().getString(R.string.required_field));
-                } else {
-                    MainCreationEventActivity.currentEvent.setAddress(event_adresse.getText().toString());
-                    MainCreationEventActivity.currentEvent.setCity(city);
-                    MainCreationEventActivity.currentEvent.setLatitude(pos.latitude);
-                    MainCreationEventActivity.currentEvent.setLongitude(pos.longitude);
-                    sendFragmentBroadcast(MainCreationEventActivity.CurrentFragment.ADRESS);
-                }
-
-            } catch (Exception e) {
-                Log.w("Response", e.getMessage());
-                Toast.makeText(getContext(), getResources().getString(R.string.error_address), Toast.LENGTH_SHORT).show();
-            }
-        }
-    };
-
 }

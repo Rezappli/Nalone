@@ -80,7 +80,6 @@ public class MainCreationEventActivity extends AppCompatActivity {
         public void onReceive(Context context, Intent intent) {
             if (intent != null) {
                 CurrentFragment currentFragment = CurrentFragment.valueOf(intent.getStringExtra("fragment"));
-
                 switch (currentFragment) {
                     case DATE:
                         imageProgessCreationDate.setImageDrawable(ContextCompat.getDrawable(getBaseContext(), R.drawable.creation_event_date_focused));
@@ -131,14 +130,14 @@ public class MainCreationEventActivity extends AppCompatActivity {
                 if (nextFrag != null) {
                     changeFragment(nextFrag);
                 }
-
-                Log.w("EVENT", nameValidate + "");
             }
         }
     };
 
     public enum CurrentFragment {
-        NAME, ADRESS, DATE, COST, PHOTO, MEMBERS
+        NAME, ADRESS,
+        DATE, COST,
+        PHOTO, MEMBERS;
     }
 
     @Override
@@ -287,30 +286,42 @@ public class MainCreationEventActivity extends AppCompatActivity {
     }
 
     private void changeVisibility(Visibility v) {
-        changeFragment(new MembersEventPublicFragment());
         currentEvent.setVisibility(v);
         initFirstFiltre();
         bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+
+        imageProgessCreationMembers.setImageDrawable(ContextCompat.getDrawable(getBaseContext(), R.drawable.creation_event_members));
+        membersValidate = false;
+        Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.fragmentCreationEvent);
+        if (fragment instanceof MembersEventPrivateFragment || fragment instanceof MembersEventPublicFragment) {
+            if (v == Visibility.PRIVATE)
+                changeFragment(new MembersEventPrivateFragment());
+            else
+                changeFragment(new MembersEventPublicFragment());
+        }
     }
 
     private void checkChangeVisibility(Visibility v) {
         if (membersValidate) {
-            final AlertDialog.Builder builder = new AlertDialog.Builder(getBaseContext());
-            builder.setMessage(getResources().getString(R.string.no_image_select))
-                    .setPositiveButton(getResources().getString(R.string.button_yes), new DialogInterface.OnClickListener() {
-                        @RequiresApi(api = Build.VERSION_CODES.O)
-                        public void onClick(DialogInterface dialog, int id) {
+            DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    switch (which) {
+                        case DialogInterface.BUTTON_POSITIVE:
                             membersValidate = false;
                             changeVisibility(v);
-                        }
-                    })
-                    .setNegativeButton(getResources().getString(R.string.button_no), new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int id) {
+                            break;
+
+                        case DialogInterface.BUTTON_NEGATIVE:
                             dialog.dismiss();
-                        }
-                    });
-            builder.create();
-            builder.show();
+                            break;
+                    }
+                }
+            };
+
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setMessage(getResources().getString(R.string.visibility_change_warning)).setPositiveButton("Oui", dialogClickListener)
+                    .setNegativeButton("Non", dialogClickListener).show();
         } else {
             changeVisibility(v);
         }

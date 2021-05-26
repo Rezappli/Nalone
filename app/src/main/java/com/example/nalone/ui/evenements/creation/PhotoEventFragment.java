@@ -5,7 +5,6 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -16,7 +15,6 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import androidx.annotation.RequiresApi;
-import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.bumptech.glide.Glide;
 import com.example.nalone.R;
@@ -24,7 +22,6 @@ import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
 
 import static android.app.Activity.RESULT_OK;
-import static com.example.nalone.ui.evenements.creation.MainCreationEventActivity.ACTION_RECEIVE_NEXT_CLICK;
 
 
 public class PhotoEventFragment extends EventFragment {
@@ -56,25 +53,32 @@ public class PhotoEventFragment extends EventFragment {
         if (MainCreationEventActivity.image != null) {
             Glide.with(this).load(MainCreationEventActivity.image).fitCenter().centerCrop().into(imagePhoto);
         }
-
+        receiverNextClick = new BroadcastReceiver() {
+            @RequiresApi(api = Build.VERSION_CODES.O)
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                if (MainCreationEventActivity.image == null) {
+                    final AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+                    builder.setMessage(getResources().getString(R.string.no_image_select))
+                            .setPositiveButton(getResources().getString(R.string.button_yes), new DialogInterface.OnClickListener() {
+                                @RequiresApi(api = Build.VERSION_CODES.O)
+                                public void onClick(DialogInterface dialog, int id) {
+                                    sendFragmentBroadcast(MainCreationEventActivity.CurrentFragment.PHOTO);
+                                }
+                            })
+                            .setNegativeButton(getResources().getString(R.string.button_no), new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int id) {
+                                    dialog.dismiss();
+                                }
+                            });
+                    builder.create();
+                    builder.show();
+                } else {
+                    sendFragmentBroadcast(MainCreationEventActivity.CurrentFragment.PHOTO);
+                }
+            }
+        };
         return root;
-    }
-
-
-    @Override
-    public void onResume() {
-        super.onResume();
-
-        IntentFilter intentFilter = new IntentFilter();
-        intentFilter.addAction(ACTION_RECEIVE_NEXT_CLICK);
-        LocalBroadcastManager.getInstance(getContext()).registerReceiver(receiverNextClick, intentFilter);
-    }
-
-    @Override
-    public void onPause() {
-        super.onPause();
-        LocalBroadcastManager.getInstance(getContext()).unregisterReceiver(receiverNextClick);
-
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
@@ -102,35 +106,5 @@ public class PhotoEventFragment extends EventFragment {
                 Log.w("Response", result.getError());
             }
         }
-    }
-
-    private final BroadcastReceiver receiverNextClick = new BroadcastReceiver() {
-        @RequiresApi(api = Build.VERSION_CODES.O)
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            if (MainCreationEventActivity.image == null) {
-                final AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-                builder.setMessage(getResources().getString(R.string.no_image_select))
-                        .setPositiveButton(getResources().getString(R.string.button_yes), new DialogInterface.OnClickListener() {
-                            @RequiresApi(api = Build.VERSION_CODES.O)
-                            public void onClick(DialogInterface dialog, int id) {
-                                notifyMainCreation();
-                            }
-                        })
-                        .setNegativeButton(getResources().getString(R.string.button_no), new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int id) {
-                                dialog.dismiss();
-                            }
-                        });
-                builder.create();
-                builder.show();
-            } else {
-                notifyMainCreation();
-            }
-        }
-    };
-
-    private void notifyMainCreation() {
-        sendFragmentBroadcast(MainCreationEventActivity.CurrentFragment.PHOTO);
     }
 }

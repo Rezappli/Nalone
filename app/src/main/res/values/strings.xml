@@ -92,6 +92,7 @@
     <string name="title_activity_maps">Map</string>
     <string name="newEvent"> Nouvel évènement </string>
     <string name="visibility"> Visibilité </string>
+    <string name="visibility_change_warning"> La gestion des membres va être réinitialisé. Voulez-vous continuer ? </string>
     <string name="valid"> Valider </string>
     <string name="valided"> validé </string>
     <string name="listInvité"> Liste d\'invités </string>
@@ -275,6 +276,7 @@
     <string name="error_address">Nous n\'avons pas réussie à trouver l\'adresse :(</string>
     <string name="error_lise_member_empty">Veuillez invitez des amis</string>
     <string name="error_lise_member_not_selected">Veuillez sélectionner le type d\'invitation</string>
+    <string name="error_limit_member_empty">Veuillez entrer une limite de participant</string>
     <string name="required_field">Champs obligatoire</string>
     <string name="int_over_zero">Veuillez entrer un prix supérieur à 0</string>
     <string name="date_in_futur">Veuillez selectionner des dates dans le futur</string>

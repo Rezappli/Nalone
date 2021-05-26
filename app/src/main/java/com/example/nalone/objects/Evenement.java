@@ -11,6 +11,7 @@ import com.example.nalone.util.Constants;
 import java.io.Serializable;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 
 public class Evenement implements Serializable {
@@ -33,6 +34,8 @@ public class Evenement implements Serializable {
     private int price;
     private TypeEvent category;
     private String image_url;
+    private ArrayList<User> members;
+    private boolean isFriendMembers;
 
     public Evenement() {
         this.uid = null;
@@ -46,19 +49,20 @@ public class Evenement implements Serializable {
         this.owner_uid = null;
         this.latitude = null;
         this.longitude = null;
-        this.nbMembers = 0;
-        this.limitMembers = 0;
+        this.nbMembers = -1;
+        this.limitMembers = -1;
         this.status = null;
-        this.price = 0;
+        this.price = -1;
         this.category = null;
         this.ownerName = null;
         this.image_url = null;
+        this.members = new ArrayList<>();
     }
 
 
     public Evenement(String uid, StatusEvent status, String owner, String name, String description,
                      String address, String city, Visibility visibility, String startDate, String endDate,
-                     double latitude, double longitude, int nbMembers, int limitMembers, TypeEvent category, int price) {
+                     double latitude, double longitude, ArrayList<User> members, int nbMembers, int limitMembers, TypeEvent category, int price) {
         this.uid = uid;
         this.name = name;
         this.description = description;
@@ -76,6 +80,7 @@ public class Evenement implements Serializable {
         this.category = category;
         this.price = price;
         this.image_url = null;
+        this.members = members;
     }
 
     public void setOwner_uid(String owner_uid) {
@@ -242,6 +247,22 @@ public class Evenement implements Serializable {
 
     public void setLimitMembers(int limitMembers) {
         this.limitMembers = limitMembers;
+    }
+
+    public boolean isFriendMembers() {
+        return isFriendMembers;
+    }
+
+    public void setFriendMembers(boolean friendMembers) {
+        isFriendMembers = friendMembers;
+    }
+
+    public ArrayList<User> getMembers() {
+        return members;
+    }
+
+    public void setMembers(ArrayList<User> members) {
+        this.members = members;
     }
 
     @Override

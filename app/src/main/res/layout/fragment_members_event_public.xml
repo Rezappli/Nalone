@@ -16,7 +16,7 @@
         android:visibility="visible">
 
         <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/textInputEditPrice"
+            android:id="@+id/textInputEditNbMember"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:drawableEnd="@drawable/ic_round_person_edit"

@@ -3,7 +3,6 @@ package com.example.nalone.ui.evenements.creation;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,13 +10,11 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import androidx.cardview.widget.CardView;
-import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.example.nalone.R;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 
-import static com.example.nalone.ui.evenements.creation.MainCreationEventActivity.ACTION_RECEIVE_NEXT_CLICK;
 import static com.example.nalone.ui.evenements.creation.MainCreationEventActivity.currentEvent;
 
 public class CostEventFragment extends EventFragment {
@@ -50,7 +47,7 @@ public class CostEventFragment extends EventFragment {
             changeToFree();
             isTaping = true;
             isFree = false;
-        } else {
+        } else if (currentEvent.getPrice() != -1) {
             changeToPaying();
             isTaping = true;
             isFree = false;
@@ -70,25 +67,38 @@ public class CostEventFragment extends EventFragment {
             isTaping = true;
             isFree = false;
         });
-
+        receiverNextClick = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                int finalValue;
+                String value = textInputPrice.getText().toString();
+                if (!value.matches("")) {
+                    finalValue = Integer.parseInt(value);
+                } else {
+                    finalValue = 0;
+                }
+                if (!isTaping) {
+                    imageViewPaying.setImageDrawable(getResources().getDrawable(R.drawable.ic_baseline_attach_money_24_error));
+                    imageViewFree.setImageDrawable(getResources().getDrawable(R.drawable.ic_baseline_money_off_24_error));
+                } else {
+                    if (!isFree) {
+                        if (textInputPrice.getText().toString().matches("")) {
+                            textInputPrice.setError(getResources().getString(R.string.required_field));
+                            return;
+                        } else if (finalValue <= 0) {
+                            textInputPrice.setError(getResources().getString(R.string.int_over_zero));
+                            return;
+                        } else {
+                            MainCreationEventActivity.currentEvent.setPrice(finalValue);
+                        }
+                    } else {
+                        MainCreationEventActivity.currentEvent.setPrice(0);
+                    }
+                    sendFragmentBroadcast(MainCreationEventActivity.CurrentFragment.COST);
+                }
+            }
+        };
         return root;
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-
-        IntentFilter intentFilter = new IntentFilter();
-        intentFilter.addAction(ACTION_RECEIVE_NEXT_CLICK);
-        LocalBroadcastManager.getInstance(getContext()).registerReceiver(receiverNextClick, intentFilter);
-
-    }
-
-    @Override
-    public void onPause() {
-        super.onPause();
-        LocalBroadcastManager.getInstance(getContext()).unregisterReceiver(receiverNextClick);
-
     }
 
     private void changeToPaying() {
@@ -102,37 +112,4 @@ public class CostEventFragment extends EventFragment {
         imageViewPaying.setImageDrawable(getResources().getDrawable(R.drawable.ic_baseline_attach_money_24));
         textInputLayoutPrice.setVisibility(View.INVISIBLE);
     }
-
-    private final BroadcastReceiver receiverNextClick = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            int finalValue;
-            String value = textInputPrice.getText().toString();
-            if (!value.matches("")) {
-                finalValue = Integer.parseInt(value);
-            } else {
-                finalValue = 0;
-            }
-            if (!isTaping) {
-                imageViewPaying.setImageDrawable(getResources().getDrawable(R.drawable.ic_baseline_attach_money_24_error));
-                imageViewFree.setImageDrawable(getResources().getDrawable(R.drawable.ic_baseline_money_off_24_error));
-            } else {
-                if (!isFree) {
-                    if (textInputPrice.getText().toString().matches("")) {
-                        textInputPrice.setError(getResources().getString(R.string.required_field));
-                        return;
-                    } else if (finalValue <= 0) {
-                        textInputPrice.setError(getResources().getString(R.string.int_over_zero));
-                        return;
-                    } else {
-                        MainCreationEventActivity.currentEvent.setPrice(finalValue);
-                    }
-                } else {
-                    MainCreationEventActivity.currentEvent.setPrice(0);
-                }
-                sendFragmentBroadcast(MainCreationEventActivity.CurrentFragment.COST);
-            }
-        }
-    };
-
 }

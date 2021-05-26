@@ -32,7 +32,6 @@ import static com.example.nalone.dialog.SelectDateFragment.EXTRA_START_DATE;
 import static com.example.nalone.dialog.TimePickerFragment.ACTION_RECEIVE_TIME;
 import static com.example.nalone.dialog.TimePickerFragment.EXTRA_END_TIME;
 import static com.example.nalone.dialog.TimePickerFragment.EXTRA_START_TIME;
-import static com.example.nalone.ui.evenements.creation.MainCreationEventActivity.ACTION_RECEIVE_NEXT_CLICK;
 import static com.example.nalone.ui.evenements.creation.MainCreationEventActivity.currentEvent;
 
 public class DateEventFragment extends EventFragment {
@@ -113,6 +112,65 @@ public class DateEventFragment extends EventFragment {
             newFragment.show(getActivity().getSupportFragmentManager(), "DIALOG_TIME");
         });
 
+        receiverNextClick = new BroadcastReceiver() {
+            @RequiresApi(api = Build.VERSION_CODES.O)
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy hh:mm");
+
+                if (eventStartDate.getText().toString().equalsIgnoreCase("date")) {
+                    eventStartDate.setError(getResources().getString(R.string.required_field));
+                    return;
+                } else {
+                    eventStartDate.setError(null);
+                }
+
+                if (eventEndDate.getText().toString().equalsIgnoreCase("date")) {
+                    eventEndDate.setError(getResources().getString(R.string.required_field));
+                    return;
+                } else {
+                    eventEndDate.setError(null);
+                }
+
+                if (eventStartHoraire.getText().toString().equalsIgnoreCase("horaire")) {
+                    eventStartHoraire.setError(getResources().getString(R.string.required_field));
+                    return;
+                } else {
+                    eventStartHoraire.setError(null);
+                }
+
+                if (eventEndHoraire.getText().toString().equalsIgnoreCase("horaire")) {
+                    eventEndHoraire.setError(getResources().getString(R.string.required_field));
+                    return;
+                } else {
+                    eventEndHoraire.setError(null);
+                }
+
+
+                String tsStart = eventStartDate.getText().toString() + " " + eventStartHoraire.getText().toString();
+                String tsEnd = eventEndDate.getText().toString() + " " + eventEndHoraire.getText().toString();
+                StatusEvent seStart = null;
+                try {
+                    seStart = TimeUtil.verifStatut(new Date(), sdf.parse(tsStart));
+                    StatusEvent seEnd = TimeUtil.verifStatut(new Date(), sdf.parse(tsEnd));
+                    if (seStart == StatusEvent.FINI || seStart == StatusEvent.EXPIRE || seEnd == StatusEvent.FINI || seEnd == StatusEvent.EXPIRE) {
+                        Toast.makeText(getContext(), getResources().getString(R.string.date_in_futur), Toast.LENGTH_SHORT).show();
+                    } else {
+
+                        tsStart = tsStart.replaceAll("/", "-"); //convertion de date pour sql
+                        tsEnd = tsEnd.replaceAll("/", "-");
+
+                        MainCreationEventActivity.currentEvent.setStartDate(tsStart);
+                        MainCreationEventActivity.currentEvent.setEndDate(tsEnd);
+
+                        sendFragmentBroadcast(MainCreationEventActivity.CurrentFragment.DATE);
+                    }
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+            }
+        };
+
         return root;
     }
 
@@ -126,12 +184,6 @@ public class DateEventFragment extends EventFragment {
         IntentFilter intentFilter1 = new IntentFilter();
         intentFilter1.addAction(ACTION_RECEIVE_TIME);
         LocalBroadcastManager.getInstance(getContext()).registerReceiver(receiverTime, intentFilter1);
-
-        IntentFilter intentFilter2 = new IntentFilter();
-        intentFilter2.addAction(ACTION_RECEIVE_NEXT_CLICK);
-        LocalBroadcastManager.getInstance(getContext()).registerReceiver(receiverNextClick, intentFilter2);
-
-
     }
 
 
@@ -163,63 +215,4 @@ public class DateEventFragment extends EventFragment {
         return temp;
 
     }
-
-    private final BroadcastReceiver receiverNextClick = new BroadcastReceiver() {
-        @RequiresApi(api = Build.VERSION_CODES.O)
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy hh:mm");
-
-            if (eventStartDate.getText().toString().equalsIgnoreCase("date")) {
-                eventStartDate.setError(getResources().getString(R.string.required_field));
-                return;
-            } else {
-                eventStartDate.setError(null);
-            }
-
-            if (eventEndDate.getText().toString().equalsIgnoreCase("date")) {
-                eventEndDate.setError(getResources().getString(R.string.required_field));
-                return;
-            } else {
-                eventEndDate.setError(null);
-            }
-
-            if (eventStartHoraire.getText().toString().equalsIgnoreCase("horaire")) {
-                eventStartHoraire.setError(getResources().getString(R.string.required_field));
-                return;
-            } else {
-                eventStartHoraire.setError(null);
-            }
-
-            if (eventEndHoraire.getText().toString().equalsIgnoreCase("horaire")) {
-                eventEndHoraire.setError(getResources().getString(R.string.required_field));
-                return;
-            } else {
-                eventEndHoraire.setError(null);
-            }
-
-
-            String tsStart = eventStartDate.getText().toString() + " " + eventStartHoraire.getText().toString();
-            String tsEnd = eventEndDate.getText().toString() + " " + eventEndHoraire.getText().toString();
-            StatusEvent seStart = null;
-            try {
-                seStart = TimeUtil.verifStatut(new Date(), sdf.parse(tsStart));
-                StatusEvent seEnd = TimeUtil.verifStatut(new Date(), sdf.parse(tsEnd));
-                if (seStart == StatusEvent.FINI || seStart == StatusEvent.EXPIRE || seEnd == StatusEvent.FINI || seEnd == StatusEvent.EXPIRE) {
-                    Toast.makeText(getContext(), getResources().getString(R.string.date_in_futur), Toast.LENGTH_SHORT).show();
-                } else {
-
-                    tsStart = tsStart.replaceAll("/", "-"); //convertion de date pour sql
-                    tsEnd = tsEnd.replaceAll("/", "-");
-
-                    MainCreationEventActivity.currentEvent.setStartDate(tsStart);
-                    MainCreationEventActivity.currentEvent.setEndDate(tsEnd);
-
-                    sendFragmentBroadcast(MainCreationEventActivity.CurrentFragment.DATE);
-                }
-            } catch (ParseException e) {
-                e.printStackTrace();
-            }
-        }
-    };
 }
