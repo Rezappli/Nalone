@@ -103,8 +103,9 @@ public class SearchEventActivity extends AppCompatActivity {
         mAdapter.setOnItemClickListener(new SearchEvenementAdapter.OnItemClickListener() {
             @Override
             public void onDisplayClick(int position) {
-                InfosEvenementsActivity.EVENT_LOAD = evenementList.get(position);
-                startActivity(new Intent(getBaseContext(), InfosEvenementsActivity.class));
+                Intent intent = new Intent(getBaseContext(), InfosEvenementsActivity.class);
+                intent.putExtra("event", evenementList.get(position));
+                startActivity(intent);
                 //InfosEvenementsActivity.type = "nouveau";
             }
 

@@ -337,12 +337,17 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         adapteSuggestion.setOnItemClickListener(new EvenementAdapter.OnItemClickListener() {
             @Override
             public void onDisplayClick(int position) {
-                InfosEvenementsActivity.EVENT_LOAD = eventsSuggest.get(position);
                 //InfosEvenementsActivity.type = "nouveau";
-                startActivity(new Intent(getContext(), InfosEvenementsActivity.class));
+                displayEventInfo(eventsSuggest.get(position));
 
             }
         });
+    }
+
+    private void displayEventInfo(Evenement evenement) {
+        Intent intent = new Intent(getContext(), InfosEvenementsActivity.class);
+        intent.putExtra("event", evenement);
+        startActivity(intent);
     }
 
     private void configurePopular() {
@@ -353,10 +358,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         adapterPopulaire.setOnItemClickListener(new EvenementAdapter.OnItemClickListener() {
             @Override
             public void onDisplayClick(int position) {
-                InfosEvenementsActivity.EVENT_LOAD = eventsPopular.get(position);
-                //InfosEvenementsActivity.type = "nouveau";
-                startActivity(new Intent(getContext(), InfosEvenementsActivity.class));
-
+                displayEventInfo(eventsPopular.get(position));
             }
         });
     }

@@ -78,8 +78,9 @@ public class PlanningRegistrationsFragment extends Fragment {
         mRecyclerSoon = view.findViewById(R.id.recyclerViewSoon);
 
         showMoreButton.setOnClickListener(v -> {
-            InfosEvenementsActivity.EVENT_LOAD = nextEvent;
-            startActivity(new Intent(getContext(), InfosEvenementsActivity.class));
+            Intent intent = new Intent(getContext(), InfosEvenementsActivity.class);
+            intent.putExtra("event", nextEvent);
+            startActivity(intent);
         });
 
         callNextEvent();
