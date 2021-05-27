@@ -107,6 +107,7 @@
     <string name="ou"> Ou ? </string>
     <string name="search_title"> Rechercher un ami </string>
     <string name="search_event_title"> Rechercher un évènement </string>
+    <string name="title_user_info"> Utilisateur </string>
     <string name="evebt_info"> Infos évènement </string>
     <string name="aucun_resultat"> Aucun résultat trouvé </string>
     <string name="eventCreateProfil"> Création </string>
@@ -117,7 +118,8 @@
     <string name="proprio"> Propriétaire : </string>
     <string name="organisateur"> Organisateur : </string>
     <string name="participants"> participants</string>
-    <!-- TODO: Remove or change this placeholder text -->
+    <string name="participants_uppercase"> Participants</string>
+    =    <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="title_planning_registrations">Inscriptions</string>
     <string name="title_planning_creations">Mes évènements</string>

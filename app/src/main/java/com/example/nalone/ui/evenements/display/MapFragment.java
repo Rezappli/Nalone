@@ -62,7 +62,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import static com.example.nalone.HomeActivity.buttonBack;
 import static com.example.nalone.enumeration.TypeEvent.ART;
 import static com.example.nalone.util.Constants.MAPVIEW_BUNDLE_KEY;
 import static com.example.nalone.util.Constants.USER;
@@ -131,7 +130,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     }
 
     private void createFragment() {
-        buttonBack.setVisibility(View.GONE);
         navController = Navigation.findNavController(getActivity(), R.id.nav_host_fragment);
         linearLayoutPopular = rootView.findViewById(R.id.linearPopular);
         linearLayoutSuggest = rootView.findViewById(R.id.linearSuggest);

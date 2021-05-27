@@ -11,7 +11,7 @@ import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
 import android.view.ViewGroup;
-        
+
 import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
@@ -19,8 +19,6 @@ import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 
 import com.example.nalone.R;
-import com.example.nalone.objects.User;
-import com.example.nalone.ui.amis.display.PopupProfilFragment;
 import com.google.android.gms.vision.CameraSource;
 import com.google.android.gms.vision.Detector;
 import com.google.android.gms.vision.barcode.Barcode;
@@ -111,8 +109,8 @@ public class CameraFragment extends Fragment {
             public void receiveDetections(Detector.Detections<Barcode> detections) {
                 SparseArray<Barcode> qrcodes = detections.getDetectedItems();
                 if (qrcodes.size() != 0) {
-                    if(qrcodes.valueAt(0).displayValue.length() == USER.getUid().length()) {
-                        if(!found) {
+                    if (qrcodes.valueAt(0).displayValue.length() == USER.getUid().length()) {
+                        if (!found) {
                             found = true;
                             Vibrator v = (Vibrator) getActivity().getApplicationContext().getSystemService(Context.VIBRATOR_SERVICE);
                             v.vibrate(400);

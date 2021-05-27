@@ -15,7 +15,7 @@
         android:layout_height="40dp"
         android:background="@color/white"
         android:gravity="center"
-        app:elevation="5dp">
+        app:elevation="0dp">
 
         <RelativeLayout
             android:layout_width="match_parent"

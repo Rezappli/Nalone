@@ -100,7 +100,6 @@ public class PlanningRegistrationsFragment extends Fragment {
             public void onJSONReceived(JSONArray jsonArray) {
                 Log.w("Response", "Value:" + jsonArray.toString());
                 try {
-
                     if (jsonArray.length() > 0) {
                         nextEvent = (Evenement) JSONController.convertJSONToObject(jsonArray.getJSONObject(0), Evenement.class);
                         linearNext.setVisibility(View.VISIBLE);

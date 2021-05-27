@@ -1,5 +1,6 @@
 package com.example.nalone.ui.recherche;
 
+import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
@@ -30,7 +31,7 @@ import com.example.nalone.json.JSONController;
 import com.example.nalone.json.JSONObjectCrypt;
 import com.example.nalone.listeners.JSONArrayListener;
 import com.example.nalone.objects.User;
-import com.example.nalone.ui.amis.display.PopupProfilFragment;
+import com.example.nalone.ui.amis.display.InfoUserActivity;
 import com.example.nalone.util.Constants;
 
 import org.json.JSONArray;
@@ -39,7 +40,6 @@ import org.json.JSONException;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.example.nalone.HomeActivity.buttonBack;
 import static com.example.nalone.util.Constants.USER;
 
 public class RechercheAmisFragment extends Fragment {
@@ -73,13 +73,7 @@ public class RechercheAmisFragment extends Fragment {
     @RequiresApi(api = Build.VERSION_CODES.O)
     public void createFragment() {
         loading = rootView.findViewById(R.id.search_loading);
-        buttonBack.setVisibility(View.VISIBLE);
-        buttonBack.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
 
-            }
-        });
         linearSansRechercheAmis = rootView.findViewById(R.id.linearSansRechercheGroupe);
         swipeContainer = rootView.findViewById(R.id.AmisSwipeRefreshLayout);
 
@@ -192,12 +186,9 @@ public class RechercheAmisFragment extends Fragment {
 
 
     public void showPopUpProfil(User u) {
-
-        PopupProfilFragment.USER_LOAD = u;
-        PopupProfilFragment.button = R.drawable.ic_baseline_add_circle_outline_24;
-
-        PopupProfilFragment.type = "recherche";
-        navController.navigate(R.id.action_navigation_recherche_amis_to_navigation_popup_profil);
+        Intent intent = new Intent(getContext(), InfoUserActivity.class);
+        intent.putExtra("user", u);
+        startActivity(intent);
     }
 
     @Override

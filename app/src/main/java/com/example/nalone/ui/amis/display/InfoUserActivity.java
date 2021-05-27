@@ -4,19 +4,15 @@ import android.annotation.SuppressLint;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.RequiresApi;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
-import androidx.fragment.app.Fragment;
-import androidx.navigation.NavController;
-import androidx.navigation.Navigation;
 
 import com.android.volley.VolleyError;
 import com.example.nalone.R;
@@ -35,15 +31,10 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.example.nalone.HomeActivity.buttonBack;
 import static com.example.nalone.util.Constants.USER;
 
-public class PopupProfilFragment extends Fragment {
-
-    public static User USER_LOAD;
-    public static int button = 0;
-    private NavController navController;
-    public static String type;
+public class InfoUserActivity extends AppCompatActivity {
+    private User USER_LOAD;
 
     private ImageView imagePerson;
     private Button buttonAdd;
@@ -56,37 +47,25 @@ public class PopupProfilFragment extends Fragment {
 
     int nbEventFirt, nbEventSecond, nbEventThird, nbEventFourth;
 
-    @SuppressLint("SetTextI18n")
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        View root = inflater.inflate(R.layout.fragment_popup_profil, container, false);
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_info_user);
 
-        navController = Navigation.findNavController(getActivity(), R.id.nav_host_fragment);
+        if (getIntent() != null) {
+            USER_LOAD = (User) getIntent().getSerializableExtra("user");
+        }
+
+        ImageView buttonBack = findViewById(R.id.buttonBack);
         buttonBack.setVisibility(View.VISIBLE);
-        if (type == "amis") {
-            buttonBack.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    navController.navigate(R.id.action_navigation_popup_profil_to_navigation_amis2);
-                }
-            });
-        }
-        if (type == "recherche") {
-            buttonBack.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    navController.navigate(R.id.action_navigation_popup_profil_to_navigation_recherche_amis);
-                }
-            });
-        }
+        buttonBack.setOnClickListener(v -> onBackPressed());
 
-        TextView tvR = root.findViewById(R.id.tvR);
-        TextView tvPython = root.findViewById(R.id.tvPython);
-        TextView tvCPP = root.findViewById(R.id.tvCPP);
-        TextView tvJava = root.findViewById(R.id.tvJava);
-        PieChart pieChart = root.findViewById(R.id.piechart);
+
+        TextView tvR = findViewById(R.id.tvR);
+        TextView tvPython = findViewById(R.id.tvPython);
+        TextView tvCPP = findViewById(R.id.tvCPP);
+        TextView tvJava = findViewById(R.id.tvJava);
+        PieChart pieChart = findViewById(R.id.piechart);
 
         nbEventFirt = 30;
         nbEventSecond = 10;
@@ -118,14 +97,14 @@ public class PopupProfilFragment extends Fragment {
 
         CardView cardViewPhotoPerson;
 
-        nameProfil = root.findViewById(R.id.profilName);
-        descriptionProfil = root.findViewById(R.id.profilDescription);
-        nbCreateProfil = root.findViewById(R.id.nbEventCreate);
-        nbParticipateProfil = root.findViewById(R.id.nbEventParticipe);
-        imagePerson = root.findViewById(R.id.imagePerson);
-        buttonAdd = root.findViewById(R.id.buttonAdd);
-        cardViewPhotoPerson = root.findViewById(R.id.cardViewPhotoPerson);
-        villeProfil = root.findViewById(R.id.userConnectVille);
+        nameProfil = findViewById(R.id.profilName);
+        descriptionProfil = findViewById(R.id.profilDescription);
+        nbCreateProfil = findViewById(R.id.nbEventCreate);
+        nbParticipateProfil = findViewById(R.id.nbEventParticipe);
+        imagePerson = findViewById(R.id.imagePerson);
+        buttonAdd = findViewById(R.id.buttonAdd);
+        cardViewPhotoPerson = findViewById(R.id.cardViewPhotoPerson);
+        villeProfil = findViewById(R.id.userConnectVille);
 
         nameProfil.setText(USER_LOAD.getName());
         villeProfil.setText(USER_LOAD.getCity());
@@ -136,11 +115,11 @@ public class PopupProfilFragment extends Fragment {
 
         List<ImageView> imageCentreInteret = new ArrayList<>();
 
-        ImageView img_centre1 = root.findViewById(R.id.imageViewCI1);
-        ImageView img_centre2 = root.findViewById(R.id.imageViewCI2);
-        ImageView img_centre3 = root.findViewById(R.id.imageViewCI3);
-        ImageView img_centre4 = root.findViewById(R.id.imageViewCI4);
-        ImageView img_centre5 = root.findViewById(R.id.imageViewCI5);
+        ImageView img_centre1 = findViewById(R.id.imageViewCI1);
+        ImageView img_centre2 = findViewById(R.id.imageViewCI2);
+        ImageView img_centre3 = findViewById(R.id.imageViewCI3);
+        ImageView img_centre4 = findViewById(R.id.imageViewCI4);
+        ImageView img_centre5 = findViewById(R.id.imageViewCI5);
 
         imageCentreInteret.add(img_centre1);
         imageCentreInteret.add(img_centre2);
@@ -159,36 +138,21 @@ public class PopupProfilFragment extends Fragment {
             descriptionProfil.setVisibility(View.GONE);
         }
 
-        buttonAdd.setOnClickListener(new View.OnClickListener() {
-            @RequiresApi(api = Build.VERSION_CODES.O)
-            @Override
-            public void onClick(View v) {
-                Log.w("Button", "Button : " + button);
-                if (button == R.drawable.ic_round_mail_24) {
-                    Toast.makeText(getContext(), getResources().getString(R.string.invit_received), Toast.LENGTH_SHORT).show();
-                } else if (button == R.drawable.ic_round_hourglass_top_24) {
-                    Toast.makeText(getContext(), getResources().getString(R.string.invit_in_progress), Toast.LENGTH_SHORT).show();
-                    buttonAdd.setText(getResources().getString(R.string.button_invit_waiting));
-                    buttonAdd.setBackground(getResources().getDrawable(R.drawable.custom_input));
-                } else {
-                    addFriend();
-                }
-            }
-        });
 
-
-        return root;
     }
+
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     public void hasFriendRequest() {
         JSONObjectCrypt params = new JSONObjectCrypt();
         params.putCryptParameter("uid", USER_LOAD.getUid());
 
-        JSONController.getJsonArrayFromUrl(Constants.URL_FRIENDS_INVITATIONS, getContext(), params, new JSONArrayListener() {
+        JSONController.getJsonArrayFromUrl(Constants.URL_FRIENDS_INVITATIONS, getBaseContext(), params, new JSONArrayListener() {
             @Override
             public void onJSONReceived(JSONArray jsonArray) {
                 if (jsonArray.length() > 0) {
+                } else {
+                    buttonAdd.setOnClickListener(v -> addFriend());
                 }
             }
 
@@ -209,26 +173,25 @@ public class PopupProfilFragment extends Fragment {
 
         Log.w("Response", "Params " + params.toString());
 
-        JSONController.getJsonObjectFromUrl(Constants.URL_SEND_FRIEND_REQUEST, getContext(), params, new JSONObjectListener() {
+        JSONController.getJsonObjectFromUrl(Constants.URL_SEND_FRIEND_REQUEST, getBaseContext(), params, new JSONObjectListener() {
             @SuppressLint("UseCompatLoadingForDrawables")
             @Override
             public void onJSONReceived(JSONObject jsonObject) {
                 if (jsonObject.length() == 3) {
-                    Toast.makeText(getContext(), getResources().getString(R.string.invit_send), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getBaseContext(), getResources().getString(R.string.invit_send), Toast.LENGTH_SHORT).show();
                     buttonAdd.setText(getResources().getString(R.string.button_invit_waiting));
                     buttonAdd.setBackground(getResources().getDrawable(R.drawable.custom_input));
                 } else {
-                    Toast.makeText(getContext(), getResources().getString(R.string.error), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getBaseContext(), getResources().getString(R.string.error), Toast.LENGTH_SHORT).show();
                     Log.w("Response", "Error:" + jsonObject.toString());
                 }
             }
 
             @Override
             public void onJSONReceivedError(VolleyError volleyError) {
-                Toast.makeText(getContext(), getResources().getString(R.string.error), Toast.LENGTH_SHORT).show();
+                Toast.makeText(getBaseContext(), getResources().getString(R.string.error), Toast.LENGTH_SHORT).show();
                 Log.w("Response", "Error:" + volleyError.toString());
             }
         });
     }
-
 }

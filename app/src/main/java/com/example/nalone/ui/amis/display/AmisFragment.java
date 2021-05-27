@@ -44,7 +44,6 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.example.nalone.HomeActivity.buttonBack;
 import static com.example.nalone.util.Constants.ON_FRIENDS_ACTIVITY;
 import static com.example.nalone.util.Constants.USER;
 
@@ -77,13 +76,11 @@ public class AmisFragment extends Fragment {
         resultat.setVisibility(View.GONE);
         linearSansMesAmis = rootView.findViewById(R.id.linearSansMesAmis);
         navController = Navigation.findNavController(getActivity(), R.id.nav_host_fragment);
-        buttonBack.setVisibility(View.GONE);
         mRecyclerView = rootView.findViewById(R.id.recyclerViewMesAmis);
         final SwipeRefreshLayout mSwipeRefreshLayout = rootView.findViewById(R.id.AmisSwipeRefreshLayout);
         loading = rootView.findViewById(R.id.loading);
         ImageView imagePerson = rootView.findViewById(R.id.imagePerson);
-
-
+        
         search_bar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -190,12 +187,9 @@ public class AmisFragment extends Fragment {
     }
 
     public void showPopUpProfil(User u) {
-
-        PopupProfilFragment.USER_LOAD = u;
-        //PopupProfilFragment.button = getResources(0);
-
-        PopupProfilFragment.type = "amis";
-        navController.navigate(R.id.action_navigation_amis_to_navigation_popup_profil);
+        Intent intent = new Intent(getContext(), InfoUserActivity.class);
+        intent.putExtra("user", u);
+        startActivity(intent);
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)

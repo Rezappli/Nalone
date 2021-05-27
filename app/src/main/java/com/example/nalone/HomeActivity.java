@@ -51,7 +51,7 @@ import static com.example.nalone.util.Constants.USER;
 
 public class HomeActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
 
-    public static ImageView buttonBack, buttonNotif, buttonPlanning;
+    private ImageView buttonBack, buttonNotif, buttonPlanning;
     private CardView cardViewPrivate, cardViewPublic;
     private boolean isOpen = false;
     private ImageView item_profil;

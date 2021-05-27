@@ -18,9 +18,6 @@
         android:label="@string/title_recherche"
         tools:layout="@layout/fragment_recherche_amis">
         <action
-            android:id="@+id/action_navigation_recherche_amis_to_navigation_popup_profil"
-            app:destination="@id/navigation_popup_profil" />
-        <action
             android:id="@+id/action_navigation_recherche_amis_to_navigation_recherche"
             app:destination="@id/navigation_recherche" />
         <action
@@ -35,9 +32,6 @@
         android:label="@string/title_amis"
         tools:layout="@layout/fragment_mes_amis">
         <action
-            android:id="@+id/action_navigation_amis_to_navigation_popup_profil"
-            app:destination="@id/navigation_popup_profil" />
-        <action
             android:id="@+id/action_navigation_amis_self"
             app:destination="@id/navigation_amis" />
         <action
@@ -51,24 +45,12 @@
         android:label="@string/title_messages"
         tools:layout="@layout/fragment_messages" />
 
-    <fragment
-        android:id="@+id/navigation_list_membres"
-        android:name="com.example.nalone.ui.amis.display.ListMembresFragment"
-        android:label="@string/title_messages"
-        tools:layout="@layout/fragment_list_membres">
-        <action
-            android:id="@+id/action_navigation_list_membres_to_navigation_popup_mes_groupes"
-            app:destination="@id/navigation_popup_mes_groupes" />
-    </fragment>
 
     <fragment
         android:id="@+id/navigation_camera"
         android:name="com.example.nalone.dialog.CameraFragment"
         android:label="@string/quitter"
         tools:layout="@layout/activity_camera">
-        <action
-            android:id="@+id/action_navigation_camera_to_navigation_popup_profil"
-            app:destination="@id/navigation_popup_profil" />
         <action
             android:id="@+id/action_navigation_camera_to_navigation_recherche"
             app:destination="@id/navigation_recherche" />
@@ -101,9 +83,6 @@
         <action
             android:id="@+id/action_navigation_popup_mes_groupes_to_navigation_edit_group"
             app:destination="@id/navigation_edit_group" />
-        <action
-            android:id="@+id/action_navigation_popup_mes_groupes_to_navigation_list_membres"
-            app:destination="@id/navigation_list_membres" />
     </fragment>
 
     <fragment
@@ -138,26 +117,7 @@
         <action
             android:id="@+id/action_navigation_recherche_to_navigation_recherche_amis"
             app:destination="@id/navigation_recherche_friends" />
-        <action
-            android:id="@+id/action_navigation_recherche_to_navigation_popup_profil"
-            app:destination="@id/navigation_popup_profil" />
     </fragment>
 
-
-    <fragment
-        android:id="@+id/navigation_popup_profil"
-        android:name="com.example.nalone.ui.amis.display.PopupProfilFragment"
-        android:label="@string/title_profil"
-        tools:layout="@layout/fragment_popup_profil">
-        <action
-            android:id="@+id/action_navigation_popup_profil_to_navigation_recherche_amis"
-            app:destination="@id/navigation_recherche_friends" />
-        <action
-            android:id="@+id/action_navigation_popup_profil_to_navigation_amis2"
-            app:destination="@id/navigation_amis" />
-        <action
-            android:id="@+id/action_navigation_popup_profil_to_navigation_recherche"
-            app:destination="@id/navigation_recherche" />
-    </fragment>
 
 </navigation>

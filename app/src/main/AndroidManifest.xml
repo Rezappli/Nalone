@@ -29,7 +29,8 @@
         android:roundIcon="@mipmap/ic_logo_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme.NoActionBar">
-        <activity android:name=".ui.evenements.display.PlanningActivity"></activity>
+        <activity android:name=".ui.amis.display.InfoUserActivity"></activity>
+        <activity android:name=".ui.evenements.display.PlanningActivity" />
         <activity android:name=".ui.UserListActivity" />
         <activity android:name=".signUpActivities.WelcomeActivity" />
         <activity android:name=".signUpActivities.CheckMailValidationActivity" />
@@ -111,7 +112,6 @@
         <meta-data
             android:name="com.google.android.gms.vision.DEPENDENCIES"
             android:value="barcode" />
-
     </application>
 
 </manifest>
