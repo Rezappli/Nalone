@@ -46,7 +46,6 @@ public class PlanningActivity extends AppCompatActivity {
         public void addFragment(Fragment fragment, String s) {
             fragmentArrayList.add(fragment);
             stringArrayList.add(s);
-
         }
 
         public PlanningAdapter(@NonNull FragmentManager fm) {

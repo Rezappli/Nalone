@@ -1,18 +1,22 @@
 package com.example.nalone.ui.evenements.display;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.RequiresApi;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -38,6 +42,9 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import static com.example.nalone.enumeration.StatusEvent.BIENTOT;
+import static com.example.nalone.enumeration.StatusEvent.ENCOURS;
+import static com.example.nalone.enumeration.StatusEvent.FINI;
 import static com.example.nalone.util.Constants.USER;
 
 public class PlanningRegistrationsFragment extends Fragment {
@@ -45,10 +52,16 @@ public class PlanningRegistrationsFragment extends Fragment {
     private ImageView imageTypeEvent;
     private ImageView showMoreButton;
     private TextView nextEventName, nextEventCity, nextEventDate, nextEventTime, nextEventNbMembers, nextEventStatus, textViewTitleDebut, differenceDate;
-    private List<Evenement> eventsSoon, eventsEnd;
+    private List<Evenement> eventsNow, eventsSoon, eventsEnd, eventsRecycler;
     private Evenement nextEvent;
-    private LinearLayout linearPlanning, linearNoResult, linearSoon, linearEnd, linearNext;
-    private RecyclerView mRecyclerSoon, mRecyclerEnd;
+    private EvenementAdapter evenementAdapter;
+    private LinearLayout linearPlanning, linearNext, linearNoResultBis;
+    private RecyclerView mRecyclerRegistrations;
+    private ProgressBar progressPlanningRegistration;
+    private boolean nowChecked, nextChecked, endChecked, soonChecked;
+    private Handler handler;
+    private TextView textViewNow, textViewSoon, textViewEnd;
+
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
@@ -67,15 +80,12 @@ public class PlanningRegistrationsFragment extends Fragment {
         imageTypeEvent = view.findViewById(R.id.imageTypeEvent);
         showMoreButton = view.findViewById(R.id.showMoreButton);
         linearNext = view.findViewById(R.id.linearNext);
-        linearNoResult = view.findViewById(R.id.linearNoResult);
-        linearEnd = view.findViewById(R.id.linearEnd);
-        linearSoon = view.findViewById(R.id.linearSoon);
+        linearNoResultBis = view.findViewById(R.id.linearNoResultBis);
+        progressPlanningRegistration = view.findViewById(R.id.progressPlanningRegistration);
         linearNext.setVisibility(View.GONE);
-        linearSoon.setVisibility(View.GONE);
-        linearEnd.setVisibility(View.GONE);
+        linearPlanning = view.findViewById(R.id.linearPlanning);
+        linearPlanning.setVisibility(View.GONE);
 
-        mRecyclerEnd = view.findViewById(R.id.recyclerViewEnd);
-        mRecyclerSoon = view.findViewById(R.id.recyclerViewSoon);
 
         showMoreButton.setOnClickListener(v -> {
             Intent intent = new Intent(getContext(), InfosEvenementsActivity.class);
@@ -83,9 +93,117 @@ public class PlanningRegistrationsFragment extends Fragment {
             startActivity(intent);
         });
 
+        handler = new Handler();
+        handler.postDelayed(runnable, 0);
+
+        mRecyclerRegistrations = view.findViewById(R.id.recycleViewPlanningRegistrations);
+        eventsRecycler = new ArrayList<>();
+        evenementAdapter = new EvenementAdapter(eventsRecycler, R.layout.item_evenement_bis, false);
+        mRecyclerRegistrations.setAdapter(evenementAdapter);
+        mRecyclerRegistrations.setLayoutManager(new LinearLayoutManager(getContext(), RecyclerView.VERTICAL, false) {
+            @Override
+            public boolean canScrollVertically() {
+                return false;
+            }
+        });
+
         callNextEvent();
         callEventEnd();
+        callEventNow();
+        callEventSoon();
+
+        textViewNow = view.findViewById(R.id.textViewPlanningRegistrationsNow);
+        textViewSoon = view.findViewById(R.id.textViewPlanningRegistrationsSoon);
+        textViewEnd = view.findViewById(R.id.textViewPlanningRegistrationsEnd);
+        textViewNow.setOnClickListener(v -> {
+            updateDrawableClicked(ENCOURS);
+        });
+        textViewSoon.setOnClickListener(v -> {
+            updateDrawableClicked(BIENTOT);
+        });
+        textViewEnd.setOnClickListener(v -> {
+            updateDrawableClicked(FINI);
+        });
         return view;
+    }
+
+    private void updateDrawableClicked(StatusEvent statusEvent) {
+        switch (statusEvent) {
+            case FINI:
+                changeTextViewBackground(textViewEnd, true);
+                changeTextViewBackground(textViewSoon, false);
+                changeTextViewBackground(textViewNow, false);
+                updateRecyclerView(eventsEnd);
+                break;
+            case ENCOURS:
+                changeTextViewBackground(textViewEnd, false);
+                changeTextViewBackground(textViewSoon, false);
+                changeTextViewBackground(textViewNow, true);
+                updateRecyclerView(eventsNow);
+                break;
+            case BIENTOT:
+                changeTextViewBackground(textViewEnd, false);
+                changeTextViewBackground(textViewSoon, true);
+                changeTextViewBackground(textViewNow, false);
+                updateRecyclerView(eventsSoon);
+                break;
+        }
+    }
+
+    private void changeTextViewBackground(TextView textView, boolean isClicked) {
+        textView.setBackground(ContextCompat.getDrawable(getContext(), isClicked ? R.drawable.tab_indicator : R.drawable.custom_button_signup));
+        textView.setTextColor(isClicked ? Color.WHITE : getResources().getColor(R.color.secundaryTextColor));
+    }
+
+    private final Runnable runnable = new Runnable() {
+        @Override
+        public void run() {
+            if (endChecked && nowChecked && soonChecked && nextChecked) {
+                if (linearPlanning.getVisibility() == View.GONE) {
+                    linearPlanning.setVisibility(View.VISIBLE);
+                    progressPlanningRegistration.setVisibility(View.GONE);
+                    if (!eventsNow.isEmpty()) {
+                        updateDrawableClicked(ENCOURS);
+                    } else if (!eventsSoon.isEmpty()) {
+                        updateDrawableClicked(BIENTOT);
+                    } else if (!eventsEnd.isEmpty()) {
+                        updateDrawableClicked(FINI);
+                    } else {
+                        updateDrawableClicked(ENCOURS);
+                    }
+                } else {
+                    try {
+                        if (nextEvent != null) {
+                            TimeUtil.differenceDate(new Date(), new SimpleDateFormat("yyyy-MM-dd hh:mm").parse(nextEvent.getStartDate()), differenceDate);
+                        } else {
+                            handler.removeCallbacks(runnable);
+                        }
+                    } catch (ParseException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+
+            handler.postDelayed(runnable, 0);
+        }
+    };
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        handler.removeCallbacks(runnable);
+    }
+
+    private void updateRecyclerView(List<Evenement> evenements) {
+        Log.w("EVENEMENTTT", evenements.size() + "");
+        eventsRecycler.clear();
+        if (!evenements.isEmpty()) {
+            linearNoResultBis.setVisibility(View.GONE);
+            eventsRecycler.addAll(evenements);
+        } else {
+            linearNoResultBis.setVisibility(View.VISIBLE);
+        }
+        evenementAdapter.notifyDataSetChanged();
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
@@ -94,23 +212,61 @@ public class PlanningRegistrationsFragment extends Fragment {
         JSONObjectCrypt params = new JSONObjectCrypt();
 
         params.putCryptParameter("uid", USER.getUid());
+        params.putCryptParameter("status", BIENTOT);
 
         JSONController.getJsonArrayFromUrl(Constants.URL_EVENT_NEXT, getContext(), params, new JSONArrayListener() {
             @Override
             public void onJSONReceived(JSONArray jsonArray) {
                 Log.w("Response", "Value:" + jsonArray.toString());
                 try {
+                    Log.w("PLANNING", "NEXT : " + jsonArray.length());
+
                     if (jsonArray.length() > 0) {
                         nextEvent = (Evenement) JSONController.convertJSONToObject(jsonArray.getJSONObject(0), Evenement.class);
                         linearNext.setVisibility(View.VISIBLE);
-                        linearNoResult.setVisibility(View.GONE);
-                        callEventSoon();
                         initNextEvent();
                     } else {
                         linearNext.setVisibility(View.GONE);
-                        linearNoResult.setVisibility(View.VISIBLE);
                     }
+
+                    nextChecked = true;
                 } catch (JSONException | ParseException e) {
+                    Log.w("Response", "Erreur:" + e.getMessage());
+                    Toast.makeText(getContext(), getResources().getString(R.string.error_event), Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onJSONReceivedError(VolleyError volleyError) {
+                Log.w("Response", "Erreur:" + volleyError.toString());
+                Toast.makeText(getContext(), getResources().getString(R.string.error_event), Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    private void callEventNow() {
+        JSONObjectCrypt params = new JSONObjectCrypt();
+
+        params.putCryptParameter("uid", USER.getUid());
+        params.putCryptParameter("status", ENCOURS);
+        JSONController.getJsonArrayFromUrl(Constants.URL_EVENT_NEXT, getContext(), params, new JSONArrayListener() {
+            @Override
+            public void onJSONReceived(JSONArray jsonArray) {
+                Log.w("Response", "Value:" + jsonArray.toString());
+                try {
+                    Log.w("PLANNING", "END : " + jsonArray.length());
+                    eventsNow = new ArrayList<>();
+
+                    if (jsonArray.length() > 0) {
+                        for (int i = 0; i < jsonArray.length(); i++) {
+                            eventsNow.add((Evenement) JSONController.convertJSONToObject(jsonArray.getJSONObject(i), Evenement.class));
+                        }
+                    }
+
+                    nowChecked = true;
+
+                } catch (JSONException e) {
                     Log.w("Response", "Erreur:" + e.getMessage());
                     Toast.makeText(getContext(), getResources().getString(R.string.error_event), Toast.LENGTH_SHORT).show();
                 }
@@ -129,22 +285,22 @@ public class PlanningRegistrationsFragment extends Fragment {
         JSONObjectCrypt params = new JSONObjectCrypt();
 
         params.putCryptParameter("uid", USER.getUid());
-        params.putCryptParameter("status", "FINI");
+        params.putCryptParameter("status", FINI);
         JSONController.getJsonArrayFromUrl(Constants.URL_EVENT_NEXT, getContext(), params, new JSONArrayListener() {
             @Override
             public void onJSONReceived(JSONArray jsonArray) {
                 Log.w("Response", "Value:" + jsonArray.toString());
                 try {
+                    Log.w("PLANNING", "END : " + jsonArray.length());
+                    eventsEnd = new ArrayList<>();
+
                     if (jsonArray.length() > 0) {
-                        eventsEnd = new ArrayList<>();
                         for (int i = 0; i < jsonArray.length(); i++) {
                             eventsEnd.add((Evenement) JSONController.convertJSONToObject(jsonArray.getJSONObject(i), Evenement.class));
                         }
-                        initRecyclerEnd();
-                        linearEnd.setVisibility(View.VISIBLE);
-                    } else {
-                        linearEnd.setVisibility(View.GONE);
                     }
+                    endChecked = true;
+
                 } catch (JSONException e) {
                     Log.w("Response", "Erreur:" + e.getMessage());
                     Toast.makeText(getContext(), getResources().getString(R.string.error_event), Toast.LENGTH_SHORT).show();
@@ -164,23 +320,21 @@ public class PlanningRegistrationsFragment extends Fragment {
         JSONObjectCrypt params = new JSONObjectCrypt();
 
         params.putCryptParameter("uid", USER.getUid());
-        params.putCryptParameter("status", "BIENTOT");
+        params.putCryptParameter("status", BIENTOT);
         JSONController.getJsonArrayFromUrl(Constants.URL_EVENT_NEXT, getContext(), params, new JSONArrayListener() {
             @Override
             public void onJSONReceived(JSONArray jsonArray) {
                 Log.w("Response", "Value:" + jsonArray.toString());
                 try {
+                    Log.w("PLANNING", "SOON : " + jsonArray.length());
+                    eventsSoon = new ArrayList<>();
 
                     if (jsonArray.length() > 1) {
-                        eventsSoon = new ArrayList<>();
                         for (int i = 1; i < jsonArray.length(); i++) {
                             eventsSoon.add((Evenement) JSONController.convertJSONToObject(jsonArray.getJSONObject(i), Evenement.class));
                         }
-                        initRecyclerSoon();
-                        linearSoon.setVisibility(View.VISIBLE);
-                    } else {
-                        linearSoon.setVisibility(View.GONE);
                     }
+                    soonChecked = true;
 
                 } catch (JSONException e) {
                     Log.w("Response", "Erreur:" + e.getMessage());
@@ -200,24 +354,9 @@ public class PlanningRegistrationsFragment extends Fragment {
         nextEvent.replaceFields(nextEventName, nextEventCity, nextEventNbMembers, nextEventDate, nextEventTime, imageTypeEvent);
         if (nextEvent.getStatusEvent() == StatusEvent.ENCOURS) {
             textViewTitleDebut.setText(getResources().getString(R.string.event_start_from));
-        } else if (nextEvent.getStatusEvent() == StatusEvent.BIENTOT) {
+        } else if (nextEvent.getStatusEvent() == BIENTOT) {
             textViewTitleDebut.setText(getResources().getString(R.string.event_start_in));
         }
-        TimeUtil.differenceDate(new Date(), new SimpleDateFormat("yyyy-MM-dd hh:mm").parse(nextEvent.getStartDate()), differenceDate);
-    }
-
-    private void initRecyclerEnd() {
-        //EvenementAdapter mAdapterEnd = new EvenementAdapter(this.eventsEnd, R.layout.item_evenement_bis, false);
-        this.mRecyclerEnd.setAdapter(new EvenementAdapter(this.eventsEnd, R.layout.item_evenement_bis, false));
-        //final LinearLayoutManager llm = new LinearLayoutManager(this, RecyclerView.VERTICAL, false);
-        this.mRecyclerEnd.setLayoutManager(new LinearLayoutManager(getContext(), RecyclerView.VERTICAL, false));
-    }
-
-    private void initRecyclerSoon() {
-        //EvenementAdapter mAdapterSoon = new EvenementAdapter(this.eventsSoon, R.layout.item_evenement_bis, false);
-        this.mRecyclerSoon.setAdapter(new EvenementAdapter(this.eventsSoon, R.layout.item_evenement_bis, false));
-        //final LinearLayoutManager llm = new LinearLayoutManager(this, RecyclerView.VERTICAL, false);
-        this.mRecyclerSoon.setLayoutManager(new LinearLayoutManager(getContext(), RecyclerView.VERTICAL, false));
     }
 
 }

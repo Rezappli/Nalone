@@ -578,7 +578,7 @@
                     android:layout_alignParentBottom="true"
                     android:layout_gravity="center"
                     android:layout_marginEnd="0dp"
-                    app:cardBackgroundColor="#C3DFDC"
+                    app:cardBackgroundColor="@color/colorPrimaryLight"
                     app:cardCornerRadius="5dp">
 
                     <ImageView

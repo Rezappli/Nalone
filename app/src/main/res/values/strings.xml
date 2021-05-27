@@ -159,7 +159,7 @@
     <string name="aucunEvent"> Aucun évènement en approche ! </string>
     <string name="aucunMesEvent"> Aucun évènement planifié </string>
     <string name="aucunCreationsEvent"> Aucun évènement crée </string>
-    <string name="en_cours"> Maintenant </string>
+    <string name="en_cours"> En cours </string>
     <string name="bientot"> A venir </string>
     <string name="plus_tard"> Plus tard </string>
     <string name="finis"> Terminé </string>

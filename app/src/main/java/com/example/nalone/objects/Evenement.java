@@ -34,6 +34,7 @@ public class Evenement implements Serializable {
     private int price;
     private TypeEvent category;
     private String image_url;
+    
     private ArrayList<User> members;
     private boolean isFriendMembers;
 
@@ -62,7 +63,7 @@ public class Evenement implements Serializable {
 
     public Evenement(String uid, StatusEvent status, String owner, String name, String description,
                      String address, String city, Visibility visibility, String startDate, String endDate,
-                     double latitude, double longitude, ArrayList<User> members, int nbMembers, int limitMembers, TypeEvent category, int price) {
+                     double latitude, double longitude, int nbMembers/*, int limitMembers*/, TypeEvent category, int price) {
         this.uid = uid;
         this.name = name;
         this.description = description;
@@ -75,12 +76,11 @@ public class Evenement implements Serializable {
         this.latitude = latitude;
         this.longitude = longitude;
         this.nbMembers = nbMembers;
-        this.limitMembers = limitMembers;
+        //  this.limitMembers = limitMembers;
         this.status = status;
         this.category = category;
         this.price = price;
         this.image_url = null;
-        this.members = members;
     }
 
     public void setOwner_uid(String owner_uid) {

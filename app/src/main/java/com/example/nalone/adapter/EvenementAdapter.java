@@ -75,10 +75,10 @@ public class EvenementAdapter extends RecyclerView.Adapter<EvenementAdapter.Even
         public TextView mTitle;
         public TextView mDate;
         public TextView mTime;
-        public TextView mVille;
+        public TextView mCity;
         //public TextView mDescription;
-        public CardView textViewAfficher, cardViewPrice;
-        public TextView textViewNbMembers, textViewPrice;
+        public CardView cardViewDisplay, cardViewPrice;
+        public TextView textViewNbMembers, textViewPrice, textViewDisplay;
         public ImageView imageViewCategory;
 
         public EventViewHolder(@NonNull View itemView, final OnItemClickListener listener) {
@@ -88,22 +88,28 @@ public class EvenementAdapter extends RecyclerView.Adapter<EvenementAdapter.Even
             mTitle = itemView.findViewById(R.id.titleEventList1);
             mDate = itemView.findViewById(R.id.dateEventList1);
             mTime = itemView.findViewById(R.id.timeEventList1);
-            mVille = itemView.findViewById(R.id.villeEventList);
-            textViewAfficher = itemView.findViewById(R.id.cardViewEvent);
+            mCity = itemView.findViewById(R.id.villeEventList);
+            cardViewDisplay = itemView.findViewById(R.id.cardViewEvent);
             textViewNbMembers = itemView.findViewById(R.id.textViewNbMembers);
             imageViewCategory = itemView.findViewById(R.id.imageTypeEvent);
             textViewPrice = itemView.findViewById(R.id.textViewPrice);
             cardViewPrice = itemView.findViewById(R.id.cardViewPrice);
+            textViewDisplay = itemView.findViewById(R.id.textViewAfficher1);
 
+            cardViewDisplay.setOnClickListener(v -> {
+                if (mListener != null) {
+                    int position = getAdapterPosition();
+                    if (position != RecyclerView.NO_POSITION) {
+                        listener.onDisplayClick(position);
+                    }
+                }
+            });
 
-            this.textViewAfficher.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if (mListener != null) {
-                        int position = getAdapterPosition();
-                        if (position != RecyclerView.NO_POSITION) {
-                            listener.onDisplayClick(position);
-                        }
+            textViewDisplay.setOnClickListener(v -> {
+                if (mListener != null) {
+                    int position = getAdapterPosition();
+                    if (position != RecyclerView.NO_POSITION) {
+                        listener.onDisplayClick(position);
                     }
                 }
             });
@@ -113,7 +119,7 @@ public class EvenementAdapter extends RecyclerView.Adapter<EvenementAdapter.Even
         public void updateWhithEvent(final Evenement e) throws ParseException {
             Date d = sdfDate.parse(cutString(e.getStartDate(), 10, -1));
             this.mTitle.setText(e.getName());
-            this.mVille.setText(e.getCity());
+            this.mCity.setText(e.getCity());
             this.mDate.setText(Constants.getFullDate(d));
             this.mTime.setText(cutString(e.getStartDate(), 5, 11));
             if (item != R.layout.item_evenement_bis) {
