@@ -27,6 +27,7 @@ import com.example.nalone.enumeration.ImageType;
 import com.example.nalone.json.JSONController;
 import com.example.nalone.json.JSONObjectCrypt;
 import com.example.nalone.listeners.JSONObjectListener;
+import com.example.nalone.payment.CheckoutActivity;
 import com.example.nalone.qrcode.QRCodeFragment;
 import com.example.nalone.util.Constants;
 
@@ -245,7 +246,7 @@ public class ProfilActivity extends AppCompatActivity {
         paypalButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(ProfilActivity.this, SampleActivity.class));
+                startActivity(new Intent(ProfilActivity.this, CheckoutActivity.class));
             }
         });
         buttonBack = findViewById(R.id.buttonBack);
