@@ -46,6 +46,7 @@
         android:layout_height="match_parent">
 
         <LinearLayout
+            android:id="@+id/linearInfoEvent"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
@@ -142,11 +143,14 @@
                         android:layout_marginStart="5dp"
                         android:layout_marginEnd="5dp"
                         app:cardBackgroundColor="@color/white"
-                        app:cardCornerRadius="150dp">
+                        app:cardCornerRadius="150dp"
+                        app:cardElevation="1dp">
 
                         <LinearLayout
+                            android:id="@+id/linearPrice"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
+                            android:background="@drawable/custom_border_grey_r150"
                             android:orientation="horizontal"
                             android:paddingEnd="10dp">
 
@@ -200,7 +204,15 @@
                     <androidx.cardview.widget.CardView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        app:cardCornerRadius="150dp">
+                        app:cardCornerRadius="150dp"
+                        app:cardElevation="1dp">
+
+                        <RelativeLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:background="@drawable/custom_border_grey_r150">
+
+                        </RelativeLayout>
 
                         <ImageView
                             android:id="@+id/buttonAfficher"
@@ -230,7 +242,15 @@
                     <androidx.cardview.widget.CardView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        app:cardCornerRadius="150dp">
+                        app:cardCornerRadius="150dp"
+                        app:cardElevation="1dp">
+
+                        <RelativeLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:background="@drawable/custom_border_grey_r150">
+
+                        </RelativeLayout>
 
                         <ImageView
                             android:id="@+id/buttonPartager"
@@ -296,13 +316,14 @@
                 android:layout_height="match_parent"
                 android:layout_marginStart="20dp"
                 android:layout_marginEnd="20dp"
-                app:cardCornerRadius="10dp">
+                app:cardCornerRadius="10dp"
+                app:cardElevation="1dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_gravity="center"
-                    android:layout_margin="10dp"
+                    android:background="@drawable/custom_border_grey_r10"
                     android:orientation="vertical">
 
                     <TextView
@@ -357,7 +378,15 @@
                 android:layout_height="match_parent"
                 android:layout_marginStart="20dp"
                 android:layout_marginEnd="20dp"
-                app:cardCornerRadius="10dp">
+                app:cardCornerRadius="10dp"
+                app:cardElevation="1dp">
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@drawable/custom_border_grey_r10">
+
+                </RelativeLayout>
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -422,7 +451,14 @@
                 android:layout_marginEnd="20dp"
                 android:layout_marginBottom="50dp"
                 app:cardCornerRadius="10dp"
-                app:cardElevation="2dp">
+                app:cardElevation="1dp">
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@drawable/custom_border_grey_r10">
+
+                </RelativeLayout>
 
                 <LinearLayout
                     android:layout_width="match_parent"

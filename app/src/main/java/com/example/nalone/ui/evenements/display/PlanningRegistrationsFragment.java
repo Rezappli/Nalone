@@ -50,13 +50,11 @@ import static com.example.nalone.util.Constants.USER;
 public class PlanningRegistrationsFragment extends Fragment {
 
     private ImageView imageTypeEvent;
-    private ImageView showMoreButton;
-    private TextView nextEventName, nextEventCity, nextEventDate, nextEventTime, nextEventNbMembers, nextEventStatus, textViewTitleDebut, differenceDate;
+    private TextView nextEventName, nextEventCity, nextEventDate, nextEventTime, nextEventStatus, textViewTitleDebut, differenceDate;
     private List<Evenement> eventsNow, eventsSoon, eventsEnd, eventsRecycler;
     private Evenement nextEvent;
     private EvenementAdapter evenementAdapter;
     private LinearLayout linearPlanning, linearNext, linearNoResultBis;
-    private RecyclerView mRecyclerRegistrations;
     private ProgressBar progressPlanningRegistration;
     private boolean nowChecked, nextChecked, endChecked, soonChecked;
     private Handler handler;
@@ -75,17 +73,15 @@ public class PlanningRegistrationsFragment extends Fragment {
         nextEventCity = view.findViewById(R.id.nextEventCity);
         nextEventDate = view.findViewById(R.id.nextEventDate);
         nextEventTime = view.findViewById(R.id.nextEventTime);
-        nextEventNbMembers = view.findViewById(R.id.nextEventNbMembers);
         nextEventStatus = view.findViewById(R.id.textViewStatus);
         imageTypeEvent = view.findViewById(R.id.imageTypeEvent);
-        showMoreButton = view.findViewById(R.id.showMoreButton);
+        ImageView showMoreButton = view.findViewById(R.id.showMoreButton);
         linearNext = view.findViewById(R.id.linearNext);
         linearNoResultBis = view.findViewById(R.id.linearNoResultBis);
         progressPlanningRegistration = view.findViewById(R.id.progressPlanningRegistration);
         linearNext.setVisibility(View.GONE);
         linearPlanning = view.findViewById(R.id.linearPlanning);
         linearPlanning.setVisibility(View.GONE);
-
 
         showMoreButton.setOnClickListener(v -> {
             Intent intent = new Intent(getContext(), InfosEvenementsActivity.class);
@@ -96,9 +92,10 @@ public class PlanningRegistrationsFragment extends Fragment {
         handler = new Handler();
         handler.postDelayed(runnable, 0);
 
-        mRecyclerRegistrations = view.findViewById(R.id.recycleViewPlanningRegistrations);
+        RecyclerView mRecyclerRegistrations = view.findViewById(R.id.recycleViewPlanningRegistrations);
         eventsRecycler = new ArrayList<>();
         evenementAdapter = new EvenementAdapter(eventsRecycler, R.layout.item_evenement_bis, false);
+        evenementAdapter.setOnItemClickListener(position -> eventsRecycler.get(position).displayEventInfo(getContext(), true));
         mRecyclerRegistrations.setAdapter(evenementAdapter);
         mRecyclerRegistrations.setLayoutManager(new LinearLayoutManager(getContext(), RecyclerView.VERTICAL, false) {
             @Override
@@ -115,15 +112,9 @@ public class PlanningRegistrationsFragment extends Fragment {
         textViewNow = view.findViewById(R.id.textViewPlanningRegistrationsNow);
         textViewSoon = view.findViewById(R.id.textViewPlanningRegistrationsSoon);
         textViewEnd = view.findViewById(R.id.textViewPlanningRegistrationsEnd);
-        textViewNow.setOnClickListener(v -> {
-            updateDrawableClicked(ENCOURS);
-        });
-        textViewSoon.setOnClickListener(v -> {
-            updateDrawableClicked(BIENTOT);
-        });
-        textViewEnd.setOnClickListener(v -> {
-            updateDrawableClicked(FINI);
-        });
+        textViewNow.setOnClickListener(v -> updateDrawableClicked(ENCOURS));
+        textViewSoon.setOnClickListener(v -> updateDrawableClicked(BIENTOT));
+        textViewEnd.setOnClickListener(v -> updateDrawableClicked(FINI));
         return view;
     }
 
@@ -209,12 +200,8 @@ public class PlanningRegistrationsFragment extends Fragment {
     @RequiresApi(api = Build.VERSION_CODES.O)
     private void callNextEvent() {
         nextEvent = null;
-        JSONObjectCrypt params = new JSONObjectCrypt();
 
-        params.putCryptParameter("uid", USER.getUid());
-        params.putCryptParameter("status", BIENTOT);
-
-        JSONController.getJsonArrayFromUrl(Constants.URL_EVENT_NEXT, getContext(), params, new JSONArrayListener() {
+        JSONController.getJsonArrayFromUrl(Constants.URL_EVENT_NEXT, getContext(), JSONParams(BIENTOT), new JSONArrayListener() {
             @Override
             public void onJSONReceived(JSONArray jsonArray) {
                 Log.w("Response", "Value:" + jsonArray.toString());
@@ -245,12 +232,20 @@ public class PlanningRegistrationsFragment extends Fragment {
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
-    private void callEventNow() {
+    private JSONObjectCrypt JSONParams(StatusEvent statusEvent) {
         JSONObjectCrypt params = new JSONObjectCrypt();
 
         params.putCryptParameter("uid", USER.getUid());
-        params.putCryptParameter("status", ENCOURS);
-        JSONController.getJsonArrayFromUrl(Constants.URL_EVENT_NEXT, getContext(), params, new JSONArrayListener() {
+        params.putCryptParameter("status", statusEvent);
+        params.putCryptParameter("type", "REGISTRATION");
+
+        return params;
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    private void callEventNow() {
+
+        JSONController.getJsonArrayFromUrl(Constants.URL_EVENT_NEXT, getContext(), JSONParams(ENCOURS), new JSONArrayListener() {
             @Override
             public void onJSONReceived(JSONArray jsonArray) {
                 Log.w("Response", "Value:" + jsonArray.toString());
@@ -282,11 +277,8 @@ public class PlanningRegistrationsFragment extends Fragment {
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     private void callEventEnd() {
-        JSONObjectCrypt params = new JSONObjectCrypt();
 
-        params.putCryptParameter("uid", USER.getUid());
-        params.putCryptParameter("status", FINI);
-        JSONController.getJsonArrayFromUrl(Constants.URL_EVENT_NEXT, getContext(), params, new JSONArrayListener() {
+        JSONController.getJsonArrayFromUrl(Constants.URL_EVENT_NEXT, getContext(), JSONParams(FINI), new JSONArrayListener() {
             @Override
             public void onJSONReceived(JSONArray jsonArray) {
                 Log.w("Response", "Value:" + jsonArray.toString());
@@ -351,7 +343,7 @@ public class PlanningRegistrationsFragment extends Fragment {
     }
 
     private void initNextEvent() throws ParseException {
-        nextEvent.replaceFields(nextEventName, nextEventCity, nextEventNbMembers, nextEventDate, nextEventTime, imageTypeEvent);
+        nextEvent.replaceFields(nextEventName, nextEventCity, null, nextEventDate, nextEventTime, imageTypeEvent);
         if (nextEvent.getStatusEvent() == StatusEvent.ENCOURS) {
             textViewTitleDebut.setText(getResources().getString(R.string.event_start_from));
         } else if (nextEvent.getStatusEvent() == BIENTOT) {

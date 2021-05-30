@@ -1,11 +1,16 @@
 package com.example.nalone.objects;
 
+import android.content.Context;
+import android.content.Intent;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import androidx.annotation.Nullable;
 
 import com.example.nalone.enumeration.StatusEvent;
 import com.example.nalone.enumeration.TypeEvent;
 import com.example.nalone.enumeration.Visibility;
+import com.example.nalone.ui.evenements.InfosEvenementsActivity;
 import com.example.nalone.util.Constants;
 
 import java.io.Serializable;
@@ -34,7 +39,7 @@ public class Evenement implements Serializable {
     private int price;
     private TypeEvent category;
     private String image_url;
-    
+
     private ArrayList<User> members;
     private boolean isFriendMembers;
 
@@ -208,12 +213,13 @@ public class Evenement implements Serializable {
         return typeEventObject.getDrawableType(getCategory());
     }
 
-    public void replaceFields(TextView tvName, TextView tvCity, TextView tvNbMembers, TextView tvDate, TextView tvTime, ImageView iv) throws ParseException {
+    public void replaceFields(TextView tvName, TextView tvCity, @Nullable TextView tvNbMembers, TextView tvDate, TextView tvTime, ImageView iv) throws ParseException {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd hh:mm");
         String final_date_text = "";
         tvName.setText(this.getName());
         tvCity.setText(this.getCity());
-        tvNbMembers.setText(this.getNbMembers() + "");
+        if (tvNbMembers != null)
+            tvNbMembers.setText(this.getNbMembers() + "");
         Date date = sdf.parse(this.getStartDate());
         String date_text = Constants.formatD.format(date);
         for (int i = 0; i < date_text.length() - 5; i++) {
@@ -263,6 +269,13 @@ public class Evenement implements Serializable {
 
     public void setMembers(ArrayList<User> members) {
         this.members = members;
+    }
+
+    public void displayEventInfo(Context context, boolean isRegistered) {
+        Intent intent = new Intent(context, InfosEvenementsActivity.class);
+        intent.putExtra("event", this);
+        intent.putExtra("isRegistered", isRegistered);
+        context.startActivity(intent);
     }
 
     @Override

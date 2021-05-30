@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/white"
-    tools:context=".ui.evenements.display.MapFragment">
+    tools:context=".ui.evenements.display.EventMapFragment">
 
 
     <RelativeLayout
@@ -40,8 +40,8 @@
             android:id="@+id/mapView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_below="@id/divider14"
-            android:layout_marginBottom="92dp"
+            android:layout_alignParentBottom="true"
+            android:layout_marginBottom="0dp"
             android:visibility="visible" />
 
         <LinearLayout
@@ -214,172 +214,6 @@
             android:visibility="gone" />
 
     </RelativeLayout>
-
-    <androidx.core.widget.NestedScrollView
-        android:id="@+id/sheet"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@drawable/custom_header_bottom_sheet"
-        android:clipToPadding="false"
-        android:fillViewport="false"
-        android:focusableInTouchMode="true"
-        app:behavior_hideable="true"
-        app:behavior_peekHeight="100dp"
-        app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior">
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical">
-
-            <ImageView
-                android:id="@+id/imageExpanded"
-                android:layout_width="match_parent"
-                android:layout_height="30dp"
-                android:layout_gravity="center"
-                app:srcCompat="@drawable/bottom_sheet_line" />
-
-            <RelativeLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="30dp"
-                android:layout_marginEnd="30dp"
-                android:layout_marginBottom="35dp">
-
-                <SearchView
-                    android:id="@+id/searchViewSheet"
-                    style="@style/Widget.AppCompat.Light.SearchView"
-                    android:layout_width="match_parent"
-                    android:layout_height="35dp"
-                    android:background="@drawable/custom_search" />
-
-                <ImageView
-                    android:id="@+id/filtreSearch"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentEnd="true"
-                    android:layout_centerVertical="true"
-                    android:layout_marginStart="30dp"
-                    android:layout_marginEnd="10dp"
-                    android:visibility="gone"
-                    app:srcCompat="@drawable/filter_event" />
-
-            </RelativeLayout>
-
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/recyclerTypeEvent"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginBottom="10dp">
-
-            </androidx.recyclerview.widget.RecyclerView>
-
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
-
-                <LinearLayout
-                    android:id="@+id/linearMap"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:orientation="vertical">
-
-                    <LinearLayout
-                        android:id="@+id/linearSuggest"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:orientation="vertical"
-                        android:visibility="gone">
-
-                        <TextView
-                            android:id="@+id/textView57"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_margin="10dp"
-                            android:text="@string/bottom_suggestion"
-                            android:textColor="#000000"
-                            android:textSize="18sp"
-                            android:textStyle="bold" />
-
-                        <androidx.recyclerview.widget.RecyclerView
-                            android:id="@+id/recyclerViewSuggestion"
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:background="#ffffff" />
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:id="@+id/linearPopular"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:orientation="vertical"
-                        android:visibility="gone">
-
-                        <TextView
-                            android:id="@+id/textView58"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_margin="10dp"
-                            android:text="@string/bottom_popular"
-                            android:textColor="#000000"
-                            android:textSize="18sp"
-                            android:textStyle="bold" />
-
-                        <androidx.recyclerview.widget.RecyclerView
-                            android:id="@+id/recyclerViewSearchPopulaire"
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:background="#ffffff">
-
-                        </androidx.recyclerview.widget.RecyclerView>
-                    </LinearLayout>
-
-                    <TextView
-                        android:id="@+id/textView59"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_margin="10dp"
-                        android:text="@string/en_cours"
-                        android:textSize="18sp"
-                        android:textStyle="bold"
-                        android:visibility="gone" />
-
-                    <androidx.recyclerview.widget.RecyclerView
-                        android:id="@+id/recyclerViewNow"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:visibility="gone" />
-                </LinearLayout>
-
-                <LinearLayout
-                    android:id="@+id/linearNoResult"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_centerInParent="true"
-                    android:layout_marginTop="60dp"
-                    android:gravity="center"
-                    android:orientation="vertical"
-                    android:visibility="gone">
-
-                    <ImageView
-                        android:id="@+id/imageView29"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        app:srcCompat="@drawable/no_result" />
-
-                    <TextView
-                        android:id="@+id/textView30"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:gravity="center"
-                        android:text="@string/no_result_event" />
-                </LinearLayout>
-
-            </RelativeLayout>
-
-        </LinearLayout>
-    </androidx.core.widget.NestedScrollView>
 
     <androidx.core.widget.NestedScrollView
         android:id="@+id/sheetEvent"

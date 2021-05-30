@@ -101,7 +101,6 @@ public class TypeEventObject {
                 return context.getResources().getString(R.string.event_movie);
             case MUSIC:
                 return context.getResources().getString(R.string.event_music);
-
             case PARTY:
                 return context.getResources().getString(R.string.event_party);
             case SPORT:

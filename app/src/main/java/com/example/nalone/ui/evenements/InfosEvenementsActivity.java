@@ -67,6 +67,9 @@ public class InfosEvenementsActivity extends AppCompatActivity {
     private ImageView imageViewEuro;
     private CardView cardViewPrice;
 
+    private boolean isRegistered;
+    private LinearLayout linearPrice;
+
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -79,6 +82,7 @@ public class InfosEvenementsActivity extends AppCompatActivity {
     private void createFragment() {
         if (getIntent() != null) {
             EVENT_LOAD = (Evenement) getIntent().getSerializableExtra("event");
+            isRegistered = getIntent().getBooleanExtra("isRegistered", false);
         }
         participants = 0;
         textViewNbMembers = findViewById(R.id.textViewNbMembers);
@@ -96,6 +100,7 @@ public class InfosEvenementsActivity extends AppCompatActivity {
         textViewPrice = findViewById(R.id.textViewPrice);
         imageViewEuro = findViewById(R.id.imageViewEuro);
         cardViewPrice = findViewById(R.id.cardViewPrice);
+        linearPrice = findViewById(R.id.linearPrice);
 
         buttonBack.setOnClickListener(v -> onBackPressed());
 
@@ -119,7 +124,6 @@ public class InfosEvenementsActivity extends AppCompatActivity {
         if (EVENT_LOAD != null) {
             initWidgets();
         }
-        setData();
     }
 
     private void initWidgets() {
@@ -133,6 +137,11 @@ public class InfosEvenementsActivity extends AppCompatActivity {
         mTitle.setText(EVENT_LOAD.getName());
         mOwner.setText(EVENT_LOAD.getOwnerName());
 
+        if (isRegistered) {
+            registerClicked();
+        } else {
+            unregisterClicked();
+        }
 
         nbParticipants.setText(EVENT_LOAD.getNbMembers() + "");
 
@@ -230,6 +239,7 @@ public class InfosEvenementsActivity extends AppCompatActivity {
         textViewPrice.setText(getString(R.string.location_inscrit));
         textViewPrice.setTextColor(Color.WHITE);
         cardViewPrice.setCardBackgroundColor(getResources().getColor(R.color.colorPrimary));
+        linearPrice.setBackground(null);
     }
 
     private void unregisterClicked() {
@@ -248,28 +258,7 @@ public class InfosEvenementsActivity extends AppCompatActivity {
         textViewPrice.setTextColor(getResources().getColor(R.color.grey));
         buttonInscription.setColorFilter(getResources().getColor(R.color.colorPrimary), PorterDuff.Mode.MULTIPLY);
         cardViewPrice.setCardBackgroundColor(Color.WHITE);
-    }
-
-    @RequiresApi(api = Build.VERSION_CODES.O)
-    private void setData() {
-
-        JSONObjectCrypt params = new JSONObjectCrypt();
-        params.putCryptParameter("uid", USER.getUid());
-        params.putCryptParameter("uid_event", EVENT_LOAD.getUid());
-
-        JSONController.getJsonObjectFromUrl(Constants.URL_EVENT_ISREGISTERED, getBaseContext(), params, new JSONObjectListener() {
-            @SuppressLint("UseCompatLoadingForDrawables")
-            @Override
-            public void onJSONReceived(JSONObject jsonObject) {
-                registerClicked();
-            }
-
-            @SuppressLint("UseCompatLoadingForDrawables")
-            @Override
-            public void onJSONReceivedError(VolleyError volleyError) {
-                unregisterClicked();
-            }
-        });
+        linearPrice.setBackground(getResources().getDrawable(R.drawable.custom_border_grey_r150));
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)

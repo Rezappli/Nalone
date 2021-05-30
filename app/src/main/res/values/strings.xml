@@ -121,6 +121,8 @@
     <string name="participants_uppercase"> Participants</string>
     =    <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="title_home_map">Map</string>
+    <string name="title_home_list">Liste</string>
     <string name="title_planning_registrations">Inscriptions</string>
     <string name="title_planning_creations">Mes évènements</string>
     <string name="location_private"> Privé </string>

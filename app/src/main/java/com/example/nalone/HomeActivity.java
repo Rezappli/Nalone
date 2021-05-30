@@ -21,6 +21,7 @@ import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
+import androidx.viewpager.widget.ViewPager;
 
 import com.android.volley.VolleyError;
 import com.example.nalone.enumeration.TypeEvent;
@@ -35,11 +36,15 @@ import com.example.nalone.objects.User;
 import com.example.nalone.signUpActivities.SpinnerAdapter;
 import com.example.nalone.ui.NotificationActivity;
 import com.example.nalone.ui.evenements.creation.MainCreationEventActivity;
+import com.example.nalone.ui.evenements.display.EventListFragment;
+import com.example.nalone.ui.evenements.display.EventMapFragment;
 import com.example.nalone.ui.evenements.display.PlanningActivity;
+import com.example.nalone.ui.evenements.display.PlanningAdapter;
 import com.example.nalone.ui.profil.ProfilActivity;
 import com.example.nalone.util.Constants;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
+import com.google.android.material.tabs.TabLayout;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -63,12 +68,25 @@ public class HomeActivity extends AppCompatActivity implements AdapterView.OnIte
 
     private boolean typeChoosed;
 
+    private TabLayout tabLayout;
+    private ViewPager viewPager;
+    private PlanningAdapter adapter;
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
+
+        tabLayout = findViewById(R.id.tab_layout_map);
+        viewPager = findViewById(R.id.view_pager_map);
+
+        adapter = new PlanningAdapter(getSupportFragmentManager());
+        adapter.addFragment(new EventMapFragment(), getString(R.string.title_home_map));
+        adapter.addFragment(new EventListFragment(), getString(R.string.title_home_list));
+        viewPager.setAdapter(adapter);
+
+        tabLayout.setupWithViewPager(viewPager);
 
         typeChoosed = false;
         scheduleJob();
@@ -90,13 +108,6 @@ public class HomeActivity extends AppCompatActivity implements AdapterView.OnIte
             startActivity(new Intent(getBaseContext(), ProfilActivity.class)); //Affichage de la page de profil
         });
 
-        typeEventObject = new TypeEventObject(getBaseContext());
-        Spinner spin = (Spinner) findViewById(R.id.spinnerType);
-
-        spin.setOnItemSelectedListener(this);
-
-        SpinnerAdapter customAdapter = new SpinnerAdapter(getBaseContext(), typeEventObject.getListActivitiesImage(), typeEventObject.getListActivitiesName());
-        spin.setAdapter(customAdapter);
 
         cardViewPrivate.setOnClickListener(v -> openType(Visibility.PRIVATE));
 
@@ -111,6 +122,13 @@ public class HomeActivity extends AppCompatActivity implements AdapterView.OnIte
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
         NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
         NavigationUI.setupWithNavController(navView, navController);
+
+
+        typeEventObject = new TypeEventObject(getBaseContext());
+        Spinner spin = (Spinner) findViewById(R.id.spinnerType);
+        spin.setOnItemSelectedListener(this);
+        SpinnerAdapter customAdapter = new SpinnerAdapter(getBaseContext(), typeEventObject.getListActivitiesImage(), typeEventObject.getListActivitiesName());
+        spin.setAdapter(customAdapter);
 
         bottomSheetType = findViewById(R.id.sheetCreateEventType);
         bottomSheetBehaviorType = BottomSheetBehavior.from(bottomSheetType);

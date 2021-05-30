@@ -1,6 +1,6 @@
 package com.example.nalone.adapter;
 
-import android.graphics.drawable.Drawable;
+import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,21 +12,21 @@ import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.nalone.R;
-import com.example.nalone.items.ItemFiltre;
-import com.example.nalone.objects.TypeEventObject;
 
 import java.util.List;
 
 public class TypeEventAdapter extends RecyclerView.Adapter<TypeEventAdapter.TypeEventViewHolder> {
-    private List<TypeEventObject> typeEventObjectsList;
+    private List<Integer> imageTypeEventObjectsList;
+    private List<String> nameTypeEventList;
     private OnItemClickListener mListener;
+    private Context context;
 
     public interface OnItemClickListener {
         void onAddClick(int position);
     }
 
-    public void setOnItemClickListener(OnItemClickListener listener){
-        mListener= listener;
+    public void setOnItemClickListener(OnItemClickListener listener) {
+        mListener = listener;
     }
 
 
@@ -46,9 +46,9 @@ public class TypeEventAdapter extends RecyclerView.Adapter<TypeEventAdapter.Type
             mCardView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if(listener != null){
+                    if (listener != null) {
                         int position = getAdapterPosition();
-                        if(position != RecyclerView.NO_POSITION){
+                        if (position != RecyclerView.NO_POSITION) {
                             listener.onAddClick(position);
                         }
                     }
@@ -65,19 +65,21 @@ public class TypeEventAdapter extends RecyclerView.Adapter<TypeEventAdapter.Type
         return tevh;
     }
 
-    public TypeEventAdapter(List<TypeEventObject> objectList){
-        this.typeEventObjectsList = objectList;
+    public TypeEventAdapter(List<String> nameList, List<Integer> imagesList, Context context) {
+        this.context = context;
+        this.nameTypeEventList = nameList;
+        this.imageTypeEventObjectsList = imagesList;
     }
 
     @Override
     public void onBindViewHolder(@NonNull TypeEventViewHolder holder, int position) {
-        holder.mText.setText(typeEventObjectsList.get(position).getmName());
-        holder.mImage.setImageDrawable(typeEventObjectsList.get(position).getmDrawable());
+        holder.mText.setText(nameTypeEventList.get(position));
+        holder.mImage.setImageDrawable(context.getResources().getDrawable(imageTypeEventObjectsList.get(position)));
     }
 
     @Override
     public int getItemCount() {
-        return typeEventObjectsList.size();
+        return nameTypeEventList.size();
     }
 
 }

@@ -5,6 +5,7 @@ import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -68,8 +69,9 @@ public class EvenementAdapter extends RecyclerView.Adapter<EvenementAdapter.Even
         return this.evenementList.size();
     }
 
-
     public class EventViewHolder extends RecyclerView.ViewHolder {
+        private final SimpleDateFormat sdfDate = new SimpleDateFormat("yyyy-MM-dd");
+        private final SimpleDateFormat sdfTransform = new SimpleDateFormat("dd/MM/yyyy");
 
         public ImageView mImageView;
         public TextView mTitle;
@@ -78,11 +80,13 @@ public class EvenementAdapter extends RecyclerView.Adapter<EvenementAdapter.Even
         public TextView mCity;
         //public TextView mDescription;
         public CardView cardViewDisplay, cardViewPrice;
-        public TextView textViewNbMembers, textViewPrice, textViewDisplay;
+        public TextView textViewPrice;
         public ImageView imageViewCategory;
+        private EvenementAdapter.OnItemClickListener mListener;
 
-        public EventViewHolder(@NonNull View itemView, final OnItemClickListener listener) {
+        public EventViewHolder(@NonNull View itemView, final EvenementAdapter.OnItemClickListener listener) {
             super(itemView);
+            mListener = listener;
             mImageView = itemView.findViewById(R.id.imageEvent);
 
             mTitle = itemView.findViewById(R.id.titleEventList1);
@@ -90,11 +94,9 @@ public class EvenementAdapter extends RecyclerView.Adapter<EvenementAdapter.Even
             mTime = itemView.findViewById(R.id.timeEventList1);
             mCity = itemView.findViewById(R.id.villeEventList);
             cardViewDisplay = itemView.findViewById(R.id.cardViewEvent);
-            textViewNbMembers = itemView.findViewById(R.id.textViewNbMembers);
             imageViewCategory = itemView.findViewById(R.id.imageTypeEvent);
             textViewPrice = itemView.findViewById(R.id.textViewPrice);
             cardViewPrice = itemView.findViewById(R.id.cardViewPrice);
-            textViewDisplay = itemView.findViewById(R.id.textViewAfficher1);
 
             cardViewDisplay.setOnClickListener(v -> {
                 if (mListener != null) {
@@ -105,14 +107,27 @@ public class EvenementAdapter extends RecyclerView.Adapter<EvenementAdapter.Even
                 }
             });
 
-            textViewDisplay.setOnClickListener(v -> {
-                if (mListener != null) {
-                    int position = getAdapterPosition();
-                    if (position != RecyclerView.NO_POSITION) {
-                        listener.onDisplayClick(position);
+            if (item == R.layout.item_evenement_bis) {
+                ImageView imageViewDisplay = itemView.findViewById(R.id.showMoreButton);
+                imageViewDisplay.setOnClickListener(v -> {
+                    if (mListener != null) {
+                        int position = getAdapterPosition();
+                        if (position != RecyclerView.NO_POSITION) {
+                            listener.onDisplayClick(position);
+                        }
                     }
-                }
-            });
+                });
+            } else {
+                Button buttonDisplay = itemView.findViewById(R.id.buttonDisplay);
+                buttonDisplay.setOnClickListener(v -> {
+                    if (mListener != null) {
+                        int position = getAdapterPosition();
+                        if (position != RecyclerView.NO_POSITION) {
+                            listener.onDisplayClick(position);
+                        }
+                    }
+                });
+            }
         }
 
         @SuppressLint("SetTextI18n")
@@ -123,7 +138,6 @@ public class EvenementAdapter extends RecyclerView.Adapter<EvenementAdapter.Even
             this.mDate.setText(Constants.getFullDate(d));
             this.mTime.setText(cutString(e.getStartDate(), 5, 11));
             if (item != R.layout.item_evenement_bis) {
-                this.textViewNbMembers.setText(e.getNbMembers() + "");
                 if (e.getPrice() != 0) {
                     this.textViewPrice.setText(e.getPrice() + " €");
                     this.cardViewPrice.setBackgroundColor(Color.parseColor("#335CDD"));
@@ -131,29 +145,26 @@ public class EvenementAdapter extends RecyclerView.Adapter<EvenementAdapter.Even
             }
             imageViewCategory.setImageResource(e.getImageCategory());
         }
-    }
 
-
-    private String cutString(String s, int length, int start) {
-        if (length > s.length()) {
-            return null;
-        }
-
-        String temp = "";
-
-        int i = 0;
-        if (start != -1) {
-            for (i = start; i < length + start; i++) {
-                temp += s.charAt(i);
+        private String cutString(String s, int length, int start) {
+            if (length > s.length()) {
+                return null;
             }
-        } else {
-            for (i = 0; i < length; i++) {
-                temp += s.charAt(i);
+
+            String temp = "";
+
+            int i = 0;
+            if (start != -1) {
+                for (i = start; i < length + start; i++) {
+                    temp += s.charAt(i);
+                }
+            } else {
+                for (i = 0; i < length; i++) {
+                    temp += s.charAt(i);
+                }
             }
+            return temp;
+
         }
-        return temp;
-
     }
-
-
 }

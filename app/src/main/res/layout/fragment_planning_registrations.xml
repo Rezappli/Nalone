@@ -20,7 +20,7 @@
                 android:id="@+id/linearPlanning"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
+                android:layout_marginTop="10dp"
                 android:gravity="center"
                 android:orientation="vertical"
                 android:visibility="visible">
@@ -43,7 +43,6 @@
                         android:layout_marginBottom="5dp"
                         android:gravity="center"
                         android:text="@string/next"
-                        android:textColor="@color/black"
                         android:textSize="24sp"
                         android:textStyle="bold" />
 
@@ -58,8 +57,6 @@
                             android:layout_height="wrap_content"
                             android:layout_marginEnd="2dp"
                             android:text="@string/event_start_in"
-                            android:textColor="@color/black"
-                            android:textColorHint="#000000"
                             android:textSize="18sp" />
 
                         <TextView
@@ -188,7 +185,6 @@
                                         <LinearLayout
                                             android:layout_width="match_parent"
                                             android:layout_height="wrap_content"
-                                            android:layout_weight="1"
                                             android:orientation="vertical">
 
                                             <TextView
@@ -196,9 +192,9 @@
                                                 android:layout_width="wrap_content"
                                                 android:layout_height="wrap_content"
                                                 android:layout_marginTop="5dp"
-                                                android:text="klssssssssssssssssssllllllllllllllllllllllllllllllll"
+                                                android:text="Nom"
                                                 android:textColor="#000000"
-                                                android:textSize="16sp"
+                                                android:textSize="18sp"
                                                 android:textStyle="bold" />
 
                                             <TextView
@@ -209,7 +205,7 @@
                                                 android:drawablePadding="5dp"
                                                 android:text="ville"
                                                 android:textColor="#000000"
-                                                android:textSize="12sp" />
+                                                android:textSize="14sp" />
 
                                             <LinearLayout
                                                 android:layout_width="match_parent"
@@ -224,7 +220,7 @@
                                                     android:drawablePadding="5dp"
                                                     android:text="date"
                                                     android:textColor="#000000"
-                                                    android:textSize="12sp" />
+                                                    android:textSize="14sp" />
 
                                                 <TextView
                                                     android:id="@+id/textView66"
@@ -238,53 +234,31 @@
                                                     android:layout_height="wrap_content"
                                                     android:text="time"
                                                     android:textColor="#000000"
-                                                    android:textSize="12sp" />
+                                                    android:textSize="14sp" />
                                             </LinearLayout>
 
                                         </LinearLayout>
 
-                                        <LinearLayout
+                                        <RelativeLayout
                                             android:layout_width="match_parent"
-                                            android:layout_height="wrap_content"
-                                            android:layout_marginTop="10dp"
-                                            android:layout_marginBottom="10dp"
-                                            android:gravity="center"
-                                            android:orientation="horizontal">
+                                            android:layout_height="match_parent">
 
                                             <TextView
-                                                android:id="@+id/nextEventNbMembers"
-                                                android:layout_width="wrap_content"
+                                                android:id="@+id/textViewAfficher3"
+                                                android:layout_width="match_parent"
                                                 android:layout_height="wrap_content"
-                                                android:paddingEnd="5dp"
-                                                android:text="0"
-                                                android:textSize="12sp"
-                                                android:textStyle="bold" />
-
-                                            <TextView
-                                                android:id="@+id/textView42"
-                                                android:layout_width="wrap_content"
-                                                android:layout_height="wrap_content"
-                                                android:text="@string/participants"
-                                                android:textColor="#000000"
-                                                android:textSize="12sp" />
-
-                                        </LinearLayout>
-
-                                        <TextView
-                                            android:id="@+id/textViewAfficher3"
-                                            android:layout_width="match_parent"
-                                            android:layout_height="wrap_content"
-                                            android:layout_gravity="center"
-                                            android:layout_marginStart="70dp"
-                                            android:layout_marginTop="5dp"
-                                            android:layout_marginEnd="70dp"
-                                            android:layout_marginBottom="10dp"
-                                            android:background="@drawable/custom_search"
-                                            android:drawableStart="@drawable/ic_baseline_qr_code_2_24"
-                                            android:drawablePadding="5dp"
-                                            android:gravity="center"
-                                            android:paddingEnd="10dp"
-                                            android:text="@string/qr_code_event" />
+                                                android:layout_centerInParent="true"
+                                                android:layout_marginStart="70dp"
+                                                android:layout_marginTop="5dp"
+                                                android:layout_marginEnd="70dp"
+                                                android:layout_marginBottom="10dp"
+                                                android:background="@drawable/custom_search"
+                                                android:drawableStart="@drawable/ic_baseline_qr_code_30"
+                                                android:drawablePadding="5dp"
+                                                android:gravity="center"
+                                                android:paddingEnd="10dp"
+                                                android:text="@string/qr_code_event" />
+                                        </RelativeLayout>
 
                                     </LinearLayout>
                                 </RelativeLayout>

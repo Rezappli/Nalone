@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/navigation_evenements"
-        android:name="com.example.nalone.ui.evenements.display.MapFragment"
+        android:name="com.example.nalone.ui.evenements.display.EventMapFragment"
         android:label="@string/title_evenements"
         tools:layout="@layout/fragment_map" />
 
