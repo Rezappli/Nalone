@@ -209,8 +209,7 @@ public class Evenement implements Serializable {
     }
 
     public int getImageCategory() {
-        TypeEventObject typeEventObject = new TypeEventObject();
-        return typeEventObject.getDrawableType(getCategory());
+        return TypeEvent.imageOfValue(getCategory());
     }
 
     public void replaceFields(TextView tvName, TextView tvCity, @Nullable TextView tvNbMembers, TextView tvDate, TextView tvTime, ImageView iv) throws ParseException {

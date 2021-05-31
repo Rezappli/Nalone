@@ -31,7 +31,6 @@ import com.example.nalone.json.JSONObjectCrypt;
 import com.example.nalone.listeners.JSONArrayListener;
 import com.example.nalone.listeners.JSONObjectListener;
 import com.example.nalone.objects.Evenement;
-import com.example.nalone.objects.TypeEventObject;
 import com.example.nalone.objects.User;
 import com.example.nalone.signUpActivities.SpinnerAdapter;
 import com.example.nalone.ui.NotificationActivity;
@@ -64,7 +63,6 @@ public class HomeActivity extends AppCompatActivity implements AdapterView.OnIte
     private Visibility currentVisibility;
 
     private BottomSheetBehavior bottomSheetBehaviorVisibility, bottomSheetBehaviorType;
-    private TypeEventObject typeEventObject;
 
     private boolean typeChoosed;
 
@@ -124,10 +122,9 @@ public class HomeActivity extends AppCompatActivity implements AdapterView.OnIte
         NavigationUI.setupWithNavController(navView, navController);
 
 
-        typeEventObject = new TypeEventObject(getBaseContext());
         Spinner spin = (Spinner) findViewById(R.id.spinnerType);
         spin.setOnItemSelectedListener(this);
-        SpinnerAdapter customAdapter = new SpinnerAdapter(getBaseContext(), typeEventObject.getListActivitiesImage(), typeEventObject.getListActivitiesName());
+        SpinnerAdapter customAdapter = new SpinnerAdapter(getBaseContext(), TypeEvent.listOfImages(getBaseContext()), TypeEvent.listOfNames(getBaseContext()));
         spin.setAdapter(customAdapter);
 
         bottomSheetType = findViewById(R.id.sheetCreateEventType);
@@ -313,7 +310,8 @@ public class HomeActivity extends AppCompatActivity implements AdapterView.OnIte
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
         if (typeChoosed) {
-            goCreateEvent(typeEventObject.getListTypeEvent()[position]);
+            Log.w("TYPEVENTT", TypeEvent.values()[position].toString());
+            goCreateEvent(TypeEvent.values()[position]);
         }
         typeChoosed = true;
     }

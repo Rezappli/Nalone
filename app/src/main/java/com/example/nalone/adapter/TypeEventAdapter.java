@@ -1,6 +1,6 @@
 package com.example.nalone.adapter;
 
-import android.content.Context;
+import android.graphics.drawable.Drawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,10 +16,9 @@ import com.example.nalone.R;
 import java.util.List;
 
 public class TypeEventAdapter extends RecyclerView.Adapter<TypeEventAdapter.TypeEventViewHolder> {
-    private List<Integer> imageTypeEventObjectsList;
+    private List<Drawable> imageTypeEventObjectsList;
     private List<String> nameTypeEventList;
     private OnItemClickListener mListener;
-    private Context context;
 
     public interface OnItemClickListener {
         void onAddClick(int position);
@@ -65,8 +64,7 @@ public class TypeEventAdapter extends RecyclerView.Adapter<TypeEventAdapter.Type
         return tevh;
     }
 
-    public TypeEventAdapter(List<String> nameList, List<Integer> imagesList, Context context) {
-        this.context = context;
+    public TypeEventAdapter(List<String> nameList, List<Drawable> imagesList) {
         this.nameTypeEventList = nameList;
         this.imageTypeEventObjectsList = imagesList;
     }
@@ -74,7 +72,7 @@ public class TypeEventAdapter extends RecyclerView.Adapter<TypeEventAdapter.Type
     @Override
     public void onBindViewHolder(@NonNull TypeEventViewHolder holder, int position) {
         holder.mText.setText(nameTypeEventList.get(position));
-        holder.mImage.setImageDrawable(context.getResources().getDrawable(imageTypeEventObjectsList.get(position)));
+        holder.mImage.setImageDrawable(imageTypeEventObjectsList.get(position));
     }
 
     @Override

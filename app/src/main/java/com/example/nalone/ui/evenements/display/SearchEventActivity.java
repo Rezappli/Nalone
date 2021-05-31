@@ -45,7 +45,7 @@ public class SearchEventActivity extends AppCompatActivity {
     private TextView textViewType, textViewSort, textViewDate, textViewLocation, textViewPrice;
     private BottomSheetBehavior bottomSheetBehaviorDate, bottomSheetBehaviorType, bottomSheetBehaviorSort, bottomSheetBehaviorPrice, bottomSheetBehaviorLocation, bottomSheetBehaviorParticipation;
     private View viewGrey, bottomSheetType, bottomSheetDate, bottomSheetSort, bottomSheetPrice, bottomSheetLocation, bottomSheetParticipation;
-    public static TypeEvent currentType;
+    private TypeEvent currentType;
     private FiltreSort currentSort;
     private FiltreDate currentDate;
     private int currentLocation, currentPrice;
@@ -65,6 +65,9 @@ public class SearchEventActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search_event);
+        if (getIntent() != null) {
+            currentType = TypeEvent.valueOf(getIntent().getStringExtra("type"));
+        }
         buttonBack = findViewById(R.id.buttonBack);
         buttonBack.setOnClickListener(v -> onBackPressed());
         currentSort = FiltreSort.PERTINENCE;

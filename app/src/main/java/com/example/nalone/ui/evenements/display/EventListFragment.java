@@ -27,17 +27,14 @@ import com.example.nalone.json.JSONController;
 import com.example.nalone.json.JSONObjectCrypt;
 import com.example.nalone.listeners.JSONArrayListener;
 import com.example.nalone.objects.Evenement;
-import com.example.nalone.objects.TypeEventObject;
 import com.example.nalone.util.Constants;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
-import static com.example.nalone.enumeration.TypeEvent.ART;
 import static com.example.nalone.util.Constants.USER;
 
 public class EventListFragment extends Fragment {
@@ -49,10 +46,10 @@ public class EventListFragment extends Fragment {
     private RecyclerView recyclerViewSuggestion;
     private RecyclerView recyclerViewPopular;
     private ImageView imageViewFiltreSearch;
-    private List<TypeEventObject> filtreTypeList;
     private RecyclerView recyclerTypeEvent;
 
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -69,40 +66,18 @@ public class EventListFragment extends Fragment {
         searchView.setQueryHint("Recherche");
         initFiltres();
 
+        getEventsList();
+
         return rootView;
     }
 
     @SuppressLint("UseCompatLoadingForDrawables")
     private void initFiltres() {
-        filtreTypeList = new ArrayList<>();
-
-        filtreTypeList.add(new TypeEventObject(getResources().getDrawable(R.drawable.event_art), getResources().getString(R.string.event_art), ART));
-        filtreTypeList.add(new TypeEventObject(getResources().getDrawable(R.drawable.event_sport), getResources().getString(R.string.event_sport), TypeEvent.SPORT));
-        filtreTypeList.add(new TypeEventObject(getResources().getDrawable(R.drawable.event_car), getResources().getString(R.string.event_car), TypeEvent.CAR));
-        filtreTypeList.add(new TypeEventObject(getResources().getDrawable(R.drawable.event_conference), getResources().getString(R.string.event_conference), TypeEvent.CONFERENCE));
-        filtreTypeList.add(new TypeEventObject(getResources().getDrawable(R.drawable.event_shop), getResources().getString(R.string.event_shop), TypeEvent.SHOP));
-        filtreTypeList.add(new TypeEventObject(getResources().getDrawable(R.drawable.event_show), getResources().getString(R.string.event_show), TypeEvent.SHOW));
-        filtreTypeList.add(new TypeEventObject(getResources().getDrawable(R.drawable.event_game), getResources().getString(R.string.event_game), TypeEvent.GAME));
-        filtreTypeList.add(new TypeEventObject(getResources().getDrawable(R.drawable.event_gather), getResources().getString(R.string.event_gather), TypeEvent.GATHER));
-        filtreTypeList.add(new TypeEventObject(getResources().getDrawable(R.drawable.event_movie), getResources().getString(R.string.event_movie), TypeEvent.MULTIMEDIA));
-        filtreTypeList.add(new TypeEventObject(getResources().getDrawable(R.drawable.event_music), getResources().getString(R.string.event_music), TypeEvent.MUSIC));
-        filtreTypeList.add(new TypeEventObject(getResources().getDrawable(R.drawable.event_party), getResources().getString(R.string.event_party), TypeEvent.PARTY));
-        filtreTypeList.add(new TypeEventObject(getResources().getDrawable(R.drawable.event_science), getResources().getString(R.string.event_science), TypeEvent.SCIENCE));
-        TypeEventObject typeEventObject = new TypeEventObject(getContext());
-
-        ArrayList<String> nameList = new ArrayList<>();
-        ArrayList<Integer> imageList = new ArrayList<>();
-
-        for (Integer i : typeEventObject.getListActivitiesImage()) {
-            imageList.add(i);
-        }
-
-        Collections.addAll(nameList, typeEventObject.getListActivitiesName());
-
-        TypeEventAdapter typeAdapter = new TypeEventAdapter(nameList, imageList, getContext());
+        TypeEventAdapter typeAdapter = new TypeEventAdapter(TypeEvent.listOfNames(getContext()), TypeEvent.listOfImages(getContext()));
         typeAdapter.setOnItemClickListener(position -> {
-            SearchEventActivity.currentType = filtreTypeList.get(position).getmType();
-            startActivity(new Intent(getContext(), SearchEventActivity.class));
+            Intent intent = new Intent(getContext(), SearchEventActivity.class);
+            intent.putExtra("type", TypeEvent.values()[position].toString());
+            startActivity(intent);
         });
         recyclerTypeEvent.setAdapter(typeAdapter);
         final LinearLayoutManager llm2 = new LinearLayoutManager(getActivity(), RecyclerView.HORIZONTAL, false);

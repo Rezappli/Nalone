@@ -40,7 +40,6 @@ import com.example.nalone.json.JSONController;
 import com.example.nalone.json.JSONObjectCrypt;
 import com.example.nalone.listeners.JSONObjectListener;
 import com.example.nalone.objects.Evenement;
-import com.example.nalone.objects.TypeEventObject;
 import com.example.nalone.signUpActivities.SpinnerAdapter;
 import com.example.nalone.util.Constants;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
@@ -76,7 +75,6 @@ public class MainCreationEventActivity extends AppCompatActivity implements Adap
     private TextView textViewTitleEvent;
     public static String ACTION_RECEIVE_FRAGMENT = "ACTION_RECEIVE_FRAGMENT";
     public static String ACTION_RECEIVE_NEXT_CLICK = "ACTION_RECEIVE_NEXT_CLICK";
-    private TypeEventObject typeEventObject;
 
     private boolean isTypeChoosed;
 
@@ -143,7 +141,7 @@ public class MainCreationEventActivity extends AppCompatActivity implements Adap
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
         if (isTypeChoosed) {
-            changeType(typeEventObject.getListTypeEvent()[position]);
+            changeType(TypeEvent.values()[position]);
         } else {
             isTypeChoosed = true;
         }
@@ -193,14 +191,14 @@ public class MainCreationEventActivity extends AppCompatActivity implements Adap
 
         initFirstFiltre();
         initCardViewVisibility();
-        
+
         Spinner spin = (Spinner) findViewById(R.id.spinnerType);
 
         spin.setOnItemSelectedListener(this);
 
-        SpinnerAdapter customAdapter = new SpinnerAdapter(getBaseContext(), typeEventObject.getListActivitiesImage(), typeEventObject.getListActivitiesName());
+        SpinnerAdapter customAdapter = new SpinnerAdapter(getBaseContext(), TypeEvent.listOfImages(getBaseContext()), TypeEvent.listOfNames(getBaseContext()));
         spin.setAdapter(customAdapter);
-        spin.setSelection(Arrays.asList(typeEventObject.getListTypeEvent()).indexOf(currentEvent.getCategory()));
+        spin.setSelection(Arrays.asList(TypeEvent.values()).indexOf(currentEvent.getCategory()));
 
         buttonBack.setOnClickListener(v -> onBackPressed());
 
@@ -257,8 +255,6 @@ public class MainCreationEventActivity extends AppCompatActivity implements Adap
             bottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
             viewGrey.setVisibility(View.VISIBLE);
         });
-        // navController = Navigation.findNavController(this, R.id.nav_host_fragment2);
-
     }
 
     @Override
@@ -340,9 +336,8 @@ public class MainCreationEventActivity extends AppCompatActivity implements Adap
     private void initFirstFiltre() {
         textViewVisibility = findViewById(R.id.textViewVisibility);
         textViewType = findViewById(R.id.textViewType);
-        TypeEventObject typeEvent = new TypeEventObject(getBaseContext());
-        textViewType.setCompoundDrawablesWithIntrinsicBounds(typeEvent.getDrawableType(currentEvent.getCategory()), 0, 0, 0);
-        textViewType.setText(typeEvent.getTextType(currentEvent.getCategory()));
+        textViewType.setCompoundDrawablesWithIntrinsicBounds(TypeEvent.imageOfValue(currentEvent.getCategory()), 0, 0, 0);
+        textViewType.setText(TypeEvent.nameOfValue(currentEvent.getCategory(), getBaseContext()));
         textViewType.setOnClickListener(v -> {
             if (bottomSheetBehavior.getState() == BottomSheetBehavior.STATE_EXPANDED) {
                 bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
@@ -354,8 +349,6 @@ public class MainCreationEventActivity extends AppCompatActivity implements Adap
 
         textViewVisibility.setCompoundDrawablesWithIntrinsicBounds(getDrawableVisibility(currentEvent.getVisibility()), 0, 0, 0);
         textViewVisibility.setText(getTextVisibility(currentEvent.getVisibility()));
-
-        typeEventObject = new TypeEventObject(getBaseContext());
 
 
     }
