@@ -56,6 +56,7 @@ public class HomeActivity extends AppCompatActivity implements AdapterView.OnIte
     private ImageView item_profil;
     private View bottomSheetVisibility, bottomSheetType;
     private Visibility currentVisibility;
+    protected View viewGrey;
 
     private BottomSheetBehavior bottomSheetBehaviorVisibility, bottomSheetBehaviorType;
 
@@ -67,6 +68,7 @@ public class HomeActivity extends AppCompatActivity implements AdapterView.OnIte
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
+        getSupportActionBar().hide();
 
         typeChoosed = false;
         scheduleJob();
@@ -79,7 +81,7 @@ public class HomeActivity extends AppCompatActivity implements AdapterView.OnIte
         buttonPlanning = findViewById(R.id.buttonPlanning);
         buttonPlanning.setOnClickListener(v -> startActivity(new Intent(getBaseContext(), PlanningActivity.class)));
         bottomSheetVisibility = findViewById(R.id.sheetCreateEvent);
-        final View viewGrey = findViewById(R.id.viewGrey);
+        viewGrey = findViewById(R.id.viewGrey);
         cardViewPrivate = findViewById(R.id.cardViewPrivate);
         cardViewPublic = findViewById(R.id.cardViewPublic);
         item_profil = findViewById(R.id.item_profil);

@@ -1,8 +1,13 @@
 package com.example.nalone.ui.evenements.display;
 
 import android.annotation.SuppressLint;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
+import android.content.IntentFilter;
+import android.graphics.PorterDuff;
+import android.graphics.PorterDuffColorFilter;
+import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
@@ -15,20 +20,26 @@ import android.widget.SearchView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.cardview.widget.CardView;
+import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.android.volley.VolleyError;
 import com.example.nalone.R;
-import com.example.nalone.adapter.SearchEvenementAdapter;
-import com.example.nalone.adapter.TypeEventAdapter;
-import com.example.nalone.enumeration.FiltreDate;
-import com.example.nalone.enumeration.FiltreEvent;
-import com.example.nalone.enumeration.FiltreSort;
-import com.example.nalone.enumeration.TypeEvent;
+import com.example.nalone.adapter.EvenementAdapter;
+import com.example.nalone.adapter.FilterAdapter;
+import com.example.nalone.dialog.SelectDateFragment;
+import com.example.nalone.enumeration.filter.FiltreDate;
+import com.example.nalone.enumeration.filter.FiltreEvent;
+import com.example.nalone.enumeration.filter.FiltreOwner;
+import com.example.nalone.enumeration.filter.FiltrePrice;
+import com.example.nalone.enumeration.filter.FiltreSort;
+import com.example.nalone.enumeration.filter.FiltreType;
 import com.example.nalone.json.JSONController;
 import com.example.nalone.json.JSONObjectCrypt;
 import com.example.nalone.listeners.JSONArrayListener;
@@ -40,34 +51,52 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import org.json.JSONArray;
 import org.json.JSONException;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
+import static com.example.nalone.dialog.SelectDateFragment.ACTION_RECEIVE_DATE;
+import static com.example.nalone.dialog.SelectDateFragment.EXTRA_START_DATE;
 import static com.example.nalone.util.Constants.USER;
 
 public class EventListFragment extends Fragment {
 
-    private LinearLayout linearLayout, linearNoResult;
+    private LinearLayout linearNoResult;
     private SearchView searchView;
-    private ImageView imageViewFiltreSearch;
-    private RecyclerView recyclerTypeEvent;
 
-    private TextView textViewSort, textViewDate, textViewLocation, textViewPrice;
-    private BottomSheetBehavior bottomSheetBehaviorDate, bottomSheetBehaviorSort, bottomSheetBehaviorPrice, bottomSheetBehaviorLocation, bottomSheetBehaviorParticipation;
-    private View viewGrey, bottomSheetType, bottomSheetDate, bottomSheetSort, bottomSheetPrice, bottomSheetLocation, bottomSheetParticipation;
-    private TypeEvent currentType;
+    private TextView textViewType, textViewSort, textViewDate, textViewLocation, textViewPrice, textViewOwner, titleFilter;
+    private BottomSheetBehavior bottomSheetBehaviorFilter;
+    private View viewGrey;
+    private FiltreType currentType;
     private FiltreSort currentSort;
     private FiltreDate currentDate;
-    private int currentLocation, currentPrice;
-    private TextView textViewSortPertinence, textViewSortPriceASC, textViewSortPriceDESC, textViewSortLocation, textViewSortDate;
-    private TextView textViewDateToday, textViewDateTomorrow, textViewDateWeek, textViewDateMonth, textViewDateOther;
-    private SearchEvenementAdapter mAdapter;
-    private RecyclerView mRecycler;
+    private FiltreEvent currentFiltre;
+    private FiltreOwner currentOwner;
+    private FiltrePrice currentPrice;
+    private String currentLocation;
+    private EvenementAdapter mAdapter;
+    private RecyclerView recyclerFilter;
     private List<Evenement> evenementList;
     private boolean hasChange;
     private CardView cardViewLoading;
     private ImageView buttonBack;
     private View rootView;
+    private List<String> listFilterName;
+    private List<Drawable> listFilterImage;
+    private final BroadcastReceiver receiverDate = new BroadcastReceiver() {
+        @RequiresApi(api = Build.VERSION_CODES.O)
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if (intent != null) {
+                currentDate = FiltreDate.OTHER;
+                textViewDate.setText(intent.getStringExtra(EXTRA_START_DATE));
+                bottomExpandedToCollapsed();
+                getEventFiltred();
+            }
+        }
+    };
 
     @SuppressLint("CutPasteId")
     @RequiresApi(api = Build.VERSION_CODES.O)
@@ -77,65 +106,127 @@ public class EventListFragment extends Fragment {
         // Inflate the layout for this fragment
         rootView = inflater.inflate(R.layout.fragment_home_list, container, false);
         linearNoResult = rootView.findViewById(R.id.linearNoResult);
-        imageViewFiltreSearch = rootView.findViewById(R.id.filtreSearch);
         searchView = rootView.findViewById(R.id.searchViewSheet);
-        recyclerTypeEvent = rootView.findViewById(R.id.recyclerTypeEvent);
         searchView.setQueryHint("Recherche");
-        initFiltres();
 
+        listFilterImage = new ArrayList<>();
+        listFilterName = new ArrayList<>();
         //  buttonBack = rootView.findViewById(R.id.buttonBack);
         // buttonBack.setOnClickListener(v -> onBackPressed());
         currentSort = FiltreSort.PERTINENCE;
-        currentDate = FiltreDate.NONE;
+        currentDate = null;
         currentType = null;
-        currentLocation = Constants.range;
+        currentOwner = FiltreOwner.PUBLIC;
+        currentPrice = null;
+        currentLocation = USER.getCity();
+
         cardViewLoading = rootView.findViewById(R.id.cardViewLoading);
-        cardViewLoading.setVisibility(View.GONE);
 
         viewGrey = rootView.findViewById(R.id.viewGrey);
-        viewGrey.setOnClickListener(v -> {
-            if (hasChange) {
-                getEventFiltred();
+        viewGrey.setOnClickListener(v -> bottomExpandedToCollapsed());
+
+        View bottomSheetFilter = rootView.findViewById(R.id.sheetFilter);
+        bottomSheetBehaviorFilter = BottomSheetBehavior.from(bottomSheetFilter);
+        bottomSheetBehaviorFilter.setBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
+            @Override
+            public void onStateChanged(@NonNull View view, int state) {
+                switch (state) {
+                    case BottomSheetBehavior.STATE_COLLAPSED:
+                        if (hasChange) {
+                            getEventFiltred();
+                        }
+                        viewGrey.setVisibility(View.GONE);
+                        break;
+                    case BottomSheetBehavior.STATE_HIDDEN:
+                        viewGrey.setVisibility(View.GONE);
+                        break;
+                    case BottomSheetBehavior.STATE_DRAGGING:
+                    case BottomSheetBehavior.STATE_EXPANDED:
+
+                    case BottomSheetBehavior.STATE_HALF_EXPANDED:
+                    case BottomSheetBehavior.STATE_SETTLING:
+                        break;
+                }
             }
-            bottomExpandedToCollapsed();
+
+            @Override
+            public void onSlide(@NonNull View view, float v) {
+
+            }
         });
 
-        initTextView();
-        initBottomSheet();
+        initTextViewSort();
+        initRecyclerView();
         getEventFiltred();
         return rootView;
     }
 
-    @SuppressLint("UseCompatLoadingForDrawables")
-    private void initFiltres() {
-        TypeEventAdapter typeAdapter = new TypeEventAdapter(TypeEvent.listOfNames(getContext()), TypeEvent.listOfImages(getContext()));
-        typeAdapter.setOnItemClickListener(position -> {
-            Intent intent = new Intent(getContext(), SearchEventActivity.class);
-            intent.putExtra("type", TypeEvent.values()[position].toString());
-            startActivity(intent);
-        });
-        recyclerTypeEvent.setAdapter(typeAdapter);
-        final LinearLayoutManager llm2 = new LinearLayoutManager(getActivity(), RecyclerView.HORIZONTAL, false);
-        recyclerTypeEvent.setLayoutManager(llm2);
+    @Override
+    public void onResume() {
+        super.onResume();
+        IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction(ACTION_RECEIVE_DATE);
+        LocalBroadcastManager.getInstance(requireContext()).registerReceiver(receiverDate, intentFilter);
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        LocalBroadcastManager.getInstance(requireContext()).unregisterReceiver(receiverDate);
+    }
+
+    private void updateFilters(int position) {
+        switch (currentFiltre) {
+            case OWNER:
+                currentOwner = FiltreOwner.values()[position];
+                textViewOwner.setText(FiltreOwner.nameOfValue(FiltreOwner.values()[position]));
+                break;
+            case LOCATION:
+                break;
+            case PRICE:
+                currentPrice = FiltrePrice.values()[position];
+                textViewPrice.setText(FiltrePrice.nameOfValue(FiltrePrice.values()[position]));
+                textViewPrice.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_baseline_event_24_primary, 0, 0, 0);
+                break;
+            case TYPE:
+                currentType = FiltreType.values()[position];
+                textViewType.setText(FiltreType.nameOfValue(FiltreType.values()[position]));
+                textViewType.setCompoundDrawablesWithIntrinsicBounds(FiltreType.imageOfValue(FiltreType.values()[position]), 0, 0, 0);
+                Drawable[] drawables = textViewType.getCompoundDrawables();
+                drawables[0].setColorFilter(new PorterDuffColorFilter(getResources().getColor(R.color.colorPrimary), PorterDuff.Mode.SRC_IN));
+                break;
+            case DATE:
+                if (FiltreDate.values()[position] == FiltreDate.values()[FiltreDate.values().length - 1]) {
+                    DialogFragment newFragment = new SelectDateFragment();
+                    SelectDateFragment.isStart = true;
+                    newFragment.show(getActivity().getSupportFragmentManager(), "DatePicker");
+                } else {
+                    currentDate = FiltreDate.values()[position];
+                    textViewDate.setText(FiltreDate.nameOfValue(FiltreDate.values()[position]));
+                    bottomExpandedToCollapsed();
+                }
+                textViewDate.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_baseline_event_24_primary, 0, 0, 0);
+                break;
+            case SORT:
+                currentSort = FiltreSort.values()[position];
+                textViewSort.setText(FiltreSort.nameOfValue(FiltreSort.values()[position]));
+                break;
+        }
+
+
     }
 
     private void initRecyclerView() {
-        mRecycler = rootView.findViewById(R.id.recyclerViewSearch);
-        mAdapter = new SearchEvenementAdapter(evenementList);
-        mAdapter.setOnItemClickListener(new SearchEvenementAdapter.OnItemClickListener() {
-            @Override
-            public void onDisplayClick(int position) {
-                Intent intent = new Intent(getContext(), InfosEvenementsActivity.class);
-                intent.putExtra("event", evenementList.get(position));
-                intent.putExtra("isRegistered", false);
-                startActivity(intent);
-            }
-
-            @Override
-            public void onParticipateClick(int position) {
-                bottomSheetBehaviorParticipation.setState(BottomSheetBehavior.STATE_EXPANDED);
-                viewGrey.setVisibility(View.VISIBLE);
-            }
+        recyclerFilter = rootView.findViewById(R.id.recyclerViewFilter);
+        titleFilter = rootView.findViewById(R.id.titleFilter);
+        evenementList = new ArrayList<>();
+        RecyclerView mRecycler = rootView.findViewById(R.id.recyclerViewHomeList);
+        mAdapter = new EvenementAdapter(this.evenementList, R.layout.item_evenement, false);
+        mAdapter.setOnItemClickListener(position -> {
+            Intent intent = new Intent(getContext(), InfosEvenementsActivity.class);
+            intent.putExtra("event", evenementList.get(position));
+            intent.putExtra("isRegistered", false);
+            startActivity(intent);
         });
         mRecycler.setAdapter(mAdapter);
         mRecycler.setLayoutManager(new LinearLayoutManager(getContext()));
@@ -143,33 +234,51 @@ public class EventListFragment extends Fragment {
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     private void getEventFiltred() {
-        cardViewLoading.setVisibility(View.VISIBLE);
         linearNoResult.setVisibility(View.GONE);
+        cardViewLoading.setVisibility(View.VISIBLE);
         JSONObjectCrypt params = new JSONObjectCrypt();
 
         params.putCryptParameter("uid", USER.getUid());
-        if (currentType != null) {
+        params.putCryptParameter("owner", currentOwner.toString());
+        params.putCryptParameter("sort", currentSort.toString());
+        if (currentType != null && currentType != FiltreType.NULL) {
             params.putCryptParameter("type", currentType.toString());
         }
-        params.putCryptParameter("sort", currentSort.toString());
-        if (currentDate != FiltreDate.NONE)
+        if (currentDate != null && currentDate != FiltreDate.NULL) {
             params.putCryptParameter("date", currentDate.toString());
+            if (currentDate == FiltreDate.OTHER) {
+                Date initDate = null;
+                try {
+                    initDate = new SimpleDateFormat("dd/MM/yyyy").parse(textViewDate.getText().toString());
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+                SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+                String parsedDate = formatter.format(initDate);
+                params.putCryptParameter("dateChosen", parsedDate);
+            }
+        }
+
+        if (currentPrice != null) {
+            params.putCryptParameter("price", currentPrice);
+        }
 
         JSONController.getJsonArrayFromUrl(Constants.URL_EVENT_FILTRE, requireContext(), params, new JSONArrayListener() {
             @Override
             public void onJSONReceived(JSONArray jsonArray) {
                 try {
-                    evenementList = new ArrayList<>();
+                    evenementList.clear();
                     for (int i = 0; i < jsonArray.length(); i++) {
                         evenementList.add((Evenement) JSONController.convertJSONToObject(jsonArray.getJSONObject(i), Evenement.class));
                     }
-                    initRecyclerView();
+                    mAdapter.notifyDataSetChanged();
                     if (evenementList.isEmpty()) {
                         linearNoResult.setVisibility(View.VISIBLE);
                     } else {
                         linearNoResult.setVisibility(View.GONE);
                     }
                     cardViewLoading.setVisibility(View.GONE);
+                    hasChange = false;
                 } catch (JSONException e) {
                     Log.w("Response", "Erreur:" + e.getMessage());
                     Toast.makeText(getContext(), getResources().getString(R.string.error_event), Toast.LENGTH_SHORT).show();
@@ -185,224 +294,110 @@ public class EventListFragment extends Fragment {
         });
     }
 
-    /**
-     * Methode permettant l'initialisation des text view de la fenetre
-     * Event category
-     * Sort filter
-     * Date filter
-     */
-    @RequiresApi(api = Build.VERSION_CODES.O)
-    private void initTextView() {
-        initTextViewSort();
-        initTextViewDate();
-    }
-
-    @RequiresApi(api = Build.VERSION_CODES.O)
-    private void initTextViewDate() {
-        textViewDateToday = rootView.findViewById(R.id.textViewDateToday);
-        textViewDateToday.setOnClickListener(v -> changeActualDate(FiltreDate.TODAY));
-        textViewDateTomorrow = rootView.findViewById(R.id.textViewDateTomorrow);
-        textViewDateTomorrow.setOnClickListener(v -> changeActualDate(FiltreDate.TOMORROW));
-        textViewDateWeek = rootView.findViewById(R.id.textViewDateWeek);
-        textViewDateWeek.setOnClickListener(v -> changeActualDate(FiltreDate.WEEK));
-        textViewDateMonth = rootView.findViewById(R.id.textViewDateMonth);
-        textViewDateMonth.setOnClickListener(v -> changeActualDate(FiltreDate.MONTH));
-        textViewDateOther = rootView.findViewById(R.id.textViewDateOther);
-        textViewDateOther.setOnClickListener(v -> changeActualDate(FiltreDate.OTHER));
-
-    }
-
     @RequiresApi(api = Build.VERSION_CODES.O)
     private void initTextViewSort() {
+        textViewType = rootView.findViewById(R.id.textViewType);
         textViewSort = rootView.findViewById(R.id.textViewSort);
-        textViewSortDate = rootView.findViewById(R.id.textViewSortDate);
-        textViewSortDate.setOnClickListener(v -> changeActualSort(FiltreSort.DATE));
-        textViewSortLocation = rootView.findViewById(R.id.textViewSortLocation);
-        textViewSortLocation.setOnClickListener(v -> changeActualSort(FiltreSort.LOCATION));
-        textViewSortPertinence = rootView.findViewById(R.id.textViewSortPertinence);
-        textViewSortPertinence.setOnClickListener(v -> changeActualSort(FiltreSort.PERTINENCE));
-        textViewSortPriceASC = rootView.findViewById(R.id.textViewSortPriceASC);
-        textViewSortPriceASC.setOnClickListener(v -> changeActualSort(FiltreSort.PRICEASC));
-
-        textViewSortPriceDESC = rootView.findViewById(R.id.textViewSortPriceDESC);
-        textViewSortPriceDESC.setOnClickListener(v -> changeActualSort(FiltreSort.PRICEDESC));
-
         textViewLocation = rootView.findViewById(R.id.textViewLocation);
+        textViewOwner = rootView.findViewById(R.id.textViewOwner);
+        textViewLocation.setText(currentLocation);
+
         textViewPrice = rootView.findViewById(R.id.textViewPrice);
-
         textViewDate = rootView.findViewById(R.id.textViewDate);
-        textViewDateToday = rootView.findViewById(R.id.textViewDateToday);
-        textViewDateTomorrow = rootView.findViewById(R.id.textViewDateTomorrow);
-        textViewDateWeek = rootView.findViewById(R.id.textViewDateWeek);
-        textViewDateMonth = rootView.findViewById(R.id.textViewDateMonth);
-        textViewDateOther = rootView.findViewById(R.id.textViewDateOther);
 
+        textViewType.setOnClickListener(v -> {
+            updateRecyclerView(FiltreEvent.TYPE);
+            bottomCollapsedToExpanded();
+        });
 
-        textViewLocation.setOnClickListener(v -> bottomCollapsedToExpanded(FiltreEvent.LOCATION));
+        textViewLocation.setOnClickListener(v -> {
+            updateRecyclerView(FiltreEvent.LOCATION);
+            bottomCollapsedToExpanded();
+        });
 
-        textViewPrice.setOnClickListener(v -> bottomCollapsedToExpanded(FiltreEvent.PRICE));
+        textViewPrice.setOnClickListener(v -> {
+            updateRecyclerView(FiltreEvent.PRICE);
+            bottomCollapsedToExpanded();
+        });
 
-        textViewDate.setOnClickListener(v -> bottomCollapsedToExpanded(FiltreEvent.DATE));
+        textViewDate.setOnClickListener(v -> {
+            updateRecyclerView(FiltreEvent.DATE);
+            bottomCollapsedToExpanded();
+        });
 
-        textViewSort.setOnClickListener(v -> bottomCollapsedToExpanded(FiltreEvent.SORT));
+        textViewSort.setOnClickListener(v -> {
+            updateRecyclerView(FiltreEvent.SORT);
+            bottomCollapsedToExpanded();
+        });
+
+        textViewOwner.setOnClickListener(v -> {
+            updateRecyclerView(FiltreEvent.OWNER);
+            bottomCollapsedToExpanded();
+        });
     }
 
-    private void initBottomSheet() {
-        bottomSheetType = rootView.findViewById(R.id.sheetType);
-
-        bottomSheetDate = rootView.findViewById(R.id.sheetDate);
-        bottomSheetBehaviorDate = BottomSheetBehavior.from(bottomSheetDate);
-
-        bottomSheetSort = rootView.findViewById(R.id.sheetSort);
-        bottomSheetBehaviorSort = BottomSheetBehavior.from(bottomSheetSort);
-
-        bottomSheetLocation = rootView.findViewById(R.id.sheetLocation);
-        bottomSheetBehaviorLocation = BottomSheetBehavior.from(bottomSheetLocation);
-
-        bottomSheetPrice = rootView.findViewById(R.id.sheetPrice);
-        bottomSheetBehaviorPrice = BottomSheetBehavior.from(bottomSheetPrice);
-
-        bottomSheetParticipation = rootView.findViewById(R.id.sheetParticipate);
-        bottomSheetBehaviorParticipation = BottomSheetBehavior.from(bottomSheetParticipation);
-    }
-
-    @RequiresApi(api = Build.VERSION_CODES.O)
-    private void changeActualDate(FiltreDate filtreDate) {
-        if (filtreDate != currentDate) {
-            currentDate = filtreDate;
-            textViewDateToday.setTextColor(Color.DKGRAY);
-            textViewDateTomorrow.setTextColor(Color.DKGRAY);
-            textViewDateWeek.setTextColor(Color.DKGRAY);
-            textViewDateMonth.setTextColor(Color.DKGRAY);
-            textViewDateOther.setTextColor(Color.DKGRAY);
-
-            textViewDateToday.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_baseline_event_24, 0, 0, 0);
-            textViewDateTomorrow.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_baseline_event_24, 0, 0, 0);
-            textViewDateWeek.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_baseline_event_24, 0, 0, 0);
-            textViewDateMonth.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_baseline_event_24, 0, 0, 0);
-            textViewDateOther.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_baseline_event_24, 0, 0, 0);
-
-
-            switch (filtreDate) {
-                case WEEK:
-                    selectedDate(textViewDateWeek, getResources().getString(R.string.filter_date_week));
-                    break;
-                case MONTH:
-                    selectedDate(textViewDateMonth, getResources().getString(R.string.filter_date_month));
-                    break;
-                case OTHER:
-                    selectedDate(textViewDateOther, getResources().getString(R.string.filter_date_choose));
-                    break;
-                case TODAY:
-                    selectedDate(textViewDateToday, getResources().getString(R.string.filter_date_today));
-                    break;
-                case TOMORROW:
-                    selectedDate(textViewDateTomorrow, getResources().getString(R.string.filter_date_tomorrow));
-                    break;
-            }
-            hasChange = true;
-        }
-    }
-
-    @RequiresApi(api = Build.VERSION_CODES.O)
-    private void changeActualSort(FiltreSort filtreSort) {
-        if (filtreSort != currentSort) {
-            currentSort = filtreSort;
-            textViewSortPertinence.setTextColor(Color.DKGRAY);
-            textViewSortPriceDESC.setTextColor(Color.DKGRAY);
-            textViewSortPriceASC.setTextColor(Color.DKGRAY);
-            textViewSortDate.setTextColor(Color.DKGRAY);
-            textViewSortLocation.setTextColor(Color.DKGRAY);
-
-            textViewSortPertinence.setCompoundDrawablesWithIntrinsicBounds(R.drawable.filtre_sort, 0, 0, 0);
-            textViewSortPriceDESC.setCompoundDrawablesWithIntrinsicBounds(R.drawable.filtre_sort, 0, 0, 0);
-            textViewSortPriceASC.setCompoundDrawablesWithIntrinsicBounds(R.drawable.filtre_sort, 0, 0, 0);
-            textViewSortDate.setCompoundDrawablesWithIntrinsicBounds(R.drawable.filtre_sort, 0, 0, 0);
-            textViewSortLocation.setCompoundDrawablesWithIntrinsicBounds(R.drawable.filtre_sort, 0, 0, 0);
-
-            switch (filtreSort) {
-                case PERTINENCE:
-                    selectedSort(textViewSortPertinence, getResources().getString(R.string.filter_sort_pertinence));
-                    break;
-                case PRICEDESC:
-                    selectedSort(textViewSortPriceDESC, getResources().getString(R.string.filter_sort_price_desc));
-                    break;
-                case PRICEASC:
-                    selectedSort(textViewSortPriceASC, getResources().getString(R.string.filter_sort_price_asc));
-                    break;
-                case DATE:
-                    selectedSort(textViewSortDate, getResources().getString(R.string.filter_sort_date));
-                    break;
-                case LOCATION:
-                    selectedSort(textViewSortLocation, getResources().getString(R.string.filter_sort_location));
-                    break;
-            }
-            hasChange = true;
-        }
-
-    }
-
-    private void selectedDate(TextView textView, String text) {
-        textView.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_baseline_event_24_primary, 0, 0, 0);
-        textView.setTextColor(getResources().getColor(R.color.colorPrimary));
-        textViewDate.setText(text);
-        textViewDate.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_baseline_event_24_primary, 0, 0, 0);
-    }
-
-    private void selectedSort(TextView textView, String text) {
-        textViewSort.setText(text);
-        textView.setTextColor(getResources().getColor(R.color.colorPrimary));
-        textView.setCompoundDrawablesWithIntrinsicBounds(R.drawable.sort, 0, 0, 0);
-    }
-
-    private void bottomCollapsedToExpanded(FiltreEvent filtreEvent) {
-        bottomExpandedToCollapsed();
-        viewGrey.setVisibility(View.VISIBLE);
+    private void updateRecyclerView(FiltreEvent filtreEvent) {
+        int itemPosition = -1;
+        currentFiltre = filtreEvent;
+        listFilterImage.clear();
+        listFilterName.clear();
         switch (filtreEvent) {
+            case OWNER:
+                titleFilter.setText(getString(R.string.visibility));
+                listFilterName.addAll(FiltreOwner.listOfNames(getContext()));
+                listFilterImage.addAll(FiltreOwner.listOfImages(getContext()));
+                if (currentOwner != null)
+                    itemPosition = FiltreOwner.indexOfValue(currentOwner);
+                break;
             case DATE:
-                if (bottomSheetBehaviorDate.getState() == BottomSheetBehavior.STATE_COLLAPSED)
-                    bottomSheetBehaviorDate.setState(BottomSheetBehavior.STATE_EXPANDED);
+                titleFilter.setText(getString(R.string.dateEvent));
+                listFilterName.addAll(FiltreDate.listOfNames(getContext()));
+                listFilterImage.addAll(FiltreDate.listOfImages(getContext()));
+                if (currentDate != null)
+                    itemPosition = FiltreDate.indexOfValue(currentDate);
                 break;
             case SORT:
-                if (bottomSheetBehaviorSort.getState() == BottomSheetBehavior.STATE_COLLAPSED)
-                    bottomSheetBehaviorSort.setState(BottomSheetBehavior.STATE_EXPANDED);
+                titleFilter.setText(getString(R.string.filter_sort));
+                listFilterName.addAll(FiltreSort.listOfNames(getContext()));
+                listFilterImage.addAll(FiltreSort.listOfImages(getContext()));
+                if (currentSort != null)
+                    itemPosition = FiltreSort.indexOfValue(currentSort);
                 break;
-
+            case TYPE:
+                titleFilter.setText(getString(R.string.type));
+                listFilterName.addAll(FiltreType.listOfNames(getContext()));
+                listFilterImage.addAll(FiltreType.listOfImages(getContext()));
+                if (currentType != null)
+                    itemPosition = FiltreType.indexOfValue(currentType);
+                break;
             case PRICE:
-                if (bottomSheetBehaviorPrice.getState() == BottomSheetBehavior.STATE_COLLAPSED)
-                    bottomSheetBehaviorPrice.setState(BottomSheetBehavior.STATE_EXPANDED);
+                titleFilter.setText(getString(R.string.price));
+                listFilterName.addAll(FiltrePrice.listOfNames(getContext()));
+                listFilterImage.addAll(FiltrePrice.listOfImages(getContext()));
+                if (currentPrice != null)
+                    itemPosition = FiltrePrice.indexOfValue(currentPrice);
                 break;
-
             case LOCATION:
-                if (bottomSheetBehaviorLocation.getState() == BottomSheetBehavior.STATE_COLLAPSED)
-                    bottomSheetBehaviorLocation.setState(BottomSheetBehavior.STATE_EXPANDED);
-                break;
         }
+        FilterAdapter filterAdapter = new FilterAdapter(listFilterName, listFilterImage, itemPosition);
+        filterAdapter.setOnItemClickListener(position -> {
+            hasChange = true;
+            if (currentFiltre != FiltreEvent.DATE)
+                bottomExpandedToCollapsed();
+            updateFilters(position);
+        });
+        recyclerFilter.setAdapter(filterAdapter);
+        recyclerFilter.setLayoutManager(new LinearLayoutManager(getContext()));
+    }
+
+    private void bottomCollapsedToExpanded() {
+        viewGrey.setVisibility(View.VISIBLE);
+        bottomSheetBehaviorFilter.setState(BottomSheetBehavior.STATE_EXPANDED);
     }
 
     private void bottomExpandedToCollapsed() {
-
-        if (bottomSheetBehaviorPrice.getState() == BottomSheetBehavior.STATE_EXPANDED) {
-            bottomSheetBehaviorPrice.setState(BottomSheetBehavior.STATE_COLLAPSED);
-        }
-
-        if (bottomSheetBehaviorDate.getState() == BottomSheetBehavior.STATE_EXPANDED) {
-            bottomSheetBehaviorDate.setState(BottomSheetBehavior.STATE_COLLAPSED);
-        }
-
-        if (bottomSheetBehaviorSort.getState() == BottomSheetBehavior.STATE_EXPANDED) {
-            bottomSheetBehaviorSort.setState(BottomSheetBehavior.STATE_COLLAPSED);
-        }
-
-        if (bottomSheetBehaviorLocation.getState() == BottomSheetBehavior.STATE_EXPANDED) {
-            bottomSheetBehaviorLocation.setState(BottomSheetBehavior.STATE_COLLAPSED);
-        }
-        if (bottomSheetBehaviorParticipation.getState() == BottomSheetBehavior.STATE_EXPANDED) {
-            bottomSheetBehaviorParticipation.setState(BottomSheetBehavior.STATE_COLLAPSED);
-        }
-
         viewGrey.setVisibility(View.GONE);
+        bottomSheetBehaviorFilter.setState(BottomSheetBehavior.STATE_COLLAPSED);
     }
-
 
 }

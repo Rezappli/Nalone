@@ -69,6 +69,9 @@
     <string name="title_activity_home">MainActivity</string>
     <string name="title_recherche"> Recherche </string>
     <string name="title_amis"> Amis </string>
+    <string name="price_low"> - de 20€</string>
+    <string name="price_medium"> 20€ à 50€ </string>
+    <string name="price_high"> + de 50€ </string>
     <string name="subtitle_event_amis"> Invites tout tes amis </string>
     <string name="title_evenements"> Événements </string>
     <string name="title_messages"> Messages </string>
@@ -106,10 +109,12 @@
     <string name="par_qui"> Par qui ? </string>
     <string name="ou"> Ou ? </string>
     <string name="search_title"> Rechercher un ami </string>
+    <string name="search"> Rechercher</string>
     <string name="search_event_title"> Rechercher un évènement </string>
     <string name="title_user_info"> Utilisateur </string>
     <string name="evebt_info"> Infos évènement </string>
     <string name="aucun_resultat"> Aucun résultat trouvé </string>
+    <string name="title_nothing"> Aucune</string>
     <string name="eventCreateProfil"> Création </string>
     <string name="eventParticipateProfil"> Participation </string>
     <string name="title_activity_amis_fragment">AmisFragment</string>
@@ -117,6 +122,7 @@
     <string name="horaireEvent"> Horaire </string>
     <string name="proprio"> Propriétaire : </string>
     <string name="organisateur"> Organisateur : </string>
+    <string name="organisateur_title"> Organisateur </string>
     <string name="participants"> participants</string>
     <string name="participants_uppercase"> Participants</string>
     =    <!-- TODO: Remove or change this placeholder text -->
@@ -127,7 +133,7 @@
     <string name="title_planning_creations">Mes évènements</string>
     <string name="location_private"> Privé </string>
     <string name="location_private_maj"> PRIVE </string>
-    <string name="location_all"> Tout </string>
+    <string name="location_all"> Tous </string>
     <string name="location_public"> Public </string>
     <string name="location_public_maj"> PUBLIC </string>
     <string name="location_not_found"> Localisation de votre adresse impossible </string>
@@ -321,8 +327,9 @@
 
     <string name="filter_sort_pertinence">Pertinence</string>
     <string name="filter_sort">Trier par</string>
-    <string name="filter_sort_date">Par date</string>
-    <string name="filter_sort_location">Par distance</string>
+    <string name="filter_sort_date">Date</string>
+    <string name="filter_sort_popular">Popularité</string>
+    <string name="filter_sort_location">Distance</string>
     <string name="filter_sort_price_asc">Prix croissant </string>
     <string name="filter_sort_price_desc">Prix decroissant </string>
     <string name="filter_date_today"> Aujourd\'hui </string>

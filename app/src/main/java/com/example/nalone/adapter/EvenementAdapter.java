@@ -11,6 +11,7 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.nalone.R;
@@ -79,8 +80,9 @@ public class EvenementAdapter extends RecyclerView.Adapter<EvenementAdapter.Even
         public TextView mTime;
         public TextView mCity;
         //public TextView mDescription;
-        public CardView cardViewDisplay, cardViewPrice;
-        public TextView textViewPrice;
+        public ConstraintLayout linearEvent;
+        public CardView cardViewPrice;
+        public TextView textViewPrice, textViewNbMembers, textViewOwnerName;
         public ImageView imageViewCategory;
         private EvenementAdapter.OnItemClickListener mListener;
 
@@ -93,12 +95,12 @@ public class EvenementAdapter extends RecyclerView.Adapter<EvenementAdapter.Even
             mDate = itemView.findViewById(R.id.dateEventList1);
             mTime = itemView.findViewById(R.id.timeEventList1);
             mCity = itemView.findViewById(R.id.villeEventList);
-            cardViewDisplay = itemView.findViewById(R.id.cardViewEvent);
+            linearEvent = itemView.findViewById(R.id.linearEvent);
             imageViewCategory = itemView.findViewById(R.id.imageTypeEvent);
             textViewPrice = itemView.findViewById(R.id.textViewPrice);
             cardViewPrice = itemView.findViewById(R.id.cardViewPrice);
 
-            cardViewDisplay.setOnClickListener(v -> {
+            linearEvent.setOnClickListener(v -> {
                 if (mListener != null) {
                     int position = getAdapterPosition();
                     if (position != RecyclerView.NO_POSITION) {
@@ -108,8 +110,8 @@ public class EvenementAdapter extends RecyclerView.Adapter<EvenementAdapter.Even
             });
 
             if (item == R.layout.item_evenement_bis) {
-                ImageView imageViewDisplay = itemView.findViewById(R.id.showMoreButton);
-                imageViewDisplay.setOnClickListener(v -> {
+                TextView textViewDisplay = itemView.findViewById(R.id.textViewAfficher);
+                textViewDisplay.setOnClickListener(v -> {
                     if (mListener != null) {
                         int position = getAdapterPosition();
                         if (position != RecyclerView.NO_POSITION) {
@@ -118,6 +120,8 @@ public class EvenementAdapter extends RecyclerView.Adapter<EvenementAdapter.Even
                     }
                 });
             } else {
+                textViewOwnerName = itemView.findViewById(R.id.textViewNameOwner);
+                textViewNbMembers = itemView.findViewById(R.id.textViewNbMembers);
                 Button buttonDisplay = itemView.findViewById(R.id.buttonDisplay);
                 buttonDisplay.setOnClickListener(v -> {
                     if (mListener != null) {
@@ -138,9 +142,16 @@ public class EvenementAdapter extends RecyclerView.Adapter<EvenementAdapter.Even
             this.mDate.setText(Constants.getFullDate(d));
             this.mTime.setText(cutString(e.getStartDate(), 5, 11));
             if (item != R.layout.item_evenement_bis) {
+                textViewOwnerName.setText(e.getOwnerName());
+                textViewNbMembers.setText(e.getNbMembers() + "");
+
                 if (e.getPrice() != 0) {
                     this.textViewPrice.setText(e.getPrice() + " €");
-                    this.cardViewPrice.setBackgroundColor(Color.parseColor("#335CDD"));
+                    this.cardViewPrice.setBackgroundColor(Color.parseColor("#0C6FE6"));
+                } else {
+                    this.textViewPrice.setText("Free");
+                    this.cardViewPrice.setBackgroundColor(Color.parseColor("#00D7F3"));
+
                 }
             }
             imageViewCategory.setImageResource(e.getImageCategory());

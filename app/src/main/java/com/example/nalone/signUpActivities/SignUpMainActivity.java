@@ -6,13 +6,13 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
 
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.fragment.NavHostFragment;
 
-import com.example.nalone.NoLonelyActivity;
 import com.example.nalone.R;
 import com.example.nalone.listeners.CreationFragmentListener;
 import com.example.nalone.listeners.CreationMainListener;
@@ -20,7 +20,7 @@ import com.example.nalone.listeners.CreationMainListener;
 import java.util.ArrayList;
 import java.util.List;
 
-public class SignUpMainActivity extends NoLonelyActivity implements CreationMainListener {
+public class SignUpMainActivity extends AppCompatActivity implements CreationMainListener {
 
     private NavController navController;
     private static List<CreationFragmentListener> listeners;
