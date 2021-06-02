@@ -20,17 +20,6 @@ import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
 
 import com.android.volley.VolleyError;
-import com.nolonely.mobile.R;
-import com.nolonely.mobile.enumeration.Visibility;
-import com.nolonely.mobile.enumeration.VisibilityMap;
-import com.nolonely.mobile.json.JSONController;
-import com.nolonely.mobile.json.JSONObjectCrypt;
-import com.nolonely.mobile.listeners.JSONArrayListener;
-import com.nolonely.mobile.objects.CustomMarker;
-import com.nolonely.mobile.objects.CustomRenderer;
-import com.nolonely.mobile.objects.Evenement;
-import com.nolonely.mobile.ui.evenements.InfosEvenementsActivity;
-import com.nolonely.mobile.util.Constants;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
@@ -42,6 +31,16 @@ import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.maps.android.clustering.ClusterManager;
+import com.nolonely.mobile.R;
+import com.nolonely.mobile.enumeration.VisibilityMap;
+import com.nolonely.mobile.json.JSONController;
+import com.nolonely.mobile.json.JSONObjectCrypt;
+import com.nolonely.mobile.listeners.JSONArrayListener;
+import com.nolonely.mobile.objects.CustomMarker;
+import com.nolonely.mobile.objects.CustomRenderer;
+import com.nolonely.mobile.objects.Evenement;
+import com.nolonely.mobile.ui.evenements.InfosEvenementsActivity;
+import com.nolonely.mobile.util.Constants;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -51,6 +50,9 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import static com.nolonely.mobile.enumeration.VisibilityMap.ALL;
+import static com.nolonely.mobile.enumeration.VisibilityMap.FRIEND;
+import static com.nolonely.mobile.enumeration.VisibilityMap.PUBLIC;
 import static com.nolonely.mobile.util.Constants.MAPVIEW_BUNDLE_KEY;
 import static com.nolonely.mobile.util.Constants.USER;
 import static com.nolonely.mobile.util.Constants.range;
@@ -67,7 +69,8 @@ public class EventMapFragment extends Fragment implements OnMapReadyCallback {
 
     private static VisibilityMap currentVisibilityMap = VisibilityMap.ALL;
 
-    private List<Evenement> nearby_events;
+    private List<Evenement> publicList;
+    private List<Evenement> friendList;
 
     private CardView loading;
 
@@ -175,8 +178,8 @@ public class EventMapFragment extends Fragment implements OnMapReadyCallback {
         cardViewLocationPrive.setOnClickListener(v -> {
             hiddeText(textViewLocationPrive);
             imageViewLocationPrive.setImageDrawable(getResources().getDrawable(R.drawable.location_private_30));
-            updateMap(VisibilityMap.PRIVATE);
-            currentVisibilityMap = VisibilityMap.PRIVATE;
+            updateMap(FRIEND);
+            currentVisibilityMap = FRIEND;
         });
 
         cardViewLocationInscrit.setOnClickListener(v -> {
@@ -250,24 +253,56 @@ public class EventMapFragment extends Fragment implements OnMapReadyCallback {
 
         JSONObjectCrypt params = new JSONObjectCrypt();
         params.putCryptParameter("uid", USER.getUid());
-        params.putCryptParameter("latitude", USER.getLatitude());
-        params.putCryptParameter("longitude", USER.getLongitude());
-        params.putCryptParameter("range", range);
+        params.putCryptParameter("filter", PUBLIC.toString());
 
-        nearby_events = new ArrayList<>();
 
         JSONController.getJsonArrayFromUrl(Constants.URL_NEARBY_EVENTS, getContext(), params, new JSONArrayListener() {
             @Override
             public void onJSONReceived(JSONArray jsonArray) {
                 Log.w("Response", "Value:" + jsonArray.toString());
                 try {
+                    publicList = new ArrayList<>();
+
                     if (jsonArray.length() > 0) {
                         for (int i = 0; i < jsonArray.length(); i++) {
-                            nearby_events.add((Evenement) JSONController.convertJSONToObject(jsonArray.getJSONObject(i), Evenement.class));
+                            publicList.add((Evenement) JSONController.convertJSONToObject(jsonArray.getJSONObject(i), Evenement.class));
                         }
-                        updateMap(VisibilityMap.ALL);
-                        updateCircle();
                     }
+                    checkJSONReceived();
+                } catch (JSONException e) {
+                    Log.w("Response", "Erreur:" + e.getMessage());
+                    Toast.makeText(getContext(), getResources().getString(R.string.error_event), Toast.LENGTH_SHORT).show();
+                }
+
+            }
+
+            @Override
+            public void onJSONReceivedError(VolleyError volleyError) {
+                Log.w("Response", "Erreur:" + volleyError.toString());
+                Toast.makeText(getContext(), getResources().getString(R.string.error_event), Toast.LENGTH_SHORT).show();
+            }
+        });
+
+
+        JSONObjectCrypt params1 = new JSONObjectCrypt();
+        params1.putCryptParameter("uid", USER.getUid());
+        params1.putCryptParameter("filter", FRIEND.toString());
+
+        JSONController.getJsonArrayFromUrl(Constants.URL_NEARBY_EVENTS, getContext(), params1, new JSONArrayListener() {
+            @Override
+            public void onJSONReceived(JSONArray jsonArray) {
+                Log.w("Response", "Value:" + jsonArray.toString());
+                try {
+                    friendList = new ArrayList<>();
+
+                    if (jsonArray.length() > 0) {
+                        for (int i = 0; i < jsonArray.length(); i++) {
+                            friendList.add((Evenement) JSONController.convertJSONToObject(jsonArray.getJSONObject(i), Evenement.class));
+                        }
+                    }
+
+                    checkJSONReceived();
+                    updateCircle();
                 } catch (JSONException e) {
                     Log.w("Response", "Erreur:" + e.getMessage());
                     Toast.makeText(getContext(), getResources().getString(R.string.error_event), Toast.LENGTH_SHORT).show();
@@ -288,6 +323,13 @@ public class EventMapFragment extends Fragment implements OnMapReadyCallback {
 
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.M)
+    private void checkJSONReceived() {
+        if (friendList != null && publicList != null) {
+            updateMap(ALL);
+        }
+    }
+
 
     @RequiresApi(api = Build.VERSION_CODES.M)
     public void updateMap(VisibilityMap visibilityMap) {
@@ -295,32 +337,29 @@ public class EventMapFragment extends Fragment implements OnMapReadyCallback {
         clusterManager.clearItems();
         switch (visibilityMap) {
             case ALL:
-                for (Evenement e : nearby_events) {
-                    addMarkerOnMap(e);
+                for (Evenement e : publicList) {
+                    addMarkerOnMap(e, true);
+                }
+                for (Evenement e : friendList) {
+                    addMarkerOnMap(e, false);
                 }
                 break;
             case PUBLIC:
-                for (Evenement e : nearby_events) {
-                    if (e.getVisibility().equals(Visibility.PUBLIC)) {
-                        if (!e.getOwner_uid().equalsIgnoreCase(USER.getUid())) {
-                            addMarkerOnMap(e);
-                        }
+                for (Evenement e : publicList) {
+                    if (!e.getOwner_uid().equalsIgnoreCase(USER.getUid())) {
+                        addMarkerOnMap(e, true);
                     }
                 }
                 break;
-            case PRIVATE:
-                for (Evenement e : nearby_events) {
-                    if (e.getVisibility().equals(Visibility.PRIVATE)) {
-                        if (!e.getOwner_uid().equalsIgnoreCase(USER.getUid())) {
-                            addMarkerOnMap(e);
-                        }
-                    }
+            case FRIEND:
+                for (Evenement e : friendList) {
+                    addMarkerOnMap(e, false);
                 }
                 break;
             case CREATE:
-                for (Evenement e : nearby_events) {
+                for (Evenement e : publicList) {
                     if (e.getOwner_uid().equalsIgnoreCase(USER.getUid())) {
-                        addMarkerOnMap(e);
+                        addMarkerOnMap(e, true);
                     }
                 }
                 break;
@@ -351,22 +390,18 @@ public class EventMapFragment extends Fragment implements OnMapReadyCallback {
     }
 
     @SuppressLint("SetTextI18n")
-    private void addMarkerOnMap(Evenement e) {
+    private void addMarkerOnMap(Evenement e, boolean isPublic) {
 
         CustomMarker m;
 
-        if (e.getVisibility().equals(Visibility.PUBLIC)) {
+        if (isPublic) {
             if (e.getOwner_uid().equalsIgnoreCase(USER.getUid())) {
                 m = new CustomMarker(new LatLng(e.getLatitude(), e.getLongitude()), BitmapDescriptorFactory.HUE_GREEN, e);
             } else {
                 m = new CustomMarker(new LatLng(e.getLatitude(), e.getLongitude()), BitmapDescriptorFactory.HUE_RED, e);
             }
         } else {
-            if (e.getOwner_uid().equalsIgnoreCase(USER.getUid())) {
-                m = new CustomMarker(new LatLng(e.getLatitude(), e.getLongitude()), BitmapDescriptorFactory.HUE_GREEN, e);
-            } else {
-                m = new CustomMarker(new LatLng(e.getLatitude(), e.getLongitude()), BitmapDescriptorFactory.HUE_AZURE, e);
-            }
+            m = new CustomMarker(new LatLng(e.getLatitude(), e.getLongitude()), BitmapDescriptorFactory.HUE_AZURE, e);
         }
 
         clusterManager.addItem(m);

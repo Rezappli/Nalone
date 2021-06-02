@@ -4,6 +4,7 @@
     android:id="@+id/linearEvent"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:background="@color/white"
     android:orientation="vertical">
 
     <LinearLayout
@@ -33,6 +34,7 @@
                 android:layout_height="50dp"
                 android:layout_gravity="center|clip_vertical"
                 android:layout_marginStart="24dp"
+                android:visibility="gone"
                 app:cardCornerRadius="150dp"
                 app:cardElevation="0dp"
                 app:layout_constraintBottom_toBottomOf="parent"
@@ -63,7 +65,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    app:srcCompat="@drawable/ic_baseline_qr_code_50" />
+                    app:srcCompat="@drawable/ic_baseline_qr_code_scanner_50" />
             </androidx.cardview.widget.CardView>
 
             <ImageView
@@ -102,11 +104,13 @@
                 android:layout_weight="0.3">
 
                 <LinearLayout
+                    android:id="@+id/linearLayout6"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_centerHorizontal="true"
                     android:layout_centerVertical="true"
                     android:layout_marginTop="10dp"
+                    android:layout_marginEnd="50dp"
                     android:layout_marginBottom="8dp"
                     android:background="#FFFFFF"
                     android:orientation="vertical"
@@ -168,33 +172,63 @@
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
+                        android:gravity="center"
                         android:orientation="horizontal">
 
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:layout_weight="1"
-                            android:orientation="vertical">
+                        <TextView
+                            android:id="@+id/nextEventNbMembersRegister"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:paddingEnd="5dp"
+                            android:text="0"
+                            android:textColor="@color/colorPrimary"
+                            android:textSize="12sp"
+                            android:textStyle="bold" />
 
-                        </LinearLayout>
+                        <TextView
+                            android:id="@+id/nextEventNbMembers2"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:paddingEnd="5dp"
+                            android:text="/"
+                            android:textSize="12sp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:id="@+id/nextEventNbMembersTotal"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:paddingEnd="5dp"
+                            android:text="0"
+                            android:textColor="@color/places_autocomplete_prediction_secondary_text"
+                            android:textSize="12sp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:id="@+id/textView42"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/valided"
+                            android:textColor="@color/places_autocomplete_prediction_secondary_text"
+                            android:textSize="12sp" />
 
                     </LinearLayout>
 
                     <TextView
-                        android:id="@+id/textViewAfficher"
-                        android:layout_width="100dp"
+                        android:id="@+id/textViewParticipants"
+                        android:layout_width="150dp"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
-                        android:layout_marginStart="20dp"
-                        android:layout_marginEnd="20dp"
+                        android:layout_marginTop="10dp"
                         android:layout_marginBottom="10dp"
                         android:layout_weight="1"
-                        android:background="@drawable/custom_button_signup"
+                        android:background="@drawable/custom_search"
+                        android:drawableStart="@drawable/ic_baseline_groups_15"
                         android:drawablePadding="5dp"
                         android:gravity="center"
                         android:paddingStart="5dp"
                         android:paddingEnd="5dp"
-                        android:text="@string/afficher"
+                        android:text="@string/participants_uppercase"
                         android:textSize="16sp" />
 
                 </LinearLayout>
@@ -215,6 +249,16 @@
                         android:layout_gravity="center"
                         app:srcCompat="@drawable/event_sport" />
                 </androidx.cardview.widget.CardView>
+
+                <ImageView
+                    android:id="@+id/imageViewAfficher"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:layout_marginBottom="40dp"
+                    app:layout_constraintBottom_toBottomOf="@+id/linearLayout6"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:srcCompat="@drawable/arrow_event" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 

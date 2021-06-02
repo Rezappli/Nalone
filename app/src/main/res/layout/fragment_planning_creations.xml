@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@color/white"
     tools:context=".ui.evenements.display.PlanningCreationsFragment">
 
     <RelativeLayout
@@ -94,21 +95,37 @@
                                 android:background="@android:color/transparent"
                                 android:orientation="vertical">
 
-                                <RelativeLayout
+                                <androidx.constraintlayout.widget.ConstraintLayout
                                     android:layout_width="match_parent"
                                     android:layout_height="match_parent"
                                     android:layout_weight="1">
+
+                                    <androidx.cardview.widget.CardView
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginEnd="24dp"
+                                        app:cardCornerRadius="10dp"
+                                        app:layout_constraintBottom_toBottomOf="@+id/imageEvent"
+                                        app:layout_constraintEnd_toEndOf="parent"
+                                        app:layout_constraintTop_toTopOf="@+id/imageEvent">
+
+                                        <ImageView
+                                            android:id="@+id/imageView11"
+                                            android:layout_width="wrap_content"
+                                            android:layout_height="wrap_content"
+                                            android:layout_gravity="center"
+                                            app:srcCompat="@drawable/ic_baseline_qr_code_scanner_50" />
+                                    </androidx.cardview.widget.CardView>
 
                                     <ImageView
                                         android:id="@+id/imageEvent"
                                         android:layout_width="match_parent"
                                         android:layout_height="match_parent"
-                                        android:layout_weight="1"
                                         android:adjustViewBounds="false"
                                         android:scaleType="fitCenter"
                                         app:srcCompat="@drawable/ic_baseline_mesevent" />
 
-                                </RelativeLayout>
+                                </androidx.constraintlayout.widget.ConstraintLayout>
 
                                 <View
                                     android:id="@+id/divider22"
@@ -140,9 +157,9 @@
                                                 android:layout_width="wrap_content"
                                                 android:layout_height="wrap_content"
                                                 android:layout_marginTop="5dp"
-                                                android:text="klssssssssssssssssssllllllllllllllllllllllllllllllll"
+                                                android:text="Nom"
                                                 android:textColor="#000000"
-                                                android:textSize="14sp"
+                                                android:textSize="18sp"
                                                 android:textStyle="bold" />
 
                                             <TextView
@@ -153,7 +170,7 @@
                                                 android:drawablePadding="5dp"
                                                 android:text="ville"
                                                 android:textColor="#000000"
-                                                android:textSize="12sp" />
+                                                android:textSize="14sp" />
 
                                             <LinearLayout
                                                 android:layout_width="match_parent"
@@ -168,13 +185,14 @@
                                                     android:drawablePadding="5dp"
                                                     android:text="date"
                                                     android:textColor="#000000"
-                                                    android:textSize="12sp" />
+                                                    android:textSize="14sp" />
 
                                                 <TextView
                                                     android:id="@+id/textView66"
                                                     android:layout_width="wrap_content"
                                                     android:layout_height="wrap_content"
-                                                    android:text=", " />
+                                                    android:text=", "
+                                                    android:textSize="14sp" />
 
                                                 <TextView
                                                     android:id="@+id/nextEventTime"
@@ -182,18 +200,10 @@
                                                     android:layout_height="wrap_content"
                                                     android:text="time"
                                                     android:textColor="#000000"
-                                                    android:textSize="12sp" />
+                                                    android:textSize="14sp" />
                                             </LinearLayout>
 
                                         </LinearLayout>
-
-                                        <ImageView
-                                            android:id="@+id/showMoreButton"
-                                            android:layout_width="wrap_content"
-                                            android:layout_height="40dp"
-                                            android:layout_gravity="center_vertical"
-                                            android:layout_weight="1"
-                                            app:srcCompat="@drawable/arrow_event" />
 
                                     </LinearLayout>
 
@@ -201,7 +211,6 @@
                                         android:layout_width="match_parent"
                                         android:layout_height="wrap_content"
                                         android:layout_marginTop="10dp"
-                                        android:layout_marginBottom="10dp"
                                         android:gravity="center"
                                         android:orientation="horizontal">
 
@@ -212,7 +221,7 @@
                                             android:paddingEnd="5dp"
                                             android:text="0"
                                             android:textColor="@color/colorPrimary"
-                                            android:textSize="20sp"
+                                            android:textSize="18sp"
                                             android:textStyle="bold" />
 
                                         <TextView
@@ -221,7 +230,7 @@
                                             android:layout_height="wrap_content"
                                             android:paddingEnd="5dp"
                                             android:text="/"
-                                            android:textSize="20sp"
+                                            android:textSize="18sp"
                                             android:textStyle="bold" />
 
                                         <TextView
@@ -231,7 +240,7 @@
                                             android:paddingEnd="5dp"
                                             android:text="0"
                                             android:textColor="@color/places_autocomplete_prediction_secondary_text"
-                                            android:textSize="20sp"
+                                            android:textSize="18sp"
                                             android:textStyle="bold" />
 
                                         <TextView
@@ -240,7 +249,7 @@
                                             android:layout_height="wrap_content"
                                             android:text="@string/valided"
                                             android:textColor="@color/places_autocomplete_prediction_secondary_text"
-                                            android:textSize="20sp" />
+                                            android:textSize="18sp" />
 
                                     </LinearLayout>
 
@@ -252,26 +261,11 @@
                                         android:orientation="horizontal">
 
                                         <TextView
-                                            android:id="@+id/textViewAfficher2"
-                                            android:layout_width="match_parent"
-                                            android:layout_height="wrap_content"
-                                            android:layout_gravity="center"
-                                            android:layout_marginEnd="5dp"
-                                            android:layout_weight="1"
-                                            android:background="@drawable/custom_search"
-                                            android:drawableStart="@drawable/ic_baseline_qr_code_30"
-                                            android:drawablePadding="5dp"
-                                            android:gravity="center"
-                                            android:paddingStart="5dp"
-                                            android:paddingEnd="5dp"
-                                            android:text="@string/valid" />
-
-                                        <TextView
                                             android:id="@+id/textViewAfficher3"
                                             android:layout_width="match_parent"
                                             android:layout_height="wrap_content"
                                             android:layout_gravity="center"
-                                            android:layout_marginStart="5dp"
+                                            android:layout_marginEnd="5dp"
                                             android:layout_weight="1"
                                             android:background="@drawable/custom_search"
                                             android:drawableStart="@drawable/ic_baseline_groups_30"
@@ -280,6 +274,22 @@
                                             android:paddingStart="5dp"
                                             android:paddingEnd="5dp"
                                             android:text="@string/participants_uppercase" />
+
+                                        <TextView
+                                            android:id="@+id/showMoreButton"
+                                            android:layout_width="match_parent"
+                                            android:layout_height="wrap_content"
+                                            android:layout_gravity="center"
+                                            android:layout_marginStart="5dp"
+                                            android:layout_weight="1"
+                                            android:background="@drawable/custom_search"
+                                            android:drawableStart="@drawable/ic_baseline_info_30"
+                                            android:drawablePadding="5dp"
+                                            android:gravity="center"
+                                            android:paddingStart="5dp"
+                                            android:paddingEnd="5dp"
+                                            android:text="@string/afficher" />
+
                                     </LinearLayout>
 
                                 </LinearLayout>

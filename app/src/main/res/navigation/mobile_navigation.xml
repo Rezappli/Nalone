@@ -39,10 +39,10 @@
     </fragment>
 
     <fragment
-        android:id="@+id/navigation_messages"
-        android:name="com.nolonely.mobile.ui.message.MessagesFragment"
-        android:label="@string/title_messages"
-        tools:layout="@layout/fragment_messages" />
+        android:id="@+id/navigation_planning"
+        android:name="com.nolonely.mobile.ui.evenements.display.PlanningFragment"
+        android:label="@string/planning"
+        tools:layout="@layout/fragment_planning" />
 
 
     <fragment

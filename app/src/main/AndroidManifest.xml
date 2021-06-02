@@ -33,6 +33,8 @@
         <activity android:name="com.nolonely.mobile.ui.UserListActivity" />
         <activity android:name="com.nolonely.mobile.signUpActivities.WelcomeActivity" />
         <activity android:name="com.nolonely.mobile.signUpActivities.CheckMailValidationActivity" />
+        <activity android:name="com.nolonely.mobile.ui.message.MessagesActivity" />
+        <activity android:name="com.nolonely.mobile.ui.message.NewMessageActivity" />
         <activity android:name="com.nolonely.mobile.signUpActivities.CheckPhoneValidationActivity" />
         <activity android:name="com.nolonely.mobile.signUpActivities.SignUpMainActivity" />
         <activity android:name="com.nolonely.mobile.ui.evenements.display.EventPlanningActivity" />

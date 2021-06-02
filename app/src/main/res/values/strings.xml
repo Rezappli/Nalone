@@ -101,6 +101,8 @@
     <string name="listInvité"> Liste d\'invités </string>
     <string name="listGroup"> Ajouter des membres </string>
 
+    <string name="title_chat">Messagerie</string>
+    <string name="title_new_chat">Nouveau message</string>
     <string name="cancel"> Annuler </string>
     <string name="back"> Retour </string>
     <string name="quand"> Quand ? </string>

@@ -75,7 +75,7 @@ public class PlanningCreationsFragment extends Fragment {
         nextEventDate = view.findViewById(R.id.nextEventDate);
         nextEventTime = view.findViewById(R.id.nextEventTime);
         imageTypeEvent = view.findViewById(R.id.imageTypeEvent);
-        ImageView showMoreButton = view.findViewById(R.id.showMoreButton);
+        TextView showMoreButton = view.findViewById(R.id.showMoreButton);
         linearNext = view.findViewById(R.id.linearNext);
         linearNoResultBis = view.findViewById(R.id.linearNoResultBis);
         progressPlanningRegistration = view.findViewById(R.id.progressPlanningRegistration);
@@ -94,7 +94,7 @@ public class PlanningCreationsFragment extends Fragment {
 
         RecyclerView mRecyclerRegistrations = view.findViewById(R.id.recycleViewPlanningRegistrations);
         eventsRecycler = new ArrayList<>();
-        evenementAdapter = new EvenementAdapter(eventsRecycler, R.layout.item_evenement_bis, false);
+        evenementAdapter = new EvenementAdapter(eventsRecycler, R.layout.item_evenement_creation, false);
         evenementAdapter.setOnItemClickListener(position -> eventsRecycler.get(position).displayEventInfo(getContext(), true));
         mRecyclerRegistrations.setAdapter(evenementAdapter);
         mRecyclerRegistrations.setLayoutManager(new LinearLayoutManager(getContext(), RecyclerView.VERTICAL, false) {

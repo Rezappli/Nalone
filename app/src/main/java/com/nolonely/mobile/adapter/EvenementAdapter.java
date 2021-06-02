@@ -5,7 +5,6 @@ import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -109,9 +108,9 @@ public class EvenementAdapter extends RecyclerView.Adapter<EvenementAdapter.Even
                 }
             });
 
-            if (item == R.layout.item_evenement_bis) {
-                TextView textViewDisplay = itemView.findViewById(R.id.textViewAfficher);
-                textViewDisplay.setOnClickListener(v -> {
+            if (item != R.layout.item_evenement) {
+                ImageView imageViewDisplay = itemView.findViewById(R.id.imageViewAfficher);
+                imageViewDisplay.setOnClickListener(v -> {
                     if (mListener != null) {
                         int position = getAdapterPosition();
                         if (position != RecyclerView.NO_POSITION) {
@@ -122,8 +121,8 @@ public class EvenementAdapter extends RecyclerView.Adapter<EvenementAdapter.Even
             } else {
                 textViewOwnerName = itemView.findViewById(R.id.textViewNameOwner);
                 textViewNbMembers = itemView.findViewById(R.id.textViewNbMembers);
-                Button buttonDisplay = itemView.findViewById(R.id.buttonDisplay);
-                buttonDisplay.setOnClickListener(v -> {
+                TextView textViewAfficher = itemView.findViewById(R.id.textViewAfficher);
+                textViewAfficher.setOnClickListener(v -> {
                     if (mListener != null) {
                         int position = getAdapterPosition();
                         if (position != RecyclerView.NO_POSITION) {
@@ -141,7 +140,7 @@ public class EvenementAdapter extends RecyclerView.Adapter<EvenementAdapter.Even
             this.mCity.setText(e.getCity());
             this.mDate.setText(Constants.getFullDate(d));
             this.mTime.setText(cutString(e.getStartDate(), 5, 11));
-            if (item != R.layout.item_evenement_bis) {
+            if (item == R.layout.item_evenement) {
                 textViewOwnerName.setText(e.getOwnerName());
                 textViewNbMembers.setText(e.getNbMembers() + "");
 

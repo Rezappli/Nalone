@@ -23,6 +23,8 @@ import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
 import com.android.volley.VolleyError;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.nolonely.mobile.enumeration.TypeEvent;
 import com.nolonely.mobile.enumeration.Visibility;
 import com.nolonely.mobile.json.JSONController;
@@ -34,11 +36,9 @@ import com.nolonely.mobile.objects.User;
 import com.nolonely.mobile.signUpActivities.SpinnerAdapter;
 import com.nolonely.mobile.ui.NotificationActivity;
 import com.nolonely.mobile.ui.evenements.creation.MainCreationEventActivity;
-import com.nolonely.mobile.ui.evenements.display.PlanningActivity;
+import com.nolonely.mobile.ui.message.MessagesActivity;
 import com.nolonely.mobile.ui.profil.ProfilActivity;
 import com.nolonely.mobile.util.Constants;
-import com.google.android.material.bottomnavigation.BottomNavigationView;
-import com.google.android.material.bottomsheet.BottomSheetBehavior;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -50,7 +50,7 @@ import static com.nolonely.mobile.util.Constants.USER;
 
 public class HomeActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
 
-    private ImageView buttonBack, buttonNotif, buttonPlanning;
+    private ImageView buttonBack, buttonNotif, buttonChat;
     private CardView cardViewPrivate, cardViewPublic;
     private boolean isOpen = false;
     private ImageView item_profil;
@@ -78,8 +78,8 @@ public class HomeActivity extends AppCompatActivity implements AdapterView.OnIte
         buttonBack = findViewById(R.id.buttonBack);
         buttonBack.setVisibility(View.GONE);
         buttonNotif = findViewById(R.id.buttonNotif);
-        buttonPlanning = findViewById(R.id.buttonPlanning);
-        buttonPlanning.setOnClickListener(v -> startActivity(new Intent(getBaseContext(), PlanningActivity.class)));
+        buttonChat = findViewById(R.id.buttonChat);
+        buttonChat.setOnClickListener(v -> startActivity(new Intent(getBaseContext(), MessagesActivity.class)));
         bottomSheetVisibility = findViewById(R.id.sheetCreateEvent);
         viewGrey = findViewById(R.id.viewGrey);
         cardViewPrivate = findViewById(R.id.cardViewPrivate);
@@ -99,7 +99,7 @@ public class HomeActivity extends AppCompatActivity implements AdapterView.OnIte
 
         buttonBack.setVisibility(View.GONE);
         AppBarConfiguration appBarConfiguration = new AppBarConfiguration.Builder(
-                R.id.navigation_recherche_friends, R.id.navigation_amis, R.id.navigation_evenements, R.id.navigation_messages)
+                R.id.navigation_recherche_friends, R.id.navigation_amis, R.id.navigation_evenements, R.id.navigation_planning)
                 .build();
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
         NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);

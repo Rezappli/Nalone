@@ -50,7 +50,7 @@ import static com.nolonely.mobile.util.Constants.USER;
 public class PlanningRegistrationsFragment extends Fragment {
 
     private ImageView imageTypeEvent;
-    private TextView nextEventName, nextEventCity, nextEventDate, nextEventTime, nextEventStatus, textViewTitleDebut, differenceDate;
+    private TextView nextEventName, nextEventCity, nextEventDate, nextEventTime, nextEventNbMembers, textViewTitleDebut, differenceDate;
     private List<Evenement> eventsNow, eventsSoon, eventsEnd, eventsRecycler;
     private Evenement nextEvent;
     private EvenementAdapter evenementAdapter;
@@ -73,9 +73,9 @@ public class PlanningRegistrationsFragment extends Fragment {
         nextEventCity = view.findViewById(R.id.nextEventCity);
         nextEventDate = view.findViewById(R.id.nextEventDate);
         nextEventTime = view.findViewById(R.id.nextEventTime);
-        nextEventStatus = view.findViewById(R.id.textViewStatus);
+        nextEventNbMembers = view.findViewById(R.id.textViewNbMembers);
         imageTypeEvent = view.findViewById(R.id.imageTypeEvent);
-        ImageView showMoreButton = view.findViewById(R.id.showMoreButton);
+        TextView showMoreButton = view.findViewById(R.id.showMoreButton);
         linearNext = view.findViewById(R.id.linearNext);
         linearNoResultBis = view.findViewById(R.id.linearNoResultBis);
         progressPlanningRegistration = view.findViewById(R.id.progressPlanningRegistration);
@@ -94,7 +94,7 @@ public class PlanningRegistrationsFragment extends Fragment {
 
         RecyclerView mRecyclerRegistrations = view.findViewById(R.id.recycleViewPlanningRegistrations);
         eventsRecycler = new ArrayList<>();
-        evenementAdapter = new EvenementAdapter(eventsRecycler, R.layout.item_evenement_bis, false);
+        evenementAdapter = new EvenementAdapter(eventsRecycler, R.layout.item_evenement_registration, false);
         evenementAdapter.setOnItemClickListener(position -> eventsRecycler.get(position).displayEventInfo(getContext(), true));
         mRecyclerRegistrations.setAdapter(evenementAdapter);
         mRecyclerRegistrations.setLayoutManager(new LinearLayoutManager(getContext(), RecyclerView.VERTICAL, false) {
@@ -343,7 +343,7 @@ public class PlanningRegistrationsFragment extends Fragment {
     }
 
     private void initNextEvent() throws ParseException {
-        nextEvent.replaceFields(nextEventName, nextEventCity, null, nextEventDate, nextEventTime, imageTypeEvent);
+        nextEvent.replaceFields(nextEventName, nextEventCity, nextEventNbMembers, nextEventDate, nextEventTime, imageTypeEvent);
         if (nextEvent.getStatusEvent() == StatusEvent.ENCOURS) {
             textViewTitleDebut.setText(getResources().getString(R.string.event_start_from));
         } else if (nextEvent.getStatusEvent() == BIENTOT) {

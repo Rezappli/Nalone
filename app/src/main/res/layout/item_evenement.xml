@@ -202,17 +202,21 @@
 
                     </LinearLayout>
 
-                    <Button
-                        android:id="@+id/buttonDisplay"
-                        android:layout_width="150dp"
-                        android:layout_height="30dp"
+                    <TextView
+                        android:id="@+id/textViewAfficher"
+                        android:layout_width="100dp"
+                        android:layout_height="wrap_content"
                         android:layout_gravity="center"
                         android:layout_marginTop="10dp"
-                        android:layout_marginBottom="20dp"
+                        android:layout_marginBottom="10dp"
+                        android:layout_weight="1"
                         android:background="@drawable/custom_button_signup"
-                        android:paddingStart="20dp"
-                        android:paddingEnd="20dp"
-                        android:text="@string/afficher" />
+                        android:drawablePadding="5dp"
+                        android:gravity="center"
+                        android:paddingStart="5dp"
+                        android:paddingEnd="5dp"
+                        android:text="@string/afficher"
+                        android:textSize="16sp" />
 
                 </LinearLayout>
 

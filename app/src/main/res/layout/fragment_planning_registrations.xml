@@ -81,189 +81,192 @@
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent">
 
-                        <RelativeLayout
+                        <LinearLayout
                             android:layout_width="match_parent"
-                            android:layout_height="match_parent">
+                            android:layout_height="match_parent"
+                            android:layout_centerHorizontal="true"
+                            android:layout_centerVertical="true"
+                            android:layout_gravity="center"
+                            android:background="@android:color/transparent"
+                            android:orientation="vertical">
 
-                            <androidx.cardview.widget.CardView
-                                android:id="@+id/nextEventStatus"
-                                android:layout_width="100dp"
-                                android:layout_height="20dp"
-                                android:layout_alignParentEnd="true"
-                                android:layout_marginTop="15dp"
-                                android:layout_marginEnd="-20dp"
-                                android:rotation="40"
-                                app:cardBackgroundColor="@color/colorPrimary">
-
-                                <TextView
-                                    android:id="@+id/textViewStatus"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:layout_gravity="center"
-                                    android:text="@string/wait" />
-                            </androidx.cardview.widget.CardView>
-
-                            <LinearLayout
+                            <androidx.constraintlayout.widget.ConstraintLayout
                                 android:layout_width="match_parent"
                                 android:layout_height="match_parent"
-                                android:layout_alignParentBottom="true"
-                                android:layout_centerInParent="true"
-                                android:layout_gravity="center"
-                                android:background="@android:color/transparent"
-                                android:orientation="vertical">
+                                android:layout_weight="1">
 
-                                <RelativeLayout
-                                    android:layout_width="match_parent"
-                                    android:layout_height="match_parent"
-                                    android:layout_weight="1">
-
-                                    <androidx.cardview.widget.CardView
-                                        android:id="@+id/cardViewProfil"
-                                        android:layout_width="50dp"
-                                        android:layout_height="50dp"
-                                        android:layout_centerVertical="true"
-                                        android:layout_gravity="center|clip_vertical"
-                                        android:layout_marginStart="20dp"
-                                        app:cardCornerRadius="150dp">
-
-                                        <ImageView
-                                            android:id="@+id/imagePerson"
-                                            android:layout_width="match_parent"
-                                            android:layout_height="match_parent"
-                                            android:layout_gravity="center"
-                                            android:contentDescription="@string/TODO"
-                                            app:srcCompat="@drawable/ic_round_person_edit_focused" />
-                                    </androidx.cardview.widget.CardView>
+                                <androidx.cardview.widget.CardView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginEnd="24dp"
+                                    app:cardCornerRadius="10dp"
+                                    app:layout_constraintBottom_toBottomOf="@+id/imageEvent"
+                                    app:layout_constraintEnd_toEndOf="parent"
+                                    app:layout_constraintTop_toTopOf="@+id/imageEvent">
 
                                     <ImageView
-                                        android:id="@+id/imageEvent"
-                                        android:layout_width="match_parent"
-                                        android:layout_height="match_parent"
-                                        android:layout_weight="1"
-                                        android:adjustViewBounds="false"
-                                        android:scaleType="fitCenter"
-                                        app:srcCompat="@drawable/ic_baseline_event_24" />
-
-                                    <androidx.cardview.widget.CardView
+                                        android:id="@+id/imageView11"
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
-                                        android:layout_centerInParent="true"
-                                        app:cardBackgroundColor="#23424242"
-                                        app:cardCornerRadius="10dp" />
-                                </RelativeLayout>
+                                        android:layout_gravity="center"
+                                        app:srcCompat="@drawable/ic_baseline_qr_code_50" />
+                                </androidx.cardview.widget.CardView>
 
-                                <View
-                                    android:id="@+id/divider22"
-                                    android:layout_width="match_parent"
-                                    android:layout_height="0.2dp"
-                                    android:background="@android:color/darker_gray" />
-
-                                <RelativeLayout
-                                    android:layout_width="match_parent"
-                                    android:layout_height="match_parent"
-                                    android:layout_weight="1">
+                                <androidx.cardview.widget.CardView
+                                    android:id="@+id/cardViewProfil"
+                                    android:layout_width="50dp"
+                                    android:layout_height="50dp"
+                                    android:layout_marginStart="24dp"
+                                    app:cardCornerRadius="150dp"
+                                    app:layout_constraintBottom_toBottomOf="parent"
+                                    app:layout_constraintStart_toStartOf="parent"
+                                    app:layout_constraintTop_toTopOf="parent">
 
                                     <ImageView
-                                        android:id="@+id/showMoreButton"
-                                        android:layout_width="wrap_content"
-                                        android:layout_height="40dp"
-                                        android:layout_alignParentTop="true"
-                                        android:layout_alignParentEnd="true"
-                                        android:layout_marginTop="50dp"
-                                        android:layout_marginEnd="0dp"
-                                        android:layout_weight="1"
-                                        app:srcCompat="@drawable/arrow_event" />
+                                        android:id="@+id/imagePerson"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="match_parent"
+                                        android:layout_gravity="center"
+                                        android:contentDescription="@string/TODO"
+                                        app:srcCompat="@drawable/ic_round_person_edit_focused" />
+                                </androidx.cardview.widget.CardView>
+
+                                <ImageView
+                                    android:id="@+id/imageEvent"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent"
+                                    android:adjustViewBounds="false"
+                                    android:scaleType="fitCenter"
+                                    app:srcCompat="@drawable/ic_baseline_event_24" />
+
+                            </androidx.constraintlayout.widget.ConstraintLayout>
+
+                            <View
+                                android:id="@+id/divider22"
+                                android:layout_width="match_parent"
+                                android:layout_height="0.2dp"
+                                android:background="@android:color/darker_gray" />
+
+                            <RelativeLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:layout_weight="1">
+
+                                <LinearLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent"
+                                    android:layout_marginStart="5dp"
+                                    android:layout_marginEnd="5dp"
+                                    android:layout_weight="1"
+                                    android:orientation="vertical">
 
                                     <LinearLayout
                                         android:layout_width="match_parent"
-                                        android:layout_height="match_parent"
-                                        android:layout_marginStart="5dp"
-                                        android:layout_marginEnd="5dp"
-                                        android:layout_weight="1"
+                                        android:layout_height="wrap_content"
                                         android:orientation="vertical">
+
+                                        <TextView
+                                            android:id="@+id/nextEventName"
+                                            android:layout_width="wrap_content"
+                                            android:layout_height="wrap_content"
+                                            android:layout_marginTop="5dp"
+                                            android:text="Nom"
+                                            android:textColor="#000000"
+                                            android:textSize="18sp"
+                                            android:textStyle="bold" />
+
+                                        <TextView
+                                            android:id="@+id/nextEventCity"
+                                            android:layout_width="match_parent"
+                                            android:layout_height="wrap_content"
+                                            android:drawableStart="@drawable/ic_baseline_location_on_24"
+                                            android:drawablePadding="5dp"
+                                            android:text="ville"
+                                            android:textColor="#000000"
+                                            android:textSize="14sp" />
 
                                         <LinearLayout
                                             android:layout_width="match_parent"
                                             android:layout_height="wrap_content"
-                                            android:orientation="vertical">
+                                            android:orientation="horizontal">
 
                                             <TextView
-                                                android:id="@+id/nextEventName"
+                                                android:id="@+id/nextEventDate"
                                                 android:layout_width="wrap_content"
                                                 android:layout_height="wrap_content"
-                                                android:layout_marginTop="5dp"
-                                                android:text="Nom"
+                                                android:drawableStart="@drawable/ic_baseline_calendar_today_24"
+                                                android:drawablePadding="5dp"
+                                                android:text="date"
                                                 android:textColor="#000000"
+                                                android:textSize="14sp" />
+
+                                            <TextView
+                                                android:id="@+id/textView66"
+                                                android:layout_width="wrap_content"
+                                                android:layout_height="wrap_content"
+                                                android:text=", " />
+
+                                            <TextView
+                                                android:id="@+id/nextEventTime"
+                                                android:layout_width="match_parent"
+                                                android:layout_height="wrap_content"
+                                                android:text="time"
+                                                android:textColor="#000000"
+                                                android:textSize="14sp" />
+                                        </LinearLayout>
+
+                                        <LinearLayout
+                                            android:layout_width="match_parent"
+                                            android:layout_height="match_parent"
+                                            android:layout_marginTop="10dp"
+                                            android:gravity="center"
+                                            android:orientation="horizontal">
+
+                                            <TextView
+                                                android:id="@+id/textViewNbMembers"
+                                                android:layout_width="wrap_content"
+                                                android:layout_height="wrap_content"
+                                                android:paddingEnd="5dp"
+                                                android:text="@string/participants"
                                                 android:textSize="18sp"
                                                 android:textStyle="bold" />
 
                                             <TextView
-                                                android:id="@+id/nextEventCity"
-                                                android:layout_width="match_parent"
+                                                android:id="@+id/textView42"
+                                                android:layout_width="wrap_content"
                                                 android:layout_height="wrap_content"
-                                                android:drawableStart="@drawable/ic_baseline_location_on_24"
-                                                android:drawablePadding="5dp"
-                                                android:text="ville"
-                                                android:textColor="#000000"
-                                                android:textSize="14sp" />
-
-                                            <LinearLayout
-                                                android:layout_width="match_parent"
-                                                android:layout_height="wrap_content"
-                                                android:orientation="horizontal">
-
-                                                <TextView
-                                                    android:id="@+id/nextEventDate"
-                                                    android:layout_width="wrap_content"
-                                                    android:layout_height="wrap_content"
-                                                    android:drawableStart="@drawable/ic_baseline_calendar_today_24"
-                                                    android:drawablePadding="5dp"
-                                                    android:text="date"
-                                                    android:textColor="#000000"
-                                                    android:textSize="14sp" />
-
-                                                <TextView
-                                                    android:id="@+id/textView66"
-                                                    android:layout_width="wrap_content"
-                                                    android:layout_height="wrap_content"
-                                                    android:text=", " />
-
-                                                <TextView
-                                                    android:id="@+id/nextEventTime"
-                                                    android:layout_width="match_parent"
-                                                    android:layout_height="wrap_content"
-                                                    android:text="time"
-                                                    android:textColor="#000000"
-                                                    android:textSize="14sp" />
-                                            </LinearLayout>
+                                                android:text="@string/participants"
+                                                android:textSize="18sp" />
 
                                         </LinearLayout>
 
-                                        <RelativeLayout
-                                            android:layout_width="match_parent"
-                                            android:layout_height="match_parent">
-
-                                            <TextView
-                                                android:id="@+id/textViewAfficher3"
-                                                android:layout_width="match_parent"
-                                                android:layout_height="wrap_content"
-                                                android:layout_centerInParent="true"
-                                                android:layout_marginStart="70dp"
-                                                android:layout_marginTop="5dp"
-                                                android:layout_marginEnd="70dp"
-                                                android:layout_marginBottom="10dp"
-                                                android:background="@drawable/custom_search"
-                                                android:drawableStart="@drawable/ic_baseline_qr_code_30"
-                                                android:drawablePadding="5dp"
-                                                android:gravity="center"
-                                                android:paddingEnd="10dp"
-                                                android:text="@string/qr_code_event" />
-                                        </RelativeLayout>
+                                        <TextView
+                                            android:id="@+id/showMoreButton"
+                                            android:layout_width="150dp"
+                                            android:layout_height="wrap_content"
+                                            android:layout_gravity="center"
+                                            android:layout_marginStart="5dp"
+                                            android:layout_marginTop="10dp"
+                                            android:layout_marginBottom="10dp"
+                                            android:layout_weight="1"
+                                            android:background="@drawable/custom_search"
+                                            android:drawableStart="@drawable/ic_baseline_info_30"
+                                            android:drawablePadding="5dp"
+                                            android:gravity="center"
+                                            android:paddingStart="5dp"
+                                            android:paddingEnd="5dp"
+                                            android:text="@string/afficher" />
 
                                     </LinearLayout>
-                                </RelativeLayout>
 
-                            </LinearLayout>
+                                </LinearLayout>
+                            </RelativeLayout>
+
+                        </LinearLayout>
+
+                        <RelativeLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent">
 
                             <androidx.cardview.widget.CardView
                                 android:id="@+id/cardTypeEvent"
@@ -285,13 +288,6 @@
                             </androidx.cardview.widget.CardView>
 
                         </RelativeLayout>
-
-                        <LinearLayout
-                            android:layout_width="wrap_content"
-                            android:layout_height="match_parent"
-                            android:orientation="horizontal">
-
-                        </LinearLayout>
 
                     </androidx.cardview.widget.CardView>
 

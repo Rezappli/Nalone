@@ -34,7 +34,6 @@ import com.nolonely.mobile.json.JSONObjectCrypt;
 import com.nolonely.mobile.listeners.JSONArrayListener;
 import com.nolonely.mobile.listeners.JSONObjectListener;
 import com.nolonely.mobile.objects.User;
-import com.nolonely.mobile.ui.message.ChatActivityFriend;
 import com.nolonely.mobile.util.Constants;
 
 import org.json.JSONArray;
@@ -80,7 +79,7 @@ public class AmisFragment extends Fragment {
         final SwipeRefreshLayout mSwipeRefreshLayout = rootView.findViewById(R.id.AmisSwipeRefreshLayout);
         loading = rootView.findViewById(R.id.loading);
         ImageView imagePerson = rootView.findViewById(R.id.imagePerson);
-        
+
         search_bar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -180,8 +179,7 @@ public class AmisFragment extends Fragment {
 
             @Override
             public void onMessageClick(int position) {
-                ChatActivityFriend.USER_LOAD = friends.get(position);
-                startActivity(new Intent(getContext(), ChatActivityFriend.class));
+                friends.get(position).launchChat(getContext(), getActivity());
             }
         });
     }
