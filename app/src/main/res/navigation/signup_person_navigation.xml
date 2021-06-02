@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/signUpInfosFragment"
-        android:name="com.example.nalone.signUpActivities.SignUpInfosFragment"
+        android:name="com.nolonely.mobile.signUpActivities.SignUpInfosFragment"
         android:label="fragment_sign_up_infos"
         tools:layout="@layout/fragment_sign_up_infos">
         <action
@@ -16,7 +16,7 @@
     </fragment>
     <fragment
         android:id="@+id/signUpLocationFragment"
-        android:name="com.example.nalone.signUpActivities.SignUpLocationFragment"
+        android:name="com.nolonely.mobile.signUpActivities.SignUpLocationFragment"
         android:label="fragment_sign_up_location"
         tools:layout="@layout/fragment_sign_up_location">
         <action
@@ -28,7 +28,7 @@
     </fragment>
     <fragment
         android:id="@+id/signUpLoginFragment"
-        android:name="com.example.nalone.signUpActivities.SignUpLoginFragment"
+        android:name="com.nolonely.mobile.signUpActivities.SignUpLoginFragment"
         android:label="fragment_sign_up_login"
         tools:layout="@layout/fragment_sign_up_login">
         <action

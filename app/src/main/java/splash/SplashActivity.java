@@ -11,21 +11,21 @@ import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.android.volley.VolleyError;
-import com.example.nalone.HomeActivity;
-import com.example.nalone.MainActivity;
-import com.example.nalone.R;
-import com.example.nalone.json.JSONController;
-import com.example.nalone.json.JSONObjectCrypt;
-import com.example.nalone.listeners.JSONObjectListener;
-import com.example.nalone.objects.User;
-import com.example.nalone.ui.profil.ParametresActivity;
-import com.example.nalone.util.Constants;
+import com.nolonely.mobile.HomeActivity;
+import com.nolonely.mobile.MainActivity;
+import com.nolonely.mobile.R;
+import com.nolonely.mobile.json.JSONController;
+import com.nolonely.mobile.json.JSONObjectCrypt;
+import com.nolonely.mobile.listeners.JSONObjectListener;
+import com.nolonely.mobile.objects.User;
+import com.nolonely.mobile.ui.profil.ParametresActivity;
+import com.nolonely.mobile.util.Constants;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import static com.example.nalone.util.Constants.USER;
-import static com.example.nalone.util.Constants.range;
+import static com.nolonely.mobile.util.Constants.USER;
+import static com.nolonely.mobile.util.Constants.range;
 
 public class SplashActivity extends AppCompatActivity {
 

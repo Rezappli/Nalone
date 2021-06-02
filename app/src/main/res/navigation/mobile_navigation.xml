@@ -7,13 +7,13 @@
 
     <fragment
         android:id="@+id/navigation_evenements"
-        android:name="com.example.nalone.ui.evenements.display.EventFragment"
+        android:name="com.nolonely.mobile.ui.evenements.display.EventFragment"
         android:label="@string/title_evenements"
         tools:layout="@layout/fragment_event" />
 
     <fragment
         android:id="@+id/navigation_recherche_friends"
-        android:name="com.example.nalone.ui.recherche.RechercheAmisFragment"
+        android:name="com.nolonely.mobile.ui.recherche.RechercheAmisFragment"
         android:label="@string/title_recherche"
         tools:layout="@layout/fragment_recherche_amis">
         <action
@@ -27,7 +27,7 @@
 
     <fragment
         android:id="@+id/navigation_amis"
-        android:name="com.example.nalone.ui.amis.display.AmisFragment"
+        android:name="com.nolonely.mobile.ui.amis.display.AmisFragment"
         android:label="@string/title_amis"
         tools:layout="@layout/fragment_mes_amis">
         <action
@@ -40,14 +40,14 @@
 
     <fragment
         android:id="@+id/navigation_messages"
-        android:name="com.example.nalone.ui.message.MessagesFragment"
+        android:name="com.nolonely.mobile.ui.message.MessagesFragment"
         android:label="@string/title_messages"
         tools:layout="@layout/fragment_messages" />
 
 
     <fragment
         android:id="@+id/navigation_camera"
-        android:name="com.example.nalone.dialog.CameraFragment"
+        android:name="com.nolonely.mobile.dialog.CameraFragment"
         android:label="@string/quitter"
         tools:layout="@layout/activity_camera">
         <action
@@ -60,7 +60,7 @@
 
     <fragment
         android:id="@+id/navigation_edit_group"
-        android:name="com.example.nalone.ui.amis.display.EditGroupFragment"
+        android:name="com.nolonely.mobile.ui.amis.display.EditGroupFragment"
         android:label="@string/edit_group"
         tools:layout="@layout/fragment_edit_group">
         <action
@@ -73,7 +73,7 @@
 
     <fragment
         android:id="@+id/navigation_popup_mes_groupes"
-        android:name="com.example.nalone.ui.amis.display.PopUpMesGroupesFragment"
+        android:name="com.nolonely.mobile.ui.amis.display.PopUpMesGroupesFragment"
         android:label="@string/edit_group"
         tools:layout="@layout/fragment_pop_up_mes_groupes">
         <action
@@ -86,7 +86,7 @@
 
     <fragment
         android:id="@+id/navigation_mes_groupes"
-        android:name="com.example.nalone.ui.amis.display.MesGroupeFragment"
+        android:name="com.nolonely.mobile.ui.amis.display.MesGroupeFragment"
         android:label="@string/title_recherche"
         tools:layout="@layout/fragment_mes_groupe">
         <action
@@ -100,7 +100,7 @@
 
     <fragment
         android:id="@+id/navigation_group"
-        android:name="com.example.nalone.ui.amis.display.GroupeFragment"
+        android:name="com.nolonely.mobile.ui.amis.display.GroupeFragment"
         android:label="@string/listGroup"
         tools:layout="@layout/fragment_groupe">
         <action
@@ -110,7 +110,7 @@
 
     <fragment
         android:id="@+id/navigation_recherche"
-        android:name="com.example.nalone.ui.recherche.RechercheFragment"
+        android:name="com.nolonely.mobile.ui.recherche.RechercheFragment"
         android:label="@string/title_recherche"
         tools:layout="@layout/fragment_recherche">
         <action

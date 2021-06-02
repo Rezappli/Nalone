@@ -1,4 +1,4 @@
-package com.example.nalone;
+package com.nolonely.mobile;
 
 import org.junit.Test;
 
