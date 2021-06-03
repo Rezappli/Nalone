@@ -6,22 +6,6 @@
     android:layout_height="match_parent"
     tools:context=".ui.evenements.display.EventListFragment">
 
-    <androidx.cardview.widget.CardView
-        android:id="@+id/cardViewLoading"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        app:cardCornerRadius="100dp">
-
-        <ProgressBar
-            android:id="@+id/progressBar4"
-            style="@android:style/Widget.DeviceDefault.Light.ProgressBar.Inverse"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_margin="10dp" />
-    </androidx.cardview.widget.CardView>
-
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -188,11 +172,16 @@
         android:background="#39292929"
         android:visibility="gone" />
 
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
-    </RelativeLayout>
+    <ProgressBar
+        android:id="@+id/loading"
+        style="@android:style/Widget.DeviceDefault.Light.ProgressBar.Inverse"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="10dp"
+        android:layout_marginBottom="10dp" />
 
     <androidx.core.widget.NestedScrollView
         android:id="@+id/sheetFilter"

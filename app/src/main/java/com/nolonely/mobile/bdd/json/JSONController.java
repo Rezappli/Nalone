@@ -1,4 +1,4 @@
-package com.nolonely.mobile.json;
+package com.nolonely.mobile.bdd.json;
 
 import android.content.Context;
 import android.os.Build;
@@ -17,10 +17,10 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.HttpHeaderParser;
 import com.android.volley.toolbox.JsonRequest;
 import com.android.volley.toolbox.Volley;
+import com.google.gson.Gson;
 import com.nolonely.mobile.listeners.JSONArrayListener;
 import com.nolonely.mobile.listeners.JSONObjectListener;
 import com.nolonely.mobile.util.CryptoUtils;
-import com.google.gson.Gson;
 
 import org.json.JSONArray;
 import org.json.JSONException;

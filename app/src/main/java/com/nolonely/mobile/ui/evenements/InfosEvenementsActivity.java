@@ -23,10 +23,10 @@ import androidx.cardview.widget.CardView;
 
 import com.android.volley.VolleyError;
 import com.nolonely.mobile.R;
+import com.nolonely.mobile.bdd.json.JSONController;
+import com.nolonely.mobile.bdd.json.JSONObjectCrypt;
 import com.nolonely.mobile.enumeration.StatusEvent;
 import com.nolonely.mobile.enumeration.Visibility;
-import com.nolonely.mobile.json.JSONController;
-import com.nolonely.mobile.json.JSONObjectCrypt;
 import com.nolonely.mobile.listeners.JSONObjectListener;
 import com.nolonely.mobile.objects.Evenement;
 import com.nolonely.mobile.util.Constants;
@@ -55,7 +55,7 @@ public class InfosEvenementsActivity extends AppCompatActivity {
     private TextView textViewInscription;
     private ImageView imageEvenement, buttonPartager;
     private TextView diffDate;
-    private Handler handler = new Handler();
+    private Handler handler;
     private boolean inscrit;
     private TextView textViewPartager;
     private TextView textViewTitleDebut;

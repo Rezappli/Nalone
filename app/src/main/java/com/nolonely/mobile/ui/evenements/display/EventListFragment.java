@@ -16,23 +16,26 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.SearchView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
-import androidx.cardview.widget.CardView;
 import androidx.fragment.app.DialogFragment;
-import androidx.fragment.app.Fragment;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.android.volley.VolleyError;
+import com.google.android.material.bottomsheet.BottomSheetBehavior;
+import com.nolonely.mobile.NoLonelyFragment;
 import com.nolonely.mobile.R;
 import com.nolonely.mobile.adapter.EvenementAdapter;
 import com.nolonely.mobile.adapter.FilterAdapter;
+import com.nolonely.mobile.bdd.json.JSONController;
+import com.nolonely.mobile.bdd.json.JSONObjectCrypt;
 import com.nolonely.mobile.dialog.SelectDateFragment;
 import com.nolonely.mobile.enumeration.filter.FiltreDate;
 import com.nolonely.mobile.enumeration.filter.FiltreEvent;
@@ -40,13 +43,10 @@ import com.nolonely.mobile.enumeration.filter.FiltreOwner;
 import com.nolonely.mobile.enumeration.filter.FiltrePrice;
 import com.nolonely.mobile.enumeration.filter.FiltreSort;
 import com.nolonely.mobile.enumeration.filter.FiltreType;
-import com.nolonely.mobile.json.JSONController;
-import com.nolonely.mobile.json.JSONObjectCrypt;
 import com.nolonely.mobile.listeners.JSONArrayListener;
 import com.nolonely.mobile.objects.Evenement;
 import com.nolonely.mobile.ui.evenements.InfosEvenementsActivity;
 import com.nolonely.mobile.util.Constants;
-import com.google.android.material.bottomsheet.BottomSheetBehavior;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -61,7 +61,7 @@ import static com.nolonely.mobile.dialog.SelectDateFragment.ACTION_RECEIVE_DATE;
 import static com.nolonely.mobile.dialog.SelectDateFragment.EXTRA_START_DATE;
 import static com.nolonely.mobile.util.Constants.USER;
 
-public class EventListFragment extends Fragment {
+public class EventListFragment extends NoLonelyFragment {
 
     private LinearLayout linearNoResult;
     private SearchView searchView;
@@ -80,7 +80,7 @@ public class EventListFragment extends Fragment {
     private RecyclerView recyclerFilter;
     private List<Evenement> evenementList;
     private boolean hasChange;
-    private CardView cardViewLoading;
+    private ProgressBar loading;
     private ImageView buttonBack;
     private View rootView;
     private List<String> listFilterName;
@@ -93,7 +93,7 @@ public class EventListFragment extends Fragment {
                 currentDate = FiltreDate.OTHER;
                 textViewDate.setText(intent.getStringExtra(EXTRA_START_DATE));
                 bottomExpandedToCollapsed();
-                getEventFiltred();
+                checkInternetConnection();
             }
         }
     };
@@ -120,7 +120,7 @@ public class EventListFragment extends Fragment {
         currentPrice = null;
         currentLocation = USER.getCity();
 
-        cardViewLoading = rootView.findViewById(R.id.cardViewLoading);
+        loading = rootView.findViewById(R.id.loading);
 
         viewGrey = rootView.findViewById(R.id.viewGrey);
         viewGrey.setOnClickListener(v -> bottomExpandedToCollapsed());
@@ -133,7 +133,7 @@ public class EventListFragment extends Fragment {
                 switch (state) {
                     case BottomSheetBehavior.STATE_COLLAPSED:
                         if (hasChange) {
-                            getEventFiltred();
+                            checkInternetConnection();
                         }
                         viewGrey.setVisibility(View.GONE);
                         break;
@@ -157,9 +157,10 @@ public class EventListFragment extends Fragment {
 
         initTextViewSort();
         initRecyclerView();
-        getEventFiltred();
+        checkInternetConnection();
         return rootView;
     }
+
 
     @Override
     public void onResume() {
@@ -235,7 +236,7 @@ public class EventListFragment extends Fragment {
     @RequiresApi(api = Build.VERSION_CODES.O)
     private void getEventFiltred() {
         linearNoResult.setVisibility(View.GONE);
-        cardViewLoading.setVisibility(View.VISIBLE);
+        loading.setVisibility(View.VISIBLE);
         JSONObjectCrypt params = new JSONObjectCrypt();
 
         params.putCryptParameter("uid", USER.getUid());
@@ -277,7 +278,7 @@ public class EventListFragment extends Fragment {
                     } else {
                         linearNoResult.setVisibility(View.GONE);
                     }
-                    cardViewLoading.setVisibility(View.GONE);
+                    loading.setVisibility(View.GONE);
                     hasChange = false;
                 } catch (JSONException e) {
                     Log.w("Response", "Erreur:" + e.getMessage());
@@ -400,4 +401,9 @@ public class EventListFragment extends Fragment {
         bottomSheetBehaviorFilter.setState(BottomSheetBehavior.STATE_COLLAPSED);
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    @Override
+    protected void doInHaveInternetConnection() {
+        getEventFiltred();
+    }
 }

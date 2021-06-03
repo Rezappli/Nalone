@@ -16,13 +16,6 @@ import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.android.volley.VolleyError;
-import com.nolonely.mobile.json.JSONController;
-import com.nolonely.mobile.json.JSONObjectCrypt;
-import com.nolonely.mobile.listeners.JSONObjectListener;
-import com.nolonely.mobile.objects.User;
-import com.nolonely.mobile.signUpActivities.SignUpMainActivity;
-import com.nolonely.mobile.util.Constants;
-import com.nolonely.mobile.util.CryptoUtils;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
@@ -30,6 +23,13 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.SignInButton;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.Task;
+import com.nolonely.mobile.bdd.json.JSONController;
+import com.nolonely.mobile.bdd.json.JSONObjectCrypt;
+import com.nolonely.mobile.listeners.JSONObjectListener;
+import com.nolonely.mobile.objects.User;
+import com.nolonely.mobile.signUpActivities.SignUpMainActivity;
+import com.nolonely.mobile.util.Constants;
+import com.nolonely.mobile.util.CryptoUtils;
 
 import org.json.JSONException;
 import org.json.JSONObject;

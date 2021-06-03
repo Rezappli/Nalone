@@ -32,17 +32,17 @@ import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.navigation.NavController;
 
 import com.android.volley.VolleyError;
+import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.nolonely.mobile.R;
+import com.nolonely.mobile.bdd.json.JSONController;
+import com.nolonely.mobile.bdd.json.JSONObjectCrypt;
 import com.nolonely.mobile.enumeration.ImageType;
 import com.nolonely.mobile.enumeration.TypeEvent;
 import com.nolonely.mobile.enumeration.Visibility;
-import com.nolonely.mobile.json.JSONController;
-import com.nolonely.mobile.json.JSONObjectCrypt;
 import com.nolonely.mobile.listeners.JSONObjectListener;
 import com.nolonely.mobile.objects.Evenement;
 import com.nolonely.mobile.signUpActivities.SpinnerAdapter;
 import com.nolonely.mobile.util.Constants;
-import com.google.android.material.bottomsheet.BottomSheetBehavior;
 
 import org.json.JSONObject;
 

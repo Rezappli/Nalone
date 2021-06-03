@@ -11,14 +11,14 @@ import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 
 import com.android.volley.VolleyError;
-import com.nolonely.mobile.R;
-import com.nolonely.mobile.json.JSONController;
-import com.nolonely.mobile.json.JSONObjectCrypt;
-import com.nolonely.mobile.listeners.JSONObjectListener;
-import com.nolonely.mobile.util.Constants;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.material.textfield.TextInputEditText;
+import com.nolonely.mobile.R;
+import com.nolonely.mobile.bdd.json.JSONController;
+import com.nolonely.mobile.bdd.json.JSONObjectCrypt;
+import com.nolonely.mobile.listeners.JSONObjectListener;
+import com.nolonely.mobile.util.Constants;
 
 import org.json.JSONObject;
 

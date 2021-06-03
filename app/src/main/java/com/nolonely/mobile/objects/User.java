@@ -31,6 +31,21 @@ public class User implements Serializable {
     }
 
 
+    public User(String uid, String name, String pseudo, String city, String number, String mail, String description, int number_events_create, int number_events_attend, String image_url, double latitude, double longitude) {
+        this.uid = uid;
+        this.name = name;
+        this.pseudo = pseudo;
+        this.city = city;
+        this.number = number;
+        this.mail = mail;
+        this.description = description;
+        this.number_events_create = number_events_create;
+        this.number_events_attend = number_events_attend;
+        this.image_url = image_url;
+        this.latitude = latitude;
+        this.longitude = longitude;
+    }
+
     public User(String uid, String name, String pseudo, String city,
                 String number, String mail,
                 String description) {

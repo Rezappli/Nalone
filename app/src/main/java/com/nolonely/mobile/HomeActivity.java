@@ -15,7 +15,6 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
@@ -25,10 +24,10 @@ import androidx.navigation.ui.NavigationUI;
 import com.android.volley.VolleyError;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
+import com.nolonely.mobile.bdd.json.JSONController;
+import com.nolonely.mobile.bdd.json.JSONObjectCrypt;
 import com.nolonely.mobile.enumeration.TypeEvent;
 import com.nolonely.mobile.enumeration.Visibility;
-import com.nolonely.mobile.json.JSONController;
-import com.nolonely.mobile.json.JSONObjectCrypt;
 import com.nolonely.mobile.listeners.JSONArrayListener;
 import com.nolonely.mobile.listeners.JSONObjectListener;
 import com.nolonely.mobile.objects.Evenement;
@@ -48,8 +47,8 @@ import java.util.UUID;
 import static com.nolonely.mobile.util.Constants.USER;
 
 
-public class HomeActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
-
+public class HomeActivity extends NoLonelyActivity implements AdapterView.OnItemSelectedListener {
+    
     private ImageView buttonBack, buttonNotif, buttonChat;
     private CardView cardViewPrivate, cardViewPublic;
     private boolean isOpen = false;

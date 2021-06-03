@@ -8,8 +8,8 @@ import android.view.ViewGroup;
 import androidx.fragment.app.Fragment;
 import androidx.viewpager.widget.ViewPager;
 
-import com.nolonely.mobile.R;
 import com.google.android.material.tabs.TabLayout;
+import com.nolonely.mobile.R;
 
 public class EventFragment extends Fragment {
 
@@ -32,6 +32,5 @@ public class EventFragment extends Fragment {
         viewPager.setAdapter(adapter);
         tabLayout.setupWithViewPager(viewPager);
         return view;
-
     }
 }

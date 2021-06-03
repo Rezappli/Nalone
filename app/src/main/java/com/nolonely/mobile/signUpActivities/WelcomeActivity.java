@@ -18,14 +18,14 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.android.volley.VolleyError;
 import com.bumptech.glide.Glide;
+import com.google.android.material.textfield.TextInputEditText;
 import com.nolonely.mobile.HomeActivity;
 import com.nolonely.mobile.R;
-import com.nolonely.mobile.json.JSONController;
-import com.nolonely.mobile.json.JSONObjectCrypt;
+import com.nolonely.mobile.bdd.json.JSONController;
+import com.nolonely.mobile.bdd.json.JSONObjectCrypt;
 import com.nolonely.mobile.listeners.JSONObjectListener;
 import com.nolonely.mobile.objects.User;
 import com.nolonely.mobile.util.Constants;
-import com.google.android.material.textfield.TextInputEditText;
 
 import org.json.JSONObject;
 
@@ -100,7 +100,7 @@ public class WelcomeActivity extends AppCompatActivity {
         photoPickerIntent.setType("image/*");
         startActivityForResult(photoPickerIntent, RESULT_LOAD_IMG);
     }
- 
+
     @RequiresApi(api = Build.VERSION_CODES.O)
     private void checkDescription() {
         if (!signUpDescription.getText().toString().matches("")) {

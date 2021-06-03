@@ -1,4 +1,4 @@
-package com.nolonely.mobile.json;
+package com.nolonely.mobile.bdd.json;
 
 import android.os.Build;
 import android.util.Log;
