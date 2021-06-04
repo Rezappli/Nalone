@@ -16,10 +16,8 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.cardview.widget.CardView;
-import androidx.navigation.NavController;
-import androidx.navigation.Navigation;
-import androidx.navigation.ui.AppBarConfiguration;
-import androidx.navigation.ui.NavigationUI;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 
 import com.android.volley.VolleyError;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -34,9 +32,13 @@ import com.nolonely.mobile.objects.Evenement;
 import com.nolonely.mobile.objects.User;
 import com.nolonely.mobile.signUpActivities.SpinnerAdapter;
 import com.nolonely.mobile.ui.NotificationActivity;
+import com.nolonely.mobile.ui.amis.display.AmisFragment;
 import com.nolonely.mobile.ui.evenements.creation.MainCreationEventActivity;
+import com.nolonely.mobile.ui.evenements.display.EventFragment;
+import com.nolonely.mobile.ui.evenements.display.PlanningFragment;
 import com.nolonely.mobile.ui.message.MessagesActivity;
 import com.nolonely.mobile.ui.profil.ProfilActivity;
+import com.nolonely.mobile.ui.recherche.RechercheAmisFragment;
 import com.nolonely.mobile.util.Constants;
 
 import org.json.JSONArray;
@@ -47,8 +49,8 @@ import java.util.UUID;
 import static com.nolonely.mobile.util.Constants.USER;
 
 
-public class HomeActivity extends NoLonelyActivity implements AdapterView.OnItemSelectedListener {
-    
+public class HomeActivity extends JSONActivity implements AdapterView.OnItemSelectedListener {
+
     private ImageView buttonBack, buttonNotif, buttonChat;
     private CardView cardViewPrivate, cardViewPublic;
     private boolean isOpen = false;
@@ -62,6 +64,14 @@ public class HomeActivity extends NoLonelyActivity implements AdapterView.OnItem
     private boolean typeChoosed;
 
 
+    final Fragment fragment1 = new EventFragment();
+    final Fragment fragment2 = new PlanningFragment();
+    final Fragment fragment3 = new RechercheAmisFragment();
+    final Fragment fragment4 = new AmisFragment();
+    final FragmentManager fm = getSupportFragmentManager();
+
+    Fragment active = fragment1;
+
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,10 +79,16 @@ public class HomeActivity extends NoLonelyActivity implements AdapterView.OnItem
         setContentView(R.layout.activity_home);
         getSupportActionBar().hide();
 
+        BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.nav_view);
+        navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
+
+        fm.beginTransaction().add(R.id.main_container, fragment4, "4").hide(fragment4).commit();
+        fm.beginTransaction().add(R.id.main_container, fragment3, "3").hide(fragment3).commit();
+        fm.beginTransaction().add(R.id.main_container, fragment2, "2").hide(fragment2).commit();
+        fm.beginTransaction().add(R.id.main_container, fragment1, "1").commit();
+
         typeChoosed = false;
         scheduleJob();
-
-        BottomNavigationView navView = findViewById(R.id.nav_view);
 
         buttonBack = findViewById(R.id.buttonBack);
         buttonBack.setVisibility(View.GONE);
@@ -97,13 +113,6 @@ public class HomeActivity extends NoLonelyActivity implements AdapterView.OnItem
         buttonNotif.setOnClickListener(v -> startActivity(new Intent(getBaseContext(), NotificationActivity.class)));
 
         buttonBack.setVisibility(View.GONE);
-        AppBarConfiguration appBarConfiguration = new AppBarConfiguration.Builder(
-                R.id.navigation_recherche_friends, R.id.navigation_amis, R.id.navigation_evenements, R.id.navigation_planning)
-                .build();
-        NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
-        NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
-        NavigationUI.setupWithNavController(navView, navController);
-
 
         Spinner spin = (Spinner) findViewById(R.id.spinnerType);
         spin.setOnItemSelectedListener(this);
@@ -178,6 +187,31 @@ public class HomeActivity extends NoLonelyActivity implements AdapterView.OnItem
 
 
     }
+
+    private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
+            = item -> {
+        switch (item.getItemId()) {
+            case R.id.navigation_evenements:
+                fm.beginTransaction().hide(active).show(fragment1).commit();
+                active = fragment1;
+                return true;
+
+            case R.id.navigation_planning:
+                fm.beginTransaction().hide(active).show(fragment2).commit();
+                active = fragment2;
+                return true;
+
+            case R.id.navigation_recherche_friends:
+                fm.beginTransaction().hide(active).show(fragment3).commit();
+                active = fragment3;
+                return true;
+            case R.id.navigation_amis:
+                fm.beginTransaction().hide(active).show(fragment4).commit();
+                active = fragment4;
+                return true;
+        }
+        return false;
+    };
 
     /**
      * Méthode permettant de mettre à jour les informations de l'utilisateur avant d'ouvrir la page de profil

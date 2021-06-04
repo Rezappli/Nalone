@@ -15,14 +15,12 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
-import androidx.navigation.NavController;
-import androidx.navigation.Navigation;
 
-import com.nolonely.mobile.R;
 import com.google.android.gms.vision.CameraSource;
 import com.google.android.gms.vision.Detector;
 import com.google.android.gms.vision.barcode.Barcode;
 import com.google.android.gms.vision.barcode.BarcodeDetector;
+import com.nolonely.mobile.R;
 
 import java.io.IOException;
 
@@ -34,7 +32,6 @@ public class CameraFragment extends Fragment {
     private BarcodeDetector barcodeDetector;
     private CameraSource cameraSource;
     final int RequestCameraPermissionID = 1001;
-    private NavController navController;
     private boolean found;
 
     @Override
@@ -61,7 +58,6 @@ public class CameraFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.activity_camera, container, false);
 
         found = false;
-        navController = Navigation.findNavController(getActivity(), R.id.nav_host_fragment);
         cameraPreview = rootView.findViewById(R.id.camerPreview);
 
         barcodeDetector = new BarcodeDetector.Builder(getContext())

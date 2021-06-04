@@ -10,7 +10,6 @@ import android.widget.SearchView;
 import androidx.biometric.BiometricPrompt;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
-import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
@@ -49,9 +48,8 @@ public class MessagesFragment extends Fragment {
 
     private void createFragment() {
         search_bar = rootView.findViewById(R.id.search_bar_amis);
-        navController = Navigation.findNavController(getActivity(), R.id.nav_host_fragment);
+        //navController = Navigation.findNavController(getActivity(), R.id.nav_host_fragment);
         mRecyclerView = rootView.findViewById(R.id.recyclerViewMessagesAmis);
         mSwipeRefreshLayout = rootView.findViewById(R.id.messageFriendSwipeRefreshLayout);
-
     }
 }

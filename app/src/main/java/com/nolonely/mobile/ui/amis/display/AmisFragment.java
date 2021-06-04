@@ -20,8 +20,6 @@ import android.widget.Toast;
 import androidx.annotation.RequiresApi;
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
-import androidx.navigation.NavController;
-import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
@@ -49,7 +47,6 @@ import static com.nolonely.mobile.util.Constants.USER;
 public class AmisFragment extends Fragment {
 
     private SearchView search_bar;
-    private NavController navController;
     private View rootView;
     private RecyclerView mRecyclerView;
     private List<User> friends;
@@ -74,7 +71,6 @@ public class AmisFragment extends Fragment {
         resultat = rootView.findViewById(R.id.resultatText_amis);
         resultat.setVisibility(View.GONE);
         linearSansMesAmis = rootView.findViewById(R.id.linearSansMesAmis);
-        navController = Navigation.findNavController(getActivity(), R.id.nav_host_fragment);
         mRecyclerView = rootView.findViewById(R.id.recyclerViewMesAmis);
         final SwipeRefreshLayout mSwipeRefreshLayout = rootView.findViewById(R.id.AmisSwipeRefreshLayout);
         loading = rootView.findViewById(R.id.loading);

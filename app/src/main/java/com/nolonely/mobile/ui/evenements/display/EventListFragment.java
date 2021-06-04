@@ -30,7 +30,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.android.volley.VolleyError;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
-import com.nolonely.mobile.NoLonelyFragment;
+import com.nolonely.mobile.JSONFragment;
 import com.nolonely.mobile.R;
 import com.nolonely.mobile.adapter.EvenementAdapter;
 import com.nolonely.mobile.adapter.FilterAdapter;
@@ -61,7 +61,7 @@ import static com.nolonely.mobile.dialog.SelectDateFragment.ACTION_RECEIVE_DATE;
 import static com.nolonely.mobile.dialog.SelectDateFragment.EXTRA_START_DATE;
 import static com.nolonely.mobile.util.Constants.USER;
 
-public class EventListFragment extends NoLonelyFragment {
+public class EventListFragment extends JSONFragment {
 
     private LinearLayout linearNoResult;
     private SearchView searchView;
@@ -93,7 +93,7 @@ public class EventListFragment extends NoLonelyFragment {
                 currentDate = FiltreDate.OTHER;
                 textViewDate.setText(intent.getStringExtra(EXTRA_START_DATE));
                 bottomExpandedToCollapsed();
-                checkInternetConnection();
+                launchJSONCall();
             }
         }
     };
@@ -133,7 +133,7 @@ public class EventListFragment extends NoLonelyFragment {
                 switch (state) {
                     case BottomSheetBehavior.STATE_COLLAPSED:
                         if (hasChange) {
-                            checkInternetConnection();
+                            launchJSONCall();
                         }
                         viewGrey.setVisibility(View.GONE);
                         break;
@@ -157,7 +157,7 @@ public class EventListFragment extends NoLonelyFragment {
 
         initTextViewSort();
         initRecyclerView();
-        checkInternetConnection();
+        launchJSONCall();
         return rootView;
     }
 

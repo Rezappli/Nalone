@@ -17,7 +17,6 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.cardview.widget.CardView;
-import androidx.fragment.app.Fragment;
 
 import com.android.volley.VolleyError;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -31,6 +30,7 @@ import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.maps.android.clustering.ClusterManager;
+import com.nolonely.mobile.JSONFragment;
 import com.nolonely.mobile.R;
 import com.nolonely.mobile.bdd.json.JSONController;
 import com.nolonely.mobile.bdd.json.JSONObjectCrypt;
@@ -58,7 +58,7 @@ import static com.nolonely.mobile.util.Constants.USER;
 import static com.nolonely.mobile.util.Constants.range;
 
 
-public class EventMapFragment extends Fragment implements OnMapReadyCallback {
+public class EventMapFragment extends JSONFragment implements OnMapReadyCallback {
 
     private View rootView;
 
@@ -202,8 +202,6 @@ public class EventMapFragment extends Fragment implements OnMapReadyCallback {
             updateMap(VisibilityMap.CREATE);
             currentVisibilityMap = VisibilityMap.CREATE;
         });
-
-
     }
 
 
@@ -251,81 +249,13 @@ public class EventMapFragment extends Fragment implements OnMapReadyCallback {
             mMap.moveCamera(CameraUpdateFactory.newCameraPosition(posCam));
         }
 
-        JSONObjectCrypt params = new JSONObjectCrypt();
-        params.putCryptParameter("uid", USER.getUid());
-        params.putCryptParameter("filter", PUBLIC.toString());
-
-
-        JSONController.getJsonArrayFromUrl(Constants.URL_NEARBY_EVENTS, getContext(), params, new JSONArrayListener() {
-            @Override
-            public void onJSONReceived(JSONArray jsonArray) {
-                Log.w("Response", "Value:" + jsonArray.toString());
-                try {
-                    publicList = new ArrayList<>();
-
-                    if (jsonArray.length() > 0) {
-                        for (int i = 0; i < jsonArray.length(); i++) {
-                            publicList.add((Evenement) JSONController.convertJSONToObject(jsonArray.getJSONObject(i), Evenement.class));
-                        }
-                    }
-                    checkJSONReceived();
-                } catch (JSONException e) {
-                    Log.w("Response", "Erreur:" + e.getMessage());
-                    Toast.makeText(getContext(), getResources().getString(R.string.error_event), Toast.LENGTH_SHORT).show();
-                }
-
-            }
-
-            @Override
-            public void onJSONReceivedError(VolleyError volleyError) {
-                Log.w("Response", "Erreur:" + volleyError.toString());
-                Toast.makeText(getContext(), getResources().getString(R.string.error_event), Toast.LENGTH_SHORT).show();
-            }
-        });
-
-
-        JSONObjectCrypt params1 = new JSONObjectCrypt();
-        params1.putCryptParameter("uid", USER.getUid());
-        params1.putCryptParameter("filter", FRIEND.toString());
-
-        JSONController.getJsonArrayFromUrl(Constants.URL_NEARBY_EVENTS, getContext(), params1, new JSONArrayListener() {
-            @Override
-            public void onJSONReceived(JSONArray jsonArray) {
-                Log.w("Response", "Value:" + jsonArray.toString());
-                try {
-                    friendList = new ArrayList<>();
-
-                    if (jsonArray.length() > 0) {
-                        for (int i = 0; i < jsonArray.length(); i++) {
-                            friendList.add((Evenement) JSONController.convertJSONToObject(jsonArray.getJSONObject(i), Evenement.class));
-                        }
-                    }
-
-                    checkJSONReceived();
-                    updateCircle();
-                } catch (JSONException e) {
-                    Log.w("Response", "Erreur:" + e.getMessage());
-                    Toast.makeText(getContext(), getResources().getString(R.string.error_event), Toast.LENGTH_SHORT).show();
-                }
-
-            }
-
-            @Override
-            public void onJSONReceivedError(VolleyError volleyError) {
-                Log.w("Response", "Erreur:" + volleyError.toString());
-                Toast.makeText(getContext(), getResources().getString(R.string.error_event), Toast.LENGTH_SHORT).show();
-            }
-        });
-
-
-        loading.setVisibility(View.GONE);
-
-
+        launchJSONCall();
     }
 
     @RequiresApi(api = Build.VERSION_CODES.M)
     private void checkJSONReceived() {
         if (friendList != null && publicList != null) {
+            loading.setVisibility(View.GONE);
             updateMap(ALL);
         }
     }
@@ -480,6 +410,7 @@ public class EventMapFragment extends Fragment implements OnMapReadyCallback {
             mapViewBundel = new Bundle();
             outState.putBundle(MAPVIEW_BUNDLE_KEY, mapViewBundel);
         }
+
     }
 
     @Override
@@ -493,4 +424,76 @@ public class EventMapFragment extends Fragment implements OnMapReadyCallback {
         mMapView.onStop();
         super.onStop();
     }
+
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    @Override
+    protected void doInHaveInternetConnection() {
+        JSONObjectCrypt params = new JSONObjectCrypt();
+        params.putCryptParameter("uid", USER.getUid());
+        params.putCryptParameter("filter", PUBLIC.toString());
+
+
+        JSONController.getJsonArrayFromUrl(Constants.URL_NEARBY_EVENTS, getContext(), params, new JSONArrayListener() {
+            @Override
+            public void onJSONReceived(JSONArray jsonArray) {
+                Log.w("Response", "Value:" + jsonArray.toString());
+                try {
+                    publicList = new ArrayList<>();
+
+                    if (jsonArray.length() > 0) {
+                        for (int i = 0; i < jsonArray.length(); i++) {
+                            publicList.add((Evenement) JSONController.convertJSONToObject(jsonArray.getJSONObject(i), Evenement.class));
+                        }
+                    }
+                    checkJSONReceived();
+                } catch (JSONException e) {
+                    Log.w("Response", "Erreur:" + e.getMessage());
+                    Toast.makeText(getContext(), getResources().getString(R.string.error_event), Toast.LENGTH_SHORT).show();
+                }
+
+            }
+
+            @Override
+            public void onJSONReceivedError(VolleyError volleyError) {
+                Log.w("Response", "Erreur:" + volleyError.toString());
+                Toast.makeText(getContext(), getResources().getString(R.string.error_event), Toast.LENGTH_SHORT).show();
+            }
+        });
+
+
+        JSONObjectCrypt params1 = new JSONObjectCrypt();
+        params1.putCryptParameter("uid", USER.getUid());
+        params1.putCryptParameter("filter", FRIEND.toString());
+
+        JSONController.getJsonArrayFromUrl(Constants.URL_NEARBY_EVENTS, getContext(), params1, new JSONArrayListener() {
+            @Override
+            public void onJSONReceived(JSONArray jsonArray) {
+                Log.w("Response", "Value:" + jsonArray.toString());
+                try {
+                    friendList = new ArrayList<>();
+
+                    if (jsonArray.length() > 0) {
+                        for (int i = 0; i < jsonArray.length(); i++) {
+                            friendList.add((Evenement) JSONController.convertJSONToObject(jsonArray.getJSONObject(i), Evenement.class));
+                        }
+                    }
+
+                    checkJSONReceived();
+                    updateCircle();
+                } catch (JSONException e) {
+                    Log.w("Response", "Erreur:" + e.getMessage());
+                    Toast.makeText(getContext(), getResources().getString(R.string.error_event), Toast.LENGTH_SHORT).show();
+                }
+
+            }
+
+            @Override
+            public void onJSONReceivedError(VolleyError volleyError) {
+                Log.w("Response", "Erreur:" + volleyError.toString());
+                Toast.makeText(getContext(), getResources().getString(R.string.error_event), Toast.LENGTH_SHORT).show();
+            }
+        });
+
+    }
+
 }

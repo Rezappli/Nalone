@@ -15,7 +15,7 @@ import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.fragment.app.Fragment;
 
-public abstract class NoLonelyFragment extends Fragment {
+public abstract class JSONFragment extends Fragment {
 
 
     @Override
@@ -37,7 +37,7 @@ public abstract class NoLonelyFragment extends Fragment {
         return true;
     }
 
-    protected void checkInternetConnection() {
+    protected void launchJSONCall() {
         handler = new Handler();
         handler.postDelayed(runnable, 0);
     }

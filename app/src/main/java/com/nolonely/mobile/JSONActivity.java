@@ -6,7 +6,7 @@ import android.net.NetworkInfo;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-public class NoLonelyActivity extends AppCompatActivity {
+public class JSONActivity extends AppCompatActivity {
 
     protected boolean haveInternetConnection() {
         // Fonction haveInternetConnection : return true si connecté, return false dans le cas contraire

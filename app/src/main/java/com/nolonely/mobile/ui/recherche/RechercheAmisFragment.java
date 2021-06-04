@@ -18,7 +18,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
-import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
@@ -93,7 +92,7 @@ public class RechercheAmisFragment extends Fragment {
         search_bar = rootView.findViewById(R.id.search_bar);
         resultat = rootView.findViewById(R.id.resultatText);
         resultat.setVisibility(View.GONE);
-        navController = Navigation.findNavController(getActivity(), R.id.nav_host_fragment);
+        //navController = Navigation.findNavController(getActivity(), R.id.nav_host_fragment);
 
         mRecyclerView = rootView.findViewById(R.id.recyclerView);
 
