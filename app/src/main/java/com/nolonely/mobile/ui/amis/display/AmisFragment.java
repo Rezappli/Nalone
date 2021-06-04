@@ -143,6 +143,43 @@ public class AmisFragment extends Fragment {
         });
     }
 
+    private void setupRecyclerViewWithSearch(List<User> list) {
+        Log.w("Recherche", "Taille liste : " + list.size());
+        MyFriendsAdapter mAdapter = new MyFriendsAdapter(list);
+        mAdapter.setOnItemClickListener(new MyFriendsAdapter.OnItemClickListener() {
+            @Override
+            public void onDisplayClick(int position) {
+                showPopUpProfil(friends.get(position));
+            }
+
+            @RequiresApi(api = Build.VERSION_CODES.O)
+            @Override
+            public void onDeleteClick(int position) {
+                removeFriend(friends.get(position));
+            }
+
+            @RequiresApi(api = Build.VERSION_CODES.M)
+            @Override
+            public void onCallClick(int position) {
+                if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.CALL_PHONE)
+                        != PackageManager.PERMISSION_GRANTED) {
+                    getActivity().requestPermissions(new String[]{Manifest.permission.CALL_PHONE}, 0);
+                    return;
+                }
+                Intent callIntent = new Intent(Intent.ACTION_CALL);
+                callIntent.setData(Uri.parse("tel:" + friends.get(position).getNumber()));
+                startActivity(callIntent);
+            }
+
+            @Override
+            public void onMessageClick(int position) {
+                friends.get(position).launchChat(getContext(), getActivity(), false);
+            }
+        });
+        mRecyclerView.setAdapter(mAdapter);
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+    }
+
     private void configureRecyclerViewAmis() {
         MyFriendsAdapter mAdapter = new MyFriendsAdapter(this.friends);
         this.mRecyclerView.setAdapter(mAdapter);
@@ -175,7 +212,7 @@ public class AmisFragment extends Fragment {
 
             @Override
             public void onMessageClick(int position) {
-                friends.get(position).launchChat(getContext(), getActivity());
+                friends.get(position).launchChat(getContext(), getActivity(), false);
             }
         });
     }

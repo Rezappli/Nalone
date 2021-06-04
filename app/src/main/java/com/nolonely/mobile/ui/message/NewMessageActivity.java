@@ -46,7 +46,7 @@ public class NewMessageActivity extends AppCompatActivity {
         recyclerViewMessagesAmis = findViewById(R.id.recyclerViewMessagesAmis);
         searchUserAdapter = new SearchUserAdapter(friendList);
         searchUserAdapter.setOnItemClickListener(position -> {
-            friendList.get(position).launchChat(getBaseContext(), this);
+            friendList.get(position).launchChat(getBaseContext(), this, true);
         });
         recyclerViewMessagesAmis.setAdapter(searchUserAdapter);
         recyclerViewMessagesAmis.setLayoutManager(new LinearLayoutManager(getBaseContext()));

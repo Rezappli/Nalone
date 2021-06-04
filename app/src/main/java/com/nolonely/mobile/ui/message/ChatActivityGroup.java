@@ -5,14 +5,17 @@ import android.os.Bundle;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+
+import com.google.android.material.textfield.TextInputEditText;
 import com.nolonely.mobile.R;
 import com.nolonely.mobile.objects.Group;
 import com.nolonely.mobile.objects.Message;
-import com.google.android.material.textfield.TextInputEditText;
+
 import static com.nolonely.mobile.util.Constants.ON_MESSAGE_ACTIVITY;
 
 public class ChatActivityGroup extends AppCompatActivity {
@@ -49,7 +52,7 @@ public class ChatActivityGroup extends AppCompatActivity {
         nameUser = findViewById(R.id.nameUser);
         nameUser.setText(GROUP_LOAD.getName());
         mRecyclerView = findViewById(R.id.messagesRecyclerView);
-        profile_view = findViewById(R.id.profile_view);
+        //profile_view = findViewById(R.id.profile_view);
 
     }
 

@@ -45,17 +45,18 @@
                         tools:ignore="MissingConstraints">
 
                         <ImageView
-                            android:id="@+id/profile_view"
+                            android:id="@+id/chatUserImageView"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:layout_gravity="center"
-                            android:contentDescription="@string/TODO" />
+                            android:contentDescription="@string/TODO"
+                            app:srcCompat="@drawable/ic_round_person_edit_focused" />
 
 
                     </androidx.cardview.widget.CardView>
 
                     <ImageView
-                        android:id="@+id/imageView19"
+                        android:id="@+id/chatImageBack"
                         android:layout_width="25dp"
                         android:layout_height="25dp"
                         android:layout_centerVertical="true"

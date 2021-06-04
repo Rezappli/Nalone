@@ -76,6 +76,10 @@
     <string name="title_evenements"> Événements </string>
     <string name="title_messages"> Messages </string>
     <string name="title_profil"> Profil </string>
+    <string name="error_get_messages"> Une erreur inconnue est survenue lors de chargement de la conversation </string>
+    <string name="error_get_channel"> Une erreur inconnue est survenue lors de chargement de la conversation avec cet utilisateur </string>
+    <string name="error_creating_channel"> Une erreur inconnue est survenue lors de la création de la conversation </string>
+    <string name="error_channel_already_exist"> Une conversation existe déjà </string>
     <string name="choixCI"> Séléctionnez 5 centres d\'intérêt</string>
     <string name="choixDepa"> Sélectionnez votre département </string>
     <string name="ci_sport"> Sport </string>

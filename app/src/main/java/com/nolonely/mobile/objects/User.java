@@ -167,9 +167,10 @@ public class User implements Serializable {
         context.startActivity(intent);
     }
 
-    public void launchChat(Context context, Activity activity) {
+    public void launchChat(Context context, Activity activity, Boolean newChat) {
         Intent intent = new Intent(context, ChatActivityFriend.class);
         intent.putExtra("user", this);
+        intent.putExtra("newChat", newChat);
         activity.startActivity(intent);
     }
 

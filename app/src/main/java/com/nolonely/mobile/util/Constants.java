@@ -71,10 +71,6 @@ public class Constants {
 
     public static Application application;
 
-    public static int ID_NOTIFICATION_GLOBAL = 100;
-    public static int ID_NOTIFICATION_INVITATIONS = 101;
-    public static int ID_NOTIFICATION_MESSAGES = 102;
-
     public static boolean ON_MESSAGE_ACTIVITY = false;
     public static boolean ON_FRIENDS_ACTIVITY = false;
 
@@ -126,6 +122,11 @@ public class Constants {
 
     public static String URL_UPDATE_ME = BASE_API_URL + "/update_me.php";
     public static String URL_TEST = BASE_API_URL + "/test.php";
+
+    public static String URl_GET_MESSAGES_CHANNEL = BASE_API_URL + "/get_messages_channel";
+    public static String URl_CREATE_MESSAGES_CHANNEL = BASE_API_URL + "/create_messages_channel";
+    public static String URl_SEND_MESSAGES = BASE_API_URL + "/send_message";
+    public static String URl_GET_MESSAGES = BASE_API_URL + "/get_messages";
 
     public static final float margin_percentage = 3.5142f;
 
@@ -191,6 +192,12 @@ public class Constants {
         });
     }
 
+    /**
+     * Convert a date with first caracter upper
+     *
+     * @param d
+     * @return
+     */
     public static String getFullDate(Date d) {
         String s = Constants.formatD.format(d);
         String temp = "";
