@@ -72,12 +72,16 @@ public class HomeActivity extends JSONActivity implements AdapterView.OnItemSele
 
     Fragment active = fragment1;
 
+    private CardView cardViewNoConnection;
+
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
         getSupportActionBar().hide();
+
+        cardViewNoConnection = findViewById(R.id.cardViewNoConnection);
 
         BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.nav_view);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
@@ -342,5 +346,15 @@ public class HomeActivity extends JSONActivity implements AdapterView.OnItemSele
                 Log.w("Response", "Value:" + volleyError.toString());
             }
         });
+    }
+
+    @Override
+    protected void displayNoConnection() {
+        cardViewNoConnection.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    protected void hiddeNoConnection() {
+        cardViewNoConnection.setVisibility(View.GONE);
     }
 }

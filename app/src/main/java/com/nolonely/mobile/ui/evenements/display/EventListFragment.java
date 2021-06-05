@@ -27,6 +27,7 @@ import androidx.fragment.app.DialogFragment;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.android.volley.VolleyError;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
@@ -77,6 +78,7 @@ public class EventListFragment extends JSONFragment {
     private FiltrePrice currentPrice;
     private String currentLocation;
     private EvenementAdapter mAdapter;
+    private RecyclerView mRecycler;
     private RecyclerView recyclerFilter;
     private List<Evenement> evenementList;
     private boolean hasChange;
@@ -85,6 +87,8 @@ public class EventListFragment extends JSONFragment {
     private View rootView;
     private List<String> listFilterName;
     private List<Drawable> listFilterImage;
+    private SwipeRefreshLayout swipeContainer;
+
     private final BroadcastReceiver receiverDate = new BroadcastReceiver() {
         @RequiresApi(api = Build.VERSION_CODES.O)
         @Override
@@ -93,6 +97,9 @@ public class EventListFragment extends JSONFragment {
                 currentDate = FiltreDate.OTHER;
                 textViewDate.setText(intent.getStringExtra(EXTRA_START_DATE));
                 bottomExpandedToCollapsed();
+                linearNoResult.setVisibility(View.GONE);
+                loading.setVisibility(View.VISIBLE);
+                mRecycler.setVisibility(View.INVISIBLE);
                 launchJSONCall();
             }
         }
@@ -105,6 +112,19 @@ public class EventListFragment extends JSONFragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         rootView = inflater.inflate(R.layout.fragment_home_list, container, false);
+
+        swipeContainer = rootView.findViewById(R.id.swipeRefreshListEvent);
+
+        swipeContainer.setColorSchemeResources(android.R.color.holo_blue_bright);
+
+        swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @RequiresApi(api = Build.VERSION_CODES.O)
+            @Override
+            public void onRefresh() {
+                launchJSONCall();
+            }
+        });
+
         linearNoResult = rootView.findViewById(R.id.linearNoResult);
         searchView = rootView.findViewById(R.id.searchViewSheet);
         searchView.setQueryHint("Recherche");
@@ -133,6 +153,9 @@ public class EventListFragment extends JSONFragment {
                 switch (state) {
                     case BottomSheetBehavior.STATE_COLLAPSED:
                         if (hasChange) {
+                            linearNoResult.setVisibility(View.GONE);
+                            loading.setVisibility(View.VISIBLE);
+                            mRecycler.setVisibility(View.INVISIBLE);
                             launchJSONCall();
                         }
                         viewGrey.setVisibility(View.GONE);
@@ -221,7 +244,7 @@ public class EventListFragment extends JSONFragment {
         recyclerFilter = rootView.findViewById(R.id.recyclerViewFilter);
         titleFilter = rootView.findViewById(R.id.titleFilter);
         evenementList = new ArrayList<>();
-        RecyclerView mRecycler = rootView.findViewById(R.id.recyclerViewHomeList);
+        mRecycler = rootView.findViewById(R.id.recyclerViewHomeList);
         mAdapter = new EvenementAdapter(this.evenementList, R.layout.item_evenement, false);
         mAdapter.setOnItemClickListener(position -> {
             Intent intent = new Intent(getContext(), InfosEvenementsActivity.class);
@@ -235,8 +258,7 @@ public class EventListFragment extends JSONFragment {
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     private void getEventFiltred() {
-        linearNoResult.setVisibility(View.GONE);
-        loading.setVisibility(View.VISIBLE);
+
         JSONObjectCrypt params = new JSONObjectCrypt();
 
         params.putCryptParameter("uid", USER.getUid());
@@ -268,6 +290,7 @@ public class EventListFragment extends JSONFragment {
             @Override
             public void onJSONReceived(JSONArray jsonArray) {
                 try {
+                    mRecycler.setVisibility(View.VISIBLE);
                     evenementList.clear();
                     for (int i = 0; i < jsonArray.length(); i++) {
                         evenementList.add((Evenement) JSONController.convertJSONToObject(jsonArray.getJSONObject(i), Evenement.class));
@@ -279,6 +302,8 @@ public class EventListFragment extends JSONFragment {
                         linearNoResult.setVisibility(View.GONE);
                     }
                     loading.setVisibility(View.GONE);
+                    swipeContainer.setRefreshing(false);
+
                     hasChange = false;
                 } catch (JSONException e) {
                     Log.w("Response", "Erreur:" + e.getMessage());

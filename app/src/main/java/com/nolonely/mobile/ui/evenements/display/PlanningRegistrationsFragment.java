@@ -309,11 +309,8 @@ public class PlanningRegistrationsFragment extends Fragment {
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     private void callEventSoon() {
-        JSONObjectCrypt params = new JSONObjectCrypt();
 
-        params.putCryptParameter("uid", USER.getUid());
-        params.putCryptParameter("status", BIENTOT);
-        JSONController.getJsonArrayFromUrl(Constants.URL_EVENT_NEXT, getContext(), params, new JSONArrayListener() {
+        JSONController.getJsonArrayFromUrl(Constants.URL_EVENT_NEXT, getContext(), JSONParams(BIENTOT), new JSONArrayListener() {
             @Override
             public void onJSONReceived(JSONArray jsonArray) {
                 Log.w("Response", "Value:" + jsonArray.toString());

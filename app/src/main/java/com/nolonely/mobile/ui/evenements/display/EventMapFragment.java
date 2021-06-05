@@ -97,6 +97,7 @@ public class EventMapFragment extends JSONFragment implements OnMapReadyCallback
                              Bundle savedInstanceState) {
         rootView = inflater.inflate(R.layout.fragment_map, container, false);
 
+
         mMapView = rootView.findViewById(R.id.mapView);
         if (USER != null) {
             initGoogleMap(savedInstanceState);
@@ -428,11 +429,11 @@ public class EventMapFragment extends JSONFragment implements OnMapReadyCallback
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     protected void doInHaveInternetConnection() {
+
         JSONObjectCrypt params = new JSONObjectCrypt();
         params.putCryptParameter("uid", USER.getUid());
         params.putCryptParameter("filter", PUBLIC.toString());
-
-
+        
         JSONController.getJsonArrayFromUrl(Constants.URL_NEARBY_EVENTS, getContext(), params, new JSONArrayListener() {
             @Override
             public void onJSONReceived(JSONArray jsonArray) {
@@ -495,5 +496,6 @@ public class EventMapFragment extends JSONFragment implements OnMapReadyCallback
         });
 
     }
+
 
 }

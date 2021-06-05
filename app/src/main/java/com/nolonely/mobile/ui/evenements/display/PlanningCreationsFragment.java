@@ -198,14 +198,22 @@ public class PlanningCreationsFragment extends Fragment {
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
-    private void callNextEvent() {
-        nextEvent = null;
+    private JSONObjectCrypt JSONParams(StatusEvent statusEvent) {
         JSONObjectCrypt params = new JSONObjectCrypt();
 
         params.putCryptParameter("uid", USER.getUid());
-        params.putCryptParameter("status", BIENTOT);
+        params.putCryptParameter("status", statusEvent);
+        params.putCryptParameter("type", "CREATION");
 
-        JSONController.getJsonArrayFromUrl(Constants.URL_EVENT_NEXT, getContext(), params, new JSONArrayListener() {
+        return params;
+    }
+
+
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    private void callNextEvent() {
+        nextEvent = null;
+
+        JSONController.getJsonArrayFromUrl(Constants.URL_EVENT_NEXT, getContext(), JSONParams(BIENTOT), new JSONArrayListener() {
             @Override
             public void onJSONReceived(JSONArray jsonArray) {
                 Log.w("Response", "Value:" + jsonArray.toString());
@@ -237,12 +245,8 @@ public class PlanningCreationsFragment extends Fragment {
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     private void callEventNow() {
-        JSONObjectCrypt params = new JSONObjectCrypt();
 
-        params.putCryptParameter("uid", USER.getUid());
-        params.putCryptParameter("status", ENCOURS);
-        params.putCryptParameter("type", "CREATION");
-        JSONController.getJsonArrayFromUrl(Constants.URL_EVENT_NEXT, getContext(), params, new JSONArrayListener() {
+        JSONController.getJsonArrayFromUrl(Constants.URL_EVENT_NEXT, getContext(), JSONParams(ENCOURS), new JSONArrayListener() {
             @Override
             public void onJSONReceived(JSONArray jsonArray) {
                 Log.w("Response", "Value:" + jsonArray.toString());
@@ -274,11 +278,9 @@ public class PlanningCreationsFragment extends Fragment {
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     private void callEventEnd() {
-        JSONObjectCrypt params = new JSONObjectCrypt();
 
-        params.putCryptParameter("uid", USER.getUid());
-        params.putCryptParameter("status", FINI);
-        JSONController.getJsonArrayFromUrl(Constants.URL_EVENT_NEXT, getContext(), params, new JSONArrayListener() {
+
+        JSONController.getJsonArrayFromUrl(Constants.URL_EVENT_NEXT, getContext(), JSONParams(FINI), new JSONArrayListener() {
             @Override
             public void onJSONReceived(JSONArray jsonArray) {
                 Log.w("Response", "Value:" + jsonArray.toString());
@@ -313,6 +315,8 @@ public class PlanningCreationsFragment extends Fragment {
 
         params.putCryptParameter("uid", USER.getUid());
         params.putCryptParameter("status", BIENTOT);
+        params.putCryptParameter("type", "CREATION");
+
         JSONController.getJsonArrayFromUrl(Constants.URL_EVENT_NEXT, getContext(), params, new JSONArrayListener() {
             @Override
             public void onJSONReceived(JSONArray jsonArray) {

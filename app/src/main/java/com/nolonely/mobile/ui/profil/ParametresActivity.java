@@ -19,13 +19,14 @@ import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.nolonely.mobile.MainActivity;
-import com.nolonely.mobile.R;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.nolonely.mobile.MainActivity;
+import com.nolonely.mobile.R;
+import com.nolonely.mobile.bdd.sql_lite.DatabaseManager;
 
 import static com.nolonely.mobile.util.Constants.USER;
 import static com.nolonely.mobile.util.Constants.mAuth;
@@ -204,6 +205,8 @@ public class ParametresActivity extends AppCompatActivity {
                         editor.clear();
                         editor.apply();
 
+                        DatabaseManager db = new DatabaseManager(getBaseContext());
+                        db.deleteAll();
                         Intent intent = new Intent(getBaseContext(), MainActivity.class);
                         startActivity(intent);
                     }

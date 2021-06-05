@@ -19,7 +19,7 @@ public class DatabaseManager extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        Log.w("DATABASE", "Created");
+        Log.w("SQLITE", "Created");
         String strSql = "CREATE TABLE users (\n" +
                 "  uid TEXT NOT NULL,\n" +
                 "  name TEXT NOT NULL,\n" +
@@ -46,9 +46,10 @@ public class DatabaseManager extends SQLiteOpenHelper {
     }
 
     public void insertUserConnect(User user) {
-        Log.w("DATABASE", "Inserted");
+        Log.w("SQLITE", "Inserted");
 
-        String strSql = "INSERT INTO users (uid, name, pseudo, city, description, mail, phone, number_events_attend, number_events_create, image_url, latitude, longitude) VALUES " +
+        String strSql = "INSERT INTO users (uid, name, pseudo, city, description, mail, " +
+                "phone, number_events_attend, number_events_create, image_url, latitude, longitude) VALUES " +
                 "('" + user.getUid() + "', '" + user.getName() + "', '" + user.getPseudo() +
                 "','" + user.getCity() + "','" + user.getDescription() + "','" + user.getMail()
                 + "','" + user.getNumber() + "'," + user.getNumber_events_attend()
@@ -56,7 +57,13 @@ public class DatabaseManager extends SQLiteOpenHelper {
         this.getWritableDatabase().execSQL(strSql);
     }
 
+    public void deleteAll() {
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.execSQL("DELETE FROM users");
+    }
+
     public User readMainUser() {
+        Log.w("SQLITE", "READ");
         User user = null;
 
         Cursor cursor = this.getReadableDatabase().rawQuery("select * from users", null);

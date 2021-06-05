@@ -95,6 +95,7 @@
     <string name="quitter"> Quitter </string>
     <string name="terminer"> Terminé </string>
     <string name="textErrorWifi"> Nous ne parvenons pas à établir une connexion. Veuillez verifier l\'état de votre réseau </string>
+    <string name="no_internet_connection"> Aucune connexion, vérifiez votre connexion </string>
     <string name="mdpOublie"> Mot de passe oublié ? </string>
     <string name="title_activity_maps">Map</string>
     <string name="newEvent"> Nouvel évènement </string>

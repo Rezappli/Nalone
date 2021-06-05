@@ -16,13 +16,13 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
-import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.android.volley.VolleyError;
+import com.nolonely.mobile.JSONFragment;
 import com.nolonely.mobile.R;
 import com.nolonely.mobile.adapter.user.SearchUserAdapter;
 import com.nolonely.mobile.bdd.json.JSONController;
@@ -41,7 +41,7 @@ import java.util.List;
 
 import static com.nolonely.mobile.util.Constants.USER;
 
-public class RechercheAmisFragment extends Fragment {
+public class RechercheAmisFragment extends JSONFragment {
 
     private SearchView search_bar;
     private NavController navController;
@@ -116,7 +116,7 @@ public class RechercheAmisFragment extends Fragment {
             }
         });
 
-        getUsers();
+        launchJSONCall();
 
     }
 
@@ -157,6 +157,8 @@ public class RechercheAmisFragment extends Fragment {
                     }
                     loading.setVisibility(View.GONE);
 
+                    swipeContainer.setRefreshing(false);
+
                 } catch (JSONException e) {
                     Log.w("Response", "Valeur" + jsonArray.toString());
                     Log.w("Response", "Erreur:" + e.getMessage());
@@ -178,7 +180,7 @@ public class RechercheAmisFragment extends Fragment {
             @RequiresApi(api = Build.VERSION_CODES.O)
             @Override
             public void onRefresh() {
-                createFragment();
+                launchJSONCall();
             }
         });
     }
@@ -201,6 +203,12 @@ public class RechercheAmisFragment extends Fragment {
     public void onResume() {
         super.onResume();
         createFragment();
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    @Override
+    protected void doInHaveInternetConnection() {
+        getUsers();
     }
 
 

@@ -16,6 +16,7 @@ import com.nolonely.mobile.MainActivity;
 import com.nolonely.mobile.R;
 import com.nolonely.mobile.bdd.json.JSONController;
 import com.nolonely.mobile.bdd.json.JSONObjectCrypt;
+import com.nolonely.mobile.bdd.sql_lite.DatabaseManager;
 import com.nolonely.mobile.listeners.JSONObjectListener;
 import com.nolonely.mobile.objects.User;
 import com.nolonely.mobile.ui.profil.ParametresActivity;
@@ -29,11 +30,14 @@ import static com.nolonely.mobile.util.Constants.range;
 
 public class SplashActivity extends AppCompatActivity {
 
+    DatabaseManager databaseManager;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
 
+        databaseManager = new DatabaseManager(getBaseContext());
         SharedPreferences settings = this.getSharedPreferences(ParametresActivity.SHARED_PREFS, MODE_PRIVATE);
         range = settings.getInt(ParametresActivity.sharedRange, 50);
     }
@@ -51,18 +55,9 @@ public class SplashActivity extends AppCompatActivity {
         Constants.application = getApplication();
         SharedPreferences loginPreferences = getSharedPreferences("login", MODE_PRIVATE);
 
-        if (loginPreferences.contains("mail") && loginPreferences.contains("password")) {
-            try {
-               /* DatabaseManager databaseManager = new DatabaseManager(getBaseContext());
-                if (databaseManager.readMainUser() != null) {
-                    USER = databaseManager.readMainUser();
-                } else {*/
-                verifyUserData(loginPreferences);
-                // }
-            } catch (JSONException e) {
-                Log.w("Response", e.getMessage());
-                launchMainActivity();
-            }
+        if (loginPreferences.contains("mail") && loginPreferences.contains("password") && databaseManager.readMainUser() != null) {
+            USER = databaseManager.readMainUser();
+            launchHomeActivity();
         } else {
             launchMainActivity();
         }
@@ -109,7 +104,7 @@ public class SplashActivity extends AppCompatActivity {
             public void onJSONReceived(JSONObject jsonObject) {
                 Log.w("User", jsonObject.toString());
                 USER = (User) JSONController.convertJSONToObject(jsonObject, User.class);
-                Log.w("User", "Ville : " + USER.getCity());
+                databaseManager.insertUserConnect(USER);
                 launchHomeActivity();
             }
 

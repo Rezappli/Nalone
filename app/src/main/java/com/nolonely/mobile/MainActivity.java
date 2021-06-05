@@ -25,6 +25,7 @@ import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.Task;
 import com.nolonely.mobile.bdd.json.JSONController;
 import com.nolonely.mobile.bdd.json.JSONObjectCrypt;
+import com.nolonely.mobile.bdd.sql_lite.DatabaseManager;
 import com.nolonely.mobile.listeners.JSONObjectListener;
 import com.nolonely.mobile.objects.User;
 import com.nolonely.mobile.signUpActivities.SignUpMainActivity;
@@ -200,8 +201,8 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onJSONReceived(JSONObject jsonObject) {
                 USER = (User) JSONController.convertJSONToObject(jsonObject, User.class);
-                // DatabaseManager databaseManager = new DatabaseManager(getBaseContext());
-                //databaseManager.insertUserConnect(USER);
+                DatabaseManager databaseManager = new DatabaseManager(getBaseContext());
+                databaseManager.insertUserConnect(USER);
                 launchHomeActivity();
             }
 
