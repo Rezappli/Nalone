@@ -53,7 +53,12 @@ public class SplashActivity extends AppCompatActivity {
 
         if (loginPreferences.contains("mail") && loginPreferences.contains("password")) {
             try {
+               /* DatabaseManager databaseManager = new DatabaseManager(getBaseContext());
+                if (databaseManager.readMainUser() != null) {
+                    USER = databaseManager.readMainUser();
+                } else {*/
                 verifyUserData(loginPreferences);
+                // }
             } catch (JSONException e) {
                 Log.w("Response", e.getMessage());
                 launchMainActivity();

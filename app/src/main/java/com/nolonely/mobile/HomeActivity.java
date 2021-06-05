@@ -268,23 +268,7 @@ public class HomeActivity extends JSONActivity implements AdapterView.OnItemSele
     @RequiresApi(api = Build.VERSION_CODES.O)
     private void getNotifications() {
         if (USER != null) {
-            JSONObjectCrypt params = new JSONObjectCrypt();
-            params.putCryptParameter("uid", USER.getUid());
-
-            JSONController.getJsonArrayFromUrl(Constants.URL_NEW_NOTIFICATIONS, HomeActivity.this, params, new JSONArrayListener() {
-                @Override
-                public void onJSONReceived(JSONArray jsonArray) {
-                    if (jsonArray.length() > 0) {
-                        buttonNotif.setImageResource(R.drawable.notification);
-                    }
-                }
-
-                @Override
-                public void onJSONReceivedError(VolleyError volleyError) {
-                    Toast.makeText(HomeActivity.this, getResources().getString(R.string.error_notifications), Toast.LENGTH_SHORT).show();
-                    Log.w("Response", "Value:" + volleyError.toString());
-                }
-            });
+            launchJSONCall();
         }
     }
 
@@ -336,5 +320,27 @@ public class HomeActivity extends JSONActivity implements AdapterView.OnItemSele
     @Override
     public void onNothingSelected(AdapterView<?> parent) {
 
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    @Override
+    protected void doInHaveInternetConnection() {
+        JSONObjectCrypt params = new JSONObjectCrypt();
+        params.putCryptParameter("uid", USER.getUid());
+
+        JSONController.getJsonArrayFromUrl(Constants.URL_NEW_NOTIFICATIONS, HomeActivity.this, params, new JSONArrayListener() {
+            @Override
+            public void onJSONReceived(JSONArray jsonArray) {
+                if (jsonArray.length() > 0) {
+                    buttonNotif.setImageResource(R.drawable.notification);
+                }
+            }
+
+            @Override
+            public void onJSONReceivedError(VolleyError volleyError) {
+                Toast.makeText(HomeActivity.this, getResources().getString(R.string.error_notifications), Toast.LENGTH_SHORT).show();
+                Log.w("Response", "Value:" + volleyError.toString());
+            }
+        });
     }
 }

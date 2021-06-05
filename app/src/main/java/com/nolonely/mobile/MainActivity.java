@@ -200,6 +200,8 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onJSONReceived(JSONObject jsonObject) {
                 USER = (User) JSONController.convertJSONToObject(jsonObject, User.class);
+                // DatabaseManager databaseManager = new DatabaseManager(getBaseContext());
+                //databaseManager.insertUserConnect(USER);
                 launchHomeActivity();
             }
 
