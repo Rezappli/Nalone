@@ -38,7 +38,7 @@ public class Evenement implements Serializable {
     private String ownerName;
     private int price;
     private TypeEvent category;
-    private String image_url;
+    private String image_url_event;
 
     private ArrayList<User> members;
     private boolean isFriendMembers;
@@ -61,7 +61,7 @@ public class Evenement implements Serializable {
         this.price = -1;
         this.category = null;
         this.ownerName = null;
-        this.image_url = null;
+        this.image_url_event = null;
         this.members = new ArrayList<>();
     }
 
@@ -85,7 +85,7 @@ public class Evenement implements Serializable {
         this.status = status;
         this.category = category;
         this.price = price;
-        this.image_url = null;
+        this.image_url_event = null;
     }
 
     public void setOwner_uid(String owner_uid) {
@@ -238,12 +238,12 @@ public class Evenement implements Serializable {
         this.category = eventType;
     }
 
-    public String getImage_url() {
-        return image_url;
+    public String getImage_url_event() {
+        return image_url_event;
     }
 
-    public void setImage_url(String image_url) {
-        this.image_url = image_url;
+    public void setImage_url_event(String image_url_event) {
+        this.image_url_event = image_url_event;
     }
 
     public int getLimitMembers() {

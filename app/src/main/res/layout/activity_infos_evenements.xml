@@ -275,6 +275,44 @@
 
                     </LinearLayout>
 
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:orientation="vertical">
+
+                        <androidx.cardview.widget.CardView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            app:cardCornerRadius="150dp"
+                            app:cardElevation="1dp">
+
+                            <RelativeLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:background="@drawable/custom_border_grey_r150">
+
+                            </RelativeLayout>
+
+                            <ImageView
+                                android:id="@+id/buttonSignaler"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_margin="5dp"
+                                app:srcCompat="@drawable/ic_baseline_report_50" />
+                        </androidx.cardview.widget.CardView>
+
+                        <TextView
+                            android:id="@+id/textViewSignaler"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="5dp"
+                            android:gravity="center"
+                            android:text="@string/report" />
+
+                    </LinearLayout>
+
                 </LinearLayout>
 
                 <TextView

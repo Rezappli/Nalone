@@ -418,7 +418,7 @@ public class MainCreationEventActivity extends AppCompatActivity implements Adap
         try {
             String imageData = BitMapToString(MediaStore.Images.Media.getBitmap(getBaseContext().getContentResolver(), image));
             Constants.uploadImageOnServer(ImageType.EVENT, MainCreationEventActivity.currentEvent.getUid(), imageData, getBaseContext()); //upload image on web server
-            MainCreationEventActivity.currentEvent.setImage_url(Constants.BASE_API_URL + "/" + ImageType.EVENT + "/" + MainCreationEventActivity.currentEvent.getUid());
+            MainCreationEventActivity.currentEvent.setImage_url_event(Constants.BASE_API_URL + "/" + ImageType.EVENT + "/" + MainCreationEventActivity.currentEvent.getUid());
         } catch (IOException e) {
             Log.w("Response", "Erreur: " + e.getMessage());
         }

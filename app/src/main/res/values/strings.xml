@@ -213,6 +213,7 @@
     <string name="qr_code"> Mon QR Code </string>
     <string name="qr_code_event"> QR Code </string>
     <string name="enter_message"> Entrez votre message </string>
+    <string name="error_send_message"> Une erreur est survenue lors de l\'envoi de votre message </string>
     <string name="ajout_desc"> <u>Ajouter une description</u> </string>
     <string name="title_add_participant"> Ajout de participants </string>
     <string name="title_invitation_friend"> Demandes d\'ami </string>
@@ -327,6 +328,7 @@
     <string name="event_not_save">Votre évènement n\'est pas sauvegardé ! \nCette action est irréversible ! Vous vous continuez ?</string>
     <string name="event_error_create">Impossible de créer l\'évènement :(</string>
     <string name="user_error_create">Inscription impossible.. Veuillez réessayer</string>
+    <string name="report"> Signaler </string>
 
     <string name="wait"> Attente </string>
     <string name="canceled"> Annulé </string>
@@ -406,6 +408,20 @@
     <string name="title_message"> NoLonely - Message </string>
     <string name="title_event_soon"> NoLonely - Événement </string>
     <string name="description_event_soon"> Un événement va bientôt démarrer ! </string>
+
+    <!--Strings for report activity -->
+    <string name="title_report"> Vous êtes sur le point de signaler un </string>
+    <string name="deposit_report"> Séléctionner les points à signaler </string>
+    <string name="report_event"> événement </string>
+    <string name="report_user"> utilisateur </string>
+    <string name="report_name"> Le nom </string>
+    <string name="report_image"> La/les photo(s) </string>
+    <string name="report_description"> La description </string>
+    <string name="report_all"> Tous les points </string>
+    <string name="report_other"> Autres </string>
+    <string name="report_certification"> Je certifie que l\'ensemble des informations renseignées sont exactes. En cas de faux signalement, votre compte s\'expose à des sanctions.</string>
+    <string name="report_informations"> Votre message pour les modérateurs.</string>
+    <string name="report_sent"> Votre rapport à été envoyé !</string>
 
 
 </resources>

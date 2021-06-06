@@ -23,6 +23,7 @@ import androidx.cardview.widget.CardView;
 
 import com.android.volley.VolleyError;
 import com.nolonely.mobile.R;
+import com.nolonely.mobile.ReportActivity;
 import com.nolonely.mobile.bdd.json.JSONController;
 import com.nolonely.mobile.bdd.json.JSONObjectCrypt;
 import com.nolonely.mobile.enumeration.StatusEvent;
@@ -53,7 +54,7 @@ public class InfosEvenementsActivity extends AppCompatActivity {
     private int participants;
     private ImageView buttonInscription, ownerImage;
     private TextView textViewInscription;
-    private ImageView imageEvenement, buttonPartager;
+    private ImageView imageEvenement, buttonPartager, buttonSignaler;
     private TextView diffDate;
     private Handler handler;
     private boolean inscrit;
@@ -115,6 +116,14 @@ public class InfosEvenementsActivity extends AppCompatActivity {
             sendIntent.putExtra(Intent.EXTRA_TEXT, "This is my text to send.");
             sendIntent.setType("text/plain");
             startActivity(sendIntent);
+        });
+
+        buttonSignaler = findViewById(R.id.buttonSignaler);
+        buttonSignaler.setOnClickListener(v -> {
+            Intent intent = new Intent(InfosEvenementsActivity.this, ReportActivity.class);
+            intent.putExtra("type", "event");
+            intent.putExtra("uid_report", EVENT_LOAD.getUid());
+            startActivity(intent);
         });
 
 

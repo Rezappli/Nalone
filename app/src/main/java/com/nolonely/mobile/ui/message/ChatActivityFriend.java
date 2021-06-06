@@ -2,6 +2,7 @@ package com.nolonely.mobile.ui.message;
 
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -10,12 +11,14 @@ import android.widget.Toast;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.android.volley.VolleyError;
 import com.google.android.material.textfield.TextInputEditText;
 import com.nolonely.mobile.R;
+import com.nolonely.mobile.adapter.ChatAdapter;
 import com.nolonely.mobile.bdd.json.JSONController;
 import com.nolonely.mobile.bdd.json.JSONObjectCrypt;
 import com.nolonely.mobile.listeners.JSONArrayListener;
@@ -46,6 +49,7 @@ public class ChatActivityFriend extends AppCompatActivity {
     private TextView nameUser;
     private RecyclerView mRecyclerView;
     private ImageView chatImageBack;
+    private ChatAdapter mAdapter;
     private List<Message> messages;
 
     private Chat chatChannel = null;
@@ -54,6 +58,7 @@ public class ChatActivityFriend extends AppCompatActivity {
     private LinearLayout.LayoutParams otherLayoutMessages;
     private CardView newMessagePopUp;
     private SwipeRefreshLayout mSwipeRefreshLayout;
+    private boolean b = false;
 
 
     private boolean newChat = false;
@@ -81,52 +86,62 @@ public class ChatActivityFriend extends AppCompatActivity {
         mRecyclerView = findViewById(R.id.messagesRecyclerView);
 
         chatImageBack.setOnClickListener(v -> finish());
-        buttonSend.setOnClickListener(v -> sendMessage(messageEditText.getText().toString()));
+        buttonSend.setOnClickListener(v -> listenChannel(messageEditText.getText().toString()));
 
         Constants.setUserImage(USER_LOAD, chatUserImageView);
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
-    private void createFragment() {
+    private void listenChannel(String message) {
         if (newChat) {
-            createMessageChannel();
+            createMessageChannel(message);
+        } else if (chatChannel == null) {
+            getChatChannel(message);
         } else {
-            getChatChannel();
+            sendMessage(message);
         }
+
+        messageEditText.setText("");
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
-    private void createMessageChannel() {
+    private void createMessageChannel(String message) {
         String uidChannel = UUID.randomUUID().toString();
         JSONObjectCrypt params = new JSONObjectCrypt();
         params.putCryptParameter("uid", USER.getUid());
         params.putCryptParameter("uid_2", USER_LOAD.getUid());
         params.putCryptParameter("uid_channel", uidChannel);
 
-        JSONController.getJsonObjectFromUrl(Constants.URl_CREATE_MESSAGES_CHANNEL, this, params, new JSONObjectListener() {
+        JSONController.getJsonObjectFromUrl(Constants.URl_CREATE_MESSAGE_CHANNEL, this, params, new JSONObjectListener() {
             @Override
             public void onJSONReceived(JSONObject jsonObject) {
                 if (jsonObject.length() == 3) {
                     chatChannel = new Chat(uidChannel, Constants.formatDayHoursMinutesSeconds.format(new Date(System.currentTimeMillis())));
+                    Log.w("Chat", "Create channel");
+                    newChat = false;
+                    messages = new ArrayList<Message>();
+                    sendMessage(message);
                 } else {
                     Toast.makeText(ChatActivityFriend.this, getResources().getString(R.string.error_channel_already_exist), Toast.LENGTH_SHORT).show();
+                    Log.w("Chat", "Response : " + jsonObject.toString());
                 }
             }
 
             @Override
             public void onJSONReceivedError(VolleyError volleyError) {
                 Toast.makeText(ChatActivityFriend.this, getResources().getString(R.string.error_creating_channel), Toast.LENGTH_SHORT).show();
+                Log.w("Chat", "Erreur : " + volleyError.toString());
             }
         });
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
-    private void getChatChannel() {
+    private void getChatChannel(String message) {
         JSONObjectCrypt params = new JSONObjectCrypt();
         params.putCryptParameter("uid", USER.getUid());
         params.putCryptParameter("uid_2", USER_LOAD.getUid());
 
-        JSONController.getJsonObjectFromUrl(Constants.URl_GET_MESSAGES_CHANNEL, this, params, new JSONObjectListener() {
+        JSONController.getJsonObjectFromUrl(Constants.URl_GET_MESSAGE_CHANNEL, this, params, new JSONObjectListener() {
             @Override
             public void onJSONReceived(JSONObject jsonObject) {
                 chatChannel = (Chat) JSONController.convertJSONToObject(jsonObject, Chat.class);
@@ -146,8 +161,24 @@ public class ChatActivityFriend extends AppCompatActivity {
         if (chatChannel != null) {
             JSONObjectCrypt params = new JSONObjectCrypt();
             params.putCryptParameter("uid", USER.getUid());
-            params.putCryptParameter("uid_channel", chatChannel);
+            params.putCryptParameter("uid_channel", chatChannel.getUidChannel());
             params.putCryptParameter("message", message);
+
+            JSONController.getJsonObjectFromUrl(Constants.URl_SEND_MESSAGES, ChatActivityFriend.this, params, new JSONObjectListener() {
+                @Override
+                public void onJSONReceived(JSONObject jsonObject) {
+                    if (jsonObject.length() == 3) {
+                        Log.w("Chat", "Message have been sent");
+                        updateMessages(chatChannel, 15);
+                    }
+                }
+
+                @Override
+                public void onJSONReceivedError(VolleyError volleyError) {
+                    Toast.makeText(ChatActivityFriend.this, getResources().getString(R.string.error_send_message), Toast.LENGTH_SHORT).show();
+                    Log.w("Chat", "Erreur : " + volleyError.toString());
+                }
+            });
         }
     }
 
@@ -158,6 +189,8 @@ public class ChatActivityFriend extends AppCompatActivity {
         params.putCryptParameter("uid_channel", chatChannel.getUidChannel());
         params.putCryptParameter("limit", limite);
 
+        Log.w("Chat", "Params:" + params.toString());
+
         JSONController.getJsonArrayFromUrl(Constants.URl_GET_MESSAGES, this, params, new JSONArrayListener() {
             @Override
             public void onJSONReceived(JSONArray jsonArray) throws JSONException {
@@ -166,26 +199,29 @@ public class ChatActivityFriend extends AppCompatActivity {
                 }
 
                 if (messages.size() > 0) {
-
-                } else {
-                    //hide recycler
-                    //Show message no message
+                    setupRecyclerViewWithList(messages);
                 }
-                //set adapter
+
 
             }
 
             @Override
             public void onJSONReceivedError(VolleyError volleyError) {
                 Toast.makeText(ChatActivityFriend.this, getResources().getString(R.string.error_get_messages), Toast.LENGTH_SHORT).show();
+                Log.w("Chat", "Response:" + volleyError.toString());
             }
         });
+    }
+
+    private void setupRecyclerViewWithList(List<Message> list) {
+        mAdapter = new ChatAdapter(list);
+        mRecyclerView.setAdapter(mAdapter);
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(ChatActivityFriend.this));
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     public void onResume() {
         super.onResume();
-        createFragment();
     }
 }

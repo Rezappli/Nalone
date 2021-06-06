@@ -123,10 +123,10 @@ public class Constants {
     public static String URL_UPDATE_ME = BASE_API_URL + "/update_me.php";
     public static String URL_TEST = BASE_API_URL + "/test.php";
 
-    public static String URl_GET_MESSAGES_CHANNEL = BASE_API_URL + "/get_messages_channel";
-    public static String URl_CREATE_MESSAGES_CHANNEL = BASE_API_URL + "/create_messages_channel";
-    public static String URl_SEND_MESSAGES = BASE_API_URL + "/send_message";
-    public static String URl_GET_MESSAGES = BASE_API_URL + "/get_messages";
+    public static String URl_GET_MESSAGE_CHANNEL = BASE_API_URL + "/get_message_channel.php";
+    public static String URl_CREATE_MESSAGE_CHANNEL = BASE_API_URL + "/create_message_channel.php";
+    public static String URl_SEND_MESSAGES = BASE_API_URL + "/send_message.php";
+    public static String URl_GET_MESSAGES = BASE_API_URL + "/get_messages.php";
 
     public static final float margin_percentage = 3.5142f;
 
@@ -185,8 +185,8 @@ public class Constants {
         imageView.post(new Runnable() {
             @Override
             public void run() {
-                if (e.getImage_url() != null && !e.getImage_url().equals("")) {
-                    Glide.with(application).load(e.getImage_url()).fitCenter().centerCrop().into(imageView);
+                if (e.getImage_url_event() != null && !e.getImage_url_event().equals("")) {
+                    Glide.with(application).load(e.getImage_url_event()).fitCenter().centerCrop().into(imageView);
                 }
             }
         });

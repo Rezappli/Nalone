@@ -24,37 +24,37 @@
         android:label="@string/app_name"
         android:networkSecurityConfig="@xml/network_security_config"
         android:roundIcon="@mipmap/ic_logo_round"
+        android:screenOrientation="portrait"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme.NoActionBar"
-        android:screenOrientation="portrait">
-
-        <activity android:name="com.nolonely.mobile.ui.amis.display.InfoUserActivity" />
-        <activity android:name="com.nolonely.mobile.ui.evenements.display.PlanningActivity" />
-        <activity android:name="com.nolonely.mobile.ui.UserListActivity" />
-        <activity android:name="com.nolonely.mobile.signUpActivities.WelcomeActivity" />
-        <activity android:name="com.nolonely.mobile.signUpActivities.CheckMailValidationActivity" />
-        <activity android:name="com.nolonely.mobile.ui.message.MessagesActivity" />
-        <activity android:name="com.nolonely.mobile.ui.message.NewMessageActivity" />
-        <activity android:name="com.nolonely.mobile.signUpActivities.CheckPhoneValidationActivity" />
-        <activity android:name="com.nolonely.mobile.signUpActivities.SignUpMainActivity" />
-        <activity android:name="com.nolonely.mobile.ui.evenements.display.EventPlanningActivity" />
-        <activity android:name="com.nolonely.mobile.payment.CheckoutActivity" />
-        <activity android:name="com.nolonely.mobile.ui.profil.ProfilActivity" />
-        <activity android:name="com.nolonely.mobile.ui.profil.EditActivity" />
-        <activity android:name="com.nolonely.mobile.ui.profil.ParametresActivity" />
-        <activity android:name="com.nolonely.mobile.ui.profil.AideActivity" />
-        <activity android:name="com.nolonely.mobile.ui.evenements.InfosEvenementsActivity" />
+        android:theme="@style/AppTheme.NoActionBar">
+        <activity android:name=".ReportActivity"></activity>
+        <activity android:name=".ui.amis.display.InfoUserActivity" />
+        <activity android:name=".ui.evenements.display.PlanningActivity" />
+        <activity android:name=".ui.UserListActivity" />
+        <activity android:name=".signUpActivities.WelcomeActivity" />
+        <activity android:name=".signUpActivities.CheckMailValidationActivity" />
+        <activity android:name=".ui.message.MessagesActivity" />
+        <activity android:name=".ui.message.NewMessageActivity" />
+        <activity android:name=".signUpActivities.CheckPhoneValidationActivity" />
+        <activity android:name=".signUpActivities.SignUpMainActivity" />
+        <activity android:name=".ui.evenements.display.EventPlanningActivity" />
+        <activity android:name=".payment.CheckoutActivity" />
+        <activity android:name=".ui.profil.ProfilActivity" />
+        <activity android:name=".ui.profil.EditActivity" />
+        <activity android:name=".ui.profil.ParametresActivity" />
+        <activity android:name=".ui.profil.AideActivity" />
+        <activity android:name=".ui.evenements.InfosEvenementsActivity" />
         <activity
             android:name="com.theartofdev.edmodo.cropper.CropImageActivity"
             android:theme="@style/Base.Theme.AppCompat" />
-        <activity android:name="com.nolonely.mobile.ui.evenements.creation.MainCreationEventActivity" />
-        <activity android:name="com.nolonely.mobile.ui.NotificationActivity" />
-        <activity android:name="com.nolonely.mobile.ResetPasswordActivity" />
+        <activity android:name=".ui.evenements.creation.MainCreationEventActivity" />
+        <activity android:name=".ui.NotificationActivity" />
+        <activity android:name=".ResetPasswordActivity" />
         <activity
-            android:name="com.nolonely.mobile.ui.message.ChatActivityGroup"
+            android:name=".ui.message.ChatActivityGroup"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name="com.nolonely.mobile.ui.message.ChatActivityFriend"
+            android:name=".ui.message.ChatActivityFriend"
             android:theme="@style/AppTheme.NoActionBar" />
         <!--
              The API key for Google Maps-based APIs is defined as a string resource.
@@ -64,23 +64,23 @@
              sign the APK for publishing.
              You can define the keys for the debug and release targets in src/debug/ and src/release/.
         -->
-
-        <activity android:name="com.nolonely.mobile.ErrorConnexionActivity" />
-        <activity android:name="com.nolonely.mobile.ui.profil.SampleActivity" />
+        <activity android:name=".ErrorConnexionActivity" />
+        <activity android:name=".ui.profil.SampleActivity" />
         <activity
-            android:name="com.nolonely.mobile.HomeActivity"
+            android:name=".HomeActivity"
             android:label="@string/title_activity_home"
             android:theme="@style/AppTheme" />
-        <activity android:name="com.nolonely.mobile.signUpActivities.SignUpProfilActivity" />
+        <activity android:name=".signUpActivities.SignUpProfilActivity" />
         <activity
-            android:name="com.nolonely.mobile.MainActivity"
-            android:parentActivityName="com.nolonely.mobile.MainActivity" />
+            android:name=".MainActivity"
+            android:parentActivityName=".MainActivity" />
         <activity
             android:name="splash.SplashActivity"
-            android:parentActivityName="com.nolonely.mobile.MainActivity"
+            android:parentActivityName=".MainActivity"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
 
                 <action android:name="android.intent.action.VIEW" />
@@ -89,14 +89,14 @@
                 <category android:name="android.intent.category.BROWSABLE" />
                 <!-- Accepts URIs that begin with "http://www.example.com/gizmos” -->
                 <data
-                    android:scheme="https"
                     android:host="www.nolonely.fr"
-                    android:pathPrefix="/teams" />
+                    android:pathPrefix="/teams"
+                    android:scheme="https" />
             </intent-filter>
         </activity>
 
         <service
-            android:name="com.nolonely.mobile.NotificationMessagingService"
+            android:name=".NotificationMessagingService"
             android:permission="android.permission.BIND_JOB_SERVICE" />
 
         <meta-data
