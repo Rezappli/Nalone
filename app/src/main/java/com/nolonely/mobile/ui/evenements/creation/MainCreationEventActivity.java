@@ -426,7 +426,7 @@ public class MainCreationEventActivity extends AppCompatActivity implements Adap
                 Log.w("Response", "Erreur: " + volleyError.toString());
             }
         });
-        
+
         try {
             String imageData = BitMapToString(MediaStore.Images.Media.getBitmap(getBaseContext().getContentResolver(), image));
             Constants.uploadImageOnServer(ImageType.EVENT, MainCreationEventActivity.currentEvent.getUid(), imageData, getBaseContext()); //upload image on web server
@@ -447,7 +447,6 @@ public class MainCreationEventActivity extends AppCompatActivity implements Adap
     public void onBackPressed() {
         Fragment fragment = getSupportFragmentManager().findFragmentByTag("currentFragment");
         changeFragment(fragment, false);
-
     }
 
     @Override
@@ -512,10 +511,12 @@ public class MainCreationEventActivity extends AppCompatActivity implements Adap
             updateStep(cardViewProgressCreationMembers, viewStepMembers, isNext);
             textViewTitleEvent.setText(getString(R.string.title_creation_event_members));
         } else if (fragment instanceof PhotoEventFragment) {
-            if (!isNext)
+            if (!isNext) {
                 onFinishActivity();
-            updateStep(cardViewProgressCreationPhoto, null, isNext);
-            textViewTitleEvent.setText(getString(R.string.title_creation_event_photo));
+            } else {
+                textViewTitleEvent.setText(getString(R.string.title_creation_event_photo));
+            }
+
         }
 
         getSupportFragmentManager().beginTransaction()
