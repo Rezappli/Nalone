@@ -8,6 +8,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Bitmap;
+import android.graphics.PorterDuff;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -26,7 +27,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
-import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.navigation.NavController;
@@ -68,8 +68,9 @@ public class MainCreationEventActivity extends AppCompatActivity implements Adap
 
     private CardView cardViewPublic, cardViewPrivate;
 
-    private ImageView imageProgessCreationDate, imageProgessCreationMembers,
-            imageProgessCreationName, imageProgessCreationPosition, imageProgessCreationPhoto, imageProgressCreationCost;
+    private View viewStepDate, viewStepName, viewStepMembers, viewStepPosition, viewStepFinal, viewStepCost;
+    private ImageView imageProgressCreationDate, imageProgressCreationMembers,
+            imageProgressCreationName, imageProgressCreationPosition, imageProgressCreationPhoto, imageProgressCreationCost;
     private CardView cardViewProgressCreationDate, cardViewProgressCreationMembers,
             cardViewProgressCreationName, cardViewProgressCreationPosition, cardViewProgressCreationPhoto, cardViewProgressCreationCost;
     private TextView textViewTitleEvent;
@@ -86,27 +87,27 @@ public class MainCreationEventActivity extends AppCompatActivity implements Adap
                 CurrentFragment currentFragment = CurrentFragment.valueOf(intent.getStringExtra("fragment"));
                 switch (currentFragment) {
                     case DATE:
-                        imageProgessCreationDate.setImageDrawable(ContextCompat.getDrawable(getBaseContext(), R.drawable.creation_event_date_focused));
+                        imageProgressCreationDate.setColorFilter(getResources().getColor(R.color.colorPrimary), PorterDuff.Mode.MULTIPLY);
                         dateValidate = true;
                         break;
                     case COST:
-                        imageProgressCreationCost.setImageDrawable(ContextCompat.getDrawable(getBaseContext(), R.drawable.cost_event_focused));
+                        imageProgressCreationCost.setColorFilter(getResources().getColor(R.color.colorPrimary), PorterDuff.Mode.MULTIPLY);
                         costValidate = true;
                         break;
                     case NAME:
-                        imageProgessCreationName.setImageDrawable(ContextCompat.getDrawable(getBaseContext(), R.drawable.creation_event_name_focused));
+                        imageProgressCreationName.setColorFilter(getResources().getColor(R.color.colorPrimary), PorterDuff.Mode.MULTIPLY);
                         nameValidate = true;
                         break;
                     case PHOTO:
-                        imageProgessCreationPhoto.setImageDrawable(ContextCompat.getDrawable(getBaseContext(), R.drawable.creation_event_photo_focused));
+                        imageProgressCreationPhoto.setColorFilter(getResources().getColor(R.color.colorPrimary), PorterDuff.Mode.MULTIPLY);
                         photoValidate = true;
                         break;
                     case ADRESS:
-                        imageProgessCreationPosition.setImageDrawable(ContextCompat.getDrawable(getBaseContext(), R.drawable.creation_event_adress_focused));
+                        imageProgressCreationPosition.setColorFilter(getResources().getColor(R.color.colorPrimary), PorterDuff.Mode.MULTIPLY);
                         addressValidate = true;
                         break;
                     case MEMBERS:
-                        imageProgessCreationMembers.setImageDrawable(ContextCompat.getDrawable(getBaseContext(), R.drawable.creation_event_members_focused));
+                        imageProgressCreationMembers.setColorFilter(getResources().getColor(R.color.colorPrimary), PorterDuff.Mode.MULTIPLY);
                         membersValidate = true;
                         break;
 
@@ -124,15 +125,14 @@ public class MainCreationEventActivity extends AppCompatActivity implements Adap
                     nextFrag = new DateEventFragment();
                 } else if (!addressValidate) {
                     nextFrag = new AddressEventFragment();
-                } else if (!membersValidate) {
-                    nextFrag = new MembersEventPrivateFragment();
                 } else if (!costValidate) {
                     nextFrag = new CostEventFragment();
+                } else {
+                    nextFrag = new MembersEventPrivateFragment();
                 }
 
-
                 if (nextFrag != null) {
-                    changeFragment(nextFrag);
+                    changeFragment(nextFrag, true);
                 }
             }
         }
@@ -168,8 +168,11 @@ public class MainCreationEventActivity extends AppCompatActivity implements Adap
                 .add(R.id.fragmentCreationEvent, new PhotoEventFragment(), "findThisFragment")
                 .addToBackStack(null)
                 .commit();
-        initialiserImageView();
-        initialiserCardView();
+
+        initStepView();
+        initImageView();
+        initCardView();
+
         Button buttonValidate = findViewById(R.id.buttonNextFragmentMembers);
         buttonValidate.setOnClickListener(v -> {
             LocalBroadcastManager localBctMgr = LocalBroadcastManager.getInstance(this);
@@ -200,7 +203,7 @@ public class MainCreationEventActivity extends AppCompatActivity implements Adap
         spin.setAdapter(customAdapter);
         spin.setSelection(Arrays.asList(TypeEvent.values()).indexOf(currentEvent.getCategory()));
 
-        buttonBack.setOnClickListener(v -> onBackPressed());
+        buttonBack.setOnClickListener(v -> onFinishActivity());
 
         bottomSheetType = findViewById(R.id.sheetCreateEventType);
         bottomSheetBehaviorType = BottomSheetBehavior.from(bottomSheetType);
@@ -257,6 +260,17 @@ public class MainCreationEventActivity extends AppCompatActivity implements Adap
         });
     }
 
+    private void onFinishActivity() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage(getResources().getString(R.string.event_not_save))
+                .setPositiveButton(getResources().getString(R.string.button_yes), (dialog, id) -> {
+                    finish();
+                })
+                .setNegativeButton(getResources().getString(R.string.button_no), (dialog, id) -> dialog.dismiss());
+        builder.create();
+        builder.show();
+    }
+
     @Override
     protected void onResume() {
         super.onResume();
@@ -288,15 +302,13 @@ public class MainCreationEventActivity extends AppCompatActivity implements Adap
         currentEvent.setVisibility(v);
         initFirstFiltre();
         bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
-
-        imageProgessCreationMembers.setImageDrawable(ContextCompat.getDrawable(getBaseContext(), R.drawable.creation_event_members));
         membersValidate = false;
         Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.fragmentCreationEvent);
         if (fragment instanceof MembersEventPrivateFragment || fragment instanceof MembersEventPublicFragment) {
             if (v == Visibility.PRIVATE)
-                changeFragment(new MembersEventPrivateFragment());
+                changeFragment(new MembersEventPrivateFragment(), true);
             else
-                changeFragment(new MembersEventPublicFragment());
+                changeFragment(new MembersEventPublicFragment(), true);
         }
     }
 
@@ -414,7 +426,7 @@ public class MainCreationEventActivity extends AppCompatActivity implements Adap
                 Log.w("Response", "Erreur: " + volleyError.toString());
             }
         });
-
+        
         try {
             String imageData = BitMapToString(MediaStore.Images.Media.getBitmap(getBaseContext().getContentResolver(), image));
             Constants.uploadImageOnServer(ImageType.EVENT, MainCreationEventActivity.currentEvent.getUid(), imageData, getBaseContext()); //upload image on web server
@@ -433,14 +445,9 @@ public class MainCreationEventActivity extends AppCompatActivity implements Adap
 
     @Override
     public void onBackPressed() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setMessage(getResources().getString(R.string.event_not_save))
-                .setPositiveButton(getResources().getString(R.string.button_yes), (dialog, id) -> {
-                    finish();
-                })
-                .setNegativeButton(getResources().getString(R.string.button_no), (dialog, id) -> dialog.dismiss());
-        builder.create();
-        builder.show();
+        Fragment fragment = getSupportFragmentManager().findFragmentByTag("currentFragment");
+        changeFragment(fragment, false);
+
     }
 
     @Override
@@ -449,39 +456,25 @@ public class MainCreationEventActivity extends AppCompatActivity implements Adap
         currentEvent = null;
     }
 
-    private void setCurrentProgressColor(CardView cardView) {
-        cardViewProgressCreationDate.setCardBackgroundColor(getResources().getColor(R.color.grey));
-        cardViewProgressCreationName.setCardBackgroundColor(getResources().getColor(R.color.grey));
-        cardViewProgressCreationMembers.setCardBackgroundColor(getResources().getColor(R.color.grey));
-        cardViewProgressCreationPhoto.setCardBackgroundColor(getResources().getColor(R.color.grey));
-        cardViewProgressCreationPosition.setCardBackgroundColor(getResources().getColor(R.color.grey));
-        cardViewProgressCreationCost.setCardBackgroundColor(getResources().getColor(R.color.grey));
-
-        cardView.setCardBackgroundColor(getResources().getColor(R.color.colorPrimary));
+    private void initStepView() {
+        viewStepCost = findViewById(R.id.viewStepCost);
+        viewStepDate = findViewById(R.id.viewStepDate);
+        viewStepMembers = findViewById(R.id.viewStepMembers);
+        viewStepName = findViewById(R.id.viewStepName);
+        viewStepPosition = findViewById(R.id.viewStepPosition);
+        viewStepFinal = findViewById(R.id.viewStepFinal);
     }
 
-    private void initialiserImageView() {
-        imageProgessCreationDate = findViewById(R.id.imageProgessCreationDate);
-        imageProgessCreationMembers = findViewById(R.id.imageProgessCreationMembers);
-        imageProgessCreationName = findViewById(R.id.imageProgessCreationName);
-        imageProgessCreationPosition = findViewById(R.id.imageProgessCreationPosition);
-        imageProgessCreationPhoto = findViewById(R.id.imageProgessCreationPhoto);
+    private void initImageView() {
+        imageProgressCreationDate = findViewById(R.id.imageProgessCreationDate);
+        imageProgressCreationMembers = findViewById(R.id.imageProgessCreationMembers);
+        imageProgressCreationName = findViewById(R.id.imageProgessCreationName);
+        imageProgressCreationPosition = findViewById(R.id.imageProgessCreationPosition);
+        imageProgressCreationPhoto = findViewById(R.id.imageProgessCreationPhoto);
         imageProgressCreationCost = findViewById(R.id.imageProgessCreationCost);
-
-        imageProgressCreationCost.setOnClickListener(v -> changeFragment(new CostEventFragment()));
-        imageProgessCreationDate.setOnClickListener(v -> changeFragment(new DateEventFragment()));
-        imageProgessCreationName.setOnClickListener(v -> changeFragment(new NameEventFragment()));
-        imageProgessCreationPosition.setOnClickListener(v -> changeFragment(new AddressEventFragment()));
-        imageProgessCreationMembers.setOnClickListener(v -> {
-            if (currentEvent.getVisibility().equals(Visibility.PRIVATE))
-                changeFragment(new MembersEventPrivateFragment());
-            else
-                changeFragment(new MembersEventPublicFragment());
-        });
-        imageProgessCreationPhoto.setOnClickListener(v -> changeFragment(new PhotoEventFragment()));
     }
 
-    private void initialiserCardView() {
+    private void initCardView() {
         cardViewProgressCreationDate = findViewById(R.id.cardViewProgressCreationDate);
         cardViewProgressCreationMembers = findViewById(R.id.cardViewProgressCreationMembers);
         cardViewProgressCreationName = findViewById(R.id.cardViewProgressCreationName);
@@ -491,37 +484,50 @@ public class MainCreationEventActivity extends AppCompatActivity implements Adap
 
     }
 
-    private void changeFragment(Fragment fragment) {
+
+    private void changeFragment(Fragment fragment, boolean isNext) {
         if (fragment instanceof NameEventFragment) {
-            setCurrentProgressColor(cardViewProgressCreationName);
+            if (!isNext)
+                fragment = new PhotoEventFragment();
+            updateStep(cardViewProgressCreationName, viewStepName, isNext);
             textViewTitleEvent.setText(getString(R.string.title_creation_event_name));
-        }
-        if (fragment instanceof AddressEventFragment) {
-            setCurrentProgressColor(cardViewProgressCreationPosition);
+        } else if (fragment instanceof AddressEventFragment) {
+            if (!isNext)
+                fragment = new DateEventFragment();
+            updateStep(cardViewProgressCreationPosition, viewStepPosition, isNext);
             textViewTitleEvent.setText(getString(R.string.title_creation_event_adress));
-        }
-        if (fragment instanceof DateEventFragment) {
-            setCurrentProgressColor(cardViewProgressCreationDate);
+        } else if (fragment instanceof DateEventFragment) {
+            if (!isNext)
+                fragment = new NameEventFragment();
+            updateStep(cardViewProgressCreationDate, viewStepDate, isNext);
             textViewTitleEvent.setText(getString(R.string.title_creation_event_date));
-        }
-        if (fragment instanceof CostEventFragment) {
-            setCurrentProgressColor(cardViewProgressCreationCost);
+        } else if (fragment instanceof CostEventFragment) {
+            if (!isNext)
+                fragment = new AddressEventFragment();
+            updateStep(cardViewProgressCreationCost, viewStepCost, isNext);
             textViewTitleEvent.setText(getString(R.string.title_creation_event_cost));
-        }
-        if (fragment instanceof MembersEventPrivateFragment || fragment instanceof MembersEventPublicFragment) {
-            setCurrentProgressColor(cardViewProgressCreationMembers);
+        } else if (fragment instanceof MembersEventPrivateFragment || fragment instanceof MembersEventPublicFragment) {
+            if (!isNext)
+                fragment = new CostEventFragment();
+            updateStep(cardViewProgressCreationMembers, viewStepMembers, isNext);
             textViewTitleEvent.setText(getString(R.string.title_creation_event_members));
-        }
-        if (fragment instanceof PhotoEventFragment) {
-            setCurrentProgressColor(cardViewProgressCreationPhoto);
+        } else if (fragment instanceof PhotoEventFragment) {
+            if (!isNext)
+                onFinishActivity();
+            updateStep(cardViewProgressCreationPhoto, null, isNext);
             textViewTitleEvent.setText(getString(R.string.title_creation_event_photo));
         }
 
         getSupportFragmentManager().beginTransaction()
-                .replace(R.id.fragmentCreationEvent, fragment, "findThisFragment")
+                .replace(R.id.fragmentCreationEvent, fragment, "currentFragment")
                 .addToBackStack(null)
                 .commit();
     }
 
+    private void updateStep(CardView cardView, View view, boolean isNext) {
+        int color = isNext ? getResources().getColor(R.color.colorPrimary) : getResources().getColor(R.color.grey);
+        cardView.setCardBackgroundColor(color);
+        view.setBackgroundColor(color);
+    }
 
 }

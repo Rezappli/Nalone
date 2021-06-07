@@ -325,7 +325,7 @@
     <string name="image_save_error">Impossible d\'enregister l\'image :(</string>
     <string name="image_save">Votre image à été sauvegardée !</string>
     <string name="image_get_error">Impossible d\'e récupérer l\'image :(</string>
-    <string name="event_not_save">Votre évènement n\'est pas sauvegardé ! \nCette action est irréversible ! Vous vous continuez ?</string>
+    <string name="event_not_save">Votre évènement ne sera pas sauvegardé ! \n Voulez-vous continuer ?</string>
     <string name="event_error_create">Impossible de créer l\'évènement :(</string>
     <string name="user_error_create">Inscription impossible.. Veuillez réessayer</string>
     <string name="report"> Signaler </string>
