@@ -60,7 +60,37 @@ public class PlanningCreationsFragment extends Fragment {
     private boolean nowChecked, nextChecked, endChecked, soonChecked;
     private Handler handler;
     private TextView textViewNow, textViewSoon, textViewEnd;
+    private final Runnable runnable = new Runnable() {
+        @Override
+        public void run() {
+            if (endChecked && nowChecked && soonChecked && nextChecked) {
+                if (linearPlanning.getVisibility() == View.GONE) {
+                    linearPlanning.setVisibility(View.VISIBLE);
+                    progressPlanningRegistration.setVisibility(View.GONE);
+                    if (!eventsNow.isEmpty()) {
+                        updateDrawableClicked(ENCOURS);
+                    } else if (!eventsSoon.isEmpty()) {
+                        updateDrawableClicked(BIENTOT);
+                    } else if (!eventsEnd.isEmpty()) {
+                        updateDrawableClicked(FINI);
+                    } else {
+                        updateDrawableClicked(ENCOURS);
+                    }
+                } else {
+                    try {
+                        if (nextEvent != null) {
+                            TimeUtil.differenceDate(new Date(), new SimpleDateFormat("yyyy-MM-dd hh:mm").parse(nextEvent.getStartDate()), differenceDate);
+                        }
+                    } catch (ParseException e) {
+                        e.printStackTrace();
+                    }
+                }
+            } else {
+                handler.postDelayed(this, 0);
+            }
 
+        }
+    };
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
@@ -89,8 +119,6 @@ public class PlanningCreationsFragment extends Fragment {
             startActivity(intent);
         });
 
-        handler = new Handler();
-        handler.postDelayed(runnable, 0);
 
         RecyclerView mRecyclerRegistrations = view.findViewById(R.id.recycleViewPlanningRegistrations);
         eventsRecycler = new ArrayList<>();
@@ -108,6 +136,9 @@ public class PlanningCreationsFragment extends Fragment {
         callEventEnd();
         callEventNow();
         callEventSoon();
+
+        handler = new Handler();
+        handler.postDelayed(runnable, 0);
 
         textViewNow = view.findViewById(R.id.textViewPlanningRegistrationsNow);
         textViewSoon = view.findViewById(R.id.textViewPlanningRegistrationsSoon);
@@ -146,38 +177,6 @@ public class PlanningCreationsFragment extends Fragment {
         textView.setTextColor(isClicked ? Color.WHITE : getResources().getColor(R.color.secundaryTextColor));
     }
 
-    private final Runnable runnable = new Runnable() {
-        @Override
-        public void run() {
-            if (endChecked && nowChecked && soonChecked && nextChecked) {
-                if (linearPlanning.getVisibility() == View.GONE) {
-                    linearPlanning.setVisibility(View.VISIBLE);
-                    progressPlanningRegistration.setVisibility(View.GONE);
-                    if (!eventsNow.isEmpty()) {
-                        updateDrawableClicked(ENCOURS);
-                    } else if (!eventsSoon.isEmpty()) {
-                        updateDrawableClicked(BIENTOT);
-                    } else if (!eventsEnd.isEmpty()) {
-                        updateDrawableClicked(FINI);
-                    } else {
-                        updateDrawableClicked(ENCOURS);
-                    }
-                } else {
-                    try {
-                        if (nextEvent != null) {
-                            TimeUtil.differenceDate(new Date(), new SimpleDateFormat("yyyy-MM-dd hh:mm").parse(nextEvent.getStartDate()), differenceDate);
-                        } else {
-                            handler.removeCallbacks(runnable);
-                        }
-                    } catch (ParseException e) {
-                        e.printStackTrace();
-                    }
-                }
-            }
-
-            handler.postDelayed(runnable, 0);
-        }
-    };
 
     @Override
     public void onDestroyView() {
@@ -251,7 +250,7 @@ public class PlanningCreationsFragment extends Fragment {
             public void onJSONReceived(JSONArray jsonArray) {
                 Log.w("Response", "Value:" + jsonArray.toString());
                 try {
-                    Log.w("PLANNING", "END : " + jsonArray.length());
+                    Log.w("PLANNING", "NOW : " + jsonArray.length());
                     eventsNow = new ArrayList<>();
 
                     if (jsonArray.length() > 0) {
@@ -278,7 +277,6 @@ public class PlanningCreationsFragment extends Fragment {
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     private void callEventEnd() {
-
 
         JSONController.getJsonArrayFromUrl(Constants.URL_EVENT_NEXT, getContext(), JSONParams(FINI), new JSONArrayListener() {
             @Override

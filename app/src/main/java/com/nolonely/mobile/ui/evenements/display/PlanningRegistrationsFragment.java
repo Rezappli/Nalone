@@ -206,8 +206,6 @@ public class PlanningRegistrationsFragment extends Fragment {
             public void onJSONReceived(JSONArray jsonArray) {
                 Log.w("Response", "Value:" + jsonArray.toString());
                 try {
-                    Log.w("PLANNING", "NEXT : " + jsonArray.length());
-
                     if (jsonArray.length() > 0) {
                         nextEvent = (Evenement) JSONController.convertJSONToObject(jsonArray.getJSONObject(0), Evenement.class);
                         linearNext.setVisibility(View.VISIBLE);
@@ -250,7 +248,6 @@ public class PlanningRegistrationsFragment extends Fragment {
             public void onJSONReceived(JSONArray jsonArray) {
                 Log.w("Response", "Value:" + jsonArray.toString());
                 try {
-                    Log.w("PLANNING", "END : " + jsonArray.length());
                     eventsNow = new ArrayList<>();
 
                     if (jsonArray.length() > 0) {
@@ -283,7 +280,6 @@ public class PlanningRegistrationsFragment extends Fragment {
             public void onJSONReceived(JSONArray jsonArray) {
                 Log.w("Response", "Value:" + jsonArray.toString());
                 try {
-                    Log.w("PLANNING", "END : " + jsonArray.length());
                     eventsEnd = new ArrayList<>();
 
                     if (jsonArray.length() > 0) {
@@ -315,7 +311,6 @@ public class PlanningRegistrationsFragment extends Fragment {
             public void onJSONReceived(JSONArray jsonArray) {
                 Log.w("Response", "Value:" + jsonArray.toString());
                 try {
-                    Log.w("PLANNING", "SOON : " + jsonArray.length());
                     eventsSoon = new ArrayList<>();
 
                     if (jsonArray.length() > 1) {
