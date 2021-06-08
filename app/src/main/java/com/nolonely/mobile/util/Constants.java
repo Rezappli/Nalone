@@ -128,6 +128,9 @@ public class Constants {
     public static String URl_SEND_MESSAGES = BASE_API_URL + "/send_message.php";
     public static String URl_GET_MESSAGES = BASE_API_URL + "/get_messages.php";
 
+    public static String URL_SEND_REPORT = BASE_API_URL + "/create_report.php";
+    public static String URL_GET_DISCUSSIONS = BASE_API_URL + "/get_discussions.php";
+
     public static final float margin_percentage = 3.5142f;
 
 

@@ -29,6 +29,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="@string/nom"
+                android:maxLength="20"
                 android:singleLine="true"
                 android:textSize="18sp" />
         </com.google.android.material.textfield.TextInputLayout>
@@ -43,14 +44,15 @@
             android:layout_marginEnd="20dp"
             android:layout_marginBottom="20dp"
             app:counterEnabled="true"
-            app:counterMaxLength="100">
+            app:counterMaxLength="150">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/eventResume"
                 android:layout_width="match_parent"
                 android:layout_height="120dp"
                 android:gravity="top"
-                android:hint="@string/description" />
+                android:hint="@string/description"
+                android:maxLength="150" />
         </com.google.android.material.textfield.TextInputLayout>
 
     </LinearLayout>

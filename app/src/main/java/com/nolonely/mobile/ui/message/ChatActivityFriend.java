@@ -18,7 +18,7 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import com.android.volley.VolleyError;
 import com.google.android.material.textfield.TextInputEditText;
 import com.nolonely.mobile.R;
-import com.nolonely.mobile.adapter.ChatAdapter;
+import com.nolonely.mobile.adapter.messages.ChatAdapter;
 import com.nolonely.mobile.bdd.json.JSONController;
 import com.nolonely.mobile.bdd.json.JSONObjectCrypt;
 import com.nolonely.mobile.listeners.JSONArrayListener;
@@ -72,6 +72,7 @@ public class ChatActivityFriend extends AppCompatActivity {
         if (getIntent() != null) {
             USER_LOAD = (User) getIntent().getSerializableExtra("user");
             newChat = (Boolean) getIntent().getSerializableExtra("newChat");
+            chatChannel = (Chat) getIntent().getSerializableExtra("chatChannel");
         }
 
         ON_MESSAGE_ACTIVITY = true;

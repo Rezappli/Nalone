@@ -2,26 +2,32 @@ package com.nolonely.mobile;
 
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.LinearLayout;
-import android.widget.RadioButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.android.volley.VolleyError;
+import com.nolonely.mobile.bdd.json.JSONController;
 import com.nolonely.mobile.bdd.json.JSONObjectCrypt;
+import com.nolonely.mobile.listeners.JSONObjectListener;
+import com.nolonely.mobile.util.Constants;
+
+import org.json.JSONObject;
 
 import static com.nolonely.mobile.util.Constants.USER;
 
 public class ReportActivity extends AppCompatActivity {
 
     private TextView report_title;
-    private RadioButton radioButtonName, radioButtonImage, radioButtonDescription, radioButtonOther;
+    private CheckBox checkBoxButtonName, checkBoxButtonImage, checkBoxButtonDescription, checkBoxButtonOther;
     private String uid_report;
     private LinearLayout reportLinearLayoutDetails;
     private String type;
@@ -44,48 +50,52 @@ public class ReportActivity extends AppCompatActivity {
         reportLinearLayoutDetails = findViewById(R.id.reportLinearLayoutDetails);
         messageEditText = findViewById(R.id.editTextReportMessage);
 
-        radioButtonName = findViewById(R.id.radioButtonName);
-        radioButtonDescription = findViewById(R.id.radioButtonDescription);
-        radioButtonImage = findViewById(R.id.radioButtonImage);
-        radioButtonOther = findViewById(R.id.radioButtonOther);
+        checkBoxButtonName = findViewById(R.id.checkBoxButtonName);
+        checkBoxButtonDescription = findViewById(R.id.checkBoxDescription);
+        checkBoxButtonImage = findViewById(R.id.checkBoxImage);
+        checkBoxButtonOther = findViewById(R.id.checkBoxOther);
 
         checkBoxDeposit = findViewById(R.id.checkBoxDeposit);
         validateButton = findViewById(R.id.buttonValidateReport);
 
-        radioButtonName.setOnClickListener(v -> {
+        validateButton.setClickable(false);
+
+        checkBoxButtonName.setOnClickListener(v -> {
             if (reportLinearLayoutDetails.getVisibility() == View.GONE) {
                 reportLinearLayoutDetails.setVisibility(View.VISIBLE);
             }
         });
 
-        radioButtonImage.setOnClickListener(v -> {
+        checkBoxButtonImage.setOnClickListener(v -> {
             if (reportLinearLayoutDetails.getVisibility() == View.GONE) {
                 reportLinearLayoutDetails.setVisibility(View.VISIBLE);
             }
         });
 
-        radioButtonDescription.setOnClickListener(v -> {
+        checkBoxButtonDescription.setOnClickListener(v -> {
             if (reportLinearLayoutDetails.getVisibility() == View.GONE) {
                 reportLinearLayoutDetails.setVisibility(View.VISIBLE);
             }
         });
 
-        radioButtonOther.setOnClickListener(v -> {
+        checkBoxButtonOther.setOnClickListener(v -> {
             if (reportLinearLayoutDetails.getVisibility() == View.GONE) {
                 reportLinearLayoutDetails.setVisibility(View.VISIBLE);
             }
         });
 
-        checkBoxDeposit.setOnClickListener(v -> {
-            if (checkBoxDeposit.isSelected()) {
-                validateButton.setClickable(true);
-            } else {
-                validateButton.setClickable(false);
-            }
-        });
 
         validateButton.setOnClickListener(v -> {
-            onValidate();
+            if (checkBoxDeposit.isChecked()) {
+                if (checkBoxButtonName.isChecked() || checkBoxButtonDescription.isChecked()
+                        || checkBoxButtonImage.isChecked() || checkBoxButtonOther.isChecked()) {
+                    onValidate();
+                } else {
+                    Toast.makeText(ReportActivity.this, getResources().getString(R.string.report_no_select_section), Toast.LENGTH_SHORT).show();
+                }
+            } else {
+                Toast.makeText(ReportActivity.this, getResources().getString(R.string.report_no_select_checkbox), Toast.LENGTH_SHORT).show();
+            }
         });
 
         if (type.equalsIgnoreCase("event")) {
@@ -101,19 +111,19 @@ public class ReportActivity extends AppCompatActivity {
     private void onValidate() {
         if (uid_report != null) {
             String reportString = "";
-            if (radioButtonName.isSelected()) {
+            if (checkBoxButtonName.isChecked()) {
                 reportString += "name;";
             }
 
-            if (radioButtonDescription.isSelected()) {
+            if (checkBoxButtonDescription.isChecked()) {
                 reportString += "description;";
             }
 
-            if (radioButtonImage.isSelected()) {
+            if (checkBoxButtonImage.isChecked()) {
                 reportString += "image;";
             }
 
-            if (radioButtonOther.isSelected()) {
+            if (checkBoxButtonOther.isChecked()) {
                 reportString += "other;";
             }
 
@@ -121,10 +131,29 @@ public class ReportActivity extends AppCompatActivity {
             params.putCryptParameter("uid", USER.getUid());
             params.putCryptParameter("type", type);
             params.putCryptParameter("uid_report", uid_report);
-            params.putCryptParameter("message", messageEditText.getText().toString());
-            params.putCryptParameter("report", reportString);
+            if (!messageEditText.getText().toString().equalsIgnoreCase("")) {
+                params.putCryptParameter("message", messageEditText.getText().toString());
+            }
+            params.putCryptParameter("report_items", reportString);
+            Log.w("Report", "Params : " + params.toString());
 
-            Toast.makeText(ReportActivity.this, getResources().getString(R.string.report_sent), Toast.LENGTH_SHORT).show();
+            JSONController.getJsonObjectFromUrl(Constants.URL_SEND_REPORT, ReportActivity.this, params, new JSONObjectListener() {
+                @Override
+                public void onJSONReceived(JSONObject jsonObject) {
+                    if (jsonObject.length() == 3) {
+                        Toast.makeText(ReportActivity.this, getResources().getString(R.string.report_sent), Toast.LENGTH_SHORT).show();
+                        finish();
+                    } else {
+                        Toast.makeText(ReportActivity.this, getResources().getString(R.string.error), Toast.LENGTH_SHORT).show();
+                    }
+                }
+
+                @Override
+                public void onJSONReceivedError(VolleyError volleyError) {
+                    Toast.makeText(ReportActivity.this, getResources().getString(R.string.error), Toast.LENGTH_SHORT).show();
+                }
+            });
+
         } else {
             Toast.makeText(ReportActivity.this, getResources().getString(R.string.error), Toast.LENGTH_SHORT).show();
         }

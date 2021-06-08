@@ -419,9 +419,11 @@
     <string name="report_description"> La description </string>
     <string name="report_all"> Tous les points </string>
     <string name="report_other"> Autres </string>
-    <string name="report_certification"> Je certifie que l\'ensemble des informations renseignées sont exactes. En cas de faux signalement, votre compte s\'expose à des sanctions.</string>
-    <string name="report_informations"> Votre message pour les modérateurs.</string>
-    <string name="report_sent"> Votre rapport à été envoyé !</string>
+    <string name="report_certification"> Je certifie que l\'ensemble des informations renseignées sont exactes. \nEn cas de faux signalement, votre compte s\'expose à des sanctions. </string>
+    <string name="report_informations"> Votre message pour les modérateurs. </string>
+    <string name="report_sent"> Votre rapport à été envoyé ! </string>
+    <string name="report_no_select_checkbox"> Vous devez cocher la case au dessus </string>
+    <string name="report_no_select_section"> Vous devez choisir un/des point(s) à signaler </string>
 
 
 </resources>

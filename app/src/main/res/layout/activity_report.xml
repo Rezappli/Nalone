@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -44,26 +45,26 @@
                     android:gravity="center"
                     android:orientation="vertical">
 
-                    <RadioButton
-                        android:id="@+id/radioButtonName"
+                    <CheckBox
+                        android:id="@+id/checkBoxButtonName"
                         android:layout_width="150dp"
                         android:layout_height="wrap_content"
                         android:text="@string/report_name" />
 
-                    <RadioButton
-                        android:id="@+id/radioButtonDescription"
+                    <CheckBox
+                        android:id="@+id/checkBoxDescription"
                         android:layout_width="150dp"
                         android:layout_height="wrap_content"
                         android:text="@string/report_description" />
 
-                    <RadioButton
-                        android:id="@+id/radioButtonImage"
+                    <CheckBox
+                        android:id="@+id/checkBoxImage"
                         android:layout_width="150dp"
                         android:layout_height="wrap_content"
                         android:text="@string/report_image" />
 
-                    <RadioButton
-                        android:id="@+id/radioButtonOther"
+                    <CheckBox
+                        android:id="@+id/checkBoxOther"
                         android:layout_width="150dp"
                         android:layout_height="wrap_content"
                         android:text="@string/report_other" />
@@ -76,23 +77,37 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:orientation="vertical"
-                android:visibility="gone">
+                android:visibility="visible">
 
                 <TextView
                     android:id="@+id/textView55"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_margin="15dp"
                     android:gravity="center"
                     android:text="@string/report_informations" />
 
-                <EditText
-                    android:id="@+id/editTextReportMessage"
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/signupDesc"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:ems="10"
-                    android:gravity="start|top"
-                    android:inputType="textMultiLine"
-                    android:maxLength="200" />
+                    android:layout_height="match_parent"
+                    android:layout_marginStart="20dp"
+                    android:layout_marginTop="20dp"
+                    android:layout_marginEnd="20dp"
+                    android:layout_marginBottom="20dp"
+                    app:counterEnabled="true"
+                    app:counterMaxLength="150">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/editTextReportMessage"
+                        android:layout_width="match_parent"
+                        android:layout_height="120dp"
+                        android:layout_margin="10dp"
+                        android:gravity="top"
+                        android:hint="@string/description"
+                        android:maxLength="150" />
+                </com.google.android.material.textfield.TextInputLayout>
 
                 <CheckBox
                     android:id="@+id/checkBoxDeposit"
