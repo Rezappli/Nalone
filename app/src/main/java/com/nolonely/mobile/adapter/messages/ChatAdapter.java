@@ -1,4 +1,4 @@
-package com.nolonely.mobile.adapter;
+package com.nolonely.mobile.adapter.messages;
 
 import android.graphics.Color;
 import android.view.LayoutInflater;
