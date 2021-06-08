@@ -237,6 +237,8 @@
     <string name="title_creation_event_cost">Définis le coût</string>
     <string name="title_creation_event_members">Géres tes membres </string>
     <string name="start_date">Début de l\'évènement</string>
+    <string name="start">Début</string>
+    <string name="end">Fin</string>
     <string name="end_date">Fin de l\'évènement</string>
     <string name="add_member">Ajouter des participants</string>
     <string name="info_visibility_private">Seuls les utilisateurs invités verront votre évènement</string>
