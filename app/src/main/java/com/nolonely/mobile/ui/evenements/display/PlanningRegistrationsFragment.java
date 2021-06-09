@@ -57,7 +57,7 @@ public class PlanningRegistrationsFragment extends Fragment {
     private LinearLayout linearPlanning, linearNext, linearNoResultBis;
     private ProgressBar progressPlanningRegistration;
     private boolean nowChecked, nextChecked, endChecked, soonChecked;
-    private Handler handler;
+    public Handler handler;
     private TextView textViewNow, textViewSoon, textViewEnd;
 
 
