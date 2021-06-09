@@ -69,13 +69,7 @@ public class MessageUserAdapter extends RecyclerView.Adapter<MessageUserAdapter.
         }
 
         public void update(final Chat c) {
-            //messageText.setText(m.get);
-            // lastMessage.setText();
-            //
-            //
-            // THIBOULE LE GROS BG A TOI DE JOUER
-            //
-            //
+            dateText.setText(c.getDate());
         }
     }
 

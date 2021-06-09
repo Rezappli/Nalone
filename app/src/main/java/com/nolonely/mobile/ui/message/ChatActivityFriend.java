@@ -117,7 +117,7 @@ public class ChatActivityFriend extends AppCompatActivity {
             @Override
             public void onJSONReceived(JSONObject jsonObject) {
                 if (jsonObject.length() == 3) {
-                    chatChannel = new Chat(uidChannel, Constants.formatDayHoursMinutesSeconds.format(new Date(System.currentTimeMillis())));
+                    chatChannel = new Chat(uidChannel, Constants.formatDayHoursMinutesSeconds.format(new Date(System.currentTimeMillis())), USER.getName(), message);
                     Log.w("Chat", "Create channel");
                     newChat = false;
                     messages = new ArrayList<Message>();
