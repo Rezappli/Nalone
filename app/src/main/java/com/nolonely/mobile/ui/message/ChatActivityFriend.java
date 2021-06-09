@@ -25,6 +25,7 @@ import com.nolonely.mobile.listeners.JSONArrayListener;
 import com.nolonely.mobile.listeners.JSONObjectListener;
 import com.nolonely.mobile.objects.Chat;
 import com.nolonely.mobile.objects.Message;
+import com.nolonely.mobile.objects.User;
 import com.nolonely.mobile.util.Constants;
 
 import org.json.JSONArray;
@@ -44,6 +45,7 @@ public class ChatActivityFriend extends AppCompatActivity {
     private ImageView buttonSend;
     private TextInputEditText messageEditText;
     private ImageView chatUserImageView;
+    private User USER_LOAD;
     private TextView nameUser;
     private RecyclerView mRecyclerView;
     private ImageView chatImageBack;
@@ -68,6 +70,7 @@ public class ChatActivityFriend extends AppCompatActivity {
         setContentView(R.layout.activity_chatbox);
 
         if (getIntent() != null) {
+            USER_LOAD = (User) getIntent().getSerializableExtra("user");
             newChat = (Boolean) getIntent().getSerializableExtra("newChat");
             chatChannel = (Chat) getIntent().getSerializableExtra("chatChannel");
         }
@@ -80,19 +83,21 @@ public class ChatActivityFriend extends AppCompatActivity {
         buttonSend = findViewById(R.id.buttonSend);
         messageEditText = findViewById(R.id.messageEditText);
         nameUser = findViewById(R.id.nameUser);
-        nameUser.setText(chatChannel.getName());
+        nameUser.setText(USER_LOAD.getName());
         mRecyclerView = findViewById(R.id.messagesRecyclerView);
 
         chatImageBack.setOnClickListener(v -> finish());
         buttonSend.setOnClickListener(v -> listenChannel(messageEditText.getText().toString()));
 
-        Constants.setUserImageWithUrl(chatChannel.getImage(), chatUserImageView);
+        Constants.setUserImage(USER_LOAD, chatUserImageView);
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     private void listenChannel(String message) {
         if (newChat) {
             createMessageChannel(message);
+        } else if (chatChannel == null) {
+            getChatChannel(message);
         } else {
             sendMessage(message);
         }
@@ -105,7 +110,7 @@ public class ChatActivityFriend extends AppCompatActivity {
         String uidChannel = UUID.randomUUID().toString();
         JSONObjectCrypt params = new JSONObjectCrypt();
         params.putCryptParameter("uid", USER.getUid());
-        params.putCryptParameter("uid_2", chatChannel.getUidChannel());
+        params.putCryptParameter("uid_2", USER_LOAD.getUid());
         params.putCryptParameter("uid_channel", uidChannel);
 
         JSONController.getJsonObjectFromUrl(Constants.URl_CREATE_MESSAGE_CHANNEL, this, params, new JSONObjectListener() {
@@ -127,6 +132,27 @@ public class ChatActivityFriend extends AppCompatActivity {
             public void onJSONReceivedError(VolleyError volleyError) {
                 Toast.makeText(ChatActivityFriend.this, getResources().getString(R.string.error_creating_channel), Toast.LENGTH_SHORT).show();
                 Log.w("Chat", "Erreur : " + volleyError.toString());
+            }
+        });
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    private void getChatChannel(String message) {
+        JSONObjectCrypt params = new JSONObjectCrypt();
+        params.putCryptParameter("uid", USER.getUid());
+        params.putCryptParameter("uid_2", USER_LOAD.getUid());
+
+        JSONController.getJsonObjectFromUrl(Constants.URl_GET_MESSAGE_CHANNEL, this, params, new JSONObjectListener() {
+            @Override
+            public void onJSONReceived(JSONObject jsonObject) {
+                chatChannel = (Chat) JSONController.convertJSONToObject(jsonObject, Chat.class);
+                messages = new ArrayList<Message>();
+                updateMessages(chatChannel, 15);
+            }
+
+            @Override
+            public void onJSONReceivedError(VolleyError volleyError) {
+                Toast.makeText(ChatActivityFriend.this, getResources().getString(R.string.error_get_channel), Toast.LENGTH_SHORT).show();
             }
         });
     }
