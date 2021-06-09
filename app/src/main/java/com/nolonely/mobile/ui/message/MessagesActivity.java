@@ -3,6 +3,7 @@ package com.nolonely.mobile.ui.message;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.util.Log;
 import android.widget.ImageView;
 import android.widget.SearchView;
@@ -10,7 +11,6 @@ import android.widget.Toast;
 
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.biometric.BiometricPrompt;
 import androidx.navigation.NavController;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -30,12 +30,10 @@ import org.json.JSONException;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.Executor;
 
 import static com.nolonely.mobile.util.Constants.USER;
 
 public class MessagesActivity extends AppCompatActivity {
-
 
     private SearchView search_bar;
 
@@ -46,12 +44,7 @@ public class MessagesActivity extends AppCompatActivity {
     private ImageView addMessage;
     private List<Chat> chatList;
 
-
-    //bio
-    private Executor executor;
-    private BiometricPrompt biometricPrompt;
-    private BiometricPrompt.PromptInfo promptInfo;
-
+    @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -62,13 +55,7 @@ public class MessagesActivity extends AppCompatActivity {
         addMessage = findViewById(R.id.imageViewAddChat);
         addMessage.setOnClickListener(v -> startActivity(new Intent(getBaseContext(), NewMessageActivity.class)));
 
-        mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @RequiresApi(api = Build.VERSION_CODES.O)
-            @Override
-            public void onRefresh() {
-                createFragment();
-            }
-        });
+        mSwipeRefreshLayout.setOnRefreshListener(() -> createFragment());
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
@@ -82,18 +69,26 @@ public class MessagesActivity extends AppCompatActivity {
         chatList = new ArrayList<>();
         JSONObjectCrypt params = new JSONObjectCrypt();
         params.putCryptParameter("uid", USER.getUid());
-        params.putCryptParameter("limit", "15");
+        params.putCryptParameter("limit", 15);
         Log.w("Chat", "Params : " + params.toString());
 
         JSONController.getJsonArrayFromUrl(Constants.URL_GET_DISCUSSIONS, MessagesActivity.this, params, new JSONArrayListener() {
             @Override
             public void onJSONReceived(JSONArray jsonArray) throws JSONException {
-                Log.w("Chat", "Discussions : " + jsonArray.length());
                 for (int i = 0; i < jsonArray.length(); i++) {
                     chatList.add((Chat) JSONController.convertJSONToObject(jsonArray.getJSONObject(i), Chat.class));
                 }
 
-                mRecyclerView.setAdapter(new MessageUserAdapter(chatList));
+                MessageUserAdapter m = new MessageUserAdapter(chatList);
+                m.setOnItemClickListener(position -> {
+                    Log.w("Chat", "Click on friend");
+                    Intent i = new Intent(getBaseContext(), ChatActivityFriend.class);
+                    i.putExtra("newChat", false);
+                    i.putExtra("chatChannel", (Parcelable) chatList.get(position));
+                    startActivity(i);
+                });
+
+                mRecyclerView.setAdapter(m);
                 mRecyclerView.setLayoutManager(new LinearLayoutManager(MessagesActivity.this));
             }
 
