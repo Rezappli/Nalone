@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.nolonely.mobile.R;
 import com.nolonely.mobile.objects.Chat;
+import com.nolonely.mobile.util.Constants;
 
 import java.util.List;
 
@@ -69,7 +70,10 @@ public class MessageUserAdapter extends RecyclerView.Adapter<MessageUserAdapter.
         }
 
         public void update(final Chat c) {
+            lastMessage.setText(c.getLastMessage());
             dateText.setText(c.getDate());
+            ownerText.setText(c.getName());
+            Constants.setUserImageWithUrl(c.getImage(), ownerImage);
         }
     }
 
