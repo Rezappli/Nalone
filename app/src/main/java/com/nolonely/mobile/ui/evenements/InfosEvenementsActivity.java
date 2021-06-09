@@ -354,24 +354,4 @@ public class InfosEvenementsActivity extends AppCompatActivity {
         handler.postDelayed(runnable, 0);
         super.onResume();
     }
-
-    private String cutString(String s) {
-        if (5 > s.length()) {
-            return null;
-        }
-
-        StringBuilder temp = new StringBuilder();
-
-        int i = 0;
-        if (11 != -1) {
-            for (i = 11; i < 5 + 11; i++) {
-                temp.append(s.charAt(i));
-            }
-        } else {
-            for (i = 0; i < 5; i++) {
-                temp.append(s.charAt(i));
-            }
-        }
-        return temp.toString();
-    }
 }

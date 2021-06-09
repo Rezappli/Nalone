@@ -288,11 +288,12 @@
 
                             <!--Text view to display R -->
                             <TextView
-                                android:id="@+id/tvR"
+                                android:id="@+id/ci1"
                                 android:layout_width="match_parent"
                                 android:layout_height="match_parent"
                                 android:paddingLeft="10dp"
-                                android:text="@string/event_art" />
+                                android:text="@string/event_art"
+                                android:textSize="13sp" />
 
                         </LinearLayout>
 
@@ -307,15 +308,16 @@
                             <View
                                 android:layout_width="15dp"
                                 android:layout_height="match_parent"
-                                android:background="@color/colorPrimaryDark" />
+                                android:background="@color/colorSecond" />
 
                             <!--Text view to display python text -->
                             <TextView
-                                android:id="@+id/tvPython"
+                                android:id="@+id/ci2"
                                 android:layout_width="match_parent"
                                 android:layout_height="match_parent"
                                 android:paddingLeft="10dp"
-                                android:text="@string/event_sport" />
+                                android:text="@string/event_sport"
+                                android:textSize="13sp" />
 
                         </LinearLayout>
 
@@ -330,40 +332,20 @@
                             <View
                                 android:layout_width="15dp"
                                 android:layout_height="match_parent"
-                                android:background="@color/green" />
+                                android:background="@color/colorThird" />
 
                             <!--Text view to display C++ text -->
                             <TextView
-                                android:id="@+id/tvCPP"
+                                android:id="@+id/ci3"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:paddingLeft="10dp"
-                                android:text="@string/event_party" />
+                                android:text="@string/event_party"
+                                android:textSize="13sp" />
 
                         </LinearLayout>
 
                         <!--Linear layout to display Java-->
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="15dp"
-                            android:layout_gravity="center_vertical"
-                            android:layout_marginTop="5dp">
-
-                            <!--View to display the blue color icon-->
-                            <View
-                                android:layout_width="15dp"
-                                android:layout_height="match_parent"
-                                android:background="@color/indigo" />
-
-                            <!--Text view to display Java text -->
-                            <TextView
-                                android:id="@+id/tvJava"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:paddingLeft="10dp"
-                                android:text="@string/event_music" />
-
-                        </LinearLayout>
 
                     </LinearLayout>
 

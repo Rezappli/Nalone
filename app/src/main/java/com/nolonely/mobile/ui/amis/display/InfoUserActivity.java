@@ -60,31 +60,25 @@ public class InfoUserActivity extends AppCompatActivity {
         buttonBack.setVisibility(View.VISIBLE);
         buttonBack.setOnClickListener(v -> onBackPressed());
 
-
-        TextView tvR = findViewById(R.id.tvR);
-        TextView tvPython = findViewById(R.id.tvPython);
-        TextView tvCPP = findViewById(R.id.tvCPP);
-        TextView tvJava = findViewById(R.id.tvJava);
+        TextView ci1 = findViewById(R.id.ci1);
+        TextView ci2 = findViewById(R.id.ci2);
+        TextView ci3 = findViewById(R.id.ci3);
         PieChart pieChart = findViewById(R.id.piechart);
 
         nbEventFirt = 30;
         nbEventSecond = 10;
         nbEventThird = 5;
-        nbEventFourth = 2;
 
         pieChart.addPieSlice(
                 new PieModel(
-                        "R",
                         nbEventFirt,
                         getResources().getColor(R.color.colorPrimary)));
         pieChart.addPieSlice(
                 new PieModel(
-                        "Python",
                         nbEventSecond,
                         getResources().getColor(R.color.colorSecond)));
         pieChart.addPieSlice(
                 new PieModel(
-                        "C++",
                         nbEventThird,
                         getResources().getColor(R.color.colorThird)));
 

@@ -46,18 +46,25 @@ public class SplashActivity extends AppCompatActivity {
     @Override
     public void onStart() {
         super.onStart();
-        init();
+        try {
+            init();
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
-    public void init() {
+    public void init() throws JSONException {
 
         Constants.application = getApplication();
         SharedPreferences loginPreferences = getSharedPreferences("login", MODE_PRIVATE);
 
         if (loginPreferences.contains("mail") && loginPreferences.contains("password") && databaseManager.readMainUser() != null) {
-            USER = databaseManager.readMainUser();
-            launchHomeActivity();
+            if (databaseManager.readMainUser() != null) {
+                USER = databaseManager.readMainUser();
+                launchHomeActivity();
+            } else
+                verifyUserData(loginPreferences);
         } else {
             launchMainActivity();
         }
