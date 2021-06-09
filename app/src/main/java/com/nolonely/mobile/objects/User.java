@@ -1,12 +1,5 @@
 package com.nolonely.mobile.objects;
 
-import android.app.Activity;
-import android.content.Context;
-import android.content.Intent;
-
-import com.nolonely.mobile.ui.amis.display.InfoUserActivity;
-import com.nolonely.mobile.ui.message.ChatActivityFriend;
-
 import java.io.Serializable;
 
 public class User implements Serializable {
@@ -158,20 +151,6 @@ public class User implements Serializable {
 
     public void setPseudo(String pseudo) {
         this.pseudo = pseudo;
-    }
-
-    public void displayUserInfo(Context context, boolean isFriend) {
-        Intent intent = new Intent(context, InfoUserActivity.class);
-        intent.putExtra("user", this);
-        intent.putExtra("isFriend", isFriend);
-        context.startActivity(intent);
-    }
-
-    public void launchChat(Context context, Activity activity, Boolean newChat) {
-        Intent intent = new Intent(context, ChatActivityFriend.class);
-        intent.putExtra("user", this);
-        intent.putExtra("newChat", newChat);
-        activity.startActivity(intent);
     }
 
 

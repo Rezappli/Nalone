@@ -194,17 +194,9 @@ public class HomeActivity extends JSONActivity implements AdapterView.OnItemSele
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = item -> {
-        if (item.getItemId() != R.id.navigation_planning) {
-            if (active == fragment2) {
-                fragment2.onPause();
-            }
-        }
         switch (item.getItemId()) {
             case R.id.navigation_evenements:
                 fm.beginTransaction().hide(active).show(fragment1).commit();
-                if (active == fragment2) {
-                    fragment2.onPause();
-                }
                 active = fragment1;
                 return true;
 

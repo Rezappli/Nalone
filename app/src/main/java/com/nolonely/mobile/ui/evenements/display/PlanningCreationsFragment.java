@@ -30,7 +30,6 @@ import com.nolonely.mobile.enumeration.StatusEvent;
 import com.nolonely.mobile.listeners.JSONArrayListener;
 import com.nolonely.mobile.objects.Evenement;
 import com.nolonely.mobile.ui.evenements.InfosEvenementsActivity;
-import com.nolonely.mobile.ui.evenements.InfosEventCreationActivity;
 import com.nolonely.mobile.util.Constants;
 import com.nolonely.mobile.util.TimeUtil;
 

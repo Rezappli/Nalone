@@ -59,12 +59,6 @@
     <string name="title_notsend"> Rien reçu ? </string>
     <string name="subtitle_notsend"> Renvoyer le lien </string>
     <string name="autre"> Autre </string>
-    <string name="choixAnnee"> Ton année d\'étude ?</string>
-    <string name="TC"> TC </string>
-    <string name="GB"> GB </string>
-    <string name="MMI"> MMI </string>
-    <string name="INFO"> INFO </string>
-    <string name="LP"> LP </string>
     <string name="description"> Description (Facultatif) </string>
     <string name="biographie"> Biographie </string>
     <string name="centresInteretsTitle"> Tes centres d\'intérêts : </string>

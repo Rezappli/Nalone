@@ -32,6 +32,7 @@ import com.nolonely.mobile.bdd.json.JSONObjectCrypt;
 import com.nolonely.mobile.listeners.JSONArrayListener;
 import com.nolonely.mobile.listeners.JSONObjectListener;
 import com.nolonely.mobile.objects.User;
+import com.nolonely.mobile.ui.message.ChatActivityFriend;
 import com.nolonely.mobile.util.Constants;
 
 import org.json.JSONArray;
@@ -173,7 +174,10 @@ public class AmisFragment extends Fragment {
 
             @Override
             public void onMessageClick(int position) {
-                friends.get(position).launchChat(getContext(), getActivity(), false);
+                Intent intent = new Intent(getContext(), ChatActivityFriend.class);
+                intent.putExtra("user", friends.get(position));
+                intent.putExtra("newChat", false);
+                startActivity(intent);
             }
         });
         mRecyclerView.setAdapter(mAdapter);
@@ -212,7 +216,10 @@ public class AmisFragment extends Fragment {
 
             @Override
             public void onMessageClick(int position) {
-                friends.get(position).launchChat(getContext(), getActivity(), false);
+                Intent intent = new Intent(getContext(), ChatActivityFriend.class);
+                intent.putExtra("user", friends.get(position));
+                intent.putExtra("newChat", false);
+                startActivity(intent);
             }
         });
     }

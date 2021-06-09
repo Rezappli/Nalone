@@ -32,18 +32,4 @@ public class PlanningFragment extends Fragment {
         tabLayout.setupWithViewPager(viewPager);
         return view;
     }
-
-    @Override
-    public void onPause() {
-        super.onPause();
-        planningRegistrationsFragment.onPause();
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        if (planningRegistrationsFragment.handler != null) {
-            planningRegistrationsFragment.onResume();
-        }
-    }
 }

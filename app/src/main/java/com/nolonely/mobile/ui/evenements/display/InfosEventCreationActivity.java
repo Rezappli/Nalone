@@ -1,4 +1,4 @@
-package com.nolonely.mobile.ui.evenements;
+package com.nolonely.mobile.ui.evenements.display;
 
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
@@ -181,5 +181,5 @@ public class InfosEventCreationActivity extends AppCompatActivity {
         super.onResume();
     }
 
-  
+
 }

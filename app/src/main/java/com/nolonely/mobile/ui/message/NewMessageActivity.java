@@ -1,5 +1,6 @@
 package com.nolonely.mobile.ui.message;
 
+import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
@@ -46,7 +47,10 @@ public class NewMessageActivity extends AppCompatActivity {
         recyclerViewMessagesAmis = findViewById(R.id.recyclerViewMessagesAmis);
         searchUserAdapter = new SearchUserAdapter(friendList);
         searchUserAdapter.setOnItemClickListener(position -> {
-            friendList.get(position).launchChat(getBaseContext(), this, true);
+            Intent intent = new Intent(getBaseContext(), ChatActivityFriend.class);
+            intent.putExtra("user", friendList.get(position));
+            intent.putExtra("newChat", true);
+            startActivity(intent);
         });
         recyclerViewMessagesAmis.setAdapter(searchUserAdapter);
         recyclerViewMessagesAmis.setLayoutManager(new LinearLayoutManager(getBaseContext()));
