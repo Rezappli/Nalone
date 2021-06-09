@@ -1,7 +1,5 @@
 package com.nolonely.mobile.objects;
 
-import android.content.Context;
-import android.content.Intent;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -10,7 +8,6 @@ import androidx.annotation.Nullable;
 import com.nolonely.mobile.enumeration.StatusEvent;
 import com.nolonely.mobile.enumeration.TypeEvent;
 import com.nolonely.mobile.enumeration.Visibility;
-import com.nolonely.mobile.ui.evenements.InfosEvenementsActivity;
 import com.nolonely.mobile.util.Constants;
 
 import java.io.Serializable;
@@ -268,13 +265,6 @@ public class Evenement implements Serializable {
 
     public void setMembers(ArrayList<User> members) {
         this.members = members;
-    }
-
-    public void displayEventInfo(Context context, boolean isRegistered) {
-        Intent intent = new Intent(context, InfosEvenementsActivity.class);
-        intent.putExtra("event", this);
-        intent.putExtra("isRegistered", isRegistered);
-        context.startActivity(intent);
     }
 
     @Override

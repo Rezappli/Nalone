@@ -17,6 +17,7 @@
     <uses-permission android:name="android.permission." />
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
 
+
     <application
         android:name="splash.MyApp"
         android:allowBackup="true"
@@ -29,6 +30,7 @@
         android:theme="@style/AppTheme.NoActionBar">
         <activity android:name=".ReportActivity"></activity>
         <activity android:name=".ui.amis.display.InfoUserActivity" />
+        <activity android:name=".ui.evenements.InfosEventCreationActivity" />
         <activity android:name=".ui.evenements.display.PlanningActivity" />
         <activity android:name=".ui.UserListActivity" />
         <activity android:name=".signUpActivities.WelcomeActivity" />

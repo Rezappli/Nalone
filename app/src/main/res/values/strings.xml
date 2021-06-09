@@ -8,6 +8,8 @@
     <string name="inscrireButton">S\'inscrire </string>
     <string name="participer"> Participer</string>
     <string name="ignorer"> Ignorer</string>
+    <string name="start">Début</string>
+    <string name="end">Fin</string>
     <string name="desinscriptionButton">Se désinscrire </string>
     <string name="buttonConnexion"> Se connecter </string>
     <string name="titleSignUpOne"> Nom et pseudo </string>

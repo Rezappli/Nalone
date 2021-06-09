@@ -30,6 +30,7 @@ import com.nolonely.mobile.enumeration.StatusEvent;
 import com.nolonely.mobile.listeners.JSONArrayListener;
 import com.nolonely.mobile.objects.Evenement;
 import com.nolonely.mobile.ui.evenements.InfosEvenementsActivity;
+import com.nolonely.mobile.ui.evenements.InfosEventCreationActivity;
 import com.nolonely.mobile.util.Constants;
 import com.nolonely.mobile.util.TimeUtil;
 
@@ -48,7 +49,6 @@ import static com.nolonely.mobile.enumeration.StatusEvent.FINI;
 import static com.nolonely.mobile.util.Constants.USER;
 
 public class PlanningCreationsFragment extends Fragment {
-
 
     private ImageView imageTypeEvent;
     private TextView nextEventName, nextEventCity, nextEventDate, nextEventTime, textViewTitleDebut, differenceDate;
@@ -123,7 +123,12 @@ public class PlanningCreationsFragment extends Fragment {
         RecyclerView mRecyclerRegistrations = view.findViewById(R.id.recycleViewPlanningRegistrations);
         eventsRecycler = new ArrayList<>();
         evenementAdapter = new EvenementAdapter(eventsRecycler, R.layout.item_evenement_creation, false);
-        evenementAdapter.setOnItemClickListener(position -> eventsRecycler.get(position).displayEventInfo(getContext(), true));
+        evenementAdapter.setOnItemClickListener(position -> {
+            Intent intent = new Intent(getContext(), InfosEventCreationActivity.class);
+            intent.putExtra("event", eventsRecycler.get(position));
+            startActivity(intent);
+        });
+
         mRecyclerRegistrations.setAdapter(evenementAdapter);
         mRecyclerRegistrations.setLayoutManager(new LinearLayoutManager(getContext(), RecyclerView.VERTICAL, false) {
             @Override
@@ -138,7 +143,6 @@ public class PlanningCreationsFragment extends Fragment {
         callEventSoon();
 
         handler = new Handler();
-        handler.postDelayed(runnable, 0);
 
         textViewNow = view.findViewById(R.id.textViewPlanningRegistrationsNow);
         textViewSoon = view.findViewById(R.id.textViewPlanningRegistrationsSoon);
@@ -147,6 +151,18 @@ public class PlanningCreationsFragment extends Fragment {
         textViewSoon.setOnClickListener(v -> updateDrawableClicked(BIENTOT));
         textViewEnd.setOnClickListener(v -> updateDrawableClicked(FINI));
         return view;
+    }
+
+    @Override
+    public void onResume() {
+        handler.post(runnable);
+        super.onResume();
+    }
+
+    @Override
+    public void onPause() {
+        handler.removeCallbacks(runnable);
+        super.onPause();
     }
 
     private void updateDrawableClicked(StatusEvent statusEvent) {
