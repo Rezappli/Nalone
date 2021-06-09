@@ -2,34 +2,21 @@ package com.nolonely.mobile.objects;
 
 
 public class Chat {
-    private String uid;
+    private String uidChannel;
     private String name;
-    private String message;
+    private String lastMessage;
     private String date;
-    private String image;
 
     public Chat(String uidChannel, String date, String username, String lastMessage) {
-        this.uid = uidChannel;
+        this.uidChannel = uidChannel;
         this.date = date;
     }
 
     public String getUidChannel() {
-        return uid;
+        return uidChannel;
     }
 
     public String getDate() {
         return date;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public String getLastMessage() {
-        return message;
-    }
-
-    public String getImage() {
-        return image;
     }
 }

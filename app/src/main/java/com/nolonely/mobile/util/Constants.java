@@ -162,19 +162,15 @@ public class Constants {
 
 
     public static void setUserImage(final User u, final ImageView imageView) {
-        imageView.post(() -> {
-            if (u.getImage_url() != null && !u.getImage_url().equals("")) {
-                Glide.with(application).load(u.getImage_url()).fitCenter().centerCrop().into(imageView);
+        imageView.post(new Runnable() {
+            @Override
+            public void run() {
+                if (u.getImage_url() != null && !u.getImage_url().equals("")) {
+                    Glide.with(application).load(u.getImage_url()).fitCenter().centerCrop().into(imageView);
+                }
             }
         });
-    }
 
-    public static void setUserImageWithUrl(final String url, final ImageView imageView) {
-        imageView.post(() -> {
-            if (url != null && !url.equals("")) {
-                Glide.with(application).load(url).fitCenter().centerCrop().into(imageView);
-            }
-        });
     }
 
     public static void setGroupImage(final Group g, final ImageView imageView) {
