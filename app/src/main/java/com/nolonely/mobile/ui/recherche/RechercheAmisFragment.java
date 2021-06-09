@@ -151,6 +151,7 @@ public class RechercheAmisFragment extends JSONFragment {
                         }
                         linearSansRechercheAmis.setVisibility(View.GONE);
                         configureRecyclerViewAmis();
+
                     } else {
                         linearSansRechercheAmis.setVisibility(View.VISIBLE);
                     }

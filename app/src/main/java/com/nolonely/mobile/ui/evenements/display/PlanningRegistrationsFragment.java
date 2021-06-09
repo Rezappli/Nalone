@@ -90,16 +90,12 @@ public class PlanningRegistrationsFragment extends Fragment {
         });
 
         handler = new Handler();
+        handler.postDelayed(runnable, 0);
 
         RecyclerView mRecyclerRegistrations = view.findViewById(R.id.recycleViewPlanningRegistrations);
         eventsRecycler = new ArrayList<>();
         evenementAdapter = new EvenementAdapter(eventsRecycler, R.layout.item_evenement_registration, false);
-        evenementAdapter.setOnItemClickListener(position -> {
-            Intent intent = new Intent(getContext(), InfosEvenementsActivity.class);
-            intent.putExtra("event", eventsRecycler.get(position));
-            intent.putExtra("isRegistered", true);
-            startActivity(intent);
-        });
+        evenementAdapter.setOnItemClickListener(position -> eventsRecycler.get(position).displayEventInfo(getContext(), true));
         mRecyclerRegistrations.setAdapter(evenementAdapter);
         mRecyclerRegistrations.setLayoutManager(new LinearLayoutManager(getContext(), RecyclerView.VERTICAL, false) {
             @Override
@@ -143,18 +139,6 @@ public class PlanningRegistrationsFragment extends Fragment {
                 updateRecyclerView(eventsSoon);
                 break;
         }
-    }
-
-    @Override
-    public void onResume() {
-        handler.post(runnable);
-        super.onResume();
-    }
-
-    @Override
-    public void onPause() {
-        handler.removeCallbacks(runnable);
-        super.onPause();
     }
 
     private void changeTextViewBackground(TextView textView, boolean isClicked) {

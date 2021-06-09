@@ -1,6 +1,8 @@
 package com.nolonely.mobile.ui.evenements;
 
 import android.annotation.SuppressLint;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
@@ -26,16 +28,11 @@ import com.nolonely.mobile.bdd.json.JSONController;
 import com.nolonely.mobile.bdd.json.JSONObjectCrypt;
 import com.nolonely.mobile.enumeration.StatusEvent;
 import com.nolonely.mobile.enumeration.Visibility;
-import com.nolonely.mobile.listeners.JSONArrayListener;
 import com.nolonely.mobile.listeners.JSONObjectListener;
 import com.nolonely.mobile.objects.Evenement;
-import com.nolonely.mobile.objects.User;
-import com.nolonely.mobile.ui.amis.display.InfoUserActivity;
 import com.nolonely.mobile.util.Constants;
 import com.nolonely.mobile.util.TimeUtil;
 
-import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.text.ParseException;
@@ -70,7 +67,6 @@ public class InfosEvenementsActivity extends AppCompatActivity {
     private TextView textViewPrice;
     private ImageView imageViewEuro;
     private CardView cardViewPrice;
-    private CardView cardViewOwner;
 
     private boolean isRegistered;
     private LinearLayout linearPrice;
@@ -106,54 +102,6 @@ public class InfosEvenementsActivity extends AppCompatActivity {
         imageViewEuro = findViewById(R.id.imageViewEuro);
         cardViewPrice = findViewById(R.id.cardViewPrice);
         linearPrice = findViewById(R.id.linearPrice);
-        cardViewOwner = findViewById(R.id.cardViewOwner);
-        cardViewOwner.setOnClickListener(v -> {
-
-            JSONObjectCrypt params = new JSONObjectCrypt();
-            params.putCryptParameter("uid", EVENT_LOAD.getOwner_uid());
-
-            JSONController.getJsonObjectFromUrl(Constants.URL_ME, this, params, new JSONObjectListener() {
-                @Override
-                public void onJSONReceived(JSONObject jsonObject) {
-                    Log.w("User", jsonObject.toString());
-                    User user = (User) JSONController.convertJSONToObject(jsonObject, User.class);
-
-                    JSONObjectCrypt params = new JSONObjectCrypt();
-                    params.putCryptParameter("uid", USER.getUid());
-
-                    JSONController.getJsonArrayFromUrl(Constants.URL_MY_FRIENDS, getBaseContext(), params, new JSONArrayListener() {
-                        @Override
-                        public void onJSONReceived(JSONArray jsonArray) {
-                            try {
-                                boolean isFriend = false;
-                                for (int i = 0; i < jsonArray.length(); i++) {
-                                    if (user == (User) JSONController.convertJSONToObject(jsonArray.getJSONObject(i), User.class)) {
-                                        isFriend = true;
-                                    }
-                                }
-                                Intent intent = new Intent(getBaseContext(), InfoUserActivity.class);
-                                intent.putExtra("user", user);
-                                intent.putExtra("isFriend", isFriend);
-                                startActivity(intent);
-
-                            } catch (JSONException e) {
-                                Log.w("Response", "Erreur: " + e.getMessage());
-                            }
-                        }
-
-                        @Override
-                        public void onJSONReceivedError(VolleyError volleyError) {
-                            Log.w("Response", "Erreur: " + volleyError.toString());
-                        }
-                    });
-                }
-
-                @Override
-                public void onJSONReceivedError(VolleyError volleyError) {
-                    Log.w("Response", "Erreur : " + volleyError.toString());
-                }
-            });
-        });
 
         buttonBack.setOnClickListener(v -> onBackPressed());
 
@@ -186,10 +134,8 @@ public class InfosEvenementsActivity extends AppCompatActivity {
 
     private void initWidgets() {
         TextView mTitle = findViewById(R.id.title);
-        TextView mDateStart = findViewById(R.id.dateStart);
-        TextView mDateEnd = findViewById(R.id.dateEnd);
-        TextView mTimeStart = findViewById(R.id.timeStart);
-        TextView mTimeEnd = findViewById(R.id.timeEnd);
+        TextView mDate = findViewById(R.id.date);
+        TextView mTimer = findViewById(R.id.time);
         TextView mOwner = findViewById(R.id.owner);
         TextView mDescription = findViewById(R.id.description);
 
@@ -215,15 +161,13 @@ public class InfosEvenementsActivity extends AppCompatActivity {
         handler.postDelayed(runnable, 0);
 
         try {
-            mDateStart.setText(TimeUtil.dateOfDateLetter(EVENT_LOAD.getStartDate()));
-            mDateEnd.setText(TimeUtil.dateOfDateLetter(EVENT_LOAD.getEndDate()));
+            mDate.setText(TimeUtil.dateOfDateLetter(EVENT_LOAD.getStartDate()));
         } catch (ParseException e) {
             Log.w("Response", "Erreur:" + e.getMessage());
             Toast.makeText(getBaseContext(), getResources().getString(R.string.error), Toast.LENGTH_SHORT).show();
         }
 
-        mTimeStart.setText(TimeUtil.timeOfDate(EVENT_LOAD.getStartDate()));
-        mTimeEnd.setText(TimeUtil.timeOfDate(EVENT_LOAD.getEndDate()));
+        mTimer.setText(TimeUtil.timeOfDate(EVENT_LOAD.getStartDate()));
 
         Log.w("STATUS", EVENT_LOAD.getStatusEvent() + "");
         if (EVENT_LOAD.getStatusEvent() == StatusEvent.ENCOURS) {
@@ -253,6 +197,45 @@ public class InfosEvenementsActivity extends AppCompatActivity {
             }
         }
     };
+
+
+    private void suppression() {
+        final AlertDialog.Builder builder = new AlertDialog.Builder(getBaseContext());
+        builder.setMessage(getResources().getString(R.string.alert_dialog_delete_event))
+                .setPositiveButton(getResources().getText(R.string.button_yes), new DialogInterface.OnClickListener() {
+                    @RequiresApi(api = Build.VERSION_CODES.O)
+                    public void onClick(DialogInterface dialog, int id) {
+                        JSONObjectCrypt params = new JSONObjectCrypt();
+                        params.putCryptParameter("uid", USER.getUid());
+                        params.putCryptParameter("uid_event", EVENT_LOAD.getUid());
+
+                        JSONController.getJsonObjectFromUrl(Constants.URL_EVENT_DELETE, getBaseContext(), params, new JSONObjectListener() {
+                            @Override
+                            public void onJSONReceived(JSONObject jsonObject) {
+                                if (jsonObject.length() == 3) {
+                                    Toast.makeText(getBaseContext(), getResources().getString(R.string.event_delete), Toast.LENGTH_SHORT).show();
+                                    onBackPressed();
+                                } else {
+                                    Toast.makeText(getBaseContext(), getResources().getString(R.string.error), Toast.LENGTH_SHORT).show();
+                                }
+                            }
+
+                            @Override
+                            public void onJSONReceivedError(VolleyError volleyError) {
+                                Toast.makeText(getBaseContext(), getResources().getString(R.string.error), Toast.LENGTH_SHORT).show();
+                                Log.w("Response", "Erreur:" + volleyError.toString());
+                            }
+                        });
+                    }
+                })
+                .setNegativeButton(getResources().getText(R.string.button_no), new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        dialog.dismiss();
+                    }
+                });
+        builder.create();
+        builder.show();
+    }
 
     private void registerClicked() {
         inscrit = true;
