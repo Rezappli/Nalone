@@ -5,23 +5,17 @@ import android.content.Context;
 import android.os.Build;
 import android.util.Log;
 import android.widget.ImageView;
-import android.widget.Toast;
 
 import androidx.annotation.RequiresApi;
 
-import com.android.volley.AuthFailureError;
-import com.android.volley.Response;
 import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonObjectRequest;
 import com.bumptech.glide.Glide;
-import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.wallet.WalletConstants;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.nolonely.mobile.bdd.json.JSONController;
 import com.nolonely.mobile.bdd.json.JSONObjectCrypt;
 import com.nolonely.mobile.enumeration.ImageType;
-import com.nolonely.mobile.fcm.MySingleton;
 import com.nolonely.mobile.listeners.JSONObjectListener;
 import com.nolonely.mobile.objects.Evenement;
 import com.nolonely.mobile.objects.Group;
@@ -37,9 +31,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
-
-//import com.koalap.geofirestore.GeoFire;
 
 public class Constants {
 
@@ -49,7 +40,6 @@ public class Constants {
 
     public static FirebaseUser currentUser;
 
-    public static String USER_ID;
     public static User USER;
 
     public static boolean load = false;
@@ -62,8 +52,6 @@ public class Constants {
     public static SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
     public static SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm");
     public static SimpleDateFormat allTimeFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-
-    public static LatLng targetZoom;
 
     public static int range;
 
@@ -86,7 +74,7 @@ public class Constants {
     public static String URL_REGISTER = BASE_API_URL + "/register.php";
     public static String URL_SEND_MAIL = BASE_API_URL + "/send_mail.php";
     public static String URL_CHECK_MAIL_VALIDATION = BASE_API_URL + "/check_mail_validation.php";
-    public static String URL_EXISTING_OBJECT = BASE_API_URL + "/existing_object.php";
+    public static String URL_EXISTING_PSEUDO = BASE_API_URL + "/existing_pseudo.php";
     public static String URL_NEARBY_EVENTS = BASE_API_URL + "/get_event_nearby.php";
     public static String URL_FRIENDS = BASE_API_URL + "/get_friends.php";
     public static String URL_FRIENDS_INVITATIONS = BASE_API_URL + "/get_friends_request.php";
@@ -133,34 +121,6 @@ public class Constants {
 
     public static final float margin_percentage = 3.5142f;
 
-
-    public static void sendNotification(JSONObject notification, final Context context) {
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(FCM_API, notification,
-                new Response.Listener<JSONObject>() {
-                    @Override
-                    public void onResponse(JSONObject response) {
-                        Log.i("Notification", "onResponse: " + response.toString());
-                    }
-                },
-                new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        Toast.makeText(context, "Request error", Toast.LENGTH_LONG).show();
-                        Log.i("Notification", "onErrorResponse: Didn't work");
-                    }
-                }) {
-            @Override
-            public Map<String, String> getHeaders() throws AuthFailureError {
-                Map<String, String> params = new HashMap<>();
-                params.put("Authorization", serverKey);
-                params.put("Content-Type", contentType);
-                return params;
-            }
-        };
-        MySingleton.getInstance(context).addToRequestQueue(jsonObjectRequest);
-    }
-
-
     public static void setUserImage(final User u, final ImageView imageView) {
         imageView.post(() -> {
             if (u.getImage_url() != null && !u.getImage_url().equals("")) {
@@ -178,23 +138,17 @@ public class Constants {
     }
 
     public static void setGroupImage(final Group g, final ImageView imageView) {
-        imageView.post(new Runnable() {
-            @Override
-            public void run() {
-                if (g.getImage_url() != null && !g.getImage_url().equals("")) {
-                    Glide.with(application).load(g.getImage_url()).fitCenter().centerCrop().into(imageView);
-                }
+        imageView.post(() -> {
+            if (g.getImage_url() != null && !g.getImage_url().equals("")) {
+                Glide.with(application).load(g.getImage_url()).fitCenter().centerCrop().into(imageView);
             }
         });
     }
 
     public static void setEventImage(final Evenement e, final ImageView imageView) {
-        imageView.post(new Runnable() {
-            @Override
-            public void run() {
-                if (e.getImage_url_event() != null && !e.getImage_url_event().equals("")) {
-                    Glide.with(application).load(e.getImage_url_event()).fitCenter().centerCrop().into(imageView);
-                }
+        imageView.post(() -> {
+            if (e.getImage_url_event() != null && !e.getImage_url_event().equals("")) {
+                Glide.with(application).load(e.getImage_url_event()).fitCenter().centerCrop().into(imageView);
             }
         });
     }
@@ -288,14 +242,14 @@ public class Constants {
      *
      * @value #COUNTRY_CODE Your local country
      */
-    public static final String COUNTRY_CODE = "US";
+    public static final String COUNTRY_CODE = "FR";
 
     /**
      * Required by the API, but not visible to the user.
      *
      * @value #CURRENCY_CODE Your local currency
      */
-    public static final String CURRENCY_CODE = "USD";
+    public static final String CURRENCY_CODE = "EUR";
 
     /**
      * Supported countries for shipping (use ISO 3166-1 alpha-2 country codes). Relevant only when

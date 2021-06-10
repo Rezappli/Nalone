@@ -13,7 +13,6 @@ import com.android.volley.NetworkResponse;
 import com.android.volley.ParseError;
 import com.android.volley.Request;
 import com.android.volley.Response;
-import com.android.volley.VolleyError;
 import com.android.volley.toolbox.HttpHeaderParser;
 import com.android.volley.toolbox.JsonRequest;
 import com.android.volley.toolbox.Volley;
@@ -27,44 +26,35 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.UnsupportedEncodingException;
-import java.util.HashMap;
 import java.util.Map;
 
 public class JSONController {
 
     private static Gson gson = new Gson();
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     public static void getJsonArrayFromUrl(@NonNull String url, @NonNull Context context,
                                            @NonNull JSONObject parameters, final JSONArrayListener listener) {
         Volley.newRequestQueue(context)
                 .add(new JsonRequest<JSONArray>(Request.Method.POST,
                              url,
                              parameters.toString(),
-                             new Response.Listener<JSONArray>() {
-                                 @RequiresApi(api = Build.VERSION_CODES.O)
-                                 @Override
-                                 public void onResponse(JSONArray jsonArray) {
-                                     if (listener != null) {
-                                         try {
-                                             listener.onJSONReceived(CryptoUtils.decryptArray(jsonArray));
-                                         } catch (JSONException e) {
-                                             e.printStackTrace();
-                                         }
+                             jsonArray -> {
+                                 if (listener != null) {
+                                     try {
+                                         listener.onJSONReceived(CryptoUtils.decryptArray(jsonArray));
+                                     } catch (JSONException e) {
+                                         e.printStackTrace();
                                      }
                                  }
-                             }, new Response.ErrorListener() {
-                         @Override
-                         public void onErrorResponse(VolleyError volleyError) {
-                             if (listener != null) {
-                                 Log.w("Response", "Error call from " + listener.getClass());
-                                 listener.onJSONReceivedError(volleyError);
-                             }
+                             }, volleyError -> {
+                         if (listener != null) {
+                             Log.w("Response", "Error call from " + listener.getClass());
+                             listener.onJSONReceivedError(volleyError);
                          }
                      }) {
                          @Override
                          protected Map<String, String> getParams() throws AuthFailureError {
-                             Map<String, String> params = new HashMap<String, String>();
-
                              return super.getParams();
                          }
 
@@ -85,31 +75,25 @@ public class JSONController {
                          }
                      }
                 ).setRetryPolicy(new DefaultRetryPolicy(
+                DefaultRetryPolicy.DEFAULT_TIMEOUT_MS,
                 0,
-                DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
                 DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     public static void getJsonObjectFromUrl(@NonNull String url, @NonNull Context context,
                                             @NonNull JSONObject parameters, final JSONObjectListener listener) {
         Volley.newRequestQueue(context)
                 .add(new JsonRequest<JSONObject>(Request.Method.POST,
                              url,
                              parameters.toString(),
-                             new Response.Listener<JSONObject>() {
-                                 @RequiresApi(api = Build.VERSION_CODES.O)
-                                 @Override
-                                 public void onResponse(JSONObject jsonObject) {
-                                     if (listener != null) {
-                                         listener.onJSONReceived(CryptoUtils.decryptObject(jsonObject));
-                                     }
+                             jsonObject -> {
+                                 if (listener != null) {
+                                     listener.onJSONReceived(CryptoUtils.decryptObject(jsonObject));
                                  }
-                             }, new Response.ErrorListener() {
-                         @Override
-                         public void onErrorResponse(VolleyError volleyError) {
-                             if (listener != null) {
-                                 listener.onJSONReceivedError(volleyError);
-                             }
+                             }, volleyError -> {
+                         if (listener != null) {
+                             listener.onJSONReceivedError(volleyError);
                          }
                      }) {
                          @Override
@@ -133,7 +117,11 @@ public class JSONController {
                              }
                          }
                      }
-                );
+                ).setRetryPolicy(new DefaultRetryPolicy(
+                DefaultRetryPolicy.DEFAULT_TIMEOUT_MS,
+                0,
+                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+        ;
     }
 
     public static Object convertJSONToObject(JSONObject s, Class c) {

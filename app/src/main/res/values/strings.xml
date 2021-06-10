@@ -55,7 +55,8 @@
     <string name="title_check_phone"> Verification de votre téléphone</string>
     <string name="subtitle_check_phone"> Un code vous à été envoyé au </string>
     <string name="subtitle_check_phone_code"> Code </string>
-    <string name="subtitle_check_mail"> Un lien vous à été envoyé a l\'adresse </string>
+    <string name="code_incorrect"> Le code que vous avez entré(e) est incorrect ! </string>
+    <string name="subtitle_check_mail"> Un code vous à été envoyé(e) à votre adresse mail </string>
     <string name="title_notsend"> Rien reçu ? </string>
     <string name="subtitle_notsend"> Renvoyer le lien </string>
     <string name="autre"> Autre </string>

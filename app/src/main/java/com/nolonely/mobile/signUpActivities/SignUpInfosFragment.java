@@ -90,7 +90,7 @@ public class SignUpInfosFragment extends SignUpFragment {
         JSONObjectCrypt params = new JSONObjectCrypt();
         params.putCryptParameter("pseudo", pseudoEntered);
 
-        JSONController.getJsonObjectFromUrl(Constants.URL_EXISTING_OBJECT, getContext(), params, new JSONObjectListener() {
+        JSONController.getJsonObjectFromUrl(Constants.URL_EXISTING_PSEUDO, getContext(), params, new JSONObjectListener() {
             @Override
             public void onJSONReceived(JSONObject jsonObject) {
                 if (jsonObject.length() == 3) {

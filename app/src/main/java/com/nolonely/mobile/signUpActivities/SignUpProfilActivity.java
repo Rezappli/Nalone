@@ -16,13 +16,13 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.bumptech.glide.Glide;
-import com.nolonely.mobile.MainActivity;
-import com.nolonely.mobile.R;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseUser;
+import com.nolonely.mobile.MainActivity;
+import com.nolonely.mobile.R;
 
 import static com.nolonely.mobile.util.Constants.mAuth;
 
@@ -52,13 +52,10 @@ public class SignUpProfilActivity extends AppCompatActivity {
         signupNext = findViewById(R.id.signUpNext3);
         signUpDescription = findViewById(R.id.signUpDescription);
 
-        imageViewPhotoProfil.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent photoPickerIntent = new Intent(Intent.ACTION_PICK);
-                photoPickerIntent.setType("image/*");
-                startActivityForResult(photoPickerIntent, RESULT_LOAD_IMG);
-            }
+        imageViewPhotoProfil.setOnClickListener(view -> {
+            Intent photoPickerIntent = new Intent(Intent.ACTION_PICK);
+            photoPickerIntent.setType("image/*");
+            startActivityForResult(photoPickerIntent, RESULT_LOAD_IMG);
         });
 
         signupNext.setOnClickListener(new View.OnClickListener() {

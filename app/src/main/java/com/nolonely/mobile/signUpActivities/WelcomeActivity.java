@@ -1,7 +1,6 @@
 package com.nolonely.mobile.signUpActivities;
 
 import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
@@ -47,6 +46,7 @@ public class WelcomeActivity extends AppCompatActivity {
 
     private User user;
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -74,18 +74,11 @@ public class WelcomeActivity extends AppCompatActivity {
 
         signupNext.setOnClickListener(view -> {
             if (!hasSelectedImage) {
-                final AlertDialog.Builder builder = new AlertDialog.Builder(getBaseContext());
+                final AlertDialog.Builder builder = new AlertDialog.Builder(WelcomeActivity.this);
                 builder.setMessage("Vous n'avez pas séléctionné de photo de profil ! Voulez-vous continuer ?")
-                        .setPositiveButton("Oui", new DialogInterface.OnClickListener() {
-                            @RequiresApi(api = Build.VERSION_CODES.O)
-                            public void onClick(DialogInterface dialog, int id) {
-                                checkDescription();
-                            }
-                        })
-                        .setNegativeButton("Non", new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int id) {
+                        .setPositiveButton("Oui", (dialog, id) -> checkDescription())
+                        .setNegativeButton("Non", (dialog, id) -> {
 
-                            }
                         });
                 builder.create();
                 builder.show();
@@ -107,11 +100,16 @@ public class WelcomeActivity extends AppCompatActivity {
             user.setDescription(signUpDescription.getText().toString());
             JSONObjectCrypt params = new JSONObjectCrypt();
 
+            params.putCryptParameter("uid", user.getUid());
             params.putCryptParameter("name", user.getName());
             params.putCryptParameter("city", user.getCity());
             params.putCryptParameter("description", user.getDescription());
             params.putCryptParameter("latitude", user.getLatitude());
             params.putCryptParameter("longitude", user.getLongitude());
+            params.putCryptParameter("number_events_attend", "0");
+            params.putCryptParameter("number_events_create", "0");
+
+            Log.w("Params update me", "params : " + params.toString());
 
             JSONController.getJsonObjectFromUrl(Constants.URL_UPDATE_ME, getBaseContext(), params, new JSONObjectListener() {
                 @Override
@@ -132,6 +130,7 @@ public class WelcomeActivity extends AppCompatActivity {
 
     private void startHomeActivity() {
         USER = user;
+        user = null;
         startActivity(new Intent(getBaseContext(), HomeActivity.class));
     }
 
