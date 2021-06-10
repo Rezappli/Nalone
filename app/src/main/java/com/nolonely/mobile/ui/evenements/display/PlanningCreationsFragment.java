@@ -189,7 +189,7 @@ public class PlanningCreationsFragment extends Fragment {
 
     private void changeTextViewBackground(TextView textView, boolean isClicked) {
         textView.setBackground(ContextCompat.getDrawable(getContext(), isClicked ? R.drawable.tab_indicator : R.drawable.custom_button_signup));
-        textView.setTextColor(isClicked ? Color.WHITE : getResources().getColor(R.color.secundaryTextColor));
+        textView.setTextColor(isClicked ? Color.WHITE : getResources().getColor(R.color.grey));
     }
 
 

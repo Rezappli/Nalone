@@ -57,6 +57,12 @@ public class DatabaseManager extends SQLiteOpenHelper {
         this.getWritableDatabase().execSQL(strSql);
     }
 
+    public void updateUser(User user) {
+        String strSql = "UPDATE users SET  name = '" + user.getName() + "',  " +
+                "city = '" + user.getCity() + "', description = '" + user.getDescription() + "', mail = '" + user.getMail() + "', phone = '" + user.getNumber() + "', number_events_attend = " + user.getNumber_events_attend() + ", number_events_create = " + user.getNumber_events_create() + ", image_url= '" + user.getImage_url() + "', latitude= " + user.getLatitude() + ", longitude = " + user.getLongitude() + " WHERE uid = '" + user.getUid() + "'";
+        this.getWritableDatabase().execSQL(strSql);
+    }
+
     public void deleteAll() {
         SQLiteDatabase db = this.getWritableDatabase();
         db.execSQL("DELETE FROM users");

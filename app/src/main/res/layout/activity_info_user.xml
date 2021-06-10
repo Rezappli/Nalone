@@ -59,27 +59,13 @@
                 android:layout_margin="30dp"
                 app:cardCornerRadius="150dp">
 
-                <LinearLayout
+                <ImageView
+                    android:id="@+id/imagePerson"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:gravity="center"
-                    android:orientation="vertical">
-
-                    <androidx.cardview.widget.CardView
-                        android:layout_width="100dp"
-                        android:layout_height="100dp"
-                        android:layout_gravity="center|clip_vertical"
-                        app:cardCornerRadius="150dp">
-
-                        <ImageView
-                            android:id="@+id/imagePerson"
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:layout_gravity="center"
-                            android:contentDescription="@string/TODO"
-                            app:srcCompat="@drawable/ic_baseline_account_circle_24" />
-                    </androidx.cardview.widget.CardView>
-                </LinearLayout>
+                    android:layout_gravity="center"
+                    android:contentDescription="@string/TODO"
+                    app:srcCompat="@drawable/ic_baseline_account_circle_24" />
 
             </androidx.cardview.widget.CardView>
 
@@ -148,11 +134,17 @@
 
                 <androidx.cardview.widget.CardView
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                    android:layout_height="wrap_content"
                     android:layout_margin="20dp"
                     android:layout_weight="0.33"
                     app:cardCornerRadius="10dp"
-                    app:cardElevation="4dp">
+                    app:cardElevation="1dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="@drawable/custom_border_grey_r10"
+                        android:orientation="horizontal"></LinearLayout>
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -189,12 +181,18 @@
 
                 <androidx.cardview.widget.CardView
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                    android:layout_height="wrap_content"
                     android:layout_margin="20dp"
                     android:layout_weight="0.33"
                     app:cardBackgroundColor="@android:color/white"
                     app:cardCornerRadius="10dp"
-                    app:cardElevation="4dp">
+                    app:cardElevation="1dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="@drawable/custom_border_grey_r10"
+                        android:orientation="horizontal"></LinearLayout>
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -239,8 +237,10 @@
                 android:layout_height="200dp"
                 android:layout_marginLeft="20dp"
                 android:layout_marginRight="20dp"
+                android:layout_marginBottom="30dp"
                 android:elevation="10dp"
-                app:cardCornerRadius="10dp">
+                app:cardCornerRadius="10dp"
+                app:cardElevation="1dp">
 
 
                 <!--Linear layout to display pie chart -->
@@ -249,106 +249,147 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:orientation="horizontal"
-                    android:weightSum="2">
+                    android:background="@drawable/custom_border_grey_r10"
+                    android:orientation="horizontal"></LinearLayout>
 
-                    <!--Pie chart to display the data-->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical">
 
-                    <org.eazegraph.lib.charts.PieChart xmlns:app="http://schemas.android.com/apk/res-auto"
-                        android:id="@+id/piechart"
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_marginLeft="15dp"
-                        android:layout_marginTop="15dp"
-                        android:layout_marginBottom="15dp"
-                        android:layout_weight="1"
-                        android:padding="6dp"
+                    <TextView
+                        android:id="@+id/textView69"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:gravity="center"
+                        android:text="@string/CI" />
 
-                        />
-
-                    <!-- to display pie chart details -->
                     <LinearLayout
-                        android:layout_width="0dp"
+                        android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:layout_marginLeft="20dp"
-                        android:layout_weight="1"
-                        android:gravity="center_vertical"
-                        android:orientation="vertical">
+                        android:orientation="horizontal"
+                        android:visibility="visible"
+                        android:weightSum="2">
 
-                        <LinearLayout
+                        <!--Pie chart to display the data-->
+
+                        <RelativeLayout
                             android:layout_width="match_parent"
-                            android:layout_height="15dp"
-                            android:layout_gravity="center_vertical">
+                            android:layout_height="match_parent"
+                            android:layout_margin="15dp"
+                            android:layout_weight="1">
 
-                            <!--View to display the yellow color icon-->
-                            <View
-                                android:layout_width="15dp"
-                                android:layout_height="match_parent"
-                                android:background="@color/colorPrimary" />
-
-                            <!--Text view to display R -->
-                            <TextView
-                                android:id="@+id/ci1"
+                            <org.eazegraph.lib.charts.PieChart
+                                android:id="@+id/piechart"
                                 android:layout_width="match_parent"
                                 android:layout_height="match_parent"
-                                android:paddingLeft="10dp"
-                                android:text="@string/event_art"
-                                android:textSize="13sp" />
+                                android:layout_weight="1"
+                                android:padding="6dp"
 
-                        </LinearLayout>
+                                />
 
-                        <!--Linear layout to display Python-->
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="15dp"
-                            android:layout_gravity="center_vertical"
-                            android:layout_marginTop="5dp">
-
-                            <!--View to display the green color icon-->
-                            <View
-                                android:layout_width="15dp"
-                                android:layout_height="match_parent"
-                                android:background="@color/colorSecond" />
-
-                            <!--Text view to display python text -->
                             <TextView
-                                android:id="@+id/ci2"
-                                android:layout_width="match_parent"
-                                android:layout_height="match_parent"
-                                android:paddingLeft="10dp"
-                                android:text="@string/event_sport"
-                                android:textSize="13sp" />
-
-                        </LinearLayout>
-
-                        <!--Linear layout to display C++-->
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="15dp"
-                            android:layout_gravity="center_vertical"
-                            android:layout_marginTop="5dp">
-
-                            <!--View to display the red color icon-->
-                            <View
-                                android:layout_width="15dp"
-                                android:layout_height="match_parent"
-                                android:background="@color/colorThird" />
-
-                            <!--Text view to display C++ text -->
-                            <TextView
-                                android:id="@+id/ci3"
-                                android:layout_width="match_parent"
+                                android:id="@+id/textView68"
+                                android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:paddingLeft="10dp"
-                                android:text="@string/event_party"
-                                android:textSize="13sp" />
+                                android:layout_centerInParent="true"
+                                android:text="NA" />
+
+                        </RelativeLayout>
+
+                        <!-- to display pie chart details -->
+                        <LinearLayout
+                            android:id="@+id/linearTopCi"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_marginLeft="20dp"
+                            android:layout_weight="1"
+                            android:gravity="center_vertical"
+                            android:orientation="vertical"
+                            android:visibility="gone">
+
+                            <LinearLayout
+                                android:id="@+id/linearCi1"
+                                android:layout_width="match_parent"
+                                android:layout_height="15dp"
+                                android:layout_gravity="center_vertical"
+                                android:visibility="gone">
+
+                                <!--View to display the yellow color icon-->
+                                <View
+                                    android:layout_width="15dp"
+                                    android:layout_height="match_parent"
+                                    android:background="@color/colorPrimary" />
+
+                                <!--Text view to display R -->
+                                <TextView
+                                    android:id="@+id/ci1"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent"
+                                    android:paddingLeft="10dp"
+                                    android:text="@string/event_art"
+                                    android:textSize="13sp" />
+
+                            </LinearLayout>
+
+                            <!--Linear layout to display Python-->
+                            <LinearLayout
+                                android:id="@+id/linearCi2"
+                                android:layout_width="match_parent"
+                                android:layout_height="15dp"
+                                android:layout_gravity="center_vertical"
+                                android:layout_marginTop="5dp"
+                                android:visibility="gone">
+
+                                <!--View to display the green color icon-->
+                                <View
+                                    android:layout_width="15dp"
+                                    android:layout_height="match_parent"
+                                    android:background="@color/colorSecond" />
+
+                                <!--Text view to display python text -->
+                                <TextView
+                                    android:id="@+id/ci2"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent"
+                                    android:paddingLeft="10dp"
+                                    android:text="@string/event_sport"
+                                    android:textSize="13sp" />
+
+                            </LinearLayout>
+
+                            <!--Linear layout to display C++-->
+                            <LinearLayout
+                                android:id="@+id/linearCi3"
+                                android:layout_width="match_parent"
+                                android:layout_height="15dp"
+                                android:layout_gravity="center_vertical"
+                                android:layout_marginTop="5dp"
+                                android:visibility="gone">
+
+                                <!--View to display the red color icon-->
+                                <View
+                                    android:layout_width="15dp"
+                                    android:layout_height="match_parent"
+                                    android:background="@color/colorThird" />
+
+                                <!--Text view to display C++ text -->
+                                <TextView
+                                    android:id="@+id/ci3"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:paddingLeft="10dp"
+                                    android:text="@string/event_party"
+                                    android:textSize="13sp" />
+
+                            </LinearLayout>
+
+                            <!--Linear layout to display Java-->
 
                         </LinearLayout>
-
-                        <!--Linear layout to display Java-->
 
                     </LinearLayout>
-
                 </LinearLayout>
 
             </androidx.cardview.widget.CardView>

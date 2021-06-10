@@ -6,15 +6,14 @@ import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.Vibrator;
 import android.util.SparseArray;
-import android.view.LayoutInflater;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
-import android.view.View;
-import android.view.ViewGroup;
+import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
-import androidx.fragment.app.Fragment;
 
 import com.google.android.gms.vision.CameraSource;
 import com.google.android.gms.vision.Detector;
@@ -26,7 +25,7 @@ import java.io.IOException;
 
 import static com.nolonely.mobile.util.Constants.USER;
 
-public class CameraFragment extends Fragment {
+public class CameraActivity extends AppCompatActivity {
 
     private SurfaceView cameraPreview;
     private BarcodeDetector barcodeDetector;
@@ -39,7 +38,7 @@ public class CameraFragment extends Fragment {
         switch (requestCode) {
             case RequestCameraPermissionID:
                 if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+                    if (ActivityCompat.checkSelfPermission(getBaseContext(), Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
                         return;
                     }
                     try {
@@ -52,19 +51,19 @@ public class CameraFragment extends Fragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-
-        View rootView = inflater.inflate(R.layout.activity_camera, container, false);
-
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_camera);
+        ImageView buttonBack = findViewById(R.id.buttonBack);
+        buttonBack.setOnClickListener(v -> onBackPressed());
         found = false;
-        cameraPreview = rootView.findViewById(R.id.camerPreview);
+        cameraPreview = findViewById(R.id.camerPreview);
 
-        barcodeDetector = new BarcodeDetector.Builder(getContext())
+        barcodeDetector = new BarcodeDetector.Builder(getBaseContext())
                 .setBarcodeFormats(Barcode.QR_CODE)
                 .build();
         cameraSource = new CameraSource
-                .Builder(getContext(), barcodeDetector)
+                .Builder(getBaseContext(), barcodeDetector)
                 .setRequestedPreviewSize(640, 480)
                 .setAutoFocusEnabled(true)
                 .build();
@@ -72,8 +71,8 @@ public class CameraFragment extends Fragment {
         cameraPreview.getHolder().addCallback(new SurfaceHolder.Callback() {
             @Override
             public void surfaceCreated(@NonNull SurfaceHolder holder) {
-                if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
-                    ActivityCompat.requestPermissions(getActivity(),
+                if (ActivityCompat.checkSelfPermission(getBaseContext(), Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+                    ActivityCompat.requestPermissions(getParent(),
                             new String[]{Manifest.permission.CAMERA}, RequestCameraPermissionID);
                     return;
                 }
@@ -108,7 +107,7 @@ public class CameraFragment extends Fragment {
                     if (qrcodes.valueAt(0).displayValue.length() == USER.getUid().length()) {
                         if (!found) {
                             found = true;
-                            Vibrator v = (Vibrator) getActivity().getApplicationContext().getSystemService(Context.VIBRATOR_SERVICE);
+                            Vibrator v = (Vibrator) getApplicationContext().getSystemService(Context.VIBRATOR_SERVICE);
                             v.vibrate(400);
                             /*mStoreBase.collection("users").document(qrcodes.valueAt(0).displayValue).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                                 @Override
@@ -125,7 +124,6 @@ public class CameraFragment extends Fragment {
                 }
             }
         });
-
-        return rootView;
     }
+
 }

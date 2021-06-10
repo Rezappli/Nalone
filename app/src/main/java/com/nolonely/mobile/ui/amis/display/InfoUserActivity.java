@@ -7,6 +7,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -44,7 +45,7 @@ public class InfoUserActivity extends AppCompatActivity {
     String NOTIFICATION_MESSAGE;
     String TOPIC;
 
-    int nbEventFirt, nbEventSecond, nbEventThird, nbEventFourth;
+    int nbEventFirt, nbEventSecond, nbEventThird;
 
     boolean isFriend;
 
@@ -111,10 +112,13 @@ public class InfoUserActivity extends AppCompatActivity {
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     private void getTopCI() {
-        TextView ci1 = findViewById(R.id.ci1);
-        TextView ci2 = findViewById(R.id.ci2);
-        TextView ci3 = findViewById(R.id.ci3);
+        LinearLayout ci1 = findViewById(R.id.linearCi1);
+        LinearLayout ci2 = findViewById(R.id.linearCi2);
+        LinearLayout ci3 = findViewById(R.id.linearCi3);
         PieChart pieChart = findViewById(R.id.piechart);
+        TextView ciTotal = findViewById(R.id.textView68);
+
+        LinearLayout linearCi = findViewById(R.id.linearTopCi);
 
         nbEventFirt = 0;
         nbEventSecond = 0;
@@ -123,15 +127,17 @@ public class InfoUserActivity extends AppCompatActivity {
         JSONObjectCrypt params = new JSONObjectCrypt();
         params.putCryptParameter("uid", USER_LOAD.getUid());
 
-        JSONController.getJsonArrayFromUrl(Constants.URL_USER_WHITHOUT_ME, getBaseContext(), params, new JSONArrayListener() {
+        JSONController.getJsonArrayFromUrl(Constants.URL_GET_TOP_CI, getBaseContext(), params, new JSONArrayListener() {
             @Override
             public void onJSONReceived(JSONArray jsonArray) {
                 try {
 
                     if (jsonArray.length() > 0) {
+                        ciTotal.setVisibility(View.GONE);
+                        linearCi.setVisibility(View.VISIBLE);
                         for (int i = 0; i < jsonArray.length(); i++) {
                             if (i == 0) {
-                                nbEventFirt = ((TopCI) jsonArray.get(0)).getNumber();
+                                nbEventFirt = ((TopCI) JSONController.convertJSONToObject(jsonArray.getJSONObject(0), TopCI.class)).getNumber();
                                 ci1.setVisibility(View.VISIBLE);
                                 pieChart.addPieSlice(
                                         new PieModel(
@@ -139,7 +145,7 @@ public class InfoUserActivity extends AppCompatActivity {
                                                 getResources().getColor(R.color.colorPrimary)));
                             }
                             if (i == 1) {
-                                nbEventSecond = ((TopCI) jsonArray.get(1)).getNumber();
+                                nbEventSecond = ((TopCI) JSONController.convertJSONToObject(jsonArray.getJSONObject(1), TopCI.class)).getNumber();
                                 ci2.setVisibility(View.VISIBLE);
                                 pieChart.addPieSlice(
                                         new PieModel(
@@ -147,7 +153,7 @@ public class InfoUserActivity extends AppCompatActivity {
                                                 getResources().getColor(R.color.colorSecond)));
                             }
                             if (i == 2) {
-                                nbEventThird = ((TopCI) jsonArray.get(2)).getNumber();
+                                nbEventThird = ((TopCI) JSONController.convertJSONToObject(jsonArray.getJSONObject(2), TopCI.class)).getNumber();
                                 ci3.setVisibility(View.VISIBLE);
                                 pieChart.addPieSlice(
                                         new PieModel(
@@ -156,13 +162,14 @@ public class InfoUserActivity extends AppCompatActivity {
                             }
                         }
 
+                    } else {
                         pieChart.addPieSlice(
                                 new PieModel(
                                         100,
                                         getResources().getColor(R.color.grey)));
-                        pieChart.startAnimation();
                     }
 
+                    pieChart.startAnimation();
 
                 } catch (JSONException e) {
                     Log.w("Response", "Valeur" + jsonArray.toString());

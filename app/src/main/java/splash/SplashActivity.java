@@ -62,12 +62,35 @@ public class SplashActivity extends AppCompatActivity {
         if (loginPreferences.contains("mail") && loginPreferences.contains("password") && databaseManager.readMainUser() != null) {
             if (databaseManager.readMainUser() != null) {
                 USER = databaseManager.readMainUser();
+                updateUser();
                 launchHomeActivity();
             } else
                 verifyUserData(loginPreferences);
         } else {
             launchMainActivity();
         }
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    private void updateUser() {
+        JSONObjectCrypt params = new JSONObjectCrypt();
+        params.putCryptParameter("uid", USER.getUid());
+
+        JSONController.getJsonObjectFromUrl(Constants.URL_ME, this, params, new JSONObjectListener() {
+            @Override
+            public void onJSONReceived(JSONObject jsonObject) {
+                Log.w("User", jsonObject.toString());
+                USER = (User) JSONController.convertJSONToObject(jsonObject, User.class);
+                databaseManager.insertUserConnect(USER);
+                launchHomeActivity();
+            }
+
+            @Override
+            public void onJSONReceivedError(VolleyError volleyError) {
+                Log.w("Response", "Erreur : " + volleyError.toString());
+                launchMainActivity();
+            }
+        });
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)

@@ -30,6 +30,7 @@
         android:theme="@style/AppTheme.NoActionBar">
         <activity android:name=".ReportActivity"></activity>
         <activity android:name=".ui.amis.display.InfoUserActivity" />
+        <activity android:name=".ui.evenements.display.InfosEventCreationActivity" />
         <activity android:name=".ui.evenements.display.PlanningActivity" />
         <activity android:name=".ui.UserListActivity" />
         <activity android:name=".signUpActivities.WelcomeActivity" />
@@ -45,6 +46,7 @@
         <activity android:name=".ui.profil.ParametresActivity" />
         <activity android:name=".ui.profil.AideActivity" />
         <activity android:name=".ui.evenements.InfosEvenementsActivity" />
+        <activity android:name=".dialog.CameraActivity" />
         <activity
             android:name="com.theartofdev.edmodo.cropper.CropImageActivity"
             android:theme="@style/Base.Theme.AppCompat" />
@@ -71,7 +73,6 @@
             android:name=".HomeActivity"
             android:label="@string/title_activity_home"
             android:theme="@style/AppTheme" />
-        <activity android:name=".signUpActivities.SignUpProfilActivity" />
         <activity
             android:name=".MainActivity"
             android:parentActivityName=".MainActivity" />

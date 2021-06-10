@@ -15,6 +15,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.navigation.NavController;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -27,6 +28,7 @@ import com.nolonely.mobile.R;
 import com.nolonely.mobile.adapter.user.SearchUserAdapter;
 import com.nolonely.mobile.bdd.json.JSONController;
 import com.nolonely.mobile.bdd.json.JSONObjectCrypt;
+import com.nolonely.mobile.dialog.CameraActivity;
 import com.nolonely.mobile.items.ItemPerson;
 import com.nolonely.mobile.listeners.JSONArrayListener;
 import com.nolonely.mobile.objects.User;
@@ -65,16 +67,29 @@ public class RechercheAmisFragment extends JSONFragment {
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         rootView = inflater.inflate(R.layout.fragment_recherche_amis, container, false);
+        linearSansRechercheAmis = rootView.findViewById(R.id.linearSansRechercheGroupe);
+        swipeContainer = rootView.findViewById(R.id.AmisSwipeRefreshLayout);
+        search_bar = rootView.findViewById(R.id.search_bar);
+        resultat = rootView.findViewById(R.id.resultatText);
+        mRecyclerView = rootView.findViewById(R.id.recyclerView);
+        configureRecyclerViewAmis();
+
+        launchJSONCall();
+
         return rootView;
 
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        friends = new ArrayList<>();
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     public void createFragment() {
         loading = rootView.findViewById(R.id.search_loading);
 
-        linearSansRechercheAmis = rootView.findViewById(R.id.linearSansRechercheGroupe);
-        swipeContainer = rootView.findViewById(R.id.AmisSwipeRefreshLayout);
 
         swipeContainer.setColorSchemeResources(android.R.color.holo_blue_bright);
 
@@ -85,16 +100,14 @@ public class RechercheAmisFragment extends JSONFragment {
         qr_code.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                navController.navigate(R.id.action_navigation_recherche_amis_to_navigation_camera2);
+                startActivity(new Intent(getContext(), CameraActivity.class));
             }
         });
 
-        search_bar = rootView.findViewById(R.id.search_bar);
-        resultat = rootView.findViewById(R.id.resultatText);
+
         resultat.setVisibility(View.GONE);
         //navController = Navigation.findNavController(getActivity(), R.id.nav_host_fragment);
 
-        mRecyclerView = rootView.findViewById(R.id.recyclerView);
 
         search_bar.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -116,7 +129,6 @@ public class RechercheAmisFragment extends JSONFragment {
             }
         });
 
-        launchJSONCall();
 
     }
 
@@ -131,15 +143,18 @@ public class RechercheAmisFragment extends JSONFragment {
                 showProfil(friends.get(position));
             }
         });
+
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     private void getUsers() {
-        friends = new ArrayList<>();
 
         JSONObjectCrypt params = new JSONObjectCrypt();
         params.putCryptParameter("uid", USER.getUid());
-        params.putCryptParameter("limit", 10); //fix a limit to 10 users
+        params.putCryptParameter("limit1", friends.size()); //fix a limit to 10 users
+        params.putCryptParameter("limit2", friends.size() + 20); //fix a limit to 10 users
+        params.putCryptParameter("longitude", USER.getLongitude()); //fix a limit to 10 users
+        params.putCryptParameter("latitude", USER.getLatitude()); //fix a limit to 10 users
 
         JSONController.getJsonArrayFromUrl(Constants.URL_USER_WHITHOUT_ME, getContext(), params, new JSONArrayListener() {
             @Override
@@ -149,12 +164,17 @@ public class RechercheAmisFragment extends JSONFragment {
                         for (int i = 0; i < jsonArray.length(); i++) {
                             friends.add((User) JSONController.convertJSONToObject(jsonArray.getJSONObject(i), User.class));
                         }
-                        linearSansRechercheAmis.setVisibility(View.GONE);
-                        configureRecyclerViewAmis();
+                        mAdapter.notifyDataSetChanged();
 
-                    } else {
-                        linearSansRechercheAmis.setVisibility(View.VISIBLE);
                     }
+
+                    if (friends.isEmpty()) {
+                        linearSansRechercheAmis.setVisibility(View.VISIBLE);
+                    } else {
+                        linearSansRechercheAmis.setVisibility(View.GONE);
+                    }
+
+
                     loading.setVisibility(View.GONE);
 
                     swipeContainer.setRefreshing(false);

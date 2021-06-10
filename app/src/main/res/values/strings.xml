@@ -149,7 +149,7 @@
     <string name="location_mesevent"> Créer </string>
     <string name="descriptionNF"> Description : </string>
     <string name="afficher"> Afficher </string>
-    <string name="CI"> Centre d\'interêt </string>
+    <string name="CI"> Centres d\'interêt </string>
     <string name="title_sold"> Solde </string>
     <string name="or_main"> OU </string>
     <string name="particular"> Particulier </string>
@@ -208,6 +208,7 @@
     <string name="delete_event"> Annuler l\'évènement </string>
     <string name="qr_code"> Mon QR Code </string>
     <string name="qr_code_event"> QR Code </string>
+    <string name="qr_code_scan"> Scan QR Code </string>
     <string name="enter_message"> Entrez votre message </string>
     <string name="error_send_message"> Une erreur est survenue lors de l\'envoi de votre message </string>
     <string name="ajout_desc"> <u>Ajouter une description</u> </string>

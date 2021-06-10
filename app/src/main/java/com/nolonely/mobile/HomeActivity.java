@@ -24,6 +24,7 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.nolonely.mobile.bdd.json.JSONController;
 import com.nolonely.mobile.bdd.json.JSONObjectCrypt;
+import com.nolonely.mobile.bdd.sql_lite.DatabaseManager;
 import com.nolonely.mobile.enumeration.TypeEvent;
 import com.nolonely.mobile.enumeration.Visibility;
 import com.nolonely.mobile.listeners.JSONArrayListener;
@@ -231,6 +232,8 @@ public class HomeActivity extends JSONActivity implements AdapterView.OnItemSele
             @Override
             public void onJSONReceived(JSONObject jsonObject) {
                 USER = (User) JSONController.convertJSONToObject(jsonObject, User.class);
+                DatabaseManager databaseManager = new DatabaseManager(getBaseContext());
+                databaseManager.updateUser((User) JSONController.convertJSONToObject(jsonObject, User.class));
                 Log.w("Response", "Mise à jour des informations utilisateurs");
                 Log.w("Response", jsonObject.toString());
             }

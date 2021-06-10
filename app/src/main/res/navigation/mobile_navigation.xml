@@ -19,9 +19,6 @@
         <action
             android:id="@+id/action_navigation_recherche_amis_to_navigation_recherche"
             app:destination="@id/navigation_recherche" />
-        <action
-            android:id="@+id/action_navigation_recherche_amis_to_navigation_camera2"
-            app:destination="@id/navigation_camera" />
     </fragment>
 
 
@@ -44,19 +41,6 @@
         android:label="@string/planning"
         tools:layout="@layout/fragment_planning" />
 
-
-    <fragment
-        android:id="@+id/navigation_camera"
-        android:name="com.nolonely.mobile.dialog.CameraFragment"
-        android:label="@string/quitter"
-        tools:layout="@layout/activity_camera">
-        <action
-            android:id="@+id/action_navigation_camera_to_navigation_recherche"
-            app:destination="@id/navigation_recherche" />
-        <action
-            android:id="@+id/action_navigation_camera_to_navigation_recherche_amis2"
-            app:destination="@id/navigation_recherche_friends" />
-    </fragment>
 
     <fragment
         android:id="@+id/navigation_edit_group"

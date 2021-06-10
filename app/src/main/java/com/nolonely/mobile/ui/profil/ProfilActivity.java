@@ -24,6 +24,7 @@ import com.bumptech.glide.Glide;
 import com.nolonely.mobile.R;
 import com.nolonely.mobile.bdd.json.JSONController;
 import com.nolonely.mobile.bdd.json.JSONObjectCrypt;
+import com.nolonely.mobile.bdd.sql_lite.DatabaseManager;
 import com.nolonely.mobile.enumeration.ImageType;
 import com.nolonely.mobile.listeners.JSONObjectListener;
 import com.nolonely.mobile.qrcode.QRCodeFragment;
@@ -153,6 +154,8 @@ public class ProfilActivity extends AppCompatActivity {
             @Override
             public void onJSONReceived(JSONObject jsonObject) {
                 Toast.makeText(getBaseContext(), getResources().getString(R.string.update_description), Toast.LENGTH_SHORT).show();
+                DatabaseManager databaseManager = new DatabaseManager(getBaseContext());
+                databaseManager.updateUser(USER);
             }
 
             @Override
