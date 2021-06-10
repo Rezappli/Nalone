@@ -46,16 +46,20 @@
             android:textColor="@color/colorPrimary"
             android:textStyle="bold" />
 
-        <Button
-            android:id="@+id/buttonCheckValidation"
-            android:layout_width="200dp"
+        <com.alimuzaffar.lib.pin.PinEntryEditText
+            android:id="@+id/codeValidation"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginTop="80dp"
-            android:background="@drawable/custom_button_simple_grey"
-            android:clickable="false"
-            android:text="@string/valid"
-            android:textColor="@color/black" />
+            android:layout_marginStart="30dp"
+            android:layout_marginTop="30dp"
+            android:layout_marginEnd="30dp"
+            android:cursorVisible="false"
+            android:digits="1234567890"
+            android:inputType="number"
+            android:maxLength="4"
+            android:textIsSelectable="false"
+            android:textSize="20sp"
+            app:pinAnimationType="popIn" />
 
         <TextView
             android:id="@+id/buttonResendCheckValidation"

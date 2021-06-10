@@ -1,17 +1,14 @@
 package com.nolonely.mobile.signUpActivities;
 
-import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
 import android.util.Log;
-import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.RequiresApi;
-import androidx.core.content.ContextCompat;
 
+import com.alimuzaffar.lib.pin.PinEntryEditText;
 import com.android.volley.VolleyError;
 import com.nolonely.mobile.R;
 import com.nolonely.mobile.bdd.json.JSONController;
@@ -24,10 +21,8 @@ import org.json.JSONObject;
 
 public class CheckMailValidationActivity extends CheckValidationActivity {
 
-    private Button buttonValidate;
     private TextView buttonResendCheckValidation;
-    private Handler handler;
-    private Runnable runnable;
+    private PinEntryEditText codeValidation;
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
@@ -35,10 +30,18 @@ public class CheckMailValidationActivity extends CheckValidationActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_check_mail_validation);
 
-        buttonValidate = findViewById(R.id.buttonCheckValidation);
         buttonResendCheckValidation = findViewById(R.id.buttonResendCheckValidation);
-        buttonResendCheckValidation.setOnClickListener(v -> checkMail(true));
-        buttonValidate.setOnClickListener(v -> createUser());
+        codeValidation = findViewById(R.id.codeValidation);
+
+        codeValidation.setOnPinEnteredListener(new PinEntryEditText.OnPinEnteredListener() {
+            @Override
+            public void onPinEntered(CharSequence str) {
+                Log.w("Check", "Check Validation Mail");
+                checkValidationMail();
+            }
+        });
+        buttonResendCheckValidation.setOnClickListener(v -> checkMail());
+
         Bundle extras = getIntent().getExtras();
 
         if (extras != null) {
@@ -47,35 +50,25 @@ public class CheckMailValidationActivity extends CheckValidationActivity {
             user = (User) extras.getSerializable("user");
             initWidgets();
         }
-
-        handler = new Handler();
-
-        runnable = this::checkValidationMail;
-
-
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     private void initWidgets() {
         TextView infoUser = findViewById(R.id.infoUserCheckValidation);
-        checkMail(false);
+        checkMail();
         infoUser.setText(login);
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
-    private void checkMail(boolean isForceSend) {
+    private void checkMail() {
 
         JSONObjectCrypt params = new JSONObjectCrypt();
-        params.putCryptParameter("mail", login);
         params.putCryptParameter("uid", user.getUid());
-        params.putCryptParameter("force", isForceSend);
-
+        params.putCryptParameter("mail", login);
 
         JSONController.getJsonObjectFromUrl(Constants.URL_SEND_MAIL, this, params, new JSONObjectListener() {
             @Override
             public void onJSONReceived(JSONObject jsonObject) {
-                Log.w("Response", "JSON Object received, uid : " + user.getUid());
-                handler.postDelayed(runnable, 1000);
             }
 
             @Override
@@ -90,22 +83,19 @@ public class CheckMailValidationActivity extends CheckValidationActivity {
     private void checkValidationMail() {
         JSONObjectCrypt params = new JSONObjectCrypt();
         params.putCryptParameter("uid", user.getUid());
+        params.putCryptParameter("code", codeValidation.getText().toString());
 
         JSONController.getJsonObjectFromUrl(Constants.URL_CHECK_MAIL_VALIDATION, getBaseContext(), params, new JSONObjectListener() {
             @Override
             public void onJSONReceived(JSONObject jsonObject) {
-                handler.postDelayed(runnable, 1000);
 
                 if (jsonObject.length() == 3) {
-                    buttonValidate.setBackground(ContextCompat.getDrawable(getBaseContext(), R.drawable.custom_button_simple));
-                    buttonValidate.setTextColor(Color.WHITE);
-                    buttonValidate.setClickable(true);
-                    user.setMail(login); //picaxe56250@gmail.com
+                    user.setMail(login);
                     user.setNumber("+33");
-                    Log.w("MAIL", "VALIDATE");
-                    handler.removeCallbacks(runnable);
+                    createUser();
+                } else {
+                    Toast.makeText(CheckMailValidationActivity.this, getResources().getString(R.string.code_incorrect), Toast.LENGTH_SHORT).show();
                 }
-                Log.w("MAIL", "NO VALIDATE");
 
             }
 

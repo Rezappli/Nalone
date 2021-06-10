@@ -69,6 +69,7 @@ public class SearchThread extends Thread {
 
         } catch (IOException ex) {
             ex.printStackTrace();
+            this.interrupt();
         }
 
         return addressSearch;
