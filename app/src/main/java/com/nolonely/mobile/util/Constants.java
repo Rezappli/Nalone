@@ -96,7 +96,10 @@ public class Constants {
     public static String URL_ADD_EVENT = BASE_API_URL + "/add_event.php";
     public static String URL_UPLOAD_IMAGE = BASE_API_URL + "/upload_image.php";
 
+
     public static String URL_GET_GROUPS = BASE_API_URL + "/get_groups.php";
+    
+    public static String URL_GET_TOP_CI = BASE_API_URL + "/get_top_ci.php";
 
     public static String URL_DELETE_USER_TO_EVENT = BASE_API_URL + "/delete_user_event.php";
     public static String URL_DELETE_FRIEND = BASE_API_URL + "/delete_friend.php";
