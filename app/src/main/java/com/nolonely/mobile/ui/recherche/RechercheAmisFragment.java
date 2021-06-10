@@ -128,7 +128,7 @@ public class RechercheAmisFragment extends JSONFragment {
         mAdapter.setOnItemClickListener(new SearchUserAdapter.OnItemClickListener() {
             @Override
             public void onDisplayClick(int position) {
-                showPopUpProfil(friends.get(position));
+                showProfil(friends.get(position));
             }
         });
     }
@@ -186,9 +186,10 @@ public class RechercheAmisFragment extends JSONFragment {
     }
 
 
-    public void showPopUpProfil(User u) {
+    public void showProfil(User u) {
         Intent intent = new Intent(getContext(), InfoUserActivity.class);
         intent.putExtra("user", u);
+        intent.putExtra("isFriend", false);
         startActivity(intent);
     }
 

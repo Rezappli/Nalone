@@ -150,7 +150,7 @@ public class AmisFragment extends Fragment {
         mAdapter.setOnItemClickListener(new MyFriendsAdapter.OnItemClickListener() {
             @Override
             public void onDisplayClick(int position) {
-                showPopUpProfil(friends.get(position));
+                showProfil(friends.get(position));
             }
 
             @RequiresApi(api = Build.VERSION_CODES.O)
@@ -192,7 +192,7 @@ public class AmisFragment extends Fragment {
         mAdapter.setOnItemClickListener(new MyFriendsAdapter.OnItemClickListener() {
             @Override
             public void onDisplayClick(int position) {
-                showPopUpProfil(friends.get(position));
+                showProfil(friends.get(position));
             }
 
             @RequiresApi(api = Build.VERSION_CODES.O)
@@ -224,9 +224,10 @@ public class AmisFragment extends Fragment {
         });
     }
 
-    public void showPopUpProfil(User u) {
+    public void showProfil(User u) {
         Intent intent = new Intent(getContext(), InfoUserActivity.class);
         intent.putExtra("user", u);
+        intent.putExtra("isFriend", true);
         startActivity(intent);
     }
 

@@ -20,16 +20,15 @@ import com.nolonely.mobile.bdd.json.JSONController;
 import com.nolonely.mobile.bdd.json.JSONObjectCrypt;
 import com.nolonely.mobile.listeners.JSONArrayListener;
 import com.nolonely.mobile.listeners.JSONObjectListener;
+import com.nolonely.mobile.objects.TopCI;
 import com.nolonely.mobile.objects.User;
 import com.nolonely.mobile.util.Constants;
 
 import org.eazegraph.lib.charts.PieChart;
 import org.eazegraph.lib.models.PieModel;
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import static com.nolonely.mobile.util.Constants.USER;
 
@@ -47,6 +46,10 @@ public class InfoUserActivity extends AppCompatActivity {
 
     int nbEventFirt, nbEventSecond, nbEventThird, nbEventFourth;
 
+    boolean isFriend;
+
+    @SuppressLint({"SetTextI18n", "UseCompatLoadingForDrawables"})
+    @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -54,35 +57,15 @@ public class InfoUserActivity extends AppCompatActivity {
 
         if (getIntent() != null) {
             USER_LOAD = (User) getIntent().getSerializableExtra("user");
+            isFriend = getIntent().getBooleanExtra("isFriend", false);
         }
 
         ImageView buttonBack = findViewById(R.id.buttonBack);
         buttonBack.setVisibility(View.VISIBLE);
         buttonBack.setOnClickListener(v -> onBackPressed());
 
-        TextView ci1 = findViewById(R.id.ci1);
-        TextView ci2 = findViewById(R.id.ci2);
-        TextView ci3 = findViewById(R.id.ci3);
-        PieChart pieChart = findViewById(R.id.piechart);
+        getTopCI();
 
-        nbEventFirt = 30;
-        nbEventSecond = 10;
-        nbEventThird = 5;
-
-        pieChart.addPieSlice(
-                new PieModel(
-                        nbEventFirt,
-                        getResources().getColor(R.color.colorPrimary)));
-        pieChart.addPieSlice(
-                new PieModel(
-                        nbEventSecond,
-                        getResources().getColor(R.color.colorSecond)));
-        pieChart.addPieSlice(
-                new PieModel(
-                        nbEventThird,
-                        getResources().getColor(R.color.colorThird)));
-
-        pieChart.startAnimation();
         TextView nameProfil;
         TextView descriptionProfil;
         TextView nbCreateProfil;
@@ -107,20 +90,13 @@ public class InfoUserActivity extends AppCompatActivity {
 
         Constants.setUserImage(USER_LOAD, imagePerson);
 
-        List<ImageView> imageCentreInteret = new ArrayList<>();
-
-        ImageView img_centre1 = findViewById(R.id.imageViewCI1);
-        ImageView img_centre2 = findViewById(R.id.imageViewCI2);
-        ImageView img_centre3 = findViewById(R.id.imageViewCI3);
-        ImageView img_centre4 = findViewById(R.id.imageViewCI4);
-        ImageView img_centre5 = findViewById(R.id.imageViewCI5);
-
-        imageCentreInteret.add(img_centre1);
-        imageCentreInteret.add(img_centre2);
-        imageCentreInteret.add(img_centre3);
-        imageCentreInteret.add(img_centre4);
-        imageCentreInteret.add(img_centre5);
-
+        if (isFriend) {
+            buttonAdd.setOnClickListener(v -> deleteFriend());
+            buttonAdd.setText(getResources().getString(R.string.button_invit_waiting));
+            buttonAdd.setBackground(getResources().getDrawable(R.drawable.custom_input));
+        } else {
+            buttonAdd.setOnClickListener(v -> addFriend());
+        }
 
         nameProfil.setText(USER_LOAD.getName());
         descriptionProfil.setText(USER_LOAD.getDescription());
@@ -131,8 +107,108 @@ public class InfoUserActivity extends AppCompatActivity {
         if (USER_LOAD.getDescription().matches("")) {
             descriptionProfil.setVisibility(View.GONE);
         }
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    private void getTopCI() {
+        TextView ci1 = findViewById(R.id.ci1);
+        TextView ci2 = findViewById(R.id.ci2);
+        TextView ci3 = findViewById(R.id.ci3);
+        PieChart pieChart = findViewById(R.id.piechart);
+
+        nbEventFirt = 0;
+        nbEventSecond = 0;
+        nbEventThird = 0;
+
+        JSONObjectCrypt params = new JSONObjectCrypt();
+        params.putCryptParameter("uid", USER_LOAD.getUid());
+
+        JSONController.getJsonArrayFromUrl(Constants.URL_USER_WHITHOUT_ME, getBaseContext(), params, new JSONArrayListener() {
+            @Override
+            public void onJSONReceived(JSONArray jsonArray) {
+                try {
+
+                    if (jsonArray.length() > 0) {
+                        for (int i = 0; i < jsonArray.length(); i++) {
+                            if (i == 0) {
+                                nbEventFirt = ((TopCI) jsonArray.get(0)).getNumber();
+                                ci1.setVisibility(View.VISIBLE);
+                                pieChart.addPieSlice(
+                                        new PieModel(
+                                                nbEventFirt,
+                                                getResources().getColor(R.color.colorPrimary)));
+                            }
+                            if (i == 1) {
+                                nbEventSecond = ((TopCI) jsonArray.get(1)).getNumber();
+                                ci2.setVisibility(View.VISIBLE);
+                                pieChart.addPieSlice(
+                                        new PieModel(
+                                                nbEventSecond,
+                                                getResources().getColor(R.color.colorSecond)));
+                            }
+                            if (i == 2) {
+                                nbEventThird = ((TopCI) jsonArray.get(2)).getNumber();
+                                ci3.setVisibility(View.VISIBLE);
+                                pieChart.addPieSlice(
+                                        new PieModel(
+                                                nbEventThird,
+                                                getResources().getColor(R.color.colorThird)));
+                            }
+                        }
+
+                        pieChart.addPieSlice(
+                                new PieModel(
+                                        100,
+                                        getResources().getColor(R.color.grey)));
+                        pieChart.startAnimation();
+                    }
 
 
+                } catch (JSONException e) {
+                    Log.w("Response", "Valeur" + jsonArray.toString());
+                    Log.w("Response", "Erreur:" + e.getMessage());
+                    Toast.makeText(getBaseContext(), getResources().getString(R.string.error), Toast.LENGTH_SHORT).show();
+                }
+
+            }
+
+            @Override
+            public void onJSONReceivedError(VolleyError volleyError) {
+                Log.w("Response", "Erreur:" + volleyError.toString());
+                Toast.makeText(getBaseContext(), getResources().getString(R.string.error_event), Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    private void deleteFriend() {
+        JSONObjectCrypt params = new JSONObjectCrypt();
+        params.putCryptParameter("uid", USER.getUid());
+        params.putCryptParameter("uid_friend", USER_LOAD.getUid());
+
+
+        Log.w("Response", "Params " + params.toString());
+
+        JSONController.getJsonObjectFromUrl(Constants.URL_DELETE_FRIEND, getBaseContext(), params, new JSONObjectListener() {
+            @SuppressLint("UseCompatLoadingForDrawables")
+            @Override
+            public void onJSONReceived(JSONObject jsonObject) {
+                if (jsonObject.length() == 3) {
+                    Toast.makeText(getBaseContext(), getResources().getString(R.string.delete_friend), Toast.LENGTH_SHORT).show();
+                    buttonAdd.setText(getResources().getString(R.string.follow));
+                    buttonAdd.setBackground(getResources().getDrawable(R.drawable.custom_button_simple));
+                } else {
+                    Toast.makeText(getBaseContext(), getResources().getString(R.string.error), Toast.LENGTH_SHORT).show();
+                    Log.w("Response", "Error:" + jsonObject.toString());
+                }
+            }
+
+            @Override
+            public void onJSONReceivedError(VolleyError volleyError) {
+                Toast.makeText(getBaseContext(), getResources().getString(R.string.error), Toast.LENGTH_SHORT).show();
+                Log.w("Response", "Error:" + volleyError.toString());
+            }
+        });
     }
 
 
