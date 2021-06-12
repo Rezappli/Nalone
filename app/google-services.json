@@ -10,7 +10,7 @@
       "client_info": {
         "mobilesdk_app_id": "1:968855060845:android:b3e2f61da883e64dce9a64",
         "android_client_info": {
-          "package_name": "com.example.nalone"
+          "package_name": "com.nolonely.mobile"
         }
       },
       "oauth_client": [
@@ -18,7 +18,7 @@
           "client_id": "968855060845-4uigrntrvih6jbsvm1bsqu4i7mqr0tcr.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
-            "package_name": "com.example.nalone",
+            "package_name": "com.nolonely.mobile",
             "certificate_hash": "b5c6d0302d1171cd1185d5a332e7a8574b8602b3"
           }
         },
@@ -26,7 +26,7 @@
           "client_id": "968855060845-6brvkercsecvgqvuqsae5mcmucsflkup.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
-            "package_name": "com.example.nalone",
+            "package_name": "com.nolonely.mobile",
             "certificate_hash": "e86b02723c84cf245eca435c81000400bb424833"
           }
         },

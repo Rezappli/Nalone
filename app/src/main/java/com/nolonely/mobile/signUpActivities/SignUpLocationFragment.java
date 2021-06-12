@@ -5,17 +5,16 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.ListView;
 
 import androidx.annotation.Nullable;
 
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.material.textfield.TextInputEditText;
 import com.nolonely.mobile.R;
 import com.nolonely.mobile.listeners.CreationFragmentListener;
 import com.nolonely.mobile.objects.AddressSearch;
 import com.nolonely.mobile.thread.SearchThread;
-import com.google.android.gms.maps.model.LatLng;
-import com.google.android.material.textfield.TextInputEditText;
 
 
 public class SignUpLocationFragment extends SignUpFragment implements CreationFragmentListener {
@@ -57,11 +56,6 @@ public class SignUpLocationFragment extends SignUpFragment implements CreationFr
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
                 if (t != null) {
                     if (t.isAlive()) {
                         t.interrupt();
@@ -70,17 +64,20 @@ public class SignUpLocationFragment extends SignUpFragment implements CreationFr
                 t = new SearchThread(listView, s + "", getActivity());
                 t.start();
             }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+            }
         });
 
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                AddressSearch ad = (AddressSearch) listView.getAdapter().getItem(position);
-                pos = new LatLng(ad.getLatitude(), ad.getLongitude());
-                city = ad.getCity();
-                inputCity.setText(ad.getAddress());
-                listView.setVisibility(View.GONE);
-            }
+        listView.setOnItemClickListener((parent, view, position, id) -> {
+            AddressSearch ad = (AddressSearch) listView.getAdapter().getItem(position);
+            pos = new LatLng(ad.getLatitude(), ad.getLongitude());
+            city = ad.getCity();
+            Log.w("Position", "Pos : " + pos.toString());
+            Log.w("Position", "City : " + city.toString());
+            inputCity.setText(ad.getAddress());
+            listView.setVisibility(View.GONE);
         });
     }
 
