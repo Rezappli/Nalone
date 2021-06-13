@@ -31,14 +31,11 @@ public class SearchThread extends Thread {
     public void run() {
         if (listView != null) {
             List<AddressSearch> list = getLocationFromAddress(search);
-            activity.runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    if (listView != null) {
-                        listView.setAdapter(null);
-                        if (list != null) {
-                            listView.setAdapter(new AddressSearchAdapter(activity, list));
-                        }
+            activity.runOnUiThread(() -> {
+                if (listView != null) {
+                    listView.setAdapter(null);
+                    if (list != null) {
+                        listView.setAdapter(new AddressSearchAdapter(activity, list));
                     }
                 }
             });
@@ -53,18 +50,20 @@ public class SearchThread extends Thread {
         List<AddressSearch> addressSearch = null;
 
         try {
-            address = coder.getFromLocationName(strAddress, 10);
-            if (address == null) {
-                return null;
-            }
-
-            if (address.size() > 0) {
-                addressSearch = new ArrayList<>();
-                for (Address a : address) {
-                    addressSearch.add(new AddressSearch(a.getAddressLine(0), a.getLatitude(), a.getLongitude(), a.getLocality()));
+            if (coder.getFromLocationName(strAddress, 10) != null) {
+                address = coder.getFromLocationName(strAddress, 10);
+                if (address == null) {
+                    return null;
                 }
-            } else {
-                return null;
+
+                if (address.size() > 0) {
+                    addressSearch = new ArrayList<>();
+                    for (Address a : address) {
+                        addressSearch.add(new AddressSearch(a.getAddressLine(0), a.getLatitude(), a.getLongitude(), a.getLocality()));
+                    }
+                } else {
+                    return null;
+                }
             }
 
         } catch (IOException ex) {
