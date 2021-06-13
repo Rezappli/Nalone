@@ -122,7 +122,7 @@ public class PlanningCreationsFragment extends Fragment {
 
         RecyclerView mRecyclerRegistrations = view.findViewById(R.id.recycleViewPlanningRegistrations);
         eventsRecycler = new ArrayList<>();
-        evenementAdapter = new EvenementAdapter(eventsRecycler, R.layout.item_evenement_creation, false);
+        evenementAdapter = new EvenementAdapter(eventsRecycler, R.layout.item_evenement_creation, false, getContext());
         evenementAdapter.setOnItemClickListener(position -> {
             Intent intent = new Intent(getContext(), InfosEventCreationActivity.class);
             intent.putExtra("event", eventsRecycler.get(position));

@@ -123,7 +123,6 @@ public class PlanningEvenementAdapter extends RecyclerView.Adapter<PlanningEvene
             this.mTime.setText(cutString(e.getStartDate(), 5, 11));
             this.mProprietaire.setText(e.getOwnerName());
             this.textViewNbMembers.setText(e.getNbMembers() + "");
-
         }
     }
 

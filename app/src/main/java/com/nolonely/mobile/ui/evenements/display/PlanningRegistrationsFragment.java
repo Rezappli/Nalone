@@ -96,7 +96,7 @@ public class PlanningRegistrationsFragment extends Fragment {
 
         RecyclerView mRecyclerRegistrations = view.findViewById(R.id.recycleViewPlanningRegistrations);
         eventsRecycler = new ArrayList<>();
-        evenementAdapter = new EvenementAdapter(eventsRecycler, R.layout.item_evenement_registration, false);
+        evenementAdapter = new EvenementAdapter(eventsRecycler, R.layout.item_evenement_registration, false, getContext());
         evenementAdapter.setOnItemClickListener(position -> {
             Intent intent = new Intent(getContext(), InfosEvenementsActivity.class);
             intent.putExtra("event", eventsRecycler.get(position));

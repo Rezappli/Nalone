@@ -278,7 +278,7 @@ public class InfosEvenementsActivity extends AppCompatActivity {
                 imageViewEuro.setVisibility(View.VISIBLE);
             }
         }
-        textViewPrice.setTextColor(getResources().getColor(R.color.grey));
+        textViewPrice.setTextColor(Color.BLACK);
         buttonInscription.setColorFilter(getResources().getColor(R.color.colorPrimary), PorterDuff.Mode.MULTIPLY);
         cardViewPrice.setCardBackgroundColor(Color.WHITE);
         linearPrice.setBackground(getResources().getDrawable(R.drawable.custom_border_grey_r150));
@@ -354,5 +354,5 @@ public class InfosEvenementsActivity extends AppCompatActivity {
         handler.postDelayed(runnable, 0);
         super.onResume();
     }
-    
+
 }

@@ -245,7 +245,7 @@ public class EventListFragment extends JSONFragment {
         titleFilter = rootView.findViewById(R.id.titleFilter);
         evenementList = new ArrayList<>();
         mRecycler = rootView.findViewById(R.id.recyclerViewHomeList);
-        mAdapter = new EvenementAdapter(this.evenementList, R.layout.item_evenement, false);
+        mAdapter = new EvenementAdapter(this.evenementList, R.layout.item_evenement, false, getContext());
         mAdapter.setOnItemClickListener(position -> {
             Intent intent = new Intent(getContext(), InfosEvenementsActivity.class);
             intent.putExtra("event", evenementList.get(position));

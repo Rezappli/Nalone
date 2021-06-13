@@ -17,6 +17,7 @@ public class EventFragment extends Fragment {
     private ViewPager viewPager;
     private PlanningAdapter adapter;
 
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -25,7 +26,6 @@ public class EventFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_event, container, false);
         tabLayout = view.findViewById(R.id.tab_layout_map);
         viewPager = view.findViewById(R.id.view_pager_map);
-
         adapter = new PlanningAdapter(getChildFragmentManager());
         adapter.addFragment(new EventMapFragment(), getString(R.string.title_home_map));
         adapter.addFragment(new EventListFragment(), getString(R.string.title_home_list));

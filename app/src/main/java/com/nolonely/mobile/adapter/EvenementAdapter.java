@@ -1,6 +1,7 @@
 package com.nolonely.mobile.adapter;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -32,6 +33,7 @@ public class EvenementAdapter extends RecyclerView.Adapter<EvenementAdapter.Even
 
     private OnItemClickListener mListener;
     private boolean participate;
+    private Context context;
 
     public void setOnItemClickListener(OnItemClickListener listener) {
         mListener = listener;
@@ -41,10 +43,11 @@ public class EvenementAdapter extends RecyclerView.Adapter<EvenementAdapter.Even
         void onDisplayClick(int position);
     }
 
-    public EvenementAdapter(List<Evenement> nearby_events, int view, boolean participate) {
+    public EvenementAdapter(List<Evenement> nearby_events, int view, boolean participate, Context context) {
         this.evenementList = nearby_events;
         this.participate = participate;
         this.item = view;
+        this.context = context;
     }
 
     @NonNull
@@ -58,7 +61,6 @@ public class EvenementAdapter extends RecyclerView.Adapter<EvenementAdapter.Even
     public void onBindViewHolder(@NonNull EventViewHolder holder, int position) {
         try {
             holder.updateWhithEvent(this.evenementList.get(position));
-            Constants.setEventImage(this.evenementList.get(position), holder.mImageView);
         } catch (ParseException e) {
             e.printStackTrace();
         }
@@ -98,6 +100,7 @@ public class EvenementAdapter extends RecyclerView.Adapter<EvenementAdapter.Even
             imageViewCategory = itemView.findViewById(R.id.imageTypeEvent);
             textViewPrice = itemView.findViewById(R.id.textViewPrice);
             cardViewPrice = itemView.findViewById(R.id.cardViewPrice);
+            textViewNbMembers = itemView.findViewById(R.id.textViewNbMembers);
 
             linearEvent.setOnClickListener(v -> {
                 if (mListener != null) {
@@ -107,6 +110,7 @@ public class EvenementAdapter extends RecyclerView.Adapter<EvenementAdapter.Even
                     }
                 }
             });
+
 
             if (item != R.layout.item_evenement) {
                 ImageView imageViewDisplay = itemView.findViewById(R.id.imageViewAfficher);
@@ -120,7 +124,6 @@ public class EvenementAdapter extends RecyclerView.Adapter<EvenementAdapter.Even
                 });
             } else {
                 textViewOwnerName = itemView.findViewById(R.id.textViewNameOwner);
-                textViewNbMembers = itemView.findViewById(R.id.textViewNbMembers);
                 TextView textViewAfficher = itemView.findViewById(R.id.textViewAfficher);
                 textViewAfficher.setOnClickListener(v -> {
                     if (mListener != null) {
@@ -142,7 +145,6 @@ public class EvenementAdapter extends RecyclerView.Adapter<EvenementAdapter.Even
             this.mTime.setText(cutString(e.getStartDate(), 5, 11));
             if (item == R.layout.item_evenement) {
                 textViewOwnerName.setText(e.getOwnerName());
-                textViewNbMembers.setText(e.getNbMembers() + "");
 
                 if (e.getPrice() != 0) {
                     this.textViewPrice.setText(e.getPrice() + " €");
@@ -153,7 +155,14 @@ public class EvenementAdapter extends RecyclerView.Adapter<EvenementAdapter.Even
 
                 }
             }
+            textViewNbMembers.setText(e.getNbMembers() + "");
             imageViewCategory.setImageResource(e.getImageCategory());
+            if (e.getImage_url_event() != null)
+                Constants.setEventImage(e, mImageView);
+            else {
+                mImageView.setImageDrawable(context.getResources().getDrawable(R.drawable.ic_round_groups_24));
+            }
+
         }
 
         private String cutString(String s, int length, int start) {

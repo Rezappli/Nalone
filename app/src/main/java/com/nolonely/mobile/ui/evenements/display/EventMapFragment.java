@@ -67,7 +67,7 @@ public class EventMapFragment extends JSONFragment implements OnMapReadyCallback
     private TextView textViewLocationPrive, textViewLocationAll, textViewLocationPublic, textViewLocationCreate, textViewLocationInscrit;
     private ImageView imageViewLocationPrive, imageViewLocationAll, imageViewLocationPublic, imageViewLocationCreate, imageViewLocationInscrit;
 
-    private static VisibilityMap currentVisibilityMap = VisibilityMap.ALL;
+    private VisibilityMap currentVisibilityMap;
 
     private List<Evenement> publicList;
     private List<Evenement> friendList;
@@ -75,14 +75,13 @@ public class EventMapFragment extends JSONFragment implements OnMapReadyCallback
     private CardView loading;
 
     private static CameraPosition posCam = null;
-    private View viewGrey;
     private Circle circle = null;
 
 
     // Bottom sheet
     private BottomSheetBehavior bottomSheetBehaviorDetails;
 
-
+    private View viewGrey;
     private TextView textViewDetailName, textViewDetailCity, textViewDetailDate, textViewDetailTime, textViewDetailNbMembers;
     private ImageView imageViewDetailCategory;
 
@@ -92,6 +91,7 @@ public class EventMapFragment extends JSONFragment implements OnMapReadyCallback
     public EventMapFragment() {
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -99,6 +99,8 @@ public class EventMapFragment extends JSONFragment implements OnMapReadyCallback
 
 
         mMapView = rootView.findViewById(R.id.mapView);
+        createFragment();
+
         if (USER != null) {
             initGoogleMap(savedInstanceState);
         }
@@ -129,7 +131,7 @@ public class EventMapFragment extends JSONFragment implements OnMapReadyCallback
         viewGrey = rootView.findViewById(R.id.viewGreyMap);
         imageViewDetailCategory = rootView.findViewById(R.id.imageViewDetailCategory);
 
-
+        currentVisibilityMap = ALL;
         //Bottom sheet
         final View bottomSheetDetails = rootView.findViewById(R.id.sheetEvent);
 
@@ -257,14 +259,16 @@ public class EventMapFragment extends JSONFragment implements OnMapReadyCallback
     private void checkJSONReceived() {
         if (friendList != null && publicList != null) {
             loading.setVisibility(View.GONE);
-            updateMap(ALL);
+            updateMap(currentVisibilityMap);
         }
     }
 
 
     @RequiresApi(api = Build.VERSION_CODES.M)
     public void updateMap(VisibilityMap visibilityMap) {
-        mMap.clear();
+
+        if (mMap != null)
+            mMap.clear();
         clusterManager.clearItems();
         switch (visibilityMap) {
             case ALL:
@@ -399,8 +403,7 @@ public class EventMapFragment extends JSONFragment implements OnMapReadyCallback
     @Override
     public void onResume() {
         super.onResume();
-        createFragment();
-        updateCircle();
+        mMapView.onResume();
     }
 
     @Override
@@ -433,7 +436,7 @@ public class EventMapFragment extends JSONFragment implements OnMapReadyCallback
         JSONObjectCrypt params = new JSONObjectCrypt();
         params.putCryptParameter("uid", USER.getUid());
         params.putCryptParameter("filter", PUBLIC.toString());
-        
+
         JSONController.getJsonArrayFromUrl(Constants.URL_NEARBY_EVENTS, getContext(), params, new JSONArrayListener() {
             @Override
             public void onJSONReceived(JSONArray jsonArray) {
