@@ -42,6 +42,7 @@
                         android:layout_marginBottom="5dp"
                         android:gravity="center"
                         android:text="@string/next"
+                        android:textColor="@color/black"
                         android:textSize="24sp"
                         android:textStyle="bold" />
 
@@ -56,6 +57,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginEnd="2dp"
                             android:text="@string/event_start_in"
+                            android:textColor="@color/black"
                             android:textColorHint="#000000"
                             android:textSize="18sp" />
 
@@ -239,7 +241,7 @@
                                             android:layout_height="wrap_content"
                                             android:paddingEnd="5dp"
                                             android:text="0"
-                                            android:textColor="@color/places_autocomplete_prediction_secondary_text"
+                                            android:textColor="@color/black"
                                             android:textSize="18sp"
                                             android:textStyle="bold" />
 
@@ -248,7 +250,7 @@
                                             android:layout_width="wrap_content"
                                             android:layout_height="wrap_content"
                                             android:text="@string/valided"
-                                            android:textColor="@color/places_autocomplete_prediction_secondary_text"
+                                            android:textColor="@color/black"
                                             android:textSize="18sp" />
 
                                     </LinearLayout>
@@ -273,7 +275,8 @@
                                             android:gravity="center"
                                             android:paddingStart="5dp"
                                             android:paddingEnd="5dp"
-                                            android:text="@string/participants_uppercase" />
+                                            android:text="@string/participants_uppercase"
+                                            android:textColor="@color/black" />
 
                                         <TextView
                                             android:id="@+id/showMoreButton"
@@ -288,7 +291,8 @@
                                             android:gravity="center"
                                             android:paddingStart="5dp"
                                             android:paddingEnd="5dp"
-                                            android:text="@string/afficher" />
+                                            android:text="@string/afficher"
+                                            android:textColor="@color/black" />
 
                                     </LinearLayout>
 
@@ -362,7 +366,7 @@
                         android:gravity="center"
                         android:paddingBottom="5dp"
                         android:text="@string/bientot"
-                        android:textColor="@color/secundaryTextColor"
+                        android:textColor="@color/black"
                         android:textSize="16sp"
                         android:visibility="visible" />
 
@@ -377,7 +381,7 @@
                         android:gravity="center"
                         android:paddingBottom="5dp"
                         android:text="@string/finis"
-                        android:textColor="@color/secundaryTextColor"
+                        android:textColor="@color/black"
                         android:textSize="16sp" />
                 </LinearLayout>
 
@@ -402,7 +406,8 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:gravity="center"
-                        android:text="@string/no_result_planning_registrations" />
+                        android:text="@string/no_result_planning_registrations"
+                        android:textColor="@color/black" />
                 </LinearLayout>
 
                 <androidx.recyclerview.widget.RecyclerView

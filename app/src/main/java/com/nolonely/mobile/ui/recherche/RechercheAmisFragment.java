@@ -75,7 +75,7 @@ public class RechercheAmisFragment extends JSONFragment {
         configureRecyclerViewAmis();
 
         launchJSONCall();
-
+        createFragment();
         return rootView;
 
     }
@@ -223,7 +223,7 @@ public class RechercheAmisFragment extends JSONFragment {
     @Override
     public void onResume() {
         super.onResume();
-        createFragment();
+        //
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)

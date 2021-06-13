@@ -81,7 +81,8 @@ public class HomeActivity extends JSONActivity implements AdapterView.OnItemSele
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
         getSupportActionBar().hide();
-
+        getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
+       
         cardViewNoConnection = findViewById(R.id.cardViewNoConnection);
 
         BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.nav_view);

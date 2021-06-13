@@ -39,6 +39,7 @@
                     android:layout_height="wrap_content"
                     android:layout_centerInParent="true"
                     android:text="@string/search_event_title"
+                    android:textColor="@color/black"
                     android:textSize="18sp"
                     android:textStyle="bold" />
 
@@ -174,7 +175,7 @@
                                     android:layout_gravity="center"
                                     android:gravity="center"
                                     android:text="0"
-                                    android:textColor="@color/grey"
+                                    android:textColor="@color/black"
                                     android:textSize="24sp"
                                     android:visibility="visible" />
 
@@ -195,7 +196,8 @@
                             android:layout_height="wrap_content"
                             android:layout_marginTop="5dp"
                             android:gravity="center"
-                            android:text="@string/participer" />
+                            android:text="@string/participer"
+                            android:textColor="@color/black" />
 
                     </LinearLayout>
 
@@ -233,7 +235,8 @@
                             android:layout_height="wrap_content"
                             android:layout_marginTop="5dp"
                             android:gravity="center"
-                            android:text="@string/afficher" />
+                            android:text="@string/afficher"
+                            android:textColor="@color/black" />
 
                     </LinearLayout>
 
@@ -271,7 +274,8 @@
                             android:layout_height="wrap_content"
                             android:layout_marginTop="5dp"
                             android:gravity="center"
-                            android:text="@string/partager" />
+                            android:text="@string/partager"
+                            android:textColor="@color/black" />
 
                     </LinearLayout>
 
@@ -309,7 +313,8 @@
                             android:layout_height="wrap_content"
                             android:layout_marginTop="5dp"
                             android:gravity="center"
-                            android:text="@string/report" />
+                            android:text="@string/report"
+                            android:textColor="@color/black" />
 
                     </LinearLayout>
 
@@ -325,7 +330,7 @@
                     android:paddingStart="20dp"
                     android:paddingEnd="20dp"
                     android:text="Nom"
-                    android:textColor="#000000"
+                    android:textColor="@color/black"
                     android:textSize="24sp"
                     android:textStyle="bold" />
 
@@ -338,7 +343,7 @@
                     android:paddingStart="20dp"
                     android:paddingEnd="20dp"
                     android:text="@string/description"
-                    android:textColor="#000000"
+                    android:textColor="@color/black"
                     android:textSize="14sp" />
 
                 <TextView
@@ -350,7 +355,7 @@
                     android:layout_marginBottom="10dp"
                     android:layout_weight="0.5"
                     android:text="@string/quand"
-                    android:textColor="#000000"
+                    android:textColor="@color/black"
                     android:textSize="18sp"
                     android:textStyle="bold" />
 
@@ -406,7 +411,8 @@
                                 android:layout_height="wrap_content"
                                 android:layout_marginStart="5dp"
                                 android:layout_marginEnd="5dp"
-                                android:text="," />
+                                android:text=","
+                                android:textColor="@color/black" />
 
                             <TextView
                                 android:id="@+id/timeStart"
@@ -415,7 +421,7 @@
                                 android:layout_gravity="center"
                                 android:gravity="center_vertical"
                                 android:text="time"
-                                android:textColor="#000000"
+                                android:textColor="@color/black"
                                 android:textSize="16sp" />
                         </LinearLayout>
 
@@ -452,7 +458,8 @@
                                 android:layout_height="wrap_content"
                                 android:layout_marginStart="5dp"
                                 android:layout_marginEnd="5dp"
-                                android:text="," />
+                                android:text=","
+                                android:textColor="@color/black" />
 
                             <TextView
                                 android:id="@+id/timeEnd"
@@ -582,7 +589,7 @@
                             android:layout_height="wrap_content"
                             android:layout_gravity="center"
                             android:text="0"
-                            android:textColor="#070606"
+                            android:textColor="@color/black"
                             android:textSize="18sp"
                             android:textStyle="bold" />
 
@@ -708,7 +715,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
-                    android:text="@string/price" />
+                    android:text="@string/price"
+                    android:textColor="@color/black" />
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -728,7 +736,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
-                    android:text="@string/comission" />
+                    android:text="@string/comission"
+                    android:textColor="@color/black" />
 
                 <TextView
                     android:layout_width="wrap_content"

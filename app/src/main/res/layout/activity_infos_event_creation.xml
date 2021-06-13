@@ -39,6 +39,7 @@
                     android:layout_height="wrap_content"
                     android:layout_centerInParent="true"
                     android:text="@string/search_event_title"
+                    android:textColor="@color/black"
                     android:textSize="18sp"
                     android:textStyle="bold" />
 
@@ -177,7 +178,8 @@
                             android:layout_height="wrap_content"
                             android:layout_marginTop="5dp"
                             android:gravity="center"
-                            android:text="@string/cancel" />
+                            android:text="@string/cancel"
+                            android:textColor="@color/black" />
 
                     </LinearLayout>
 
@@ -214,7 +216,8 @@
                             android:layout_height="wrap_content"
                             android:layout_marginTop="5dp"
                             android:gravity="center"
-                            android:text="@string/participants_uppercase" />
+                            android:text="@string/participants_uppercase"
+                            android:textColor="@color/black" />
 
                     </LinearLayout>
 
@@ -252,7 +255,8 @@
                             android:layout_height="wrap_content"
                             android:layout_marginTop="5dp"
                             android:gravity="center"
-                            android:text="@string/edit_group" />
+                            android:text="@string/edit_group"
+                            android:textColor="@color/black" />
 
                     </LinearLayout>
 
@@ -290,7 +294,8 @@
                             android:layout_height="wrap_content"
                             android:layout_marginTop="5dp"
                             android:gravity="center"
-                            android:text="@string/partager" />
+                            android:text="@string/partager"
+                            android:textColor="@color/black" />
 
                     </LinearLayout>
 
@@ -492,7 +497,7 @@
                             android:layout_height="wrap_content"
                             android:layout_gravity="center"
                             android:text="0"
-                            android:textColor="#070606"
+                            android:textColor="@color/black"
                             android:textSize="18sp"
                             android:textStyle="bold" />
 

@@ -36,11 +36,11 @@ public class SplashActivity extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
-
         databaseManager = new DatabaseManager(getBaseContext());
         SharedPreferences settings = this.getSharedPreferences(ParametresActivity.SHARED_PREFS, MODE_PRIVATE);
         range = settings.getInt(ParametresActivity.sharedRange, 50);
     }
+
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override

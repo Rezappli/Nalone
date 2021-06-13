@@ -49,7 +49,7 @@ import static com.nolonely.mobile.util.Constants.USER;
 
 public class PlanningRegistrationsFragment extends Fragment {
 
-    private ImageView imageTypeEvent;
+    private ImageView imageTypeEvent, nextEventImage;
     private TextView nextEventName, nextEventCity, nextEventDate, nextEventTime, nextEventNbMembers, textViewTitleDebut, differenceDate;
     private List<Evenement> eventsNow, eventsSoon, eventsEnd, eventsRecycler;
     private Evenement nextEvent;
@@ -73,6 +73,8 @@ public class PlanningRegistrationsFragment extends Fragment {
         nextEventCity = view.findViewById(R.id.nextEventCity);
         nextEventDate = view.findViewById(R.id.nextEventDate);
         nextEventTime = view.findViewById(R.id.nextEventTime);
+        nextEventImage = view.findViewById(R.id.imageEvent);
+
         nextEventNbMembers = view.findViewById(R.id.textViewNbMembers);
         imageTypeEvent = view.findViewById(R.id.imageTypeEvent);
         TextView showMoreButton = view.findViewById(R.id.showMoreButton);
@@ -160,7 +162,7 @@ public class PlanningRegistrationsFragment extends Fragment {
 
     private void changeTextViewBackground(TextView textView, boolean isClicked) {
         textView.setBackground(ContextCompat.getDrawable(getContext(), isClicked ? R.drawable.tab_indicator : R.drawable.custom_button_signup));
-        textView.setTextColor(isClicked ? Color.WHITE : getResources().getColor(R.color.secundaryTextColor));
+        textView.setTextColor(isClicked ? Color.WHITE : getResources().getColor(R.color.black));
     }
 
     private final Runnable runnable = new Runnable() {
@@ -358,6 +360,7 @@ public class PlanningRegistrationsFragment extends Fragment {
         } else if (nextEvent.getStatusEvent() == BIENTOT) {
             textViewTitleDebut.setText(getResources().getString(R.string.event_start_in));
         }
+        Constants.setEventImage(nextEvent, nextEventImage);
     }
 
 }

@@ -49,7 +49,7 @@ import static com.nolonely.mobile.util.Constants.USER;
 
 public class PlanningCreationsFragment extends Fragment {
 
-    private ImageView imageTypeEvent;
+    private ImageView imageTypeEvent, nextEventImage;
     private TextView nextEventName, nextEventCity, nextEventDate, nextEventTime, textViewTitleDebut, differenceDate;
     private List<Evenement> eventsNow, eventsSoon, eventsEnd, eventsRecycler;
     private Evenement nextEvent;
@@ -104,6 +104,7 @@ public class PlanningCreationsFragment extends Fragment {
         nextEventDate = view.findViewById(R.id.nextEventDate);
         nextEventTime = view.findViewById(R.id.nextEventTime);
         imageTypeEvent = view.findViewById(R.id.imageTypeEvent);
+        nextEventImage = view.findViewById(R.id.imageEvent);
         TextView showMoreButton = view.findViewById(R.id.showMoreButton);
         linearNext = view.findViewById(R.id.linearNext);
         linearNoResultBis = view.findViewById(R.id.linearNoResultBis);
@@ -189,7 +190,7 @@ public class PlanningCreationsFragment extends Fragment {
 
     private void changeTextViewBackground(TextView textView, boolean isClicked) {
         textView.setBackground(ContextCompat.getDrawable(getContext(), isClicked ? R.drawable.tab_indicator : R.drawable.custom_button_signup));
-        textView.setTextColor(isClicked ? Color.WHITE : getResources().getColor(R.color.grey));
+        textView.setTextColor(isClicked ? Color.WHITE : getResources().getColor(R.color.black));
     }
 
 
@@ -366,5 +367,6 @@ public class PlanningCreationsFragment extends Fragment {
         } else if (nextEvent.getStatusEvent() == BIENTOT) {
             textViewTitleDebut.setText(getResources().getString(R.string.event_start_in));
         }
+        Constants.setEventImage(nextEvent, nextEventImage);
     }
 }

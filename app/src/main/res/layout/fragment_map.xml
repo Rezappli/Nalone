@@ -80,6 +80,7 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
                         android:text="@string/location_all"
+                        android:textColor="@color/black"
                         android:textSize="10sp"
                         android:visibility="gone" />
 
@@ -113,6 +114,7 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
                         android:text="@string/location_public"
+                        android:textColor="@color/black"
                         android:textSize="10sp" />
 
                 </LinearLayout>
@@ -145,6 +147,7 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
                         android:text="@string/title_amis"
+                        android:textColor="@color/black"
                         android:textSize="10sp" />
 
                 </LinearLayout>
@@ -177,6 +180,7 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
                         android:text="@string/location_mesevent"
+                        android:textColor="@color/black"
                         android:textSize="10sp" />
 
                 </LinearLayout>
@@ -210,6 +214,7 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
                         android:text="@string/location_inscrit"
+                        android:textColor="@color/black"
                         android:textSize="10sp" />
 
                 </LinearLayout>
@@ -353,7 +358,8 @@
                                 android:id="@+id/textView66"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text=", " />
+                                android:text=", "
+                                android:textColor="@color/black" />
 
                             <TextView
                                 android:id="@+id/textViewDetailTime"
@@ -387,6 +393,7 @@
                                 android:layout_height="wrap_content"
                                 android:paddingEnd="5dp"
                                 android:text="@string/participants"
+                                android:textColor="@color/black"
                                 android:textSize="12sp"
                                 android:textStyle="bold" />
 
