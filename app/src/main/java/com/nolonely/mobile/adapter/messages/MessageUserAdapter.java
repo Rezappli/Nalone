@@ -4,6 +4,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -58,6 +59,7 @@ public class MessageUserAdapter extends RecyclerView.Adapter<MessageUserAdapter.
 
         private TextView lastMessage, dateText, ownerText;
         private ImageView ownerImage;
+        private LinearLayout messageLinear;
 
         public MessageUserViewHolder(@NonNull View itemView, final OnItemClickListener onItemClickListener) {
             super(itemView);
@@ -66,7 +68,15 @@ public class MessageUserAdapter extends RecyclerView.Adapter<MessageUserAdapter.
             ownerText = itemView.findViewById(R.id.ownerChat);
             ownerImage = itemView.findViewById(R.id.ownerImage);
             dateText = itemView.findViewById(R.id.dateText);
-
+            messageLinear = itemView.findViewById(R.id.messageLayout);
+            messageLinear.setOnClickListener(v -> {
+                if (mListener != null) {
+                    int position = getAdapterPosition();
+                    if (position != RecyclerView.NO_POSITION) {
+                        mListener.onDisplayClick(position);
+                    }
+                }
+            });
         }
 
         public void update(final Chat c) {
