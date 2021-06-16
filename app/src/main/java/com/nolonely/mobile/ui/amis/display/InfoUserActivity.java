@@ -93,9 +93,10 @@ public class InfoUserActivity extends AppCompatActivity {
 
         if (isFriend) {
             buttonAdd.setOnClickListener(v -> deleteFriend());
-            buttonAdd.setText(getResources().getString(R.string.button_invit_waiting));
+            buttonAdd.setText(getResources().getString(R.string.to_delete));
             buttonAdd.setBackground(getResources().getDrawable(R.drawable.custom_input));
         } else {
+
             buttonAdd.setOnClickListener(v -> addFriend());
         }
 
@@ -228,6 +229,7 @@ public class InfoUserActivity extends AppCompatActivity {
             @Override
             public void onJSONReceived(JSONArray jsonArray) {
                 if (jsonArray.length() > 0) {
+                    
                 } else {
                     buttonAdd.setOnClickListener(v -> addFriend());
                 }

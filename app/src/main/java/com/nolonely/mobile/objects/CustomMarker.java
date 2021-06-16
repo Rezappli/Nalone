@@ -14,6 +14,7 @@ public class CustomMarker implements ClusterItem {
         this.color = color;
         this.tag = tag;
     }
+    
 
     @Override
     public LatLng getPosition() {

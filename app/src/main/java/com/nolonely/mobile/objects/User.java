@@ -15,6 +15,7 @@ public class User implements Serializable {
     private String image_url;
     private double latitude;
     private double longitude;
+    private boolean hasFriend;
 
     public User() {
     }
@@ -153,6 +154,13 @@ public class User implements Serializable {
         this.pseudo = pseudo;
     }
 
+    public boolean isHasFriend() {
+        return hasFriend;
+    }
+
+    public void setHasFriend(boolean hasFriend) {
+        this.hasFriend = hasFriend;
+    }
 
     @Override
     public String toString() {

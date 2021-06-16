@@ -31,11 +31,11 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.android.volley.VolleyError;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
-import com.nolonely.mobile.JSONFragment;
 import com.nolonely.mobile.R;
 import com.nolonely.mobile.adapter.EvenementAdapter;
 import com.nolonely.mobile.adapter.FilterAdapter;
 import com.nolonely.mobile.bdd.json.JSONController;
+import com.nolonely.mobile.bdd.json.JSONFragment;
 import com.nolonely.mobile.bdd.json.JSONObjectCrypt;
 import com.nolonely.mobile.dialog.SelectDateFragment;
 import com.nolonely.mobile.enumeration.filter.FiltreDate;
@@ -100,7 +100,7 @@ public class EventListFragment extends JSONFragment {
                 linearNoResult.setVisibility(View.GONE);
                 loading.setVisibility(View.VISIBLE);
                 mRecycler.setVisibility(View.INVISIBLE);
-                launchJSONCall();
+                launchJSONCall(true);
             }
         }
     };
@@ -121,7 +121,7 @@ public class EventListFragment extends JSONFragment {
             @RequiresApi(api = Build.VERSION_CODES.O)
             @Override
             public void onRefresh() {
-                launchJSONCall();
+                launchJSONCall(true);
             }
         });
 
@@ -156,7 +156,7 @@ public class EventListFragment extends JSONFragment {
                             linearNoResult.setVisibility(View.GONE);
                             loading.setVisibility(View.VISIBLE);
                             mRecycler.setVisibility(View.INVISIBLE);
-                            launchJSONCall();
+                            launchJSONCall(true);
                         }
                         viewGrey.setVisibility(View.GONE);
                         break;
@@ -180,7 +180,7 @@ public class EventListFragment extends JSONFragment {
 
         initTextViewSort();
         initRecyclerView();
-        launchJSONCall();
+        launchJSONCall(true);
         return rootView;
     }
 

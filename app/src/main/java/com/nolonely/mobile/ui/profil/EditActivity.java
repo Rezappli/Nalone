@@ -32,7 +32,7 @@ public class EditActivity extends AppCompatActivity {
 
 
     TextView profilEditPassword, textProfilEditMail, profilEditMail;
-    EditText profilEditNumero, profilEditPrenom, profilEditNom, profilEditVille, profilEditDate;
+    EditText profilEditNumero, profilEditNom, profilEditVille;
     Button profilEditValider;
     ImageView buttonBack;
 
@@ -51,11 +51,9 @@ public class EditActivity extends AppCompatActivity {
             }
         });
         profilEditPassword = findViewById(R.id.profilEditPassword);
-        profilEditDate = findViewById(R.id.profilEditNaissance);
         profilEditMail = findViewById(R.id.profilEditMail);
         textProfilEditMail = findViewById(R.id.textProfilEditMail);
         profilEditNom = findViewById(R.id.profilEditNom);
-        profilEditPrenom = findViewById(R.id.profilEditPrenom);
         profilEditNumero = findViewById(R.id.profilEditNumero);
         profilEditVille = findViewById(R.id.profilEditVille);
         profilEditValider = findViewById(R.id.profilEditValider);
@@ -79,23 +77,11 @@ public class EditActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 String nom = profilEditNom.getText().toString();
-                String prenom = profilEditPrenom.getText().toString();
                 String ville = profilEditVille.getText().toString();
-                String date = profilEditDate.getText().toString();
                 String num = profilEditNumero.getText().toString();
                 boolean error = false;
                 if (nom.equalsIgnoreCase("")) {
                     profilEditNom.setError("Entrez votre nom");
-                    error = true;
-                }
-
-                if (prenom.equalsIgnoreCase("")) {
-                    profilEditPrenom.setError("Entrez votre prénom");
-                    error = true;
-                }
-
-                if (date.length() != 10 || date.charAt(4) != '-' || date.charAt(7) != '-') {
-                    profilEditDate.setError("Entrez votre date de naissance");
                     error = true;
                 }
 

@@ -35,8 +35,8 @@ import org.json.JSONException;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.nolonely.mobile.ui.UserListActivity.EXTRA_TYPE_LIST;
-import static com.nolonely.mobile.ui.UserListActivity.EXTRA_USERS_LIST;
+import static com.nolonely.mobile.ui.ListActivity.EXTRA_TYPE_LIST;
+import static com.nolonely.mobile.ui.ListActivity.EXTRA_USERS_LIST;
 import static com.nolonely.mobile.util.Constants.USER;
 
 public class NotificationActivity extends AppCompatActivity {
@@ -55,8 +55,10 @@ public class NotificationActivity extends AppCompatActivity {
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        // view = R.layout.activity_notification;
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_notification);
+        createActivity();
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
@@ -66,7 +68,6 @@ public class NotificationActivity extends AppCompatActivity {
         buttonBack = findViewById(R.id.buttonBack);
         cardViewInvitsFriend = findViewById(R.id.cardViewInvitsFriend);
 
-        listInvitated = new ArrayList<User>();
         cardViewInvitsEvent = findViewById(R.id.cardViewInvitsEvent);
 
         textViewNbInvitEvent = findViewById(R.id.nbInvitsEvent);
@@ -83,11 +84,13 @@ public class NotificationActivity extends AppCompatActivity {
                 @Override
                 public void onJSONReceived(JSONArray jsonArray) {
                     try {
+                        listInvitated = new ArrayList<>();
+
                         if (jsonArray.length() > 0) {
                             for (int i = 0; i < jsonArray.length(); i++) {
                                 listInvitated.add((User) JSONController.convertJSONToObject(jsonArray.getJSONObject(i), User.class));
                             }
-                            Intent intent = new Intent(getBaseContext(), UserListActivity.class);
+                            Intent intent = new Intent(getBaseContext(), ListFriendInvitationActivity.class);
                             intent.putExtra(EXTRA_USERS_LIST, listInvitated);
                             intent.putExtra(EXTRA_TYPE_LIST, UserList.INVIT_FRIEND.toString());
                             startActivity(intent);
@@ -236,6 +239,5 @@ public class NotificationActivity extends AppCompatActivity {
     @Override
     public void onResume() {
         super.onResume();
-        createActivity();
     }
 }

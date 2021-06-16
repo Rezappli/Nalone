@@ -2,7 +2,6 @@ package com.nolonely.mobile.enumeration;
 
 import android.content.Context;
 import android.graphics.drawable.Drawable;
-import android.util.Log;
 
 import com.nolonely.mobile.R;
 
@@ -56,7 +55,6 @@ public enum TypeEvent {
 
     public static String nameOfValue(TypeEvent typeEvent, Context context) {
         for (TypeEvent te : values()) {
-            Log.w("TYPEVENTT", te.toString());
             if (te == typeEvent) {
                 return context.getString(te.name);
             }

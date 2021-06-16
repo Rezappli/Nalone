@@ -1,4 +1,4 @@
-package com.nolonely.mobile;
+package com.nolonely.mobile.bdd.json;
 
 import android.content.Context;
 import android.content.Intent;
@@ -11,13 +11,14 @@ import androidx.annotation.RequiresApi;
 import androidx.fragment.app.Fragment;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
-import static com.nolonely.mobile.JSONActivity.ACTION_RECEIVE_CONNECTION;
-import static com.nolonely.mobile.JSONActivity.ACTION_RECEIVE_NO_CONNECTION;
+import static com.nolonely.mobile.bdd.json.JSONActivity.ACTION_RECEIVE_CONNECTION;
+import static com.nolonely.mobile.bdd.json.JSONActivity.ACTION_RECEIVE_NO_CONNECTION;
 
 public abstract class JSONFragment extends Fragment {
 
     protected Handler handler;
     private boolean broadcastSent;
+    private boolean newEvent;
 
     protected boolean haveInternetConnection() {
         // Fonction haveInternetConnection : return true si connecté, return false dans le cas contraire
@@ -34,10 +35,10 @@ public abstract class JSONFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        launchJSONCall();
+        launchJSONCall(true);
     }
 
-    protected void launchJSONCall() {
+    protected void launchJSONCall(boolean checkConnection) {
         broadcastSent = false;
         handler = new Handler();
         handler.postDelayed(runnable, 0);

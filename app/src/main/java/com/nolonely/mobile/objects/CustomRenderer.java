@@ -19,6 +19,7 @@ public class CustomRenderer extends DefaultClusterRenderer<CustomMarker> {
     @Override
     protected void onBeforeClusterItemRendered(CustomMarker item, MarkerOptions markerOptions) {
         Log.w("Marker", "Color : " + item.getColor());
+        
         markerOptions.icon(BitmapDescriptorFactory.defaultMarker(item.getColor()));
     }
 

@@ -43,7 +43,7 @@
                     app:srcCompat="@drawable/round_forum_24" />
 
                 <ImageView
-                    android:id="@+id/imageView22"
+                    android:id="@+id/tonio"
                     android:layout_width="wrap_content"
                     android:layout_height="30dp"
                     android:layout_centerVertical="true"
@@ -261,10 +261,26 @@
                                 app:srcCompat="@drawable/add_event_prive" />
                         </LinearLayout>
 
+                        <androidx.cardview.widget.CardView
+                            android:id="@+id/cardViewPrivateImpossible"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:visibility="gone"
+                            app:cardBackgroundColor="#39292929"
+                            app:cardCornerRadius="150dp">
+
+                            <ImageView
+                                android:id="@+id/imageView3"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center"
+                                app:srcCompat="@drawable/ic_baseline_lock_24_white" />
+                        </androidx.cardview.widget.CardView>
+
                     </androidx.cardview.widget.CardView>
 
                     <TextView
-                        android:id="@+id/textView63"
+                        android:id="@+id/textViewPrivate"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:gravity="center"

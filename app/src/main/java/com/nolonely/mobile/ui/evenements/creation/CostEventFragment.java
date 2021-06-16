@@ -11,9 +11,9 @@ import android.widget.ImageView;
 
 import androidx.cardview.widget.CardView;
 
-import com.nolonely.mobile.R;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
+import com.nolonely.mobile.R;
 
 import static com.nolonely.mobile.ui.evenements.creation.MainCreationEventActivity.currentEvent;
 
@@ -46,7 +46,7 @@ public class CostEventFragment extends EventFragment {
         if (currentEvent.getPrice() == 0) {
             changeToFree();
             isTaping = true;
-            isFree = false;
+            isFree = true;
         } else if (currentEvent.getPrice() != -1) {
             changeToPaying();
             isTaping = true;

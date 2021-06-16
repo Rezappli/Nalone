@@ -1,16 +1,13 @@
 package com.nolonely.mobile.ui;
 
-import android.content.Intent;
+import android.annotation.SuppressLint;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.RequiresApi;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
 import com.android.volley.VolleyError;
 import com.nolonely.mobile.R;
@@ -28,38 +25,22 @@ import java.util.ArrayList;
 
 import static com.nolonely.mobile.util.Constants.USER;
 
-public class UserListActivity extends AppCompatActivity {
-    private RecyclerView mRecyclerView;
-    protected UserListAdapter userListAdapter;
-    protected ArrayList<User> users;
-    protected UserList typeList;
-    public static String EXTRA_TYPE_LIST = "EXTRA_TYPE_LIST";
-    public static String EXTRA_USERS_LIST = "EXTRA_USERS_LIST";
-    public static String EXTRA_BROADCAST_USERS_LIST = "EXTRA_BROADCAST_USERS_LIST";
-    public static String ACTION_RECEIVE_USERS_LIST = "ACTION_RECEIVE_USERS_LIST";
+public class ListFriendInvitationActivity extends ListActivity {
+
+
     private ArrayList<User> usersAdd;
 
+    @SuppressLint("ResourceType")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_user_list);
-        mRecyclerView = findViewById(R.id.recyclerViewInvitAmis);
-        this.users = new ArrayList<>();
 
-        TextView title = findViewById(R.id.title_user_list);
         if (getIntent() != null) {
             this.typeList = UserList.valueOf(getIntent().getStringExtra(EXTRA_TYPE_LIST).toUpperCase());
             this.users = (ArrayList<User>) getIntent().getSerializableExtra(EXTRA_USERS_LIST);
 
-            switch (typeList) {
-                case INVIT_FRIEND:
-                    title.setText(getString(R.string.title_invitation_friend));
-                    break;
-                case MEMBERS:
-                case INVIT_EVENT:
-                    title.setText(getString(R.string.title_add_participant));
-                    break;
-            }
+            title.setText(getString(R.string.title_invitation_friend));
+
             this.userListAdapter = new UserListAdapter(this.users, typeList);
             this.mRecyclerView.setAdapter(this.userListAdapter);
             this.mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
@@ -73,19 +54,13 @@ public class UserListActivity extends AppCompatActivity {
                 @RequiresApi(api = Build.VERSION_CODES.O)
                 @Override
                 public void onAddClick(int position) {
-                    switch (typeList) {
-                        case INVIT_FRIEND:
-                            addInvitationFriend(position);
-                            break;
-                        case INVIT_EVENT:
-                            addMember(position);
-                            break;
-                    }
+                    addInvitationFriend(position);
                 }
 
+                @RequiresApi(api = Build.VERSION_CODES.O)
                 @Override
                 public void onRemoveClick(int position) {
-                    usersAdd.remove(users.get(position));
+                    removeInvitationFriend(position);
                 }
             });
 
@@ -114,23 +89,24 @@ public class UserListActivity extends AppCompatActivity {
         });
     }
 
-    private void addMember(int position) {
-        usersAdd.add(users.get(position));
-        Toast.makeText(UserListActivity.this, users.get(position).getName() + getString(R.string.adding_participant), Toast.LENGTH_SHORT).show();
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    private void removeInvitationFriend(int position) {
+        JSONObjectCrypt params = new JSONObjectCrypt();
+        params.putCryptParameter("uid", USER.getUid());
+        params.putCryptParameter("uid_friend", users.get(position));
 
-        Intent intent = new Intent(ACTION_RECEIVE_USERS_LIST);
-        intent.putExtra(EXTRA_BROADCAST_USERS_LIST, usersAdd);
-        sendBroadcast(intent);
+        JSONController.getJsonArrayFromUrl(Constants.URL_DELETE_FIREND_INVITATION, this, params, new JSONArrayListener() {
+            @Override
+            public void onJSONReceived(JSONArray jsonArray) {
+                removeItem(position);
+            }
 
-        removeItem(position);
-    }
-
-    private void removeItem(int position) {
-        users.remove(users.get(position));
-        if (users.isEmpty()) {
-            onBackPressed();
-        }
-        userListAdapter.notifyDataSetChanged();
+            @Override
+            public void onJSONReceivedError(VolleyError volleyError) {
+                Log.w("Response", "Erreur:" + volleyError.toString());
+                Toast.makeText(getBaseContext(), getResources().getString(R.string.error), Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
 }

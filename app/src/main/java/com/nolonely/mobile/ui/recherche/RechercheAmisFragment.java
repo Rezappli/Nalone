@@ -23,10 +23,10 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.android.volley.VolleyError;
-import com.nolonely.mobile.JSONFragment;
 import com.nolonely.mobile.R;
 import com.nolonely.mobile.adapter.user.SearchUserAdapter;
 import com.nolonely.mobile.bdd.json.JSONController;
+import com.nolonely.mobile.bdd.json.JSONFragment;
 import com.nolonely.mobile.bdd.json.JSONObjectCrypt;
 import com.nolonely.mobile.dialog.CameraActivity;
 import com.nolonely.mobile.items.ItemPerson;
@@ -74,7 +74,7 @@ public class RechercheAmisFragment extends JSONFragment {
         mRecyclerView = rootView.findViewById(R.id.recyclerView);
         configureRecyclerViewAmis();
 
-        launchJSONCall();
+        launchJSONCall(true);
         createFragment();
         return rootView;
 
@@ -200,7 +200,7 @@ public class RechercheAmisFragment extends JSONFragment {
             @RequiresApi(api = Build.VERSION_CODES.O)
             @Override
             public void onRefresh() {
-                launchJSONCall();
+                launchJSONCall(true);
             }
         });
     }

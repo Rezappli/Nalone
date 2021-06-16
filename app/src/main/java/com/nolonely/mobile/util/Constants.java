@@ -13,6 +13,7 @@ import com.bumptech.glide.Glide;
 import com.google.android.gms.wallet.WalletConstants;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.nolonely.mobile.R;
 import com.nolonely.mobile.bdd.json.JSONController;
 import com.nolonely.mobile.bdd.json.JSONObjectCrypt;
 import com.nolonely.mobile.enumeration.ImageType;
@@ -98,7 +99,7 @@ public class Constants {
 
 
     public static String URL_GET_GROUPS = BASE_API_URL + "/get_groups.php";
-    
+
     public static String URL_GET_TOP_CI = BASE_API_URL + "/get_top_ci.php";
 
     public static String URL_DELETE_USER_TO_EVENT = BASE_API_URL + "/delete_user_event.php";
@@ -109,6 +110,7 @@ public class Constants {
     public static String URL_ADD_USER_TO_EVENT = BASE_API_URL + "/add_user_event.php";
     public static String URL_SEND_FRIEND_REQUEST = BASE_API_URL + "/add_friend_request.php";
     public static String URL_ADD_FRIEND = BASE_API_URL + "/add_friend.php";
+    public static String URL_DELETE_FIREND_INVITATION = BASE_API_URL + "/delete_friend_invitation.php";
     public static String URL_ADD_GROUP = BASE_API_URL + "/add_group.php";
 
     public static String URL_UPDATE_ME = BASE_API_URL + "/update_me.php";
@@ -149,11 +151,15 @@ public class Constants {
     }
 
     public static void setEventImage(final Evenement e, final ImageView imageView) {
-        imageView.post(() -> {
-            if (e.getImage_url_event() != null && !e.getImage_url_event().equals("")) {
+
+        if (e.getImage_url_event() != null && !e.getImage_url_event().equals("")) {
+            imageView.post(() -> {
                 Glide.with(application).load(e.getImage_url_event()).fitCenter().centerCrop().into(imageView);
-            }
-        });
+            });
+        } else {
+            imageView.setImageResource(R.drawable.ic_baseline_mesevent);
+        }
+
     }
 
     /**

@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Bitmap;
@@ -57,7 +56,6 @@ public class MainCreationEventActivity extends AppCompatActivity implements Adap
     public static NavController navController;
     public static ImageView buttonBack, buttonNotif;
     public static Evenement currentEvent;
-    private boolean photoValidate, dateValidate, nameValidate, membersValidate, addressValidate, costValidate;
     public static Uri image = null;
 
     private static Activity activity;
@@ -85,39 +83,39 @@ public class MainCreationEventActivity extends AppCompatActivity implements Adap
         public void onReceive(Context context, Intent intent) {
             if (intent != null) {
                 CurrentFragment currentFragment = CurrentFragment.valueOf(intent.getStringExtra("fragment"));
+                Fragment nextFrag = null;
                 switch (currentFragment) {
                     case DATE:
                         imageProgressCreationDate.setColorFilter(getResources().getColor(R.color.colorPrimary), PorterDuff.Mode.MULTIPLY);
-                        dateValidate = true;
+                        nextFrag = new AddressEventFragment();
                         break;
                     case COST:
                         imageProgressCreationCost.setColorFilter(getResources().getColor(R.color.colorPrimary), PorterDuff.Mode.MULTIPLY);
-                        costValidate = true;
+                        nextFrag = currentEvent.getVisibility() == Visibility.PRIVATE ? new MembersEventPrivateFragment() : new MembersEventPublicFragment();
                         break;
                     case NAME:
                         imageProgressCreationName.setColorFilter(getResources().getColor(R.color.colorPrimary), PorterDuff.Mode.MULTIPLY);
-                        nameValidate = true;
+                        nextFrag = new DateEventFragment();
                         break;
                     case PHOTO:
                         imageProgressCreationPhoto.setColorFilter(getResources().getColor(R.color.colorPrimary), PorterDuff.Mode.MULTIPLY);
-                        photoValidate = true;
+                        nextFrag = new NameEventFragment();
                         break;
                     case ADRESS:
                         imageProgressCreationPosition.setColorFilter(getResources().getColor(R.color.colorPrimary), PorterDuff.Mode.MULTIPLY);
-                        addressValidate = true;
+                        nextFrag = new CostEventFragment();
                         break;
                     case MEMBERS:
                         imageProgressCreationMembers.setColorFilter(getResources().getColor(R.color.colorPrimary), PorterDuff.Mode.MULTIPLY);
-                        membersValidate = true;
+                        createEvent();
                         break;
 
                 }
 
-                Fragment nextFrag = null;
 
-                if (photoValidate && nameValidate && membersValidate && dateValidate && addressValidate && costValidate) {
-                    createEvent();
-                } else if (!photoValidate) {
+                if (nextFrag != null) {
+                    changeFragment(nextFrag, true);
+                } /*else if (!photoValidate) {
                     nextFrag = new PhotoEventFragment();
                 } else if (!nameValidate) {
                     nextFrag = new NameEventFragment();
@@ -129,11 +127,9 @@ public class MainCreationEventActivity extends AppCompatActivity implements Adap
                     nextFrag = new CostEventFragment();
                 } else {
                     nextFrag = new MembersEventPrivateFragment();
-                }
+                }*/
 
-                if (nextFrag != null) {
-                    changeFragment(nextFrag, true);
-                }
+
             }
         }
     };
@@ -290,11 +286,11 @@ public class MainCreationEventActivity extends AppCompatActivity implements Adap
         cardViewPrivate = findViewById(R.id.cardViewPrivate);
         cardViewPublic = findViewById(R.id.cardViewPublic);
         cardViewPrivate.setOnClickListener(v -> {
-            checkChangeVisibility(Visibility.PRIVATE);
+            changeVisibility(Visibility.PRIVATE);
         });
 
         cardViewPublic.setOnClickListener(v -> {
-            checkChangeVisibility(Visibility.PUBLIC);
+            changeVisibility(Visibility.PUBLIC);
         });
     }
 
@@ -302,7 +298,6 @@ public class MainCreationEventActivity extends AppCompatActivity implements Adap
         currentEvent.setVisibility(v);
         initFirstFiltre();
         bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
-        membersValidate = false;
         Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.fragmentCreationEvent);
         if (fragment instanceof MembersEventPrivateFragment || fragment instanceof MembersEventPublicFragment) {
             if (v == Visibility.PRIVATE)
@@ -310,33 +305,6 @@ public class MainCreationEventActivity extends AppCompatActivity implements Adap
             else
                 changeFragment(new MembersEventPublicFragment(), true);
         }
-    }
-
-    private void checkChangeVisibility(Visibility v) {
-        if (membersValidate) {
-            DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    switch (which) {
-                        case DialogInterface.BUTTON_POSITIVE:
-                            membersValidate = false;
-                            changeVisibility(v);
-                            break;
-
-                        case DialogInterface.BUTTON_NEGATIVE:
-                            dialog.dismiss();
-                            break;
-                    }
-                }
-            };
-
-            AlertDialog.Builder builder = new AlertDialog.Builder(this);
-            builder.setMessage(getResources().getString(R.string.visibility_change_warning)).setPositiveButton("Oui", dialogClickListener)
-                    .setNegativeButton("Non", dialogClickListener).show();
-        } else {
-            changeVisibility(v);
-        }
-
     }
 
     private void changeType(TypeEvent te) {
@@ -427,12 +395,14 @@ public class MainCreationEventActivity extends AppCompatActivity implements Adap
             }
         });
 
-        try {
-            String imageData = BitMapToString(MediaStore.Images.Media.getBitmap(getBaseContext().getContentResolver(), image));
-            Constants.uploadImageOnServer(ImageType.EVENT, MainCreationEventActivity.currentEvent.getUid(), imageData, getBaseContext()); //upload image on web server
-            MainCreationEventActivity.currentEvent.setImage_url_event(Constants.BASE_API_URL + "/" + ImageType.EVENT + "/" + MainCreationEventActivity.currentEvent.getUid());
-        } catch (IOException e) {
-            Log.w("Response", "Erreur: " + e.getMessage());
+        if (currentEvent.getImage_url_event() != null) {
+            try {
+                String imageData = BitMapToString(MediaStore.Images.Media.getBitmap(getBaseContext().getContentResolver(), image));
+                Constants.uploadImageOnServer(ImageType.EVENT, MainCreationEventActivity.currentEvent.getUid(), imageData, getBaseContext()); //upload image on web server
+                MainCreationEventActivity.currentEvent.setImage_url_event(Constants.BASE_API_URL + "/" + ImageType.EVENT + "/" + MainCreationEventActivity.currentEvent.getUid());
+            } catch (IOException e) {
+                Log.w("Response", "Erreur: " + e.getMessage());
+            }
         }
     }
 

@@ -79,31 +79,6 @@
                 android:paddingEnd="12dp" />
 
             <TextView
-                android:id="@+id/textView6"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="10dp"
-                android:layout_marginBottom="5dp"
-                android:layout_weight="1"
-                android:text="@string/prenom" />
-
-            <EditText
-                android:id="@+id/profilEditPrenom"
-                android:layout_width="match_parent"
-                android:layout_height="40dp"
-                android:layout_marginBottom="15dp"
-                android:layout_weight="1"
-                android:autofillHints=""
-                android:background="@drawable/custom_input"
-                android:drawableStart="@drawable/custom_edit_person"
-                android:drawablePadding="12dp"
-                android:ems="10"
-                android:hint="@string/prenom"
-                android:inputType="text"
-                android:paddingStart="12dp"
-                android:paddingEnd="12dp" />
-
-            <TextView
                 android:id="@+id/textView15"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -124,31 +99,6 @@
                 android:drawablePadding="12dp"
                 android:ems="10"
                 android:hint="@string/ville"
-                android:inputType="text"
-                android:paddingStart="12dp"
-                android:paddingEnd="12dp" />
-
-            <TextView
-                android:id="@+id/textView31"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="10dp"
-                android:layout_marginBottom="5dp"
-                android:layout_weight="1"
-                android:text="@string/dateNaissance" />
-
-            <EditText
-                android:id="@+id/profilEditNaissance"
-                android:layout_width="match_parent"
-                android:layout_height="40dp"
-                android:layout_marginBottom="15dp"
-                android:layout_weight="1"
-                android:autofillHints=""
-                android:background="@drawable/custom_input"
-                android:drawableStart="@drawable/custom_edit_date"
-                android:drawablePadding="12dp"
-                android:ems="10"
-                android:hint="@string/date"
                 android:inputType="text"
                 android:paddingStart="12dp"
                 android:paddingEnd="12dp" />

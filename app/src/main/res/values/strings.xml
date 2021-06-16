@@ -215,6 +215,8 @@
     <string name="ajout_desc"> <u>Ajouter une description</u> </string>
     <string name="title_add_participant"> Ajout de participants </string>
     <string name="title_invitation_friend"> Demandes d\'ami </string>
+    <string name="title_invitation_event"> Demandes de partiicpation</string>
+    <string name="private_impossible"> Ajoutez des amis pour créer un évènement privé</string>
     <string name="adding_participant"> à été ajouté à la liste d\'invités </string>
     <string name="new_message"> Nouveau message </string>
     <string name="desc"> Description </string>
@@ -364,6 +366,7 @@
     <string name="event_start_from"> Commencé depuis : </string>
     <string name="event_end_from"> Terminé depuis : </string>
     <string name="unregister"> Se désinscrire </string>
+    <string name="to_delete"> Supprimer </string>
     <string name="event_delete"> Vous venez de supprimer cet évènement ! </string>
     <string name="unregister_messge"> Vous ne participez plus à cet évènement </string>
     <string name="register"> Participer </string>
@@ -399,6 +402,9 @@
     <string name="issues"> Signaler un problème </string>
     <string name="support_us"> Nous soutenir </string>
     <string name="about_us"> Qui sommes-nous </string>
+
+    <string name="title_check_inscription"> Votre participation a bien été enregistrée</string>
+    <string name="info_48h_unregistered"> Vous avez jusqu\'à 48h avant le début de l\'évènement pour annuler votre participation.</string>
 
     <!--Strings used for notifications service -->
     <string name="title_notification"> NoLonely - Notification </string>

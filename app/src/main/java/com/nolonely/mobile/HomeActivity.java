@@ -11,6 +11,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -22,6 +23,7 @@ import androidx.fragment.app.FragmentManager;
 import com.android.volley.VolleyError;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
+import com.nolonely.mobile.bdd.json.JSONActivity;
 import com.nolonely.mobile.bdd.json.JSONController;
 import com.nolonely.mobile.bdd.json.JSONObjectCrypt;
 import com.nolonely.mobile.bdd.sql_lite.DatabaseManager;
@@ -64,7 +66,6 @@ public class HomeActivity extends JSONActivity implements AdapterView.OnItemSele
 
     private boolean typeChoosed;
 
-
     final Fragment fragment1 = new EventFragment();
     final Fragment fragment2 = new PlanningFragment();
     final Fragment fragment3 = new RechercheAmisFragment();
@@ -73,7 +74,8 @@ public class HomeActivity extends JSONActivity implements AdapterView.OnItemSele
 
     Fragment active = fragment1;
 
-    private CardView cardViewNoConnection;
+    private CardView cardViewNoConnection, cardViewPrivateImpossible;
+    private TextView textViewPrivate;
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
@@ -82,7 +84,7 @@ public class HomeActivity extends JSONActivity implements AdapterView.OnItemSele
         setContentView(R.layout.activity_home);
         getSupportActionBar().hide();
         getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
-       
+
         cardViewNoConnection = findViewById(R.id.cardViewNoConnection);
 
         BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.nav_view);
@@ -105,14 +107,28 @@ public class HomeActivity extends JSONActivity implements AdapterView.OnItemSele
         viewGrey = findViewById(R.id.viewGrey);
         cardViewPrivate = findViewById(R.id.cardViewPrivate);
         cardViewPublic = findViewById(R.id.cardViewPublic);
+        textViewPrivate = findViewById(R.id.textViewPrivate);
+        cardViewPrivateImpossible = findViewById(R.id.cardViewPrivateImpossible);
+
         item_profil = findViewById(R.id.item_profil);
         item_profil.setOnClickListener(v -> {
             updateUserInformations(); //Mise à jour des informations utilisateurs
             startActivity(new Intent(getBaseContext(), ProfilActivity.class)); //Affichage de la page de profil
         });
 
+        if (USER.isHasFriend()) {
+            cardViewPrivateImpossible.setVisibility(View.GONE);
+        } else {
+            cardViewPrivateImpossible.setVisibility(View.VISIBLE);
+            textViewPrivate.setText(getString(R.string.private_impossible));
+        }
 
-        cardViewPrivate.setOnClickListener(v -> openType(Visibility.PRIVATE));
+        cardViewPrivate.setOnClickListener(v -> {
+            if (USER.isHasFriend())
+                openType(Visibility.PRIVATE);
+            else
+                Toast.makeText(this, getString(R.string.private_impossible), Toast.LENGTH_SHORT).show();
+        });
 
         cardViewPublic.setOnClickListener(v -> openType(Visibility.PUBLIC));
 
@@ -194,6 +210,7 @@ public class HomeActivity extends JSONActivity implements AdapterView.OnItemSele
 
     }
 
+
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = item -> {
         switch (item.getItemId()) {
@@ -237,12 +254,31 @@ public class HomeActivity extends JSONActivity implements AdapterView.OnItemSele
                 databaseManager.updateUser((User) JSONController.convertJSONToObject(jsonObject, User.class));
                 Log.w("Response", "Mise à jour des informations utilisateurs");
                 Log.w("Response", jsonObject.toString());
+                JSONObjectCrypt params = new JSONObjectCrypt();
+                params.putCryptParameter("uid", USER.getUid());
+                params.putCryptParameter("limit", 2); //fix a limit to 10 users
+
+                JSONController.getJsonArrayFromUrl(Constants.URL_MY_FRIENDS, getBaseContext(), params, new JSONArrayListener() {
+                    @Override
+                    public void onJSONReceived(JSONArray jsonArray) {
+                        if (jsonArray.length() > 0) {
+                            USER.setHasFriend(true);
+
+                        } else {
+                            USER.setHasFriend(false);
+                        }
+                    }
+
+                    @Override
+                    public void onJSONReceivedError(VolleyError volleyError) {
+                        Log.w("Response", "Erreur: " + volleyError.toString());
+                    }
+                });
             }
 
             @Override
             public void onJSONReceivedError(VolleyError volleyError) {
                 Log.w("Response", volleyError.toString());
-                Toast.makeText(HomeActivity.this, getResources().getString(R.string.update_fail), Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -288,6 +324,7 @@ public class HomeActivity extends JSONActivity implements AdapterView.OnItemSele
     protected void onResume() {
         super.onResume();
         getNotifications();
+        updateUserInformations(); //Mise à jour des informations utilisateurs
     }
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)

@@ -1,4 +1,4 @@
-package com.nolonely.mobile;
+package com.nolonely.mobile.bdd.json;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -19,6 +19,7 @@ public abstract class JSONActivity extends AppCompatActivity {
 
     public static String ACTION_RECEIVE_NO_CONNECTION = "ACTION_RECEIVE_NO_CONNECTION";
     public static String ACTION_RECEIVE_CONNECTION = "ACTION_RECEIVE_CONNECTION";
+
 
     protected final BroadcastReceiver receiverNoConnection = new BroadcastReceiver() {
         @Override

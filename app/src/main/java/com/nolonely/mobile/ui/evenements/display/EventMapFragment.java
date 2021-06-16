@@ -30,9 +30,9 @@ import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.maps.android.clustering.ClusterManager;
-import com.nolonely.mobile.JSONFragment;
 import com.nolonely.mobile.R;
 import com.nolonely.mobile.bdd.json.JSONController;
+import com.nolonely.mobile.bdd.json.JSONFragment;
 import com.nolonely.mobile.bdd.json.JSONObjectCrypt;
 import com.nolonely.mobile.enumeration.VisibilityMap;
 import com.nolonely.mobile.listeners.JSONArrayListener;
@@ -83,7 +83,7 @@ public class EventMapFragment extends JSONFragment implements OnMapReadyCallback
 
     private View viewGrey;
     private TextView textViewDetailName, textViewDetailCity, textViewDetailDate, textViewDetailTime, textViewDetailNbMembers;
-    private ImageView imageViewDetailCategory;
+    private ImageView imageViewDetailCategory, imageEvent;
 
     private ClusterManager<CustomMarker> clusterManager;
 
@@ -130,6 +130,7 @@ public class EventMapFragment extends JSONFragment implements OnMapReadyCallback
         loading = rootView.findViewById(R.id.loading);
         viewGrey = rootView.findViewById(R.id.viewGreyMap);
         imageViewDetailCategory = rootView.findViewById(R.id.imageViewDetailCategory);
+        imageEvent = rootView.findViewById(R.id.imageEvent);
 
         currentVisibilityMap = ALL;
         //Bottom sheet
@@ -252,7 +253,7 @@ public class EventMapFragment extends JSONFragment implements OnMapReadyCallback
             mMap.moveCamera(CameraUpdateFactory.newCameraPosition(posCam));
         }
 
-        launchJSONCall();
+        launchJSONCall(true);
     }
 
     @RequiresApi(api = Build.VERSION_CODES.M)
@@ -338,8 +339,9 @@ public class EventMapFragment extends JSONFragment implements OnMapReadyCallback
         } else {
             m = new CustomMarker(new LatLng(e.getLatitude(), e.getLongitude()), BitmapDescriptorFactory.HUE_AZURE, e);
         }
-
+        
         clusterManager.addItem(m);
+
         clusterManager.setRenderer(new CustomRenderer(getContext(), mMap, clusterManager));
 
         mMap.setOnMarkerClickListener(clusterManager);
@@ -364,19 +366,17 @@ public class EventMapFragment extends JSONFragment implements OnMapReadyCallback
                     parseException.printStackTrace();
                 }
 
+                textViewDetailNbMembers.setText(e1.getNbMembers() + "");
+                textViewDetailCity.setText(e1.getCity());
+                textViewDetailDate.setText(Constants.dateFormat.format(d));
+                textViewDetailName.setText(e1.getName());
+                textViewDetailName.setText(e1.getName());
+                imageViewDetailCategory.setImageResource(e1.getImageCategory());
+                Constants.setEventImage(e1, imageEvent);
                 if (d == null) {
-                    textViewDetailNbMembers.setText(e1.getNbMembers() + "");
-                    textViewDetailCity.setText(e1.getCity());
                     textViewDetailDate.setText(Constants.dateFormat.format(d));
-                    textViewDetailName.setText(e1.getName());
-                    imageViewDetailCategory.setImageResource(e1.getImageCategory());
                 } else {
-                    textViewDetailNbMembers.setText(e1.getNbMembers() + "");
-                    textViewDetailCity.setText(e1.getCity());
-                    textViewDetailDate.setText(Constants.dateFormat.format(d));
-                    textViewDetailName.setText(e1.getName());
                     textViewDetailTime.setText(Constants.timeFormat.format(d));
-                    imageViewDetailCategory.setImageResource(e1.getImageCategory());
                 }
             }
 

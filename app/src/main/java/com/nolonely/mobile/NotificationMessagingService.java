@@ -38,26 +38,21 @@ public class NotificationMessagingService extends JobService {
     }
 
     private void doBackgroundWork(final JobParameters params) {
-        new Thread(new Runnable() {
-            @RequiresApi(api = Build.VERSION_CODES.O)
-            @Override
-            public void run() {
-                for (int i = 0; i < 2; i++) {
-                    Log.d(TAG, "run: " + i);
-                    if (jobCancelled) {
-                        return;
-                    }
-                    try {
-                        Thread.sleep(1000);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
+        new Thread(() -> {
+            for (int i = 0; i < 2; i++) {
+                Log.d(TAG, "run: " + i);
+                if (jobCancelled) {
+                    return;
                 }
-
-                Log.d(TAG, "Job finished");
-                jobFinished(params, true);
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
             }
 
+            Log.d(TAG, "Job finished");
+            jobFinished(params, true);
         }).start();
     }
 

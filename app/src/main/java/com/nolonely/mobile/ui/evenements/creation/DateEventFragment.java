@@ -78,7 +78,7 @@ public class DateEventFragment extends EventFragment {
         eventEndHoraire = root.findViewById(R.id.eventEndHoraire);
 
         if (currentEvent.getStartDate() != null) {
-            String tsStart = currentEvent.getStartDate().replaceAll("-", "-"); //convertion de date pour sql
+            String tsStart = currentEvent.getStartDate().replaceAll("-", "/"); //convertion de date pour sql
             eventStartDate.setText(tsStart.substring(0, 10));
             eventStartHoraire.setText(TimeUtil.timeOfDate(currentEvent.getStartDate()));
         }

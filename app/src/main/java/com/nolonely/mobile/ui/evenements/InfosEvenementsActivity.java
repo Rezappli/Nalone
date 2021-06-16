@@ -9,19 +9,22 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
 
 import com.android.volley.VolleyError;
+import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.nolonely.mobile.R;
 import com.nolonely.mobile.ReportActivity;
+import com.nolonely.mobile.bdd.json.JSONActivity;
 import com.nolonely.mobile.bdd.json.JSONController;
 import com.nolonely.mobile.bdd.json.JSONObjectCrypt;
 import com.nolonely.mobile.enumeration.StatusEvent;
@@ -44,7 +47,7 @@ import java.util.Date;
 
 import static com.nolonely.mobile.util.Constants.USER;
 
-public class InfosEvenementsActivity extends AppCompatActivity {
+public class InfosEvenementsActivity extends JSONActivity {
 
     @SuppressLint("SimpleDateFormat")
     private final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd hh:mm");
@@ -71,9 +74,13 @@ public class InfosEvenementsActivity extends AppCompatActivity {
     private ImageView imageViewEuro;
     private CardView cardViewPrice;
     private CardView cardViewOwner;
+    private BottomSheetBehavior bottomSheetBehaviorParticipate;
 
     private boolean isRegistered;
     private LinearLayout linearPrice;
+
+    private View viewGrey;
+    private CardView cardViewParticipationCheck;
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
@@ -106,6 +113,17 @@ public class InfosEvenementsActivity extends AppCompatActivity {
         imageViewEuro = findViewById(R.id.imageViewEuro);
         cardViewPrice = findViewById(R.id.cardViewPrice);
         linearPrice = findViewById(R.id.linearPrice);
+        viewGrey = findViewById(R.id.viewGreyInfosEvenements);
+        viewGrey.setOnClickListener(v -> {
+            if (bottomSheetBehaviorParticipate.getState() == BottomSheetBehavior.STATE_EXPANDED) {
+                bottomSheetBehaviorParticipate.setState(BottomSheetBehavior.STATE_COLLAPSED);
+            }
+            cardViewParticipationCheck.setVisibility(View.GONE);
+            viewGrey.setVisibility(View.VISIBLE);
+        });
+        cardViewParticipationCheck = findViewById(R.id.cardViewParticipationCheck);
+
+
         cardViewOwner = findViewById(R.id.cardViewOwner);
         cardViewOwner.setOnClickListener(v -> {
 
@@ -178,6 +196,32 @@ public class InfosEvenementsActivity extends AppCompatActivity {
             startActivity(intent);
         });
 
+        View bottomSheetType = findViewById(R.id.sheetParticipate);
+        bottomSheetBehaviorParticipate = BottomSheetBehavior.from(bottomSheetType);
+        bottomSheetBehaviorParticipate.setHideable(false);
+        bottomSheetBehaviorParticipate.setBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
+            @Override
+            public void onStateChanged(@NonNull View view, int state) {
+                switch (state) {
+                    case BottomSheetBehavior.STATE_COLLAPSED:
+                        if (cardViewParticipationCheck.getVisibility() == View.GONE)
+                            viewGrey.setVisibility(View.GONE);
+                        break;
+                    case BottomSheetBehavior.STATE_DRAGGING:
+                    case BottomSheetBehavior.STATE_HIDDEN:
+                        break;
+                    case BottomSheetBehavior.STATE_EXPANDED:
+                        viewGrey.setVisibility(View.VISIBLE);
+                        break;
+
+                }
+            }
+
+            @Override
+            public void onSlide(@NonNull View view, float v) {
+
+            }
+        });
 
         if (EVENT_LOAD != null) {
             initWidgets();
@@ -193,6 +237,20 @@ public class InfosEvenementsActivity extends AppCompatActivity {
         TextView mOwner = findViewById(R.id.owner);
         TextView mDescription = findViewById(R.id.description);
 
+        if (EVENT_LOAD.getPrice() > 0) {
+            TextView payPrice = findViewById(R.id.payPrice);
+            Button payCheck = findViewById(R.id.payCheck);
+            TextView payCommission = findViewById(R.id.payCommission);
+            TextView payTotal = findViewById(R.id.payTotal);
+
+            payPrice.setText(EVENT_LOAD.getPrice() + "");
+            payCommission.setText(EVENT_LOAD.getPrice() / 20 + "");
+            payCheck.setOnClickListener(v -> {
+                cardViewParticipationCheck.setVisibility(View.VISIBLE);
+                bottomSheetBehaviorParticipate.setState(BottomSheetBehavior.STATE_COLLAPSED);
+            });
+            payTotal.setText(EVENT_LOAD.getPrice() + (EVENT_LOAD.getPrice() / 20) + "");
+        }
         String final_date_text = "";
         mTitle.setText(EVENT_LOAD.getName());
         mOwner.setText(EVENT_LOAD.getOwnerName());
@@ -287,13 +345,15 @@ public class InfosEvenementsActivity extends AppCompatActivity {
     @RequiresApi(api = Build.VERSION_CODES.O)
     private void incription() {
         if (!inscrit) {
-            Toast.makeText(getBaseContext(), getResources().getString(R.string.register_message) + " " + EVENT_LOAD.getName(), Toast.LENGTH_SHORT).show();
-            registerClicked();
-            //onRegisterUser();
+            if (EVENT_LOAD.getPrice() > 0) {
+                bottomSheetBehaviorParticipate.setState(BottomSheetBehavior.STATE_EXPANDED);
+            } else {
+                registerClicked();
+                onRegisterUser();
+            }
         } else {
-            Toast.makeText(getBaseContext(), getResources().getString(R.string.unregister_messge) + " " + EVENT_LOAD.getName(), Toast.LENGTH_SHORT).show();
             unregisterClicked();
-            //onUnregisterUser();
+            onUnregisterUser();
         }
     }
 
@@ -331,7 +391,7 @@ public class InfosEvenementsActivity extends AppCompatActivity {
         JSONController.getJsonObjectFromUrl(Constants.URL_DELETE_USER_TO_EVENT, getBaseContext(), params, new JSONObjectListener() {
             @Override
             public void onJSONReceived(JSONObject jsonObject) {
-                Toast.makeText(getBaseContext(), getResources().getString(R.string.register_message), Toast.LENGTH_SHORT).show();
+                Toast.makeText(getBaseContext(), getResources().getString(R.string.unregister_messge), Toast.LENGTH_SHORT).show();
             }
 
             @Override
@@ -353,6 +413,21 @@ public class InfosEvenementsActivity extends AppCompatActivity {
     public void onResume() {
         handler.postDelayed(runnable, 0);
         super.onResume();
+    }
+
+    @Override
+    protected void doInHaveInternetConnection() {
+
+    }
+
+    @Override
+    protected void displayNoConnection() {
+
+    }
+
+    @Override
+    protected void hiddeNoConnection() {
+
     }
 
 }

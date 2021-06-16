@@ -28,7 +28,7 @@ import com.nolonely.mobile.bdd.json.JSONObjectCrypt;
 import com.nolonely.mobile.enumeration.UserList;
 import com.nolonely.mobile.listeners.JSONArrayListener;
 import com.nolonely.mobile.objects.User;
-import com.nolonely.mobile.ui.UserListActivity;
+import com.nolonely.mobile.ui.ListAddMembersActivity;
 import com.nolonely.mobile.util.Constants;
 
 import org.json.JSONArray;
@@ -36,10 +36,10 @@ import org.json.JSONException;
 
 import java.util.ArrayList;
 
-import static com.nolonely.mobile.ui.UserListActivity.ACTION_RECEIVE_USERS_LIST;
-import static com.nolonely.mobile.ui.UserListActivity.EXTRA_BROADCAST_USERS_LIST;
-import static com.nolonely.mobile.ui.UserListActivity.EXTRA_TYPE_LIST;
-import static com.nolonely.mobile.ui.UserListActivity.EXTRA_USERS_LIST;
+import static com.nolonely.mobile.ui.ListActivity.ACTION_RECEIVE_USERS_LIST;
+import static com.nolonely.mobile.ui.ListActivity.EXTRA_BROADCAST_USERS_LIST;
+import static com.nolonely.mobile.ui.ListActivity.EXTRA_TYPE_LIST;
+import static com.nolonely.mobile.ui.ListActivity.EXTRA_USERS_LIST;
 import static com.nolonely.mobile.ui.evenements.creation.MainCreationEventActivity.currentEvent;
 import static com.nolonely.mobile.util.Constants.USER;
 
@@ -106,7 +106,7 @@ public class MembersEventPrivateFragment extends EventFragment {
                             }
                         }
                         if (!friends.isEmpty()) {
-                            Intent intent = new Intent(getContext(), UserListActivity.class);
+                            Intent intent = new Intent(getContext(), ListAddMembersActivity.class);
                             intent.putExtra(EXTRA_USERS_LIST, friends);
                             intent.putExtra(EXTRA_TYPE_LIST, UserList.INVIT_EVENT.toString());
                             startActivity(intent);

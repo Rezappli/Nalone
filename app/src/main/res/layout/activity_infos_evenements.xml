@@ -617,6 +617,63 @@
 
     </LinearLayout>
 
+    <View
+        android:id="@+id/viewGreyInfosEvenements"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="#39292929"
+        android:visibility="gone" />
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/cardViewParticipationCheck"
+        android:layout_width="match_parent"
+        android:layout_height="300dp"
+        android:layout_gravity="center"
+        android:layout_marginStart="20dp"
+        android:layout_marginEnd="20dp"
+        android:visibility="gone"
+        app:cardCornerRadius="10dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/textView4"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="10dp"
+                android:gravity="center"
+                android:text="@string/title_check_inscription"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+
+            <com.airbnb.lottie.LottieAnimationView
+                android:id="@+id/animationView"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                app:lottie_autoPlay="true"
+                app:lottie_loop="false"
+                app:lottie_rawRes="@raw/checkmark" />
+
+            <TextView
+                android:id="@+id/textView31"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="10dp"
+                android:gravity="center"
+                android:text="@string/info_48h_unregistered"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+
+        </LinearLayout>
+
+    </androidx.cardview.widget.CardView>
+
     <androidx.core.widget.NestedScrollView
         android:id="@+id/sheetParticipate"
         android:layout_width="match_parent"
@@ -719,6 +776,7 @@
                     android:textColor="@color/black" />
 
                 <TextView
+                    android:id="@+id/payPrice"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:drawableEnd="@drawable/ic_baseline_euro_symbol_14"
@@ -740,6 +798,7 @@
                     android:textColor="@color/black" />
 
                 <TextView
+                    android:id="@+id/payCommission"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:drawableEnd="@drawable/ic_baseline_euro_symbol_14"
@@ -769,7 +828,7 @@
                     android:textColor="#000000" />
 
                 <TextView
-                    android:id="@+id/textView83"
+                    android:id="@+id/payTotal"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:drawableEnd="@drawable/ic_baseline_euro_symbol_14"
@@ -785,7 +844,7 @@
                 android:background="@android:color/darker_gray" />
 
             <Button
-                android:id="@+id/button2"
+                android:id="@+id/payCheck"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
@@ -793,7 +852,6 @@
                 android:text="@string/participer" />
 
             <TextView
-                android:id="@+id/textView84"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"

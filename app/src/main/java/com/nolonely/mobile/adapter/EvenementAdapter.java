@@ -80,7 +80,6 @@ public class EvenementAdapter extends RecyclerView.Adapter<EvenementAdapter.Even
         public TextView mDate;
         public TextView mTime;
         public TextView mCity;
-        //public TextView mDescription;
         public ConstraintLayout linearEvent;
         public CardView cardViewPrice;
         public TextView textViewPrice, textViewNbMembers, textViewOwnerName;
@@ -157,11 +156,8 @@ public class EvenementAdapter extends RecyclerView.Adapter<EvenementAdapter.Even
             }
             textViewNbMembers.setText(e.getNbMembers() + "");
             imageViewCategory.setImageResource(e.getImageCategory());
-            if (e.getImage_url_event() != null)
-                Constants.setEventImage(e, mImageView);
-            else {
-                mImageView.setImageDrawable(context.getResources().getDrawable(R.drawable.ic_round_groups_24));
-            }
+            Constants.setEventImage(e, mImageView);
+
 
         }
 
