@@ -23,6 +23,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
 import com.android.volley.VolleyError;
+import com.google.android.gms.maps.model.LatLng;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.nolonely.mobile.bdd.json.JSONActivity;
@@ -92,6 +93,7 @@ public class HomeActivity extends JSONActivity implements AdapterView.OnItemSele
         setContentView(R.layout.activity_home);
         getSupportActionBar().hide();
         getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
+
 
         cardViewNoConnection = findViewById(R.id.cardViewNoConnection);
 
@@ -248,6 +250,9 @@ public class HomeActivity extends JSONActivity implements AdapterView.OnItemSele
         });
 
 
+        if (getIntent() != null && getIntent().hasExtra("longitude")) {
+            ((EventMapFragment) fragment1).focusSpecificEvent(new LatLng(getIntent().getDoubleExtra("latitude", 0.0), getIntent().getDoubleExtra("longitude", 0.0)));
+        }
     }
 
 
@@ -415,7 +420,6 @@ public class HomeActivity extends JSONActivity implements AdapterView.OnItemSele
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
         if (typeChoosed) {
-            Log.w("TYPEVENTT", TypeEvent.values()[position].toString());
             goCreateEvent(TypeEvent.values()[position]);
         }
         typeChoosed = true;

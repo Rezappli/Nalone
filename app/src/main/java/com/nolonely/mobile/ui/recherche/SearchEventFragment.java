@@ -237,8 +237,6 @@ public class SearchEventFragment extends JSONFragment {
                 textViewSort.setText(FiltreSort.nameOfValue(FiltreSort.values()[position]));
                 break;
         }
-
-
     }
 
     private void initRecyclerView() {

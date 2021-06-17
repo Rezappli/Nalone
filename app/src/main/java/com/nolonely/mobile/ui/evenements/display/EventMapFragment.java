@@ -53,6 +53,7 @@ import java.util.List;
 import static com.nolonely.mobile.enumeration.VisibilityMap.ALL;
 import static com.nolonely.mobile.enumeration.VisibilityMap.FRIEND;
 import static com.nolonely.mobile.enumeration.VisibilityMap.PUBLIC;
+import static com.nolonely.mobile.enumeration.VisibilityMap.REGISTERED;
 import static com.nolonely.mobile.util.Constants.MAPVIEW_BUNDLE_KEY;
 import static com.nolonely.mobile.util.Constants.USER;
 import static com.nolonely.mobile.util.Constants.range;
@@ -71,6 +72,7 @@ public class EventMapFragment extends JSONFragment implements OnMapReadyCallback
 
     private List<Evenement> publicList;
     private List<Evenement> friendList;
+    private List<Evenement> registeredList;
 
     private CardView loading;
 
@@ -87,10 +89,14 @@ public class EventMapFragment extends JSONFragment implements OnMapReadyCallback
 
     private ClusterManager<CustomMarker> clusterManager;
 
+    private LatLng specificEvent;
 
     public EventMapFragment() {
     }
 
+    public void focusSpecificEvent(LatLng latLng) {
+        specificEvent = latLng;
+    }
 
     @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
@@ -190,8 +196,8 @@ public class EventMapFragment extends JSONFragment implements OnMapReadyCallback
         cardViewLocationInscrit.setOnClickListener(v -> {
             hiddeText(textViewLocationInscrit);
             imageViewLocationInscrit.setImageDrawable(getResources().getDrawable(R.drawable.location_inscrit_30));
-            updateMap(VisibilityMap.REGISTER);
-            currentVisibilityMap = VisibilityMap.REGISTER;
+            updateMap(VisibilityMap.REGISTERED);
+            currentVisibilityMap = VisibilityMap.REGISTERED;
         });
 
         cardViewLocationPublic.setOnClickListener(v -> {
@@ -249,7 +255,11 @@ public class EventMapFragment extends JSONFragment implements OnMapReadyCallback
         mMap.setOnCameraMoveListener(() -> posCam = mMap.getCameraPosition());
 
         if (posCam == null) {
-            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(USER.getLatitude(), USER.getLongitude()), 10));
+            if (specificEvent == null) {
+                mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(USER.getLatitude(), USER.getLongitude()), 10));
+            } else {
+                mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(specificEvent, 10));
+            }
         } else {
             mMap.moveCamera(CameraUpdateFactory.newCameraPosition(posCam));
         }
@@ -259,7 +269,7 @@ public class EventMapFragment extends JSONFragment implements OnMapReadyCallback
 
     @RequiresApi(api = Build.VERSION_CODES.M)
     private void checkJSONReceived() {
-        if (friendList != null && publicList != null) {
+        if (friendList != null && publicList != null && registeredList != null) {
             loading.setVisibility(View.GONE);
             updateMap(currentVisibilityMap);
         }
@@ -300,7 +310,12 @@ public class EventMapFragment extends JSONFragment implements OnMapReadyCallback
                     }
                 }
                 break;
-            case REGISTER:
+            case REGISTERED:
+                for (Evenement e : registeredList) {
+                    if (!e.getOwner_uid().equalsIgnoreCase(USER.getUid())) {
+                        addMarkerOnMap(e, publicList.contains(e));
+                    }
+                }
                 break;
         }
     }
@@ -355,7 +370,12 @@ public class EventMapFragment extends JSONFragment implements OnMapReadyCallback
             if (e1 != null) {
                 Button buttonDisplay = rootView.findViewById(R.id.buttonDisplay);
                 buttonDisplay.setOnClickListener(v -> {
-                    Intent intent = new Intent(getContext(), InfosEvenementsActivity.class);
+                    Intent intent;
+                    if (e1.getOwner_uid().equals(USER.getUid())) {
+                        intent = new Intent(getContext(), InfosEventCreationActivity.class);
+                    } else {
+                        intent = new Intent(getContext(), InfosEvenementsActivity.class);
+                    }
                     intent.putExtra("event", e1);
                     startActivity(intent);
                 });
@@ -499,5 +519,37 @@ public class EventMapFragment extends JSONFragment implements OnMapReadyCallback
             }
         });
 
+        JSONObjectCrypt params2 = new JSONObjectCrypt();
+        params2.putCryptParameter("uid", USER.getUid());
+        params2.putCryptParameter("filter", REGISTERED.toString());
+
+        JSONController.getJsonArrayFromUrl(Constants.URL_NEARBY_EVENTS, getContext(), params2, new JSONArrayListener() {
+            @Override
+            public void onJSONReceived(JSONArray jsonArray) {
+                Log.w("Response", "Value:" + jsonArray.toString());
+                try {
+                    registeredList = new ArrayList<>();
+
+                    if (jsonArray.length() > 0) {
+                        for (int i = 0; i < jsonArray.length(); i++) {
+                            registeredList.add((Evenement) JSONController.convertJSONToObject(jsonArray.getJSONObject(i), Evenement.class));
+                        }
+                    }
+
+                    checkJSONReceived();
+                    updateCircle();
+                } catch (JSONException e) {
+                    Log.w("Response", "Erreur:" + e.getMessage());
+                    Toast.makeText(getContext(), getResources().getString(R.string.error_event), Toast.LENGTH_SHORT).show();
+                }
+
+            }
+
+            @Override
+            public void onJSONReceivedError(VolleyError volleyError) {
+                Log.w("Response", "Erreur:" + volleyError.toString());
+                Toast.makeText(getContext(), getResources().getString(R.string.error_event), Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 }

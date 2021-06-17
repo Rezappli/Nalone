@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -14,59 +15,61 @@
         android:orientation="vertical">
 
 
+        <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+            android:id="@+id/AmisSwipeRefreshLayout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:id="@+id/linearSansRechercheGroupe"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_centerInParent="true"
+                    android:gravity="center"
+                    android:orientation="vertical"
+                    android:visibility="gone">
+
+                    <ImageView
+                        android:id="@+id/imageView29"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        app:srcCompat="@drawable/no_result" />
+
+                    <TextView
+                        android:id="@+id/textView30"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:text="@string/no_result" />
+                </LinearLayout>
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/recyclerView"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center|center_horizontal"
+                    android:layout_weight="0.8"
+                    android:background="@android:color/white"
+                    android:scrollbars="vertical"
+                    android:visibility="visible">
+
+                </androidx.recyclerview.widget.RecyclerView>
+            </LinearLayout>
+
+        </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+
         <TextView
             android:id="@+id/resultatText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="clip_horizontal|center|center_vertical"
             android:visibility="gone" />
-
-        <LinearLayout
-            android:id="@+id/linearSansRechercheGroupe"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical"
-            android:visibility="gone">
-
-            <TextView
-                android:id="@+id/textViewSansEvent"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_gravity="bottom"
-                android:layout_weight="0.8"
-                android:fontFamily="@font/baloo"
-                android:gravity="bottom|center_horizontal"
-                android:text="@string/aucunRechercheAmis"
-                android:textSize="24sp" />
-
-            <ImageView
-                android:id="@+id/imageView27"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginStart="80dp"
-                android:layout_marginEnd="80dp"
-                android:layout_marginBottom="60dp"
-                android:layout_weight="0.2"
-                android:src="@drawable/sans_recherche_amis" />
-
-        </LinearLayout>
-
-        <androidx.swiperefreshlayout.widget.SwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
-            android:id="@+id/AmisSwipeRefreshLayout"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
-
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/recyclerView"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_gravity="center|center_horizontal"
-                android:layout_weight="0.8"
-                android:background="@android:color/white"
-                android:scrollbars="vertical">
-
-            </androidx.recyclerview.widget.RecyclerView>
-        </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
     </LinearLayout>
 

@@ -22,6 +22,7 @@ import androidx.cardview.widget.CardView;
 
 import com.android.volley.VolleyError;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
+import com.nolonely.mobile.HomeActivity;
 import com.nolonely.mobile.R;
 import com.nolonely.mobile.ReportActivity;
 import com.nolonely.mobile.bdd.json.JSONActivity;
@@ -61,7 +62,7 @@ public class InfosEvenementsActivity extends JSONActivity {
     private int participants;
     private ImageView buttonInscription, ownerImage;
     private TextView textViewInscription;
-    private ImageView imageEvenement, buttonPartager, buttonSignaler;
+    private ImageView imageEvenement, buttonPartager, buttonSignaler, buttonAfficher;
     private TextView diffDate;
     private Handler handler;
     private boolean inscrit;
@@ -188,7 +189,13 @@ public class InfosEvenementsActivity extends JSONActivity {
             }
         });
         diffDate = findViewById(R.id.differenceDate);
-
+        buttonAfficher = findViewById(R.id.buttonAfficher);
+        buttonAfficher.setOnClickListener(v -> {
+            Intent intent = new Intent(getBaseContext(), HomeActivity.class);
+            intent.putExtra("longitude", EVENT_LOAD.getLongitude());
+            intent.putExtra("latitude", EVENT_LOAD.getLatitude());
+            startActivity(intent);
+        });
         buttonPartager = findViewById(R.id.buttonPartager);
         buttonPartager.setOnClickListener(v -> {
             Toast.makeText(getBaseContext(), "Clicked on Share ", Toast.LENGTH_SHORT).show();
