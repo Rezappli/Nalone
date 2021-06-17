@@ -10,6 +10,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ImageView;
+import android.widget.SearchView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -37,11 +38,11 @@ import com.nolonely.mobile.signUpActivities.SpinnerAdapter;
 import com.nolonely.mobile.ui.NotificationActivity;
 import com.nolonely.mobile.ui.amis.display.AmisFragment;
 import com.nolonely.mobile.ui.evenements.creation.MainCreationEventActivity;
-import com.nolonely.mobile.ui.evenements.display.EventFragment;
+import com.nolonely.mobile.ui.evenements.display.EventMapFragment;
 import com.nolonely.mobile.ui.evenements.display.PlanningFragment;
 import com.nolonely.mobile.ui.message.MessagesActivity;
 import com.nolonely.mobile.ui.profil.ProfilActivity;
-import com.nolonely.mobile.ui.recherche.RechercheAmisFragment;
+import com.nolonely.mobile.ui.recherche.SearchFragment;
 import com.nolonely.mobile.util.Constants;
 
 import org.json.JSONArray;
@@ -54,21 +55,22 @@ import static com.nolonely.mobile.util.Constants.USER;
 
 public class HomeActivity extends JSONActivity implements AdapterView.OnItemSelectedListener {
 
-    private ImageView buttonBack, buttonNotif, buttonChat;
+    private ImageView buttonNotif, buttonChat;
     private CardView cardViewPrivate, cardViewPublic;
     private boolean isOpen = false;
     private ImageView item_profil;
     private View bottomSheetVisibility, bottomSheetType;
     private Visibility currentVisibility;
     protected View viewGrey;
+    private ImageView imageViewLogo;
 
     private BottomSheetBehavior bottomSheetBehaviorVisibility, bottomSheetBehaviorType;
 
     private boolean typeChoosed;
 
-    final Fragment fragment1 = new EventFragment();
+    final Fragment fragment1 = new EventMapFragment();
     final Fragment fragment2 = new PlanningFragment();
-    final Fragment fragment3 = new RechercheAmisFragment();
+    final Fragment fragment3 = new SearchFragment();
     final Fragment fragment4 = new AmisFragment();
     final FragmentManager fm = getSupportFragmentManager();
 
@@ -76,6 +78,7 @@ public class HomeActivity extends JSONActivity implements AdapterView.OnItemSele
 
     private CardView cardViewNoConnection, cardViewPrivateImpossible;
     private TextView textViewPrivate;
+    private SearchView searchView;
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
@@ -98,8 +101,6 @@ public class HomeActivity extends JSONActivity implements AdapterView.OnItemSele
         typeChoosed = false;
         scheduleJob();
 
-        buttonBack = findViewById(R.id.buttonBack);
-        buttonBack.setVisibility(View.GONE);
         buttonNotif = findViewById(R.id.buttonNotif);
         buttonChat = findViewById(R.id.buttonChat);
         buttonChat.setOnClickListener(v -> startActivity(new Intent(getBaseContext(), MessagesActivity.class)));
@@ -109,6 +110,8 @@ public class HomeActivity extends JSONActivity implements AdapterView.OnItemSele
         cardViewPublic = findViewById(R.id.cardViewPublic);
         textViewPrivate = findViewById(R.id.textViewPrivate);
         cardViewPrivateImpossible = findViewById(R.id.cardViewPrivateImpossible);
+        imageViewLogo = findViewById(R.id.ivLogo);
+        searchView = findViewById(R.id.svSearch);
 
         item_profil = findViewById(R.id.item_profil);
         item_profil.setOnClickListener(v -> {
@@ -133,8 +136,6 @@ public class HomeActivity extends JSONActivity implements AdapterView.OnItemSele
         cardViewPublic.setOnClickListener(v -> openType(Visibility.PUBLIC));
 
         buttonNotif.setOnClickListener(v -> startActivity(new Intent(getBaseContext(), NotificationActivity.class)));
-
-        buttonBack.setVisibility(View.GONE);
 
         Spinner spin = (Spinner) findViewById(R.id.spinnerType);
         spin.setOnItemSelectedListener(this);
@@ -217,26 +218,41 @@ public class HomeActivity extends JSONActivity implements AdapterView.OnItemSele
             case R.id.navigation_evenements:
                 fm.beginTransaction().hide(active).show(fragment1).commit();
                 active = fragment1;
+                changeSearchToLogo();
                 return true;
 
             case R.id.navigation_planning:
                 fm.beginTransaction().hide(active).show(fragment2).commit();
                 active = fragment2;
                 fragment2.onResume();
+                changeLogoToSearch();
                 return true;
 
-            case R.id.navigation_recherche_friends:
+            case R.id.navigation_search:
                 fm.beginTransaction().hide(active).show(fragment3).commit();
                 active = fragment3;
+                changeLogoToSearch();
                 return true;
             case R.id.navigation_amis:
                 fm.beginTransaction().hide(active).show(fragment4).commit();
                 active = fragment4;
+                changeLogoToSearch();
                 return true;
         }
 
         return false;
     };
+
+    private void changeLogoToSearch() {
+        imageViewLogo.setVisibility(View.GONE);
+        searchView.setVisibility(View.VISIBLE);
+    }
+
+    private void changeSearchToLogo() {
+        imageViewLogo.setVisibility(View.VISIBLE);
+        searchView.setVisibility(View.GONE);
+
+    }
 
     /**
      * Méthode permettant de mettre à jour les informations de l'utilisateur avant d'ouvrir la page de profil

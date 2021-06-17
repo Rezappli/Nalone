@@ -41,6 +41,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.sql.Timestamp;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -175,7 +176,13 @@ public class InfosEvenementsActivity extends JSONActivity {
 
         buttonBack.setOnClickListener(v -> onBackPressed());
 
-        cardViewPrice.setOnClickListener(v -> incription());
+        cardViewPrice.setOnClickListener(v -> {
+            try {
+                incription();
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+        });
         diffDate = findViewById(R.id.differenceDate);
 
         buttonPartager = findViewById(R.id.buttonPartager);
@@ -343,7 +350,7 @@ public class InfosEvenementsActivity extends JSONActivity {
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
-    private void incription() {
+    private void incription() throws ParseException {
         if (!inscrit) {
             if (EVENT_LOAD.getPrice() > 0) {
                 bottomSheetBehaviorParticipate.setState(BottomSheetBehavior.STATE_EXPANDED);
@@ -352,8 +359,12 @@ public class InfosEvenementsActivity extends JSONActivity {
                 onRegisterUser();
             }
         } else {
-            unregisterClicked();
-            onUnregisterUser();
+            if (new Timestamp(new Date().getTime()).getTime() - new Timestamp(TimeUtil.dateOfString(EVENT_LOAD.getStartDate()).getTime()).getTime() > 172800) {
+                unregisterClicked();
+                onUnregisterUser();
+            } else {
+                Toast.makeText(this, getString(R.string.unregistered_impossible), Toast.LENGTH_SHORT).show();
+            }
         }
     }
 

@@ -7,10 +7,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
-import android.widget.SearchView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -28,7 +26,6 @@ import com.nolonely.mobile.adapter.user.SearchUserAdapter;
 import com.nolonely.mobile.bdd.json.JSONController;
 import com.nolonely.mobile.bdd.json.JSONFragment;
 import com.nolonely.mobile.bdd.json.JSONObjectCrypt;
-import com.nolonely.mobile.dialog.CameraActivity;
 import com.nolonely.mobile.items.ItemPerson;
 import com.nolonely.mobile.listeners.JSONArrayListener;
 import com.nolonely.mobile.objects.User;
@@ -43,9 +40,8 @@ import java.util.List;
 
 import static com.nolonely.mobile.util.Constants.USER;
 
-public class RechercheAmisFragment extends JSONFragment {
+public class SearchUserFragment extends JSONFragment {
 
-    private SearchView search_bar;
     private NavController navController;
     private RecyclerView mRecyclerView;
     private SearchUserAdapter mAdapter;
@@ -55,7 +51,7 @@ public class RechercheAmisFragment extends JSONFragment {
     private List<ItemPerson> items = new ArrayList<>();
     private View rootView;
     private ProgressBar loading;
-    private ImageView qr_code;
+    // private ImageView qr_code;
     private List<User> friends;
 
     private SwipeRefreshLayout swipeContainer;
@@ -69,7 +65,6 @@ public class RechercheAmisFragment extends JSONFragment {
         rootView = inflater.inflate(R.layout.fragment_recherche_amis, container, false);
         linearSansRechercheAmis = rootView.findViewById(R.id.linearSansRechercheGroupe);
         swipeContainer = rootView.findViewById(R.id.AmisSwipeRefreshLayout);
-        search_bar = rootView.findViewById(R.id.search_bar);
         resultat = rootView.findViewById(R.id.resultatText);
         mRecyclerView = rootView.findViewById(R.id.recyclerView);
         configureRecyclerViewAmis();
@@ -95,21 +90,21 @@ public class RechercheAmisFragment extends JSONFragment {
 
         this.configureSwipeRefreshLayout();
 
-        qr_code = rootView.findViewById(R.id.qr_code_image);
+      /*  qr_code = rootView.findViewById(R.id.qr_code_image);
 
         qr_code.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 startActivity(new Intent(getContext(), CameraActivity.class));
             }
-        });
+        });*/
 
 
         resultat.setVisibility(View.GONE);
         //navController = Navigation.findNavController(getActivity(), R.id.nav_host_fragment);
 
 
-        search_bar.setOnClickListener(new View.OnClickListener() {
+/*        search_bar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 search_bar.onActionViewExpanded();
@@ -127,7 +122,7 @@ public class RechercheAmisFragment extends JSONFragment {
 
                 return false;
             }
-        });
+        });*/
 
 
     }

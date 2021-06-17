@@ -181,6 +181,7 @@
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:layout_marginBottom="20dp"
                         android:gravity="center"
                         android:orientation="horizontal">
 
@@ -203,23 +204,6 @@
                             android:textSize="12sp" />
 
                     </LinearLayout>
-
-                    <TextView
-                        android:id="@+id/textViewAfficher"
-                        android:layout_width="100dp"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:layout_marginTop="10dp"
-                        android:layout_marginBottom="10dp"
-                        android:layout_weight="1"
-                        android:background="@drawable/custom_button_signup"
-                        android:drawablePadding="5dp"
-                        android:gravity="center"
-                        android:paddingStart="5dp"
-                        android:paddingEnd="5dp"
-                        android:text="@string/afficher"
-                        android:textColor="@color/black"
-                        android:textSize="16sp" />
 
                 </LinearLayout>
 

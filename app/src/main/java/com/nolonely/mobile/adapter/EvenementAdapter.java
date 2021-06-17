@@ -123,8 +123,8 @@ public class EvenementAdapter extends RecyclerView.Adapter<EvenementAdapter.Even
                 });
             } else {
                 textViewOwnerName = itemView.findViewById(R.id.textViewNameOwner);
-                TextView textViewAfficher = itemView.findViewById(R.id.textViewAfficher);
-                textViewAfficher.setOnClickListener(v -> {
+                ConstraintLayout linearEvent = itemView.findViewById(R.id.linearEvent);
+                linearEvent.setOnClickListener(v -> {
                     if (mListener != null) {
                         int position = getAdapterPosition();
                         if (position != RecyclerView.NO_POSITION) {

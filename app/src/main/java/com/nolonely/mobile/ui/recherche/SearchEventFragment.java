@@ -1,4 +1,4 @@
-package com.nolonely.mobile.ui.evenements.display;
+package com.nolonely.mobile.ui.recherche;
 
 import android.annotation.SuppressLint;
 import android.content.BroadcastReceiver;
@@ -17,7 +17,6 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
-import android.widget.SearchView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -62,10 +61,9 @@ import static com.nolonely.mobile.dialog.SelectDateFragment.ACTION_RECEIVE_DATE;
 import static com.nolonely.mobile.dialog.SelectDateFragment.EXTRA_START_DATE;
 import static com.nolonely.mobile.util.Constants.USER;
 
-public class EventListFragment extends JSONFragment {
+public class SearchEventFragment extends JSONFragment {
 
     private LinearLayout linearNoResult;
-    private SearchView searchView;
 
     private TextView textViewType, textViewSort, textViewDate, textViewLocation, textViewPrice, textViewOwner, titleFilter;
     private BottomSheetBehavior bottomSheetBehaviorFilter;
@@ -126,8 +124,6 @@ public class EventListFragment extends JSONFragment {
         });
 
         linearNoResult = rootView.findViewById(R.id.linearNoResult);
-        searchView = rootView.findViewById(R.id.searchViewSheet);
-        searchView.setQueryHint("Recherche");
 
         listFilterImage = new ArrayList<>();
         listFilterName = new ArrayList<>();

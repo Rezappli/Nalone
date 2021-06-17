@@ -45,6 +45,10 @@ public class TimeUtil {
         return null;
     }
 
+    public static Date dateOfString(String date) throws ParseException {
+        return new SimpleDateFormat("dd/MM/yyyy").parse(date);
+    }
+
     public static String dateOfDateLetter(String mDate) throws ParseException {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd hh:mm");
 

@@ -7,13 +7,13 @@
 
     <fragment
         android:id="@+id/navigation_evenements"
-        android:name="com.nolonely.mobile.ui.evenements.display.EventFragment"
+        android:name="com.nolonely.mobile.ui.evenements.display.EventMapFragment"
         android:label="@string/title_evenements"
         tools:layout="@layout/fragment_event" />
 
     <fragment
-        android:id="@+id/navigation_recherche_friends"
-        android:name="com.nolonely.mobile.ui.recherche.RechercheAmisFragment"
+        android:id="@+id/navigation_search"
+        android:name="com.nolonely.mobile.ui.recherche.SearchFragment"
         android:label="@string/title_recherche"
         tools:layout="@layout/fragment_recherche_amis">
         <action
@@ -99,7 +99,7 @@
         tools:layout="@layout/fragment_recherche">
         <action
             android:id="@+id/action_navigation_recherche_to_navigation_recherche_amis"
-            app:destination="@id/navigation_recherche_friends" />
+            app:destination="@id/navigation_search" />
     </fragment>
 
 

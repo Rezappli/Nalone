@@ -3,7 +3,6 @@ package com.nolonely.mobile.adapter.user;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -76,7 +75,6 @@ public class MyFriendsAdapter extends RecyclerView.Adapter<MyFriendsAdapter.User
         public ImageView Delete;
         public ImageView Appel;
         public ImageView Share;
-        public ImageButton btnLocation;
 
         public UserViewHolder(@NonNull View itemView, final OnItemClickListener listener) {
             super(itemView);
@@ -92,10 +90,7 @@ public class MyFriendsAdapter extends RecyclerView.Adapter<MyFriendsAdapter.User
             Delete = (ImageView) itemView.findViewById(R.id.Delete);
             Appel = (ImageView) itemView.findViewById(R.id.Appel);
             Share = (ImageView) itemView.findViewById(R.id.Share);
-            btnLocation = (ImageButton) itemView.findViewById(R.id.btnLocation);
             //userViewHolder.button.setImageResource(R.drawable.ic_baseline_delete_24);
-
-            swipeLayout.addDrag(SwipeLayout.DragEdge.Left, swipeLayout.findViewById(R.id.bottom_wrapper1));
 
             swipeLayout.addDrag(SwipeLayout.DragEdge.Right, swipeLayout.findViewById(R.id.bottom_wraper));
             swipeLayout.addSwipeListener(new SwipeLayout.SwipeListener() {
@@ -135,20 +130,12 @@ public class MyFriendsAdapter extends RecyclerView.Adapter<MyFriendsAdapter.User
             swipeLayout.getSurfaceView().setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    //Toast.makeText(getContext(), " Click : " , Toast.LENGTH_SHORT).show();
-                }
-            });
-
-            btnLocation.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
                     if (mListener != null) {
                         int position = getAdapterPosition();
                         if (position != RecyclerView.NO_POSITION) {
                             listener.onDisplayClick(position);
                         }
                     }
-
                 }
             });
 

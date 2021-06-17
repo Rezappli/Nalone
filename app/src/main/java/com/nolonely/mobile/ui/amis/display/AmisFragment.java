@@ -13,7 +13,6 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
-import android.widget.SearchView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -47,7 +46,6 @@ import static com.nolonely.mobile.util.Constants.USER;
 
 public class AmisFragment extends Fragment {
 
-    private SearchView search_bar;
     private View rootView;
     private RecyclerView mRecyclerView;
     private List<User> friends;
@@ -68,7 +66,6 @@ public class AmisFragment extends Fragment {
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     private void createFragment() {
-        search_bar = rootView.findViewById(R.id.search_bar_amis);
         resultat = rootView.findViewById(R.id.resultatText_amis);
         resultat.setVisibility(View.GONE);
         linearSansMesAmis = rootView.findViewById(R.id.linearSansMesAmis);
@@ -76,25 +73,6 @@ public class AmisFragment extends Fragment {
         final SwipeRefreshLayout mSwipeRefreshLayout = rootView.findViewById(R.id.AmisSwipeRefreshLayout);
         loading = rootView.findViewById(R.id.loading);
         ImageView imagePerson = rootView.findViewById(R.id.imagePerson);
-
-        search_bar.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                search_bar.onActionViewExpanded();
-            }
-        });
-
-        search_bar.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-            @Override
-            public boolean onQueryTextSubmit(String query) {
-                return false;
-            }
-
-            @Override
-            public boolean onQueryTextChange(String newText) {
-                return false;
-            }
-        });
 
         mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
@@ -144,9 +122,8 @@ public class AmisFragment extends Fragment {
         });
     }
 
-    private void setupRecyclerViewWithSearch(List<User> list) {
-        Log.w("Recherche", "Taille liste : " + list.size());
-        MyFriendsAdapter mAdapter = new MyFriendsAdapter(list);
+    private void configureRecyclerViewAmis() {
+        MyFriendsAdapter mAdapter = new MyFriendsAdapter(this.friends);
         mAdapter.setOnItemClickListener(new MyFriendsAdapter.OnItemClickListener() {
             @Override
             public void onDisplayClick(int position) {
@@ -180,48 +157,10 @@ public class AmisFragment extends Fragment {
                 startActivity(intent);
             }
         });
-        mRecyclerView.setAdapter(mAdapter);
-        mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-    }
-
-    private void configureRecyclerViewAmis() {
-        MyFriendsAdapter mAdapter = new MyFriendsAdapter(this.friends);
         this.mRecyclerView.setAdapter(mAdapter);
         final LinearLayoutManager llm = new LinearLayoutManager(getActivity());
         this.mRecyclerView.setLayoutManager(llm);
-        mAdapter.setOnItemClickListener(new MyFriendsAdapter.OnItemClickListener() {
-            @Override
-            public void onDisplayClick(int position) {
-                showProfil(friends.get(position));
-            }
 
-            @RequiresApi(api = Build.VERSION_CODES.O)
-            @Override
-            public void onDeleteClick(int position) {
-                removeFriend(friends.get(position));
-            }
-
-            @RequiresApi(api = Build.VERSION_CODES.M)
-            @Override
-            public void onCallClick(int position) {
-                if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.CALL_PHONE)
-                        != PackageManager.PERMISSION_GRANTED) {
-                    getActivity().requestPermissions(new String[]{Manifest.permission.CALL_PHONE}, 0);
-                    return;
-                }
-                Intent callIntent = new Intent(Intent.ACTION_CALL);
-                callIntent.setData(Uri.parse("tel:" + friends.get(position).getNumber()));
-                startActivity(callIntent);
-            }
-
-            @Override
-            public void onMessageClick(int position) {
-                Intent intent = new Intent(getContext(), ChatActivityFriend.class);
-                intent.putExtra("user", friends.get(position));
-                intent.putExtra("newChat", false);
-                startActivity(intent);
-            }
-        });
     }
 
     public void showProfil(User u) {

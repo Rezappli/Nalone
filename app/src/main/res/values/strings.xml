@@ -132,7 +132,8 @@
     =    <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="title_home_map">Map</string>
-    <string name="title_home_list">Liste</string>
+    <string name="title_friend_serach">Utilisateurs</string>
+    <string name="title_event_search">Évènements</string>
     <string name="title_planning_registrations">Inscriptions</string>
     <string name="title_planning_creations">Mes évènements</string>
     <string name="location_private"> Privé </string>
@@ -217,6 +218,7 @@
     <string name="title_invitation_friend"> Demandes d\'ami </string>
     <string name="title_invitation_event"> Demandes de partiicpation</string>
     <string name="private_impossible"> Ajoutez des amis pour créer un évènement privé</string>
+    <string name="unregistered_impossible">Vous ne pouvez plus être remboursé car l\'évènement débute dans moins de 48h </string>
     <string name="adding_participant"> à été ajouté à la liste d\'invités </string>
     <string name="new_message"> Nouveau message </string>
     <string name="desc"> Description </string>

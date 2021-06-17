@@ -16,9 +16,9 @@
         android:id="@+id/nav_empty"
         android:title="@string/title_amis" />
     <item
-        android:id="@+id/navigation_recherche_friends"
+        android:id="@+id/navigation_search"
         android:title="@string/title_recherche"
-        android:icon="@drawable/baseline_person_search_24" />
+        android:icon="@drawable/ic_round_search_event" />
     <item
         android:id="@+id/navigation_amis"
         android:title="@string/title_amis"
