@@ -41,6 +41,7 @@ public class MessagesActivity extends AppCompatActivity {
     private SwipeRefreshLayout mSwipeRefreshLayout;
     private ImageView addMessage;
     private List<Chat> chatList;
+    private ImageView buttonBack;
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
@@ -51,6 +52,8 @@ public class MessagesActivity extends AppCompatActivity {
         mRecyclerView = findViewById(R.id.recyclerViewMessagesAmis);
         mSwipeRefreshLayout = findViewById(R.id.messageFriendSwipeRefreshLayout);
         addMessage = findViewById(R.id.imageViewAddChat);
+        buttonBack = findViewById(R.id.buttonBack);
+        buttonBack.setOnClickListener(v -> finish());
         addMessage.setOnClickListener(v -> startActivity(new Intent(getBaseContext(), NewMessageActivity.class)));
 
         mSwipeRefreshLayout.setOnRefreshListener(() -> createFragment());
