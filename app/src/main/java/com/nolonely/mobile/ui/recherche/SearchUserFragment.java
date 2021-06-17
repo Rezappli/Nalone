@@ -57,6 +57,7 @@ public class SearchUserFragment extends JSONFragment {
     private SwipeRefreshLayout swipeContainer;
 
     private LinearLayout linearSansRechercheAmis;
+    private String searchQuery = null;
 
 
     @RequiresApi(api = Build.VERSION_CODES.O)
@@ -129,16 +130,10 @@ public class SearchUserFragment extends JSONFragment {
 
     private void configureRecyclerViewAmis() {
         this.mAdapter = new SearchUserAdapter(this.friends);
-        this.mRecyclerView.setAdapter(this.mAdapter);
         final LinearLayoutManager llm = new LinearLayoutManager(getActivity());
+        mAdapter.setOnItemClickListener(position -> showProfil(friends.get(position)));
+        this.mRecyclerView.setAdapter(this.mAdapter);
         this.mRecyclerView.setLayoutManager(llm);
-        mAdapter.setOnItemClickListener(new SearchUserAdapter.OnItemClickListener() {
-            @Override
-            public void onDisplayClick(int position) {
-                showProfil(friends.get(position));
-            }
-        });
-
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
@@ -146,21 +141,25 @@ public class SearchUserFragment extends JSONFragment {
 
         JSONObjectCrypt params = new JSONObjectCrypt();
         params.putCryptParameter("uid", USER.getUid());
-        params.putCryptParameter("limit1", friends.size()); //fix a limit to 10 users
-        params.putCryptParameter("limit2", friends.size() + 20); //fix a limit to 10 users
+        params.putCryptParameter("limit1", 0); //fix a limit to 10 users
+        params.putCryptParameter("limit2", 20); //fix a limit to 10 users
         params.putCryptParameter("longitude", USER.getLongitude()); //fix a limit to 10 users
         params.putCryptParameter("latitude", USER.getLatitude()); //fix a limit to 10 users
+        if (searchQuery != null) {
+            params.putCryptParameter("search", searchQuery);
+        }
 
         JSONController.getJsonArrayFromUrl(Constants.URL_USER_WHITHOUT_ME, getContext(), params, new JSONArrayListener() {
             @Override
             public void onJSONReceived(JSONArray jsonArray) {
                 try {
+                    friends.clear();
+
                     if (jsonArray.length() > 0) {
                         for (int i = 0; i < jsonArray.length(); i++) {
                             friends.add((User) JSONController.convertJSONToObject(jsonArray.getJSONObject(i), User.class));
                         }
                         mAdapter.notifyDataSetChanged();
-
                     }
 
                     if (friends.isEmpty()) {
@@ -218,13 +217,17 @@ public class SearchUserFragment extends JSONFragment {
     @Override
     public void onResume() {
         super.onResume();
-        //
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     protected void doInHaveInternetConnection() {
         getUsers();
+    }
+
+    public void search(String query) {
+        searchQuery = query;
+        launchJSONCall(true);
     }
 
 

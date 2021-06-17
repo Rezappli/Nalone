@@ -14,6 +14,9 @@ import com.nolonely.mobile.R;
 public class PlanningFragment extends Fragment {
 
     private PlanningRegistrationsFragment planningRegistrationsFragment;
+    private PlanningCreationsFragment planningCreationsFragment;
+    private PlanningAdapter planningAdapter;
+    private ViewPager viewPager;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -21,15 +24,25 @@ public class PlanningFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_planning, container, false);
         // Inflate the layout for this fragmentù
         TabLayout tabLayout = view.findViewById(R.id.tab_layout_planning);
-        ViewPager viewPager = view.findViewById(R.id.view_pager_planning);
+        viewPager = view.findViewById(R.id.view_pager_planning);
 
         planningRegistrationsFragment = new PlanningRegistrationsFragment();
-        PlanningAdapter planningAdapter = new PlanningAdapter(getChildFragmentManager());
+        planningCreationsFragment = new PlanningCreationsFragment();
+        planningAdapter = new PlanningAdapter(getChildFragmentManager());
         planningAdapter.addFragment(planningRegistrationsFragment, getString(R.string.title_planning_registrations));
-        planningAdapter.addFragment(new PlanningCreationsFragment(), getString(R.string.title_planning_creations));
+        planningAdapter.addFragment(planningCreationsFragment, getString(R.string.title_planning_creations));
         viewPager.setAdapter(planningAdapter);
+
 
         tabLayout.setupWithViewPager(viewPager);
         return view;
+    }
+
+    public void search(String query) {
+        if (planningAdapter.getItem(viewPager.getCurrentItem()) instanceof PlanningRegistrationsFragment) {
+            planningRegistrationsFragment.search(query);
+        } else {
+            planningCreationsFragment.search(query);
+        }
     }
 }

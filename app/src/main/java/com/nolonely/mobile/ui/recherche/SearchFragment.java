@@ -9,6 +9,7 @@ import androidx.fragment.app.Fragment;
 import androidx.viewpager.widget.ViewPager;
 
 import com.google.android.material.tabs.TabLayout;
+import com.nolonely.mobile.HomeActivity;
 import com.nolonely.mobile.R;
 import com.nolonely.mobile.ui.evenements.display.PlanningAdapter;
 
@@ -17,6 +18,8 @@ public class SearchFragment extends Fragment {
     private TabLayout tabLayout;
     private ViewPager viewPager;
     private PlanningAdapter adapter;
+    private SearchEventFragment searchEventFragment;
+    private SearchUserFragment searchUserFragment;
 
 
     @Override
@@ -28,11 +31,26 @@ public class SearchFragment extends Fragment {
         tabLayout = view.findViewById(R.id.tab_layout_map);
         viewPager = view.findViewById(R.id.view_pager_map);
         adapter = new PlanningAdapter(getChildFragmentManager());
-        adapter.addFragment(new SearchEventFragment(), getString(R.string.title_event_search));
-        adapter.addFragment(new SearchUserFragment(), getString(R.string.title_friend_serach));
+        searchEventFragment = new SearchEventFragment();
+        searchUserFragment = new SearchUserFragment();
+        adapter.addFragment(searchEventFragment, getString(R.string.title_event_search));
+        adapter.addFragment(searchUserFragment, getString(R.string.title_friend_serach));
+        viewPager.setOnClickListener(v -> {
+                    ((HomeActivity) getActivity()).hideSearchView();
+                }
+        );
         viewPager.setAdapter(adapter);
         tabLayout.setupWithViewPager(viewPager);
+
         return view;
+    }
+
+    public void search(String query) {
+        if (adapter.getItem(viewPager.getCurrentItem()) instanceof SearchEventFragment) {
+            searchEventFragment.search(query);
+        } else {
+            searchUserFragment.search(query);
+        }
     }
 
 }

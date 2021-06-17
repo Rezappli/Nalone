@@ -18,6 +18,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.cardview.widget.CardView;
+import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
@@ -78,7 +79,11 @@ public class HomeActivity extends JSONActivity implements AdapterView.OnItemSele
 
     private CardView cardViewNoConnection, cardViewPrivateImpossible;
     private TextView textViewPrivate;
-    private SearchView searchView;
+    public SearchView searchView;
+
+    private CoordinatorLayout mainView;
+    public static String ACTION_RECEIVE_SEARCH = "ACTION_RECEIVE_SEARCH";
+    public static String EXTRA_SEARCH_QUERY = "EXTRA_SEARCH_QUERY";
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
@@ -90,6 +95,7 @@ public class HomeActivity extends JSONActivity implements AdapterView.OnItemSele
 
         cardViewNoConnection = findViewById(R.id.cardViewNoConnection);
 
+        mainView = findViewById(R.id.main_view);
         BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.nav_view);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
 
@@ -112,6 +118,39 @@ public class HomeActivity extends JSONActivity implements AdapterView.OnItemSele
         cardViewPrivateImpossible = findViewById(R.id.cardViewPrivateImpossible);
         imageViewLogo = findViewById(R.id.ivLogo);
         searchView = findViewById(R.id.svSearch);
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                if (active.equals(fragment2)) {
+                    ((PlanningFragment) fragment2).search(query.replaceAll("[^A-Za-z ]", ""));
+                } else if (active.equals(fragment3)) {
+                    ((SearchFragment) fragment3).search(query.replaceAll("[^A-Za-z ]", ""));
+                } else if (active.equals(fragment4)) {
+                    ((AmisFragment) fragment4).search(query.replaceAll("[^A-Za-z ]", ""));
+                }
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                return false;
+            }
+        });
+
+
+        searchView.setOnCloseListener(new SearchView.OnCloseListener() {
+            @Override
+            public boolean onClose() {
+                if (active.equals(fragment2)) {
+                    ((PlanningFragment) fragment2).search(null);
+                } else if (active.equals(fragment3)) {
+                    ((SearchFragment) fragment3).search(null);
+                } else if (active.equals(fragment4)) {
+                    ((AmisFragment) fragment4).search(null);
+                }
+                return false;
+            }
+        });
 
         item_profil = findViewById(R.id.item_profil);
         item_profil.setOnClickListener(v -> {
@@ -214,6 +253,7 @@ public class HomeActivity extends JSONActivity implements AdapterView.OnItemSele
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = item -> {
+        hideSearchView();
         switch (item.getItemId()) {
             case R.id.navigation_evenements:
                 fm.beginTransaction().hide(active).show(fragment1).commit();
@@ -361,9 +401,10 @@ public class HomeActivity extends JSONActivity implements AdapterView.OnItemSele
         }
     }
 
+
     @Override
     public void onBackPressed() {
-        //super.onBackPressed();
+        // super.onBackPressed();
     }
 
     @Override
@@ -415,5 +456,10 @@ public class HomeActivity extends JSONActivity implements AdapterView.OnItemSele
     @Override
     protected void hiddeNoConnection() {
         cardViewNoConnection.setVisibility(View.GONE);
+    }
+
+    public void hideSearchView() {
+        searchView.setQuery("", false);
+        searchView.setIconified(true);
     }
 }

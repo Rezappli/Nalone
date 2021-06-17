@@ -86,6 +86,7 @@ public class SearchEventFragment extends JSONFragment {
     private List<String> listFilterName;
     private List<Drawable> listFilterImage;
     private SwipeRefreshLayout swipeContainer;
+    private String searchQuery = null;
 
     private final BroadcastReceiver receiverDate = new BroadcastReceiver() {
         @RequiresApi(api = Build.VERSION_CODES.O)
@@ -180,6 +181,10 @@ public class SearchEventFragment extends JSONFragment {
         return rootView;
     }
 
+    public void search(String query) {
+        searchQuery = query;
+        launchJSONCall(true);
+    }
 
     @Override
     public void onResume() {
@@ -260,6 +265,7 @@ public class SearchEventFragment extends JSONFragment {
         params.putCryptParameter("uid", USER.getUid());
         params.putCryptParameter("owner", currentOwner.toString());
         params.putCryptParameter("sort", currentSort.toString());
+
         if (currentType != null && currentType != FiltreType.NULL) {
             params.putCryptParameter("type", currentType.toString());
         }
@@ -280,6 +286,10 @@ public class SearchEventFragment extends JSONFragment {
 
         if (currentPrice != null) {
             params.putCryptParameter("price", currentPrice);
+        }
+
+        if (searchQuery != null) {
+            params.putCryptParameter("search", searchQuery);
         }
 
         JSONController.getJsonArrayFromUrl(Constants.URL_EVENT_FILTRE, requireContext(), params, new JSONArrayListener() {
@@ -427,4 +437,6 @@ public class SearchEventFragment extends JSONFragment {
     protected void doInHaveInternetConnection() {
         getEventFiltred();
     }
+
+
 }

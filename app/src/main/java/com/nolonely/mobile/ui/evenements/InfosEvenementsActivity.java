@@ -88,11 +88,15 @@ public class InfosEvenementsActivity extends JSONActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_infos_evenements);
-        createFragment();
+        try {
+            createFragment();
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
-    private void createFragment() {
+    private void createFragment() throws ParseException {
         if (getIntent() != null) {
             EVENT_LOAD = (Evenement) getIntent().getSerializableExtra("event");
             isRegistered = getIntent().getBooleanExtra("isRegistered", false);
@@ -120,7 +124,7 @@ public class InfosEvenementsActivity extends JSONActivity {
                 bottomSheetBehaviorParticipate.setState(BottomSheetBehavior.STATE_COLLAPSED);
             }
             cardViewParticipationCheck.setVisibility(View.GONE);
-            viewGrey.setVisibility(View.VISIBLE);
+            viewGrey.setVisibility(View.GONE);
         });
         cardViewParticipationCheck = findViewById(R.id.cardViewParticipationCheck);
 
@@ -235,7 +239,7 @@ public class InfosEvenementsActivity extends JSONActivity {
         }
     }
 
-    private void initWidgets() {
+    private void initWidgets() throws ParseException {
         TextView mTitle = findViewById(R.id.title);
         TextView mDateStart = findViewById(R.id.dateStart);
         TextView mDateEnd = findViewById(R.id.dateEnd);
@@ -246,17 +250,22 @@ public class InfosEvenementsActivity extends JSONActivity {
 
         if (EVENT_LOAD.getPrice() > 0) {
             TextView payPrice = findViewById(R.id.payPrice);
+            TextView payName = findViewById(R.id.payName);
+            TextView payDate = findViewById(R.id.payDate);
+            TextView payTime = findViewById(R.id.payTime);
+            TextView payCity = findViewById(R.id.payCity);
+            EVENT_LOAD.replaceFields(payName, payCity, null, payDate, payTime, null);
             Button payCheck = findViewById(R.id.payCheck);
             TextView payCommission = findViewById(R.id.payCommission);
             TextView payTotal = findViewById(R.id.payTotal);
 
             payPrice.setText(EVENT_LOAD.getPrice() + "");
-            payCommission.setText(EVENT_LOAD.getPrice() / 20 + "");
+            payCommission.setText(EVENT_LOAD.getPrice() / 30 + "");
             payCheck.setOnClickListener(v -> {
                 cardViewParticipationCheck.setVisibility(View.VISIBLE);
                 bottomSheetBehaviorParticipate.setState(BottomSheetBehavior.STATE_COLLAPSED);
             });
-            payTotal.setText(EVENT_LOAD.getPrice() + (EVENT_LOAD.getPrice() / 20) + "");
+            payTotal.setText(EVENT_LOAD.getPrice() + (EVENT_LOAD.getPrice() / 30) + "");
         }
         String final_date_text = "";
         mTitle.setText(EVENT_LOAD.getName());

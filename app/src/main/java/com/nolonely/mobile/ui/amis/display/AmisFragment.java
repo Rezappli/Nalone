@@ -18,7 +18,6 @@ import android.widget.Toast;
 
 import androidx.annotation.RequiresApi;
 import androidx.core.app.ActivityCompat;
-import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
@@ -27,6 +26,7 @@ import com.android.volley.VolleyError;
 import com.nolonely.mobile.R;
 import com.nolonely.mobile.adapter.user.MyFriendsAdapter;
 import com.nolonely.mobile.bdd.json.JSONController;
+import com.nolonely.mobile.bdd.json.JSONFragment;
 import com.nolonely.mobile.bdd.json.JSONObjectCrypt;
 import com.nolonely.mobile.listeners.JSONArrayListener;
 import com.nolonely.mobile.listeners.JSONObjectListener;
@@ -44,7 +44,7 @@ import java.util.List;
 import static com.nolonely.mobile.util.Constants.ON_FRIENDS_ACTIVITY;
 import static com.nolonely.mobile.util.Constants.USER;
 
-public class AmisFragment extends Fragment {
+public class AmisFragment extends JSONFragment {
 
     private View rootView;
     private RecyclerView mRecyclerView;
@@ -64,7 +64,6 @@ public class AmisFragment extends Fragment {
         return rootView;
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.O)
     private void createFragment() {
         resultat = rootView.findViewById(R.id.resultatText_amis);
         resultat.setVisibility(View.GONE);
@@ -81,7 +80,7 @@ public class AmisFragment extends Fragment {
                 mSwipeRefreshLayout.setRefreshing(false);
             }
         });
-        getFriends();
+        launchJSONCall(true);
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
@@ -205,6 +204,16 @@ public class AmisFragment extends Fragment {
         super.onResume();
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    @Override
+    protected void doInHaveInternetConnection() {
+        getFriends();
+    }
+
+    public void search(String query) {
+
+    }
+    
     @Override
     public void onDestroy() {
         super.onDestroy();

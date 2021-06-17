@@ -17,7 +17,6 @@ import android.widget.Toast;
 
 import androidx.annotation.RequiresApi;
 import androidx.core.content.ContextCompat;
-import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -25,6 +24,7 @@ import com.android.volley.VolleyError;
 import com.nolonely.mobile.R;
 import com.nolonely.mobile.adapter.EvenementAdapter;
 import com.nolonely.mobile.bdd.json.JSONController;
+import com.nolonely.mobile.bdd.json.JSONFragment;
 import com.nolonely.mobile.bdd.json.JSONObjectCrypt;
 import com.nolonely.mobile.enumeration.StatusEvent;
 import com.nolonely.mobile.listeners.JSONArrayListener;
@@ -47,7 +47,7 @@ import static com.nolonely.mobile.enumeration.StatusEvent.ENCOURS;
 import static com.nolonely.mobile.enumeration.StatusEvent.FINI;
 import static com.nolonely.mobile.util.Constants.USER;
 
-public class PlanningRegistrationsFragment extends Fragment {
+public class PlanningRegistrationsFragment extends JSONFragment {
 
     private ImageView imageTypeEvent, nextEventImage;
     private TextView nextEventName, nextEventCity, nextEventDate, nextEventTime, nextEventNbMembers, textViewTitleDebut, differenceDate;
@@ -61,7 +61,6 @@ public class PlanningRegistrationsFragment extends Fragment {
     private TextView textViewNow, textViewSoon, textViewEnd;
 
 
-    @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -110,11 +109,7 @@ public class PlanningRegistrationsFragment extends Fragment {
                 return false;
             }
         });
-
-        callNextEvent();
-        callEventEnd();
-        callEventNow();
-        callEventSoon();
+        launchJSONCall(false);
 
         textViewNow = view.findViewById(R.id.textViewPlanningRegistrationsNow);
         textViewSoon = view.findViewById(R.id.textViewPlanningRegistrationsSoon);
@@ -152,6 +147,15 @@ public class PlanningRegistrationsFragment extends Fragment {
     public void onResume() {
         handler.post(runnable);
         super.onResume();
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    @Override
+    protected void doInHaveInternetConnection() {
+        callNextEvent();
+        callEventEnd();
+        callEventNow();
+        callEventSoon();
     }
 
     @Override
@@ -363,4 +367,6 @@ public class PlanningRegistrationsFragment extends Fragment {
         Constants.setEventImage(nextEvent, nextEventImage);
     }
 
+    public void search(String query) {
+    }
 }

@@ -16,6 +16,7 @@ import static com.nolonely.mobile.bdd.json.JSONActivity.ACTION_RECEIVE_NO_CONNEC
 
 public abstract class JSONFragment extends Fragment {
 
+
     protected Handler handler;
     private boolean broadcastSent;
     private boolean newEvent;
@@ -39,9 +40,14 @@ public abstract class JSONFragment extends Fragment {
     }
 
     protected void launchJSONCall(boolean checkConnection) {
-        broadcastSent = false;
-        handler = new Handler();
-        handler.postDelayed(runnable, 0);
+        if (checkConnection) {
+            broadcastSent = false;
+            handler = new Handler();
+            handler.postDelayed(runnable, 0);
+        } else {
+            doInHaveInternetConnection();
+        }
+
     }
 
     private final Runnable runnable = new Runnable() {
@@ -76,5 +82,4 @@ public abstract class JSONFragment extends Fragment {
 
 
     protected abstract void doInHaveInternetConnection();
-
 }

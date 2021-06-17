@@ -91,6 +91,7 @@ public class EventMapFragment extends JSONFragment implements OnMapReadyCallback
     public EventMapFragment() {
     }
 
+
     @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -339,7 +340,7 @@ public class EventMapFragment extends JSONFragment implements OnMapReadyCallback
         } else {
             m = new CustomMarker(new LatLng(e.getLatitude(), e.getLongitude()), BitmapDescriptorFactory.HUE_AZURE, e);
         }
-        
+
         clusterManager.addItem(m);
 
         clusterManager.setRenderer(new CustomRenderer(getContext(), mMap, clusterManager));
@@ -499,6 +500,4 @@ public class EventMapFragment extends JSONFragment implements OnMapReadyCallback
         });
 
     }
-
-
 }

@@ -17,7 +17,6 @@ import android.widget.Toast;
 
 import androidx.annotation.RequiresApi;
 import androidx.core.content.ContextCompat;
-import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -25,6 +24,7 @@ import com.android.volley.VolleyError;
 import com.nolonely.mobile.R;
 import com.nolonely.mobile.adapter.EvenementAdapter;
 import com.nolonely.mobile.bdd.json.JSONController;
+import com.nolonely.mobile.bdd.json.JSONFragment;
 import com.nolonely.mobile.bdd.json.JSONObjectCrypt;
 import com.nolonely.mobile.enumeration.StatusEvent;
 import com.nolonely.mobile.listeners.JSONArrayListener;
@@ -47,7 +47,7 @@ import static com.nolonely.mobile.enumeration.StatusEvent.ENCOURS;
 import static com.nolonely.mobile.enumeration.StatusEvent.FINI;
 import static com.nolonely.mobile.util.Constants.USER;
 
-public class PlanningCreationsFragment extends Fragment {
+public class PlanningCreationsFragment extends JSONFragment {
 
     private ImageView imageTypeEvent, nextEventImage;
     private TextView nextEventName, nextEventCity, nextEventDate, nextEventTime, textViewTitleDebut, differenceDate;
@@ -91,7 +91,6 @@ public class PlanningCreationsFragment extends Fragment {
         }
     };
 
-    @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -136,11 +135,7 @@ public class PlanningCreationsFragment extends Fragment {
                 return false;
             }
         });
-
-        callNextEvent();
-        callEventEnd();
-        callEventNow();
-        callEventSoon();
+        launchJSONCall(false);
 
         handler = new Handler();
 
@@ -157,6 +152,19 @@ public class PlanningCreationsFragment extends Fragment {
     public void onResume() {
         handler.post(runnable);
         super.onResume();
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    @Override
+    protected void doInHaveInternetConnection() {
+        callNextEvent();
+        callEventEnd();
+        callEventNow();
+        callEventSoon();
+    }
+    
+    public void search(String query) {
+
     }
 
     @Override
