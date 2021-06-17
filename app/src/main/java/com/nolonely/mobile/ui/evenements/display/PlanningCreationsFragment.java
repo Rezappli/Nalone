@@ -29,7 +29,6 @@ import com.nolonely.mobile.bdd.json.JSONObjectCrypt;
 import com.nolonely.mobile.enumeration.StatusEvent;
 import com.nolonely.mobile.listeners.JSONArrayListener;
 import com.nolonely.mobile.objects.Evenement;
-import com.nolonely.mobile.ui.evenements.InfosEvenementsActivity;
 import com.nolonely.mobile.util.Constants;
 import com.nolonely.mobile.util.TimeUtil;
 
@@ -113,7 +112,7 @@ public class PlanningCreationsFragment extends JSONFragment {
         linearPlanning.setVisibility(View.GONE);
 
         showMoreButton.setOnClickListener(v -> {
-            Intent intent = new Intent(getContext(), InfosEvenementsActivity.class);
+            Intent intent = new Intent(getContext(), InfosEventCreationActivity.class);
             intent.putExtra("event", nextEvent);
             startActivity(intent);
         });
@@ -162,7 +161,7 @@ public class PlanningCreationsFragment extends JSONFragment {
         callEventNow();
         callEventSoon();
     }
-    
+
     public void search(String query) {
 
     }

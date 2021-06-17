@@ -16,6 +16,7 @@ public class User implements Serializable {
     private double latitude;
     private double longitude;
     private boolean hasFriend;
+    private int is_validate;
 
     public User() {
     }
@@ -40,6 +41,22 @@ public class User implements Serializable {
         this.longitude = longitude;
     }
 
+    public User(String uid, String name, String pseudo, String city, String number, String mail, String description, int number_events_create, int number_events_attend, String image_url, double latitude, double longitude, int is_validate) {
+        this.uid = uid;
+        this.name = name;
+        this.pseudo = pseudo;
+        this.city = city;
+        this.number = number;
+        this.mail = mail;
+        this.description = description;
+        this.number_events_create = number_events_create;
+        this.number_events_attend = number_events_attend;
+        this.image_url = image_url;
+        this.latitude = latitude;
+        this.longitude = longitude;
+        this.is_validate = is_validate;
+    }
+
     public User(String uid, String name, String pseudo, String city,
                 String number, String mail,
                 String description) {
@@ -57,6 +74,7 @@ public class User implements Serializable {
         this.number_events_attend = 0;
         this.image_url = null;
     }
+
 
     public String getUid() {
         return uid;
@@ -160,6 +178,14 @@ public class User implements Serializable {
 
     public void setHasFriend(boolean hasFriend) {
         this.hasFriend = hasFriend;
+    }
+
+    public boolean isValidate() {
+        return is_validate == 1;
+    }
+
+    public void setValidate(int validate) {
+        is_validate = validate;
     }
 
     @Override

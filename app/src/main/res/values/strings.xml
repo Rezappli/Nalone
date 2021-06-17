@@ -100,6 +100,7 @@
     <string name="visibility_change_warning"> La gestion des membres va être réinitialisé. Voulez-vous continuer ? </string>
     <string name="valid"> Valider </string>
     <string name="valided"> validé </string>
+    <string name="valided_uppercase"> Validé </string>
     <string name="listInvité"> Liste d\'invités </string>
     <string name="listGroup"> Ajouter des membres </string>
 
@@ -174,6 +175,7 @@
     <string name="aucunCreationsEvent"> Aucun évènement crée </string>
     <string name="en_cours"> En cours </string>
     <string name="bientot"> A venir </string>
+    <string name="total"> Total </string>
     <string name="plus_tard"> Plus tard </string>
     <string name="finis"> Terminé </string>
     <string name="titleSearchEventInscrit">Participations</string>
@@ -301,7 +303,8 @@
     <string name="int_over_zero">Veuillez entrer un prix supérieur à 0</string>
     <string name="date_in_futur">Veuillez selectionner des dates dans le futur</string>
     <string name="event_create">Vous avez créer votre évènement !</string>
-    <string name="no_friends">Invitez des amis</string>
+    <string name="no_friends">Aucun ami</string>
+    <string name="no_participant">Aucun participant</string>
     <string name="no_more_friends">Vous avez invité tous vos amis</string>
     <string name="delete_friend">Vous avez supprimé un(e) ami(e)</string>
     <string name="limit_members">Limite de participants</string>
@@ -355,7 +358,7 @@
     <string name="amount">Quantité</string>
     <string name="CGU_participation"> En validant votre participation, vous accceptez les
         Conditions Générales d\'Utillisation de NoLonely</string>
-    <string name="comission">Comission</string>
+    <string name="comission">Services</string>
 
     <!--Strings for SearchActivity -->
     <string name="no_result"> Aucun résultat</string>

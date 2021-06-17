@@ -33,6 +33,7 @@
         <activity android:name=".ui.evenements.display.InfosEventCreationActivity" />
         <activity android:name=".ui.evenements.display.PlanningActivity" />
         <activity android:name=".ui.ListActivity" />
+        <activity android:name=".ui.evenements.display.ListParticipantActivity" />
         <activity android:name=".ui.ListAddMembersActivity" />
         <activity android:name=".ui.ListFriendInvitationActivity" />
         <activity android:name=".signUpActivities.WelcomeActivity" />

@@ -266,13 +266,14 @@ public class InfosEvenementsActivity extends JSONActivity {
             TextView payCommission = findViewById(R.id.payCommission);
             TextView payTotal = findViewById(R.id.payTotal);
 
+            double eventPrice = EVENT_LOAD.getPrice();
             payPrice.setText(EVENT_LOAD.getPrice() + "");
-            payCommission.setText(EVENT_LOAD.getPrice() / 30 + "");
+            payCommission.setText((eventPrice / 100) + "");
             payCheck.setOnClickListener(v -> {
                 cardViewParticipationCheck.setVisibility(View.VISIBLE);
                 bottomSheetBehaviorParticipate.setState(BottomSheetBehavior.STATE_COLLAPSED);
             });
-            payTotal.setText(EVENT_LOAD.getPrice() + (EVENT_LOAD.getPrice() / 30) + "");
+            payTotal.setText(eventPrice + (eventPrice / 100) + "");
         }
         String final_date_text = "";
         mTitle.setText(EVENT_LOAD.getName());

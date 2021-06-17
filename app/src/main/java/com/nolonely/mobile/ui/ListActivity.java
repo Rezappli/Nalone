@@ -30,8 +30,8 @@ public class ListActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_list);
-        this.users = new ArrayList<>();
         mRecyclerView = findViewById(R.id.recyclerViewInvitAmis);
+        this.users = new ArrayList<>();
         title = findViewById(R.id.title_user_list);
     }
 
@@ -42,5 +42,5 @@ public class ListActivity extends AppCompatActivity {
         }
         userListAdapter.notifyDataSetChanged();
     }
-    
+
 }

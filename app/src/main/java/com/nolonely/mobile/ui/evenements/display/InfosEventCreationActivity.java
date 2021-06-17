@@ -6,6 +6,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
@@ -23,16 +24,24 @@ import com.nolonely.mobile.R;
 import com.nolonely.mobile.bdd.json.JSONController;
 import com.nolonely.mobile.bdd.json.JSONObjectCrypt;
 import com.nolonely.mobile.enumeration.StatusEvent;
+import com.nolonely.mobile.listeners.JSONArrayListener;
 import com.nolonely.mobile.listeners.JSONObjectListener;
 import com.nolonely.mobile.objects.Evenement;
+import com.nolonely.mobile.objects.User;
 import com.nolonely.mobile.util.Constants;
 import com.nolonely.mobile.util.TimeUtil;
 
+import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 
+import static com.nolonely.mobile.ui.evenements.display.ListParticipantActivity.EXTRA_PARTICIPATION_REGISTERED;
+import static com.nolonely.mobile.ui.evenements.display.ListParticipantActivity.EXTRA_PARTICIPATION_VALIDATED;
+import static com.nolonely.mobile.ui.evenements.display.ListParticipantActivity.EXTRA_PARTICIPATION_WAIT;
 import static com.nolonely.mobile.util.Constants.USER;
 
 public class InfosEventCreationActivity extends AppCompatActivity {
@@ -51,6 +60,7 @@ public class InfosEventCreationActivity extends AppCompatActivity {
     private ImageView buttonBack;
     private CardView cardViewProgress;
     private View viewGrey;
+    private ImageView buttonMembers;
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
@@ -72,7 +82,8 @@ public class InfosEventCreationActivity extends AppCompatActivity {
         buttonBack = findViewById(R.id.buttonBack);
         imageEvenement = findViewById(R.id.imageEvenement);
         buttonCanceled = findViewById(R.id.buttonCanceled);
-
+        buttonMembers = findViewById(R.id.buttonMembers);
+        buttonMembers.setOnClickListener(v -> getMembers());
         buttonCanceled.setOnClickListener(v -> deleteEvent());
         buttonBack.setOnClickListener(v -> onBackPressed());
         cardViewProgress = findViewById(R.id.cardViewProgress);
@@ -88,7 +99,6 @@ public class InfosEventCreationActivity extends AppCompatActivity {
             startActivity(sendIntent);
         });
 
-
         if (EVENT_LOAD.getStatusEvent() == StatusEvent.FINI) {
             linearButton.setVisibility(View.GONE);
             cardViewTermine.setVisibility(View.VISIBLE);
@@ -97,6 +107,100 @@ public class InfosEventCreationActivity extends AppCompatActivity {
         if (EVENT_LOAD != null) {
             initWidgets();
         }
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    private void getMembers() {
+        final boolean[] isWait = {false};
+        final boolean[] isRegistered = new boolean[1];
+        final boolean[] isValidated = new boolean[1];
+        ArrayList<User> usersWait = new ArrayList<>();
+        ArrayList<User> usersRegistered = new ArrayList<>();
+        ArrayList<User> usersValidated = new ArrayList<>();
+
+        JSONObjectCrypt params = new JSONObjectCrypt();
+        params.putCryptParameter("uid", EVENT_LOAD.getUid());
+        JSONObjectCrypt params1 = new JSONObjectCrypt();
+        params1.putCryptParameter("uid", EVENT_LOAD.getUid());
+        JSONObjectCrypt params2 = new JSONObjectCrypt();
+        params2.putCryptParameter("uid", EVENT_LOAD.getUid());
+
+
+        params.putCryptParameter("type", "wait");
+
+        JSONController.getJsonArrayFromUrl(Constants.URL_EVENT_PARTICIPATIONS, this, params, new JSONArrayListener() {
+            @Override
+            public void onJSONReceived(JSONArray jsonArray) throws JSONException {
+                if (jsonArray.length() > 0) {
+                    for (int i = 0; i < jsonArray.length(); i++) {
+                        usersWait.add((User) JSONController.convertJSONToObject(jsonArray.getJSONObject(i), User.class));
+                    }
+                }
+                isWait[0] = true;
+            }
+
+            @Override
+            public void onJSONReceivedError(VolleyError volleyError) {
+                Log.w("Response", "Erreur:" + volleyError.toString());
+                Toast.makeText(getBaseContext(), getResources().getString(R.string.error), Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        params1.putCryptParameter("type", "registered");
+        JSONController.getJsonArrayFromUrl(Constants.URL_EVENT_PARTICIPATIONS, this, params1, new JSONArrayListener() {
+            @Override
+            public void onJSONReceived(JSONArray jsonArray) throws JSONException {
+                if (jsonArray.length() > 0) {
+                    for (int i = 0; i < jsonArray.length(); i++) {
+                        usersRegistered.add((User) JSONController.convertJSONToObject(jsonArray.getJSONObject(i), User.class));
+                    }
+                }
+                isRegistered[0] = true;
+            }
+
+            @Override
+            public void onJSONReceivedError(VolleyError volleyError) {
+                Log.w("Response", "Erreur:" + volleyError.toString());
+                Toast.makeText(getBaseContext(), getResources().getString(R.string.error), Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        params2.putCryptParameter("type", "validated");
+        JSONController.getJsonArrayFromUrl(Constants.URL_EVENT_PARTICIPATIONS, this, params2, new JSONArrayListener() {
+            @Override
+            public void onJSONReceived(JSONArray jsonArray) throws JSONException {
+                if (jsonArray.length() > 0) {
+                    for (int i = 0; i < jsonArray.length(); i++) {
+                        usersValidated.add((User) JSONController.convertJSONToObject(jsonArray.getJSONObject(i), User.class));
+                    }
+                }
+                isValidated[0] = true;
+            }
+
+            @Override
+            public void onJSONReceivedError(VolleyError volleyError) {
+                Log.w("Response", "Erreur:" + volleyError.toString());
+                Toast.makeText(getBaseContext(), getResources().getString(R.string.error), Toast.LENGTH_SHORT).show();
+            }
+        });
+
+
+        Handler handler = new Handler();
+        handler.post(new Runnable() {
+            @Override
+            public void run() {
+                if (isRegistered[0] && isValidated[0] && isWait[0]) {
+                    Intent intent = new Intent(getBaseContext(), ListParticipantActivity.class);
+                    intent.putExtra(EXTRA_PARTICIPATION_VALIDATED, usersValidated);
+                    intent.putExtra(EXTRA_PARTICIPATION_REGISTERED, usersRegistered);
+                    intent.putExtra(EXTRA_PARTICIPATION_WAIT, usersWait);
+                    startActivity(intent);
+                } else {
+                    handler.post(this);
+                }
+            }
+        });
+
     }
 
     private void initWidgets() {
