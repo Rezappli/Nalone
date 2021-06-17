@@ -3,8 +3,6 @@ package com.nolonely.mobile.ui.message;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Parcelable;
-import android.util.Log;
 import android.widget.ImageView;
 import android.widget.SearchView;
 import android.widget.Toast;
@@ -70,7 +68,6 @@ public class MessagesActivity extends AppCompatActivity {
         JSONObjectCrypt params = new JSONObjectCrypt();
         params.putCryptParameter("uid", USER.getUid());
         params.putCryptParameter("limit", 15);
-        Log.w("Chat", "Params : " + params.toString());
 
         JSONController.getJsonArrayFromUrl(Constants.URL_GET_DISCUSSIONS, MessagesActivity.this, params, new JSONArrayListener() {
             @Override
@@ -81,10 +78,9 @@ public class MessagesActivity extends AppCompatActivity {
 
                 MessageUserAdapter m = new MessageUserAdapter(chatList);
                 m.setOnItemClickListener(position -> {
-                    Log.w("Chat", "Click on friend");
                     Intent i = new Intent(getBaseContext(), ChatActivityFriend.class);
                     i.putExtra("newChat", false);
-                    i.putExtra("chatChannel", (Parcelable) chatList.get(position));
+                    i.putExtra("chatChannel", chatList.get(position));
                     startActivity(i);
                 });
 

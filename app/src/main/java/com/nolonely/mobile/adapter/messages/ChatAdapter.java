@@ -78,7 +78,7 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ChatViewHolder
             } else {
                 bgMessage.setCardBackgroundColor(Color.WHITE);
             }
-            //messageText.setText(m.get);
+            messageText.setText(m.getMessage());
         }
     }
 

@@ -1,16 +1,20 @@
 package com.nolonely.mobile.objects;
 
 
-public class Chat {
+import java.io.Serializable;
+
+public class Chat implements Serializable {
     private String uid;
     private String name;
     private String message;
     private String date;
     private String image;
 
-    public Chat(String uidChannel, String date, String username, String lastMessage) {
+    public Chat(String uidChannel, String date, String name, String message) {
         this.uid = uidChannel;
         this.date = date;
+        this.name = name;
+        this.message = message;
     }
 
     public String getUidChannel() {

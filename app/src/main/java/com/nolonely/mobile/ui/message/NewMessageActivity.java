@@ -48,8 +48,9 @@ public class NewMessageActivity extends AppCompatActivity {
         searchUserAdapter = new SearchUserAdapter(friendList);
         searchUserAdapter.setOnItemClickListener(position -> {
             Intent intent = new Intent(getBaseContext(), ChatActivityFriend.class);
-            intent.putExtra("user", friendList.get(position));
+            intent.putExtra("userLoad", friendList.get(position));
             intent.putExtra("newChat", true);
+            intent.putExtra("uidUserLoad", friendList.get(position).getUid());
             startActivity(intent);
         });
         recyclerViewMessagesAmis.setAdapter(searchUserAdapter);

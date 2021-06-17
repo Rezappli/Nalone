@@ -25,6 +25,7 @@ import com.nolonely.mobile.listeners.JSONArrayListener;
 import com.nolonely.mobile.listeners.JSONObjectListener;
 import com.nolonely.mobile.objects.Chat;
 import com.nolonely.mobile.objects.Message;
+import com.nolonely.mobile.objects.User;
 import com.nolonely.mobile.util.Constants;
 
 import org.json.JSONArray;
@@ -58,6 +59,10 @@ public class ChatActivityFriend extends AppCompatActivity {
     private SwipeRefreshLayout mSwipeRefreshLayout;
     private boolean b = false;
 
+    private User userLoad;
+
+    private int limit = 15;
+
 
     private boolean newChat = false;
 
@@ -69,7 +74,12 @@ public class ChatActivityFriend extends AppCompatActivity {
 
         if (getIntent() != null) {
             newChat = (Boolean) getIntent().getSerializableExtra("newChat");
-            chatChannel = (Chat) getIntent().getSerializableExtra("chatChannel");
+            if (newChat) {
+                userLoad = (User) getIntent().getSerializableExtra("userLoad");
+                Log.w("Chat", " User load : " + userLoad.toString());
+            } else {
+                chatChannel = (Chat) getIntent().getSerializableExtra("chatChannel");
+            }
         }
 
         ON_MESSAGE_ACTIVITY = true;
@@ -79,14 +89,30 @@ public class ChatActivityFriend extends AppCompatActivity {
         newMessagePopUp = findViewById(R.id.newMessagePopUp);
         buttonSend = findViewById(R.id.buttonSend);
         messageEditText = findViewById(R.id.messageEditText);
-        nameUser = findViewById(R.id.nameUser);
-        nameUser.setText(chatChannel.getName());
         mRecyclerView = findViewById(R.id.messagesRecyclerView);
+        nameUser = findViewById(R.id.nameUser);
 
         chatImageBack.setOnClickListener(v -> finish());
         buttonSend.setOnClickListener(v -> listenChannel(messageEditText.getText().toString()));
 
-        Constants.setUserImageWithUrl(chatChannel.getImage(), chatUserImageView);
+        mSwipeRefreshLayout.setOnRefreshListener(() -> {
+            limit += 10;
+            createActivity();
+            mSwipeRefreshLayout.setRefreshing(false);
+        });
+
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    private void createActivity() {
+        if (chatChannel != null) {
+            nameUser.setText(chatChannel.getName());
+            Constants.setUserImageWithUrl(chatChannel.getImage(), chatUserImageView);
+            updateMessages(limit);
+        } else {
+            nameUser.setText(userLoad.getName());
+            Constants.setUserImageWithUrl(userLoad.getImage_url(), chatUserImageView);
+        }
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
@@ -105,7 +131,7 @@ public class ChatActivityFriend extends AppCompatActivity {
         String uidChannel = UUID.randomUUID().toString();
         JSONObjectCrypt params = new JSONObjectCrypt();
         params.putCryptParameter("uid", USER.getUid());
-        params.putCryptParameter("uid_2", chatChannel.getUidChannel());
+        params.putCryptParameter("uid_2", userLoad.getUid());
         params.putCryptParameter("uid_channel", uidChannel);
 
         JSONController.getJsonObjectFromUrl(Constants.URl_CREATE_MESSAGE_CHANNEL, this, params, new JSONObjectListener() {
@@ -115,7 +141,7 @@ public class ChatActivityFriend extends AppCompatActivity {
                     chatChannel = new Chat(uidChannel, Constants.formatDayHoursMinutesSeconds.format(new Date(System.currentTimeMillis())), USER.getName(), message);
                     Log.w("Chat", "Create channel");
                     newChat = false;
-                    messages = new ArrayList<Message>();
+                    messages = new ArrayList<>();
                     sendMessage(message);
                 } else {
                     Toast.makeText(ChatActivityFriend.this, getResources().getString(R.string.error_channel_already_exist), Toast.LENGTH_SHORT).show();
@@ -144,7 +170,7 @@ public class ChatActivityFriend extends AppCompatActivity {
                 public void onJSONReceived(JSONObject jsonObject) {
                     if (jsonObject.length() == 3) {
                         Log.w("Chat", "Message have been sent");
-                        updateMessages(chatChannel, 15);
+                        updateMessages(limit);
                     }
                 }
 
@@ -158,7 +184,8 @@ public class ChatActivityFriend extends AppCompatActivity {
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
-    private void updateMessages(Chat chatChannel, int limite) {
+    private void updateMessages(int limite) {
+        messages = new ArrayList<>();
         JSONObjectCrypt params = new JSONObjectCrypt();
         params.putCryptParameter("uid", USER.getUid());
         params.putCryptParameter("uid_channel", chatChannel.getUidChannel());
@@ -170,12 +197,21 @@ public class ChatActivityFriend extends AppCompatActivity {
             @Override
             public void onJSONReceived(JSONArray jsonArray) throws JSONException {
                 for (int i = 0; i < jsonArray.length(); i++) {
+                    Log.w("Chat", "Received : " + jsonArray.toString());
                     messages.add((Message) JSONController.convertJSONToObject(jsonArray.getJSONObject(i), Message.class));
                 }
 
-                if (messages.size() > 0) {
-                    setupRecyclerViewWithList(messages);
+                if (mAdapter != null) {
+                    mAdapter.notifyDataSetChanged();
+                } else {
+                    if (messages.size() > 0) {
+                        setupRecyclerViewWithList(messages);
+                    }
                 }
+
+                /*if (messages.size() > 0) {
+                    setupRecyclerViewWithList(messages);
+                }*/
 
 
             }
@@ -191,12 +227,15 @@ public class ChatActivityFriend extends AppCompatActivity {
     private void setupRecyclerViewWithList(List<Message> list) {
         mAdapter = new ChatAdapter(list);
         mRecyclerView.setAdapter(mAdapter);
-        mRecyclerView.setLayoutManager(new LinearLayoutManager(ChatActivityFriend.this));
+        LinearLayoutManager lm = new LinearLayoutManager(ChatActivityFriend.this);
+        lm.setReverseLayout(true);
+        mRecyclerView.setLayoutManager(lm);
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     public void onResume() {
         super.onResume();
+        createActivity();
     }
 }
