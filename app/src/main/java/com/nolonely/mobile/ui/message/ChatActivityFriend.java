@@ -4,7 +4,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -47,24 +46,17 @@ public class ChatActivityFriend extends AppCompatActivity {
     private ImageView chatUserImageView;
     private TextView nameUser;
     private RecyclerView mRecyclerView;
-    private ImageView chatImageBack;
     private ChatAdapter mAdapter;
     private List<Message> messages;
-
+    private ImageView chatImageBack;
     private Chat chatChannel = null;
-
-    private LinearLayout.LayoutParams myLayoutMessages;
-    private LinearLayout.LayoutParams otherLayoutMessages;
     private CardView newMessagePopUp;
     private SwipeRefreshLayout mSwipeRefreshLayout;
     private boolean b = false;
-
     private User userLoad;
-
-    private int limit = 15;
-
-
+    public int limit = 15;
     private boolean newChat = false;
+    private MessageThread messageThread = null;
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
@@ -101,6 +93,11 @@ public class ChatActivityFriend extends AppCompatActivity {
             mSwipeRefreshLayout.setRefreshing(false);
         });
 
+        if (chatChannel != null) {
+            messageThread = new MessageThread(this);
+            messageThread.start();
+        }
+
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
@@ -112,6 +109,12 @@ public class ChatActivityFriend extends AppCompatActivity {
         } else {
             nameUser.setText(userLoad.getName());
             Constants.setUserImageWithUrl(userLoad.getImage_url(), chatUserImageView);
+        }
+
+        if (messageThread != null) {
+            if (messageThread.getState() == Thread.State.NEW) {
+                messageThread.start();
+            }
         }
     }
 
@@ -139,10 +142,11 @@ public class ChatActivityFriend extends AppCompatActivity {
             public void onJSONReceived(JSONObject jsonObject) {
                 if (jsonObject.length() == 3) {
                     chatChannel = new Chat(uidChannel, Constants.formatDayHoursMinutesSeconds.format(new Date(System.currentTimeMillis())), USER.getName(), message);
-                    Log.w("Chat", "Create channel");
                     newChat = false;
                     messages = new ArrayList<>();
                     sendMessage(message);
+                    messageThread = new MessageThread(ChatActivityFriend.this);
+                    messageThread.start();
                 } else {
                     Toast.makeText(ChatActivityFriend.this, getResources().getString(R.string.error_channel_already_exist), Toast.LENGTH_SHORT).show();
                     Log.w("Chat", "Response : " + jsonObject.toString());
@@ -184,7 +188,7 @@ public class ChatActivityFriend extends AppCompatActivity {
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
-    private void updateMessages(int limite) {
+    public void updateMessages(int limite) {
         messages = new ArrayList<>();
         JSONObjectCrypt params = new JSONObjectCrypt();
         params.putCryptParameter("uid", USER.getUid());
@@ -201,19 +205,9 @@ public class ChatActivityFriend extends AppCompatActivity {
                     messages.add((Message) JSONController.convertJSONToObject(jsonArray.getJSONObject(i), Message.class));
                 }
 
-                if (mAdapter != null) {
-                    mAdapter.notifyDataSetChanged();
-                } else {
-                    if (messages.size() > 0) {
-                        setupRecyclerViewWithList(messages);
-                    }
-                }
-
-                /*if (messages.size() > 0) {
+                if (messages.size() > 0) {
                     setupRecyclerViewWithList(messages);
-                }*/
-
-
+                }
             }
 
             @Override
@@ -237,5 +231,20 @@ public class ChatActivityFriend extends AppCompatActivity {
     public void onResume() {
         super.onResume();
         createActivity();
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        messageThread.interrupt();
+        messageThread = null;
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        if (messageThread != null) {
+            messageThread.interrupt();
+        }
     }
 }

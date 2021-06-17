@@ -28,7 +28,7 @@
         android:screenOrientation="portrait"
         android:supportsRtl="true"
         android:theme="@style/AppTheme.NoActionBar">
-        <activity android:name=".ReportActivity"></activity>
+        <activity android:name=".ReportActivity" />
         <activity android:name=".ui.amis.display.InfoUserActivity" />
         <activity android:name=".ui.evenements.display.InfosEventCreationActivity" />
         <activity android:name=".ui.evenements.display.PlanningActivity" />

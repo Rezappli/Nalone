@@ -5,6 +5,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
@@ -36,6 +37,7 @@ public class NewMessageActivity extends AppCompatActivity {
     private List<User> friendList;
     private SearchUserAdapter searchUserAdapter;
     private ProgressBar loading;
+    private ImageView buttonBack;
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
@@ -45,6 +47,8 @@ public class NewMessageActivity extends AppCompatActivity {
 
         friendList = new ArrayList<>();
         recyclerViewMessagesAmis = findViewById(R.id.recyclerViewMessagesAmis);
+        buttonBack = findViewById(R.id.buttonBack);
+        buttonBack.setOnClickListener(v -> finish());
         searchUserAdapter = new SearchUserAdapter(friendList);
         searchUserAdapter.setOnItemClickListener(position -> {
             Intent intent = new Intent(getBaseContext(), ChatActivityFriend.class);
