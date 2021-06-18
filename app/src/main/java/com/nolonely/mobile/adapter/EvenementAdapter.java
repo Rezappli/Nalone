@@ -15,6 +15,7 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.nolonely.mobile.R;
+import com.nolonely.mobile.enumeration.StatusEvent;
 import com.nolonely.mobile.objects.Evenement;
 import com.nolonely.mobile.util.Constants;
 
@@ -84,7 +85,8 @@ public class EvenementAdapter extends RecyclerView.Adapter<EvenementAdapter.Even
         public CardView cardViewPrice;
         public TextView textViewPrice, textViewNbMembers, textViewOwnerName;
         public ImageView imageViewCategory;
-        private EvenementAdapter.OnItemClickListener mListener;
+        public ImageView ivQRCode;
+        private final EvenementAdapter.OnItemClickListener mListener;
 
         public EventViewHolder(@NonNull View itemView, final EvenementAdapter.OnItemClickListener listener) {
             super(itemView);
@@ -133,6 +135,10 @@ public class EvenementAdapter extends RecyclerView.Adapter<EvenementAdapter.Even
                     }
                 });
             }
+
+            if (item == R.layout.item_evenement_registration || item == R.layout.item_evenement_creation) {
+                ivQRCode = itemView.findViewById(R.id.imageQRCode);
+            }
         }
 
         @SuppressLint("SetTextI18n")
@@ -154,6 +160,15 @@ public class EvenementAdapter extends RecyclerView.Adapter<EvenementAdapter.Even
 
                 }
             }
+
+            if (item == R.layout.item_evenement_registration || item == R.layout.item_evenement_creation) {
+                if (e.getStatusEvent() == StatusEvent.FINI) {
+                    ivQRCode.setVisibility(View.GONE);
+                } else {
+                    ivQRCode.setVisibility(View.VISIBLE);
+                }
+            }
+
             textViewNbMembers.setText(e.getNbMembers() + "");
             imageViewCategory.setImageResource(e.getImageCategory());
             Constants.setEventImage(e, mImageView);

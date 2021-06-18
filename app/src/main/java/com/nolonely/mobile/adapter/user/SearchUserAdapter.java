@@ -48,7 +48,6 @@ public class SearchUserAdapter extends RecyclerView.Adapter<SearchUserAdapter.Us
     @Override
     public void onBindViewHolder(@NonNull UserViewHolder holder, int position) {
         holder.update(this.userList.get(position));
-        Constants.setUserImage(this.userList.get(position), holder.imagePerson);
     }
 
     @Override
@@ -92,6 +91,7 @@ public class SearchUserAdapter extends RecyclerView.Adapter<SearchUserAdapter.Us
             villePers.setText(u.getCity());
             nomInvit.setText(u.getName());
             button.setImageResource(0);
+            Constants.setUserImage(u, imagePerson);
         }
     }
 

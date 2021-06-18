@@ -46,7 +46,7 @@
                     android:layout_gravity="center"
                     android:background="@drawable/custom_border_grey_r150"
                     android:contentDescription="@string/TODO"
-                    app:srcCompat="@drawable/ic_round_person_edit_focused" />
+                    app:srcCompat="@drawable/ic_baseline_account_circle_24_fonce" />
             </androidx.cardview.widget.CardView>
 
             <androidx.cardview.widget.CardView
@@ -59,7 +59,7 @@
                 app:layout_constraintTop_toTopOf="@+id/imageEvent">
 
                 <ImageView
-                    android:id="@+id/imageView11"
+                    android:id="@+id/imageQRCode"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
@@ -138,14 +138,15 @@
                             android:drawablePadding="5dp"
                             android:text="date"
                             android:textColor="@color/black"
-                            android:textSize="12sp" />
+                            android:textSize="14sp" />
 
                         <TextView
                             android:id="@+id/textView66"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text=", "
-                            android:textColor="@color/black" />
+                            android:textColor="@color/black"
+                            android:textSize="14sp" />
 
                         <TextView
                             android:id="@+id/timeEventList1"
@@ -153,7 +154,7 @@
                             android:layout_height="wrap_content"
                             android:text="time"
                             android:textColor="@color/black"
-                            android:textSize="12sp" />
+                            android:textSize="14sp" />
                     </LinearLayout>
 
                     <TextView
@@ -164,7 +165,7 @@
                         android:drawablePadding="5dp"
                         android:text="ville"
                         android:textColor="@color/black"
-                        android:textSize="12sp" />
+                        android:textSize="14sp" />
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -179,7 +180,7 @@
                             android:paddingEnd="5dp"
                             android:text="@string/participants"
                             android:textColor="@color/black"
-                            android:textSize="12sp"
+                            android:textSize="14sp"
                             android:textStyle="bold" />
 
                         <TextView
@@ -188,7 +189,7 @@
                             android:layout_height="wrap_content"
                             android:text="@string/participants"
                             android:textColor="@color/black"
-                            android:textSize="12sp" />
+                            android:textSize="14sp" />
 
                     </LinearLayout>
 

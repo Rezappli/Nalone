@@ -122,19 +122,26 @@ public class Constants {
     public static final float margin_percentage = 3.5142f;
 
     public static void setUserImage(final User u, final ImageView imageView) {
-        imageView.post(() -> {
-            if (u.getImage_url() != null && !u.getImage_url().equals("")) {
+        if (u.getImage_url() != null && !(u.getImage_url().equals(""))) {
+            imageView.post(() -> {
                 Glide.with(application).load(u.getImage_url()).fitCenter().centerCrop().into(imageView);
-            }
-        });
+            });
+        } else {
+            imageView.setImageResource(R.drawable.ic_baseline_account_circle_24_fonce);
+        }
     }
 
     public static void setUserImageWithUrl(final String url, final ImageView imageView) {
-        imageView.post(() -> {
-            if (url != null && !url.equals("")) {
-                Glide.with(application).load(url).fitCenter().centerCrop().into(imageView);
-            }
-        });
+        if (url != null && !url.equals("")) {
+            imageView.post(() -> {
+                if (url != null && !url.equals("")) {
+                    Glide.with(application).load(url).fitCenter().centerCrop().into(imageView);
+                }
+            });
+        } else {
+            imageView.setImageResource(R.drawable.ic_baseline_account_circle_24_fonce);
+        }
+
     }
 
     public static void setGroupImage(final Group g, final ImageView imageView) {
@@ -147,7 +154,7 @@ public class Constants {
 
     public static void setEventImage(final Evenement e, final ImageView imageView) {
 
-        if (e.getImage_url_event() != null && !e.getImage_url_event().equals("")) {
+        if (e.getImage_url_event() != null && !(e.getImage_url_event().equals(""))) {
             imageView.post(() -> {
                 Glide.with(application).load(e.getImage_url_event()).fitCenter().centerCrop().into(imageView);
             });

@@ -130,7 +130,7 @@
                                         android:layout_height="match_parent"
                                         android:layout_gravity="center"
                                         android:contentDescription="@string/TODO"
-                                        app:srcCompat="@drawable/ic_round_person_edit_focused" />
+                                        app:srcCompat="@drawable/ic_baseline_account_circle_24_fonce" />
                                 </androidx.cardview.widget.CardView>
 
                                 <ImageView

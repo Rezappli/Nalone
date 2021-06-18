@@ -49,7 +49,7 @@ import static com.nolonely.mobile.util.Constants.USER;
 public class PlanningCreationsFragment extends JSONFragment {
 
     private ImageView imageTypeEvent, nextEventImage;
-    private TextView nextEventName, nextEventCity, nextEventDate, nextEventTime, textViewTitleDebut, differenceDate;
+    private TextView nextEventName, nextEventCity, nextEventDate, nextEventTime, textViewTitleDebut, differenceDate, nextEventNbMembersValidate, nextEventNbMembersTotal;
     private List<Evenement> eventsNow, eventsSoon, eventsEnd, eventsRecycler;
     private Evenement nextEvent;
     private EvenementAdapter evenementAdapter;
@@ -103,6 +103,8 @@ public class PlanningCreationsFragment extends JSONFragment {
         nextEventTime = view.findViewById(R.id.nextEventTime);
         imageTypeEvent = view.findViewById(R.id.imageTypeEvent);
         nextEventImage = view.findViewById(R.id.imageEvent);
+        nextEventNbMembersTotal = view.findViewById(R.id.nextEventNbMembersTotal);
+        nextEventNbMembersValidate = view.findViewById(R.id.nextEventNbMembersRegister);
         TextView showMoreButton = view.findViewById(R.id.showMoreButton);
         linearNext = view.findViewById(R.id.linearNext);
         linearNoResultBis = view.findViewById(R.id.linearNoResultBis);
@@ -368,7 +370,7 @@ public class PlanningCreationsFragment extends JSONFragment {
     }
 
     private void initNextEvent() throws ParseException {
-        nextEvent.replaceFields(nextEventName, nextEventCity, null, nextEventDate, nextEventTime, imageTypeEvent);
+        nextEvent.replaceFields(nextEventName, nextEventCity, nextEventNbMembersTotal, nextEventDate, nextEventTime, imageTypeEvent);
         if (nextEvent.getStatusEvent() == StatusEvent.ENCOURS) {
             textViewTitleDebut.setText(getResources().getString(R.string.event_start_from));
         } else if (nextEvent.getStatusEvent() == BIENTOT) {

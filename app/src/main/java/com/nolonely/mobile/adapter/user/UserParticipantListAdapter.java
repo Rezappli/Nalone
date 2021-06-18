@@ -20,9 +20,11 @@ public class UserParticipantListAdapter extends RecyclerView.Adapter<UserPartici
 
 
     private List<User> userList;
+    private boolean isWaited;
 
-    public UserParticipantListAdapter(List<User> list) {
+    public UserParticipantListAdapter(List<User> list, boolean isWaited) {
         this.userList = list;
+        this.isWaited = isWaited;
     }
 
     private OnItemClickListener mListener;
@@ -97,10 +99,16 @@ public class UserParticipantListAdapter extends RecyclerView.Adapter<UserPartici
         public void update(final User u) {
             villePers.setText(u.getCity());
             nomInvit.setText(u.getName());
-            buttonAdd.setBackgroundResource(u.isValidate() ? R.drawable.ic_baseline_check_circle_24 : R.drawable.ic_baseline_check_circle_outline_24);
+            if (isWaited) {
+                buttonAdd.setVisibility(View.GONE);
+            } else {
+                buttonAdd.setImageResource(u.isValidate() ? R.drawable.ic_baseline_check_circle_24 : R.drawable.ic_baseline_check_circle_outline_24);
+            }
             Constants.setUserImage(u, imagePerson);
         }
     }
 
-
+    public void setWaited(boolean waited) {
+        isWaited = waited;
+    }
 }
