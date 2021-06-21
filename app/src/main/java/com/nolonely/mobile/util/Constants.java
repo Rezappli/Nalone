@@ -134,9 +134,7 @@ public class Constants {
     public static void setUserImageWithUrl(final String url, final ImageView imageView) {
         if (url != null && !url.equals("")) {
             imageView.post(() -> {
-                if (url != null && !url.equals("")) {
-                    Glide.with(application).load(url).fitCenter().centerCrop().into(imageView);
-                }
+                Glide.with(application).load(url).fitCenter().centerCrop().into(imageView);
             });
         } else {
             imageView.setImageResource(R.drawable.ic_baseline_account_circle_24_fonce);
