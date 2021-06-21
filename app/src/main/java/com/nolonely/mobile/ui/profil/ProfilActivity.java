@@ -52,6 +52,7 @@ public class ProfilActivity extends AppCompatActivity {
     private boolean editPhoto;
     private Uri imageUri = null;
     private boolean hasSelectedImage = false;
+    private CardView cardViewBalance;
 
     private int RESULT_LOAD_IMG = 1;
     private ImageView buttonBack;
@@ -202,6 +203,7 @@ public class ProfilActivity extends AppCompatActivity {
 
 
     private void initView() {
+        cardViewBalance = findViewById(R.id.cardViewBalance);
         userConnectDesc = findViewById(R.id.userConnectDescription);
         userConnectText = findViewById(R.id.userConnectText);
         userConnectVille = findViewById(R.id.userConnectVille);
@@ -219,6 +221,7 @@ public class ProfilActivity extends AppCompatActivity {
 
         buttonBack = findViewById(R.id.buttonBack);
         buttonBack.setOnClickListener(v -> onBackPressed());
+        cardViewBalance.setOnClickListener(v -> startActivity(new Intent(ProfilActivity.this, SampleActivity.class)));
         cardViewQR = findViewById(R.id.cardViewQR);
     }
 

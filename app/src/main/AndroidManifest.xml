@@ -17,7 +17,6 @@
     <uses-permission android:name="android.permission." />
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
 
-
     <application
         android:name="splash.MyApp"
         android:allowBackup="true"
@@ -28,6 +27,7 @@
         android:screenOrientation="portrait"
         android:supportsRtl="true"
         android:theme="@style/AppTheme.NoActionBar">
+        <activity android:name=".pub.MobileAdsActivity"></activity>
         <activity android:name=".ReportActivity" />
         <activity android:name=".ui.amis.display.InfoUserActivity" />
         <activity android:name=".ui.evenements.display.InfosEventCreationActivity" />
@@ -85,6 +85,7 @@
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
             <intent-filter>
@@ -103,6 +104,9 @@
         <service
             android:name=".NotificationMessagingService"
             android:permission="android.permission.BIND_JOB_SERVICE" />
+        <service
+            android:name="com.paypal.android.sdk.payments.PayPalService"
+            android:exported="false" />
 
         <meta-data
             android:name="com.google.android.gms.vision.DEPENDENCIES"

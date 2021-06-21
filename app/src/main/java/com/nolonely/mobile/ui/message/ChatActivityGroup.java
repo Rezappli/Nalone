@@ -16,8 +16,6 @@ import com.nolonely.mobile.R;
 import com.nolonely.mobile.objects.Group;
 import com.nolonely.mobile.objects.Message;
 
-import static com.nolonely.mobile.util.Constants.ON_MESSAGE_ACTIVITY;
-
 public class ChatActivityGroup extends AppCompatActivity {
 
     private ImageView buttonSend;
@@ -44,7 +42,6 @@ public class ChatActivityGroup extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chatbox);
 
-        ON_MESSAGE_ACTIVITY = true;
         mSwipeRefreshLayout = findViewById(R.id.messageSwipeRefreshLayout);
         newMessagePopUp = findViewById(R.id.newMessagePopUp);
         buttonSend = findViewById(R.id.buttonSend);

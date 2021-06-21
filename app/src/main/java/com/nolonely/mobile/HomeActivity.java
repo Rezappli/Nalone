@@ -178,7 +178,7 @@ public class HomeActivity extends JSONActivity implements AdapterView.OnItemSele
 
         buttonNotif.setOnClickListener(v -> startActivity(new Intent(getBaseContext(), NotificationActivity.class)));
 
-        Spinner spin = (Spinner) findViewById(R.id.spinnerType);
+        Spinner spin = findViewById(R.id.spinnerType);
         spin.setOnItemSelectedListener(this);
         SpinnerAdapter customAdapter = new SpinnerAdapter(getBaseContext(), TypeEvent.listOfImages(getBaseContext()), TypeEvent.listOfNames(getBaseContext()));
         spin.setAdapter(customAdapter);

@@ -70,7 +70,7 @@ public class NewMessageActivity extends AppCompatActivity {
         params.putCryptParameter("uid", USER.getUid());
         params.putCryptParameter("limit", 10); //fix a limit to 10 users
 
-        JSONController.getJsonArrayFromUrl(Constants.URL_MY_FRIENDS, getBaseContext(), params, new JSONArrayListener() {
+        JSONController.getJsonArrayFromUrl(Constants.URL_GET_POSSIBLE_DISCUSSIONS, getBaseContext(), params, new JSONArrayListener() {
             @Override
             public void onJSONReceived(JSONArray jsonArray) {
                 try {

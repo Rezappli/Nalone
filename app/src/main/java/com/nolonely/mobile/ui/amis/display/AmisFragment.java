@@ -41,7 +41,6 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.nolonely.mobile.util.Constants.ON_FRIENDS_ACTIVITY;
 import static com.nolonely.mobile.util.Constants.USER;
 
 public class AmisFragment extends JSONFragment {
@@ -199,7 +198,6 @@ public class AmisFragment extends JSONFragment {
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     public void onResume() {
-        ON_FRIENDS_ACTIVITY = true;
         createFragment();
         super.onResume();
     }
@@ -213,11 +211,10 @@ public class AmisFragment extends JSONFragment {
     public void search(String query) {
 
     }
-    
+
     @Override
     public void onDestroy() {
         super.onDestroy();
-        ON_FRIENDS_ACTIVITY = false;
     }
 
     @Override

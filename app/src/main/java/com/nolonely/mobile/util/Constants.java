@@ -43,12 +43,10 @@ public class Constants {
 
     public static User USER;
 
-    public static boolean load = false;
-
     public static final DateFormat formatD = DateFormat.getDateInstance(DateFormat.FULL,
             new Locale("fr", "FR"));
 
-    public static final DateFormat formatDayHoursMinutesSeconds = new SimpleDateFormat("dd-mm-yyyy hh:MM:ss");
+    public static DateFormat formatDayHoursMinutesSeconds = new SimpleDateFormat("dd-mm-yyyy hh:MM:ss");
 
     public static SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
     public static SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm");
@@ -59,13 +57,6 @@ public class Constants {
     public static boolean maPosition;
 
     public static Application application;
-
-    public static boolean ON_MESSAGE_ACTIVITY = false;
-    public static boolean ON_FRIENDS_ACTIVITY = false;
-
-    public static String FCM_API = null;
-    public static String serverKey = null;
-    public static String contentType = null;
 
     public static String BASE_URL = "https://nolonely.fr";
     public static String BASE_API_URL = "http://api.nolonely.fr";
@@ -118,6 +109,7 @@ public class Constants {
 
     public static String URL_SEND_REPORT = BASE_API_URL + "/create_report.php";
     public static String URL_GET_DISCUSSIONS = BASE_API_URL + "/get_discussions.php";
+    public static String URL_GET_POSSIBLE_DISCUSSIONS = BASE_API_URL + "/get_possible_discussions.php";
 
     public static final float margin_percentage = 3.5142f;
 

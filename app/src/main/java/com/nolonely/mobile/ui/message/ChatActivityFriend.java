@@ -36,7 +36,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
-import static com.nolonely.mobile.util.Constants.ON_MESSAGE_ACTIVITY;
 import static com.nolonely.mobile.util.Constants.USER;
 
 public class ChatActivityFriend extends AppCompatActivity {
@@ -74,7 +73,6 @@ public class ChatActivityFriend extends AppCompatActivity {
             }
         }
 
-        ON_MESSAGE_ACTIVITY = true;
         chatImageBack = findViewById(R.id.chatImageBack);
         mSwipeRefreshLayout = findViewById(R.id.messageSwipeRefreshLayout);
         chatUserImageView = findViewById(R.id.chatUserImageView);
@@ -237,7 +235,6 @@ public class ChatActivityFriend extends AppCompatActivity {
     public void onStop() {
         super.onStop();
         messageThread.interrupt();
-        messageThread = null;
     }
 
     @Override

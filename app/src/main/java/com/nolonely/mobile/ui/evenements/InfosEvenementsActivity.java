@@ -34,6 +34,7 @@ import com.nolonely.mobile.listeners.JSONArrayListener;
 import com.nolonely.mobile.listeners.JSONObjectListener;
 import com.nolonely.mobile.objects.Evenement;
 import com.nolonely.mobile.objects.User;
+import com.nolonely.mobile.pub.MobileAdsActivity;
 import com.nolonely.mobile.ui.amis.display.InfoUserActivity;
 import com.nolonely.mobile.util.Constants;
 import com.nolonely.mobile.util.TimeUtil;
@@ -400,6 +401,7 @@ public class InfosEvenementsActivity extends JSONActivity {
             @Override
             public void onJSONReceived(JSONObject jsonObject) {
                 Toast.makeText(getBaseContext(), getResources().getString(R.string.register_message), Toast.LENGTH_SHORT).show();
+                startActivity(new Intent(InfosEvenementsActivity.this, MobileAdsActivity.class));
             }
 
             @Override

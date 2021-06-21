@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.nolonely.mobile.R;
 import com.nolonely.mobile.objects.Message;
+import com.nolonely.mobile.util.Constants;
 
 import java.util.List;
 
@@ -74,8 +75,10 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ChatViewHolder
 
         public void update(final Message m) {
             if (m.getSender().equals(USER.getUid())) {
+                Constants.setUserImageWithUrl(USER.getImage_url(), ownerImage);
                 bgMessage.setCardBackgroundColor(Color.parseColor("#BFECF3"));
             } else {
+                
                 bgMessage.setCardBackgroundColor(Color.WHITE);
             }
             messageText.setText(m.getMessage());
