@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
-
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -38,19 +37,11 @@
                 android:contentDescription="@string/TODO"
                 app:srcCompat="@drawable/logo" />
 
-            <ProgressBar
-                android:id="@+id/progressBar"
-                style="?android:attr/progressBarStyle"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:visibility="gone" />
-
             <EditText
                 android:id="@+id/editTextAddress"
                 android:layout_width="match_parent"
                 android:layout_height="60dp"
                 android:layout_marginBottom="10dp"
-                android:autofillHints=""
                 android:background="@drawable/custom_input"
                 android:drawableStart="@drawable/custom_adress_focused"
                 android:drawablePadding="12dp"
@@ -65,7 +56,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="60dp"
                 android:layout_marginBottom="10dp"
-                android:autofillHints=""
                 android:background="@drawable/custom_input"
                 android:drawableStart="@drawable/custom_lock_focused"
                 android:drawablePadding="12dp"
@@ -83,16 +73,45 @@
                 android:text="@string/mdpOublie"
                 android:textColor="@color/colorPrimary" />
 
-            <Button
-                android:id="@+id/buttonRetry"
-                android:layout_width="200dp"
+            <RelativeLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
-                android:background="@drawable/custom_button_simple"
-                android:text="@string/buttonConnexion"
-                android:textAllCaps="false"
-                android:textColor="#FFFFFF"
-                android:textSize="20sp" />
+                android:layout_marginTop="10dp">
+
+                <Button
+                    android:id="@+id/buttonRetry"
+                    android:layout_width="200dp"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:layout_marginStart="74dp"
+                    android:layout_marginEnd="73dp"
+                    android:background="@drawable/custom_button_simple"
+                    android:text="@string/buttonConnexion"
+                    android:textAllCaps="false"
+                    android:textColor="#FFFFFF"
+                    android:textSize="20sp"
+                    android:visibility="visible" />
+
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/loading"
+                    android:layout_width="match_parent"
+                    android:layout_height="80dp"
+                    android:layout_centerInParent="true"
+                    app:cardBackgroundColor="@android:color/transparent"
+                    app:cardElevation="0dp">
+
+                    <com.airbnb.lottie.LottieAnimationView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_gravity="center"
+
+                        android:rotation="-45"
+                        app:lottie_autoPlay="true"
+                        app:lottie_loop="true"
+                        app:lottie_rawRes="@raw/loadingbis" />
+                </androidx.cardview.widget.CardView>
+
+            </RelativeLayout>
 
 
         </LinearLayout>

@@ -20,6 +20,7 @@ import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.cardview.widget.CardView;
 
+import com.airbnb.lottie.LottieAnimationView;
 import com.android.volley.VolleyError;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.nolonely.mobile.HomeActivity;
@@ -84,6 +85,7 @@ public class InfosEvenementsActivity extends JSONActivity {
 
     private View viewGrey;
     private CardView cardViewParticipationCheck;
+    private LottieAnimationView lottieAnimationView;
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
@@ -103,6 +105,8 @@ public class InfosEvenementsActivity extends JSONActivity {
             EVENT_LOAD = (Evenement) getIntent().getSerializableExtra("event");
             isRegistered = getIntent().getBooleanExtra("isRegistered", false);
         }
+        lottieAnimationView = findViewById(R.id.animationView);
+        lottieAnimationView.setMaxFrame(108);
         participants = 0;
         textViewNbMembers = findViewById(R.id.textViewNbMembers);
         nbParticipants = findViewById(R.id.nbParticipants);
@@ -372,6 +376,7 @@ public class InfosEvenementsActivity extends JSONActivity {
         if (!inscrit) {
             if (EVENT_LOAD.getPrice() > 0) {
                 bottomSheetBehaviorParticipate.setState(BottomSheetBehavior.STATE_EXPANDED);
+                lottieAnimationView.playAnimation();
             } else {
                 registerClicked();
                 onRegisterUser();

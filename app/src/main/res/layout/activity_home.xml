@@ -125,11 +125,6 @@
                 android:layout_gravity="center"
                 app:srcCompat="@drawable/ic_baseline_add_circle_outline_home" />
 
-            <View
-                android:id="@+id/divider17"
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:background="@color/lightGrey" />
         </com.google.android.material.bottomnavigation.BottomNavigationView>
 
     </com.google.android.material.bottomappbar.BottomAppBar>

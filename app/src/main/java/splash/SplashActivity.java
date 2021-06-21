@@ -82,7 +82,6 @@ public class SplashActivity extends AppCompatActivity {
                 Log.w("User", jsonObject.toString());
                 USER = (User) JSONController.convertJSONToObject(jsonObject, User.class);
                 databaseManager.insertUserConnect(USER);
-                launchHomeActivity();
             }
 
             @Override

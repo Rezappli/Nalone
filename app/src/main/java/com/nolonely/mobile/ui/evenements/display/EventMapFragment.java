@@ -3,12 +3,14 @@ package com.nolonely.mobile.ui.evenements.display;
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
@@ -27,6 +29,7 @@ import androidx.cardview.widget.CardView;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
+import com.airbnb.lottie.LottieAnimationView;
 import com.android.volley.VolleyError;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -68,7 +71,7 @@ import static com.nolonely.mobile.util.Constants.USER;
 import static com.nolonely.mobile.util.Constants.range;
 
 
-public class EventMapFragment extends JSONFragment implements OnMapReadyCallback {
+public class EventMapFragment extends JSONFragment implements OnMapReadyCallback, GoogleMap.OnMyLocationButtonClickListener, GoogleMap.OnCameraMoveStartedListener {
 
     private View rootView;
 
@@ -95,6 +98,10 @@ public class EventMapFragment extends JSONFragment implements OnMapReadyCallback
 
     private LatLng specificEvent;
     private AlertDialog positionDialog;
+    private LottieAnimationView iconPosition;
+    private boolean positionIsFocused;
+    private TextView textViewPrice;
+    private CardView cardViewPrice;
 
     /**
      * Request code for location permission request.
@@ -102,6 +109,7 @@ public class EventMapFragment extends JSONFragment implements OnMapReadyCallback
      * @see #onRequestPermissionsResult(int, String[], int[])
      */
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 1;
+    private Button buttonGo;
 
     public EventMapFragment() {
     }
@@ -150,7 +158,32 @@ public class EventMapFragment extends JSONFragment implements OnMapReadyCallback
         viewGrey = rootView.findViewById(R.id.viewGreyMap);
         imageViewDetailCategory = rootView.findViewById(R.id.imageViewDetailCategory);
         imageEvent = rootView.findViewById(R.id.imageEvent);
+        buttonGo = rootView.findViewById(R.id.buttonGo);
+        textViewPrice = rootView.findViewById(R.id.textViewPrice);
+        cardViewPrice = rootView.findViewById(R.id.cardViewPrice);
 
+        iconPosition = rootView.findViewById(R.id.iconPosition);
+        iconPosition.setOnClickListener(v -> {
+            if (locationManager.isLocationEnabled()) {
+                if (!positionIsFocused) {
+                    iconPosition.setMinFrame(0);
+                    iconPosition.setMaxFrame(37);
+                    positionIsFocused = true;
+                    iconPosition.playAnimation();
+
+                    Location location = mMap.getMyLocation();
+                    LatLng latLng = null;
+                    if (locationManager != null) {
+                        latLng = new LatLng(location.getLatitude(),
+                                location.getLongitude());
+                    }
+                    mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng,
+                            13));
+                }
+            } else {
+                createGpsDisabledAlert();
+            }
+        });
         currentVisibilityMap = ALL;
         //Bottom sheet
         final View bottomSheetDetails = rootView.findViewById(R.id.sheetEvent);
@@ -225,8 +258,37 @@ public class EventMapFragment extends JSONFragment implements OnMapReadyCallback
             updateMap(VisibilityMap.CREATE);
             currentVisibilityMap = VisibilityMap.CREATE;
         });
+
+
     }
 
+    private void createGpsDisabledAlert() {
+        AlertDialog.Builder localBuilder = new AlertDialog.Builder(getContext());
+        localBuilder
+                .setMessage("Le GPS est inactif, voulez-vous l'activer ?")
+                .setCancelable(false)
+                .setPositiveButton("Activer GPS ",
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface paramDialogInterface, int paramInt) {
+                                showGpsOptions();
+                            }
+                        }
+                );
+        localBuilder.setNegativeButton("Ne pas l'activer ",
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface paramDialogInterface, int paramInt) {
+                        paramDialogInterface.cancel();
+                        getActivity().finish();
+                    }
+                }
+        );
+        localBuilder.create().show();
+    }
+
+    private void showGpsOptions() {
+        startActivity(new Intent("android.settings.LOCATION_SOURCE_SETTINGS"));
+        getActivity().finish();
+    }
 
     @SuppressLint("UseCompatLoadingForDrawables")
     private void hiddeText(TextView tv) {
@@ -259,7 +321,7 @@ public class EventMapFragment extends JSONFragment implements OnMapReadyCallback
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
-
+        mMap.setOnCameraMoveStartedListener(this);
         clusterManager = new ClusterManager<>(requireContext(), mMap);
         mMap.setOnCameraIdleListener(clusterManager);
         mMap.setOnMarkerClickListener(clusterManager);
@@ -378,6 +440,7 @@ public class EventMapFragment extends JSONFragment implements OnMapReadyCallback
         clusterManager.setOnClusterClickListener(cluster -> false);
 
         clusterManager.setOnClusterItemClickListener(item -> {
+
             Evenement e1 = item.getTag();
 
             if (e1 != null) {
@@ -388,6 +451,11 @@ public class EventMapFragment extends JSONFragment implements OnMapReadyCallback
                         intent = new Intent(getContext(), InfosEventCreationActivity.class);
                     } else {
                         intent = new Intent(getContext(), InfosEvenementsActivity.class);
+                        for (Evenement evenement : registeredList) {
+                            if (evenement.getUid().equals(e1.getUid())) {
+                                intent.putExtra("isRegistered", true);
+                            }
+                        }
                     }
                     intent.putExtra("event", e1);
                     startActivity(intent);
@@ -400,11 +468,29 @@ public class EventMapFragment extends JSONFragment implements OnMapReadyCallback
                     parseException.printStackTrace();
                 }
 
+                buttonGo.setOnClickListener(v -> {
+                    String latitude = String.valueOf(e1.getLatitude());
+                    String longitude = String.valueOf(e1.getLongitude());
+                    Uri gmmIntentUri = Uri.parse("google.navigation:q=" + latitude + "," + longitude);
+                    Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
+                    mapIntent.setPackage("com.google.android.apps.maps");
+
+                    if (mapIntent.resolveActivity(getActivity().getPackageManager()) != null) {
+                        startActivity(mapIntent);
+                    }
+                });
                 textViewDetailNbMembers.setText(e1.getNbMembers() + "");
                 textViewDetailCity.setText(e1.getCity());
                 textViewDetailDate.setText(Constants.dateFormat.format(d));
                 textViewDetailName.setText(e1.getName());
                 textViewDetailName.setText(e1.getName());
+                if (e1.getPrice() > 0) {
+                    textViewPrice.setText(e1.getPrice() + " €");
+                    cardViewPrice.setBackgroundColor(Color.parseColor("#0C6FE6"));
+                } else {
+                    textViewPrice.setText("Free");
+                    cardViewPrice.setBackgroundColor(Color.parseColor("#00D7F3"));
+                }
                 imageViewDetailCategory.setImageResource(e1.getImageCategory());
                 Constants.setEventImage(e1, imageEvent);
                 if (d == null) {
@@ -581,6 +667,8 @@ public class EventMapFragment extends JSONFragment implements OnMapReadyCallback
     @RequiresApi(api = Build.VERSION_CODES.P)
     private void enableMyLocation() {
         locationManager = (LocationManager) getContext().getSystemService(Context.LOCATION_SERVICE);
+        //locationManager.getLastKnownLocation()
+        //locationManager.lo
         if (locationManager.isLocationEnabled()) {
             LocationListener locationListener = new LocationListener() {
                 @Override
@@ -651,4 +739,21 @@ public class EventMapFragment extends JSONFragment implements OnMapReadyCallback
     }
 
 
+    @Override
+    public boolean onMyLocationButtonClick() {
+        return false;
+    }
+
+    @Override
+    public void onCameraMoveStarted(int reason) {
+        if (reason == GoogleMap.OnCameraMoveStartedListener.REASON_GESTURE || reason == GoogleMap.OnCameraMoveStartedListener
+                .REASON_API_ANIMATION) {
+            if (positionIsFocused) {
+                iconPosition.setMinFrame(37);
+                iconPosition.setMaxFrame(60);
+                iconPosition.playAnimation();
+                positionIsFocused = false;
+            }
+        }
+    }
 }

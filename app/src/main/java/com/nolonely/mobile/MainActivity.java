@@ -8,7 +8,6 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -44,7 +43,6 @@ public class MainActivity extends AppCompatActivity {
     private EditText editTextPass;
     private EditText editTextAddress;
     private TextView passwordForget;
-    private ProgressBar progressBar;
 
     private GoogleSignInClient mGoogleSignInClient;
 
@@ -77,7 +75,6 @@ public class MainActivity extends AppCompatActivity {
         editTextAddress = findViewById(R.id.editTextAddress);
         editTextPass = findViewById(R.id.editTextPassword);
         passwordForget = findViewById(R.id.editTextPasswordForget);
-        progressBar = findViewById(R.id.progressBar);
 
         passwordForget.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -112,7 +109,7 @@ public class MainActivity extends AppCompatActivity {
                 }
 
                 if (!textAddress.equalsIgnoreCase("") && !textPass.equalsIgnoreCase("")) {
-                    progressBar.setVisibility(View.VISIBLE);
+                    textViewConnexion.setVisibility(View.GONE);
                     Log.w("Response", "Try to connect client");
                     connectUser(textAddress, textPass);
                 }
@@ -174,18 +171,20 @@ public class MainActivity extends AppCompatActivity {
                     } catch (JSONException e) {
                         Toast.makeText(MainActivity.this, getResources().getString(R.string.error), Toast.LENGTH_SHORT).show();
                         Log.w("Response", "Erreur:" + e.getMessage());
-                        progressBar.setVisibility(View.GONE);
+                        textViewConnexion.setVisibility(View.VISIBLE);
                     }
                 } else {
                     Log.w("Response", "Mail/Password incorrect : " + jsonObject.toString());
                     Toast.makeText(MainActivity.this, getResources().getString(R.string.mail_or_password_incorrect), Toast.LENGTH_SHORT).show();
-                    progressBar.setVisibility(View.GONE);
+                    textViewConnexion.setVisibility(View.VISIBLE);
+
                 }
             }
 
             @Override
             public void onJSONReceivedError(VolleyError volleyError) {
-                progressBar.setVisibility(View.GONE);
+                textViewConnexion.setVisibility(View.VISIBLE);
+
                 Toast.makeText(MainActivity.this, getResources().getString(R.string.error), Toast.LENGTH_SHORT).show();
                 Log.w("Response", "Erreur : " + volleyError.toString());
             }
@@ -239,24 +238,28 @@ public class MainActivity extends AppCompatActivity {
                     } catch (JSONException e) {
                         Toast.makeText(MainActivity.this, getResources().getString(R.string.error), Toast.LENGTH_SHORT).show();
                         Log.w("Response", "Erreur:" + e.getMessage());
-                        progressBar.setVisibility(View.GONE);
+                        textViewConnexion.setVisibility(View.VISIBLE);
+
                     }
                 } else if (jsonObject.length() == 4) {
                     Toast.makeText(MainActivity.this, getResources().getString(R.string.mail_not_verified), Toast.LENGTH_SHORT).show();
                     Log.w("Response", "Mail not verified");
-                    progressBar.setVisibility(View.GONE);
+                    textViewConnexion.setVisibility(View.VISIBLE);
+
                 } else if (jsonObject.length() == 5) {
                     Toast.makeText(MainActivity.this, getResources().getString(R.string.not_register), Toast.LENGTH_SHORT).show();
                     launchRegisterActivity();
                 } else {
                     Toast.makeText(MainActivity.this, getResources().getString(R.string.mail_or_password_incorrect), Toast.LENGTH_SHORT).show();
-                    progressBar.setVisibility(View.GONE);
+                    textViewConnexion.setVisibility(View.VISIBLE);
+
                 }
             }
 
             @Override
             public void onJSONReceivedError(VolleyError volleyError) {
-                progressBar.setVisibility(View.GONE);
+                textViewConnexion.setVisibility(View.VISIBLE);
+
                 Toast.makeText(MainActivity.this, getResources().getString(R.string.error), Toast.LENGTH_SHORT).show();
                 Log.w("Response", "Erreur : " + volleyError.toString());
             }
