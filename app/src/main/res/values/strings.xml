@@ -434,5 +434,7 @@
     <string name="report_no_select_checkbox"> Vous devez cocher la case au dessus </string>
     <string name="report_no_select_section"> Vous devez choisir un/des point(s) à signaler </string>
 
+    <string name="enable_location"> Votre position est désactivée. Voulez-vous activer votre position ? </string>
+
 
 </resources>

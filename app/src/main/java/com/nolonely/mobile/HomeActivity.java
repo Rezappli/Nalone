@@ -140,18 +140,15 @@ public class HomeActivity extends JSONActivity implements AdapterView.OnItemSele
         });
 
 
-        searchView.setOnCloseListener(new SearchView.OnCloseListener() {
-            @Override
-            public boolean onClose() {
-                if (active.equals(fragment2)) {
-                    ((PlanningFragment) fragment2).search(null);
-                } else if (active.equals(fragment3)) {
-                    ((SearchFragment) fragment3).search(null);
-                } else if (active.equals(fragment4)) {
-                    ((AmisFragment) fragment4).search(null);
-                }
-                return false;
+        searchView.setOnCloseListener(() -> {
+            if (active.equals(fragment2)) {
+                ((PlanningFragment) fragment2).search(null);
+            } else if (active.equals(fragment3)) {
+                ((SearchFragment) fragment3).search(null);
+            } else if (active.equals(fragment4)) {
+                ((AmisFragment) fragment4).search(null);
             }
+            return false;
         });
 
         item_profil = findViewById(R.id.item_profil);

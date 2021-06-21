@@ -100,9 +100,7 @@ public class Constants {
     public static String URL_ADD_GROUP = BASE_API_URL + "/add_group.php";
 
     public static String URL_UPDATE_ME = BASE_API_URL + "/update_me.php";
-    public static String URL_TEST = BASE_API_URL + "/test.php";
 
-    public static String URl_GET_MESSAGE_CHANNEL = BASE_API_URL + "/get_message_channel.php";
     public static String URl_CREATE_MESSAGE_CHANNEL = BASE_API_URL + "/create_message_channel.php";
     public static String URl_SEND_MESSAGES = BASE_API_URL + "/send_message.php";
     public static String URl_GET_MESSAGES = BASE_API_URL + "/get_messages.php";
@@ -110,8 +108,6 @@ public class Constants {
     public static String URL_SEND_REPORT = BASE_API_URL + "/create_report.php";
     public static String URL_GET_DISCUSSIONS = BASE_API_URL + "/get_discussions.php";
     public static String URL_GET_POSSIBLE_DISCUSSIONS = BASE_API_URL + "/get_possible_discussions.php";
-
-    public static final float margin_percentage = 3.5142f;
 
     public static void setUserImage(final User u, final ImageView imageView) {
         if (u.getImage_url() != null && !(u.getImage_url().equals(""))) {

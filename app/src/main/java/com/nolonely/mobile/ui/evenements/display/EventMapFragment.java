@@ -1,8 +1,14 @@
 package com.nolonely.mobile.ui.evenements.display;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Color;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
@@ -16,7 +22,10 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
+import androidx.appcompat.app.AlertDialog;
 import androidx.cardview.widget.CardView;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
 import com.android.volley.VolleyError;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -67,19 +76,13 @@ public class EventMapFragment extends JSONFragment implements OnMapReadyCallback
     private GoogleMap mMap;
     private TextView textViewLocationPrive, textViewLocationAll, textViewLocationPublic, textViewLocationCreate, textViewLocationInscrit;
     private ImageView imageViewLocationPrive, imageViewLocationAll, imageViewLocationPublic, imageViewLocationCreate, imageViewLocationInscrit;
-
     private VisibilityMap currentVisibilityMap;
-
     private List<Evenement> publicList;
     private List<Evenement> friendList;
     private List<Evenement> registeredList;
-
     private CardView loading;
-
     private static CameraPosition posCam = null;
     private Circle circle = null;
-
-
     // Bottom sheet
     private BottomSheetBehavior bottomSheetBehaviorDetails;
 
@@ -88,8 +91,17 @@ public class EventMapFragment extends JSONFragment implements OnMapReadyCallback
     private ImageView imageViewDetailCategory, imageEvent;
 
     private ClusterManager<CustomMarker> clusterManager;
+    private LocationManager locationManager;
 
     private LatLng specificEvent;
+    private AlertDialog positionDialog;
+
+    /**
+     * Request code for location permission request.
+     *
+     * @see #onRequestPermissionsResult(int, String[], int[])
+     */
+    private static final int LOCATION_PERMISSION_REQUEST_CODE = 1;
 
     public EventMapFragment() {
     }
@@ -98,7 +110,7 @@ public class EventMapFragment extends JSONFragment implements OnMapReadyCallback
         specificEvent = latLng;
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.M)
+    @RequiresApi(api = Build.VERSION_CODES.P)
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -116,7 +128,7 @@ public class EventMapFragment extends JSONFragment implements OnMapReadyCallback
     }
 
     @SuppressLint("UseCompatLoadingForDrawables")
-    @RequiresApi(api = Build.VERSION_CODES.M)
+    @RequiresApi(api = Build.VERSION_CODES.P)
     private void createFragment() {
 
         CardView cardViewLocationCreate = rootView.findViewById(R.id.cardViewLocationCreate);
@@ -267,7 +279,7 @@ public class EventMapFragment extends JSONFragment implements OnMapReadyCallback
         launchJSONCall(true);
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.M)
+    @RequiresApi(api = Build.VERSION_CODES.P)
     private void checkJSONReceived() {
         if (friendList != null && publicList != null && registeredList != null) {
             loading.setVisibility(View.GONE);
@@ -276,9 +288,8 @@ public class EventMapFragment extends JSONFragment implements OnMapReadyCallback
     }
 
 
-    @RequiresApi(api = Build.VERSION_CODES.M)
+    @RequiresApi(api = Build.VERSION_CODES.P)
     public void updateMap(VisibilityMap visibilityMap) {
-
         if (mMap != null)
             mMap.clear();
         clusterManager.clearItems();
@@ -318,6 +329,8 @@ public class EventMapFragment extends JSONFragment implements OnMapReadyCallback
                 }
                 break;
         }
+
+        enableMyLocation();
     }
 
     private void updateCircle() {
@@ -420,11 +433,20 @@ public class EventMapFragment extends JSONFragment implements OnMapReadyCallback
         super.onLowMemory();
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.M)
+    @RequiresApi(api = Build.VERSION_CODES.P)
     @Override
     public void onResume() {
         super.onResume();
         mMapView.onResume();
+        if (locationManager != null) {
+            if (locationManager.isLocationEnabled()) {
+                if (positionDialog != null) {
+                    if (positionDialog.isShowing()) {
+                        positionDialog.dismiss();
+                    }
+                }
+            }
+        }
     }
 
     @Override
@@ -450,7 +472,7 @@ public class EventMapFragment extends JSONFragment implements OnMapReadyCallback
         super.onStop();
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.O)
+    @RequiresApi(api = Build.VERSION_CODES.P)
     @Override
     protected void doInHaveInternetConnection() {
 
@@ -552,4 +574,81 @@ public class EventMapFragment extends JSONFragment implements OnMapReadyCallback
             }
         });
     }
+
+    /**
+     * Enables the My Location layer if the fine location permission has been granted.
+     */
+    @RequiresApi(api = Build.VERSION_CODES.P)
+    private void enableMyLocation() {
+        locationManager = (LocationManager) getContext().getSystemService(Context.LOCATION_SERVICE);
+        if (locationManager.isLocationEnabled()) {
+            LocationListener locationListener = new LocationListener() {
+                @Override
+                public void onLocationChanged(@NonNull Location location) {
+                }
+
+                @Override
+                public void onProviderEnabled(@NonNull String provider) {
+                    if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                        requestPermissions(
+                                new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION}, LOCATION_PERMISSION_REQUEST_CODE);
+                        return;
+                    } else {
+                        mMap.setMyLocationEnabled(true);
+                        mMap.getUiSettings().setMyLocationButtonEnabled(true);
+                    }
+                }
+
+                @Override
+                public void onProviderDisabled(@NonNull String provider) {
+                    if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                        requestPermissions(
+                                new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION}, LOCATION_PERMISSION_REQUEST_CODE);
+                        return;
+                    } else {
+                        mMap.setMyLocationEnabled(false);
+                        mMap.getUiSettings().setMyLocationButtonEnabled(false);
+                    }
+                }
+            };
+
+            if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                requestPermissions(
+                        new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION}, LOCATION_PERMISSION_REQUEST_CODE);
+                return;
+            } else {
+                mMap.setMyLocationEnabled(true);
+                mMap.getUiSettings().setMyLocationButtonEnabled(true);
+            }
+
+            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,
+                    2000,
+                    10, locationListener);
+        } else {
+            AlertDialog.Builder alertDialog = new AlertDialog.Builder(getContext());
+            alertDialog.setMessage(getContext().getResources().getString(R.string.enable_location))
+                    .setCancelable(false)
+                    .setPositiveButton(getContext().getResources().getString(R.string.button_yes), (dialog, id) -> startActivity(new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS)))
+                    .setNegativeButton(getContext().getResources().getString(R.string.button_no), (dialog, id) -> dialog.cancel());
+            positionDialog = alertDialog.create();
+            positionDialog.show();
+        }
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.P)
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        if (requestCode != LOCATION_PERMISSION_REQUEST_CODE) {
+            return;
+        }
+
+        if (ContextCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION)
+                == PackageManager.PERMISSION_GRANTED && ContextCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_COARSE_LOCATION)
+                == PackageManager.PERMISSION_GRANTED) {
+            // Enable the my location layer if the permission has been granted.
+            enableMyLocation();
+        }
+    }
+
+
 }
