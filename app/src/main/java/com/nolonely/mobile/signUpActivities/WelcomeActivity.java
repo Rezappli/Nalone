@@ -2,9 +2,12 @@ package com.nolonely.mobile.signUpActivities;
 
 import android.app.AlertDialog;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.provider.MediaStore;
+import android.util.Base64;
 import android.util.Log;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -22,11 +25,15 @@ import com.nolonely.mobile.HomeActivity;
 import com.nolonely.mobile.R;
 import com.nolonely.mobile.bdd.json.JSONController;
 import com.nolonely.mobile.bdd.json.JSONObjectCrypt;
+import com.nolonely.mobile.enumeration.ImageType;
 import com.nolonely.mobile.listeners.JSONObjectListener;
 import com.nolonely.mobile.objects.User;
 import com.nolonely.mobile.util.Constants;
 
 import org.json.JSONObject;
+
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 
 import static com.nolonely.mobile.util.Constants.USER;
 
@@ -83,9 +90,28 @@ public class WelcomeActivity extends AppCompatActivity {
                 builder.create();
                 builder.show();
             } else {
+                uploadImage();
                 startHomeActivity();
             }
         });
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    private void uploadImage() {
+        String data;
+        try {
+            data = BitMapToString(MediaStore.Images.Media.getBitmap(getBaseContext().getContentResolver(), imageUri));
+            Constants.uploadImageOnServer(ImageType.USER, user.getUid(), data, WelcomeActivity.this);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private static String BitMapToString(Bitmap bitmap) {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+        byte[] imageBytes = baos.toByteArray();
+        return Base64.encodeToString(imageBytes, Base64.DEFAULT);
     }
 
     private void choosePhoto() {
@@ -108,8 +134,6 @@ public class WelcomeActivity extends AppCompatActivity {
             params.putCryptParameter("longitude", user.getLongitude());
             params.putCryptParameter("number_events_attend", "0");
             params.putCryptParameter("number_events_create", "0");
-
-            Log.w("Params update me", "params : " + params.toString());
 
             JSONController.getJsonObjectFromUrl(Constants.URL_UPDATE_ME, getBaseContext(), params, new JSONObjectListener() {
                 @Override
@@ -145,7 +169,6 @@ public class WelcomeActivity extends AppCompatActivity {
             hasSelectedImage = true;
         } else {
             Toast.makeText(getApplicationContext(), "Vous n'avez pas choisi d'image", Toast.LENGTH_LONG).show();
-
         }
     }
 

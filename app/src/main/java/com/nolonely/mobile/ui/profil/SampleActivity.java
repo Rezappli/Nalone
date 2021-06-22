@@ -1,7 +1,6 @@
 package com.nolonely.mobile.ui.profil;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -57,9 +56,6 @@ public class SampleActivity extends AppCompatActivity {
 
     private static PayPalConfiguration config;
 
-
-    final Context context = this;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -86,7 +82,7 @@ public class SampleActivity extends AppCompatActivity {
     public void onBuyPressed(View pressed) {
         // change PAYMENT_INTENT_SALE to PAYMENT_INTENT_AUTHORIZE to only authorize payment and capture funds later.
         PayPalPayment thingToBuy = new PayPalPayment(new BigDecimal(String.valueOf(2)), "EUR", "Abonnement à NoLonely",
-                PayPalPayment.PAYMENT_INTENT_AUTHORIZE);
+                PayPalPayment.PAYMENT_INTENT_SALE);
 
         Intent intent = new Intent(SampleActivity.this, PaymentActivity.class);
 
