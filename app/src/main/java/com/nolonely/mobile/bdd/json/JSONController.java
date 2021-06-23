@@ -2,7 +2,6 @@ package com.nolonely.mobile.bdd.json;
 
 import android.content.Context;
 import android.os.Build;
-import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
@@ -49,8 +48,8 @@ public class JSONController {
                                  }
                              }, volleyError -> {
                          if (listener != null) {
-                             Log.w("Response", "Error call from " + listener.getClass());
                              listener.onJSONReceivedError(volleyError);
+                             System.err.println("Params : " + parameters.toString());
                          }
                      }) {
                          @Override
@@ -94,6 +93,7 @@ public class JSONController {
                              }, volleyError -> {
                          if (listener != null) {
                              listener.onJSONReceivedError(volleyError);
+                             System.err.println("Params : " + parameters.toString());
                          }
                      }) {
                          @Override

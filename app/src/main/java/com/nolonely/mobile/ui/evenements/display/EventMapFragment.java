@@ -84,6 +84,7 @@ public class EventMapFragment extends JSONFragment implements OnMapReadyCallback
     private List<Evenement> friendList;
     private List<Evenement> registeredList;
     private CardView loading;
+    private CardView cardViewPosition;
     private static CameraPosition posCam = null;
     private Circle circle = null;
     // Bottom sheet
@@ -148,6 +149,7 @@ public class EventMapFragment extends JSONFragment implements OnMapReadyCallback
         textViewLocationPrive = rootView.findViewById(R.id.textViewLocationPrivate);
         textViewLocationPublic = rootView.findViewById(R.id.textViewLocationPublic);
         textViewLocationInscrit = rootView.findViewById(R.id.textViewLocationInscrit);
+        cardViewPosition = rootView.findViewById(R.id.cardViewPosition);
         textViewLocationAll = rootView.findViewById(R.id.textViewLocationAll);
         imageViewLocationInscrit = rootView.findViewById(R.id.imageViewLocationInscrit);
         imageViewLocationPrive = rootView.findViewById(R.id.imageViewLocationPrive);
@@ -683,7 +685,7 @@ public class EventMapFragment extends JSONFragment implements OnMapReadyCallback
                         return;
                     } else {
                         mMap.setMyLocationEnabled(true);
-                        mMap.getUiSettings().setMyLocationButtonEnabled(true);
+                        cardViewPosition.setVisibility(View.VISIBLE);
                     }
                 }
 
@@ -695,7 +697,7 @@ public class EventMapFragment extends JSONFragment implements OnMapReadyCallback
                         return;
                     } else {
                         mMap.setMyLocationEnabled(false);
-                        mMap.getUiSettings().setMyLocationButtonEnabled(false);
+                        cardViewPosition.setVisibility(View.GONE);
                     }
                 }
             };
@@ -706,7 +708,7 @@ public class EventMapFragment extends JSONFragment implements OnMapReadyCallback
                 return;
             } else {
                 mMap.setMyLocationEnabled(true);
-                mMap.getUiSettings().setMyLocationButtonEnabled(true);
+                cardViewPosition.setVisibility(View.VISIBLE);
             }
 
             locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,
